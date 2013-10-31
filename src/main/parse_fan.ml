@@ -355,7 +355,7 @@ let apply () = begin
         | "object"; "(";pat as p; ")"; "end"  %{`ObjPatEnd(_loc,p)}
         | "object"; "(";pat as p;":";ctyp as t;")";class_structure as cst;"end" %{
             `ObjPat(_loc,`Constraint(_loc,p,t),cst)}
-        | "object"; "(";pat as p;":";ctyp as t;")";"end" %{
+        | "object"; "(";pat as p;":";ctyp as t;")" ; "end" %{
             `ObjPatEnd(_loc,`Constraint(_loc,p,t))}
         | "object"; class_structure as cst;"end" %{ `Obj(_loc,cst)}
         | "object";"end" %{ `ObjEnd(_loc)}]
@@ -442,7 +442,7 @@ let apply () = begin
         | "("; S as e; ":"; ctyp as t; ")" %{ `Constraint (_loc, e, t)}
         | "("; S as e; ","; comma_exp as el; ")" %{`Par (_loc, `Com (_loc, e, el))}
         | "("; S as e; ";"; sequence as seq; ")"  %{`Seq(_loc,`Sem(_loc,e,seq))}
-        | "("; S as e; ";"; ")" %{ `Seq(_loc,e)}
+        | "("; S as e; ";"; ")" %{ `Seq(_loc,e)} (* FIXME Seq or not?*)
         | "("; S as e; ":"; ctyp as t; ":>"; ctyp as t2; ")" %{`Coercion (_loc, e, t, t2)}
         | "("; S as e; ":>"; ctyp as t; ")" %{ `Subtype(_loc,e,t)}
         | "("; S as e; ")"  %{ e}
@@ -453,8 +453,8 @@ let apply () = begin
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] }
        sem_exp_for_list:
        [ exp as e; ";"; S as el %{fun acc -> %exp{ $e :: ${el acc}}}
-       | exp as e; ";" %{fun acc -> %exp{ $e :: $acc }}
-       | exp as e  %{fun acc -> %exp{ $e :: $acc }}]
+       | exp as e; ?";" %{fun acc -> %exp{ $e :: $acc }}
+       ]
 
        (* Inline let_in : *)
        (* [ "let"; opt_rec as rf; bind as bi; "in"; exp as e; sequence'{k} %{ *)
@@ -477,8 +477,7 @@ let apply () = begin
        (* FIXME Ant should be able to be followed *)      
        ]
        sequence':
-       [ %{ fun e -> e}
-       | ";" %{ fun e -> e}
+       [ ?";" %{ fun e -> e}
        | ";"; sequence as el %{ fun e -> `Sem(_loc,e,el)} ]
 
 
@@ -534,12 +533,12 @@ let apply () = begin
         | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]
         label_exp_list:
         [ label_exp as b1; ";"; S as b2 %{`Sem (_loc, b1, b2)}
-        | label_exp as b1; ";"        %{b1}
-        | label_exp as b1             %{b1}  ]
+        | label_exp as b1; ?";"        %{b1}
+        ]
         field_exp_list:
         [ field_exp as b1; ";"; S as b2 %{ `Sem (_loc, b1, b2)}
-        | field_exp as b1; ";"        %{ b1}
-        | field_exp as b1             %{ b1}  ] };
+        | field_exp as b1; ?";"        %{ b1}
+        ] };
   with pat
     %extend{
        pat_quot:
@@ -618,7 +617,7 @@ let apply () = begin
         | "("; "module"; a_uident as m; ":"; (* package_type *)mtyp as pt; ")" %{
             `ModuleConstraint(_loc,m, `Package(_loc,pt))}
               (* %{ ( module $m :  $pt )} *)
-        | "(";"module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
+        | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
             `ModuleConstraint (_loc, m, mk_ant s)}
         | "("; S as p; ")" %{ p}
         | "("; S as p; ":"; ctyp as t; ")" %{ %{ ($p : $t) }}
@@ -665,7 +664,7 @@ let apply () = begin
         | "("; "module"; a_uident as m; ":";  mtyp as pt; ")" %{
              `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
               (* %{ (module $m : $pt )} *)
-        | "(";"module"; a_uident as m;":"; Ant("opt", s); ")" %{
+        | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
              `ModuleConstraint (_loc, m, mk_ant  s)}
             (* %{ (module $m : $(opt: `Ant(_loc,mk_ant n s)))} *)
 
@@ -709,16 +708,13 @@ let apply () = begin
        
        sem_pat:
        [ pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
-       | pat as p; ";" %{ p}
-       | pat as p %{p} ] 
+       | pat as p; ? ";" %{ p}
+       ] 
        sem_pat_for_list:
        [ pat as p; ";"; S as pl %{ fun acc ->
          `App(_loc, `App(_loc,`Uid(_loc,"::"),p),pl acc)}
          (* %pat{  $p :: $(pl acc)  } *)
-       | pat as p; ";" %{fun acc ->
-           `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)}
-           (* %pat{  $p :: $acc  } *)
-       | pat as p %{ fun acc ->
+       | pat as p; ? ";" %{fun acc ->
            `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)}
            (* %pat{  $p :: $acc  } *)
        ]
@@ -737,10 +733,9 @@ let apply () = begin
        | pat as p %{ p} ]
        label_pat_list:
        [ label_pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
-       | label_pat as p1; ";"; "_"       %{ `Sem(_loc,p1,`Any _loc)}
-       | label_pat as p1; ";"; "_"; ";"  %{ `Sem(_loc,p1,`Any _loc)}
-       | label_pat as p1; ";"            %{ p1}
-       | label_pat as p1                 %{ p1}   ] 
+       | label_pat as p1; ";"; "_"; ? ";"  %{ `Sem(_loc,p1,`Any _loc)}
+       | label_pat as p1; ?";"            %{ p1}
+       ] 
        label_pat:
        [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
        (* | `Quot x -> Ast_quotation.expand _loc x Dyn_tag.pat
@@ -883,7 +878,7 @@ let apply () = begin
       | "downto" %{ `Negative _loc }
       | Ant ("to"|"" ,s) %{mk_ant  ~c:"flag" s}]
 
-      opt_private:
+      opt_private: (* Should be inlined directly in the future *)
       [ "private" %{ `Positive _loc}
       | Ant ("private" ,s) %{ mk_ant  ~c:"flag" s}
       | %{`Negative _loc}   ] 
@@ -998,48 +993,38 @@ let apply () = begin
               (* this entry makes %{ let $rec:r $bi in $x } parsable *)
         ] }   };
 
-  with clsigi
+
     %extend{
       clsigi_quot:
       [ clsigi as x1; ";"; S as x2 %{ `Sem(_loc,x1,x2)}
       | clsigi as x  %{x}]
 
       class_signature:
-      [ Ant (""|"csg" ,s) %{ mk_ant  ~c:"clsigi" s}
-      | Ant (""|"csg" ,s);";" %{ mk_ant  ~c:"clsigi" s}
-      | Ant (""|"csg" ,s); S as csg %{
-          (`Sem (_loc, mk_ant ~c:"clsigi"  s, csg) : FAst.clsigi )}            
-      | Ant (""|"csg" ,s);";"; S as csg %{
+      [ 
+         Ant (""|"csg" ,s); ? ";" %{ mk_ant  ~c:"clsigi" s}
+      | Ant (""|"csg" ,s); ? ";"; S as csg %{
           (`Sem (_loc, mk_ant ~c:"clsigi"  s, csg) : FAst.clsigi )}
-      | clsigi as csg %{ csg}
-      | clsigi as csg;";" %{ csg            }
-      | clsigi as csg;";";S as xs %{ `Sem(_loc,csg,xs)}
-      | clsigi as csg; S as xs %{ `Sem(_loc,csg,xs)}]
+      | clsigi as csg; ? ";" %{ csg}
+      | clsigi as csg; ? ";"; S as xs %{ `Sem(_loc,csg,xs)}
+      ]
       
       clsigi:
       [ Ant (""|"csg" ,s) %{ mk_ant ~c:"clsigi"  s}
       | Quot x %{ Ast_quotation.expand  x Dyn_tag.clsigi}
       | "inherit"; cltyp as cs %{ `SigInherit(_loc,cs)}
-
       | "val"; opt_mutable as mf; opt_virtual as mv;a_lident as l; ":"; ctyp as t %{
-          %{ val $mutable:mf $virtual:mv $l : $t }}
-      | "method"; "virtual"; opt_private as pf; a_lident as l; ":";ctyp as t %{
-          %{ method virtual $private:pf $l : $t }}
-      | "method"; opt_private as pf; a_lident as l; ":";ctyp as t %{
-          %{ method $private:pf $l : $t }}
-      | "constraint"; ctyp as t1; "="; ctyp as t2 %{ %{constraint $t1 = $t2}} ] };  
-  with clfield
+        (`CgVal (_loc, l, mf, mv, t) : FAst.clsigi )}
+      | "method"; "virtual"; opt_private as pf; a_lident as l; ":";ctyp as t 
+          %{(`VirMeth (_loc, l, pf, t) : FAst.clsigi )}
+      | "method"; opt_private as pf; a_lident as l; ":";ctyp as t %{(`Method (_loc, l, pf, t) : FAst.clsigi )}
+      | "constraint"; ctyp as t1; "="; ctyp as t2 %{ (`Eq (_loc, t1, t2) : FAst.clsigi )} ] };  
+
     %extend{
       class_structure:
-       [ Ant (""|"cst" ,s) %{ mk_ant ~c:"clfield"  s}
-       | Ant (""|"cst" ,s); ";" %{ mk_ant  ~c:"clfield"  s}
-       | Ant (""|"cst" ,s);S as st %{ `Sem(_loc, mk_ant ~c:"clfield"  s,st)  }
-       | Ant (""|"cst" ,s); ";"; S as cst %{
-         %{ ${mk_ant ~c:"clfield"  s}; $cst }}
-       | clfield as st %{ st}
-       | clfield as st;";" %{ st}
-       | clfield as st;";";S as xs %{ `Sem(_loc,st,xs)}
-       | clfield as st; S as xs %{ `Sem(_loc,st,xs)}
+       [ Ant (""|"cst" ,s); ? ";" %{ mk_ant  ~c:"clfield"  s}
+       | Ant (""|"cst" ,s);? ";"; S as st %{ `Sem(_loc, mk_ant ~c:"clfield"  s,st)  }
+       | clfield as st; ? ";" %{ st}
+       | clfield as st; ? ";";S as xs %{ `Sem(_loc,st,xs)}
        ]
 
 
@@ -1047,16 +1032,14 @@ let apply () = begin
       clfield:
         [ Ant (""|"cst" ,s) %{ mk_ant ~c:"clfield"  s}
         | Quot x %{ Ast_quotation.expand  x Dyn_tag.clfield}
-        | "inherit"; opt_override as o; clexp as ce(* ; opt_as_lident as pb *) %{
-            `Inherit(_loc,o,ce)}
-        | "inherit"; opt_override as o; clexp as ce; "as"; a_lident as i %{
-            `InheritAs(_loc,o,ce,i)}
-        | value_val_opt_override as o; opt_mutable as mf; a_lident as lab; cvalue_bind as e
-            %clfield{ val $override:o $mutable:mf $lab = $e }
+        | "inherit"; opt_override as o; clexp as ce %{`Inherit(_loc,o,ce)}
+        | "inherit"; opt_override as o; clexp as ce; "as"; a_lident as i %{`InheritAs(_loc,o,ce,i)}
+        | value_val_opt_override as o; opt_mutable as mf; a_lident as lab; cvalue_bind as e %{
+          (`CrVal (_loc, lab, o, mf, e) : FAst.clfield )}
         | value_val_opt_override as o; "virtual"; opt_mutable as mf; a_lident as l; ":";
                 ctyp as t %{
           match o with
-          | `Negative _ -> %{ val virtual $mutable:mf $l : $t }
+          | `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )
           | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}                    
         | method_opt_override as o; "virtual"; opt_private as pf; a_lident as l; ":";
                   ctyp as t %{
@@ -1064,18 +1047,16 @@ let apply () = begin
           | `Negative _ -> `VirMeth (_loc, l, pf, t)
           | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}  
 
-       | method_opt_override as o; opt_private as pf; a_lident as l; ":"; ctyp as t (* opt_polyt as topt *);
+       | method_opt_override as o; opt_private as pf; a_lident as l; ":"; ctyp as t ;
                 fun_bind as e %{
                   `CrMth(_loc,l,o,pf,e,t)}
-            (* %{ method $override:o $private:pf $l : $topt = $e } *)
        | method_opt_override as o; opt_private as pf;a_lident as l; fun_bind as e %{
            `CrMthS(_loc,l,o,pf,e)}
              
-       | "constraint"; ctyp as t1; "="; ctyp as t2 %{
-          %{constraint $t1 = $t2}}
-        | "initializer"; exp as se %{ %{ initializer $se }} ]
+       | "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1,t2)}
+       | "initializer"; exp as se %{ `Initializer(_loc,se)} ]
       clfield_quot:
-        [ clfield as x1; (* semi *)";"; S as x2 %{ `Sem(_loc,x1,x2)}
+        [ clfield as x1; ";"; S as x2 %{ `Sem(_loc,x1,x2)}
         | clfield as x %{x}]
     };
     
@@ -1100,8 +1081,7 @@ let apply () = begin
       | "->"; clexp as ce %{ ce} ]
       clexp:
       { "top"
-          [ "fun"; ipat as p; class_fun_def as ce %{  `CeFun (_loc, p, ce)}
-          | "function"; ipat as p; class_fun_def as ce %{ `CeFun (_loc, p, ce)}
+          [ ("fun"|"function"); ipat as p; class_fun_def as ce %{  `CeFun (_loc, p, ce)}
           | "let"; opt_rec as rf; bind as bi; "in"; S as ce %{ `LetIn(_loc,rf,bi,ce)}]
         "apply" NA
           [ S as ce; exp Level "label" as e %{ `CeApp (_loc, ce, e)}]
@@ -1113,12 +1093,12 @@ let apply () = begin
           | "object"; "("; pat as p; ")" ; class_structure as cst;"end"
             %{ `ObjPat(_loc,p,cst)}
           | "object"; "("; pat as p; ")" ;"end" %{ `ObjPatEnd(_loc,p)}
-          | "object";"("; pat as p;":";ctyp as t;")"; class_structure as cst;"end" %{
+          | "object" ; "("; pat as p;":";ctyp as t;")"; class_structure as cst;"end" %{
               `ObjPat(_loc,`Constraint(_loc,p,t),cst)}
-          | "object";"("; pat as p;":";ctyp as t;")"; "end" %{
+          | "object" ; "("; pat as p;":";ctyp as t;")"; "end" %{
               `ObjPatEnd(_loc,`Constraint(_loc,p,t))}
-          | "object"; class_structure as cst;"end" %{ `Obj(_loc,cst)}
-          | "object";"end" %{ `ObjEnd(_loc)}
+          | "object" ; class_structure as cst;"end" %{ `Obj(_loc,cst)}
+          | "object" ;"end" %{ `ObjEnd(_loc)}
           | "("; S as ce; ":"; cltyp as ct; ")" %{ `Constraint(_loc,ce,ct)}
           | "("; S as ce; ")" %{ce} ] } };
   with cltyp
@@ -1151,9 +1131,9 @@ let apply () = begin
       | Quot x %{ Ast_quotation.expand  x Dyn_tag.cltyp}
       | vid as i; "["; comma_ctyp as t; "]" %{ `ClApply(_loc,i,t)}
       | vid as i %{ (i :> cltyp) }
-      | "object";"(";ctyp as t;")";class_signature as csg;"end" %{ `ObjTy(_loc,t,csg)}
-      | "object";class_signature as csg;"end" %{ `Obj(_loc,csg)}
-      | "object"; "(";ctyp as t;")" %{ `ObjTyEnd(_loc,t)}
+      | "object" ; "(";ctyp as t;")";class_signature as csg;"end" %{ `ObjTy(_loc,t,csg)}
+      | "object" ; class_signature as csg;"end" %{ `Obj(_loc,csg)}
+      | "object" ; "(";ctyp as t;")" %{ `ObjTyEnd(_loc,t)}
       | "object"; "end" %{`ObjEnd(_loc)}] } ;
 end;;
 
@@ -1173,10 +1153,11 @@ let apply_ctyp () = begin
       [ Ant (""|"typ" ,s) %{ mk_ant s}
       (* | `Quot x -> Ast_quotation.expand  x Dyn_tag.ctyp *)
       | "'"; a_lident as i %{ `Quote(_loc,`Normal _loc, i)}
-      | "+"; "'"; a_lident as i %{ `Quote (_loc, `Positive _loc,  i)}
-      | "-"; "'"; a_lident as i %{ `Quote (_loc, (`Negative _loc),  i)}
-      | "+"; "_" %{ `QuoteAny (_loc, `Positive _loc)}
-      | "-"; "_" %{ `QuoteAny (_loc, `Negative _loc)}
+      | ("+"|"-" as p); "'"; a_lident as i %{
+        (* FIXME support ?("+"|"-" as p) in the future*)
+        `Quote (_loc, if p = "+" then `Positive _loc else `Negative _loc,  i)
+      }
+      | ("+"|"-" as p); "_" %{ `QuoteAny (_loc, if p = "+" then `Positive _loc else `Negative _loc)}
       | "_" %{  `Any _loc}]
       type_longident_and_parameters:
       [ "("; type_parameters as tpl; ")";type_longident as i %{ tpl (i:>ctyp) }
@@ -1189,8 +1170,7 @@ let apply_ctyp () = begin
       |  %{fun t -> t}  ]
       meth_list:
       [ meth_decl as m; ";"; S as rest   %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
-      | meth_decl as m; ";"; opt_dot_dot as v %{ (m, v)}
-      | meth_decl as m; opt_dot_dot as v      %{ (m, v)}  ]
+      | meth_decl as m; ?";"; opt_dot_dot as v %{ (m, v)}]
       meth_decl:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
       (* | `Quot x                       -> AstQuotation.expand _loc x Dyn_tag.ctyp *)
@@ -1201,8 +1181,7 @@ let apply_ctyp () = begin
       row_field:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
       | Ant("vrn" , s) %{ `TyVrn(_loc,mk_ant ~c:"ctyp"  s)} (* FIXME*)
-      | Ant("vrn" , s) ; "of"; ctyp as t %{
-          `TyVrnOf(_loc,mk_ant ~c:"ctyp"  s,t)}
+      | Ant("vrn" , s) ; "of"; ctyp as t %{`TyVrnOf(_loc,mk_ant ~c:"ctyp"  s,t)}
       | S as t1; "|"; S as t2 %{ `Bar(_loc,t1,t2)}
       | "`"; astr as i %{  `TyVrn(_loc,i)}
       | "`"; astr as i; "of";ctyp as t %{ `TyVrnOf(_loc,i,t)}
@@ -1256,7 +1235,7 @@ let apply_ctyp () = begin
       constrain:
       [ "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1, t2)} ]
       typevars:
-      [ S as t1; S as t2 %{ `App(_loc,t1,t2)(* %{ $t1 $t2 } *) (* FIXME order matters?*)}
+      [ S as t1; S as t2 %{ `App(_loc,t1,t2)}
       | Ant (""|"typ" ,s) %{  mk_ant  ~c:"ctyp"  s}
       | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp}
       | "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
@@ -1302,8 +1281,6 @@ let apply_ctyp () = begin
               `Dot(_loc,(i:>ident),id)
             with Invalid_argument s -> raise (Streamf.Error s)}
         | a_lident as i %{  (i :> ctyp)}
-              
-        (* | a_uident as i -> (i:> ctyp) *)
         | "("; S as t; "*"; star_ctyp as tl; ")" %{
             `Par (_loc, `Sta (_loc, t, tl))}
         | "("; S as t; ")" %{ t}
@@ -1353,8 +1330,7 @@ let apply_ctyp () = begin
       ]
       label_declaration_list:
       [ label_declaration as t1; ";"; S as t2 %{ `Sem(_loc,t1,t2)}
-      | label_declaration as t1; ";"            %{ t1}
-      | label_declaration as t1                 %{ t1}
+      | label_declaration as t1; ? ";"            %{ t1}
       ]
   
       label_declaration:

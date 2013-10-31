@@ -2511,18 +2511,18 @@ let apply () =
                         (`App
                            (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
                              (el acc)) : FAst.exp ) : 'sem_exp_for_list )))));
-          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
-            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       (`App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
-                       FAst.exp ) : 'sem_exp_for_list )))));
           ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
+                    (fun acc  ->
+                       (`App
+                          (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
+                       FAst.exp ) : 'sem_exp_for_list )))));
+          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
+            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     (fun acc  ->
                        (`App
                           (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
@@ -2957,17 +2957,17 @@ let apply () =
                   (fun ~__fan_2:(b2 : 'label_exp_list)  ~__fan_1:_ 
                      ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)  ->
                      (`Sem (_loc, b1, b2) : 'label_exp_list )))));
+          ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ))],
+            ("b1\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)  ->
+                    (b1 : 'label_exp_list )))));
           ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
            `Keyword ";"],
             ("b1\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)
-                     -> (b1 : 'label_exp_list )))));
-          ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ))],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)  ->
-                    (b1 : 'label_exp_list )))))]) : Gramf.olevel ));
+                     -> (b1 : 'label_exp_list )))))]) : Gramf.olevel ));
    Gramf.extend_single (field_exp_list : 'field_exp_list Gramf.t )
      (None,
        ((None, None,
@@ -2979,17 +2979,17 @@ let apply () =
                   (fun ~__fan_2:(b2 : 'field_exp_list)  ~__fan_1:_ 
                      ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)  ->
                      (`Sem (_loc, b1, b2) : 'field_exp_list )))));
+          ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ))],
+            ("b1\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)  ->
+                    (b1 : 'field_exp_list )))));
           ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
            `Keyword ";"],
             ("b1\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)
-                     -> (b1 : 'field_exp_list )))));
-          ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ))],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)  ->
-                    (b1 : 'field_exp_list )))))]) : Gramf.olevel )));
+                     -> (b1 : 'field_exp_list )))))]) : Gramf.olevel )));
   (let grammar_entry_create x = Gramf.mk x in
    let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
    Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
@@ -4208,15 +4208,15 @@ let apply () =
                   (fun ~__fan_2:(p2 : 'sem_pat)  ~__fan_1:_ 
                      ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
                      (`Sem (_loc, p1, p2) : 'sem_pat )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'sem_pat )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
             ("p\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                    (p : 'sem_pat )))));
+          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
+            ("p\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                     (p : 'sem_pat )))))]) : Gramf.olevel ));
    Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
      (None,
@@ -4230,18 +4230,18 @@ let apply () =
                         `App
                           (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
                             (pl acc)) : 'sem_pat_for_list )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       `App
-                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
-                    'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
             ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                    (fun acc  ->
+                       `App
+                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
+                    'sem_pat_for_list )))));
+          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
+            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                     (fun acc  ->
                        `App
                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
@@ -4348,17 +4348,17 @@ let apply () =
                  (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:_ 
                     ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
                     (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
+          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
+            ("p1\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
+                    (p1 : 'label_pat_list )))));
           ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
            `Keyword ";"],
             ("p1\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)
-                     -> (p1 : 'label_pat_list )))));
-          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
-            ("p1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                    (p1 : 'label_pat_list )))))]) : Gramf.olevel ));
+                     -> (p1 : 'label_pat_list )))))]) : Gramf.olevel ));
    Gramf.extend_single (label_pat : 'label_pat Gramf.t )
      (None,
        ((None, None,
@@ -6827,18 +6827,18 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t) 
                     -> (csg : 'class_signature )))));
+          ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Self],
+            ("`Sem (_loc, csg, xs)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(xs : 'class_signature) 
+                    ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, csg, xs) : 'class_signature )))));
           ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
            `Keyword ";";
            `Self],
             ("`Sem (_loc, csg, xs)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(xs : 'class_signature)  ~__fan_1:_ 
-                    ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, csg, xs) : 'class_signature )))));
-          ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Self],
-            ("`Sem (_loc, csg, xs)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'class_signature) 
                     ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
                     (`Sem (_loc, csg, xs) : 'class_signature )))))]) : 
        Gramf.olevel ));
@@ -7029,14 +7029,13 @@ let apply () =
                  | _ -> false)), (3257031, (`A "")), "`Ant s");
            `Keyword ";";
            `Self],
-            ("(`Sem (_loc, (mk_ant ~c:\"clfield\" s), cst) : FAst.clfield )\n",
+            ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(cst : 'class_structure)  ~__fan_1:_ 
+                 (fun ~__fan_2:(st : 'class_structure)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Ant (({ kind = "";_} as s) : Tokenf.ant) ->
-                        ((`Sem (_loc, (mk_ant ~c:"clfield" s), cst) : 
-                        FAst.clfield ) : 'class_structure )
+                        (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -7046,14 +7045,13 @@ let apply () =
                  | _ -> false)), (3257031, (`A "cst")), "`Ant s");
            `Keyword ";";
            `Self],
-            ("(`Sem (_loc, (mk_ant ~c:\"clfield\" s), cst) : FAst.clfield )\n",
+            ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(cst : 'class_structure)  ~__fan_1:_ 
+                 (fun ~__fan_2:(st : 'class_structure)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Ant (({ kind = "cst";_} as s) : Tokenf.ant) ->
-                        ((`Sem (_loc, (mk_ant ~c:"clfield" s), cst) : 
-                        FAst.clfield ) : 'class_structure )
+                        (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -7067,18 +7065,18 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(st : 'clfield)  (_loc : Locf.t) 
                     -> (st : 'class_structure )))));
+          ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Self],
+            ("`Sem (_loc, st, xs)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(xs : 'class_structure) 
+                    ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, st, xs) : 'class_structure )))));
           ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ));
            `Keyword ";";
            `Self],
             ("`Sem (_loc, st, xs)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(xs : 'class_structure)  ~__fan_1:_ 
-                    ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, st, xs) : 'class_structure )))));
-          ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Self],
-            ("`Sem (_loc, st, xs)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'class_structure) 
                     ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
                     (`Sem (_loc, st, xs) : 'class_structure )))))]) : 
        Gramf.olevel ));
@@ -7230,17 +7228,16 @@ let apply () =
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
            `Keyword "=";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("(`Eq (_loc, t1, t2) : FAst.clfield )\n",
+            ("`Eq (_loc, t1, t2)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
                     ~__fan_1:(t1 : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Eq (_loc, t1, t2) : FAst.clfield ) : 'clfield )))));
+                    (`Eq (_loc, t1, t2) : 'clfield )))));
           ([`Keyword "initializer"; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("(`Initializer (_loc, se) : FAst.clfield )\n",
+            ("`Initializer (_loc, se)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(se : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Initializer (_loc, se) : FAst.clfield ) : 'clfield )))))]) : 
-       Gramf.olevel ));
+                    (`Initializer (_loc, se) : 'clfield )))))]) : Gramf.olevel ));
    Gramf.extend_single (clfield_quot : 'clfield_quot Gramf.t )
      (None,
        ((None, None,
@@ -7875,29 +7872,67 @@ let apply_ctyp () =
          ([`Keyword "+";
           `Keyword "'";
           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-           ("`Quote (_loc, (`Positive _loc), i)\n",
+           ("`Quote (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc), i)\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
-                   (`Quote (_loc, (`Positive _loc), i) : 'type_parameter )))));
+                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key ({ txt = p;_} : Tokenf.txt) ->
+                       (`Quote
+                          (_loc,
+                            (if p = "+"
+                             then `Positive _loc
+                             else `Negative _loc), i) : 'type_parameter )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "-";
           `Keyword "'";
           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-           ("`Quote (_loc, (`Negative _loc), i)\n",
+           ("`Quote (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc), i)\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
-                   (`Quote (_loc, (`Negative _loc), i) : 'type_parameter )))));
+                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key ({ txt = p;_} : Tokenf.txt) ->
+                       (`Quote
+                          (_loc,
+                            (if p = "+"
+                             then `Positive _loc
+                             else `Negative _loc), i) : 'type_parameter )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "+"; `Keyword "_"],
-           ("`QuoteAny (_loc, (`Positive _loc))\n",
+           ("`QuoteAny (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc))\n",
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`QuoteAny (_loc, (`Positive _loc)) : 'type_parameter )))));
+                (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.t) 
+                   (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key ({ txt = p;_} : Tokenf.txt) ->
+                       (`QuoteAny
+                          (_loc,
+                            (if p = "+"
+                             then `Positive _loc
+                             else `Negative _loc)) : 'type_parameter )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "-"; `Keyword "_"],
-           ("`QuoteAny (_loc, (`Negative _loc))\n",
+           ("`QuoteAny (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc))\n",
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`QuoteAny (_loc, (`Negative _loc)) : 'type_parameter )))));
+                (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.t) 
+                   (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key ({ txt = p;_} : Tokenf.txt) ->
+                       (`QuoteAny
+                          (_loc,
+                            (if p = "+"
+                             then `Positive _loc
+                             else `Negative _loc)) : 'type_parameter )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "_"],
            ("`Any _loc\n",
              (Gramf.mk_action
@@ -7977,20 +8012,19 @@ let apply_ctyp () =
                     (let (ml,v) = rest in ((`Sem (_loc, m, ml)), v) : 
                     'meth_list )))));
          ([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
+          `Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
+           ("(m, v)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(v : 'opt_dot_dot)  ~__fan_0:(m : 'meth_decl) 
+                   (_loc : Locf.t)  -> ((m, v) : 'meth_list )))));
+         ([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
           `Keyword ";";
           `Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
            ("(m, v)\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(v : 'opt_dot_dot)  ~__fan_1:_ 
                    ~__fan_0:(m : 'meth_decl)  (_loc : Locf.t)  ->
-                   ((m, v) : 'meth_list )))));
-         ([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
-          `Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
-           ("(m, v)\n",
-             (Gramf.mk_action
-                (fun ~__fan_1:(v : 'opt_dot_dot)  ~__fan_0:(m : 'meth_decl) 
-                   (_loc : Locf.t)  -> ((m, v) : 'meth_list )))))]) : 
-      Gramf.olevel ));
+                   ((m, v) : 'meth_list )))))]) : Gramf.olevel ));
   Gramf.extend_single (meth_decl : 'meth_decl Gramf.t )
     (None,
       ((None, None,
@@ -8913,18 +8947,19 @@ let apply_ctyp () =
                     ~__fan_0:(t1 : 'label_declaration)  (_loc : Locf.t)  ->
                     (`Sem (_loc, t1, t2) : 'label_declaration_list )))));
          ([`Nterm
+             (Gramf.obj (label_declaration : 'label_declaration Gramf.t ))],
+           ("t1\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(t1 : 'label_declaration)  (_loc : Locf.t)  ->
+                   (t1 : 'label_declaration_list )))));
+         ([`Nterm
              (Gramf.obj (label_declaration : 'label_declaration Gramf.t ));
           `Keyword ";"],
            ("t1\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(t1 : 'label_declaration) 
-                   (_loc : Locf.t)  -> (t1 : 'label_declaration_list )))));
-         ([`Nterm
-             (Gramf.obj (label_declaration : 'label_declaration Gramf.t ))],
-           ("t1\n",
-             (Gramf.mk_action
-                (fun ~__fan_0:(t1 : 'label_declaration)  (_loc : Locf.t)  ->
-                   (t1 : 'label_declaration_list )))))]) : Gramf.olevel ));
+                   (_loc : Locf.t)  -> (t1 : 'label_declaration_list )))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (label_declaration : 'label_declaration Gramf.t )
     (None,
       ((None, None,
