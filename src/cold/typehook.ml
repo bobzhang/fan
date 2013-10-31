@@ -20,8 +20,7 @@ let plugin_add plugin =
      fun ()  ->
        if
          not @@
-           (List.exists (fun (n,_)  -> n = plugin)
-              State.current_filters.contents)
+           (List.exists (fun (n,_)  -> n = plugin) (!State.current_filters))
        then Ref.modify State.current_filters (fun x  -> cons (plugin, v) x)
        else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
@@ -79,12 +78,12 @@ let traversal () =
             (let res = self#stru u in
              let mtyps = List.rev self#get_cur_mtyps in
              let () =
-               if print_collect_mtyps.contents
+               if !print_collect_mtyps
                then eprintf "@[%a@]@." pp_print_mtyps mtyps in
              let result =
                List.fold_right (iterate_code sloc mtyps)
-                 State.current_filters.contents
-                 (if State.keep.contents
+                 (!State.current_filters)
+                 (if !State.keep
                   then res
                   else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
              self#out_module; (`Struct (sloc, result) : FAst.mexp )))
@@ -98,7 +97,7 @@ let traversal () =
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if State.keep.contents
+             if !State.keep
              then x
              else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
@@ -106,7 +105,7 @@ let traversal () =
            x ->
            let item = `Single (name, (Objs.strip_typedecl t)) in
            let () =
-             if print_collect_mtyps.contents
+             if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in
            (self#update_cur_mtyps (fun lst  -> item :: lst); x)
        | (`Value (_loc,`Negative _,_) : FAst.stru)

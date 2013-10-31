@@ -11,9 +11,9 @@ let prefix = "__fan_"
 let ghost = Locf.ghost
 let module_name = ref (`Uid (ghost, "Gramf"))
 let gm () =
-  match Configf.compilation_unit.contents with
+  match !Configf.compilation_unit with
   | Some "Gramf" -> `Uid (ghost, "")
-  | Some _|None  -> module_name.contents
+  | Some _|None  -> !module_name
 let mk_prule ~prod  ~action  =
   let env = ref [] in
   let i = ref 0 in
@@ -29,7 +29,7 @@ let mk_prule ~prod  ~action  =
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                    FAst.exp ))
-                :: (env.contents));
+                :: (!env));
               incr i;
               Some s)
          | { kind = KNone ; symbol = { outer_pattern = None ;_} } -> None
@@ -37,12 +37,12 @@ let mk_prule ~prod  ~action  =
              (env :=
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`Uid (xloc, "None") : FAst.exp ))
-                :: (env.contents));
+                :: (!env));
               None)) prod in
-  ({ prod; action; env = (List.rev env.contents) } : Gram_def.rule )
+  ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
-  prefix ^ (string_of_int (gensym ()).contents)
+  prefix ^ (string_of_int (!(gensym ())))
 let rec make_exp (tvar : string) (x : Gram_def.text) =
   let rec aux tvar (x : Gram_def.text) =
     match x with
@@ -122,7 +122,7 @@ and make_exp_rules (_loc : loc)
              FAst.exp ))))
     |> (list_of_list _loc)
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
-  (let locid: FAst.pat = `Lid (_loc, (Locf.name.contents)) in
+  (let locid: FAst.pat = `Lid (_loc, (!Locf.name)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
    let tok_match_pl =
      snd @@

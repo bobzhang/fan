@@ -106,7 +106,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    let app_src =
      app_arrow @@ (Listf.init number (fun _  -> of_id_len ~off:0 (id, len))) in
    let result_type: FAstN.ctyp =
-     `Quote (`Normal, (`Lid ("result" ^ (string_of_int result_id.contents)))) in
+     `Quote (`Normal, (`Lid ("result" ^ (string_of_int (!result_id))))) in
    let _ = incr result_id in
    let self_type: FAstN.ctyp = `Quote (`Normal, (`Lid "self_type")) in
    let (quant,dst) =

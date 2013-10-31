@@ -19,7 +19,7 @@ let resolve_name (n : Tokenf.name) =
                           (concat_domain (path, x))
                   with
                   | None  -> false
-                  | Some set -> Setf.String.mem v set) paths.contents
+                  | Some set -> Setf.String.mem v set) (!paths)
        with
        | None  -> None
        | Some r -> Some ((concat_domain (r, x)), v))
@@ -37,7 +37,7 @@ module QMap = Mapf.Make(struct type t = key
                                let compare = compare end)
 let map = ref Mapf.String.empty
 let update (pos,(str : Tokenf.name)) =
-  map := (Mapf.String.add pos str map.contents)
+  map := (Mapf.String.add pos str (!map))
 let default_at_pos pos str = update (pos, str)
 let default: Tokenf.name option ref = ref None
 let set_default s = default := (Some s)
@@ -46,8 +46,7 @@ let clear_default () = default := None
 let expander_name ~pos  (name : Tokenf.name) =
   match name with
   | (`Sub [],"") ->
-      (try Some (Mapf.String.find pos map.contents)
-       with | Not_found  -> default.contents)
+      (try Some (Mapf.String.find pos (!map)) with | Not_found  -> !default)
   | (`Sub _,_) -> resolve_name name
   | (`Absolute _,_) -> Some name
 let expanders_table = ref QMap.empty
@@ -57,7 +56,7 @@ let add ((domain,n) as name) (tag : 'a Dyn_tag.t) (f : 'a Tokenf.expand_fun)
   let s =
     try Hashtbl.find names_tbl domain with | Not_found  -> Setf.String.empty in
   Hashtbl.replace names_tbl domain (Setf.String.add n s);
-  expanders_table := (QMap.add k v expanders_table.contents)
+  expanders_table := (QMap.add k v (!expanders_table))
 let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
   (let pos_tag = Dyn_tag.of_string tag in
    let name = x.name in
@@ -68,8 +67,7 @@ let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
    | Some absolute_name ->
        let pack =
          try
-           QMap.find (absolute_name, (ExpKey.pack tag ()))
-             expanders_table.contents
+           QMap.find (absolute_name, (ExpKey.pack tag ())) (!expanders_table)
          with
          | Not_found  ->
              Locf.failf x.loc "DDSL expander `%s' at position `%s' not found"
@@ -104,7 +102,7 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
                 `Constraint (_loc, (subst_first_loc name a), ty)
             | p -> p : FAst.pat ) in
          match loc_name_opt with
-         | None  -> subst_first_loc Locf.name.contents exp_ast
+         | None  -> subst_first_loc (!Locf.name) exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
   add name Dyn_tag.exp expand_exp;

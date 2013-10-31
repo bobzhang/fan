@@ -1106,10 +1106,10 @@ let apply () =
      (None,
        ((None, None,
           [([`Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
-             ("let old = Ast_quotation.default.contents in\nmatch Ast_quotation.resolve_name ls with\n| Some x -> (Ast_quotation.default := (Some x); old)\n| None  ->\n    Locf.failf _loc \"DDSL `%s' can not be resolved\"\n      (Tokenf.string_of_name ls)\n",
+             ("let old = !Ast_quotation.default in\nmatch Ast_quotation.resolve_name ls with\n| Some x -> (Ast_quotation.default := (Some x); old)\n| None  ->\n    Locf.failf _loc \"DDSL `%s' can not be resolved\"\n      (Tokenf.string_of_name ls)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(ls : 'dot_lstrings)  (_loc : Locf.t)  ->
-                     (let old = Ast_quotation.default.contents in
+                     (let old = !Ast_quotation.default in
                       match Ast_quotation.resolve_name ls with
                       | Some x -> (Ast_quotation.default := (Some x); old)
                       | None  ->
@@ -1122,10 +1122,10 @@ let apply () =
           [([`List1sep
                ((`Nterm (Gramf.obj (name_space : 'name_space Gramf.t ))),
                  (`Keyword ";"))],
-             ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n",
+             ("let old = !Ast_quotation.map in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(xys : 'name_space list)  (_loc : Locf.t)  ->
-                     (let old = Ast_quotation.map.contents in
+                     (let old = !Ast_quotation.map in
                       Ast_quotation.map := (Mapf.String.add_list xys old);
                       old : 'pos_exps )))))]) : Gramf.olevel ));
    Gramf.extend_single (name_space : 'name_space Gramf.t )
@@ -1828,10 +1828,10 @@ let apply () =
                     (`Send (_loc, e, lab) : 'exp )))))]);
         ((Some "~-"), (Some `NA),
           [([`Keyword "!"; `Self],
-             ("`Field (_loc, e, (`Lid (_loc, \"contents\")))\n",
+             ("`App (_loc, (`Lid (_loc, \"!\")), e)\n",
                (Gramf.mk_action
                   (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Field (_loc, e, (`Lid (_loc, "contents"))) : 'exp )))));
+                     (`App (_loc, (`Lid (_loc, "!")), e) : 'exp )))));
           ([`Nterm (Gramf.obj (prefixop : 'prefixop Gramf.t )); `Self],
             ("`App (_loc, f, e)\n",
               (Gramf.mk_action
@@ -9026,5 +9026,5 @@ let apply_ctyp () =
 let fill_parsers =
   let applied = ref false in
   fun ()  ->
-    if not applied.contents then (applied := true; apply (); apply_ctyp ())
+    if not (!applied) then (applied := true; apply (); apply_ctyp ())
 let () = Ast_parsers.register_parser ("revise", fill_parsers)

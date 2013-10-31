@@ -48,8 +48,7 @@ let repr x = x
 let gram_of_entry (e : 'a t) = e.gram
 let action_parse (entry : 'a t) (ts : Tokenf.stream) =
   (try
-     let p =
-       if trace_parser.contents then Format.fprintf else Format.ifprintf in
+     let p = if !trace_parser then Format.fprintf else Format.ifprintf in
      p Format.err_formatter "@[<4>%s@ " entry.name;
      (let res = entry.start 0 ts in
       let () = p Format.err_formatter "@]@." in res)

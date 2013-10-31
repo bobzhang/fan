@@ -21,8 +21,7 @@ let meta_bool _loc =
   function | true  -> `Lid (_loc, "true") | false  -> `Lid (_loc, "false")
 let meta_ref mf_a _loc i =
   `Record
-    (_loc,
-      (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+    (_loc, (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc (!i)))))
 let mklist loc =
   let rec loop top =
     function

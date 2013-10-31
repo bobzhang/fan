@@ -1,5 +1,5 @@
-let parse_toplevel_phrase_old = Toploop.parse_toplevel_phrase.contents
-let use_file_old = Toploop.parse_use_file.contents
+let parse_toplevel_phrase_old = !Toploop.parse_toplevel_phrase
+let use_file_old = !Toploop.parse_use_file
 let normal () =
   Toploop.parse_toplevel_phrase := parse_toplevel_phrase_old;
   Toploop.parse_use_file := use_file_old

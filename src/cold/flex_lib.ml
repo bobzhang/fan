@@ -41,9 +41,9 @@ let list_of_string ?(verbose= true)  str =
   (stream |> clean) |>
     (Streamf.iter
        (fun t  ->
-          result := (t :: (result.contents));
+          result := (t :: (!result));
           if verbose then fprintf std_formatter "%a@\n" Tokenf.print t));
-  List.rev result.contents
+  List.rev (!result)
 let get_tokens s = list_of_string ~verbose:false s
 let debug_from_file file =
   let loc = Locf.mk file in

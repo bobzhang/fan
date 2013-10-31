@@ -1,7 +1,7 @@
 exception Error of string*string
 let _initialized = ref false
 let load file =
-  if not _initialized.contents
+  if not (!_initialized)
   then
     (try
        Dynlink.init ();
@@ -14,7 +14,7 @@ let load file =
               ("Fan's dynamic loader initialization",
                 (Dynlink.error_message e))));
   (match Filenamef.find_in_path ~path:("." :: Configf.fan_plugins_library ::
-           (Configf.dynload_dirs.contents)) file
+           (!Configf.dynload_dirs)) file
    with
    | None  -> raise (Error (file, "file not found in path"))
    | Some fname ->

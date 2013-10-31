@@ -296,15 +296,14 @@ let output_moves (moves : (automata_move* memory_action list) array) =
     Hashtbl.iter
       (fun m  (mems,pats)  ->
          let size_m = List.length pats in
-         if size_m > size.contents
+         if size_m > (!size)
          then (most_frequent := m; most_mems := mems; size := size_m)) t;
     (Hashtbl.fold
        (fun m  (mems,pats)  acc  ->
-          if m <> most_frequent.contents
+          if m <> (!most_frequent)
           then (output_clause (List.rev pats) mems m) :: acc
           else acc) t [])
-      @ [output_default_clause most_mems.contents most_frequent.contents]) : 
-  case list )
+      @ [output_default_clause (!most_mems) (!most_frequent)]) : case list )
 let output_tag_actions (mvs : tag_action list) =
   (List.map
      (function

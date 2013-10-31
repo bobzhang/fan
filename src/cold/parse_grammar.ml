@@ -4036,14 +4036,14 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))],
-            ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+            ("let x =\n  match name with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(il : 'qualid)  (_loc : Locf.t)  ->
                     let name = None in
                     (let x =
                        match name with
                        | Some x ->
-                           let old = Ast_quotation.default.contents in
+                           let old = !Ast_quotation.default in
                            (match Ast_quotation.resolve_name ((`Sub []), x)
                             with
                             | None  ->
@@ -4054,7 +4054,7 @@ let _ =
                      (x, (mk_name il)) : 'entry_name )))));
          ([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
           `Nterm (Gramf.obj (str : 'str Gramf.t ))],
-           ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+           ("let x =\n  match name with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(name : 'str)  ~__fan_0:(il : 'qualid) 
                    (_loc : Locf.t)  ->
@@ -4062,7 +4062,7 @@ let _ =
                    (let x =
                       match name with
                       | Some x ->
-                          let old = Ast_quotation.default.contents in
+                          let old = !Ast_quotation.default in
                           (match Ast_quotation.resolve_name ((`Sub []), x)
                            with
                            | None  ->

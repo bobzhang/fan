@@ -34,13 +34,13 @@ let process_intf name =
     (Option.map Ast_filters.apply_interf_filters) @@
       (parse_file name parse_interf) in
   Prelude.CurrentPrinter.print_interf ?input_file:(Some name)
-    ?output_file:(output_file.contents) v
+    ?output_file:(!output_file) v
 let process_impl name =
   let v =
     (Option.map Ast_filters.apply_implem_filters) @@
       (parse_file name parse_implem) in
   Prelude.CurrentPrinter.print_implem ~input_file:name
-    ?output_file:(output_file.contents) v
+    ?output_file:(!output_file) v
 let input_file x =
   match x with
   | Intf file_name ->
@@ -88,14 +88,14 @@ let initial_spec_list: (string* Arg.spec* string) list =
     " Print location of standard library and exit");
   ("-loc", (Set_string Locf.name),
     ("<name>   Name of the location variable (default: " ^
-       (Locf.name.contents ^ ").")));
+       ((!Locf.name) ^ ").")));
   ("-v",
     (Unit ((fun ()  -> eprintf "Fan version %s@." Configf.version; exit 0))),
     "Print Fan version and exit.");
   ("-compilation-unit",
     (Unit
        ((fun ()  ->
-           (match Configf.compilation_unit.contents with
+           (match !Configf.compilation_unit with
             | Some v -> printf "%s@." v
             | None  -> printf "null");
            exit 0))), "Print the current compilation unit");

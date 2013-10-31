@@ -137,9 +137,9 @@ let parse_file name pa =
 module CurrentPrinter =
   struct
     let print_interf ?input_file  ?output_file  ast =
-      sigi_printer.contents ?input_file ?output_file ast
+      ! sigi_printer ?input_file ?output_file ast
     let print_implem ?input_file  ?output_file  ast =
-      stru_printer.contents ?input_file ?output_file ast
+      ! stru_printer ?input_file ?output_file ast
   end
 let wrap parse_fun ~print_location  lb =
   try

@@ -5,6 +5,5 @@ let keep = ref true
 let id = ref 0
 let reset () = keep := true; current_filters := []
 let gensym ?(pkg= "")  prefix =
-  let res =
-    "fan_" ^ (prefix ^ ("_" ^ (pkg ^ ("_" ^ (string_of_int id.contents))))) in
+  let res = "fan_" ^ (prefix ^ ("_" ^ (pkg ^ ("_" ^ (string_of_int (!id)))))) in
   incr id; res

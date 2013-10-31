@@ -21,10 +21,10 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
       match x with
       | `Ant (_loc,x) ->
           let meta_loc_exp _loc loc =
-            match Ast_quotation.current_loc_name.contents with
+            match !Ast_quotation.current_loc_name with
             | Some "here" -> Ast_gen.meta_here _loc loc
             | x ->
-                let x = Option.default Locf.name.contents x in
+                let x = Option.default (!Locf.name) x in
                 (`Lid (_loc, x) : FAst.exp ) in
           let mloc _loc = meta_loc_exp _loc _loc in
           let e = Tokenf.ant_expand parse_exp x in

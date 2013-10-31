@@ -17,7 +17,7 @@ class primitive =
       ((`Chr (_loc, (Char.escaped i)) : FAst.ep ) : ep )
     method unit _loc (_ : unit) = ((`Uid (_loc, "()") : FAst.ep ) : ep )
     method loc _loc (_l : loc) =
-      (let n = Locf.name.contents in (`Lid (_loc, n) : FAst.ep ) : ep )
+      (let n = !Locf.name in (`Lid (_loc, n) : FAst.ep ) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with

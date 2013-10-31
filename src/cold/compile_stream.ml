@@ -9,7 +9,7 @@ type stream_pats = stream_pat list
 type stream_case = (stream_pats* pat option* exp) 
 type stream_cases = stream_case list 
 let grammar_module_name = ref "Streamf"
-let gm () = grammar_module_name.contents
+let gm () = !grammar_module_name
 let strm_n = "__strm"
 let peek_fun _loc =
   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "peek"))) : FAst.exp )

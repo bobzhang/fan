@@ -36,7 +36,7 @@ let _ =
                  match mexp with
                  | (`Struct (_loc,s) : FAst.mexp) -> s
                  | _ -> failwith "can not find items back " in
-               if Typehook.show_code.contents
+               if !Typehook.show_code
                then
                  (try Ast2pt.print_stru Format.std_formatter code
                   with

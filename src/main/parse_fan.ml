@@ -390,8 +390,7 @@ let apply () = begin
         | S as e1; "."; label_longident as e2 %{ `Field(_loc,e1,e2)}
         | S as e; "#"; a_lident as lab %{ `Send (_loc, e, lab)} ]
        "~-" NA
-        [ "!"; S as e %{  (* %{ ! $e} *) (* FIXME *)
-          `Field(_loc,e,`Lid(_loc,"contents"))}
+        [ "!"; S as e %{ `App(_loc, `Lid(_loc,"!"),e )}
         | prefixop as f; S as e %{ `App (_loc, f, e)} ]
        "simple"
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}

@@ -27,12 +27,12 @@ let eq_option mf_a x y =
   | (None ,None ) -> true
   | (Some x,Some y) -> mf_a x y
   | (_,_) -> false
-let eq_ref mf_a x y = mf_a x.contents y.contents
+let eq_ref mf_a x y = mf_a (!x) (!y)
 let pp_print_option mf_a fmt v =
   match v with
   | None  -> fprintf fmt "None"
   | Some v -> fprintf fmt "Some @[%a@]" mf_a v
-let pp_print_ref mf_a fmt v = fprintf fmt "@[{contents=%a}@]" mf_a v.contents
+let pp_print_ref mf_a fmt v = fprintf fmt "@[{contents=%a}@]" mf_a (!v)
 let pp_print_list mf_a fmt lst =
   let open List in
     fprintf fmt "@[<1>[%a]@]"
@@ -119,7 +119,7 @@ class mapbase =
           ('self_type -> 'a1 -> 'b1) -> ('a0 -> 'a1) -> 'b0 -> 'b1=
       fun _mf_a  _mf_b  _f  -> failwith "not implemented in map arrow"
     method ref : 'a 'b . ('self_type -> 'a -> 'b) -> 'a ref -> 'b ref=
-      fun mf_a  x  -> ref (mf_a self x.contents)
+      fun mf_a  x  -> ref (mf_a self (!x))
     method unknown : 'a . 'a -> 'a= fun x  -> x
   end
 class iterbase =
@@ -145,7 +145,7 @@ class iterbase =
           ('self_type -> 'a1 -> unit) -> ('a0 -> 'a1) -> 'b0 -> 'b1=
       fun _mf_a  _mf_b  _f  -> failwith "not implemented in iter arrow"
     method ref : 'a . ('self_type -> 'a -> unit) -> 'a ref -> unit=
-      fun mf_a  x  -> mf_a self x.contents
+      fun mf_a  x  -> mf_a self (!x)
     method unknown : 'a . 'a -> unit= fun _  -> ()
   end
 class eqbase =
@@ -193,7 +193,7 @@ class eqbase =
       fun _mf_a  _mf_b  _f  -> failwith "not implemented in iter arrow"
     method ref :
       'a . ('self_type -> 'a -> 'a -> bool) -> 'a ref -> 'a ref -> bool=
-      fun mf_a  x  y  -> mf_a self x.contents y.contents
+      fun mf_a  x  y  -> mf_a self (!x) (!y)
     method unknown : 'a . 'a -> 'a -> bool= fun _  _  -> true
   end
 class mapbase2 =
@@ -240,7 +240,7 @@ class mapbase2 =
       'a0 'b0 .
         ('self_type -> 'a0 -> 'a0 -> 'b0) -> 'a0 ref -> 'a0 ref -> 'b0 ref=
       fun mf_a  x  y  ->
-        match (x, y) with | (x,y) -> ref (mf_a self x.contents y.contents)
+        match (x, y) with | (x,y) -> ref (mf_a self (!x) (!y))
     method arrow :
       'a0 'b0 'a1 'b1 .
         ('self_type -> 'a0 -> 'a0 -> 'b0) ->
@@ -273,7 +273,7 @@ class foldbase =
       fun mf_a  -> function | None  -> self | Some x -> mf_a self x
     method ref :
       'a0 . ('self_type -> 'a0 -> 'self_type) -> 'a0 ref -> 'self_type=
-      fun mf_a  x  -> mf_a self x.contents
+      fun mf_a  x  -> mf_a self (!x)
     method arrow :
       'a0 'a1 .
         ('self_type -> 'a0 -> 'self_type) ->
@@ -311,8 +311,8 @@ class foldbase2 =
             (let acc = ref acc in
              let rec loop i =
                if i < l1
-               then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
-               else acc.contents in
+               then (acc := (f (!acc) (a1.(i)) (a2.(i))); loop (i + 1))
+               else !acc in
              loop 0) in
         fold_left2 mf_a self lx ly
     method option :
@@ -327,8 +327,7 @@ class foldbase2 =
       'a0 .
         ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
           'a0 ref -> 'a0 ref -> 'self_type=
-      fun mf_a  x  y  ->
-        match (x, y) with | (a,b) -> mf_a self a.contents b.contents
+      fun mf_a  x  y  -> match (x, y) with | (a,b) -> mf_a self (!a) (!b)
     method arrow :
       'a0 'a1 .
         ('self_type -> 'a0 -> 'a0 -> 'self_type) ->

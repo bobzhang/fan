@@ -45,8 +45,8 @@ let me =
   object 
     inherit  FMeta.meta
     method! loc _loc loc =
-      match Ast_quotation.current_loc_name.contents with
-      | None  -> lid _loc Locf.name.contents
+      match !Ast_quotation.current_loc_name with
+      | None  -> lid _loc (!Locf.name)
       | Some "here" -> meta_here _loc loc
       | Some x -> lid _loc x
   end

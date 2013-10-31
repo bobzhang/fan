@@ -28,12 +28,12 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
          ([`Keyword "import";
           `Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
-           ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
+           ("Ast_quotation.paths := ((`Absolute xs) :: (!Ast_quotation.paths))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(xs : 'dot_namespace)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
                    (Ast_quotation.paths := ((`Absolute xs) ::
-                      (Ast_quotation.paths.contents)) : 'item )))));
+                      (!Ast_quotation.paths)) : 'item )))));
          ([`Keyword "filter";
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
