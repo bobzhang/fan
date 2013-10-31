@@ -171,7 +171,22 @@ let apply () = begin
       mtyp_quot:
       [ mtyp as x %{ x}  ]  };
 
-  with sigi
+  %extend{
+  Inline stru_sigi :
+  [  "open"; ? "!" as bang; module_longident as i
+       %{ `Open(_loc,
+                match bang with
+                 | Some _ -> `Positive _loc
+                 | None -> `Negative _loc , (i:vid :> ident))}
+  | "type"; type_declaration as t  %{`Type(_loc,t)}
+  | "module"; "type"; a_uident as i; "="; mtyp as mt %{`ModuleType(_loc,i,mt)}
+  | "class"; "type"; cltyp_declaration as ctd  %{ `ClassType(_loc,ctd)}
+  | "exception"; constructor_declaration as t %{ `Exception(_loc,t)}
+  | "external"; a_lident as i;":";ctyp as t;"=" ;string_list as sl %{`External (_loc, i, t, sl)}
+   (* | "exception"; constructor_declaration as t; "="; type_longident as i -> *)
+   (*     %{ exception $t = $i } *)
+       
+  ]};
   %extend{
     sigi_quot:
     [ "#"; a_lident as s %{ `DirectiveSimple(_loc,s)}
@@ -181,22 +196,14 @@ let apply () = begin
     sigi:
     [ Ant (""|"sigi",s)   %{mk_ant ~c:"sigi" s}
     | Quot x %{ Ast_quotation.expand  x Dyn_tag.sigi}
-    | "exception"; constructor_declaration as t  %{ %{ exception $t }}
-    | "external"; a_lident as i;":";ctyp as t;"=" ;string_list as sl %{`External (_loc, i, t, sl)}
     | "include"; mtyp as mt %{ `Include(_loc,mt)}
     | "module"; a_uident as i; module_declaration as mt %{ `Module(_loc,i,mt)}
     | "module"; "rec"; module_rec_declaration as mb %{  `RecModule (_loc, mb)}
-    | "module"; "type"; a_uident as i; "="; mtyp as mt %{ `ModuleType(_loc,i,mt)}
     | "module"; "type"; a_uident as i  %{`ModuleTypeEnd(_loc,i)}
-    | "open"; ? "!" as bang; module_longident as i
-        %{ `Open(_loc,
-                 match bang with
-                 | Some _ -> `Positive _loc
-                 | None -> `Negative _loc , (i:vid :> ident))}
-    | "type"; type_declaration as t  %{`Type(_loc,t)}
+    | @stru_sigi
     | "val"; a_lident as i; ":"; ctyp as t %{ `Val(_loc,i,t)}
     | "class"; class_description as cd  %{ `Class(_loc,cd)}
-    | "class"; "type"; cltyp_declaration as ctd  %{ `ClassType(_loc,ctd)} ]
+    ]
     (* mli entrance *)    
     interf:
     [(*  "#"; a_lident as n;  ";;" -> *)
@@ -339,11 +346,11 @@ let apply () = begin
         [ S as e1; infixop4 as op; S as e2 %exp{ $op $e1 $e2 } ]
        "*" LA
         [ S as e1; ("land"|"lor"|"lxor"|"mod" as op) ; S as e2
-            %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2]  (* $e1 land $e2 *) }
+            %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2] }
         | S as e1; infixop5 as op; S as e2  %exp{ $op $e1 $e2 } ]
        "**" RA
         [ S as e1; ("asr"|"lsl"|"lsr" as op) ; S as e2
-            %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] (* $e1 asr $e2 *) }
+            %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] }
         | S as e1; infixop6 as op; S as e2  %exp{ $op $e1 $e2 } ]
           
        "obj" RA
@@ -365,8 +372,7 @@ let apply () = begin
        "apply" LA
         [ S as e1; S as e2 %{ `App(_loc,e1,e2)}
         | "assert"; S as e %{ `Assert(_loc,e)}
-            (* Fan_ops.mkassert _loc e *)
-        | "new"; class_longident as i %{ `New (_loc,i)} (* %{ new $i } *)
+        | "new"; class_longident as i %{ `New (_loc,i)} 
         | "lazy"; S as e %{ `Lazy(_loc,e)} ]
        "label" NA
         [ "~"; a_lident as i; ":"; S as e %{ `Label (_loc, i, e)}
@@ -960,22 +966,10 @@ let apply () = begin
 
       stru:
       { "top"
-        [ "exception"; constructor_declaration as t %{ `Exception(_loc,t)}
-        (* | "exception"; constructor_declaration as t; "="; type_longident as i -> *)
-        (*     %{ exception $t = $i } *)
-        | "external"; a_lident as i;":"; ctyp as t;"="; string_list as sl %{
-            `External (_loc, i, t, sl)}
-        | "include"; mexp as me %{ `Include(_loc,me)}
+        ["include"; mexp as me %{ `Include(_loc,me)}
         | "module"; a_uident as i; mbind0 as mb %{ `Module(_loc,i,mb)}
         | "module"; "rec"; mbind as mb %{ `RecModule(_loc,mb)}
-        | "module"; "type"; a_uident as i; "="; mtyp as mt %{`ModuleType(_loc,i,mt)}
-        | "open"; ? "!" as bang; module_longident as i
-            %{
-              `Open(_loc,
-                    match bang with
-                    | Some _ -> `Positive _loc
-                    | None -> `Negative _loc, (i: vid :> ident))}
-        | "type"; type_declaration as td %{ `Type(_loc,td)}
+        | @stru_sigi
         | "type"; type_declaration as t;"with"; "("; string_list as ns;")"
             %{`TypeWith (_loc,t,ns)}
         | @let_stru_exp %{fun x -> %stru{$exp:x}}
@@ -983,10 +977,7 @@ let apply () = begin
           match bi with
           | `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
           | _ -> `Value(_loc,r,bi)}
-        
         | "class"; class_declaration as cd %{  `Class(_loc,cd)}
-        | "class"; "type"; cltyp_declaration as ctd %{
-            `ClassType (_loc, ctd)}
         | Ant (""|"stri" ,s) %{mk_ant ~c:"stru" s}
         | Quot x %{ Ast_quotation.expand  x Dyn_tag.stru}
         | exp as e %{ `StExp(_loc,e)}
@@ -1000,8 +991,7 @@ let apply () = begin
       | clsigi as x  %{x}]
 
       class_signature:
-      [ 
-         Ant (""|"csg" ,s); ? ";" %{ mk_ant  ~c:"clsigi" s}
+      [ Ant (""|"csg" ,s); ? ";" %{ mk_ant  ~c:"clsigi" s}
       | Ant (""|"csg" ,s); ? ";"; S as csg %{
           (`Sem (_loc, mk_ant ~c:"clsigi"  s, csg) : FAst.clsigi )}
       | clsigi as csg; ? ";" %{ csg}

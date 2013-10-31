@@ -775,6 +775,7 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_0:(x : 'mtyp)  (_loc : Locf.t)  ->
                      (x : 'mtyp_quot )))))]) : Gramf.olevel )));
+  ();
   (Gramf.extend_single (sigi_quot : 'sigi_quot Gramf.t )
      (None,
        ((None, None,
@@ -844,27 +845,6 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-          ([`Keyword "exception";
-           `Nterm
-             (Gramf.obj
-                (constructor_declaration : 'constructor_declaration Gramf.t ))],
-            ("(`Exception (_loc, t) : FAst.sigi )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    ((`Exception (_loc, t) : FAst.sigi ) : 'sigi )))));
-          ([`Keyword "external";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
-            ("`External (_loc, i, t, sl)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
-                    ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`External (_loc, i, t, sl) : 'sigi )))));
           ([`Keyword "include"; `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
             ("`Include (_loc, mt)\n",
               (Gramf.mk_action
@@ -889,17 +869,6 @@ let apply () =
                  (fun ~__fan_2:(mb : 'module_rec_declaration)  ~__fan_1:_ 
                     ~__fan_0:_  (_loc : Locf.t)  ->
                     (`RecModule (_loc, mb) : 'sigi )))));
-          ([`Keyword "module";
-           `Keyword "type";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
-            ("`ModuleType (_loc, i, mt)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
-                    'sigi )))));
           ([`Keyword "module";
            `Keyword "type";
            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
@@ -941,6 +910,46 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:(t : 'type_declaration)  ~__fan_0:_ 
                     (_loc : Locf.t)  -> (`Type (_loc, t) : 'sigi )))));
+          ([`Keyword "module";
+           `Keyword "type";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Keyword "=";
+           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+            ("`ModuleType (_loc, i, mt)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
+                    ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                    (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
+                    'sigi )))));
+          ([`Keyword "class";
+           `Keyword "type";
+           `Nterm
+             (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
+            ("`ClassType (_loc, ctd)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
+                    ~__fan_0:_  (_loc : Locf.t)  ->
+                    (`ClassType (_loc, ctd) : 'sigi )))));
+          ([`Keyword "exception";
+           `Nterm
+             (Gramf.obj
+                (constructor_declaration : 'constructor_declaration Gramf.t ))],
+            ("`Exception (_loc, t)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
+                    (_loc : Locf.t)  -> (`Exception (_loc, t) : 'sigi )))));
+          ([`Keyword "external";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword ":";
+           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+           `Keyword "=";
+           `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
+            ("`External (_loc, i, t, sl)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
+                    ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
+                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                    (`External (_loc, i, t, sl) : 'sigi )))));
           ([`Keyword "val";
            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
            `Keyword ":";
@@ -956,16 +965,8 @@ let apply () =
             ("`Class (_loc, cd)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(cd : 'class_description)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Class (_loc, cd) : 'sigi )))));
-          ([`Keyword "class";
-           `Keyword "type";
-           `Nterm
-             (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
-            ("`ClassType (_loc, ctd)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ClassType (_loc, ctd) : 'sigi )))))]) : Gramf.olevel ));
+                    (_loc : Locf.t)  -> (`Class (_loc, cd) : 'sigi )))))]) : 
+       Gramf.olevel ));
    Gramf.extend_single (interf : 'interf Gramf.t )
      (None,
        ((None, None,
@@ -6425,31 +6426,11 @@ let apply () =
    Gramf.extend (stru : 'stru Gramf.t )
      (None,
        ([((Some "top"), None,
-           [([`Keyword "exception";
-             `Nterm
-               (Gramf.obj
-                  (constructor_declaration : 'constructor_declaration Gramf.t ))],
-              ("`Exception (_loc, t)\n",
+           [([`Keyword "include"; `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+              ("`Include (_loc, me)\n",
                 (Gramf.mk_action
-                   (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
-                      (_loc : Locf.t)  -> (`Exception (_loc, t) : 'stru )))));
-           ([`Keyword "external";
-            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-            `Keyword ":";
-            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-            `Keyword "=";
-            `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
-             ("`External (_loc, i, t, sl)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
-                     ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (`External (_loc, i, t, sl) : 'stru )))));
-           ([`Keyword "include"; `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
-             ("`Include (_loc, me)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_1:(me : 'mexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Include (_loc, me) : 'stru )))));
+                   (fun ~__fan_1:(me : 'mexp)  ~__fan_0:_  (_loc : Locf.t) 
+                      -> (`Include (_loc, me) : 'stru )))));
            ([`Keyword "module";
             `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
             `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ))],
@@ -6465,17 +6446,6 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(mb : 'mbind)  ~__fan_1:_  ~__fan_0:_ 
                      (_loc : Locf.t)  -> (`RecModule (_loc, mb) : 'stru )))));
-           ([`Keyword "module";
-            `Keyword "type";
-            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-            `Keyword "=";
-            `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
-             ("`ModuleType (_loc, i, mt)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
-                     ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
-                     'stru )))));
            ([`Keyword "open";
             `Nterm
               (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
@@ -6509,10 +6479,50 @@ let apply () =
            ([`Keyword "type";
             `Nterm
               (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
-             ("`Type (_loc, td)\n",
+             ("`Type (_loc, t)\n",
                (Gramf.mk_action
-                  (fun ~__fan_1:(td : 'type_declaration)  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`Type (_loc, td) : 'stru )))));
+                  (fun ~__fan_1:(t : 'type_declaration)  ~__fan_0:_ 
+                     (_loc : Locf.t)  -> (`Type (_loc, t) : 'stru )))));
+           ([`Keyword "module";
+            `Keyword "type";
+            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+            `Keyword "=";
+            `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+             ("`ModuleType (_loc, i, mt)\n",
+               (Gramf.mk_action
+                  (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
+                     ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                     (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
+                     'stru )))));
+           ([`Keyword "class";
+            `Keyword "type";
+            `Nterm
+              (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
+             ("`ClassType (_loc, ctd)\n",
+               (Gramf.mk_action
+                  (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
+                     ~__fan_0:_  (_loc : Locf.t)  ->
+                     (`ClassType (_loc, ctd) : 'stru )))));
+           ([`Keyword "exception";
+            `Nterm
+              (Gramf.obj
+                 (constructor_declaration : 'constructor_declaration Gramf.t ))],
+             ("`Exception (_loc, t)\n",
+               (Gramf.mk_action
+                  (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
+                     (_loc : Locf.t)  -> (`Exception (_loc, t) : 'stru )))));
+           ([`Keyword "external";
+            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+            `Keyword ":";
+            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+            `Keyword "=";
+            `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
+             ("`External (_loc, i, t, sl)\n",
+               (Gramf.mk_action
+                  (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
+                     ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
+                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
+                     -> (`External (_loc, i, t, sl) : 'stru )))));
            ([`Keyword "type";
             `Nterm
               (Gramf.obj (type_declaration : 'type_declaration Gramf.t ));
@@ -6624,15 +6634,6 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_1:(cd : 'class_declaration)  ~__fan_0:_ 
                      (_loc : Locf.t)  -> (`Class (_loc, cd) : 'stru )))));
-           ([`Keyword "class";
-            `Keyword "type";
-            `Nterm
-              (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
-             ("`ClassType (_loc, ctd)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`ClassType (_loc, ctd) : 'stru )))));
            ([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
