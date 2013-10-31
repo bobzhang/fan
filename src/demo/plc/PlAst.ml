@@ -1,40 +1,40 @@
 
-module StringSet = Set.Make(String)
-module StringMap = Map.Make(String)
+module StringSet = Set.Make(String) ;
+module StringMap = Map.Make(String) ;
 
 (* e.g. parent/2 *)
-type pred = (string * int)
+type pred = (string * int) ;
 
 module Pred =struct
-  type t = pred
-  let compare : t -> t -> int = compare
-end
+  type t = pred ;
+  let compare : t -> t -> int = compare ;
+end ;
 
-module PredMap = Map.Make(Pred)
+module PredMap = Map.Make Pred ;
 
 (* terms are integers, (anonymous) variables and compound (possibly atoms) *)
 type 'loc term  =
-  | Integer of int * 'loc
+  [ Integer of int * 'loc
   | Var of string * 'loc
   | Anon of 'loc
-  | Comp of string * ('loc term) list * 'loc
-
+  | Comp of string *  list (term 'loc) * 'loc]
+;
 
 (* e.g. for sibling/2: (X,Y) :- parent(Z,X), parent(Z,Y). *)
-type 'loc rule  = (('loc term) list * ('loc term) list * 'loc)
+type 'loc rule  = (list (term 'loc)  * list (term 'loc)   * 'loc);
 
 (* e.g. +X or -Y *)
-type 'loc arg_mask  = |ArgOpen of 'loc | ArgClosed of 'loc | ArgAny of 'loc
+type 'loc arg_mask  = [ArgOpen of 'loc | ArgClosed of 'loc | ArgAny of 'loc] ;
 
 (* e.g. for same/2: +X, ?Y *)
-type 'loc mask  = (('loc arg_mask) list * 'loc )
+type 'loc mask  = (list (arg_mask 'loc) * 'loc );
 
 (* Complete program: map from pred to rule list + mask list *)
-type 'loc prog  =  (('loc rule) list * ('loc mask) list) PredMap.t
+type 'loc prog  =  PredMap.t (list (rule 'loc)  * list (mask 'loc)) ;
 
-let rec statics_of_terms (acc : int StringMap.t) (terms : ('loc term) list) : int StringMap.t =
+let rec statics_of_terms acc terms =
   List.fold_left (fun comps -> fun
-    | Comp (c,ts,_) ->
+    [ Comp (c,ts,_) ->
 	let comps =
 	  let n = List.length ts in
 	  try
@@ -44,11 +44,11 @@ let rec statics_of_terms (acc : int StringMap.t) (terms : ('loc term) list) : in
 				with Not_found -> StringMap.add c n comps
 	in
 	statics_of_terms comps ts
-    | _ -> comps ) acc terms
+    | _ -> comps] ) acc terms;
 
 let rec statics_of_goal_terms acc terms =
   List.fold_left (fun comps -> fun
-    | Comp ("is",[t;_],_loc) -> statics_of_terms comps [t]
+    [ Comp ("is",[t;_],_loc) -> statics_of_terms comps [t]
     | Comp ("eq",[_;_],_loc) | Comp ("ne",[_;_],_loc)
     | Comp ("lt",[_;_],_loc) | Comp ("lte",[_;_],_loc)
     | Comp ("gt",[_;_],_loc) | Comp ("gte",[_;_],_loc) -> comps
@@ -56,12 +56,12 @@ let rec statics_of_goal_terms acc terms =
     | Comp (_c,ts,_) ->
 	(* same and diff, cut, true and fail, etc. will also match here *)
 			statics_of_terms comps ts
-    | _ -> comps) acc terms
+    | _ -> comps]) acc terms;
 
-let statics (prog : 'a prog) : (int StringMap.t) =
+let statics (prog : prog 'a) =
   PredMap.fold (fun _pred (rules,_) acc ->
     List.fold_left (fun acc (terms,goals,_) ->
-      statics_of_goal_terms (statics_of_terms acc terms) goals) acc rules) prog StringMap.empty
+      statics_of_goal_terms (statics_of_terms acc terms) goals) acc rules) prog StringMap.empty ;
 
 (* open LibUtil; *)
 

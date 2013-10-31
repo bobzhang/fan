@@ -2,7 +2,7 @@
 
 #load "demo/plc/plc.cmxs";;
 
-%plc{
+{:plc|
 %:nqueens(+N,?Board)
 nqueens(N,Board) :-  range(1,N,L),  permutation(L,Board),  safe(Board).
 %:range(+Start,+Stop,?Result)
@@ -23,13 +23,13 @@ safe([Q|Qs]) :- nodiag(Q,Qs,1), safe(Qs).
 nodiag(_,[],_).
 nodiag(Q1,[Q2|Qs],D) :-  noattack(Q1,Q2,D),  D1 is D+1,  nodiag(Q1,Qs,D1).
 %:noattack(+Queen1,+Queen2,+Dist)
-noattack(Q1,Q2,D) :-  Q2-Q1 =\= D,  Q1-Q2 =\= D. };
+noattack(Q1,Q2,D) :-  Q2-Q1 =\= D,  Q1-Q2 =\= D. |};
 nqueens_co (fun b -> print_endline (string_of_plval b)) (Int 10);
 (*
 
 
 safe([_]).
-safe([Q|Qs]) :- nodiag(Q,Qs,1), safe(Qs).
+safe([Q|Qs]) :- nodiag(Q,Qs,1), safe(Qs). 
 
 %:nodiag(+Queen,+Board,+Dist)
 nodiag(_,[],_).
