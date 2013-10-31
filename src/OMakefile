@@ -1,5 +1,50 @@
 
+.STATIC:
+    if $(not $(test -d main_annot))
+        mkdir main_annot
+    # This direcotry is preprocessed by cold
+    # The develop is mainly here
+    # produce fan0 
+    DIR_MAIN_ANNOT  = $(dir main_annot)        
+    
+    ####################################
+    # preprocessed by fan0
+    # produce fan1
+    if $(not $(test -d hot1))
+        mkdir hot1 
+    DIR_HOT1 = $(dir hot1)
 
+    if $(not $(test -d hot2))
+        mkdir hot2 
+    # fan1 -> fan2
+    DIR_HOT2 = $(dir hot2)
+
+    if $(not $(test -d hot3))
+        mkdir hot3 
+    # fan2 -> fan3 
+    DIR_HOT3 = $(dir hot3)
+    if $(not $(test -d w1))
+        mkdir w1
+    DIR_WEAK1 = w1
+    if $(not $(test -d w2))
+        mkdir w2
+    DIR_WEAK2 = w2
+    if $(not $(test -d w3))
+        mkdir w3 
+    DIR_WEAK3 = w3 
+    if $(not $(test -d unitest_annot))
+        mkdir unitest_annot
+    DIR_UNIT_ANNOT  = $(dir unitest_annot)
+    if $(not $(test -d unitest1))
+        mkdir unitest1 
+    DIR_UNIT1       = $(dir unitest1)
+    if $(not $(test -d unitest2))
+        mkdir unitest2
+    DIR_UNIT2       = $(dir unitest2)
+    if $(not $(test -d unitest3))
+        mkdir unitest3
+    DIR_UNIT3       = $(dir unitest3)
+    
 # USE_OCAMLFIND=true
 # we don't depend on ocamlfind here
 
@@ -13,23 +58,14 @@ OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.d
    *.omc
 
 ######################################
-# This direcotry is preprocessed by cold
-# The develop is mainly here
-# produce fan0 
-DIR_MAIN_ANNOT  = $(dir main_annot)
+
+
+
+
 
 
 ####################################
-# preprocessed by fan0
-# produce fan1
-DIR_HOT1 = $(dir hot1)
-####################################
-# fan1 -> fan2
-DIR_HOT2 = $(dir hot2)
 
-####################################
-# fan2 -> fan3 
-DIR_HOT3 = $(dir hot3)
 
 DIR_UTILS      = $(dir utils)
 DIR_COMMON     = $(dir common)
@@ -185,9 +221,6 @@ MakeWeakFix(mountdir,pp,exe) =
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
     OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
-DIR_WEAK1 = w1
-DIR_WEAK2 = w2
-DIR_WEAK3 = w3 
 MakeWeakFix($(DIR_WEAK1),$(file fan0), $(file weak1))
 MakeWeakFix($(DIR_WEAK2),$(file weak1), $(file weak2))
 MakeWeakFix($(DIR_WEAK3),$(file weak2), $(file weak3))
@@ -273,10 +306,6 @@ fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
 
 DIR_UNIT        = $(dir unitest)
 DIR_THIRDPARTY  = $(dir thirdparty) 
-DIR_UNIT_ANNOT  = $(dir unitest_annot)
-DIR_UNIT1       = $(dir unitest1)
-DIR_UNIT2       = $(dir unitest2)
-DIR_UNIT3       = $(dir unitest3)
 
 # fixpoint: $(add)
 
