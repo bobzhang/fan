@@ -80,8 +80,7 @@ term:
       | Uid x %{Var (x,_loc)}
       | Int s %{Integer (int_of_string s, _loc)}
       | "("; S as t; ")" %{t}
-      (* FIXME-NRG was: L0 S SEP ... but S no longer compiles *)
-      | "["; L0 term SEP "," as t; ? bar_term as e; "]" %{ term_list _loc t e}
+      | "["; L0 S SEP "," as t; ? bar_term as e; "]" %{ term_list _loc t e}
       ]
   }
 bar_term: [ "|"; term as t %{t} ]
