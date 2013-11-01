@@ -96,7 +96,7 @@ let query_inline (x:string) =
     {text = `Token(_loc, pred, des,des_str);
      styp = `Tok _loc;
      bounds = [];
-     pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
+     pattern = Some %pat@xloc{(* $vrn:v *) ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
      outer_pattern = None;}}
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
@@ -110,7 +110,7 @@ let query_inline (x:string) =
     let (pattern,bounds)  =
       match (x,xloc) with
       | (Some x, Some xloc) -> 
-          (Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
+          (Some %pat@xloc{(* $vrn:v *) ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
                     , [(xloc,x)])
       | _ -> (None, [])in
     {text = `Token(_loc, pred,des,des_str);
@@ -129,7 +129,7 @@ let query_inline (x:string) =
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
      bounds = [(xloc,x);(lloc,loc)];
-     pattern = Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
+     pattern = Some %pat@xloc{(* $vrn:v *) ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
 
 
@@ -144,7 +144,7 @@ let query_inline (x:string) =
     {text = `Token(_loc,pred,des,des_str);
      styp = `Tok _loc;
      bounds = [(loc,x)];
-     pattern = Some %pat{$vrn:v $lid:x};
+     pattern = Some %pat{(* $vrn:v *) ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
   ]
   Inline simple_symbol:
@@ -157,7 +157,7 @@ let query_inline (x:string) =
   | Str s ; "@"; Lid@xloc i %{
      {text = `Keyword (_loc,s);
       styp = `Tok _loc;
-      pattern = Some %pat@xloc{`Key ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
+      pattern = Some %pat@xloc{(* `Key *) ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
       bounds  =[(xloc,i)] ;
       outer_pattern = None;
     }}
@@ -216,7 +216,7 @@ let query_inline (x:string) =
             symbol = {
              text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
-             pattern = Some %pat{$vrn:v (({kind = $pp; _} as $p) :Tokenf.ant)(* BOOTSTRAPPING *)};
+             pattern = Some %pat{(* $vrn:v *) (({kind = $pp; _} as $p) :Tokenf.ant)(* BOOTSTRAPPING *)};
              bounds;
              outer_pattern = None }}:Gram_def.psymbol))}
 
@@ -243,7 +243,7 @@ let query_inline (x:string) =
               text = `Keyword (_loc,x);
               styp = `Tok _loc;
               bounds = [b];
-              pattern = Some %pat{`Key ({txt=$p;_}:Tokenf.txt)};
+              pattern = Some %pat{(* `Key *) ({txt=$p;_}:Tokenf.txt)};
               outer_pattern = None}}:Gram_def.psymbol))}
 
 

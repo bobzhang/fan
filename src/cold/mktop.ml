@@ -399,9 +399,9 @@ let _ =
             ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(ns : 'name list)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                    ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid ({ txt = m;_} : Tokenf.txt) ->
+                    | ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list
                            (List.map
                               (fun l  ->
@@ -410,11 +410,7 @@ let _ =
                                       (`Bind
                                          (_loc, (l :>FAst.pat),
                                            (`Dot (_loc, (`Uid (_loc, m)), l))))) : 
-                                 FAst.stru )) ns) : 'a )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
-      Gramf.olevel ));
+                                 FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       ((None, None,
@@ -431,14 +427,10 @@ let _ =
                 "Lid")],
             ("`Lid (_loc, x)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
-                        (`Lid (_loc, x) : 'name )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
-      Gramf.olevel ))
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        (`Lid (_loc, x) : 'name )))))]) : Gramf.olevel ))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

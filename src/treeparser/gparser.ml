@@ -120,7 +120,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list option  Tokenf.parse =
+and parser_of_terminals (terminals: Gstructure.terminal list)  : (* Tokenf.t *)Obj.t list option  Tokenf.parse =
   fun strm ->
     let module M = struct exception X end in
     let n = List.length terminals in
@@ -135,13 +135,19 @@ and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list o
                 | Some t -> t 
                 | None -> raise M.X  in
               begin
-                acc:= t ::!acc;
+
                 if not
                     (match terminal with
-                    |`Token(f,_,_) -> f t
+                    |`Token(f,_,_) ->
+                        begin
+                          acc:= Tokenf.strip t ::!acc;
+                          f t
+                        end
                     |`Keyword kwd ->
                         begin match t with
-                        |`Key u ->  kwd =u.txt  
+                        |`Key u ->
+                            acc := (Obj.repr u) :: !acc;
+                            kwd =u.txt  
                         | _ -> false
                         end)
                 then raise M.X
@@ -167,7 +173,6 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
         let ps = aux symb and pt = aux sep  in
         Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    (* | `Opt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk *)
     | `Try s -> let ps = aux s in Gcomb.tryp ps
     | `Peek s -> let ps = aux s in Gcomb.peek ps
     | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
@@ -179,11 +184,11 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
         begin  (* interaction with stream *)
           match Streamf.peek strm with
           | Some (`Key u as x )  when u.txt = kwd ->
-              (Streamf.junk strm ; Gaction.mk x (* tok *) )
+              (Streamf.junk strm ; Gaction.mk u (* x *) (* tok *) )
           |_ -> raise Streamf.NotConsumed
         end
     | `Token (f, _,_) -> fun strm ->  match Streamf.peek strm with
-      |Some tok when f tok -> (Streamf.junk strm; Gaction.mk tok)
+      |Some tok when f tok -> (Streamf.junk strm; Gaction.mk (Tokenf.strip tok))
       |_ -> raise Streamf.NotConsumed
   in with_loc (aux s)
 

@@ -65,18 +65,13 @@ let _ =
                "`Quot _")],
             ("let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\nlet e = Tokenf.quot_expand expander x in (r, e)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:(r : 'regexp) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_1  ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Quot x ->
+                    | x ->
                         (let expander loc _ s =
                            Gramf.parse_string ~loc Syntaxf.exp s in
                          let e = Tokenf.quot_expand expander x in (r, e) : 
-                        'case )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
-      Gramf.olevel ));
+                        'case )))))]) : Gramf.olevel ));
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     (None,
       ((None, None,
@@ -88,11 +83,10 @@ let _ =
            `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
             ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_ 
-                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_  ~__fan_1 
+                    ~__fan_0:_  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                    | ({ txt = x;_} : Tokenf.txt) ->
                         (if Hashtbl.mem named_regexps x
                          then
                            (Printf.eprintf
@@ -102,10 +96,7 @@ let _ =
                          else
                            (Hashtbl.add named_regexps x r;
                             (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )) : 
-                        'declare_regexp )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+                        'declare_regexp )))));
          ([`Self; `Self],
            ("x\n",
              (Gramf.mk_action
@@ -120,12 +111,9 @@ let _ =
                 "Lid")],
             ("(_loc, y)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Lid ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+                    | ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )))))]) : 
       Gramf.olevel ));
   Gramf.extend (regexp : 'regexp Gramf.t )
     (None,
@@ -169,27 +157,21 @@ let _ =
                "Chr")],
            ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Chr ({ txt = c;_} : Tokenf.txt) ->
+                   | ({ txt = c;_} : Tokenf.txt) ->
                        (Characters
                           (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
-                       'regexp )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                       'regexp )))));
          ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "Str")],
            ("regexp_for_string @@ (TokenEval.string s)\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Str ({ txt = s;_} : Tokenf.txt) ->
-                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )))));
          ([`Keyword "[";
           `Nterm (Gramf.obj (char_class : 'char_class Gramf.t ));
           `Keyword "]"],
@@ -226,19 +208,16 @@ let _ =
                "Lid")],
            ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                   | ({ txt = x;_} : Tokenf.txt) ->
                        ((try Hashtbl.find named_regexps x
                          with
                          | Not_found  ->
                              let p = _loc.loc_start in
                              (Fan_warnings.emitf p
                                 "Reference to unbound regexp name `%s'" x;
-                              raise UnboundRegexp)) : 'regexp )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))])] : 
+                              raise UnboundRegexp)) : 'regexp )))))])] : 
       Gramf.olevel list ));
   Gramf.extend_single (char_class : 'char_class Gramf.t )
     (None,
@@ -266,33 +245,24 @@ let _ =
                "Chr")],
             ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(__fan_2 : Tokenf.t)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_2  ~__fan_1:_  ~__fan_0  (_loc : Locf.t)  ->
                     match (__fan_2, __fan_0) with
-                    | (`Chr ({ txt = c2;_} : Tokenf.txt),`Chr
-                                                           ({ txt = c1;_} :
-                                                             Tokenf.txt))
+                    | (({ txt = c2;_} : Tokenf.txt),({ txt = c1;_} :
+                                                      Tokenf.txt))
                         ->
                         (let c1 = Char.code @@ (TokenEval.char c1) in
                          let c2 = Char.code @@ (TokenEval.char c2) in
-                         Fcset.interval c1 c2 : 'char_class1 )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
-                             (Tokenf.to_string __fan_0))))));
+                         Fcset.interval c1 c2 : 'char_class1 )))));
          ([`Token
              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
                "Chr")],
            ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Chr ({ txt = c1;_} : Tokenf.txt) ->
+                   | ({ txt = c1;_} : Tokenf.txt) ->
                        (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
-                       'char_class1 )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                       'char_class1 )))));
          ([`Self; `Self],
            ("Fcset.union cc1 cc2\n",
              (Gramf.mk_action

@@ -210,30 +210,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
-         let len = List.length e in
-         let error_fmt = String.concat " " (Listf.init len (fun _  -> "%s")) in
-         let es =
-           List.map
-             (fun x  ->
-                (`App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Tokenf")),
-                          (`Lid (_loc, "to_string")))), x) : FAst.exp )) e in
-         let error =
-           Ast_gen.appl_of_list
-             ([(`Dot
-                  (_loc, (`Uid (_loc, "Printf")), (`Lid (_loc, "sprintf"))) : 
-              FAst.exp );
-              (`Str (_loc, (String.escaped error_fmt)) : FAst.exp )] @ es) in
-         let e: FAst.exp =
-           `Match
-             (_loc, exp,
-               (`Bar
-                  (_loc, (`Case (_loc, pat, e1)),
-                    (`Case
-                       (_loc, (`Any _loc),
-                         (`App (_loc, (`Lid (_loc, "failwith")), error))))))) in
+         let e: FAst.exp = `Match (_loc, exp, (`Case (_loc, pat, e1))) in
          (`Fun
             (_loc,
               (`Case
@@ -244,23 +221,25 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                            (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
                    e))) : FAst.exp ) in
    let make_ctyp (styp : Gram_def.styp) tvar =
-     (let rec aux v =
-        match (v : Gram_def.styp ) with
-        | #vid' as x -> (x : vid'  :>ctyp)
-        | `Quote _ as x -> x
-        | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
-        | `Self _loc ->
-            if tvar = ""
-            then
-              (Locf.raise _loc) @@
-                (Streamf.Error "S: illegal in anonymous entry level")
-            else
-              (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
-        | `Tok _loc ->
-            (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))) : 
-            FAst.ctyp )
-        | `Type t -> t in
-      aux styp : ctyp ) in
+     (let module M = struct exception Token end in
+        let rec aux v =
+          match (v : Gram_def.styp ) with
+          | #vid' as x -> (x : vid'  :>ctyp)
+          | `Quote _ as x -> x
+          | `App (_loc,t1,t2) ->
+              (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
+          | `Self _loc ->
+              if tvar = ""
+              then
+                (Locf.raise _loc) @@
+                  (Streamf.Error "S: illegal in anonymous entry level")
+              else
+                (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : 
+                FAst.ctyp )
+          | `Tok _loc -> raise M.Token
+          | `Type t -> t in
+        try Some (aux styp) with | M.Token  -> None : ctyp option ) in
+   let (+:) v ty = match ty with | Some t -> typing v t | None  -> v in
    let txt =
      snd @@
        (Listf.fold_lefti
@@ -271,13 +250,11 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
              match ((s.outer_pattern), (s.pattern)) with
              | (Some (xloc,id),_) ->
                  let p =
-                   typing (`Lid (xloc, id) : FAst.pat )
-                     (make_ctyp s.styp rtvar) in
+                   (`Lid (xloc, id) : FAst.pat ) +: (make_ctyp s.styp rtvar) in
                  (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
              | (None ,Some _) ->
                  let p =
-                   typing
-                     (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
+                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat ) +:
                      (make_ctyp s.styp rtvar) in
                  (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
              | (None ,None ) ->

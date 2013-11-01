@@ -18,12 +18,9 @@ let _ =
                 "Str")],
             ("y\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Str ({ txt = y;_} : Tokenf.txt) -> (y : 'str )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+                    | ({ txt = y;_} : Tokenf.txt) -> (y : 'str )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (type_entry : 'type_entry Gramf.t )
     (None,
@@ -33,13 +30,10 @@ let _ =
                 "Lid")],
             ("(_loc, x, None, None)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
-                        ((_loc, x, None, None) : 'type_entry )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        ((_loc, x, None, None) : 'type_entry )))));
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -50,18 +44,11 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.t) 
-                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
-                    ->
+                (fun ~__fan_3:_  ~__fan_2  ~__fan_1  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match (__fan_2, __fan_1) with
-                   | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
-                                                         ({ txt = x;_} :
-                                                           Tokenf.txt))
-                       -> ((_loc, x, (Some y), None) : 'type_entry )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
-                            (Tokenf.to_string __fan_1))))));
+                   | (({ txt = y;_} : Tokenf.txt),({ txt = x;_} : Tokenf.txt))
+                       -> ((_loc, x, (Some y), None) : 'type_entry )))));
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -73,19 +60,11 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), (Some t))\n",
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp) 
-                   ~__fan_2:(__fan_2 : Tokenf.t) 
-                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
-                    ->
+                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2 
+                   ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
                    match (__fan_2, __fan_1) with
-                   | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
-                                                         ({ txt = x;_} :
-                                                           Tokenf.txt))
-                       -> ((_loc, x, (Some y), (Some t)) : 'type_entry )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
-                            (Tokenf.to_string __fan_1))))));
+                   | (({ txt = y;_} : Tokenf.txt),({ txt = x;_} : Tokenf.txt))
+                       -> ((_loc, x, (Some y), (Some t)) : 'type_entry )))));
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -96,15 +75,11 @@ let _ =
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
-                    ->
+                   ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                   | ({ txt = x;_} : Tokenf.txt) ->
                        let y = None in
-                       ((_loc, x, y, (Some t)) : 'type_entry )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+                       ((_loc, x, y, (Some t)) : 'type_entry )))));
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -116,16 +91,12 @@ let _ =
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(y : 'str) 
-                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
-                    ->
+                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_  ~__fan_1 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                   | ({ txt = x;_} : Tokenf.txt) ->
                        let y = Some y in
-                       ((_loc, x, y, (Some t)) : 'type_entry )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
+                       ((_loc, x, y, (Some t)) : 'type_entry )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (ty : 'ty Gramf.t )
     (None,
@@ -160,27 +131,20 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_  ~__fan_0 
+                    (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid ({ txt = x;_} : Tokenf.txt) ->
-                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid ({ txt = x;_} : Tokenf.txt) ->
-                       (`Uid (_loc, x) : 'qualuid )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
-      Gramf.olevel ));
+                   | ({ txt = x;_} : Tokenf.txt) ->
+                       (`Uid (_loc, x) : 'qualuid )))))]) : Gramf.olevel ));
   Gramf.extend_single (qualid : 'qualid Gramf.t )
     (None,
       ((None, None,
@@ -191,27 +155,20 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_  ~__fan_0 
+                    (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid ({ txt = x;_} : Tokenf.txt) ->
-                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "Lid")],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid ({ txt = i;_} : Tokenf.txt) ->
-                       (`Lid (_loc, i) : 'qualid )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
-      Gramf.olevel ));
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`Lid (_loc, i) : 'qualid )))))]) : Gramf.olevel ));
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
     (None,
       ((None, None,
@@ -222,14 +179,11 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_  ~__fan_0 
+                    (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid ({ txt = x;_} : Tokenf.txt) ->
-                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "Uid");
@@ -240,17 +194,11 @@ let _ =
                | _ -> false)), (3802919, (`A "t")), "`Lid \"t\"")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(__fan_2 : Tokenf.t)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_2  ~__fan_1:_  ~__fan_0  (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
-                   | (`Lid ({ txt = "t";_} : Tokenf.txt),`Uid
-                                                           ({ txt = x;_} :
-                                                             Tokenf.txt))
-                       -> (`Uid (_loc, x) : 't_qualid )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
-                            (Tokenf.to_string __fan_0))))))]) : Gramf.olevel ));
+                   | (({ txt = "t";_} : Tokenf.txt),({ txt = x;_} :
+                                                      Tokenf.txt))
+                       -> (`Uid (_loc, x) : 't_qualid )))))]) : Gramf.olevel ));
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
     (None,
       ((None, None,

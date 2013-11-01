@@ -209,7 +209,32 @@ type filter = stream -> stream
 let to_string = Formatf.to_string pp_print_t
         
 let print ppf x = Format.pp_print_string ppf (to_string x)
-    
+
+
+let strip (x:t) : Obj.t  =
+  match x with
+  | `Key x
+  | `Sym x
+  | `Lid x
+  | `Uid x
+  | `Int  x
+  | `Int32  x
+  | `Int64  x
+  | `Nativeint  x
+  | `Flo  x
+  | `Chr  x
+  | `Str x
+  | `Label x
+  | `Optlabel x
+  | `Comment x
+  | `Blank x
+  | `EOI x
+  | `Newline x 
+  | `Eident x  -> Obj.repr x 
+  | `LINE_DIRECTIVE x  -> Obj.repr x 
+  | `Quot x  -> Obj.repr x 
+  | `DirQuotation x  -> Obj.repr x 
+  | `Ant x -> Obj.repr x
 
 let get_string (x:t) :  string =
   match x with 

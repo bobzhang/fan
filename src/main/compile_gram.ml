@@ -188,21 +188,26 @@ let make_action (_loc:loc)
         let (exp,pat) =
           match (e,p) with
           | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
-        let len = List.length e in
+        (* let len = List.length e in *)
         (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
-        let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
-        let es =
-          (* BOOTSTRAPING, associated with module name [Tokenf] *)
-          List.map (fun x -> %exp{Tokenf.to_string $x}) e in
-        let error =
-          Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in
+        (* let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in *)
+        (* let es = *)
+        (*   (\* BOOTSTRAPING, associated with module name [Tokenf] *\) *)
+        (*   List.map (fun x -> %exp{Tokenf.to_string $x}) e in *)
+        (* let error = *)
+        (*   Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in *)
         let e =
           (* Ast_gen.binds binds *)
+          if Fan_ops.is_irrefut_pat pat then
+            %exp{match $exp with $pat -> e1}
+          else 
             %exp{match $exp with
-            | $pat -> $e1
-            | _ -> failwith $error} in 
+            | $pat -> $e1 (* record -- irrefutable pattern ? Prove *)
+            | _ -> assert false
+            (* | _ -> failwith $error *)} in 
         %exp{fun ($locid : Locf.t) (* BOOTSTRAPING, associated with module name [Locf] *) -> $e } in
-  let make_ctyp (styp:Gram_def.styp) tvar : ctyp = 
+  let make_ctyp (styp:Gram_def.styp) tvar : ctyp option =
+    let module M = struct exception Token end in
     let rec aux  v = 
       match (v:Gram_def.styp) with
       | #vid' as x -> (x : vid' :>ctyp) 
@@ -212,10 +217,15 @@ let make_action (_loc:loc)
           if tvar = "" then
             Locf.raise _loc @@ Streamf.Error ("S: illegal in anonymous entry level")
           else %ctyp{ '$lid:tvar }
-    | `Tok _loc -> %ctyp{ Tokenf.t }  (** BOOTSTRAPPING, associated with module name Tokenf*)
-          (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
-    | `Type t -> t  in
-    aux styp in
+      | `Tok _loc -> raise M.Token
+          (* %ctyp{ Tokenf.t } *)  (** BOOTSTRAPPING, associated with module name Tokenf*)
+            (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
+      | `Type t -> t  in
+    try Some (aux styp) with M.Token -> None  in
+  let (+:) v ty=
+    match ty with
+    | Some t -> typing v t
+    | None -> v in
   let txt =
     snd @@
     Listf.fold_lefti
@@ -223,11 +233,11 @@ let make_action (_loc:loc)
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
         match (s.outer_pattern, s.pattern) with
         | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
-            let p = typing %pat@xloc{$lid:id} (make_ctyp s.styp rtvar) in
+            let p =  %pat@xloc{$lid:id} +: make_ctyp s.styp rtvar in
             %exp{ fun ${mk_arg p} -> $txt }
         | (None, Some _) -> (* __fan_i, since we have inner binding*)            
             let p =
-              typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
+              %pat{ $lid{prefix^string_of_int i} } +: make_ctyp s.styp rtvar  in
             %exp{ fun ${mk_arg p} -> $txt }
         | (None,None) -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
   %exp{ $id{(gm())}.mk_action $txt }

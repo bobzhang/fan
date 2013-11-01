@@ -13,15 +13,11 @@ let _ =
                "Uid")],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Uid ({ txt = n;_} : Tokenf.txt) ->
+                    | ({ txt = n;_} : Tokenf.txt) ->
                         (Ref.protect Compile_stream.grammar_module_name n
-                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
          ([`Keyword "!";
           `Token
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
@@ -31,16 +27,12 @@ let _ =
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
            ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(sel : 'stream_exp_comp_list) 
-                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
-                    ->
+                (fun ~__fan_2:(sel : 'stream_exp_comp_list)  ~__fan_1 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Uid ({ txt = n;_} : Tokenf.txt) ->
+                   | ({ txt = n;_} : Tokenf.txt) ->
                        (Ref.protect Compile_stream.grammar_module_name n
-                          (fun _  -> cstream _loc sel) : 'stream_exp )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+                          (fun _  -> cstream _loc sel) : 'stream_exp )))));
          ([`Nterm
              (Gramf.obj
                 (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],

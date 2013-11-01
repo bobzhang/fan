@@ -23,8 +23,8 @@ val parser_of_tree :
 
 
 (** pure, no exception thrown out  *)
-val parser_of_terminals :
-    terminal list -> Tokenf.t list option  Tokenf.parse
+(* val parser_of_terminals : *)
+(*     terminal list -> Tokenf.t list option  Tokenf.parse *)
 
 
 (**

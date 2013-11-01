@@ -146,6 +146,10 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
+(** Strip the variant tag, note this function is only for internal use
+    by parser DSL *)
+val strip : t -> Obj.t
+    
 val to_string : t  -> string
 
 

@@ -15,11 +15,7 @@ let () =
                  "Str")],
               ("add s\n",
                 (Gramf.mk_action
-                   (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
-                      (_loc : Locf.t)  ->
+                   (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
                       match __fan_1 with
-                      | `Str ({ txt = s;_} : Tokenf.txt) -> (add s : 'item )
-                      | _ ->
-                          failwith
-                            (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
+                      | ({ txt = s;_} : Tokenf.txt) -> (add s : 'item )))))]) : 
         Gramf.olevel ))

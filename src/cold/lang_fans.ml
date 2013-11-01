@@ -60,23 +60,17 @@ let _ =
                 "Lid")],
             ("x\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Lid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+                    | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "Uid")],
            ("x\n",
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+                   | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))))]) : 
       Gramf.olevel ));
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
     (None,

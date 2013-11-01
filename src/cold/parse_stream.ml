@@ -23,12 +23,9 @@ let _ =
                 "Uid")],
             ("n\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+                    | ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (parser_exp : 'parser_exp Gramf.t )
     (None,
