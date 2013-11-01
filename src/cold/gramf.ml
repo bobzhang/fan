@@ -127,7 +127,7 @@ let gram =
     gfilter =
       { kwds = (Setf.String.of_list default_keywords); filter = fan_filter }
   }
-let filter = FanTokenFilter.filter gram.gfilter
+let filter = Tokenf.filter gram.gfilter
 let create_lexer ?(filter= ignore_layout)  ~annot  ~keywords  () =
   { annot; gfilter = { kwds = (Setf.String.of_list keywords); filter } }
 let mk f = mk_dynamic gram f

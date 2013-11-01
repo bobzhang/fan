@@ -94,7 +94,7 @@ let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
 let filter_and_parse_tokens (entry:'a t) ts =
-  parse_origin_tokens entry (FanTokenFilter.filter entry.gram.gfilter  ts)
+  parse_origin_tokens entry (Tokenf.filter entry.gram.gfilter  ts)
     
 
 
@@ -104,13 +104,13 @@ let lex_string loc str = Flex_lib.from_stream  loc (Streamf.of_string str)
 let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a t)  str =
   str
    |> Streamf.of_string |> lexer loc
-   |> FanTokenFilter.filter entry.gram.gfilter
+   |> Tokenf.filter entry.gram.gfilter
    |> parse_origin_tokens entry
 
        
 let parse (entry:'a t) loc cs =
   parse_origin_tokens entry
-    (FanTokenFilter.filter entry.gram.gfilter
+    (Tokenf.filter entry.gram.gfilter
        (Flex_lib.from_stream loc cs))
 ;;
 

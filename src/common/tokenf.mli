@@ -146,6 +146,11 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
+type filter_plugin = {
+    mutable kwds : Setf.String.t;
+    mutable filter : filter;
+  }        
+
 (** Strip the variant tag, note this function is only for internal use
     by parser DSL *)
 val strip : t -> Obj.t
@@ -169,3 +174,5 @@ val empty_name : name
 
 val name_of_string : string -> name
 
+val filter : filter_plugin -> filter
+val set_filter : filter_plugin -> (filter -> filter) -> unit

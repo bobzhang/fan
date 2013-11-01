@@ -17,7 +17,7 @@ val filter: stream -> stream
 (** Basially a filter attached to the stream lexer *)    
 type gram = Gstructure.gram = {
   annot:string;
-  gfilter : FanTokenFilter.t;
+  gfilter : Tokenf.filter_plugin;
 }
 
 module Action : sig
@@ -123,7 +123,7 @@ val mk: string -> 'a t
 
 val of_parser:  string ->  (stream -> 'a) ->  'a t
 
-val get_filter: unit -> FanTokenFilter.t
+val get_filter: unit -> Tokenf.filter_plugin
 
 
 val lex_string: Locf.t -> string -> Tokenf.stream

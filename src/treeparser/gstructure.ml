@@ -36,7 +36,7 @@ type terminal =
   
 type gram = {
     annot : string;
-    gfilter         : FanTokenFilter.t;
+    gfilter         : Tokenf.filter_plugin;
   }
 
 type label =  string option

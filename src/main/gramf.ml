@@ -48,7 +48,7 @@ let gram =  {
     filter = fan_filter;  }
 }
 
-let filter = FanTokenFilter.filter gram.gfilter
+let filter = Tokenf.filter gram.gfilter
   
 let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () = {
   annot;

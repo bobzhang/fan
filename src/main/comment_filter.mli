@@ -3,7 +3,7 @@ type t
 
 val mk : unit -> t
 
-val define : FanTokenFilter.t -> t -> unit
+val define : Tokenf.filter_plugin -> t -> unit
 
 val filter : t ->  Tokenf.stream -> Tokenf.stream 
 
