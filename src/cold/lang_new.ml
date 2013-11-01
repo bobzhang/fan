@@ -198,7 +198,8 @@ let _ =
                    match (__fan_2, __fan_0) with
                    | (({ txt = "t";_} : Tokenf.txt),({ txt = x;_} :
                                                       Tokenf.txt))
-                       -> (`Uid (_loc, x) : 't_qualid )))))]) : Gramf.olevel ));
+                       -> (`Uid (_loc, x) : 't_qualid )
+                   | _ -> assert false))))]) : Gramf.olevel ));
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
     (None,
       ((None, None,

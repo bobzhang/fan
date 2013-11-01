@@ -210,7 +210,18 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
-         let e: FAst.exp = `Match (_loc, exp, (`Case (_loc, pat, e1))) in
+         let e =
+           if Fan_ops.is_irrefut_pat pat
+           then (`Match (_loc, exp, (`Case (_loc, pat, e1))) : FAst.exp )
+           else
+             (`Match
+                (_loc, exp,
+                  (`Bar
+                     (_loc, (`Case (_loc, pat, e1)),
+                       (`Case
+                          (_loc, (`Any _loc),
+                            (`Assert (_loc, (`Lid (_loc, "false"))))))))) : 
+             FAst.exp ) in
          (`Fun
             (_loc,
               (`Case

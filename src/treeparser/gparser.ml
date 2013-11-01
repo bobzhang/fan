@@ -191,10 +191,10 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
       |Some tok when f tok ->
           begin 
             Streamf.junk strm;
-            prerr_endlinef "%s" (Tokenf.to_string tok) ;
-            let v = Gaction.mk (Tokenf.strip tok) in
-            prerr_endline "strip finished";
-            v
+            (* prerr_endlinef "%s" (Tokenf.to_string tok) ; *)
+            (* let v =  *)Gaction.mk (Tokenf.strip tok) 
+            (* prerr_endline "strip finished"; *)
+            (* v *)
           end
       |_ -> raise Streamf.NotConsumed
   in with_loc (aux s)

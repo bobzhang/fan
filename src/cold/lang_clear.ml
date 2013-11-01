@@ -17,7 +17,8 @@ let _ =
                  (fun ~__fan_0  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
+                        (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
+                    | _ -> assert false))));
          ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
@@ -27,7 +28,8 @@ let _ =
                 (fun ~__fan_0  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | (({ kind = "lid";_} as s) : Tokenf.ant) ->
-                       (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
+                       (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
+                   | _ -> assert false))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "Lid")],

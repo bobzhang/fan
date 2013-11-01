@@ -67,7 +67,7 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1  ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | x ->
+                    | (x : Tokenf.quot) ->
                         (let expander loc _ s =
                            Gramf.parse_string ~loc Syntaxf.exp s in
                          let e = Tokenf.quot_expand expander x in (r, e) : 

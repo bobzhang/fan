@@ -199,7 +199,7 @@ let make_action (_loc:loc)
         let e =
           (* Ast_gen.binds binds *)
           if Fan_ops.is_irrefut_pat pat then
-            %exp{match $exp with $pat -> e1}
+            %exp{match $exp with $pat -> $e1}
           else 
             %exp{match $exp with
             | $pat -> $e1 (* record -- irrefutable pattern ? Prove *)

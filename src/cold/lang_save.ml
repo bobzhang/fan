@@ -16,7 +16,7 @@ let _ =
                  (fun ~__fan_1  ~__fan_0:(ls : 'lid list)  (_loc : Locf.t) 
                     ->
                     match __fan_1 with
-                    | x ->
+                    | (x : Tokenf.quot) ->
                         (let b =
                            if x.name = Tokenf.empty_name
                            then
