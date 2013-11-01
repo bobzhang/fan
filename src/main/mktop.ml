@@ -393,14 +393,16 @@ let ()  =
 
 %extend{
 let a:
-  [Uid m ; ":"; L1 name as ns ; ";" %{
+  [Uid m ; ":"; L1 Lid as ns ; ";" %{
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map
-         (fun l -> %stru{ let ${(l :> FAst.pat)} = $uid:m.$l } ) ns) }]
+         (fun (l:Tokenf.txt) ->
+           let xloc = l.loc in
+           let p = %pat'@xloc{$lid{l.txt}} in
+           %stru{ let $p = $uid:m.$p } ) ns) }]
 import:
   [ L1 a  as xs  %{ Ast_gen.sem_of_list xs} ]  
-let name :
-  [ Lid x %{ `Lid(_loc,x)} ]  };;
+  };;
 (**
    improved
    --- alias

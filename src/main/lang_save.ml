@@ -12,19 +12,19 @@ Ast_gen:
 
     
 %extend{save_quot:
-  [ L1 lid as ls ; Quot x  %{
+  [ L1 Lid as ls ; Quot x  %{
    let b =
      if x.name = Tokenf.empty_name then
        let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
        Tokenf.quot_expand expander x
      else Ast_quotation.expand x Dyn_tag.exp in
-    let symbs = List.map (fun x -> State.gensym x) ls in
+    let symbs = List.map (fun (x:Tokenf.txt) -> State.gensym x.txt) ls in
     let res = State.gensym "res" in
     let exc = State.gensym "e" in
     let binds = and_of_list
-        (List.map2 (fun x y -> %bind{ $lid:x = ! $lid:y } ) symbs ls ) in
+        (List.map2 (fun x (y:Tokenf.txt) -> %bind{ $lid:x = ! $lid{y.txt} } ) symbs ls ) in
     let restore =
-       seq_sem (List.map2 (fun x y -> %exp{ $lid:x := $lid:y }) ls symbs) in
+       seq_sem (List.map2 (fun  (x:Tokenf.txt) y -> %exp{ $lid{x.txt} := $lid:y }) ls symbs) in
     %exp{
     let $binds in
     try
@@ -38,11 +38,7 @@ Ast_gen:
         begin
           $restore ;
           raise $lid:exc
-        end
-  } }
- ]
-  let lid: [ Lid x %{ x} ]
-};;
+        end} } ]};;
 
 let _ = begin
   Ast_quotation.of_exp ~name:(Ns.lang, "save") ~entry:save_quot ();

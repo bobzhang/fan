@@ -385,8 +385,7 @@ let () = of_exp ~name:(d, "p") ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
   let grammar_entry_create x = Gramf.mk x in
-  let a: 'a Gramf.t = grammar_entry_create "a"
-  and name: 'name Gramf.t = grammar_entry_create "name" in
+  let a: 'a Gramf.t = grammar_entry_create "a" in
   Gramf.extend_single (a : 'a Gramf.t )
     (None,
       ((None, None,
@@ -394,23 +393,28 @@ let _ =
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                 "Uid");
            `Keyword ":";
-           `List1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
+           `List1
+             (`Token
+                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+                  "Lid"));
            `Keyword ";"],
-            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
+            ("Ast_gen.sem_of_list\n  (List.map\n     (fun (l : Tokenf.txt)  ->\n        let xloc = l.loc in\n        let p = `Lid (xloc, (l.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, p, (`Dot (_loc, (`Uid (_loc, m)), p))))) : \n          FAst.stru )) ns)\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(ns : 'name list)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun ~__fan_3:_  ~__fan_2:(ns : Tokenf.txt list)  ~__fan_1:_
+                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list
                            (List.map
-                              (fun l  ->
+                              (fun (l : Tokenf.txt)  ->
+                                 let xloc = l.loc in
+                                 let p = `Lid (xloc, (l.txt)) in
                                  (`Value
                                     (_loc, (`Negative _loc),
                                       (`Bind
-                                         (_loc, (l :>FAst.pat),
-                                           (`Dot (_loc, (`Uid (_loc, m)), l))))) : 
-                                 FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
+                                         (_loc, p,
+                                           (`Dot (_loc, (`Uid (_loc, m)), p))))) : 
+                                   FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       ((None, None,
@@ -418,19 +422,7 @@ let _ =
             ("Ast_gen.sem_of_list xs\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(xs : 'a list)  (_loc : Locf.t)  ->
-                    (Ast_gen.sem_of_list xs : 'import )))))]) : Gramf.olevel ));
-  Gramf.extend_single (name : 'name Gramf.t )
-    (None,
-      ((None, None,
-         [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "Lid")],
-            ("`Lid (_loc, x)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        (`Lid (_loc, x) : 'name )))))]) : Gramf.olevel ))
+                    (Ast_gen.sem_of_list xs : 'import )))))]) : Gramf.olevel ))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

@@ -144,7 +144,7 @@ let query_inline (x:string) =
     {text = `Token(_loc,pred,des,des_str);
      styp = %ctyp'{Tokenf.quot};
      bounds = [(loc,x)];
-     pattern = Some %pat{(* $vrn:v *) ($lid:x : Tokenf.quot)};
+     pattern = Some %pat{ ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
   ]
   Inline simple_symbol:
@@ -157,7 +157,7 @@ let query_inline (x:string) =
   | Str s ; "@"; Lid@xloc i %{
      {text = `Keyword (_loc,s);
       styp = %ctyp'{Tokenf.txt};
-      pattern = Some %pat@xloc{(* `Key *) ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
+      pattern = Some %pat@xloc{({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
       bounds  =[(xloc,i)] ;
       outer_pattern = None;
     }}
@@ -178,16 +178,12 @@ let query_inline (x:string) =
   |@simple_symbol]
           
   let or_words :
-      [ L1 str SEP "|" as v %{  (v,None)  }
-      | L1 str SEP "|" as v; "as"; Lid@xloc s %{
+      [ L1 Str SEP "|" as v %{  (v,None)  }
+      | L1 Str SEP "|" as v; "as"; Lid@xloc s %{
           (v , Some (xloc,s)) } ]
-  let str :
-      [Str s %{(s,_loc)} ]
   let or_strs :
-      [ L1 str0 SEP "|" as xs %{(xs,None)}
-      | L1  str0 SEP "|"  as xs; "as"; Lid@xloc s %{ (xs,Some (xloc,s))}]
-  let str0 :
-      [ Str s %{s}]
+      [ L1 Str SEP "|" as xs %{(xs,None)}
+      | L1  Str SEP "|"  as xs; "as"; Lid@xloc s %{ (xs,Some (xloc,s))}]
 
   simple :
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
@@ -198,25 +194,27 @@ let query_inline (x:string) =
       match ps with
       | (vs,y) ->
           vs |>
-          List.map (fun (x,xloc) ->
-           let  z = %pat'@xloc{$str:x} in
-           let pred = %exp{function
-             | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
-             | _ -> false} in
-           let des = %exp{($int':i,`A $z)} in
-           let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
+          List.map (fun (x:Tokenf.txt) ->
+            let (x,xloc) = (x.txt,x.loc) in
+            let  z = %pat'@xloc{$str:x} in
+            let pred = %exp{function
+              | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
+              | _ -> false} in
+            let des = %exp{($int':i,`A $z)} in
+            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
            
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
-           let (pp,bounds) =
-             match y with
-             | None -> (%pat{$z},[])
-             | Some ((xloc,u) as v) -> (%pat@xloc{( $z as $lid:u)},[v]) in
-           ({kind = KNormal;
-            symbol = {
-             text = `Token(_loc,pred,des,des_str);
-             styp= %ctyp'{Tokenf.ant};
-             pattern = Some %pat{(* $vrn:v *) (({kind = $pp; _} as $p) :Tokenf.ant)(* BOOTSTRAPPING *)};
+            let (pp,bounds) =
+              match y with
+              | None -> (%pat{$z},[])
+              | Some ((xloc,u) as v) -> (%pat@xloc{( $z as $lid:u)},[v]) in
+            ({kind = KNormal;
+              symbol = {
+              text = `Token(_loc,pred,des,des_str);
+              styp= %ctyp'{Tokenf.ant};
+              pattern = Some %pat{(* $vrn:v *) (({kind = $pp; _} as $p) :Tokenf.ant)
+              (* BOOTSTRAPPING *)};
              bounds;
              outer_pattern = None }}:Gram_def.psymbol))}
 
@@ -225,10 +223,10 @@ let query_inline (x:string) =
     | (vs, None) ->
         vs |>
         List.map
-          (fun x ->
+          (fun (x:Tokenf.txt) ->
             ({kind = KNormal;
               symbol = {
-              text = `Keyword(_loc,x);
+              text = `Keyword(x.loc,x.txt);
               styp = %ctyp'{Tokenf.txt};
               bounds = [];
               pattern = None;
@@ -237,13 +235,13 @@ let query_inline (x:string) =
         let p = %pat@xloc{$lid:v} in
         vs |>
         List.map
-          (fun x ->
+          (fun (x:Tokenf.txt) ->
             ({kind = KNormal;
              symbol = {
-              text = `Keyword (_loc,x);
+              text = `Keyword (x.loc,x.txt);
               styp = %ctyp'{Tokenf.txt};
               bounds = [b];
-              pattern = Some %pat{(* `Key *) ({txt=$p;_}:Tokenf.txt)};
+              pattern = Some %pat{({txt=$p;_}:Tokenf.txt)};
               outer_pattern = None}}:Gram_def.psymbol))}
 
 
@@ -259,14 +257,7 @@ let query_inline (x:string) =
   let sep_symbol : [ "SEP"; single_symbol as t %{t}]
   symbol :
   (* be more precise, no recursive grammar? *)
-  (*
-    transformation 
-    L1 Str Sep ";"
-    L1 Lid Sep ";"
-   *)
-      
-  [
-   ("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
+  [("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
