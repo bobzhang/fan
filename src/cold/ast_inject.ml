@@ -16,7 +16,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -36,7 +36,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -56,7 +56,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->

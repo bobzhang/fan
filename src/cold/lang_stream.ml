@@ -10,7 +10,7 @@ let _ =
          [([`Keyword "!";
            `Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid n")],
+               "Uid")],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -25,7 +25,7 @@ let _ =
          ([`Keyword "!";
           `Token
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-              "`Uid n");
+              "Uid");
           `Nterm
             (Gramf.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],

@@ -36,7 +36,7 @@ let _ =
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "`Lid s")],
+               "Lid")],
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -71,7 +71,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid x");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -86,7 +86,7 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid x")],
+               "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->

@@ -12,7 +12,7 @@ let () =
            [([`Keyword "require";
              `Token
                (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                 "`Str s")],
+                 "Str")],
               ("add s\n",
                 (Gramf.mk_action
                    (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 

@@ -9,7 +9,7 @@ let _ =
          [([`Keyword "default";
            `Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-               "`Str s")],
+               "Str")],
             ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -37,7 +37,7 @@ let _ =
          ([`Keyword "filter";
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-              "`Str s")],
+              "Str")],
            ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -60,7 +60,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i");
+                "Uid");
            `Keyword ".";
            `Self],
             ("i :: xs\n",
@@ -75,7 +75,7 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid i")],
+               "Uid")],
            ("[i]\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->

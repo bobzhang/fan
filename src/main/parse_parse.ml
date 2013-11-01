@@ -98,32 +98,25 @@ let query_inline (x:string) =
      bounds = [];
      pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
      outer_pattern = None;}}
-  | ("Lid" |"Uid"|"Str" as v)    %{
-    let i = hash_variant v in
-    let pred = %exp{function
-      | $vrn:v _ -> true
-      | _ -> false} in
-    let des = %exp{($int':i,`Any)} in
-    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    {text = `Token(_loc,pred, des,des_str);
-     styp = `Tok _loc;
-     pattern = None ;
-     bounds = [];
-     outer_pattern = None}}
-      
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
-     | "Optlabel" |"Str" as v);  Lid@xloc x %{
+     | "Optlabel" |"Str" as v);  ? Lid@xloc x %{
     let i = hash_variant v in                                 
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
     let des = %exp{($int':i,`Any)} in
-    let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
+    let des_str =  v in
+    let (pattern,bounds)  =
+      match (x,xloc) with
+      | (Some x, Some xloc) -> 
+          (Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
+                    , [(xloc,x)])
+      | _ -> (None, [])in
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern = Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)};
-     bounds = [(xloc,x)];
+     pattern;
+     bounds ;
      outer_pattern = None}}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" as v); "@"; Lid@lloc loc ; Lid@xloc x %{

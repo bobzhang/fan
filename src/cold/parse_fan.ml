@@ -1133,7 +1133,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                 "`Lid x");
+                 "Lid");
             `Keyword ":";
             `Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
              ("(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Tokenf.string_of_name y)\n   | Some x -> x))\n",
@@ -1154,7 +1154,7 @@ let apply () =
                            (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -1750,7 +1750,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'exp )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "`Label i");
+                (48004564, `Any), "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
               (Gramf.mk_action
@@ -1765,7 +1765,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "`Optlabel i");
+                (688526593, `Any), "Optlabel");
            `Self],
             ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
               (Gramf.mk_action
@@ -2226,7 +2226,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
-                "`Int s")],
+                "Int")],
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2238,7 +2238,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Int32 _ -> true | _ -> false)),
-                ((-783416530), `Any), "`Int32 s")],
+                ((-783416530), `Any), "Int32")],
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2250,7 +2250,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Int64 _ -> true | _ -> false)),
-                ((-783415859), `Any), "`Int64 s")],
+                ((-783415859), `Any), "Int64")],
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2262,7 +2262,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Nativeint _ -> true | _ -> false)),
-                ((-113706088), `Any), "`Nativeint s")],
+                ((-113706088), `Any), "Nativeint")],
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2274,7 +2274,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
-                "`Flo s")],
+                "Flo")],
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2286,7 +2286,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
-                "`Chr s")],
+                "Chr")],
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2298,7 +2298,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "`Str s")],
+                "Str")],
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2359,7 +2359,7 @@ let apply () =
           ([`Keyword "{";
            `Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "`Lid x");
+               "Lid");
            `Keyword "with";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
            `Keyword "}"],
@@ -3475,7 +3475,7 @@ let apply () =
                     ((i : vid  :>pat) : 'pat )))));
           ([`Token
               (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
-                "`Int s")],
+                "Int")],
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3487,7 +3487,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Int32 _ -> true | _ -> false)),
-                ((-783416530), `Any), "`Int32 s")],
+                ((-783416530), `Any), "Int32")],
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3499,7 +3499,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Int64 _ -> true | _ -> false)),
-                ((-783415859), `Any), "`Int64 s")],
+                ((-783415859), `Any), "Int64")],
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3511,7 +3511,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Nativeint _ -> true | _ -> false)),
-                ((-113706088), `Any), "`Nativeint s")],
+                ((-113706088), `Any), "Nativeint")],
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3523,7 +3523,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
-                "`Flo s")],
+                "Flo")],
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3535,7 +3535,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
-                "`Chr s")],
+                "Chr")],
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3547,7 +3547,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "`Str s")],
+                "Str")],
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3560,7 +3560,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
-               "`Int s")],
+               "Int")],
             ("`Int (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -3574,7 +3574,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Int32 _ -> true | _ -> false)),
-               ((-783416530), `Any), "`Int32 s")],
+               ((-783416530), `Any), "Int32")],
             ("`Int32 (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -3588,7 +3588,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Int64 _ -> true | _ -> false)),
-               ((-783415859), `Any), "`Int64 s")],
+               ((-783415859), `Any), "Int64")],
             ("`Int64 (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -3602,7 +3602,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Nativeint _ -> true | _ -> false)),
-               ((-113706088), `Any), "`Nativeint s")],
+               ((-113706088), `Any), "Nativeint")],
             ("`Nativeint (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -3616,7 +3616,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
-               "`Flo s")],
+               "Flo")],
             ("`Flo (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
@@ -3772,7 +3772,7 @@ let apply () =
                     ((`Any _loc : FAst.pat ) : 'pat )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "`Label i");
+                (48004564, `Any), "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
               (Gramf.mk_action
@@ -3801,7 +3801,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'pat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "`Optlabel i");
+                (688526593, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword "=";
@@ -3821,7 +3821,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "`Optlabel i");
+                (688526593, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword ")"],
@@ -4073,7 +4073,7 @@ let apply () =
                     ((`Any _loc : FAst.pat ) : 'ipat )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "`Label i");
+                (48004564, `Any), "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
               (Gramf.mk_action
@@ -4102,7 +4102,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'ipat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "`Optlabel i");
+                (688526593, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword "=";
@@ -4122,7 +4122,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "`Optlabel i");
+                (688526593, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword ")"],
@@ -4418,7 +4418,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                 "`Lid i")],
+                 "Lid")],
              ("i\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4429,7 +4429,7 @@ let apply () =
                            (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("i\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4457,7 +4457,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                 "`Lid i")],
+                 "Lid")],
              ("`C (_loc, i)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4469,7 +4469,7 @@ let apply () =
                            (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("`C (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4618,7 +4618,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid i")],
+                "Lid")],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4630,7 +4630,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4642,7 +4642,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid s");
+                "Uid");
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n",
@@ -4768,7 +4768,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid i")],
+                "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4780,7 +4780,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4792,7 +4792,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid s");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4911,7 +4911,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid i")],
+                "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4923,7 +4923,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4935,7 +4935,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid s");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4954,7 +4954,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                 "`Uid s")],
+                 "Uid")],
              ("`Uid (_loc, s)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5005,7 +5005,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid s");
+                "Uid");
            `Keyword ".";
            `Self],
             ("dot (`Uid (_loc, s)) l\n",
@@ -5072,7 +5072,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                 "`Lid i")],
+                 "Lid")],
              ("((`Sub []), i)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5084,7 +5084,7 @@ let apply () =
                            (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i");
+                "Uid");
            `Keyword ".";
            `Self],
             ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
@@ -5104,7 +5104,7 @@ let apply () =
           ([`Keyword ".";
            `Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid i");
+               "Uid");
            `Keyword ".";
            `Self],
             ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
@@ -5177,7 +5177,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i");
+                "Uid");
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -5193,7 +5193,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i");
+                "Uid");
            `Keyword ".";
            `Keyword "("],
             ("(`Uid (_loc, i) : FAst.ident )\n",
@@ -5285,7 +5285,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, i)), l)\n",
@@ -5300,7 +5300,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5404,7 +5404,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5492,7 +5492,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid i")],
+                "Lid")],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5504,7 +5504,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid i")],
+                "Uid")],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5564,7 +5564,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid i")],
+                "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6012,7 +6012,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid s")],
+                "Lid")],
             ("`Lid (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6054,7 +6054,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid s")],
+                "Uid")],
             ("`Uid (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6098,7 +6098,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "`Str x")],
+                "Str")],
             ("`Str (_loc, x)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6110,7 +6110,7 @@ let apply () =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "`Str x");
+                "Str");
            `Self],
             ("`App (_loc, (`Str (_loc, x)), xs)\n",
               (Gramf.mk_action
@@ -8478,7 +8478,7 @@ let apply_ctyp () =
                     (`Label (_loc, i, t) : 'ctyp )))));
          ([`Token
              (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
-               "`Label s");
+               "Label");
           `Keyword ":";
           `Self],
            ("`Label (_loc, (`Lid (_loc, s)), t)\n",
@@ -8493,7 +8493,7 @@ let apply_ctyp () =
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               (688526593, `Any), "`Optlabel s");
+               (688526593, `Any), "Optlabel");
           `Self],
            ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
              (Gramf.mk_action

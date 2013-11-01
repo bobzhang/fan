@@ -84,7 +84,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->

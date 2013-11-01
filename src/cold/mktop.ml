@@ -392,7 +392,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid m");
+                "Uid");
            `Keyword ":";
            `List1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
            `Keyword ";"],
@@ -428,7 +428,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("`Lid (_loc, x)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->

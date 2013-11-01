@@ -15,7 +15,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "`Str y")],
+                "Str")],
             ("y\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -30,7 +30,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "`Lid x")],
+                "Lid")],
             ("(_loc, x, None, None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -43,10 +43,10 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid x");
+              "Lid");
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-              "`Str y");
+              "Str");
           `Keyword ")"],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
@@ -65,10 +65,10 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid x");
+              "Lid");
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-              "`Str y");
+              "Str");
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Keyword ")"],
            ("(_loc, x, (Some y), (Some t))\n",
@@ -89,7 +89,7 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid x");
+              "Lid");
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Keyword ")"],
@@ -108,7 +108,7 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid x");
+              "Lid");
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Nterm (Gramf.obj (str : 'str Gramf.t ));
@@ -155,7 +155,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid x");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -170,7 +170,7 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid x")],
+               "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -186,7 +186,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid x");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -201,7 +201,7 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "`Lid i")],
+               "Lid")],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -217,7 +217,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "`Uid x");
+                "Uid");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -232,7 +232,7 @@ let _ =
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid x");
+               "Uid");
           `Keyword ".";
           `Token
             (((function
