@@ -16,30 +16,69 @@ let gm () =
   | Some _|None  -> !module_name
 let mk_prule ~prod  ~action  =
   let env = ref [] in
+  let inner_env = ref [] in
   let i = ref 0 in
   let prod =
     Listf.filter_map
       (fun (p : Gram_def.psymbol)  ->
          match p with
-         | { kind = KSome ; symbol = ({ outer_pattern = None ;_} as symbol) }
-           |{ kind = KNormal ; symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
-             symbol = ({ outer_pattern = Some (xloc,id);_} as s) } ->
+             symbol = ({ outer_pattern = None ; bounds;_} as symbol) } ->
+             (inner_env :=
+                ((List.map
+                    (fun (xloc,id)  ->
+                       ((`Lid (xloc, id) : FAst.pat ),
+                         (`App
+                            (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                         FAst.exp ))) bounds)
+                   @ (!inner_env));
+              incr i;
+              Some symbol)
+         | { kind = KNormal ; symbol } -> (incr i; Some symbol)
+         | { kind = KSome ;
+             symbol = ({ outer_pattern = Some (xloc,id); bounds;_} as s) } ->
              (env :=
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                    FAst.exp ))
                 :: (!env));
+              inner_env :=
+                ((List.map
+                    (fun (xloc,id)  ->
+                       ((`Lid (xloc, id) : FAst.pat ),
+                         (`App
+                            (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                         FAst.exp ))) bounds)
+                   @ (!inner_env));
               incr i;
               Some s)
-         | { kind = KNone ; symbol = { outer_pattern = None ;_} } -> None
-         | { kind = KNone ; symbol = { outer_pattern = Some (xloc,id);_} } ->
+         | { kind = KNone ; symbol = { outer_pattern = None ; bounds;_} } ->
+             (inner_env :=
+                ((List.map
+                    (fun (xloc,id)  ->
+                       ((`Lid (xloc, id) : FAst.pat ),
+                         (`Uid (xloc, "None") : FAst.exp ))) bounds)
+                   @ (!inner_env));
+              None)
+         | { kind = KNone ;
+             symbol = { outer_pattern = Some (xloc,id); bounds;_} } ->
              (env :=
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`Uid (xloc, "None") : FAst.exp ))
                 :: (!env));
+              inner_env :=
+                ((List.map
+                    (fun (xloc,id)  ->
+                       ((`Lid (xloc, id) : FAst.pat ),
+                         (`Uid (xloc, "None") : FAst.exp ))) bounds)
+                   @ (!inner_env));
               None)) prod in
-  ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
+  ({
+     prod;
+     action;
+     inner_env = (List.rev (!inner_env));
+     env = (List.rev (!env))
+   } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (!(gensym ())))
@@ -147,12 +186,16 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
    let e =
      let binds =
        x.env |> (List.map (fun (p,e)  -> (`Bind (_loc, p, e) : FAst.bind ))) in
+     let inner_binds =
+       x.inner_env |>
+         (List.map (fun (p,e)  -> (`Bind (_loc, p, e) : FAst.bind ))) in
      let e1: FAst.exp =
        `Constraint
          (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
+     let e1 = Ast_gen.binds inner_binds e1 in
+     let e1 = Ast_gen.binds binds e1 in
      match tok_match_pl with
      | ([],_) ->
-         let e1 = Ast_gen.binds binds e1 in
          (`Fun
             (_loc,
               (`Case
@@ -183,16 +226,14 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                   (_loc, (`Uid (_loc, "Printf")), (`Lid (_loc, "sprintf"))) : 
               FAst.exp );
               (`Str (_loc, (String.escaped error_fmt)) : FAst.exp )] @ es) in
-         let e =
-           Ast_gen.binds binds
-             (`Match
-                (_loc, exp,
-                  (`Bar
-                     (_loc, (`Case (_loc, pat, e1)),
-                       (`Case
-                          (_loc, (`Any _loc),
-                            (`App (_loc, (`Lid (_loc, "failwith")), error))))))) : 
-             FAst.exp ) in
+         let e: FAst.exp =
+           `Match
+             (_loc, exp,
+               (`Bar
+                  (_loc, (`Case (_loc, pat, e1)),
+                    (`Case
+                       (_loc, (`Any _loc),
+                         (`App (_loc, (`Lid (_loc, "failwith")), error))))))) in
          (`Fun
             (_loc,
               (`Case

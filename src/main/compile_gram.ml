@@ -38,30 +38,59 @@ let gm () =
 
 let mk_prule ~prod ~action =
   let env = ref [] in
+  let inner_env = ref [] in
   let i = ref 0 in 
   let prod =
     Listf.filter_map
       (function  (p:Gram_def.psymbol) ->
         match p with
-        | {kind = KSome;  symbol = ({outer_pattern = None;_} as symbol) }
-        | {kind = KNormal; symbol} -> begin
-            incr i;
-            Some symbol 
-        end
-        | {kind = KSome; symbol = ({outer_pattern = Some (xloc,id) ;_} as s)} -> begin 
-            env := (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id } ) :: !env;
-            incr i;
-            Some s
-        end
-        | {kind = KNone; symbol = {outer_pattern = None ; _ }} ->
-            None
-        | {kind = KNone; symbol = {outer_pattern = Some (xloc,id);_}} -> begin
-            env := (%pat@xloc{$lid:id}, %exp@xloc{None}) :: !env ;
-            None 
-        end
-            
-      ) prod in
-  ({prod;action;env = List.rev !env}:Gram_def.rule)
+          (* ? Lid i
+             ? Lid 
+           *)
+        | {kind = KSome;  symbol = ({outer_pattern = None; bounds  ; _} as symbol) } ->
+            begin
+              inner_env :=
+                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id}))
+                  bounds @ !inner_env;
+              incr i;
+              Some symbol;
+            end
+        | {kind = KNormal; symbol} ->
+            begin
+              incr i;
+              Some symbol 
+            end
+        (* ? Lid i as v 
+         *)      
+        | {kind = KSome; symbol = ({outer_pattern = Some (xloc,id) ; bounds; _} as s)} ->
+            begin 
+              env := (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id } ) :: !env;
+              inner_env :=
+                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id}))
+                  bounds @ !inner_env;
+              incr i;
+              Some s
+            end
+              
+        | {kind = KNone; symbol = {outer_pattern = None ; bounds; _}} ->
+            begin
+              inner_env :=
+                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{None})) bounds
+                @ !inner_env;
+              None
+            end
+        | {kind = KNone; symbol = {outer_pattern = Some (xloc,id); bounds; _}} ->
+            begin
+              env := (%pat@xloc{$lid:id}, %exp@xloc{None}) :: !env ;
+              inner_env :=
+                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{None})) bounds
+                @ !inner_env;
+              None 
+            end) prod in
+  ({prod;
+    action;
+    inner_env = List.rev !inner_env;
+    env = List.rev !env}:Gram_def.rule)
 
 
 let gen_lid ()=
@@ -145,10 +174,14 @@ let make_action (_loc:loc)
   let e =
     let binds =
         x.env |> List.map (fun (p,e) -> %bind{$p = $e}) in
+    let inner_binds =
+      x.inner_env |> List.map (fun (p,e) -> %bind{$p = $e}) in
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
+    let e1 = Ast_gen.binds inner_binds e1 in
+    let e1 = Ast_gen.binds binds e1 in
     match tok_match_pl with
     | ([],_) ->
-        let e1 = Ast_gen.binds binds e1  in
+        (* let e1 = Ast_gen.binds binds e1  in *)
         %exp{fun ($locid : Locf.t) -> $e1 }
           (* BOOTSTRAPING, associated with module name [Locf] *)
     | (e,p) ->
@@ -164,7 +197,7 @@ let make_action (_loc:loc)
         let error =
           Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in
         let e =
-          Ast_gen.binds binds
+          (* Ast_gen.binds binds *)
             %exp{match $exp with
             | $pat -> $e1
             | _ -> failwith $error} in 

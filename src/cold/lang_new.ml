@@ -98,9 +98,9 @@ let _ =
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
                     ->
-                   let y = None in
                    match __fan_1 with
                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                       let y = None in
                        ((_loc, x, y, (Some t)) : 'type_entry )
                    | _ ->
                        failwith
@@ -119,9 +119,9 @@ let _ =
                    ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
                     ->
-                   let y = Some y in
                    match __fan_1 with
                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                       let y = Some y in
                        ((_loc, x, y, (Some t)) : 'type_entry )
                    | _ ->
                        failwith

@@ -3805,9 +3805,9 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1:(s : 'single_symbol) 
                     ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                    let sep = None in
                     match __fan_0 with
                     | `Key ({ txt = l;_} : Tokenf.txt) ->
+                        let sep = None in
                         (let styp =
                            `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                          let text =
@@ -3834,9 +3834,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                   let sep = None in
                    match __fan_0 with
                    | `Key ({ txt = l;_} : Tokenf.txt) ->
+                       let sep = None in
                        (let styp =
                           `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                         let text =
@@ -3865,9 +3865,9 @@ let _ =
                 (fun ~__fan_2:(sep : 'sep_symbol) 
                    ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                   let sep = Some sep in
                    match __fan_0 with
                    | `Key ({ txt = l;_} : Tokenf.txt) ->
+                       let sep = Some sep in
                        (let styp =
                           `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                         let text =
@@ -3896,9 +3896,9 @@ let _ =
                 (fun ~__fan_2:(sep : 'sep_symbol) 
                    ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                   let sep = Some sep in
                    match __fan_0 with
                    | `Key ({ txt = l;_} : Tokenf.txt) ->
+                       let sep = Some sep in
                        (let styp =
                           `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                         let text =
@@ -4530,9 +4530,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   let action = None in
                    match __fan_1 with
                    | `Lid ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                       let action = None in
                        (let rules =
                           match query_inline x with
                           | Some x -> x
@@ -4565,9 +4565,9 @@ let _ =
                 (fun ~__fan_2:(action : 'opt_action) 
                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
                     ->
-                   let action = Some action in
                    match __fan_1 with
                    | `Lid ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                       let action = Some action in
                        (let rules =
                           match query_inline x with
                           | Some x -> x

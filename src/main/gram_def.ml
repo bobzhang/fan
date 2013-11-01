@@ -51,7 +51,10 @@ and level  = {
 and rule = {
     prod : symbol list ;
     action : exp option ;
+
     env : (pat * exp) list;
+    
+    inner_env :(pat*exp) list;
 }
 and kind =
   | KNone

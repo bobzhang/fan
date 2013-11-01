@@ -1,13 +1,13 @@
 %create{a};;
 
-%extend{a:  [ Lid i as u  %{(u,i)}]}
+(* %extend{a:  [ Lid i as u  %{(u,i)}]} *)
 
 
-%extend{a: ["a"@xloc]}
-(* FIXME *)  
-%extend{a: [?a as v;?Lid i as k %{(v,c,i, k)} ]}
+(* %extend{a: ["a"@xloc]} *)
+(* (\* FIXME *\)   *)
+(* %extend{a: [ ?Lid i as k %{(i, k)} ]} *)
 
-%extend{a: [?Lid i  %{(v,c,i, k)} ]}
+(* %extend{a: [?Lid i  %{(v,c,i, k)} ]} *)
 
 %extend{a: [? Lid@xloc x as y %{(y,x,xloc)}]}  
 
