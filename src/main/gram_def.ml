@@ -62,7 +62,10 @@ and symbol = {
     text : text;
     styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
-    pattern : pat option;
+
+    pattern : pat option; (* inner destruction *)
+    bounds : locid list; (* inner bounded variables *) 
+    
     outer_pattern :  locid option; (* [as outer_pattern] *)
 }
 and psymbol = {

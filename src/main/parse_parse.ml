@@ -82,6 +82,7 @@ let query_inline (x:string) =
     {text = `Token(_loc,pred,des,des_str);
      styp = `Tok _loc;
      pattern = None;
+     bounds = [];
      outer_pattern = None;
    }}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
@@ -94,6 +95,7 @@ let query_inline (x:string) =
 
     {text = `Token(_loc, pred, des,des_str);
      styp = `Tok _loc;
+     bounds = [];
      pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
      outer_pattern = None;}}
   | ("Lid" |"Uid"|"Str" as v)    %{
@@ -106,6 +108,7 @@ let query_inline (x:string) =
     {text = `Token(_loc,pred, des,des_str);
      styp = `Tok _loc;
      pattern = None ;
+     bounds = [];
      outer_pattern = None}}
       
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
@@ -120,9 +123,10 @@ let query_inline (x:string) =
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern = Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)};
+     bounds = [(xloc,x)];
      outer_pattern = None}}
   (** split opt, introducing an epsilon predicate? *)    
-  | ("Lid"|"Uid"|"Str" as v); "@"; Lid loc ; Lid@xloc x %{
+  | ("Lid"|"Uid"|"Str" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
     let i = hash_variant v in
     let pred =  %exp{function
       | $vrn:v _ -> true
@@ -131,12 +135,13 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
+     bounds = [(xloc,x);(lloc,loc)];
      pattern = Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
 
 
 
-  |  ("Quot"|"DirQuotation" as v) ; Lid x %{
+  |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
     let i = hash_variant v in                                              
     let pred = %exp{function
       | $vrn:v _ -> true
@@ -145,6 +150,7 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     {text = `Token(_loc,pred,des,des_str);
      styp = `Tok _loc;
+     bounds = [(loc,x)];
      pattern = Some %pat{$vrn:v $lid:x};
      outer_pattern = None}}
   ]
@@ -153,22 +159,26 @@ let query_inline (x:string) =
      {text = `Keyword (_loc,s);
       styp=`Tok _loc;
       pattern= None;
+      bounds = [];
       outer_pattern = None}}
   | Str s ; "@"; Lid@xloc i %{
      {text = `Keyword (_loc,s);
       styp = `Tok _loc;
       pattern = Some %pat@xloc{`Key ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
+      bounds  =[(xloc,i)] ;
       outer_pattern = None;
     }}
   | name as n;  ? level_str as lev %{
-     {text = `Nterm (_loc ,n, lev);
+    { text = `Nterm (_loc ,n, lev);
       styp = %ctyp'{'$lid{n.tvar}};
+      bounds = [];
       pattern = None;
       outer_pattern = None}}
   | "S" %{
     {text = `Self _loc;
      styp = `Self _loc;
      pattern = None;
+     bounds = [];
      outer_pattern = None}}]        
   single_symbol :
   [@simple_token 
@@ -180,6 +190,11 @@ let query_inline (x:string) =
           (v , Some (xloc,s)) } ]
   let str :
       [Str s %{(s,_loc)} ]
+  let or_strs :
+      [ L1 str0 SEP "|" as xs %{(xs,None)}
+      | L1  str0 SEP "|"  as xs; "as"; Lid@xloc s %{ (xs,Some (xloc,s))}]
+  let str0 :
+      [ Str s %{s}]
 
   simple :
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
@@ -200,15 +215,16 @@ let query_inline (x:string) =
            
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
-           let pp =
+           let (pp,bounds) =
              match y with
-             | None -> %pat{$z}
-             | Some(xloc,u) -> %pat@xloc{( $z as $lid:u)} in
+             | None -> (%pat{$z},[])
+             | Some ((xloc,u) as v) -> (%pat@xloc{( $z as $lid:u)},[v]) in
            ({kind = KNormal;
             symbol = {
              text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern = Some %pat{$vrn:v (({kind = $pp; _} as $p) :Tokenf.ant)(* BOOTSTRAPPING *)};
+             bounds;
              outer_pattern = None }}:Gram_def.psymbol))}
 
   | "("; or_strs as v; ")" %{
@@ -221,9 +237,11 @@ let query_inline (x:string) =
               symbol = {
               text = `Keyword(_loc,x);
               styp = `Tok _loc;
+              bounds = [];
               pattern = None;
               outer_pattern = None}}:Gram_def.psymbol))
-    | (vs, Some b) ->
+    | (vs, Some ((xloc,v) as b)) ->
+        let p = %pat@xloc{$lid:v} in
         vs |>
         List.map
           (fun x ->
@@ -231,7 +249,8 @@ let query_inline (x:string) =
              symbol = {
               text = `Keyword (_loc,x);
               styp = `Tok _loc;
-              pattern = Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)};
+              bounds = [b];
+              pattern = Some %pat{`Key ({txt=$p;_}:Tokenf.txt)};
               outer_pattern = None}}:Gram_def.psymbol))}
 
 
@@ -242,11 +261,6 @@ let query_inline (x:string) =
   (*   | (vs,Some x) -> *)
   (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
   ]
-  let or_strs :
-      [ L1 str0 SEP "|" as xs %{(xs,None)}
-      | L1  str0 SEP "|"  as xs; "as"; Lid s %{ (xs,Some s)}]
-  let str0 :
-      [ Str s %{s}]
   let level_str :  ["Level"; Str  s %{s} ]      
  
   let sep_symbol : [ "SEP"; single_symbol as t %{t}]
@@ -273,8 +287,8 @@ let query_inline (x:string) =
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
-    [{kind =KNormal;
-      symbol = {text; styp; pattern=None; outer_pattern = None }}]}
+    [{kind =KNormal; (* FIXME More precise, or meaning full warning message *)
+      symbol = {text; styp; pattern=None; outer_pattern = None; bounds = [] }}]}
   | "?"; single_symbol as s  %{
     [{kind = KNone;
       symbol = {s with (* pattern=None; *)outer_pattern = None }};
@@ -285,7 +299,9 @@ let query_inline (x:string) =
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
-    [{kind = KNormal; symbol={text;styp=s.styp;pattern=None;outer_pattern = None}}]}
+    (* FIXME more precise *)
+    [{kind = KNormal; symbol= {text;styp=s.styp;pattern=None;outer_pattern = None; bounds = s.bounds}
+    }]}
   | simple as p %{ p}   ]
   psymbol :
   [ symbol as ss %{ss}

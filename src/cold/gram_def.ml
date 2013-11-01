@@ -57,6 +57,7 @@ and symbol =
   text: text;
   styp: styp;
   pattern: pat option;
+  bounds: locid list;
   outer_pattern: locid option} 
 and psymbol =  {
   kind: kind;
