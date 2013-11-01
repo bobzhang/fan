@@ -96,10 +96,21 @@ let query_inline (x:string) =
      styp = `Tok _loc;
      pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
      outer_pattern = None;}}
-
+  | ("Lid" |"Uid"|"Str" as v)    %{
+    let i = hash_variant v in
+    let pred = %exp{function
+      | $vrn:v _ -> true
+      | _ -> false} in
+    let des = %exp{($int':i,`Any)} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
+    {text = `Token(_loc,pred, des,des_str);
+     styp = `Tok _loc;
+     pattern = None ;
+     outer_pattern = None}}
+      
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
-     | "Optlabel" |"Str" as v); Lid@xloc x %{
+     | "Optlabel" |"Str" as v);  Lid@xloc x %{
     let i = hash_variant v in                                 
     let pred =  %exp{function
       | $vrn:v _ -> true
@@ -123,17 +134,7 @@ let query_inline (x:string) =
      pattern = Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
 
-  | ("Lid" |"Uid"|"Str" as v)    %{
-    let i = hash_variant v in
-    let pred = %exp{function
-      | $vrn:v _ -> true
-      | _ -> false} in
-    let des = %exp{($int':i,`Any)} in
-    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    {text = `Token(_loc,pred, des,des_str);
-     styp = `Tok _loc;
-     pattern = None ;
-     outer_pattern = None}}
+
 
   |  ("Quot"|"DirQuotation" as v) ; Lid x %{
     let i = hash_variant v in                                              
@@ -153,7 +154,12 @@ let query_inline (x:string) =
       styp=`Tok _loc;
       pattern= None;
       outer_pattern = None}}
-                  
+  | Str s ; "@"; Lid@xloc i %{
+     {text = `Keyword (_loc,s);
+      styp = `Tok _loc;
+      pattern = Some %pat@xloc{`Key ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
+      outer_pattern = None;
+    }}
   | name as n;  ? level_str as lev %{
      {text = `Nterm (_loc ,n, lev);
       styp = %ctyp'{'$lid{n.tvar}};
@@ -271,9 +277,9 @@ let query_inline (x:string) =
       symbol = {text; styp; pattern=None; outer_pattern = None }}]}
   | "?"; single_symbol as s  %{
     [{kind = KNone;
-      symbol = {s with pattern=None;outer_pattern = None }};
+      symbol = {s with (* pattern=None; *)outer_pattern = None }};
      {kind = KSome;
-      symbol = {s with pattern = None ; outer_pattern = None}
+      symbol = {s with (* pattern = None ; *) outer_pattern = None}
     }]}
 
   | ("TRY"|"PEEK" as p); single_symbol as s %{
@@ -397,7 +403,7 @@ let query_inline (x:string) =
   level :
   [  ?str as  label ;  ?assoc as assoc; rule_list as rules
        %{{label;assoc;rules}} ]
-  (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT as s %{()} ] } *)
+
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
 
@@ -614,5 +620,5 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/parse_grammar.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/parse_parse.cmo" *)
 (* end: *)

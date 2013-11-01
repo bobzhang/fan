@@ -1,21 +1,30 @@
+type loc = Locf.t
+
   
 type domains =
     [ `Absolute of string list | `Sub of string list]
 
+type name = (domains* string)
       
-let pp_print_domains: Format.formatter -> domains -> unit =
+let pp_print_domains : domains Formatf.t = 
   fun fmt  ->
     function
     | `Absolute (_a0:string list) ->
-        Format.fprintf fmt "@[<1>(`Absolute@ %a)@]"
-          (Formatf.pp_print_list Formatf.pp_print_string) _a0
+        Format.fprintf fmt ".%s" (String.concat "." _a0)
     | `Sub _a0 ->
-        Format.fprintf fmt "@[<1>(`Sub@ %a)@]"
-          (Formatf.pp_print_list Formatf.pp_print_string) _a0
+        Format.fprintf fmt "%s" (String.concat "." _a0)
+
+let pp_print_name : Format.formatter -> name -> unit =
+  fun fmt  _a0  ->
+    (fun fmt  (_a0,_a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]"
+        pp_print_domains _a0
+        Format.pp_print_string _a1) fmt _a0
 
 
-type loc = Locf.t
-type name = (domains* string) 
+let string_of_name = Formatf.to_string pp_print_name
+            
+
 
 
 type quot = {
@@ -63,6 +72,16 @@ let pp_print_ant fmt  (x:ant) =
   Format.fprintf fmt "cxt:%S;content:%S"
   (match x.cxt with None ->""|Some s -> s)  x.txt 
       
+let pp_print_quot : Format.formatter -> quot -> unit =
+  fun fmt {name;meta;shift;txt;loc;retract}  ->
+    Format.fprintf fmt
+      "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;txt=%a}@]"
+      pp_print_name name
+      (Formatf.pp_print_option Formatf.pp_print_string) meta
+      Locf.pp_print_t loc
+      Format.pp_print_int shift
+      Format.pp_print_int retract
+      Format.pp_print_string txt
 
 type 'a expand_fun = Locf.t -> string option -> string -> 'a
       
@@ -115,25 +134,6 @@ let quot_expand (expander:'a expand_fun) (x:quot) =
     String.sub x.txt x.shift (String.length x.txt - x.retract - x.shift) in 
   expander loc x.meta content
       
-let pp_print_name: Format.formatter -> name -> unit =
-  fun fmt  _a0  ->
-    (fun fmt  (_a0,_a1)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
-         Format.pp_print_string _a1) fmt _a0
-
-let pp_print_quot : Format.formatter -> quot -> unit =
-  fun fmt {name;meta;shift;txt;loc;retract}  ->
-    Format.fprintf fmt
-      "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;txt=%a}@]"
-      pp_print_name name
-      (Formatf.pp_print_option Formatf.pp_print_string) meta
-      Locf.pp_print_t loc
-      Format.pp_print_int shift
-      Format.pp_print_int retract
-      Format.pp_print_string txt
-
-let string_of_name = Formatf.to_string pp_print_name
-            
 let pp_print_quotation: Format.formatter -> quotation -> unit =
   fun fmt  (`Quot x)  ->
     Format.fprintf fmt "@[<1>(`Quot %a)@]"

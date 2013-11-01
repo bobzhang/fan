@@ -1828,10 +1828,16 @@ let apply () =
                     (`Send (_loc, e, lab) : 'exp )))))]);
         ((Some "~-"), (Some `NA),
           [([`Keyword "!"; `Self],
-             ("`App (_loc, (`Lid (_loc, \"!\")), e)\n",
+             ("`App (_loc, (`Lid (xloc, \"!\")), e)\n",
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`App (_loc, (`Lid (_loc, "!")), e) : 'exp )))));
+                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.t) 
+                     (_loc : Locf.t)  ->
+                     match __fan_0 with
+                     | `Key ({ loc = xloc;_} : Tokenf.txt) ->
+                         (`App (_loc, (`Lid (xloc, "!")), e) : 'exp )
+                     | _ ->
+                         failwith
+                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
           ([`Nterm (Gramf.obj (prefixop : 'prefixop Gramf.t )); `Self],
             ("`App (_loc, f, e)\n",
               (Gramf.mk_action

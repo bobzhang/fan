@@ -124,6 +124,8 @@ let initial_spec_list : (string * Arg.spec * string) list =
    ("-o", String (fun x -> output_file := Some x),
     "<file> Output on <file> instead of standard output.");
 
+   ("-list", Unit Ast_quotation.dump_names_tbl, "list all registered DDSLs");
+
    ("-unsafe", Set Configf.unsafe,
     "Generate unsafe accesses to array and strings.");
 

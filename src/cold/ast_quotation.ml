@@ -1,5 +1,6 @@
 let pp_print_string = Format.pp_print_string
 let bprintf = Format.bprintf
+let fprintf = Format.fprintf
 let paths: Tokenf.domains list ref =
   ref
     [`Absolute ["Fan"; "Lang"];
@@ -10,6 +11,14 @@ let concat_domain =
   | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
   | _ -> invalid_arg "concat_domain"
 let names_tbl: (Tokenf.domains,Setf.String.t) Hashtbl.t = Hashtbl.create 30
+let dump_names_tbl () =
+  names_tbl |>
+    (Hashtbl.iter
+       (fun k  s  ->
+          fprintf Format.std_formatter "Domain:%a\n" Tokenf.pp_print_domains
+            k;
+          Setf.String.iter
+            (fun v  -> fprintf Format.std_formatter "\t%s\n" v) s))
 let resolve_name (n : Tokenf.name) =
   match n with
   | ((`Sub _ as x),v) ->

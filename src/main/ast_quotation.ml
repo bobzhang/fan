@@ -5,13 +5,12 @@
 Format:
   pp_print_string
   bprintf
+  fprintf
   ;
 };;
 
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
-(* val parse_quotation_result: *)
-(*     (Locf.t -> string -> 'a) -> Locf.t -> Tokenf.quotation -> string -> string -> 'a *)
 
 (*********************************)
 (* name table                    *)        
@@ -32,7 +31,17 @@ let concat_domain = function
 (** [names_tbl] is used to manage the namespace and names *)
 let names_tbl : (Tokenf.domains,Setf.String.t) Hashtbl.t =
   Hashtbl.create 30 
-
+let dump_names_tbl () =
+  names_tbl |>
+  Hashtbl.iter
+    (fun k s ->
+      begin 
+        fprintf Format.std_formatter
+          "Domain:%a\n" Tokenf.pp_print_domains k;
+        Setf.String.iter
+          (fun v -> fprintf Format.std_formatter "\t%s\n" v ) s
+      end)
+    
 (**  when no qualified path is given , it uses [Sub []] *)
 let resolve_name (n:Tokenf.name) =
   match n with

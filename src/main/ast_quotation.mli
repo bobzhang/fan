@@ -3,7 +3,8 @@
   
 open FAst
 
-val resolve_name : (* Locf.t -> *) Tokenf.name -> Tokenf.name option
+val dump_names_tbl : unit -> unit
+val resolve_name : Tokenf.name -> Tokenf.name option
 
 val paths : Tokenf.domains list ref
     

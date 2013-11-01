@@ -21,6 +21,10 @@ type quot = {
     (* the letter to be retracted *)
   }
 
+(** $x
+    $lid:x
+    $lid{x} *)
+
 type ant = {
     loc : loc ;
     cxt : string option;
@@ -29,26 +33,6 @@ type ant = {
     shift : int;
     retract : int;
   }      
-(*
-type ant  = {
-    (*
-      $x
-      $lid:x
-      $`lid:x
-      $(lid:x)
-      $(....)
-
-      $x
-      $lid:x
-      $lid':x
-      $lid:{xxx}
-     *)
-    meta : string option;
-    shift : int ;
-    retract : int;
-    loc : loc;
-    content : string;
-  } *)
       
 (** The [loc] is the initial location. The option string is the meta-data
     for example, the [location variable]. The string is the quotation contents. 
@@ -167,7 +151,8 @@ val to_string : t  -> string
 
 val print : t Formatf.t 
 
-
+val pp_print_domains : domains Formatf.t
+    
 val pp_print_ant : ant Formatf.t
     
 val get_string : t -> string

@@ -55,7 +55,7 @@ let list_of_string ?(verbose=true) str =
     stream
     |> clean
     |> Streamf.iter
-        (fun t -> begin 
+        (fun t -> begin
           result := t :: !result ;
           if verbose then 
             fprintf std_formatter "%a@\n" Tokenf.print t 
