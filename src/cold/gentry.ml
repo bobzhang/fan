@@ -78,6 +78,7 @@ let copy = Ginsert.copy
 let extend = Ginsert.extend
 let unsafe_extend = Ginsert.unsafe_extend
 let unsafe_extend_single = Ginsert.unsafe_extend_single
+let entry_first = Gtools.entry_first
 let delete_rule = Gdelete.delete_rule
 let symb_failed = Gfailed.symb_failed
 let symb_failed_txt = Gfailed.symb_failed_txt

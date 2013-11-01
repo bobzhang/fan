@@ -122,6 +122,8 @@ Ginsert:
   copy extend
   unsafe_extend
   unsafe_extend_single;
+Gtools:
+  entry_first;
 Gdelete:
   delete_rule;
 Gfailed: 

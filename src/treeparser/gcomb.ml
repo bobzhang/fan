@@ -44,22 +44,6 @@ let slist1sep ~err  ~f  s sep =
     | _ -> al in
   fun (__strm : _ t)  -> let a = s __strm in f (kont [a] __strm)
     
-(* let slist1sep ~err ~f s sep = *)
-(*   let rec kont al = parser *)
-(*     |  v = sep; a = (parser *)
-(*         |  a = s  -> a *)
-(*         | -> *)
-(*             raise (Error (err v (\* Gfailed.symb_failed entry v sep symb *\))) ); *)
-(*       's  ->kont (a :: al) s *)
-(*     |  -> al  in *)
-(*   parser *)
-(*     | a = s ; 's  -> f (kont [a] s) *)
-    
-let opt ps ~f  (__strm : _ t) =
-  let v  = try Some (ps __strm) with  NotConsumed  -> None in
-  match  v with
-  | Some _ -> f v 
-  | _ -> f None
         
 let tryp ps strm =
   let strm' = dup strm in

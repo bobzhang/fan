@@ -93,6 +93,35 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
 
 
 
+let rec entry_first (v:Gstructure.entry) : string list =
+  match v.desc with
+  | Dlevels ls ->
+      Listf.concat_map level_first ls  
+  | Dparser _ ->[] (* invalid_arg "entry_first function parser" *)
+and level_first (x:Gstructure.level) : string list =
+  tree_first x.lprefix
+
+and tree_first (x:Gstructure.tree) : string list =
+  match x with
+  | Node {node;brother;_} ->
+      symbol_first node @ tree_first brother
+  | LocAct _ | DeadEnd -> []
+
+and symbol_first (x:symbol) : string list  = 
+  match x  with
+  | `Nterm e -> entry_first e
+  | `Snterml (e,_) -> entry_first e
+        
+  | `List0 s
+  | `List1 s 
+  | `List0sep (s,_) 
+  | `List1sep (s,_) -> symbol_first s 
+  | `Self -> assert false
+  | `Try s 
+  | `Peek s ->symbol_first s
+  | `Keyword s -> [s ]
+  | `Token _ -> []
+
         
 
 (* let rec get_first = fun *)

@@ -22,11 +22,11 @@ val slist1sep :
   f:('b list -> 'c) ->
   ('d Streamf.t -> 'b) ->
   ('d Streamf.t -> 'a) -> 'd Streamf.t -> 'c
-val opt :
-  ('a Streamf.t -> 'b) ->
-  f:('b option -> 'c) -> 'a Streamf.t -> 'c
+
 val tryp : ('a Streamf.t -> 'b) -> 'a Streamf.t -> 'b
+
 val peek : ('a Streamf.t -> 'b) -> 'a Streamf.t -> 'b
+
 val orp :
   ?msg:string ->
   ('a Streamf.t -> 'b) ->

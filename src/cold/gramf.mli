@@ -93,6 +93,8 @@ val setup_parser:  'a t ->  (stream -> 'a) -> unit
     
 val clear: 'a t -> unit
 
+val entry_first : 'a t -> string list
+    
 val mk_action: 'a -> Action.t
 
 val obj: 'a t -> entry         

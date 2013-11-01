@@ -92,3 +92,4 @@ val copy : 'a t -> 'a t
 val eoi_entry : 'a t -> 'a t
 
 val map : name:string -> ('a -> 'b) -> 'a t -> 'b t     
+val entry_first : 'a t -> string list

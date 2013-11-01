@@ -19,12 +19,19 @@ Ast_gen:
   ;
 }
 open FAst
-(* open Ast_gen *)
 open! Syntaxf
 
 
 %create{Gramf pos_exps};;
-      
+
+(* Gramf.extend_single prefixop *)
+(*  (None, *)
+(*       ((None, None, *)
+(*          [([`Keyword "x"], *)
+(*             ("", *)
+(*               (Gramf.mk_action *)
+(*                  (fun ~__fan_0:_  (_loc : Locf.t)  -> (() : 'a )))))]) :  *)
+(*       Gramf.olevel )) *)
 let apply () = begin 
   begin
     setup_op_parser prefixop
