@@ -322,9 +322,10 @@ let apply () = begin
         | "while"; S as e; "do"; sequence as seq; "done" %{
             `While (_loc, e, seq)}]  
        ":=" NA
-        [ S as e1; ":="; S as e2 %{
+        [ S as e1; ":="@xloc; S as e2 %{
+          `App(_loc, `App (_loc, `Lid(xloc,":="), e1),e2)
           (* (`Assign (_loc,`Field(_loc,e1,`Lid(_loc,"contents")),e2):exp) *)
-          %{ $e1 := $e2 }}
+          (* %{ $e1 := $e2 } *)}
         | S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
             match Fan_ops.bigarray_set _loc e1 e2 with
             | Some e -> e

@@ -209,10 +209,10 @@ let bigarray_set loc var newval =
                                                         `Lid (_,"get"))),arr),c1),c2),c3)
       : FAst.exp) ->
       Some
-        (`Assign
+        (`App
            (loc,
-             (`Field
-                (loc,
+             (`App
+                (loc, (`Lid (loc, ":=")),
                   (`App
                      (loc,
                        (`App
@@ -226,8 +226,7 @@ let bigarray_set loc var newval =
                                            (`Dot
                                               (loc, (`Uid (loc, "Array3")),
                                                 (`Lid (loc, "get")))))), arr)),
-                                 c1)), c2)), c3)), (`Lid (loc, "contents")))),
-             newval) : FAst.exp )
+                                 c1)), c2)), c3)))), newval) : FAst.exp )
   | (`App
        (_loc,`App
                (_,`Dot

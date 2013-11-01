@@ -1383,14 +1383,18 @@ let apply () =
                      (`While (_loc, e, seq) : 'exp )))))]);
         ((Some ":="), (Some `NA),
           [([`Self; `Keyword ":="; `Self],
-             ("(`Assign (_loc, (`Field (_loc, e1, (`Lid (_loc, \"contents\")))), e2) : \nFAst.exp )\n",
+             ("`App (_loc, (`App (_loc, (`Lid (xloc, \":=\")), e1)), e2)\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:_  ~__fan_0:(e1 : 'exp)
-                      (_loc : Locf.t)  ->
-                     ((`Assign
-                         (_loc,
-                           (`Field (_loc, e1, (`Lid (_loc, "contents")))),
-                           e2) : FAst.exp ) : 'exp )))));
+                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.t) 
+                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                     match __fan_1 with
+                     | `Key ({ loc = xloc;_} : Tokenf.txt) ->
+                         (`App
+                            (_loc, (`App (_loc, (`Lid (xloc, ":=")), e1)),
+                              e2) : 'exp )
+                     | _ ->
+                         failwith
+                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
           ([`Self; `Keyword "<-"; `Self],
             ("match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n",
               (Gramf.mk_action
