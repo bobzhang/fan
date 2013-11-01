@@ -399,7 +399,7 @@ let _ =
             ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(ns : 'name list)  ~__fan_1:_ 
-                    ~__fan_0  (_loc : Locf.t)  ->
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list
@@ -427,7 +427,7 @@ let _ =
                 "Lid")],
             ("`Lid (_loc, x)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Lid (_loc, x) : 'name )))))]) : Gramf.olevel ))

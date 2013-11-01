@@ -65,7 +65,8 @@ let _ =
                "`Quot _")],
             ("let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\nlet e = Tokenf.quot_expand expander x in (r, e)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1  ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(__fan_1 : Tokenf.quot) 
+                    ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
                     match __fan_1 with
                     | (x : Tokenf.quot) ->
                         (let expander loc _ s =
@@ -83,8 +84,9 @@ let _ =
            `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
             ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_  ~__fan_1 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_ 
+                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
                     match __fan_1 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (if Hashtbl.mem named_regexps x
@@ -111,7 +113,7 @@ let _ =
                 "Lid")],
             ("(_loc, y)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )))))]) : 
       Gramf.olevel ));
@@ -157,7 +159,7 @@ let _ =
                "Chr")],
            ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = c;_} : Tokenf.txt) ->
                        (Characters
@@ -168,7 +170,7 @@ let _ =
                "Str")],
            ("regexp_for_string @@ (TokenEval.string s)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = s;_} : Tokenf.txt) ->
                        (regexp_for_string @@ (TokenEval.string s) : 'regexp )))));
@@ -208,7 +210,7 @@ let _ =
                "Lid")],
            ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        ((try Hashtbl.find named_regexps x
@@ -245,7 +247,8 @@ let _ =
                "Chr")],
             ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
               (Gramf.mk_action
-                 (fun ~__fan_2  ~__fan_1:_  ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match (__fan_2, __fan_0) with
                     | (({ txt = c2;_} : Tokenf.txt),({ txt = c1;_} :
                                                       Tokenf.txt))
@@ -258,7 +261,7 @@ let _ =
                "Chr")],
            ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = c1;_} : Tokenf.txt) ->
                        (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 

@@ -23,7 +23,7 @@ let _ =
                 "Uid")],
             ("n\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )))))]) : 
       Gramf.olevel ));

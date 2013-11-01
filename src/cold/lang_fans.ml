@@ -60,7 +60,7 @@ let _ =
                 "Lid")],
             ("x\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
          ([`Token
@@ -68,7 +68,7 @@ let _ =
                "Uid")],
            ("x\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))))]) : 
       Gramf.olevel ));

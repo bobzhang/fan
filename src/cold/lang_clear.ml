@@ -14,7 +14,7 @@ let _ =
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "";_} as s) : Tokenf.ant) ->
                         (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
@@ -25,7 +25,7 @@ let _ =
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | (({ kind = "lid";_} as s) : Tokenf.ant) ->
                        (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
@@ -35,7 +35,7 @@ let _ =
                "Lid")],
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = s;_} : Tokenf.txt) ->
                        (`Lid (_loc, s) : 'a_lident )))))]) : Gramf.olevel ));
@@ -68,8 +68,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_  ~__fan_0 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
@@ -78,7 +78,7 @@ let _ =
                "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        (`Uid (_loc, x) : 'qualuid )))))]) : Gramf.olevel ))

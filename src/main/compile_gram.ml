@@ -206,8 +206,7 @@ let make_action (_loc:loc)
             | _ -> assert false
             (* | _ -> failwith $error *)} in 
         %exp{fun ($locid : Locf.t) (* BOOTSTRAPING, associated with module name [Locf] *) -> $e } in
-  let make_ctyp (styp:Gram_def.styp) tvar : ctyp option =
-    let module M = struct exception Token end in
+  let make_ctyp (styp:Gram_def.styp) tvar : ctyp  =
     let rec aux  v = 
       match (v:Gram_def.styp) with
       | #vid' as x -> (x : vid' :>ctyp) 
@@ -217,15 +216,9 @@ let make_action (_loc:loc)
           if tvar = "" then
             Locf.raise _loc @@ Streamf.Error ("S: illegal in anonymous entry level")
           else %ctyp{ '$lid:tvar }
-      | `Tok _loc -> raise M.Token
-          (* %ctyp{ Tokenf.t } *)  (** BOOTSTRAPPING, associated with module name Tokenf*)
-            (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
       | `Type t -> t  in
-    try Some (aux styp) with M.Token -> None  in
-  let (+:) v ty=
-    match ty with
-    | Some t -> typing v t
-    | None -> v in
+    aux styp in
+  let (+:) = typing in
   let txt =
     snd @@
     Listf.fold_lefti

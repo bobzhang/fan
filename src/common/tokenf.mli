@@ -7,8 +7,8 @@ type loc = Locf.t
 
 (* FIXME how to put it in ocamldoc?
    The generic quotation type . To see how fields are used here is an example:
-    "{:q_name@q_loc|q_contents|}"
-    The last one, q_shift is equal to the length of "{:q_name@q_loc|"
+    "%q_name@q_loc{q_contents}"
+    The last one, q_shift is equal to the length of "%q_name@q_loc{"
  *)
 type quot = {
     name    :name;

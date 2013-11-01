@@ -18,7 +18,7 @@ let _ =
                 "Str")],
             ("y\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = y;_} : Tokenf.txt) -> (y : 'str )))))]) : 
       Gramf.olevel ));
@@ -30,7 +30,7 @@ let _ =
                 "Lid")],
             ("(_loc, x, None, None)\n",
               (Gramf.mk_action
-                 (fun ~__fan_0  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         ((_loc, x, None, None) : 'type_entry )))));
@@ -44,7 +44,8 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2  ~__fan_1  ~__fan_0:_ 
+                (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.txt) 
+                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
                    match (__fan_2, __fan_1) with
                    | (({ txt = y;_} : Tokenf.txt),({ txt = x;_} : Tokenf.txt))
@@ -60,8 +61,10 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), (Some t))\n",
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2 
-                   ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp) 
+                   ~__fan_2:(__fan_2 : Tokenf.txt) 
+                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match (__fan_2, __fan_1) with
                    | (({ txt = y;_} : Tokenf.txt),({ txt = x;_} : Tokenf.txt))
                        -> ((_loc, x, (Some y), (Some t)) : 'type_entry )))));
@@ -75,7 +78,8 @@ let _ =
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
-                   ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match __fan_1 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        let y = None in
@@ -91,8 +95,9 @@ let _ =
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(y : 'str) 
-                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_  ~__fan_1 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
+                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
+                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match __fan_1 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        let y = Some y in
@@ -131,8 +136,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_  ~__fan_0 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
@@ -141,7 +146,7 @@ let _ =
                "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        (`Uid (_loc, x) : 'qualuid )))))]) : Gramf.olevel ));
@@ -155,8 +160,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_  ~__fan_0 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )))));
@@ -165,7 +170,7 @@ let _ =
                "Lid")],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = i;_} : Tokenf.txt) ->
                        (`Lid (_loc, i) : 'qualid )))))]) : Gramf.olevel ));
@@ -179,8 +184,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_  ~__fan_0 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )))));
@@ -194,7 +199,8 @@ let _ =
                | _ -> false)), (3802919, (`A "t")), "`Lid \"t\"")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun ~__fan_2  ~__fan_1:_  ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
                    | (({ txt = "t";_} : Tokenf.txt),({ txt = x;_} :
                                                       Tokenf.txt))

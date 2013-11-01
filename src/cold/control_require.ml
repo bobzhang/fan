@@ -15,7 +15,8 @@ let () =
                  "Str")],
               ("add s\n",
                 (Gramf.mk_action
-                   (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                      (_loc : Locf.t)  ->
                       match __fan_1 with
                       | ({ txt = s;_} : Tokenf.txt) -> (add s : 'item )))))]) : 
         Gramf.olevel ))

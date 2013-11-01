@@ -13,7 +13,8 @@ let _ =
                "Uid")],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
                     match __fan_1 with
                     | ({ txt = n;_} : Tokenf.txt) ->
                         (Ref.protect Compile_stream.grammar_module_name n
@@ -27,8 +28,9 @@ let _ =
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
            ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(sel : 'stream_exp_comp_list)  ~__fan_1 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_2:(sel : 'stream_exp_comp_list) 
+                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match __fan_1 with
                    | ({ txt = n;_} : Tokenf.txt) ->
                        (Ref.protect Compile_stream.grammar_module_name n

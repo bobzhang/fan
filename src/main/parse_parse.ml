@@ -80,7 +80,7 @@ let query_inline (x:string) =
     let des = %exp{($int':i, `Empty)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
     {text = `Token(_loc,pred,des,des_str);
-     styp = `Tok _loc;
+     styp = %ctyp'{Tokenf.txt};
      pattern = None;
      bounds = [];
      outer_pattern = None;
@@ -94,7 +94,7 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
 
     {text = `Token(_loc, pred, des,des_str);
-     styp = `Tok _loc;
+     styp = %ctyp'{Tokenf.txt};
      bounds = [];
      pattern = Some %pat@xloc{(* $vrn:v *) ({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
      outer_pattern = None;}}
@@ -114,7 +114,7 @@ let query_inline (x:string) =
                     , [(xloc,x)])
       | _ -> (None, [])in
     {text = `Token(_loc, pred,des,des_str);
-     styp = `Tok _loc;
+     styp = %ctyp'{Tokenf.txt};
      pattern;
      bounds ;
      outer_pattern = None}}
@@ -127,7 +127,7 @@ let query_inline (x:string) =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     {text = `Token(_loc, pred,des,des_str);
-     styp = `Tok _loc;
+     styp = %ctyp'{Tokenf.txt};
      bounds = [(xloc,x);(lloc,loc)];
      pattern = Some %pat@xloc{(* $vrn:v *) ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
@@ -142,7 +142,7 @@ let query_inline (x:string) =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     {text = `Token(_loc,pred,des,des_str);
-     styp = `Tok _loc;
+     styp = %ctyp'{Tokenf.quot};
      bounds = [(loc,x)];
      pattern = Some %pat{(* $vrn:v *) ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
@@ -150,13 +150,13 @@ let query_inline (x:string) =
   Inline simple_symbol:
   [  Str s %{
      {text = `Keyword (_loc,s);
-      styp=`Tok _loc;
+      styp= %ctyp'{Tokenf.txt};
       pattern= None;
       bounds = [];
       outer_pattern = None}}
   | Str s ; "@"; Lid@xloc i %{
      {text = `Keyword (_loc,s);
-      styp = `Tok _loc;
+      styp = %ctyp'{Tokenf.txt};
       pattern = Some %pat@xloc{(* `Key *) ({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
       bounds  =[(xloc,i)] ;
       outer_pattern = None;
@@ -215,7 +215,7 @@ let query_inline (x:string) =
            ({kind = KNormal;
             symbol = {
              text = `Token(_loc,pred,des,des_str);
-             styp= `Tok _loc;
+             styp= %ctyp'{Tokenf.ant};
              pattern = Some %pat{(* $vrn:v *) (({kind = $pp; _} as $p) :Tokenf.ant)(* BOOTSTRAPPING *)};
              bounds;
              outer_pattern = None }}:Gram_def.psymbol))}
@@ -229,7 +229,7 @@ let query_inline (x:string) =
             ({kind = KNormal;
               symbol = {
               text = `Keyword(_loc,x);
-              styp = `Tok _loc;
+              styp = %ctyp'{Tokenf.txt};
               bounds = [];
               pattern = None;
               outer_pattern = None}}:Gram_def.psymbol))
@@ -241,7 +241,7 @@ let query_inline (x:string) =
             ({kind = KNormal;
              symbol = {
               text = `Keyword (_loc,x);
-              styp = `Tok _loc;
+              styp = %ctyp'{Tokenf.txt};
               bounds = [b];
               pattern = Some %pat{(* `Key *) ({txt=$p;_}:Tokenf.txt)};
               outer_pattern = None}}:Gram_def.psymbol))}
@@ -266,16 +266,6 @@ let query_inline (x:string) =
    *)
       
   [
-   (* ("L0"|"L1" as l); ("Lid"|"Uid"| "Int" | "Int32" | "Int64" *)
-   (*   | "Nativeint" |"Flo" | "Chr" |"Label"  *)
-   (*   | "Optlabel" |"Str" as v); ? sep_symbol as sep %{ *)
-   (* let (s:Gram_def.symbol) = *)
-   (*   { text = *)
-   (*     styp = *)
-   (*     pattern = None *)
-   (*   } in *)
-   (* [mk_symbol ~text ~styp ~pattern:None ] *)
-   (* } *)
    ("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
@@ -284,9 +274,9 @@ let query_inline (x:string) =
       symbol = {text; styp; pattern=None; outer_pattern = None; bounds = [] }}]}
   | "?"; single_symbol as s  %{
     [{kind = KNone;
-      symbol = {s with (* pattern=None; *)outer_pattern = None }};
+      symbol = {s with outer_pattern = None }};
      {kind = KSome;
-      symbol = {s with (* pattern = None ; *) outer_pattern = None}
+      symbol = {s with outer_pattern = None}
     }]}
 
   | ("TRY"|"PEEK" as p); single_symbol as s %{

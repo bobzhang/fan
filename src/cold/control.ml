@@ -12,7 +12,8 @@ let _ =
                "Str")],
             ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
               (Gramf.mk_action
-                 (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
                     match __fan_1 with
                     | ({ txt = s;_} : Tokenf.txt) ->
                         ((match Ast_quotation.resolve_name ((`Sub []), s)
@@ -36,7 +37,8 @@ let _ =
               "Str")],
            ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
-                (fun ~__fan_1  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match __fan_1 with
                    | ({ txt = s;_} : Tokenf.txt) ->
                        (Ast_filters.use_implem_filter s : 'item )))));
@@ -57,8 +59,8 @@ let _ =
            `Self],
             ("i :: xs\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'dot_namespace)  ~__fan_1:_  ~__fan_0 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'dot_namespace)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = i;_} : Tokenf.txt) -> (i ::
                         xs : 'dot_namespace )))));
@@ -67,7 +69,7 @@ let _ =
                "Uid")],
            ("[i]\n",
              (Gramf.mk_action
-                (fun ~__fan_0  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = i;_} : Tokenf.txt) -> ([i] : 'dot_namespace )))))]) : 
       Gramf.olevel ));
