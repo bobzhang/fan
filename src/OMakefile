@@ -194,7 +194,7 @@ section
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(file fan)
-    OCamlAdditionalExistDependency($(PP_FAN))
+    OCamlAdditionalDigestDependency($(PP_FAN))
     # AdditionalDependency($(PP_FAN))
     # weaker dependency require snapshot from time to time however
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
