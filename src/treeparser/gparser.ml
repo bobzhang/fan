@@ -184,17 +184,17 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
         begin  (* interaction with stream *)
           match Streamf.peek strm with
           | Some (`Key u  )  when u.txt = kwd ->
-              (Streamf.junk strm ; Gaction.mk u (* x *) (* tok *) )
+              begin 
+                Streamf.junk strm ;
+                Gaction.mk u
+              end
           |_ -> raise Streamf.NotConsumed
         end
     | `Token (f, _,_) -> fun strm ->  match Streamf.peek strm with
       |Some tok when f tok ->
           begin 
             Streamf.junk strm;
-            (* prerr_endlinef "%s" (Tokenf.to_string tok) ; *)
-            (* let v =  *)Gaction.mk (Tokenf.strip tok) 
-            (* prerr_endline "strip finished"; *)
-            (* v *)
+            Gaction.mk (Tokenf.strip tok) 
           end
       |_ -> raise Streamf.NotConsumed
   in with_loc (aux s)
