@@ -36,7 +36,6 @@ let empty_lev lname assoc =
 let levels_of_entry  (e: Gstructure.entry) =
   match e.desc with
   |Dlevels ls -> Some ls
-  |_ -> None
     
 
 let find_level ?position (entry:Gstructure.entry)  levs =
@@ -193,9 +192,7 @@ let level_of_olevel (lb:olevel) =
 let insert_olevels_in_levels entry position olevels =
   let elev =
     match entry.desc with
-    | Dlevels elev -> elev
-    | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.name  in
+    | Dlevels elev -> elev in
   match olevels with
   | [] -> elev
   | _::_ -> 
@@ -209,9 +206,7 @@ let insert_olevels_in_levels entry position olevels =
 let insert_olevel (entry:Gstructure.entry) position olevel =
   let elev =
     match entry.desc with
-    | Dlevels elev -> elev
-    | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.name  in
+    | Dlevels elev -> elev in
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
@@ -332,13 +327,13 @@ let  eoi_entry e =
     {e with
      start = (fun _ -> assert false) ;
      continue = fun _ -> assert false;} in
-  (match result.desc with
+  match result.desc with
   | Dlevels ls ->
       (result.desc <- Dlevels (List.map eoi_level ls);
        result.start <- Gparser.start_parser_of_entry result;
        result.continue <- Gparser.continue_parser_of_entry result;
        result)
-  | Dparser _ -> failwith "Ginsert.eoi_entry Dparser")
+
 
 (**
    {:extend|g:[g{x};`EOI -> x]|}

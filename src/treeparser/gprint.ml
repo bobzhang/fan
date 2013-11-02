@@ -111,7 +111,6 @@ class text_grammar : grammar_print = object(self:'self)
       (fun f e ->
         match e.desc with
         |Dlevels elev -> self#levels f elev
-        |Dparser _ -> pp f "<parser>"
       ) e
   end
   (* used in dumping symbol [`Stree] *)    

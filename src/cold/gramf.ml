@@ -114,7 +114,6 @@ let filter = Tokenf.filter gram.gfilter
 let create_lexer ?(filter= None)  ~annot  ~keywords  () =
   { annot; gfilter = { kwds = (Setf.String.of_list keywords); filter } }
 let mk f = mk_dynamic gram f
-let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let token_stream_of_string s = lex_string Locf.string_loc s
 let debug_origin_token_stream (entry : 'a t) tokens =
@@ -134,7 +133,6 @@ let sfold0sep = Gfold.sfold0sep
 let sfold1sep = Gfold.sfold1sep
 let find_level ?position  (entry : Gstructure.entry) =
   match entry.desc with
-  | Dparser _ -> invalid_arg "Gramf.find_level"
   | Dlevels levs ->
       let (_,f,_) = Ginsert.find_level ?position entry levs in f
 let parse_include_file entry =

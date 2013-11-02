@@ -14,7 +14,7 @@ type word =
    | `A of string
    | `Empty
    | `Level of int
-  ]
+   ]
 and data = (int * word) (* FIXME duplicate in gram_def *)      
 type descr = data
     
@@ -53,7 +53,6 @@ type entry = {
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 
-  | Dparser of (Tokenf.stream -> Gaction.t )
 and level = {
     lname   : label;
     assoc   : assoc ;

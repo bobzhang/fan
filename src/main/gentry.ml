@@ -38,28 +38,6 @@ let mk_dynamic g n : 'a t ={
   freezed = false;     
 }
 
-
-
-
-
-
-let of_parser g n (p : Tokenf.stream -> 'a) : 'a t   =
-  let f ts = Gaction.mk (p ts) in {
-  gram = g;
-  name = n;
-  start  = fun _ -> f;
-  continue =  fun _ _ _  _  -> raise Streamf.NotConsumed;
-  desc = Dparser f;
-  freezed = true (* false *);    
-}
-
-let setup_parser (e:'a t) (p : Tokenf.stream -> 'a) =
-  let f ts = Gaction.mk (p ts) in begin
-    e.start <- fun _ -> f;
-    e.continue <- fun _ _ _ -> fun _ -> raise Streamf.NotConsumed;
-    e.desc <- Dparser f
-  end
-
 let clear (e:'a t) = begin 
   e.start <- fun _ -> fun _ -> raise Streamf.NotConsumed;
   e.continue <- fun _ _ _ -> fun _-> raise Streamf.NotConsumed;

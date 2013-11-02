@@ -24,7 +24,6 @@ let level_number (entry:Gstructure.entry) lab =
         if Gtools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
   match entry.desc with
   | Dlevels elev -> lookup 0 elev
-  | Dparser _ -> raise Not_found 
         
 
 (* in case of syntax error, the system attempts to recover the error by applying
@@ -236,7 +235,7 @@ let start_parser_of_entry (entry:Gstructure.entry) =
   match entry.desc with
   | Dlevels [] -> Gtools.empty_entry entry.name
   | Dlevels elev -> start_parser_of_levels entry  elev
-  | Dparser p -> fun _ -> p
+
     
 
 
@@ -272,7 +271,6 @@ let continue_parser_of_entry (entry:Gstructure.entry) =
   | Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in
     (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
-  | Dparser _ -> fun _ _ _ _ -> raise Streamf.NotConsumed  
 
 
 (* local variables: *)

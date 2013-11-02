@@ -17,17 +17,6 @@ val trace_parser : bool ref
 (** the entry would not share the lexer filter with [glexer] used by fan *)    
 val mk_dynamic : gram -> string -> 'a t
 
-
-
-(** given a stream parser, name and filter,  craft a new entry,
-    note that such stream parser is not extensible *)
-val of_parser :
-  gram -> string -> (Tokenf.stream -> 'a) -> 'a t
-
-(** given an entry, clear it to set it as a stream parser
- *)      
-val setup_parser : 'a t -> (Tokenf.stream -> 'a) -> unit
-
 val clear : 'a t -> unit
 
 val obj : 'a t -> entry

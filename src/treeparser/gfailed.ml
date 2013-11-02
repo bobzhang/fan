@@ -87,7 +87,7 @@ let tree_in_entry prev_symb tree = function
       (match Listf.find_map search_level  levels with
       | Some x -> x
       | None -> tree)
-  | Dparser _ -> tree 
+  
 
         
 (* error message entrance *)

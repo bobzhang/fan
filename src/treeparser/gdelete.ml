@@ -112,6 +112,6 @@ let delete_rule entry sl =
           entry.continue <- continue
         end
       end
-  | Dparser _ -> ()
+  
 
 

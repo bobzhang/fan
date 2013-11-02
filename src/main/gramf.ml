@@ -200,7 +200,6 @@ let create_lexer ?(filter=None) ~annot ~keywords   () = {
 (* FIXME duplicate some code from Entry *)
 let mk f = mk_dynamic gram f
 
-let of_parser name strm = of_parser gram name strm
 
 let get_filter () = gram.gfilter
 
@@ -253,7 +252,6 @@ Gfold:
 
 let find_level ?position (entry:Gstructure.entry) =
   match entry.desc with
-  | Dparser _ -> invalid_arg "Gramf.find_level"
   | Dlevels levs -> let (_,f,_) = Ginsert.find_level ?position entry levs in f
 
 

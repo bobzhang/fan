@@ -90,7 +90,6 @@ val trace_parser: bool ref
 
 val parse_origin_tokens:  'a t -> stream -> 'a
       
-val setup_parser:  'a t ->  (stream -> 'a) -> unit
     
 val clear: 'a t -> unit
 
@@ -121,8 +120,6 @@ val mk_dynamic: gram -> string -> 'a t
 val gram_of_entry: 'a t -> gram
     
 val mk: string -> 'a t
-
-val of_parser:  string ->  (stream -> 'a) ->  'a t
 
 val get_filter: unit -> Tokenf.filter_plugin
 

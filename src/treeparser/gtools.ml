@@ -95,9 +95,7 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
 
 let rec entry_first (v:Gstructure.entry) : string list =
   match v.desc with
-  | Dlevels ls ->
-      Listf.concat_map level_first ls  
-  | Dparser _ ->[] (* invalid_arg "entry_first function parser" *)
+  | Dlevels ls -> Listf.concat_map level_first ls  
 and level_first (x:Gstructure.level) : string list =
   tree_first x.lprefix
 
