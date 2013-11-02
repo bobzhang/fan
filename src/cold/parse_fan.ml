@@ -1,7 +1,5 @@
 let mk_ant = Tokenf.mk_ant
 let ident_of_ctyp = Fan_ops.ident_of_ctyp
-let setup_op_parser = Gramlib.setup_op_parser
-let symbolchar = Gramlib.symbolchar
 let (<+>) = Ast_gen.( <+> ) 
 let apply = Ast_gen.apply
 let dot = Ast_gen.dot

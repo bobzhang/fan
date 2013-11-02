@@ -33,9 +33,7 @@
   ctyp_quot  stru_quot  sigi_quot  clfield_quot  clsigi_quot  mexp_quot
   mtyp_quot  cltyp_quot  clexp_quot  constr_quot  bind_quot  rec_exp_quot
   module_declaration type_info type_repr
-
   (case_quot "quotation of case (try/match/function case)")
-
   module_longident_dot_lparen  sequence'  fun_def  
   mbind_quot ident_quot string_list     
   method_opt_override  value_val_opt_override  unquoted_typevars  lang with_exp_lang

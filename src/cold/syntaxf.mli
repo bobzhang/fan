@@ -150,8 +150,8 @@ val type_parameters : (ctyp -> ctyp) Gramf.t
 val typevars : ctyp Gramf.t
 val val_longident : ident Gramf.t
 val constr : constr Gramf.t
-val constr_quot : constr Gramf.t
 
+val constr_quot : constr Gramf.t
 val string_list : strings Gramf.t
 
 
