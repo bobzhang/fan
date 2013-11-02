@@ -35,11 +35,7 @@ let apply () =
           ((List.mem (x.[0]) ['*'; '/'; '%'; '\\']) &&
              ((((x.[0]) <> '*') ||
                  (((String.length x) < 2) || ((x.[1]) <> '*')))
-                && (symbolchar x 1))));
-   setup_op_parser infixop6
-     (fun x  ->
-        ((String.length x) >= 2) &&
-          (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2)))));
+                && (symbolchar x 1)))));
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
        ((None, None,
@@ -1492,13 +1488,21 @@ let apply () =
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )))));
-          ([`Self; `Nterm (Gramf.obj (infixop6 : 'infixop6 Gramf.t )); `Self],
-            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+          ([`Self;
+           `Token
+             (((function
+                | `Inf ({ level = 4;_} : Tokenf.op) -> true
+                | _ -> false)), (3654849, (`Level 4)), "Precedence4");
+           `Self],
+            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(op : 'infixop6) 
+                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                    'exp )))))]);
+                    match __fan_1 with
+                    | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
+                        (let op: FAst.exp = `Lid (xloc, x) in
+                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                        'exp )))))]);
         ((Some "obj"), (Some `RA),
           [([`Keyword "fun";
             `Keyword "|";

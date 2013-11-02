@@ -37,7 +37,7 @@
   (infixop3 "infix operator (level 3) (start with '^', '@')")
   (infixop4 "infix operator (level 4) (start with '+', '-')")
   (infixop5 "infix operator (level 5) (start with '*', '/', '%')")
-  (infixop6 "infix operator (level 6) (start with \"**\") (right assoc)")
+
 
 
   (case_quot "quotation of case (try/match/function case)")

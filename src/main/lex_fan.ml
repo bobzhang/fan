@@ -153,6 +153,8 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
 
    | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
    | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
+
+   | "**" symbolchar* as txt %{ `Inf{loc = !!lexbuf; txt ; level = 4}}
        
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"

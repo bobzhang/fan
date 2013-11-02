@@ -48,9 +48,6 @@ let apply () = begin
       (fun x -> String.length x >= 1 && List.mem x.[0] ['*'; '/'; '%'; '\\'] &&
       (x.[0] <> '*' || String.length x < 2 || x.[1] <> '*') &&
       symbolchar x 1 );
-    setup_op_parser infixop6
-      (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
-              symbolchar x 2 );
   end;
 
   (* with mexp *)
@@ -354,9 +351,10 @@ let apply () = begin
        "**" RA
         [ S as e1; ("asr"|"lsl"|"lsr" as op) ; S as e2
             %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] }
-        | S as e1; infixop6 as op; S as e2  %exp{ $op $e1 $e2 }
-        (* | S as e1; Inf@xloc (2,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)} *)
-        ]
+        | S as e1; Inf@xloc (4,x); S as e2 %{
+          let op = %exp@xloc{$lid:x} in
+          %exp{$op $e1 $e2}}]
+
           
        "obj" RA
         [("fun"|"function"); "|";  L1 case0 SEP "|" as a  %{
