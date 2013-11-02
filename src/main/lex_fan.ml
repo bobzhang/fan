@@ -38,9 +38,12 @@ let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 
 let symbolchar = '*'|not_star_symbolchar
+
 let left_delimitor = (* At least a safe_delimchars *)
    '(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>'
+
 let right_delimitor = ')' | [ '|' ]? ']' | '>' ']'
+
 let ocaml_escaped_char =
   '\\'
   (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
@@ -101,8 +104,6 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
      begin
        update_loc  lexbuf;
        token lexbuf
-       (* let loc = !! lexbuf in *)
-       (* `Newline {loc;txt} *)
      end }
    | "~" (ocaml_lid as txt) ':' %{
      let loc = !! lexbuf in
@@ -111,11 +112,8 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | "?" (ocaml_lid as txt) ':' %{
      let loc = !!lexbuf in
      `Optlabel {loc;txt}}
-         
-   | ocaml_lid as txt  %{let loc =  !! lexbuf in `Lid {loc;txt}}
-         
-   | ocaml_uid as txt  %{let loc = !! lexbuf in `Uid {loc;txt}}
-         
+   | ocaml_lid as txt  %{ `Lid {loc= !!lexbuf;txt}}
+   | ocaml_uid as txt  %{ `Uid {loc= !!lexbuf;txt}}
    | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
        (* FIXME - int_of_string ("-" ^ s) ??
           safety check *)
@@ -141,8 +139,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
          `Chr {loc;txt}
        end}
          
-   | "'" (ocaml_char as txt ) "'" %{
-     let loc = !!lexbuf in `Chr {loc;txt}}
+   | "'" (ocaml_char as txt ) "'" %{ `Chr {loc= !!lexbuf ;txt}}
          
    | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
                                                    
@@ -153,11 +150,15 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | '(' ocaml_blank*
        ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Eident {loc = !! lexbuf;txt}}
+
+   (* | '!' symbolchar+ as txt %{ `Pre{loc=!!lexbuf; txt}} *)
+   (* | ['~' '?'] symbolchar+ as txt  %{`Pre{loc=!!lexbuf; txt }} *)
+       
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    | left_delimitor | right_delimitor
-   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
+   | (['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * ))
        as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{
