@@ -134,7 +134,6 @@ let infixop4 = Gramf.mk "infix operator (level 4) (start with '+', '-')"
 let infixop5 = Gramf.mk "infix operator (level 5) (start with '*', '/', '%')"
 let infixop6 =
   Gramf.mk "infix operator (level 6) (start with \"**\") (right assoc)"
-let prefixop = Gramf.mk "prefix operator (start with '!', '?', '~')"
 let case_quot = Gramf.mk "quotation of case (try/match/function case)"
 let module_longident_dot_lparen = Gramf.mk "module_longident_dot_lparen"
 let sequence' = Gramf.mk "sequence'"

@@ -13,12 +13,7 @@ open FAst
 open! Syntaxf
 let pos_exps = Gramf.mk "pos_exps"
 let apply () =
-  (setup_op_parser prefixop
-     (fun x  ->
-        (not (List.mem x ["!="; "??"])) &&
-          (((String.length x) >= 2) &&
-             ((List.mem (x.[0]) ['!'; '?'; '~']) && (symbolchar x 1))));
-   setup_op_parser infixop2
+  (setup_op_parser infixop2
      (fun x  ->
         (List.mem x ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"]) ||
           ((not (List.mem x ["<-"; "||"; "&&"])) &&
@@ -44,25 +39,7 @@ let apply () =
    setup_op_parser infixop6
      (fun x  ->
         ((String.length x) >= 2) &&
-          (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2))));
-   Gramf.setup_parser sem_exp
-     (let symb1 = Gramf.parse_origin_tokens exp in
-      let symb (__strm : _ Streamf.t) =
-        match Streamf.peek __strm with
-        | Some (`Ant (({ kind = "list";_} as n) : Tokenf.ant)) ->
-            (Streamf.junk __strm; mk_ant ~c:"exp;" n)
-        | _ -> symb1 __strm in
-      let rec kont al (__strm : _ Streamf.t) =
-        match Streamf.peek __strm with
-        | Some (`Key ({ txt = ";";_} : Tokenf.txt)) ->
-            (Streamf.junk __strm;
-             (let a =
-                try symb __strm
-                with | Streamf.NotConsumed  -> raise (Streamf.Error "") in
-              let s = __strm in
-              let _loc = al <+> a in kont (`Sem (_loc, al, a) : FAst.exp ) s))
-        | _ -> al in
-      fun (__strm : _ Streamf.t)  -> let a = symb __strm in kont a __strm));
+          (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2)))));
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
        ((None, None,
@@ -962,6 +939,25 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     (e : 'exp_quot )))))]) : Gramf.olevel ));
+   Gramf.extend_single (sem_exp : 'sem_exp Gramf.t )
+     (None,
+       ((None, None,
+          [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+             ("e1\n",
+               (Gramf.mk_action
+                  (fun ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                     (e1 : 'sem_exp )))));
+          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
+            ("e1\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                    (e1 : 'sem_exp )))));
+          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"; `Self],
+            ("`Sem (_loc, e1, e2)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(e2 : 'sem_exp)  ~__fan_1:_ 
+                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, e1, e2) : 'sem_exp )))))]) : Gramf.olevel ));
    Gramf.extend_single (cvalue_bind : 'cvalue_bind Gramf.t )
      (None,
        ((None, None,

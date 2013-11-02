@@ -51,19 +51,6 @@ let apply () = begin
     setup_op_parser infixop6
       (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
               symbolchar x 2 );
-    Gramf.setup_parser sem_exp begin
-      let symb1 = Gramf.parse_origin_tokens exp in
-      let symb = %parser{
-        |  `Ant (({kind = "list"; _} as n):Tokenf.ant)  ->
-            mk_ant ~c:"exp;" n
-        |  a = symb1  -> a } in
-      let rec kont al = %parser{
-        |  `Key ({txt=";";_}:Tokenf.txt); a = symb; 's  ->
-            let _loc =  al <+> a  in
-            kont %exp{ $al; $a } s
-        |  -> al}  in
-      %parser{ | a = symb; 's  -> kont a s}
-    end
   end;
 
   (* with mexp *)
@@ -225,6 +212,9 @@ let apply () = begin
       [ exp as e1; ","; comma_exp as e2 %{ `Com(_loc,e1,e2)}
       | exp as e1; ";"; sem_exp as e2 %{ `Sem(_loc,e1,e2)}
       | exp as e  %{e}]
+     sem_exp:
+      [ exp as e1 ; ?";" %{e1}
+      | exp as e1 ; ";"; S as e2 %{`Sem(_loc,e1,e2)}]
        (* {:stru|
        let f (type t) () =
           let module M = struct exception E of t ; end in
@@ -461,6 +451,7 @@ let apply () = begin
         | "("; "module"; mexp as me; ")" %{`Package_exp (_loc, me)}
         | "("; "module"; mexp as me; ":"; mtyp as pt; ")" %{
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] }
+           
        sem_exp_for_list:
        [ exp as e; ";"; S as el %{fun acc -> %exp{ $e :: ${el acc}}}
        | exp as e; ?";" %{fun acc -> %exp{ $e :: $acc }}
