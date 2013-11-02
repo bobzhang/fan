@@ -151,14 +151,15 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
        ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Eident {loc = !! lexbuf;txt}}
 
-   (* | '!' symbolchar+ as txt %{ `Pre{loc=!!lexbuf; txt}} *)
-   (* | ['~' '?'] symbolchar+ as txt  %{`Pre{loc=!!lexbuf; txt }} *)
+   | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
+   | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
        
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    | left_delimitor | right_delimitor
-   | (['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * ))
+   | ['!' '~' '?']    
+   | ([(* '~' '?' '!' *) '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * ))
        as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{

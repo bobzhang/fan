@@ -1733,11 +1733,17 @@ let apply () =
                      match __fan_0 with
                      | ({ loc = xloc;_} : Tokenf.txt) ->
                          (`App (_loc, (`Lid (xloc, "!")), e) : 'exp )))));
-          ([`Nterm (Gramf.obj (prefixop : 'prefixop Gramf.t )); `Self],
-            ("`App (_loc, f, e)\n",
+          ([`Token
+              (((function | `Pre _ -> true | _ -> false)), (4003843, `Any),
+                "`Pre x");
+           `Self],
+            ("`App (_loc, (`Lid (xloc, x)), e)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(f : 'prefixop) 
-                    (_loc : Locf.t)  -> (`App (_loc, f, e) : 'exp )))))]);
+                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                        (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))))]);
         ((Some "simple"), None,
           [([`Token
                (((function | `Quot _ -> true | _ -> false)),

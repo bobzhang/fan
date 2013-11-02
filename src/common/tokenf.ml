@@ -223,7 +223,7 @@ let string_of_error_msg = Formatf.to_string pp_print_error;;
 (* [Sym] should always be filtered into keywords *)  
 let keyword_conversion (tok:t) kwds =
   match tok with
-  | `Sym u  | `Lid u
+  | `Sym u  | `Lid u | `Pre u (* for example "??"*)
   | `Uid u when Setf.String.mem u.txt  kwds -> `Key u
   | `Eident u -> `Lid u
   | _ -> tok 
