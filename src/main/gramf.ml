@@ -8,6 +8,70 @@ include Gstru
     
 module Action = Gaction
 
+(*
+  source info : lexer.mll from 4.02dev+trunk
+  "mod", INFIXOP3("mod");
+  "land", INFIXOP3("land");
+  "lor", INFIXOP3("lor");
+  "lxor", INFIXOP3("lxor");
+  "lsl", INFIXOP4("lsl");
+  "lsr", INFIXOP4("lsr");
+  "asr", INFIXOP4("asr")
+
+  | "#"  
+  | "&"  
+  | "&&" 
+  | "`"  
+  | "'"  
+  | "("  
+  | ")"  
+  | "*"  
+  | ","  
+  | "->" 
+  | "."  
+  | ".." 
+  | ":"  
+  | "::" 
+  | ":=" 
+  | ":>" 
+  | ";"  
+  | ";;" 
+  | "<"  
+  | "<-" 
+  | "="  
+  | "["  
+  | "[|" 
+  | "[<" 
+  | "[>" 
+  | "]"  
+  | "{"  
+  | "{<" 
+  | "|"  
+  | "||" 
+  | "|]" 
+  | ">"  
+  | ">]" 
+  | "}"  
+  | ">}" 
+  | "[@" 
+  | "[%" 
+  | "[%%"
+  | "[@@"
+  | "!"  
+  | "!=" { INFIXOP0  }
+  | "+"  
+  | "+." 
+  | "-"  
+  | "-." 
+  | "!" symbolchar + { PREFIXOP }
+  | ['~' '?'] symbolchar + { PREFIXOP }
+  | ['=' '<' '>' '|' '&' '$'] symbolchar * { INFIXOP0 }
+  | ['@' '^'] symbolchar * { INFIXOP1 }
+  | ['+' '-'] symbolchar * { INFIXOP2 }
+  | "**" symbolchar * { INFIXOP4 }
+  | '%'     
+  | ['*' '/' '%'] symbolchar * { INFIXOP3 }
+ *)    
 let default_keywords =
   ["&&"; "functor"; "||"; "private"; "sig"; "include";
    "exception"; "inherit"; "<"; "~"; "and"; 
@@ -28,18 +92,18 @@ let default_keywords =
 let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
-let rec fan_filter = %parser{
-  | #Tokenf.space_token; 'xs -> fan_filter xs
-  |  x; 'xs  ->
-      %stream{ x; ' fan_filter xs }
-  |  -> %stream{}}
+let  fan_filter = fun x -> x (* %parser{ *)
+  (* | #Tokenf.space_token; 'xs -> fan_filter xs *)
+  (* |  x; 'xs  -> *)
+  (*     %stream{ x; ' fan_filter xs } *)
+  (* |  -> %stream{}} *)
 
-let rec ignore_layout : Tokenf.filter =
-  %parser{
-    | #Tokenf.space_token; 'xs -> ignore_layout  xs
-    | x ; 'xs  ->
-        %stream{x; 'ignore_layout xs }
-    | -> %stream{}}
+let  ignore_layout : Tokenf.filter = fun x ->x 
+  (* %parser{ *)
+  (*   | #Tokenf.space_token; 'xs -> ignore_layout  xs *)
+  (*   | x ; 'xs  -> *)
+  (*       %stream{x; 'ignore_layout xs } *)
+  (*   | -> %stream{}} *)
           
 let gram =  {
   annot="Fan";

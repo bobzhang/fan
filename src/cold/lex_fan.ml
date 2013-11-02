@@ -14,7 +14,7 @@ let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
 let (--) = Location_util.( -- ) 
-let token: Lexing.lexbuf -> Tokenf.t =
+let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
@@ -5486,11 +5486,7 @@ let token: Lexing.lexbuf -> Tokenf.t =
            (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
        };
      (match __ocaml_lex_result with
-      | 0 ->
-          let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
-          (update_loc lexbuf; (let loc = !! lexbuf in `Newline { loc; txt }))
+      | 0 -> (update_loc lexbuf; token lexbuf)
       | 1 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -5574,22 +5570,17 @@ let token: Lexing.lexbuf -> Tokenf.t =
           (warn Comment_not_end (!! lexbuf);
            move_curr_p (-1) lexbuf;
            (let loc = !! lexbuf in `Sym { loc; txt = "*" }))
-      | 16 ->
-          let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Blank { loc = (!! lexbuf); txt }
+      | 16 -> token lexbuf
       | 17 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
           let c = new_cxt () in
-          let old = lexbuf.lex_start_p in
           (if x <> None then warn Comment_start (!! lexbuf);
            store c lexbuf;
            push_loc_cont c lexbuf lex_comment;
-           (let loc = old -- lexbuf.lex_curr_p in
-            `Comment { loc; txt = (buff_contents c) }))
+           ignore (buff_contents c);
+           token lexbuf)
       | 18 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf

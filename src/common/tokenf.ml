@@ -41,7 +41,13 @@ type txt = {
     loc : loc ;
     txt : string;
   }
-
+(*
+type symbol ={
+    loc : loc;
+    txt : string;
+    precedence : int;
+  }
+*)
 type ant = {
     loc : loc ;
     cxt : string option;
@@ -117,11 +123,12 @@ type t =
   | `Label     of txt
   | `Optlabel  of txt
   | `Str       of txt
-  | space_token
+  | `LINE_DIRECTIVE of line
+  | `EOI       of txt
+  (* | space_token *)
   | quotation
   | dir_quotation
-  | `Ant       of ant 
-  | `EOI       of txt]
+  | `Ant       of ant ]
 
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
@@ -186,11 +193,11 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
   | `Ant x  ->
       Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string x.kind
         Format.pp_print_string x.txt 
-  | `Comment x ->
-      Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string x.txt
-  | `Blank x ->
-      Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string x.txt
-  | `Newline _ -> Format.fprintf fmt "`Newline"
+  (* | `Comment x -> *)
+  (*     Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string x.txt *)
+  (* | `Blank x -> *)
+  (*     Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string x.txt *)
+  (* | `Newline _ -> Format.fprintf fmt "`Newline" *)
   | `LINE_DIRECTIVE x ->
       Format.fprintf fmt
         "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
@@ -276,10 +283,11 @@ let strip (x:t) : Obj.t  =
   | `Str x
   | `Label x
   | `Optlabel x
-  | `Comment x
-  | `Blank x
+  (* | `Comment x *)
+  (* | `Blank x *)
+  (* | `Newline x        *)
   | `EOI x
-  | `Newline x 
+
   | `Eident x  -> Obj.repr x 
   | `LINE_DIRECTIVE x  -> Obj.repr x 
   | `Quot x  -> Obj.repr x 
@@ -301,13 +309,13 @@ let get_string (x:t) :  string =
   | `Str x
   | `Label x
   | `Optlabel x
-  | `Comment x
-  | `Blank x
-  | `Eident x -> x.txt 
+  (* | `Comment x *)
+  (* | `Blank x *)
+  (* | `Newline x -> x.txt                *)
+  | `Eident x -> x.txt
   | `LINE_DIRECTIVE x -> x.txt
   | `Quot x -> x.txt
   | `DirQuotation x -> x.txt        
-  | `Newline x -> x.txt 
   | `EOI x  -> x.txt 
   | `Ant x -> x.txt
 
@@ -326,9 +334,9 @@ let get_loc (x:t) =
   | `Str x
   | `Label x
   | `Optlabel x
-  | `Comment x
-  | `Blank x
-  | `Newline x
+  (* | `Comment x *)
+  (* | `Blank x *)
+  (* | `Newline x *)
   | `EOI x 
   | `Eident x -> x.loc
   | `Ant x -> x.loc

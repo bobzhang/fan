@@ -57,11 +57,10 @@ Location_util:
 
 
 let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
-  | newline as txt %{
+  | newline  %{
     begin
       update_loc  lexbuf;
-      let loc = !! lexbuf in
-      `Newline {loc;txt}
+      token lexbuf 
     end}
   | ocaml_lid as txt %{let loc =  !! lexbuf in `Lid {loc;txt}}
   | ocaml_uid as txt  %{let loc = !! lexbuf in `Uid {loc;txt}}      

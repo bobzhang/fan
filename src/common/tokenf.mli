@@ -133,7 +133,8 @@ type t =
   | `Label          of txt
   | `Optlabel       of txt
   | `Str            of txt
-  | space_token
+  | `LINE_DIRECTIVE of line         
+  (* | space_token *)
   | `Quot           of quot
   | `DirQuotation   of quot
   | `Ant            of ant

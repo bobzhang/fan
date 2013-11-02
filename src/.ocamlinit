@@ -62,6 +62,7 @@ module O = Obj;;
 open FAst;;
 (* test dump *)
 let t_dump s =  t stru s |> Ast2pt.stru;;
+let t_meta  = Gramf.parse_string Parse_parse.simple;;
 open Parse_fan;;
 
 (* #require "inspect";; *)
@@ -69,7 +70,8 @@ open Parse_fan;;
 (* let view a= Dot.dump_to_file "test.dot"a;; *)
 #install_printer print_tree;;
 #install_printer Gramf.dump;;
-#install_printer Location_util.fmt_position;;
+let fmt_position = Location_util.fmt_position ~file:false;;
+#install_printer fmt_position;;
 (* #install_printer p_type_declaration;; *)
 
 #fan;;

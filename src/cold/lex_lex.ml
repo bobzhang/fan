@@ -453,11 +453,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
            (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
        };
      (match __ocaml_lex_result with
-      | 0 ->
-          let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
-          (update_loc lexbuf; (let loc = !! lexbuf in `Newline { loc; txt }))
+      | 0 -> (update_loc lexbuf; token lexbuf)
       | 1 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

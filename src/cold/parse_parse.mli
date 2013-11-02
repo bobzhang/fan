@@ -83,8 +83,9 @@ val string : exp Gramf.t
 (** return symbol with pattern(inferred) or None  *)    
 val symbol :  Gram_def.psymbol list Gramf.t
 
-
-(* val simple : Gram_def.symbol list Gentry.t *)
+(** Required export for unittest *)
+val simple :  Gram_def.psymbol list Gramf.t
+    
 (** return a [rule]
     {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };
     - : Gram_def.rule =

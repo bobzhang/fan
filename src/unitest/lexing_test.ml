@@ -26,12 +26,12 @@ let test_escaped_string _ =
     %err{test_escaped_string}
 
     
-let test_comment_string _ =
-  if %str{(*(**)*)}
-     |> get_tokens
-     |> %p{[`Comment ({txt="(*(**)*)";_}:Tokenf.txt);`EOI _]}
-     |> not then 
-    %err{test_comment_sting}
+(* let test_comment_string _ = *)
+(*   if %str{(\*(\**\)*\)} *)
+(*      |> get_tokens *)
+(*      |> %p{[`Comment ({txt="(\*(\**\)*\)";_}:Tokenf.txt);`EOI _]} *)
+(*      |> not then  *)
+(*     %err{test_comment_sting} *)
   
 
 let test_char _ =
@@ -204,23 +204,23 @@ let test_nested_lex _ =
     ===
       "%extend{%ctyp'{'$(lid:n.tvar)}}"
     
-let test_comment_pos _ =
-  if
-    "(*    (**) *)"
-    |> get_tokens
-    |> %p{
-      [
-       `Comment
-         ({txt = "(*    (**) *)";
-           loc =
-           {Locf.loc_start =
-            {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-            loc_end =
-            {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
-            loc_ghost = false}}:Tokenf.txt);
-       `EOI _]}
-    |> not then
-    %err{test_comment}
+(* let test_comment_pos _ = *)
+(*   if *)
+(*     "(\*    (\**\) *\)" *)
+(*     |> get_tokens *)
+(*     |> %p{ *)
+(*       [ *)
+(*        `Comment *)
+(*          ({txt = "(\*    (\**\) *\)"; *)
+(*            loc = *)
+(*            {Locf.loc_start = *)
+(*             {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0}; *)
+(*             loc_end = *)
+(*             {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13}; *)
+(*             loc_ghost = false}}:Tokenf.txt); *)
+(*        `EOI _]} *)
+(*     |> not then *)
+(*     %err{test_comment} *)
 
 
 let test_lex_simple_quot _ =
@@ -377,7 +377,7 @@ let suite =
    "test_symb_percent3" >:: test_symb_percent3;
    "test_symb_percent4" >:: test_symb_percent4;
    "test_symb_percent5" >:: test_symb_percent5;
-   "test_comment_pos" >:: test_comment_pos;
+   (* "test_comment_pos" >:: test_comment_pos; *)
    "test_single_quot" >:: test_single_quot;
    "test_ant_chr" >:: test_ant_chr;
 
@@ -385,7 +385,7 @@ let suite =
 
    "test_escaped_string" >:: test_escaped_string;
 
-   "test_comment_string" >:: test_comment_string;
+   (* "test_comment_string" >:: test_comment_string; *)
 
    "test_quotation" >:: test_quotation;
 

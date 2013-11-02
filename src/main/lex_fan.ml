@@ -95,13 +95,14 @@ Location_util:
     add_string -> (++)
     add_char -> (+>) ;
    |}  *)
-let  token : Lexing.lexbuf -> Tokenf.t  =
+let  rec token : Lexing.lexbuf -> Tokenf.t  =
   %lex{
-   | newline as txt %{
+   | newline  %{
      begin
        update_loc  lexbuf;
-       let loc = !! lexbuf in
-       `Newline {loc;txt}
+       token lexbuf
+       (* let loc = !! lexbuf in *)
+       (* `Newline {loc;txt} *)
      end }
    | "~" (ocaml_lid as txt) ':' %{
      let loc = !! lexbuf in
@@ -166,18 +167,20 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
-   | ocaml_blank + as txt %{ `Blank {loc = !! lexbuf ;txt}}
+   | ocaml_blank +  %{ token lexbuf }
          
          (* comment *)
    | "(*" (')' as x) ? %{
        let c = new_cxt () in
-       let old = lexbuf.lex_start_p in
+       (* let old = lexbuf.lex_start_p in *)
        begin
          if x <> None then warn Comment_start (!!lexbuf);
          store c lexbuf;
          push_loc_cont c lexbuf lex_comment;
-         let loc = old -- lexbuf.lex_curr_p in
-         `Comment {loc;txt= buff_contents c}
+         ignore (buff_contents c) ; (* Needed to clean the buffer *)
+         (* let loc = old -- lexbuf.lex_curr_p in *)
+         (* `Comment {loc;txt= buff_contents c} *)
+         token lexbuf (* FIXME may bring it back later *)
        end}
    | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{
        let c = new_cxt () in

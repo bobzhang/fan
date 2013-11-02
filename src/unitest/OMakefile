@@ -33,7 +33,7 @@ section
 
 test: $(PARSE) $(LEX)
     foreach(f=>..., $^)
-        $f -verbose
+        $f 
         
 clean:
     rm -rf $(OCAMLBIN_EXT)

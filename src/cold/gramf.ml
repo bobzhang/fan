@@ -104,23 +104,8 @@ let default_keywords =
   "lor";
   "["]
 let gkeywords = ref (Setf.String.of_list default_keywords)
-let rec fan_filter (__strm : _ Streamf.t) =
-  match Streamf.peek __strm with
-  | Some #Tokenf.space_token -> (Streamf.junk __strm; fan_filter __strm)
-  | Some x ->
-      (Streamf.junk __strm;
-       (let xs = __strm in
-        Streamf.icons x (Streamf.slazy (fun _  -> fan_filter xs))))
-  | _ -> Streamf.sempty
-let rec ignore_layout: Tokenf.filter =
-  fun (__strm : _ Streamf.t)  ->
-    match Streamf.peek __strm with
-    | Some #Tokenf.space_token -> (Streamf.junk __strm; ignore_layout __strm)
-    | Some x ->
-        (Streamf.junk __strm;
-         (let xs = __strm in
-          Streamf.icons x (Streamf.slazy (fun _  -> ignore_layout xs))))
-    | _ -> Streamf.sempty
+let fan_filter x = x
+let ignore_layout: Tokenf.filter = fun x  -> x
 let gram =
   {
     annot = "Fan";
