@@ -10,9 +10,11 @@ type position =
 type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
     
 type word =
-   [`Any
-   |`A of string
-   |`Empty]
+   [ `Any
+   | `A of string
+   | `Empty
+   | `Level of int
+  ]
 and data = (int * word) (* FIXME duplicate in gram_def *)      
 type descr = data
     

@@ -153,7 +153,7 @@ let query_inline (x:string) =
      { text = `Token(_loc,pred,des,des_str);
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
-       pattern = Some %pat@xloc{({txt = $lid:x;_} : Tokenf.txt)};
+       pattern = Some %pat@xloc{({txt = $lid:x;_} : Tokenf.op)};
        outer_pattern = None 
      }}
                           
@@ -169,7 +169,7 @@ let query_inline (x:string) =
      { text = `Token(_loc,pred,des,des_str);
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
-       pattern = Some %pat{({loc = $lp; txt = $p ;_} : Tokenf.txt)};
+       pattern = Some %pat{({loc = $lp; txt = $p ;_} : Tokenf.op)};
        outer_pattern = None 
      }}
   ]

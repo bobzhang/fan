@@ -7,6 +7,7 @@ end
 type word  =
   [ `Any
   | `A of string
+  | `Level of int (* infix operator precedence *)
   | `Empty (* no token associated *)]
 
 and data = (int * word)

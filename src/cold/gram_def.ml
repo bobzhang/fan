@@ -6,7 +6,7 @@ class primitive =
     method int _loc (i : int) =
       ((`Int (_loc, (string_of_int i)) : FAst.ep ) : ep )
   end
-type word = [ `Any | `A of string | `Empty] 
+type word = [ `Any | `A of string | `Level of int | `Empty] 
 and data = (int* word) 
 class meta =
   object (self : 'self_type)
@@ -16,6 +16,8 @@ class meta =
         function
         | `Any -> `Vrn (_loc, "Any")
         | `A _a0 -> `App (_loc, (`Vrn (_loc, "A")), (self#string _loc _a0))
+        | `Level _a0 ->
+            `App (_loc, (`Vrn (_loc, "Level")), (self#int _loc _a0))
         | `Empty -> `Vrn (_loc, "Empty")
     method data : 'loc -> data -> FAst.ep=
       fun _loc  _a0  ->
