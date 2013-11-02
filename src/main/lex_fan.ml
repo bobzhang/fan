@@ -135,8 +135,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | "'" (newline as txt) "'" %{
        begin
          update_loc   lexbuf ~retract:1;
-         let loc = !!lexbuf in
-         `Chr {loc;txt}
+         `Chr {loc =  !!lexbuf;txt}
        end}
          
    | "'" (ocaml_char as txt ) "'" %{ `Chr {loc= !!lexbuf ;txt}}
@@ -156,6 +155,9 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
 
    | "**" symbolchar* as txt %{ `Inf{loc = !!lexbuf; txt ; level = 4}}
    | ['*' '/' '%'] symbolchar* as txt  %{`Inf{loc = !!lexbuf; txt ; level = 3}}
+   | ['+' '-'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt ; level = 2}}
+
+   | ['@' '^'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt; level = 1}  }
 
        
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
@@ -163,7 +165,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | "{<" |">}"
    | left_delimitor | right_delimitor
    | ['!' '~' '?']    
-   | (['=' '<' '>' '|' '&' '@' '^' '+' '-' (* '*' '/' '%'  *)] symbolchar * ))
+   | (['=' '<' '>' '|' '&' (* '@' '^'  *)] symbolchar * ))
        as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{

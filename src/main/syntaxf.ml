@@ -34,8 +34,8 @@
   mtyp_quot  cltyp_quot  clexp_quot  constr_quot  bind_quot  rec_exp_quot
   module_declaration type_info type_repr
   (infixop2 "infix operator (level 2) (comparison operators, and some others)")
-  (infixop3 "infix operator (level 3) (start with '^', '@')")
-  (infixop4 "infix operator (level 4) (start with '+', '-')")
+
+
 
 
 

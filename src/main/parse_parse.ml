@@ -208,8 +208,9 @@ let query_inline (x:string) =
       | L1 Str SEP "|" as v; "as"; Lid@xloc s %{
           (v , Some (xloc,s)) } ]
   let or_strs :
-      [ L1 Str SEP "|" as xs %{(xs,None)}
-      | L1  Str SEP "|"  as xs; "as"; Lid@xloc s %{ (xs,Some (xloc,s))}]
+      [ L1  Str SEP "|" as xs %{(xs,None,None)}
+      | L1  Str SEP "|" as xs; "as"; Lid@xloc s %{ (xs, None, Some (xloc,s))}
+      | L1  Str SEP "|" as xs ; "@"; Lid@lloc l; "as"; Lid@xloc s %{(xs, Some (lloc,l), Some(xloc,s))} ]
 
   simple :
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
@@ -246,19 +247,30 @@ let query_inline (x:string) =
 
   | "("; or_strs as v; ")" %{
     match v with
-    | (vs, None) ->
+    | (vs,loc, None) -> (* ("a"|"b"@loc)*)
         vs |>
         List.map
           (fun (x:Tokenf.txt) ->
+            let (bounds,pattern) =
+              match loc with
+              | Some(loc,l) ->
+                  ([(loc,l)], Some %pat@loc{({loc= $lid:l;_}:Tokenf.txt)} )
+              | None -> ([],None) in
             ({kind = KNormal;
               symbol = {
               text = `Keyword(x.loc,x.txt);
               styp = %ctyp'{Tokenf.txt};
-              bounds = [];
-              pattern = None;
+              bounds ;
+              pattern ;
               outer_pattern = None}}:Gram_def.psymbol))
-    | (vs, Some ((xloc,v) as b)) ->
+    | (vs, loc, Some ((xloc,v) as b)) -> (* ("a"|"b"|"c"@loc as v)*)
         let p = %pat@xloc{$lid:v} in
+        let (bounds,pattern) =
+          match loc with
+          | None -> ([b],Some %pat{({txt=$p;_}:Tokenf.txt)})
+          | Some(loc,l) ->
+              let lp = %pat@loc{$lid:l} in 
+              ([(loc,l);b], Some %pat{({txt=$p; loc= $lp;_} :Tokenf.txt)}) in
         vs |>
         List.map
           (fun (x:Tokenf.txt) ->
@@ -266,8 +278,8 @@ let query_inline (x:string) =
              symbol = {
               text = `Keyword (x.loc,x.txt);
               styp = %ctyp'{Tokenf.txt};
-              bounds = [b];
-              pattern = Some %pat{({txt=$p;_}:Tokenf.txt)};
+              bounds ;
+              pattern ;
               outer_pattern = None}}:Gram_def.psymbol))}
 
 
@@ -284,7 +296,7 @@ let query_inline (x:string) =
   symbol :
   (* be more precise, no recursive grammar? *)
   [("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
-    let styp = %ctyp'{ ${s.styp} list   } in 
+    let styp = %ctyp'{ ${s.styp} list   } in
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
     [{kind =KNormal; (* FIXME More precise, or meaning full warning message *)

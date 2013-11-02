@@ -38,12 +38,6 @@ let apply () = begin
       (fun x -> List.mem x ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] ||
       (not (List.mem x ["<-"; "||"; "&&"]) && String.length x >= 2 &&
        List.mem x.[0] ['='; '<'; '>'; '|'; '&'; '$'; '!'] && symbolchar x 1));
-    setup_op_parser infixop3
-      (fun x -> String.length x >= 1 && List.mem x.[0] ['@'; '^'] &&
-              symbolchar x 1);
-    setup_op_parser infixop4
-      (fun x -> x <> "->" && String.length x >= 1 && List.mem x.[0] ['+'; '-'] &&
-      symbolchar x 1);
   end;
 
   (* with mexp *)
@@ -328,15 +322,18 @@ let apply () = begin
         [ S as e1; infixop2 as op; S as e2 %exp{ $op $e1 $e2 }
           (* S as e1; Inf@xloc (2,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}       *)
         ]
+          (* FIXME better error message [ | ... ]*)
        "^" RA
-        [ S as e1; infixop3 as op; S as e2 %exp{ $op $e1 $e2 }
-        (* | S as e1; Inf@xloc (3,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}             *)
+        [S as e1; Inf@xloc (1,x); S as e2 %{let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
         ]
         "::" RA
         [ S as e1; "::"; S as e2  %exp{  $e1 :: $e2  } ]  
        "+" LA
-        [ S as e1; infixop4 as op; S as e2 %exp{ $op $e1 $e2 }
-          (* S as e1; Inf@xloc (4,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)} *)
+        [ S as e1; Inf@xloc (2,x); S as e2 %{
+          let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
+        | S as e1; ( "+" |"-"|"-." @xloc as x); S as e2 %{
+          (* FIXME better error message %exp@{xx}*)
+          let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
         ]
        "*" LA
         [ S as e1; ("land"|"lor"|"lxor"|"mod" as op) ; S as e2
