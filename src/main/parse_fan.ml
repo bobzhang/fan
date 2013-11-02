@@ -33,13 +33,6 @@ open! Syntaxf
 (*                  (fun ~__fan_0:_  (_loc : Locf.t)  -> (() : 'a )))))]) :  *)
 (*       Gramf.olevel )) *)
 let apply () = begin 
-  begin
-    setup_op_parser infixop2
-      (fun x -> List.mem x ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] ||
-      (not (List.mem x ["<-"; "||"; "&&"]) && String.length x >= 2 &&
-       List.mem x.[0] ['='; '<'; '>'; '|'; '&'; '$'; '!'] && symbolchar x 1));
-  end;
-
   (* with mexp *)
   %extend{
       mexp_quot:
@@ -319,8 +312,11 @@ let apply () = begin
         [ S as e1; ("&"|"&&" as op) ; S as e2  %{
           Ast_gen.appl_of_list [ %exp{$lid:op}; e1 ;e2]}  ]
        "<" LA
-        [ S as e1; infixop2 as op; S as e2 %exp{ $op $e1 $e2 }
-          (* S as e1; Inf@xloc (2,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}       *)
+        (* idea merge actions ... when bounds are the same ?? *)  
+        [ S as e1; Inf@xloc (0,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}
+        | S as e1; ("==" | "=" | "<"|">"@xloc as x); S as e2 %{
+         let op = %exp@xloc{$lid:x} in
+         %exp{$op $e1 $e2 }}
         ]
           (* FIXME better error message [ | ... ]*)
        "^" RA

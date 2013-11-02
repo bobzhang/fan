@@ -159,13 +159,14 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
 
    | ['@' '^'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt; level = 1}  }
 
+   | ['=' '<' '>' '|' '&'] symbolchar *  as txt %{`Inf{loc = !!lexbuf; txt ; level = 0}}
        
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    | left_delimitor | right_delimitor
    | ['!' '~' '?']    
-   | (['=' '<' '>' '|' '&' (* '@' '^'  *)] symbolchar * ))
+   (* | (['=' '<' '>' '|' '&'] symbolchar * ) *))
        as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{

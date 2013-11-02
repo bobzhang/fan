@@ -127,8 +127,6 @@ let rec_exp_quot = Gramf.mk "rec_exp_quot"
 let module_declaration = Gramf.mk "module_declaration"
 let type_info = Gramf.mk "type_info"
 let type_repr = Gramf.mk "type_repr"
-let infixop2 =
-  Gramf.mk "infix operator (level 2) (comparison operators, and some others)"
 let case_quot = Gramf.mk "quotation of case (try/match/function case)"
 let module_longident_dot_lparen = Gramf.mk "module_longident_dot_lparen"
 let sequence' = Gramf.mk "sequence'"

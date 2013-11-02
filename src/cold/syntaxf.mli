@@ -152,10 +152,6 @@ val val_longident : ident Gramf.t
 val constr : constr Gramf.t
 val constr_quot : constr Gramf.t
 
-val infixop2 : exp Gramf.t
-
-
-
 val string_list : strings Gramf.t
 
 
