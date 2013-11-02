@@ -157,7 +157,7 @@ val infixop3 : exp Gramf.t
 val infixop4 : exp Gramf.t
 
 val string_list : strings Gramf.t
-val infixop5 : exp Gramf.t
+
 
 val module_longident_dot_lparen : ident Gramf.t
 val sequence' : (exp -> exp) Gramf.t 

@@ -36,7 +36,7 @@
   (infixop2 "infix operator (level 2) (comparison operators, and some others)")
   (infixop3 "infix operator (level 3) (start with '^', '@')")
   (infixop4 "infix operator (level 4) (start with '+', '-')")
-  (infixop5 "infix operator (level 5) (start with '*', '/', '%')")
+
 
 
 

@@ -44,10 +44,6 @@ let apply () = begin
     setup_op_parser infixop4
       (fun x -> x <> "->" && String.length x >= 1 && List.mem x.[0] ['+'; '-'] &&
       symbolchar x 1);
-    (* setup_op_parser infixop5 *)
-    (*   (fun x -> String.length x >= 1 && List.mem x.[0] ['*'; '/'; '%'; '\\'] && *)
-    (*   (x.[0] <> '*' || String.length x < 2 || x.[1] <> '*') && *)
-    (*   symbolchar x 1 ); *)
   end;
 
   (* with mexp *)
@@ -345,7 +341,6 @@ let apply () = begin
        "*" LA
         [ S as e1; ("land"|"lor"|"lxor"|"mod" as op) ; S as e2
             %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2] }
-        (* | S as e1; infixop5 as op; S as e2  %exp{ $op $e1 $e2 } *)
         | S as e1; Inf@xloc (5,x); S as e2 %{
           let op = %exp@xloc{$lid:x} in
           %exp{$op $e1 $e2}}
