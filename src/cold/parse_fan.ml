@@ -28,14 +28,7 @@ let apply () =
      (fun x  ->
         (x <> "->") &&
           (((String.length x) >= 1) &&
-             ((List.mem (x.[0]) ['+'; '-']) && (symbolchar x 1))));
-   setup_op_parser infixop5
-     (fun x  ->
-        ((String.length x) >= 1) &&
-          ((List.mem (x.[0]) ['*'; '/'; '%'; '\\']) &&
-             ((((x.[0]) <> '*') ||
-                 (((String.length x) < 2) || ((x.[1]) <> '*')))
-                && (symbolchar x 1)))));
+             ((List.mem (x.[0]) ['+'; '-']) && (symbolchar x 1)))));
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
        ((None, None,
@@ -1450,13 +1443,21 @@ let apply () =
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )))));
-          ([`Self; `Nterm (Gramf.obj (infixop5 : 'infixop5 Gramf.t )); `Self],
-            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+          ([`Self;
+           `Token
+             (((function
+                | `Inf ({ level = 5;_} : Tokenf.op) -> true
+                | _ -> false)), (3654849, (`Level 5)), "Precedence5");
+           `Self],
+            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(op : 'infixop5) 
+                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                    'exp )))))]);
+                    match __fan_1 with
+                    | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
+                        (let op: FAst.exp = `Lid (xloc, x) in
+                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                        'exp )))))]);
         ((Some "**"), (Some `RA),
           [([`Self; `Keyword "asr"; `Self],
              ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",

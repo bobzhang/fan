@@ -228,6 +228,8 @@ let keyword_conversion (tok:t) kwds =
   match tok with
   | `Sym u  | `Lid u | `Pre u (* for example "??"*)
   | `Uid u when Setf.String.mem u.txt  kwds -> `Key u
+  | `Inf u  (* * *) when Setf.String.mem u.txt kwds ->
+      `Key {loc = u.loc; txt = u.txt}
   | `Eident u -> `Lid u
   | _ -> tok 
 
