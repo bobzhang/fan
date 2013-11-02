@@ -104,16 +104,14 @@ let default_keywords =
   "lor";
   "["]
 let gkeywords = ref (Setf.String.of_list default_keywords)
-let fan_filter x = x
-let ignore_layout: Tokenf.filter = fun x  -> x
 let gram =
   {
     annot = "Fan";
     gfilter =
-      { kwds = (Setf.String.of_list default_keywords); filter = fan_filter }
+      { kwds = (Setf.String.of_list default_keywords); filter = None }
   }
 let filter = Tokenf.filter gram.gfilter
-let create_lexer ?(filter= ignore_layout)  ~annot  ~keywords  () =
+let create_lexer ?(filter= None)  ~annot  ~keywords  () =
   { annot; gfilter = { kwds = (Setf.String.of_list keywords); filter } }
 let mk f = mk_dynamic gram f
 let of_parser name strm = of_parser gram name strm

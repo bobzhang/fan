@@ -5616,13 +5616,9 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
               (((lexbuf.Lexing.lex_mem).(1)) + 0)
           and name =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(3)) + 0)
-              (((lexbuf.Lexing.lex_mem).(2)) + 0)
-          and txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
+              (((lexbuf.Lexing.lex_mem).(2)) + 0) in
           let line = int_of_string num in
-          (update_loc lexbuf ?file:name ~line ~absolute:true;
-           `LINE_DIRECTIVE { loc = (!! lexbuf); line; name; txt })
+          (update_loc lexbuf ?file:name ~line ~absolute:true; token lexbuf)
       | 20 ->
           let name =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)

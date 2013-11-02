@@ -123,9 +123,7 @@ type t =
   | `Label     of txt
   | `Optlabel  of txt
   | `Str       of txt
-  | `LINE_DIRECTIVE of line
   | `EOI       of txt
-  (* | space_token *)
   | quotation
   | dir_quotation
   | `Ant       of ant ]
@@ -193,15 +191,6 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
   | `Ant x  ->
       Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string x.kind
         Format.pp_print_string x.txt 
-  (* | `Comment x -> *)
-  (*     Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string x.txt *)
-  (* | `Blank x -> *)
-  (*     Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string x.txt *)
-  (* | `Newline _ -> Format.fprintf fmt "`Newline" *)
-  | `LINE_DIRECTIVE x ->
-      Format.fprintf fmt
-        "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
-        x.line (Formatf.pp_print_option Format.pp_print_string) x.name
   | `EOI _ -> Format.fprintf fmt "`EOI"
 
 type stream = t Streamf.t 
@@ -244,7 +233,7 @@ let check_keyword_as_label (tok:t)  kwds =
 
 type filter_plugin = {
     mutable kwds : Setf.String.t;
-    mutable filter : filter;
+    mutable filter : filter option;
   }        
 let check_unknown_keywords (tok:t) loc =
   match tok with
@@ -257,8 +246,11 @@ let filter x =
       check_keyword_as_label t x.kwds;
       t 
     end in
-  fun strm -> x.filter (Streamf.map f strm)
-let set_filter x f = x.filter <- f x.filter
+  match x.filter with
+  | None -> Streamf.map f 
+  | Some filter -> fun strm -> filter (Streamf.map f strm)
+
+
 
     
 
@@ -283,13 +275,9 @@ let strip (x:t) : Obj.t  =
   | `Str x
   | `Label x
   | `Optlabel x
-  (* | `Comment x *)
-  (* | `Blank x *)
-  (* | `Newline x        *)
   | `EOI x
 
   | `Eident x  -> Obj.repr x 
-  | `LINE_DIRECTIVE x  -> Obj.repr x 
   | `Quot x  -> Obj.repr x 
   | `DirQuotation x  -> Obj.repr x 
   | `Ant x -> Obj.repr x
@@ -309,14 +297,10 @@ let get_string (x:t) :  string =
   | `Str x
   | `Label x
   | `Optlabel x
-  (* | `Comment x *)
-  (* | `Blank x *)
-  (* | `Newline x -> x.txt                *)
+  | `EOI x  
   | `Eident x -> x.txt
-  | `LINE_DIRECTIVE x -> x.txt
   | `Quot x -> x.txt
   | `DirQuotation x -> x.txt        
-  | `EOI x  -> x.txt 
   | `Ant x -> x.txt
 
 let get_loc (x:t) =
@@ -334,15 +318,11 @@ let get_loc (x:t) =
   | `Str x
   | `Label x
   | `Optlabel x
-  (* | `Comment x *)
-  (* | `Blank x *)
-  (* | `Newline x *)
   | `EOI x 
   | `Eident x -> x.loc
   | `Ant x -> x.loc
   | `Quot x -> x.loc
   | `DirQuotation x -> x.loc
-  | `LINE_DIRECTIVE x -> x.loc 
     
 
 

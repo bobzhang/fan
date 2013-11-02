@@ -101,9 +101,13 @@ let filter_and_parse_tokens (entry:'a t) ts =
 
 let lex_string loc str = Flex_lib.from_stream  loc (Streamf.of_string str)
 
+(* Raw lexing follwed by a
+   filter 
+ *)    
 let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a t)  str =
   str
-   |> Streamf.of_string |> lexer loc
+   |> Streamf.of_string
+   |> lexer loc
    |> Tokenf.filter entry.gram.gfilter
    |> parse_origin_tokens entry
 

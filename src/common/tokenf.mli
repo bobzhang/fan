@@ -123,7 +123,6 @@ type t =
   | `Lid            of txt
   | `Uid            of txt
   | `Eident         of txt (* (+)*)
-
   | `Int            of txt
   | `Int32          of txt
   | `Int64          of txt
@@ -133,8 +132,6 @@ type t =
   | `Label          of txt
   | `Optlabel       of txt
   | `Str            of txt
-  | `LINE_DIRECTIVE of line         
-  (* | space_token *)
   | `Quot           of quot
   | `DirQuotation   of quot
   | `Ant            of ant
@@ -149,7 +146,7 @@ type filter = stream -> stream
 
 type filter_plugin = {
     mutable kwds : Setf.String.t;
-    mutable filter : filter;
+    mutable filter : filter option;
   }        
 
 (** Strip the variant tag, note this function is only for internal use
@@ -176,4 +173,4 @@ val empty_name : name
 val name_of_string : string -> name
 
 val filter : filter_plugin -> filter
-val set_filter : filter_plugin -> (filter -> filter) -> unit
+

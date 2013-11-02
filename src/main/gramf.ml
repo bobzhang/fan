@@ -92,29 +92,18 @@ let default_keywords =
 let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
-let  fan_filter = fun x -> x (* %parser{ *)
-  (* | #Tokenf.space_token; 'xs -> fan_filter xs *)
-  (* |  x; 'xs  -> *)
-  (*     %stream{ x; ' fan_filter xs } *)
-  (* |  -> %stream{}} *)
 
-let  ignore_layout : Tokenf.filter = fun x ->x 
-  (* %parser{ *)
-  (*   | #Tokenf.space_token; 'xs -> ignore_layout  xs *)
-  (*   | x ; 'xs  -> *)
-  (*       %stream{x; 'ignore_layout xs } *)
-  (*   | -> %stream{}} *)
           
 let gram =  {
   annot="Fan";
   gfilter =
   { kwds =   Setf.String.of_list default_keywords ;
-    filter = fan_filter;  }
+    filter = None;  }
 }
 
 let filter = Tokenf.filter gram.gfilter
   
-let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () = {
+let create_lexer ?(filter=None) ~annot ~keywords   () = {
   annot;
   gfilter = {
   kwds = Setf.String.of_list keywords;
