@@ -399,7 +399,7 @@ let apply () = begin
         | S as e; "#"; a_lident as lab %{ `Send (_loc, e, lab)} ]
        "~-" NA
         [ "!"@xloc; S as e %{`App(_loc, `Lid(xloc,"!"),e )}
-        (* | PreOp@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}  *)
+        (* | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )} *)
         | prefixop as f; S as e %{ `App (_loc, f, e)} ]
        "simple"
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}

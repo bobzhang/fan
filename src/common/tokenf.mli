@@ -120,6 +120,7 @@ type space_token =
 type t =
   [ `Key            of txt
   | `Sym            of txt
+  | `Pre            of txt
   | `Lid            of txt
   | `Uid            of txt
   | `Eident         of txt (* (+)*)

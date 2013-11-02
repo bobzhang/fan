@@ -36,7 +36,7 @@ let g =
                "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
                "Ant";"Quot"; "DirQuotation"; "Str";
                "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint";
-               "Flo"; 
+               "Flo"; "Pre";
                "TRY"; "PEEK"; "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level"; "LA"; "RA"; "NA"; "+";"*";"?"; "="; "@";
                "Inline"] ();;
@@ -100,7 +100,7 @@ let query_inline (x:string) =
      outer_pattern = None;}}
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
-     | "Optlabel" |"Str" as v);  ? Lid@xloc x %{
+     | "Optlabel" |"Str" |"Pre" as v);  ? Lid@xloc x %{
     let i = hash_variant v in                                 
     let pred =  %exp{function
       | $vrn:v _ -> true
@@ -119,7 +119,7 @@ let query_inline (x:string) =
      bounds ;
      outer_pattern = None}}
   (** split opt, introducing an epsilon predicate? *)    
-  | ("Lid"|"Uid"|"Str" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
+  | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
     let i = hash_variant v in
     let pred =  %exp{function
       | $vrn:v _ -> true

@@ -124,6 +124,7 @@ type t =
   | `Optlabel  of txt
   | `Str       of txt
   | `EOI       of txt
+  | `Pre       of txt 
   | quotation
   | dir_quotation
   | `Ant       of ant ]
@@ -150,9 +151,11 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
     Format.fprintf fmt "@[<1>(`DirQuotation %a)@]"
       pp_print_quot x 
 
-      
+(* idea: match x with %exp{ (( `Pre | `Key | `Sym | `Lid | `Uid) as s) x } ->*)      
 let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
-  match x with 
+  match x with
+  | `Pre x -> 
+      Format.fprintf fmt "@[<1>(`Pre@ %a)@]" Format.pp_print_string x.txt
   | `Key x ->
       Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string x.txt
   | `Sym x ->
@@ -261,29 +264,12 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 
 
 let strip (x:t) : Obj.t  =
-  match x with
-  | `Key x
-  | `Sym x
-  | `Lid x
-  | `Uid x
-  | `Int  x
-  | `Int32  x
-  | `Int64  x
-  | `Nativeint  x
-  | `Flo  x
-  | `Chr  x
-  | `Str x
-  | `Label x
-  | `Optlabel x
-  | `EOI x
-
-  | `Eident x  -> Obj.repr x 
-  | `Quot x  -> Obj.repr x 
-  | `DirQuotation x  -> Obj.repr x 
-  | `Ant x -> Obj.repr x
+  Obj.field (Obj.repr x) 1 
+ 
 
 let get_string (x:t) :  string =
-  match x with 
+  match x with
+  | `Pre x 
   | `Key x
   | `Sym x
   | `Lid x
@@ -315,6 +301,7 @@ let get_loc (x:t) =
   | `Nativeint  x
   | `Flo  x
   | `Chr  x
+  | `Pre x 
   | `Str x
   | `Label x
   | `Optlabel x
