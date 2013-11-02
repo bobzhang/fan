@@ -229,7 +229,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
           cxt = None}}
    | '$' lident as txt  %{
      `Ant{kind =""; txt ;loc = !!lexbuf; shift = 1; retract = 0; cxt = None}}
-   | "$" ( lident as name) "{"    (* ':' *) as txt  %{
+   | "$" ( lident as name)? "{"  as txt  %{
      let old = lexbuf.lex_start_p in
      let c = new_cxt () in
      begin
@@ -239,38 +239,20 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
             {loc_start = old;
              loc_end = lexbuf.lex_curr_p;
              loc_ghost = false};
-            kind = name;
+            kind = match name with | Some n -> n | None -> "";
             txt = buff_contents c;
             shift =  String.length txt ;
             retract =  1 ;
             cxt = None}
      end}
-    | "${" as txt  %{    
-      let old = lexbuf.lex_start_p in
-      let c = new_cxt () in
-      begin
-        store c lexbuf; 
-        push_loc_cont c lexbuf lex_quotation;
-        `Ant
-          {loc =
-           {loc_start = old;
-            loc_end = lexbuf.lex_curr_p ;
-            loc_ghost = false};
-           kind = "";
-           txt =  buff_contents c;
-           shift = String.length txt ;
-           retract = 1 ;
-           cxt = None}
-      end}
-    | '$' (_ as c) %{err (Illegal_character c) (!! lexbuf)        }
-    | eof %{
+   | '$' (_ as c) %{err (Illegal_character c) (!! lexbuf)        }
+   | eof %{
        let pos = lexbuf.lex_curr_p in (* FIXME *)
        (lexbuf.lex_curr_p <-
          { pos with pos_bol  = pos.pos_bol  + 1 ;
            pos_cnum = pos.pos_cnum + 1 };
         let loc = !!lexbuf in
         `EOI {loc;txt=""})}
-         
    | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     
 

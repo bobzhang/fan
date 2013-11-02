@@ -73,21 +73,106 @@ module Action = Gaction
   | ['*' '/' '%'] symbolchar * { INFIXOP3 }
  *)    
 let default_keywords =
-  ["&&"; "functor"; "||"; "private"; "sig"; "include";
-   "exception"; "inherit"; "<"; "~"; "and"; 
-   "when"; ","; "mod"; "then"; "|]"; "initializer";
-   "#";  "!"; "-." ; "_"; ">]" ; "??" ; "in"
-     ; "->"; "downto"; "lsr"; "as"; "function"; "begin";
-   ".."; ")"; "="; ":"; "|"; "[<"; 
-   "class"; "=="; "."; "{<"; "land"; ">}"; "lxor"; "do";
-   "end"; "assert"; "external";  "+"; "virtual";
-   "to"; "try"; ":>"; "lsl"; "struct"; "else"; "*"; "val"
-     ;  "constraint"; "type"; "new"; "of";
-   "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
-     ; "'"; ";"; "mutable"; "lazy"; "["; "}";
-   "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
-   ":=";  "if"; "while" ; "rec";  "object"; "or"; "-"; "("; "match"
-     ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
+  ["&&";
+   "#";
+   "!";
+   "-." ;
+   "_";
+   ">]" ;
+   "??" ;
+   "||";
+   "<";
+   "~";
+   ",";
+   "|]";
+   "->";
+   "..";
+   ")";
+   "=";
+   ":";
+   "|";
+   "[<";
+   "==";
+   ".";
+   "{<";
+   ">}";
+   "+";
+   ":>";
+   "*";
+   "<-";
+   "&";
+   ";;";
+   "{";
+   "'";
+   ";";
+   "[";
+   "}";
+   "[|";
+   "[^";
+   "`";
+   "::";
+   "]";
+   "[>";
+   ":=";
+   "-";
+   "(";
+   "?";
+   ">";
+   "[";
+   "functor";
+   "private";
+   "sig";
+   "include";
+   "exception";
+   "inherit";
+   "and"; 
+   "when";
+   "mod";
+   "then";
+   "initializer";
+   "in" ;
+   "downto";
+   "lsr";
+   "as";
+   "function";
+   "begin";
+   "class";
+   "land";
+   "lxor";
+   "do";
+   "end";
+   "assert";
+   "external";
+   "virtual";
+   "to";
+   "try";
+   "lsl";
+   "struct";
+   "else";
+   "val" ;
+   "constraint";
+   "type";
+   "new";
+   "of";
+   "done";
+   "for";
+   "fun";
+   "method" ;
+   "mutable";
+   "lazy";
+   "with";
+   "asr";
+   "if";
+   "while" ;
+   "rec";
+   "object";
+   "or";
+   "match" ;
+   "open";
+   "module";
+   "let";
+   "lor";
+ ]
 
 let gkeywords = ref (Setf.String.of_list default_keywords)
   
