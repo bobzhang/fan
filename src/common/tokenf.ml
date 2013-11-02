@@ -41,13 +41,12 @@ type txt = {
     loc : loc ;
     txt : string;
   }
-(*
-type symbol ={
+type op = {
     loc : loc;
     txt : string;
-    precedence : int;
+    level : int;
   }
-*)
+      
 type ant = {
     loc : loc ;
     cxt : string option;
@@ -108,26 +107,26 @@ type space_token =
     | `LINE_DIRECTIVE of line]
 
 type t =
-  [ `Key       of txt
-  | `Sym       of txt
-  | `Lid       of txt
-  | `Uid       of txt
-  | `Eident    of txt (* (+)*)
-
-  | `Int       of txt
-  | `Int32     of txt
-  | `Int64     of txt
-  | `Nativeint of txt
-  | `Flo       of txt
-  | `Chr       of txt
-  | `Label     of txt
-  | `Optlabel  of txt
-  | `Str       of txt
-  | `EOI       of txt
-  | `Pre       of txt 
-  | quotation
-  | dir_quotation
-  | `Ant       of ant ]
+  [ `Key          of txt
+  | `Sym          of txt
+  | `Lid          of txt
+  | `Uid          of txt
+  | `Eident       of txt (* (+)*)
+  | `Int          of txt
+  | `Int32        of txt
+  | `Int64        of txt
+  | `Nativeint    of txt
+  | `Flo          of txt
+  | `Chr          of txt
+  | `Label        of txt
+  | `Optlabel     of txt
+  | `Str          of txt
+  | `EOI          of txt
+  | `Pre          of txt
+  | `Inf          of op
+  | `Quot         of quot
+  | `DirQuotation of quot
+  | `Ant          of ant ]
 
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
@@ -154,14 +153,18 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
 (* idea: match x with %exp{ (( `Pre | `Key | `Sym | `Lid | `Uid) as s) x } ->*)      
 let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
   match x with
+  | `Inf x ->
+      Format.fprintf fmt "@[<1>(`Inf@ %a)@]" Format.pp_print_string x.txt
   | `Pre x -> 
       Format.fprintf fmt "@[<1>(`Pre@ %a)@]" Format.pp_print_string x.txt
   | `Key x ->
       Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string x.txt
   | `Sym x ->
       Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string x.txt
-  | `Lid x -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string x.txt
-  | `Uid x -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string x.txt
+  | `Lid x ->
+      Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string x.txt
+  | `Uid x ->
+      Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string x.txt
   | `Eident x ->
       Format.fprintf fmt "@[<1>(`Eident@ %a)@]" Format.pp_print_string x.txt
   | `Int x ->
@@ -286,8 +289,9 @@ let get_string (x:t) :  string =
   | `EOI x  
   | `Eident x -> x.txt
   | `Quot x -> x.txt
-  | `DirQuotation x -> x.txt        
+  | `DirQuotation x -> x.txt
   | `Ant x -> x.txt
+  | `Inf x -> x.txt 
 
 let get_loc (x:t) =
   match x with
@@ -310,6 +314,7 @@ let get_loc (x:t) =
   | `Ant x -> x.loc
   | `Quot x -> x.loc
   | `DirQuotation x -> x.loc
+  | `Inf x -> x.loc
     
 
 

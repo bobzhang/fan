@@ -332,21 +332,31 @@ let apply () = begin
         [ S as e1; ("&"|"&&" as op) ; S as e2  %{
           Ast_gen.appl_of_list [ %exp{$lid:op}; e1 ;e2]}  ]
        "<" LA
-        [ S as e1; infixop2 as op; S as e2 %exp{ $op $e1 $e2 } ]
+        [ S as e1; infixop2 as op; S as e2 %exp{ $op $e1 $e2 }
+          (* S as e1; Inf@xloc (2,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}       *)
+        ]
        "^" RA
-        [ S as e1; infixop3 as op; S as e2 %exp{ $op $e1 $e2 } ]
+        [ S as e1; infixop3 as op; S as e2 %exp{ $op $e1 $e2 }
+        (* | S as e1; Inf@xloc (3,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}             *)
+        ]
         "::" RA
         [ S as e1; "::"; S as e2  %exp{  $e1 :: $e2  } ]  
        "+" LA
-        [ S as e1; infixop4 as op; S as e2 %exp{ $op $e1 $e2 } ]
+        [ S as e1; infixop4 as op; S as e2 %exp{ $op $e1 $e2 }
+          (* S as e1; Inf@xloc (4,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)} *)
+        ]
        "*" LA
         [ S as e1; ("land"|"lor"|"lxor"|"mod" as op) ; S as e2
             %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2] }
-        | S as e1; infixop5 as op; S as e2  %exp{ $op $e1 $e2 } ]
+        | S as e1; infixop5 as op; S as e2  %exp{ $op $e1 $e2 }
+        (* | S as e1; Inf@xloc (5,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)} *)            
+        ]
        "**" RA
         [ S as e1; ("asr"|"lsl"|"lsr" as op) ; S as e2
             %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] }
-        | S as e1; infixop6 as op; S as e2  %exp{ $op $e1 $e2 } ]
+        | S as e1; infixop6 as op; S as e2  %exp{ $op $e1 $e2 }
+        (* | S as e1; Inf@xloc (2,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)} *)
+        ]
           
        "obj" RA
         [("fun"|"function"); "|";  L1 case0 SEP "|" as a  %{

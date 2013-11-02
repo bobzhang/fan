@@ -36,7 +36,7 @@ let g =
                "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
                "Ant";"Quot"; "DirQuotation"; "Str";
                "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint";
-               "Flo"; "Pre";
+               "Flo"; "Pre"; "Inf";
                "TRY"; "PEEK"; "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level"; "LA"; "RA"; "NA"; "+";"*";"?"; "="; "@";
                "Inline"] ();;
@@ -129,11 +129,8 @@ let query_inline (x:string) =
     {text = `Token(_loc, pred,des,des_str);
      styp = %ctyp'{Tokenf.txt};
      bounds = [(xloc,x);(lloc,loc)];
-     pattern = Some %pat@xloc{(* $vrn:v *) ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
+     pattern = Some %pat@xloc{({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
-
-
-
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
     let i = hash_variant v in                                              
     let pred = %exp{function
@@ -146,6 +143,35 @@ let query_inline (x:string) =
      bounds = [(loc,x)];
      pattern = Some %pat{ ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
+  | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
+     let i = hash_variant v in
+     let pred = %exp{function
+       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+       | _ -> false} in
+     let des = %exp{($int':i, `Level $int:level)} in
+     let des_str = "Precedence" ^level in
+     { text = `Token(_loc,pred,des,des_str);
+       styp = %ctyp'{Tokenf.op};
+       bounds = [(xloc,x)];
+       pattern = Some %pat@xloc{({txt = $lid:x;_} : Tokenf.txt)};
+       outer_pattern = None 
+     }}
+                          
+  | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
+     let i = hash_variant v in
+     let pred = %exp{function
+       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+       | _ -> false} in
+     let des = %exp{($int':i, `Level $int:level)} in
+     let des_str = "Precedence" ^level in
+     let p = %pat@xloc{$lid:x} in
+     let lp = %pat@lloc{$lid:l} in 
+     { text = `Token(_loc,pred,des,des_str);
+       styp = %ctyp'{Tokenf.op};
+       bounds = [(xloc,x)];
+       pattern = Some %pat{({loc = $lp; txt = $p ;_} : Tokenf.txt)};
+       outer_pattern = None 
+     }}
   ]
   Inline simple_symbol:
   [  Str s %{

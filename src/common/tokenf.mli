@@ -40,15 +40,6 @@ type ant = {
     to generate an arbitrary value of type ['a] *)                     
 type 'a expand_fun = loc -> string option -> string -> 'a
     
-(** extract the quot information for expanding
-    mainly remove the border
- *)      
-val quot_expand : 'a expand_fun -> quot -> 'a
-
-val ant_expand : (loc -> string -> 'a) -> ant -> 'a
-
-val mk_ant : ?c:string -> ant -> [> `Ant of loc * ant ]
-    
 type quotation = [ `Quot of quot ]
       
 
@@ -110,6 +101,11 @@ type line = {
     name : string option;
   }      
 
+type op = {
+    loc : loc;
+    txt : string;
+    level : int;
+  }
       
 type space_token =
   [ `Comment        of txt
@@ -136,7 +132,9 @@ type t =
   | `Quot           of quot
   | `DirQuotation   of quot
   | `Ant            of ant
-  | `EOI            of txt]
+  | `EOI            of txt
+  | `Inf            of op
+  ]
 
 
 type stream =  t Streamf.t 
@@ -150,6 +148,16 @@ type filter_plugin = {
     mutable filter : filter option;
   }        
 
+(** extract the quot information for expanding
+    mainly remove the border
+ *)      
+val quot_expand : 'a expand_fun -> quot -> 'a
+
+val ant_expand : (loc -> string -> 'a) -> ant -> 'a
+
+val mk_ant : ?c:string -> ant -> [> `Ant of loc * ant ]
+    
+      
 (** Strip the variant tag, note this function is only for internal use
     by parser DSL *)
 val strip : t -> Obj.t
