@@ -290,7 +290,7 @@ let test_symb_percent _ =
   if
     "->%"
    |> get_tokens
-   |> %p{   [`Sym ({txt= "->%"; _} :Tokenf.txt); `EOI _ ]}
+   |> %p{   [`Inf ({txt= "->%"; _} :Tokenf.op); `EOI _ ]}
    |> not then
     %err{test_symb_percent}
 
@@ -320,7 +320,7 @@ let test_symb_percent3 _ =
   if
     "|%"
     |> get_tokens
-    |> %p{  [`Sym ({txt = "|%";_}:Tokenf.txt); `EOI _ ]}
+    |> %p{  [`Inf ({txt = "|%";_}:Tokenf.op); `EOI _ ]}
     |> not then
     %err{test_symb_percent3}
 
