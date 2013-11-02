@@ -151,7 +151,7 @@ val typevars : ctyp Gramf.t
 val val_longident : ident Gramf.t
 val constr : constr Gramf.t
 val constr_quot : constr Gramf.t
-val prefixop : exp Gramf.t
+
 val infixop2 : exp Gramf.t
 val infixop3 : exp Gramf.t
 val infixop4 : exp Gramf.t

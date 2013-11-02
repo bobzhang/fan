@@ -34,9 +34,6 @@ open! Syntaxf
 (*       Gramf.olevel )) *)
 let apply () = begin 
   begin
-    setup_op_parser prefixop
-      (fun x -> not (List.mem x ["!="; "??"]) && String.length x >= 2 &&
-        List.mem x.[0] ['!'; '?'; '~'] && symbolchar x 1);
     setup_op_parser infixop2
       (fun x -> List.mem x ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] ||
       (not (List.mem x ["<-"; "||"; "&&"]) && String.length x >= 2 &&
@@ -399,8 +396,7 @@ let apply () = begin
         | S as e; "#"; a_lident as lab %{ `Send (_loc, e, lab)} ]
        "~-" NA
         [ "!"@xloc; S as e %{`App(_loc, `Lid(xloc,"!"),e )}
-        | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}
-        (* | prefixop as f; S as e %{ `App (_loc, f, e)}  *)]
+        | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}]
        "simple"
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}
         | Ant ("exp"

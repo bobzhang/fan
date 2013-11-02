@@ -39,7 +39,7 @@
   (infixop5 "infix operator (level 5) (start with '*', '/', '%')")
   (infixop6 "infix operator (level 6) (start with \"**\") (right assoc)")
 
-  (prefixop "prefix operator (start with '!', '?', '~')")
+
   (case_quot "quotation of case (try/match/function case)")
 
   module_longident_dot_lparen  sequence'  fun_def  
@@ -66,5 +66,5 @@
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fsyntax.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/syntaxf.cmo" *)
 (* end: *)
