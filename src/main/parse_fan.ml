@@ -312,7 +312,8 @@ let apply () = begin
         ]
           (* FIXME better error message [ | ... ]*)
        "^" RA
-        [S as e1; Inf@xloc (1,x); S as e2 %{let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
+        [S as e1; Inf@xloc (1,x); S as e2 %{
+         let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
         ]
         "::" RA
         [ S as e1; "::"; S as e2  %exp{  $e1 :: $e2  } ]  

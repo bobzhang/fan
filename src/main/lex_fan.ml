@@ -105,16 +105,16 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
        update_loc  lexbuf;
        token lexbuf
      end }
-   | "~" (ocaml_lid as txt) ':' %{
-     let loc = !! lexbuf in
-     `Label {loc;txt}}
+   | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
 
-   | "?" (ocaml_lid as txt) ':' %{
-     let loc = !!lexbuf in
-     `Optlabel {loc;txt}}
-   | "mod"|"land"|"lor"|"lxor" as txt %{`Inf{loc= !!lexbuf; txt ; level = 3}}
-   | "lsl"|"lsr" | "asr" as txt %{`Inf{loc= !!lexbuf; txt ; level = 4}}
-   | ocaml_lid as txt  %{ `Lid {loc= !!lexbuf;txt}}
+   | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
+   | ocaml_lid as txt  %{
+     if  %p{"mod"|"land"|"lor"|"lxor"} txt  then
+       `Inf{loc= !!lexbuf; txt ; level = 3}
+     else if %p{"lsl"|"lsr" | "asr"} txt then
+       `Inf{loc= !!lexbuf; txt ; level = 4}
+     else 
+       `Lid {loc= !!lexbuf;txt}}
    | ocaml_uid as txt  %{ `Uid {loc= !!lexbuf;txt}}
    | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
        (* FIXME - int_of_string ("-" ^ s) ??
