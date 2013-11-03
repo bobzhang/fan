@@ -6081,60 +6081,46 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-            ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
+            ("{ label; assoc; rules }\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(rules : 'rule_list)  (_loc : Locf.t)  ->
-                    let label = None and assoc = None in
-                    ({
-                       label =
-                         (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
-                       assoc;
-                       rules
-                     } : 'level )))));
+                    let assoc = None in
+                    let label = None in ({ label; assoc; rules } : 'level )))));
          ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "Str");
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
+           ("{ label; assoc; rules }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(rules : 'rule_list) 
-                   ~__fan_0:(label : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let label = Some label and assoc = None in
-                   ({
-                      label =
-                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
-                      assoc;
-                      rules
-                    } : 'level )))));
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = label;_} : Tokenf.txt) ->
+                       let assoc = None in
+                       let label = Some label in
+                       ({ label; assoc; rules } : 'level )))));
          ([`Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
+           ("{ label; assoc; rules }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(assoc : 'assoc)
                     (_loc : Locf.t)  ->
-                   let label = None and assoc = Some assoc in
-                   ({
-                      label =
-                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
-                      assoc;
-                      rules
-                    } : 'level )))));
+                   let assoc = Some assoc in
+                   let label = None in ({ label; assoc; rules } : 'level )))));
          ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "Str");
           `Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
+           ("{ label; assoc; rules }\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(rules : 'rule_list)  ~__fan_1:(assoc : 'assoc)
-                    ~__fan_0:(label : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let label = Some label and assoc = Some assoc in
-                   ({
-                      label =
-                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
-                      assoc;
-                      rules
-                    } : 'level )))))]) : Gramf.olevel ));
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = label;_} : Tokenf.txt) ->
+                       let assoc = Some assoc in
+                       let label = Some label in
+                       ({ label; assoc; rules } : 'level )))))]) : Gramf.olevel ));
   Gramf.extend_single (assoc : 'assoc Gramf.t )
     (None,
       ((None, None,

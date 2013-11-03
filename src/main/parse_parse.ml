@@ -440,8 +440,8 @@ let query_inline (x:string) =
   | level as l  %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  ? Str as  label ;  ?assoc as assoc; rule_list as rules
-       %{{label = Option.map (fun (x:Tokenf.txt) -> x.txt) label ;assoc;rules}} ]
+  [  ? Str label ;  ?assoc as assoc; rule_list as rules
+       %{{label ;assoc;rules}} ]
 
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
