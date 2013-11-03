@@ -76,7 +76,7 @@ let () =
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       begin 
-        Format.fprintf fmt "@[%a@]@\n" AstPrint.structure pt ;
+        Format.fprintf fmt "@[%a@]@." AstPrint.structure pt ;
         pp_print_flush fmt ()
       end in
   let print_interf ?input_file:(_) ?output_file ast =
@@ -88,7 +88,7 @@ let () =
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       begin 
-        Format.fprintf fmt "@[%a@]@\n" AstPrint.signature pt ;
+        Format.fprintf fmt "@[%a@]@." AstPrint.signature pt ;
         pp_print_flush fmt ()
       end in
   Hashtbl.add backends "o" {
@@ -132,14 +132,14 @@ let () =
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@\n" obj#sigi  xs in
+          Format.fprintf fmt "@[%a@]@." obj#sigi  xs in
   let ast_of_implem ?input_file:(_)  ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@\n" obj#stru  xs in
+          Format.fprintf fmt "@[%a@]@." obj#stru  xs in
   Hashtbl.add backends "dfan" {
   descr = "Compiles to Fan's original representation";
   implem = ast_of_implem;
@@ -153,14 +153,14 @@ let () =
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@\n" ObjsN.dump#sigi  (Objs.strip_sigi xs) in
+          Format.fprintf fmt "@[%a@]@." ObjsN.dump#sigi  (Objs.strip_sigi xs) in
   let ast_of_implem ?input_file:(_)  ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@\n"
+          Format.fprintf fmt "@[%a@]@."
             ObjsN.dump#stru  (Objs.strip_stru xs) in
   Hashtbl.add backends "dfanl" {
   descr = "Compiles to Fan's original representation without location";
