@@ -20,6 +20,19 @@ open! Syntaxf
 
 %create{Gramf pos_exps};;
 
+
+let make_semi  atom nt =
+  %extend{ nt:
+             [atom as b1; ";"; S as b2 %{`Sem(_loc,b1,b2)}
+             |atom as b1; ?";" %{b1}]};;
+let () = 
+  begin
+    make_semi  field_exp field_exp_list;
+    make_semi  exp sem_exp;
+    make_semi label_exp label_exp_list;
+    make_semi  pat sem_pat 
+  end
+
 let apply () = begin 
   (* with mexp *)
   %extend{
@@ -181,9 +194,7 @@ let apply () = begin
       [ exp as e1; ","; comma_exp as e2 %{ `Com(_loc,e1,e2)}
       | exp as e1; ";"; sem_exp as e2 %{ `Sem(_loc,e1,e2)}
       | exp as e  %{e}]
-     sem_exp:
-      [ exp as e1 ; ?";" %{e1}
-      | exp as e1 ; ";"; S as e2 %{`Sem(_loc,e1,e2)}]
+
        (* {:stru|
        let f (type t) () =
           let module M = struct exception E of t ; end in
@@ -381,37 +392,15 @@ let apply () = begin
         | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}]
        "simple"
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}
-        | Ant ("exp"
-                |""
-                |"par"
-                |"seq"
-                |"chr"
-                |"int"
-                |"int32"
-                |"str"
-                |"int64"
-                |"flo"
-                |"nativeint"
-                | "vrn"
-
-                |"chr'"
-                |"int64'"
-                |"nativeint'"
-                |"bool'"
-                |"int'"
-                |"int32'"
-                |"flo'"
-                |"str'"
-                |"`chr"
-                |"`int64"
-                |"`nativeint"
-                |"`bool"
-                |"`int"
-                |"`int32"
-                |"`flo"
-                |"`str"
-                , s) %{
-                    mk_ant ~c:"exp" s}
+        | Ant ("exp" |"" |"par" |"seq" |"chr"
+                |"int" |"int32" |"str" |"int64"
+                |"flo" |"nativeint" | "vrn"
+                |"chr'" |"int64'" |"nativeint'"
+                |"bool'" |"int'" |"int32'"
+                |"flo'" |"str'" |"`chr"
+                |"`int64" |"`nativeint" |"`bool"
+                |"`int" |"`int32" |"`flo" |"`str"
+                , s) %{mk_ant ~c:"exp" s}
         | @primitve 
         | TRY module_longident_dot_lparen as i;S as e; ")" %{
             `LetOpen (_loc,`Negative _loc, i, e)}
@@ -443,7 +432,8 @@ let apply () = begin
         | "("; "module"; mexp as me; ")" %{`Package_exp (_loc, me)}
         | "("; "module"; mexp as me; ":"; mtyp as pt; ")" %{
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] }
-       sem_exp_for_list:
+
+       sem_exp_for_list: (* duplicated with [sem_exp] and [make_semi]*)
        [ exp as e; ";"; S as el %{fun acc -> %exp{ $e :: ${el acc}}}
        | exp as e; ?";" %{fun acc -> %exp{ $e :: $acc }}
        ]
@@ -515,15 +505,7 @@ let apply () = begin
             `RecBind (_loc, i, `Lid (_loc, Fan_ops.to_lid i))}]
         field_exp :
         [ Ant (""|"bi",s) %{ mk_ant  ~c:"rec_exp" s}
-        | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]
-        label_exp_list:
-        [ label_exp as b1; ";"; S as b2 %{`Sem (_loc, b1, b2)}
-        | label_exp as b1; ?";"        %{b1}
-        ]
-        field_exp_list:
-        [ field_exp as b1; ";"; S as b2 %{ `Sem (_loc, b1, b2)}
-        | field_exp as b1; ?";"        %{ b1}
-        ] };
+        | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]};
   with pat
     %extend{
        pat_quot:
@@ -652,16 +634,13 @@ let apply () = begin
         | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
              `ModuleConstraint (_loc, m, mk_ant  s)}
             (* %{ (module $m : $(opt: `Ant(_loc,mk_ant n s)))} *)
-
         (* when change [pat], we need to take care of the following terms
            for factorization *)      
         | "("; pat as p; ")" %{ p}
         | "("; pat as p; ":"; ctyp as t; ")" %pat{ ($p : $t) }
         | "("; pat as p; "as"; a_lident as s; ")" %pat{  ($p as $s) }
         | "("; pat as p; ","; comma_ipat as pl; ")"  %pat{ ($p, $pl) }
-              
         | a_lident as s %{  (s: alident :> pat)}
-              
         | Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
         | "`"; luident as s  %pat{$vrn:s}
         | "_" %{ %{ _ }}
@@ -670,38 +649,25 @@ let apply () = begin
         | "~"; a_lident as i %{  `LabelS(_loc,i)}
         | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
-            (* %{ ?$lid:i : ($p=$e)} *)
         | Optlabel i; "("; pat_tcon as p; ")"  %{
             `OptLabl(_loc,`Lid(_loc,i),p)}
-            (* %{ ? $lid:i : ($p)} *)
         | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
             `OptLablExpr(_loc,i,p,e)}
-            (* %{ ?$i:($p=$e)} *)
         | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
             `OptLablExpr (_loc, i, p, mk_ant s)}
-            (* %{ ?$i : ($p = $(opt: `Ant(_loc, mk_ant n s )) )} *)
         | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
             `OptLabl(_loc,i,p)}
-            (* %{ ? $i:($p)} *)
         | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
         | "?"; "("; ipat_tcon as p; ")" %{
             `OptLabl(_loc,`Lid(_loc,""),p)}
-            (* %{ ? ($p) } *)
         | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)}
-            (* %{ ? ($p = $e) } *)]
-       
-       sem_pat:
-       [ pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
-       | pat as p; ? ";" %{ p}
-       ] 
+        ]
        sem_pat_for_list:
        [ pat as p; ";"; S as pl %{ fun acc ->
-         `App(_loc, `App(_loc,`Uid(_loc,"::"),p),pl acc)}
-         (* %pat{  $p :: $(pl acc)  } *)
+         %pat{  $p :: ${pl acc}  }}
        | pat as p; ? ";" %{fun acc ->
-           `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)}
-           (* %pat{  $p :: $acc  } *)
+            %pat{  $p :: $acc  }} 
        ]
        pat_tcon:
        [ pat as p; ":"; ctyp as t %{ %{ ($p : $t) }}
@@ -710,7 +676,7 @@ let apply () = begin
        [ Ant("" ,s) %{ mk_ant ~c:"pat" s }
        | a_lident as i %{  (i : alident :> pat)}
        | a_lident as i; ":"; ctyp as t %{(`Constraint (_loc, (i : alident :>  pat), t) : pat)}]
-       comma_ipat:
+       comma_ipat: (* TODO -- simplify -- *)
        [ S as p1; ","; S as p2 %{ %{ $p1, $p2 }}
        | ipat as p %{ p} ]
        comma_pat:

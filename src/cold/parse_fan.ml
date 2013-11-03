@@ -10,6 +10,29 @@ let appl_of_list = Ast_gen.appl_of_list
 open FAst
 open! Syntaxf
 let pos_exps = Gramf.mk "pos_exps"
+let make_semi atom nt =
+  Gramf.extend_single (nt : 'nt Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (atom : 'atom Gramf.t )); `Keyword ";"; `Self],
+            ("`Sem (_loc, b1, b2)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(b2 : 'nt)  ~__fan_1:_  ~__fan_0:(b1 : 'atom) 
+                    (_loc : Locf.t)  -> (`Sem (_loc, b1, b2) : 'nt )))));
+         ([`Nterm (Gramf.obj (atom : 'atom Gramf.t ))],
+           ("b1\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(b1 : 'atom)  (_loc : Locf.t)  -> (b1 : 'nt )))));
+         ([`Nterm (Gramf.obj (atom : 'atom Gramf.t )); `Keyword ";"],
+           ("b1\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:(b1 : 'atom)  (_loc : Locf.t)  ->
+                   (b1 : 'nt )))))]) : Gramf.olevel ))
+let () =
+  make_semi field_exp field_exp_list;
+  make_semi exp sem_exp;
+  make_semi label_exp label_exp_list;
+  make_semi pat sem_pat
 let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
@@ -943,25 +966,6 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     (e : 'exp_quot )))))]) : Gramf.olevel ));
-   Gramf.extend_single (sem_exp : 'sem_exp Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-             ("e1\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     (e1 : 'sem_exp )))));
-          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
-            ("e1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (e1 : 'sem_exp )))));
-          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"; `Self],
-            ("`Sem (_loc, e1, e2)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'sem_exp)  ~__fan_1:_ 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, e1, e2) : 'sem_exp )))))]) : Gramf.olevel ));
    Gramf.extend_single (cvalue_bind : 'cvalue_bind Gramf.t )
      (None,
        ((None, None,
@@ -2814,51 +2818,7 @@ let apply () =
                  (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
                     ~__fan_0:(l : 'a_lident)  (_loc : Locf.t)  ->
                     (`RecBind (_loc, (l :>vid), e) : 'field_exp )))))]) : 
-       Gramf.olevel ));
-   Gramf.extend_single (label_exp_list : 'label_exp_list Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
-            `Keyword ";";
-            `Self],
-             ("`Sem (_loc, b1, b2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(b2 : 'label_exp_list)  ~__fan_1:_ 
-                     ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, b1, b2) : 'label_exp_list )))));
-          ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ))],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)  ->
-                    (b1 : 'label_exp_list )))));
-          ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
-           `Keyword ";"],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(b1 : 'label_exp)  (_loc : Locf.t)
-                     -> (b1 : 'label_exp_list )))))]) : Gramf.olevel ));
-   Gramf.extend_single (field_exp_list : 'field_exp_list Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
-            `Keyword ";";
-            `Self],
-             ("`Sem (_loc, b1, b2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(b2 : 'field_exp_list)  ~__fan_1:_ 
-                     ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, b1, b2) : 'field_exp_list )))));
-          ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ))],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)  ->
-                    (b1 : 'field_exp_list )))));
-          ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
-           `Keyword ";"],
-            ("b1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(b1 : 'field_exp)  (_loc : Locf.t)
-                     -> (b1 : 'field_exp_list )))))]) : Gramf.olevel )));
+       Gramf.olevel )));
   (let grammar_entry_create x = Gramf.mk x in
    let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
    Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
@@ -3934,53 +3894,34 @@ let apply () =
                     (_loc : Locf.t)  ->
                     (`OptLablExpr (_loc, (`Lid (_loc, "")), p, e) : 'ipat )))))]) : 
        Gramf.olevel ));
-   Gramf.extend_single (sem_pat : 'sem_pat Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
-             ("`Sem (_loc, p1, p2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'sem_pat)  ~__fan_1:_ 
-                     ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, p1, p2) : 'sem_pat )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'sem_pat )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'sem_pat )))))]) : Gramf.olevel ));
    Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
      (None,
        ((None, None,
           [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
-             ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (pl acc))\n",
+             ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (pl acc)) : FAst.pat )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(pl : 'sem_pat_for_list)  ~__fan_1:_ 
                      ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                      (fun acc  ->
-                        `App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
-                            (pl acc)) : 'sem_pat_for_list )))));
+                        (`App
+                           (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
+                             (pl acc)) : FAst.pat ) : 'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
+            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                     (fun acc  ->
-                       `App
-                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
-                    'sem_pat_for_list )))));
+                       (`App
+                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
+                       FAst.pat ) : 'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
+            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                     (fun acc  ->
-                       `App
-                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
-                    'sem_pat_for_list )))))]) : Gramf.olevel ));
+                       (`App
+                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
+                       FAst.pat ) : 'sem_pat_for_list )))))]) : Gramf.olevel ));
    Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
      (None,
        ((None, None,
