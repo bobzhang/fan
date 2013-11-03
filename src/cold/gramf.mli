@@ -15,18 +15,11 @@ type position =
 val filter: stream -> stream      
 
 (** Basially a filter attached to the stream lexer *)    
-type gram = Gstructure.gram = {
+type gram = Gdefs.gram = {
   annot:string;
   gfilter : Tokenf.filter_plugin;
 }
-
-module Action : sig
-  type t = Gaction.t
-  val mk : 'a -> t
-  val get : t -> 'a
-  val apply : t -> 'a -> 'b
-  val apply2 : t -> 'a -> 'b -> 'c
-end
+type action = Gaction.t
 
       
 type word =
@@ -44,9 +37,9 @@ type terminal =
     [ `Keyword of string
     | `Token of token_pattern ]
 
-type entry = Gstructure.entry 
-and desc = Gstructure.desc
-and level =Gstructure.level 
+type entry = Gdefs.entry 
+and desc = Gdefs.desc
+and level =Gdefs.level 
 and symbol =
     (* The concrete representation is needed here
        at least for polymorphic variant, otherwise the
@@ -64,16 +57,16 @@ and symbol =
     | terminal
    ]
 
-and tree = Gstructure.tree 
-and node = Gstructure.node 
+and tree = Gdefs.tree 
+and node = Gdefs.node 
 
-type anno_action = int * symbol list * string * Action.t       
+type anno_action = int * symbol list * string * action (* Action.t        *)
 
-type production = symbol list * (string * Action.t)
+type production = symbol list * (string * action (* Action.t *))
       
 type label = string option
 
-(* FIXME duplicate with Grammar/Gstructure *)      
+(* FIXME duplicate with Grammar/Gdefs *)      
 type olevel =label * assoc option * production list
 type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      
@@ -95,7 +88,7 @@ val clear: 'a t -> unit
 
 val entry_first : 'a t -> string list
     
-val mk_action: 'a -> Action.t
+val mk_action: 'a -> (* Action.t *) action
 
 val obj: 'a t -> entry         
 

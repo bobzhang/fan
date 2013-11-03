@@ -1,4 +1,4 @@
-open Gstructure
+open Gdefs
 
 (* Deleting a rule *)
 

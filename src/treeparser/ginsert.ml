@@ -1,7 +1,7 @@
 
 
 
-open Gstructure
+open Gdefs
 
 open Util
 open Format
@@ -33,12 +33,12 @@ let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
 
-let levels_of_entry  (e: Gstructure.entry) =
+let levels_of_entry  (e: Gdefs.entry) =
   match e.desc with
   |Dlevels ls -> Some ls
     
 
-let find_level ?position (entry:Gstructure.entry)  levs =
+let find_level ?position (entry:Gdefs.entry)  levs =
   let find x n  ls = 
     let rec get = function
       | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name
@@ -65,7 +65,7 @@ let find_level ?position (entry:Gstructure.entry)  levs =
       | lev :: levs -> ([], Some (lev, "<top>"), levs)
       | [] -> ([], None, []) 
 
-let rec check_gram (entry : Gstructure.entry) = function
+let rec check_gram (entry : Gdefs.entry) = function
   | `Nterm e ->
     if entry.gram  != e.gram  then 
       failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
@@ -203,7 +203,7 @@ let insert_olevels_in_levels entry position olevels =
       | None -> levs1 @ List.map level_of_olevel olevels @ levs2 
 
 
-let insert_olevel (entry:Gstructure.entry) position olevel =
+let insert_olevel (entry:Gdefs.entry) position olevel =
   let elev =
     match entry.desc with
     | Dlevels elev -> elev in

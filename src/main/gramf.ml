@@ -1,12 +1,14 @@
 
 
 open Format
-include Gstructure
+include Gdefs
   
 include Gentry
-include Gstru
-    
-module Action = Gaction
+
+
+let mk_action = Gaction.mk
+type action = Gaction.t 
+
 
 (*
   source info : lexer.mll from 4.02dev+trunk
@@ -225,19 +227,6 @@ let parse_string_safe ?(loc=Locf.string_loc) entry  s =
   end 
 ;;
     
-    
-(* let parse_file_with ~rule file  = *)
-(*   if Sys.file_exists file then *)
-(*     let ch = open_in file in *)
-(*     let st = Streamf.of_channel ch in  *)
-(*     parse rule (Locf.mk file) st *)
-(*   else  failwithf "@[file: %s not found@]@." file; *)
-  
-
-
-(* FIXME [srules] the productions are also scanned  *)  
-(* let srules rl = *)
-(*     `Stree (List.fold_right Ginsert.add_production   rl DeadEnd) *)
 
 %import{
 Gfold:
@@ -250,7 +239,7 @@ Gfold:
 
 
 
-let find_level ?position (entry:Gstructure.entry) =
+let find_level ?position (entry:Gdefs.entry) =
   match entry.desc with
   | Dlevels levs -> let (_,f,_) = Ginsert.find_level ?position entry levs in f
 

@@ -1,6 +1,6 @@
 
 (** Pretty printer for Fan's grammar *)
-open Gstructure
+open Gdefs
 open Format
 
 (**  signature for printing grammar *)

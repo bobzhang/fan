@@ -3,7 +3,7 @@
 # These files depend on the interfaces in ../lib
 OCAMLINCLUDES += $(COMMON_INCLUDES)
 OCAMLFLAGS =  -w a 
-FILES = gaction gcomb gdelete gfailed ginsert gparser gprint gstru gstructure gtools
+FILES = gaction gcomb gdelete gfailed ginsert gparser gprint  gdefs gtools
 .PHONY: clean lib
 lib:$(OCamlLibrary libtreeparser, $(FILES))
 

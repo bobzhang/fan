@@ -10,7 +10,7 @@ Format:
 
 
 
-type 'a t  =  Gstructure.entry
+type 'a t  =  Gdefs.entry
 
 let name (e:'a t) = e.name
 

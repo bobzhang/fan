@@ -17,7 +17,7 @@ let with_loc (parse_fun: 'b Tokenf.parse ) strm =
   (x, loc)
 
 
-let level_number (entry:Gstructure.entry) lab =
+let level_number (entry:Gdefs.entry) lab =
   let rec lookup levn = function
     | [] -> failwithf "unknown level %s"  lab
     | lev :: levs ->
@@ -33,7 +33,7 @@ let level_number (entry:Gstructure.entry) lab =
         
 module ArgContainer= Stack
   
-let rec parser_of_tree (entry:Gstructure.entry)
+let rec parser_of_tree (entry:Gdefs.entry)
     (lev,assoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
@@ -41,7 +41,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
     so the action returned by son is a function,
     it is to be applied by the value returned by node.
    *)
-  let rec from_tree (tree:Gstructure.tree) : Gstructure.anno_action Tokenf.parse =
+  let rec from_tree (tree:Gdefs.tree) : Gdefs.anno_action Tokenf.parse =
     match tree  with
     | DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
@@ -106,7 +106,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
                      (match e with
                      | Streamf.NotConsumed  ->
                          raise (Streamf.Error
-                              (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
+                              (Gfailed.tree_failed  entry e (node :>Gdefs.symbol) son))
                      | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
@@ -119,7 +119,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gstructure.terminal list)  : (* Tokenf.t *)Obj.t list option  Tokenf.parse =
+and parser_of_terminals (terminals: Gdefs.terminal list)  : (* Tokenf.t *)Obj.t list option  Tokenf.parse =
   fun strm ->
     let module M = struct exception X end in
     let n = List.length terminals in
@@ -156,7 +156,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list)  : (* Tokenf.t *)O
       with M.X -> None 
 
 (* functional and re-entrant *)
-and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
+and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =
   let rec aux s = 
     match s with 
@@ -203,7 +203,7 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
 
 (* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs:  Gstructure.level list) : int ->  Gaction.t Tokenf.parse =
+  let rec aux clevn  (xs:  Gdefs.level list) : int ->  Gaction.t Tokenf.parse =
     match xs with 
     | [] -> fun _ -> fun _ -> raise Streamf.NotConsumed  
     | lev :: levs ->
@@ -231,7 +231,7 @@ let start_parser_of_levels entry =
                 with  Streamf.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
   aux 0
     
-let start_parser_of_entry (entry:Gstructure.entry) =
+let start_parser_of_entry (entry:Gdefs.entry) =
   match entry.desc with
   | Dlevels [] -> Gtools.empty_entry entry.name
   | Dlevels elev -> start_parser_of_levels entry  elev
@@ -239,7 +239,7 @@ let start_parser_of_entry (entry:Gstructure.entry) =
     
 
 
-let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
+let rec continue_parser_of_levels entry clevn (xs:Gdefs.level list) =
   match xs with 
   | [] -> fun _ _ _ ->  fun _ -> raise Streamf.NotConsumed
   | lev :: levs ->
@@ -265,7 +265,7 @@ let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
               let a = Gaction.apply2 act a loc in entry.continue levn loc a strm
 
   
-let continue_parser_of_entry (entry:Gstructure.entry) =
+let continue_parser_of_entry (entry:Gdefs.entry) =
   (* debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
   match entry.desc with
   | Dlevels elev ->

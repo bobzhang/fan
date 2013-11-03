@@ -1,5 +1,5 @@
 (** Gparser module *)
-open Gstructure
+open Gdefs
 
 
 (** apply the [parse_fun] and

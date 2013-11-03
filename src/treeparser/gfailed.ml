@@ -1,6 +1,6 @@
 
 
-open Gstructure
+open Gdefs
 
 
 
@@ -160,7 +160,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
          "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
          "----------------------------------@,@]@.")
         entry.name
-        (Gprint.text#rules ) (Gstru.flatten_tree tree);
+        (Gprint.text#rules ) (Gtools.flatten_tree tree);
     else ();
     txt ^ " (in [" ^ entry.name ^ "])"
   end

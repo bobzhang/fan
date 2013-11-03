@@ -1,5 +1,5 @@
 
-open Gstructure
+(* open Gdefs *)
 
 
 let empty_entry ename _ =
@@ -19,7 +19,8 @@ let get_prev_loc strm =
   |Some l -> Tokenf.get_loc l
   |None -> Locf.ghost
 
-let is_level_labelled n =   function
+let is_level_labelled n l =
+  match (l:Gdefs.level) with 
   | {lname=Some n1 ; _  } -> n = n1
   | _ -> false 
 
@@ -33,57 +34,56 @@ let is_level_labelled n =   function
   ]}
  *)  
 let get_terminals x =
-  let rec aux tokl last_tok  = function
-    | Node {node = (#terminal as tok); son; brother = DeadEnd}
+  let rec aux tokl last_tok  x =
+    match (x:Gdefs.tree) with 
+    | Node {node = (#Gdefs.terminal as tok); son; brother = DeadEnd}
       ->  aux (last_tok :: tokl) tok son
     | tree ->
         if tokl = [] then None (* FIXME?*)
         else Some (List.rev (last_tok :: tokl), last_tok, tree)  in
-  match x with
-  | {node=(#terminal as x);son;_} ->
+  match (x:Gdefs.node) with
+  | {node=(#Gdefs.terminal as x);son;_} ->
     (* first case we don't require anything on [brother] *)
      (aux [] x son)
   | _ -> None 
 
 
-let eq_token  (x : Gstructure.token_pattern)  (y:Gstructure.token_pattern) : bool =
+let eq_token  (x : Gdefs.token_pattern)  (y:Gdefs.token_pattern) : bool =
   match x , y with 
   | (_,a,_) , (_,b,_) -> a  =  b
 
 (** used in [Delete], the delete API may be deprecated in the future *)        
-let logically_eq_symbols entry =
-  let rec eq_symbol (s1:symbol) (s2:symbol) =
+let logically_eq_symbols (entry:Gdefs.entry) =
+  let rec eq_symbol (s1:Gdefs.symbol) (s2:Gdefs.symbol) =
     match (s1, s2) with
     | (`Nterm e1, `Nterm e2) -> e1.name = e2.name
     | (`Nterm e1, `Self) -> e1.name = entry.name
     | (`Self, `Nterm e2) -> entry.name = e2.name
     (* | (`Self, `Self) -> true *)
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.name = e2.name && l1 = l2
-    | (`List0 s1, `List0 s2) |
-      (`List1 s1, `List1 s2) |
-      (* (`Opt s1, `Opt s2) | *)
-      (`Peek s1, `Peek s2) |
-      (`Try s1, `Try s2) -> eq_symbol s1 s2
-    | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |
-      (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
+    | (`List0 s1, `List0 s2)
+    | (`List1 s1, `List1 s2)
+    | (`Peek s1, `Peek s2)
+    | (`Try s1, `Try s2) -> eq_symbol s1 s2
+    | (`List0sep (s1, sep1), `List0sep (s2, sep2))
+    | (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
     | `Token x , `Token  y  -> eq_token x y 
     | _ -> s1 = s2 in
   eq_symbol
 
 (* used in [Insert] *)
-let rec eq_symbol (s1:symbol) (s2:symbol) =
+let rec eq_symbol (s1:Gdefs.symbol) (s2:Gdefs.symbol) =
   match (s1, s2) with
   | (`Nterm e1, `Nterm e2) -> e1 == e2
   | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1 == e2 && l1 = l2
   | (`Self, `Self) -> true
-  | (`List0 s1, `List0 s2) |
-    (`List1 s1, `List1 s2) |
-    (* (`Opt s1, `Opt s2) | *)
-    (`Peek s1, `Peek s2) |
-    (`Try s1, `Try s2) -> eq_symbol s1 s2
-  | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |
-    (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
+  | (`List0 s1, `List0 s2)
+  | (`List1 s1, `List1 s2)
+  | (`Peek s1, `Peek s2)
+  | (`Try s1, `Try s2) -> eq_symbol s1 s2
+  | (`List0sep (s1, sep1), `List0sep (s2, sep2))
+  | (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
   | `Token x, `Token y -> eq_token x y
   | _ -> s1 = s2
@@ -93,20 +93,20 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
 
 
 
-let rec entry_first (v:Gstructure.entry) : string list =
+let rec entry_first (v:Gdefs.entry) : string list =
   match v.desc with
   | Dlevels ls -> Listf.concat_map level_first ls  
 
-and level_first (x:Gstructure.level) : string list =
+and level_first (x:Gdefs.level) : string list =
   tree_first x.lprefix
 
-and tree_first (x:Gstructure.tree) : string list =
+and tree_first (x:Gdefs.tree) : string list =
   match x with
   | Node {node;brother;_} ->
       symbol_first node @ tree_first brother
   | LocAct _ | DeadEnd -> []
 
-and symbol_first (x:symbol) : string list  = 
+and symbol_first (x:Gdefs.symbol) : string list  = 
   match x  with
   | `Nterm e -> entry_first e
   | `Snterml (e,_) -> entry_first e
@@ -121,6 +121,55 @@ and symbol_first (x:symbol) : string list  =
   | `Keyword s -> [s ]
   | `Token _ -> []
 
+
+
+        
+let mk_action=Gaction.mk
+
+(* tree processing *)  
+let rec flatten_tree (x: Gdefs.tree ) =
+  match x with 
+  | DeadEnd -> []
+  | LocAct (_, _) -> [[]]
+  | Node {node = n; brother = b; son = s} ->
+      List.map (fun l -> n::l) (flatten_tree s) @ flatten_tree b 
+
+type brothers =
+  | Bro of Gdefs.symbol * brothers list
+  | End
+
+
+  
+
+
+let get_brothers x =
+  let rec aux acc (x:Gdefs.tree) =
+    match x with
+    | DeadEnd -> List.rev acc 
+    | LocAct _ -> List.rev (End:: acc)
+    | Node {node = n; brother = b; son = s} ->
+        aux  (Bro (n, aux [] s) :: acc) b  in aux [] x 
+let get_children x = 
+  let rec aux acc =  function
+    | [] -> List.rev acc
+    | [Bro (n, x)] -> aux (n::acc) x
+    | _ -> raise Exit  in aux [] x 
+
+(* level -> lprefix -> *)  
+let get_first =
+  let rec aux acc (x:Gdefs.tree) =
+    match x with 
+    |Node {node;brother;_} ->
+        aux (node::acc) brother
+    |LocAct (_,_) | DeadEnd -> acc  in
+  aux []
+
+let get_first_from levels set =
+  levels |>
+  List.iter
+    (fun (level:Gdefs.level) ->
+      level.lprefix |> get_first |> Hashset.add_list set)
+    
         
 
 (* let rec get_first = fun *)

@@ -1,4 +1,4 @@
-open Gstructure
+open Gdefs
 
 (* val name_of_descr : [> `Antiquot ] * string -> string *)
 

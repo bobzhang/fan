@@ -1,6 +1,6 @@
 
 (** management for Fan's parser entry *)
-open Gstructure
+open Gdefs
 
 type 'a t (* = private entry *)
 
@@ -74,7 +74,7 @@ val symb_failed :  'b t ->  'a -> symbol -> symbol -> string
 val symb_failed_txt :  'a t -> symbol -> symbol -> string
 
 val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * Locf.t) Tokenf.parse
-val levels_of_entry : 'a t -> Gstructure.level list option      
+val levels_of_entry : 'a t -> Gdefs.level list option      
     
 val copy : 'a t -> 'a t
 

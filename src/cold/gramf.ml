@@ -1,8 +1,8 @@
 open Format
-include Gstructure
+include Gdefs
 include Gentry
-include Gstru
-module Action = Gaction
+let mk_action = Gaction.mk
+type action = Gaction.t 
 let default_keywords =
   ["&&";
   "#";
@@ -131,7 +131,7 @@ let sfold0 = Gfold.sfold0
 let sfold1 = Gfold.sfold1
 let sfold0sep = Gfold.sfold0sep
 let sfold1sep = Gfold.sfold1sep
-let find_level ?position  (entry : Gstructure.entry) =
+let find_level ?position  (entry : Gdefs.entry) =
   match entry.desc with
   | Dlevels levs ->
       let (_,f,_) = Ginsert.find_level ?position entry levs in f

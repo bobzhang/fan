@@ -1,6 +1,6 @@
 
 (** Internal: Handling functional insertion for Fan's entry *)
-open Gstructure
+open Gdefs
 
 val higher :
     [> terminal ] -> [> terminal ] -> bool
@@ -41,9 +41,9 @@ val get_initial : ([> `Self ] as 'a) list -> bool * 'a list
 
     Ginsert.add_production ([`Self;`Keyword "x";`Keyword "y"],
     ("",Gaction.mk (fun _ -> ""))) DeadEnd;;
-    - : Gstructure.tree = `-S---"x"---"y"---.
+    - : Gdefs.tree = `-S---"x"---"y"---.
     without pretty printer 
-    - : Grammar.Gstructure.tree =
+    - : Grammar.Gdefs.tree =
     Node
     {node = `Self;
       son =
