@@ -66,18 +66,25 @@ let apply () =
                       ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
                       (_loc : Locf.t)  ->
                       (`Functor (_loc, i, t, me) : 'mexp )))));
+           ([`Keyword "struct"; `Keyword "end"],
+             ("match st with | Some st -> `Struct (_loc, st) | None  -> `StructEnd _loc\n",
+               (Gramf.mk_action
+                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                     let st = None in
+                     (match st with
+                      | Some st -> `Struct (_loc, st)
+                      | None  -> `StructEnd _loc : 'mexp )))));
            ([`Keyword "struct";
             `Nterm (Gramf.obj (strus : 'strus Gramf.t ));
             `Keyword "end"],
-             ("`Struct (_loc, st)\n",
+             ("match st with | Some st -> `Struct (_loc, st) | None  -> `StructEnd _loc\n",
                (Gramf.mk_action
                   (fun ~__fan_2:_  ~__fan_1:(st : 'strus)  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`Struct (_loc, st) : 'mexp )))));
-           ([`Keyword "struct"; `Keyword "end"],
-             ("`StructEnd _loc\n",
-               (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`StructEnd _loc : 'mexp )))))]);
+                     (_loc : Locf.t)  ->
+                     let st = Some st in
+                     (match st with
+                      | Some st -> `Struct (_loc, st)
+                      | None  -> `StructEnd _loc : 'mexp )))))]);
         ((Some "apply"), None,
           [([`Self; `Self],
              ("`App (_loc, me1, me2)\n",
@@ -368,12 +375,15 @@ let apply () =
                                                    Gramf.t ));
            `Keyword "=";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("`TypeEq (_loc, t1, t2)\n",
+            ("match p with\n| Some _ -> `TypeEqPriv (_loc, t1, t2)\n| None  -> `TypeEq (_loc, t1, t2)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
                     ~__fan_1:(t1 : 'type_longident_and_parameters) 
                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`TypeEq (_loc, t1, t2) : 'constr )))));
+                    let p = None in
+                    (match p with
+                     | Some _ -> `TypeEqPriv (_loc, t1, t2)
+                     | None  -> `TypeEq (_loc, t1, t2) : 'constr )))));
           ([`Keyword "type";
            `Nterm
              (Gramf.obj
@@ -382,12 +392,16 @@ let apply () =
            `Keyword "=";
            `Keyword "private";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("`TypeEqPriv (_loc, t1, t2)\n",
+            ("match p with\n| Some _ -> `TypeEqPriv (_loc, t1, t2)\n| None  -> `TypeEq (_loc, t1, t2)\n",
               (Gramf.mk_action
-                 (fun ~__fan_4:(t2 : 'ctyp)  ~__fan_3:_  ~__fan_2:_ 
+                 (fun ~__fan_4:(t2 : 'ctyp)  ~__fan_3:(p : Tokenf.txt) 
+                    ~__fan_2:_ 
                     ~__fan_1:(t1 : 'type_longident_and_parameters) 
                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`TypeEqPriv (_loc, t1, t2) : 'constr )))));
+                    let p = Some p in
+                    (match p with
+                     | Some _ -> `TypeEqPriv (_loc, t1, t2)
+                     | None  -> `TypeEq (_loc, t1, t2) : 'constr )))));
           ([`Keyword "type";
            `Nterm
              (Gramf.obj
@@ -408,12 +422,18 @@ let apply () =
              (Gramf.obj
                 (module_longident_with_app : 'module_longident_with_app
                                                Gramf.t ))],
-            ("`ModuleEq (_loc, (i1 : vid  :>ident), i2)\n",
+            ("let i = (i1 : vid  :>ident) in\nif v = \"=\" then `ModuleEq (_loc, i, i2) else `ModuleSubst (_loc, i, i2)\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(i2 : 'module_longident_with_app)  ~__fan_2:_ 
+                 (fun ~__fan_3:(i2 : 'module_longident_with_app) 
+                    ~__fan_2:(__fan_2 : Tokenf.txt) 
                     ~__fan_1:(i1 : 'module_longident)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    (`ModuleEq (_loc, (i1 : vid  :>ident), i2) : 'constr )))));
+                    match __fan_2 with
+                    | ({ txt = v;_} : Tokenf.txt) ->
+                        (let i = (i1 : vid  :>ident) in
+                         if v = "="
+                         then `ModuleEq (_loc, i, i2)
+                         else `ModuleSubst (_loc, i, i2) : 'constr )))));
           ([`Keyword "module";
            `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
            `Keyword ":=";
@@ -421,12 +441,18 @@ let apply () =
              (Gramf.obj
                 (module_longident_with_app : 'module_longident_with_app
                                                Gramf.t ))],
-            ("`ModuleSubst (_loc, (i1 : vid  :>ident), i2)\n",
+            ("let i = (i1 : vid  :>ident) in\nif v = \"=\" then `ModuleEq (_loc, i, i2) else `ModuleSubst (_loc, i, i2)\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(i2 : 'module_longident_with_app)  ~__fan_2:_ 
+                 (fun ~__fan_3:(i2 : 'module_longident_with_app) 
+                    ~__fan_2:(__fan_2 : Tokenf.txt) 
                     ~__fan_1:(i1 : 'module_longident)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    (`ModuleSubst (_loc, (i1 : vid  :>ident), i2) : 'constr )))))]) : 
+                    match __fan_2 with
+                    | ({ txt = v;_} : Tokenf.txt) ->
+                        (let i = (i1 : vid  :>ident) in
+                         if v = "="
+                         then `ModuleEq (_loc, i, i2)
+                         else `ModuleSubst (_loc, i, i2) : 'constr )))))]) : 
        Gramf.olevel )));
   (Gramf.extend_single (sigis : 'sigis Gramf.t )
      (None,
@@ -457,12 +483,11 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s");
-           `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
+                     (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "";_} as s) : Tokenf.ant) ->
                         (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )
@@ -471,12 +496,11 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
-           `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
+                     (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "sigi";_} as s) : Tokenf.ant) ->
                         (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )
@@ -485,11 +509,12 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s");
+           `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "";_} as s) : Tokenf.ant) ->
                         (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )
@@ -498,35 +523,36 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
+           `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | (({ kind = "sigi";_} as s) : Tokenf.ant) ->
                         (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )
                     | _ -> assert false))));
+          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
+            ("`Sem (_loc, sg, s)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(s : 'sigis)  ~__fan_0:(sg : 'sigi) 
+                    (_loc : Locf.t)  -> (`Sem (_loc, sg, s) : 'sigis )))));
           ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"; `Self],
             ("`Sem (_loc, sg, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(s : 'sigis)  ~__fan_1:_ 
                     ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
                     (`Sem (_loc, sg, s) : 'sigis )))));
-          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"],
-            ("sg\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
-                    (sg : 'sigis )))));
-          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
-            ("`Sem (_loc, sg, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'sigis)  ~__fan_0:(sg : 'sigi) 
-                    (_loc : Locf.t)  -> (`Sem (_loc, sg, s) : 'sigis )))));
           ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ))],
             ("sg\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
+                    (sg : 'sigis )))));
+          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"],
+            ("sg\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
                     (sg : 'sigis )))))]) : Gramf.olevel ));
    Gramf.extend (mtyp : 'mtyp Gramf.t )
      (None,
@@ -576,18 +602,25 @@ let apply () =
                         | _ -> raise Streamf.NotConsumed in
                       acc0 mt1 mt2 : 'mtyp )))))]);
         ((Some "sig"), None,
-          [([`Keyword "sig";
-            `Nterm (Gramf.obj (sigis : 'sigis Gramf.t ));
-            `Keyword "end"],
-             ("`Sig (_loc, sg)\n",
+          [([`Keyword "sig"; `Keyword "end"],
+             ("match sg with | Some sg -> `Sig (_loc, sg) | None  -> `SigEnd _loc\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:_  ~__fan_1:(sg : 'sigis)  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`Sig (_loc, sg) : 'mtyp )))));
-          ([`Keyword "sig"; `Keyword "end"],
-            ("`SigEnd _loc\n",
+                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                     let sg = None in
+                     (match sg with
+                      | Some sg -> `Sig (_loc, sg)
+                      | None  -> `SigEnd _loc : 'mtyp )))));
+          ([`Keyword "sig";
+           `Nterm (Gramf.obj (sigis : 'sigis Gramf.t ));
+           `Keyword "end"],
+            ("match sg with | Some sg -> `Sig (_loc, sg) | None  -> `SigEnd _loc\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`SigEnd _loc : 'mtyp )))))]);
+                 (fun ~__fan_2:_  ~__fan_1:(sg : 'sigis)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let sg = Some sg in
+                    (match sg with
+                     | Some sg -> `Sig (_loc, sg)
+                     | None  -> `SigEnd _loc : 'mtyp )))))]);
         ((Some "simple"), None,
           [([`Token
                (((function
@@ -1286,15 +1319,15 @@ let apply () =
                      (`While (_loc, e, seq) : 'exp )))))]);
         ((Some ":="), (Some `NA),
           [([`Self; `Keyword ":="; `Self],
-             ("`App (_loc, (`App (_loc, (`Lid (xloc, \":=\")), e1)), e2)\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc;_} : Tokenf.txt) ->
-                         (`App
-                            (_loc, (`App (_loc, (`Lid (xloc, ":=")), e1)),
-                              e2) : 'exp )))));
+                     | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                         'exp )))));
           ([`Self; `Keyword "<-"; `Self],
             ("match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n",
               (Gramf.mk_action
@@ -1305,45 +1338,45 @@ let apply () =
                      | None  -> `Assign (_loc, e1, e2) : 'exp )))))]);
         ((Some "||"), (Some `RA),
           [([`Self; `Keyword "or"; `Self],
-             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ txt = op;_} : Tokenf.txt) ->
-                         (Ast_gen.appl_of_list
-                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                     | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))));
           ([`Self; `Keyword "||"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+            ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                    | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                        (let op: FAst.exp = `Lid (xloc, op) in
+                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))))]);
         ((Some "&&"), (Some `RA),
           [([`Self; `Keyword "&"; `Self],
-             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ txt = op;_} : Tokenf.txt) ->
-                         (Ast_gen.appl_of_list
-                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                     | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))));
           ([`Self; `Keyword "&&"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+            ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                    | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                        (let op: FAst.exp = `Lid (xloc, op) in
+                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))))]);
         ((Some "<"), (Some `LA),
           [([`Self;
@@ -1352,14 +1385,14 @@ let apply () =
                  | `Inf ({ level = 0;_} : Tokenf.op) -> true
                  | _ -> false)), (3654849, (`Level 0)), "Precedence0");
             `Self],
-             ("`App (_loc, (`App (_loc, (`Lid (xloc, x)), e1)), e2)\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                         (`App
-                            (_loc, (`App (_loc, (`Lid (xloc, x)), e1)), e2) : 
+                     | ({ loc = xloc; txt = op;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))));
           ([`Self; `Keyword "=="; `Self],
             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
@@ -1408,24 +1441,26 @@ let apply () =
                  | `Inf ({ level = 1;_} : Tokenf.op) -> true
                  | _ -> false)), (3654849, (`Level 1)), "Precedence1");
             `Self],
-             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                         (let op: FAst.exp = `Lid (xloc, x) in
+                     | ({ loc = xloc; txt = op;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
                           (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))))]);
         ((Some "::"), (Some `RA),
           [([`Self; `Keyword "::"; `Self],
-             ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e1)), e2) : FAst.exp )\n",
+             ("let op: FAst.exp = `Uid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:_  ~__fan_0:(e1 : 'exp)
-                      (_loc : Locf.t)  ->
-                     ((`App
-                         (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), e2) : 
-                     FAst.exp ) : 'exp )))))]);
+                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
+                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                     match __fan_1 with
+                     | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                         (let op: FAst.exp = `Uid (xloc, op) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                         'exp )))))]);
         ((Some "+"), (Some `LA),
           [([`Self;
             `Token
@@ -1433,43 +1468,43 @@ let apply () =
                  | `Inf ({ level = 2;_} : Tokenf.op) -> true
                  | _ -> false)), (3654849, (`Level 2)), "Precedence2");
             `Self],
-             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                         (let op: FAst.exp = `Lid (xloc, x) in
+                     | ({ loc = xloc; txt = op;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
                           (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))));
           ([`Self; `Keyword "+"; `Self],
-            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+            ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = x; loc = xloc;_} : Tokenf.txt) ->
-                        (let op: FAst.exp = `Lid (xloc, x) in
+                    | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                        (let op: FAst.exp = `Lid (xloc, op) in
                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))));
           ([`Self; `Keyword "-"; `Self],
-            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+            ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = x; loc = xloc;_} : Tokenf.txt) ->
-                        (let op: FAst.exp = `Lid (xloc, x) in
+                    | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                        (let op: FAst.exp = `Lid (xloc, op) in
                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))));
           ([`Self; `Keyword "-."; `Self],
-            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+            ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = x; loc = xloc;_} : Tokenf.txt) ->
-                        (let op: FAst.exp = `Lid (xloc, x) in
+                    | ({ txt = op; loc = xloc;_} : Tokenf.txt) ->
+                        (let op: FAst.exp = `Lid (xloc, op) in
                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))))]);
         ((Some "*"), (Some `LA),
@@ -1479,13 +1514,13 @@ let apply () =
                  | `Inf ({ level = 3;_} : Tokenf.op) -> true
                  | _ -> false)), (3654849, (`Level 3)), "Precedence3");
             `Self],
-             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                         (let op: FAst.exp = `Lid (xloc, x) in
+                     | ({ loc = xloc; txt = op;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
                           (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))))]);
         ((Some "**"), (Some `RA),
@@ -1495,13 +1530,13 @@ let apply () =
                  | `Inf ({ level = 4;_} : Tokenf.op) -> true
                  | _ -> false)), (3654849, (`Level 4)), "Precedence4");
             `Self],
-             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+             ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                         (let op: FAst.exp = `Lid (xloc, x) in
+                     | ({ loc = xloc; txt = op;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, op) in
                           (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                          'exp )))))]);
         ((Some "obj"), (Some `RA),
@@ -1541,23 +1576,48 @@ let apply () =
            `Keyword "(";
            `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
            `Keyword ")";
-           `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
            `Keyword "end"],
-            ("`ObjPat (_loc, p, cst)\n",
+            ("match cst with\n| Some cst -> `ObjPat (_loc, p, cst)\n| None  -> `ObjPatEnd (_loc, p)\n",
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(cst : 'class_structure) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ObjPat (_loc, p, cst) : 'exp )))));
+                 (fun ~__fan_4:_  ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_
+                     ~__fan_0:_  (_loc : Locf.t)  ->
+                    let cst = None in
+                    (match cst with
+                     | Some cst -> `ObjPat (_loc, p, cst)
+                     | None  -> `ObjPatEnd (_loc, p) : 'exp )))));
           ([`Keyword "object";
            `Keyword "(";
            `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
            `Keyword ")";
+           `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
            `Keyword "end"],
-            ("`ObjPatEnd (_loc, p)\n",
+            ("match cst with\n| Some cst -> `ObjPat (_loc, p, cst)\n| None  -> `ObjPatEnd (_loc, p)\n",
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ObjPatEnd (_loc, p) : 'exp )))));
+                 (fun ~__fan_5:_  ~__fan_4:(cst : 'class_structure) 
+                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let cst = Some cst in
+                    (match cst with
+                     | Some cst -> `ObjPat (_loc, p, cst)
+                     | None  -> `ObjPatEnd (_loc, p) : 'exp )))));
+          ([`Keyword "object";
+           `Keyword "(";
+           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword ":";
+           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+           `Keyword ")";
+           `Keyword "end"],
+            ("match cst with\n| Some cst -> `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n| None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n",
+              (Gramf.mk_action
+                 (fun ~__fan_6:_  ~__fan_5:_  ~__fan_4:(t : 'ctyp) 
+                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let cst = None in
+                    (match cst with
+                     | Some cst ->
+                         `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)
+                     | None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
+                      'exp )))));
           ([`Keyword "object";
            `Keyword "(";
            `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
@@ -1566,52 +1626,54 @@ let apply () =
            `Keyword ")";
            `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
            `Keyword "end"],
-            ("`ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n",
+            ("match cst with\n| Some cst -> `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n| None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n",
               (Gramf.mk_action
                  (fun ~__fan_7:_  ~__fan_6:(cst : 'class_structure) 
                     ~__fan_5:_  ~__fan_4:(t : 'ctyp)  ~__fan_3:_ 
                     ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
-                    'exp )))));
-          ([`Keyword "object";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-           `Keyword ")";
-           `Keyword "end"],
-            ("`ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n",
+                    let cst = Some cst in
+                    (match cst with
+                     | Some cst ->
+                         `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)
+                     | None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
+                      'exp )))));
+          ([`Keyword "object"; `Keyword "end"],
+            ("match cst with | Some cst -> `Obj (_loc, cst) | None  -> `ObjEnd _loc\n",
               (Gramf.mk_action
-                 (fun ~__fan_6:_  ~__fan_5:_  ~__fan_4:(t : 'ctyp) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
-                    'exp )))));
+                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                    let cst = None in
+                    (match cst with
+                     | Some cst -> `Obj (_loc, cst)
+                     | None  -> `ObjEnd _loc : 'exp )))));
           ([`Keyword "object";
            `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
            `Keyword "end"],
-            ("`Obj (_loc, cst)\n",
+            ("match cst with | Some cst -> `Obj (_loc, cst) | None  -> `ObjEnd _loc\n",
               (Gramf.mk_action
                  (fun ~__fan_2:_  ~__fan_1:(cst : 'class_structure) 
                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Obj (_loc, cst) : 'exp )))));
-          ([`Keyword "object"; `Keyword "end"],
-            ("`ObjEnd _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ObjEnd _loc : 'exp )))))]);
+                    let cst = Some cst in
+                    (match cst with
+                     | Some cst -> `Obj (_loc, cst)
+                     | None  -> `ObjEnd _loc : 'exp )))))]);
         ((Some "unary minus"), (Some `NA),
           [([`Keyword "-"; `Self],
-             ("Fan_ops.mkumin _loc \"-\" e\n",
+             ("Fan_ops.mkumin _loc x e\n",
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (Fan_ops.mkumin _loc "-" e : 'exp )))));
+                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
+                     (_loc : Locf.t)  ->
+                     match __fan_0 with
+                     | ({ txt = x;_} : Tokenf.txt) ->
+                         (Fan_ops.mkumin _loc x e : 'exp )))));
           ([`Keyword "-."; `Self],
-            ("Fan_ops.mkumin _loc \"-.\" e\n",
+            ("Fan_ops.mkumin _loc x e\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (Fan_ops.mkumin _loc "-." e : 'exp )))))]);
+                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | ({ txt = x;_} : Tokenf.txt) ->
+                        (Fan_ops.mkumin _loc x e : 'exp )))))]);
         ((Some "apply"), (Some `LA),
           [([`Self; `Self],
              ("`App (_loc, e1, e2)\n",
@@ -1727,13 +1789,13 @@ let apply () =
                     (`Send (_loc, e, lab) : 'exp )))))]);
         ((Some "~-"), (Some `NA),
           [([`Keyword "!"; `Self],
-             ("`App (_loc, (`Lid (xloc, \"!\")), e)\n",
+             ("`App (_loc, (`Lid (xloc, x)), e)\n",
                (Gramf.mk_action
                   (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
                      (_loc : Locf.t)  ->
                      match __fan_0 with
-                     | ({ loc = xloc;_} : Tokenf.txt) ->
-                         (`App (_loc, (`Lid (xloc, "!")), e) : 'exp )))));
+                     | ({ txt = x; loc = xloc;_} : Tokenf.txt) ->
+                         (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))));
           ([`Token
               (((function | `Pre _ -> true | _ -> false)), (4003843, `Any),
                 "`Pre x");
@@ -2287,18 +2349,25 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:_  ~__fan_1:(e : 'exp)  ~__fan_0:_ 
                     (_loc : Locf.t)  -> (e : 'exp )))));
+          ([`Keyword "begin"; `Keyword "end"],
+            ("match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : FAst.exp )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                    let seq = None in
+                    (match seq with
+                     | Some seq -> `Seq (_loc, seq)
+                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp )))));
           ([`Keyword "begin";
            `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
            `Keyword "end"],
-            ("`Seq (_loc, seq)\n",
+            ("match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_2:_  ~__fan_1:(seq : 'sequence)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Seq (_loc, seq) : 'exp )))));
-          ([`Keyword "begin"; `Keyword "end"],
-            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.exp ) : 'exp )))));
+                    (_loc : Locf.t)  ->
+                    let seq = Some seq in
+                    (match seq with
+                     | Some seq -> `Seq (_loc, seq)
+                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp )))));
           ([`Keyword "(";
            `Keyword "module";
            `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ));
