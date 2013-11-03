@@ -1516,8 +1516,8 @@ let apply () =
           ([`Self;
            `Token
              (((function
-                | `Inf ({ level = 5;_} : Tokenf.op) -> true
-                | _ -> false)), (3654849, (`Level 5)), "Precedence5");
+                | `Inf ({ level = 3;_} : Tokenf.op) -> true
+                | _ -> false)), (3654849, (`Level 3)), "Precedence3");
            `Self],
             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action

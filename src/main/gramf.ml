@@ -81,7 +81,7 @@ let default_keywords =
    "+";   
    "_";
    ">]" ;
-   "??" ;
+   "??" ; (* FIXME removed to conform OCaml*)
    "||";
    "<";
    "~";
