@@ -224,14 +224,15 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
            update_loc  lexbuf ?file:name ~line:(int_of_string num) ~absolute:true ;
            token lexbuf
          end}
-           (* Antiquotation handling *)
 
-       (******************)
-       (* $x   *)
-       (* $x{} *)
-       (* $x:id *)
-       (* ${}*)
-       (******************)
+
+       (**************************)
+       (* Antiquotation handling *)       
+       (* $x                     *)
+       (* $x{}                   *)
+       (* $x:id                  *)
+       (* ${}                    *)
+       (**************************)
    | '$' ( lident as name) (':'  antifollowident as follow)? as txt %{
      let (kind,shift) =
        match follow with
