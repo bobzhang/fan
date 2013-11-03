@@ -18,7 +18,7 @@ let  name_of_symbol entry : [> symbol] -> string  =  function
   | _ -> "???" 
 
 let tree_in_entry prev_symb tree = function
-  | Dlevels levels ->
+    levels ->
       let rec search_level level =
         match search_tree level.lsuffix with
         | Some t -> Some (Node {node = `Self; son = t; brother = DeadEnd})

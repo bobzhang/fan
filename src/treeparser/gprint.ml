@@ -107,10 +107,7 @@ class text_grammar : grammar_print = object(self:'self)
     pp f "@[<hv0>  %a@]" (Formatf.pp_list self#level ~sep:"@;| ") elev
   method entry f e :unit= begin
     pp f "@[<2>%s:@;[%a]@]" e.name
-      (fun f e ->
-        match e.desc with
-        |Dlevels elev -> self#levels f elev
-      ) e
+      (fun f e -> self#levels f e.desc) e
   end
   (* used in dumping symbol [`Stree] *)    
   method tree f t = self#rules f  @@ Gtools.flatten_tree t

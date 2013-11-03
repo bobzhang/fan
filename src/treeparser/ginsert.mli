@@ -14,7 +14,7 @@ val derive_eps : symbol -> bool
 (** create an empty level *)
 val empty_lev : label  -> assoc  -> level
 
-val levels_of_entry : entry -> level list option
+
 
 
 

@@ -33,9 +33,6 @@ let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
 
-let levels_of_entry  (e: Gdefs.entry) =
-  match e.desc with
-  |Dlevels ls -> Some ls
     
 
 let find_level ?position (entry:Gdefs.entry)  levs =
@@ -190,9 +187,7 @@ let level_of_olevel (lb:olevel) =
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
 let insert_olevels_in_levels entry position olevels =
-  let elev =
-    match entry.desc with
-    | Dlevels elev -> elev in
+  let elev = entry.desc in
   match olevels with
   | [] -> elev
   | _::_ -> 
@@ -204,9 +199,7 @@ let insert_olevels_in_levels entry position olevels =
 
 
 let insert_olevel (entry:Gdefs.entry) position olevel =
-  let elev =
-    match entry.desc with
-    | Dlevels elev -> elev in
+  let elev = entry.desc in
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
@@ -261,21 +254,21 @@ and unsafe_scan_product entry (symbols,x) : production  =
 let unsafe_extend entry (position,levels) =
   let levels =  unsafe_scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.desc <- Dlevels elev;
+  (entry.desc <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
 let unsafe_extend_single entry (position,olevel) = 
   let olevel = unsafe_scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.desc <-Dlevels elev;
+  (entry.desc <- elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
     
 let extend entry (position, levels) =
   let levels =  scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.desc <- Dlevels elev;
+  (entry.desc <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
@@ -284,7 +277,7 @@ let extend entry (position, levels) =
 let extend_single entry (position,olevel) = 
   let olevel = scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.desc <-Dlevels elev;
+  (entry.desc <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
@@ -327,12 +320,10 @@ let  eoi_entry e =
     {e with
      start = (fun _ -> assert false) ;
      continue = fun _ -> assert false;} in
-  match result.desc with
-  | Dlevels ls ->
-      (result.desc <- Dlevels (List.map eoi_level ls);
-       result.start <- Gparser.start_parser_of_entry result;
-       result.continue <- Gparser.continue_parser_of_entry result;
-       result)
+  (result.desc <- List.map eoi_level result.desc ;
+   result.start <- Gparser.start_parser_of_entry result;
+   result.continue <- Gparser.continue_parser_of_entry result;
+   result)
 
 
 (**

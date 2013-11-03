@@ -22,8 +22,7 @@ let level_number (entry:Gdefs.entry) lab =
     | [] -> failwithf "unknown level %s"  lab
     | lev :: levs ->
         if Gtools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
-  match entry.desc with
-  | Dlevels elev -> lookup 0 elev
+  lookup 0 entry.desc 
         
 
 (* in case of syntax error, the system attempts to recover the error by applying
@@ -233,8 +232,8 @@ let start_parser_of_levels entry =
     
 let start_parser_of_entry (entry:Gdefs.entry) =
   match entry.desc with
-  | Dlevels [] -> Gtools.empty_entry entry.name
-  | Dlevels elev -> start_parser_of_levels entry  elev
+  | [] -> Gtools.empty_entry entry.name
+  | elev -> start_parser_of_levels entry  elev
 
     
 
@@ -267,9 +266,7 @@ let rec continue_parser_of_levels entry clevn (xs:Gdefs.level list) =
   
 let continue_parser_of_entry (entry:Gdefs.entry) =
   (* debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
-  match entry.desc with
-  | Dlevels elev ->
-    let p = continue_parser_of_levels entry 0 elev in
+    let p = continue_parser_of_levels entry 0 entry.desc  in
     (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
 
 

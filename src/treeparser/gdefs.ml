@@ -51,8 +51,7 @@ type entry = {
     mutable continue : int -> Gaction.t cont_parse ;
     mutable desc     :  desc;
     mutable freezed :  bool;}
-and desc =
-  | Dlevels of level list 
+and desc = level list 
 and level = {
     lname   : label;
     assoc   : assoc ;

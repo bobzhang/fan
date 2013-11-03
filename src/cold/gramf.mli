@@ -138,16 +138,16 @@ val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 val delete_rule:  'a t -> symbol list -> unit
 
 
-val extend:  'a t -> extend_statment -> unit
-val unsafe_extend:  'a t -> extend_statment -> unit
+val extend :  'a t -> extend_statment -> unit
+val unsafe_extend :  'a t -> extend_statment -> unit
 
-val extend_single: 'a t -> single_extend_statement -> unit
-val unsafe_extend_single: 'a t -> single_extend_statement -> unit    
+val extend_single : 'a t -> single_extend_statement -> unit
+val unsafe_extend_single : 'a t -> single_extend_statement -> unit    
 
 
 
     
-val levels_of_entry: 'a t -> level list option
+
 
     
 val token_stream_of_string : string -> stream

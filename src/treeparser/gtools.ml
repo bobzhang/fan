@@ -94,8 +94,7 @@ let rec eq_symbol (s1:Gdefs.symbol) (s2:Gdefs.symbol) =
 
 
 let rec entry_first (v:Gdefs.entry) : string list =
-  match v.desc with
-  | Dlevels ls -> Listf.concat_map level_first ls  
+ Listf.concat_map level_first v.desc
 
 and level_first (x:Gdefs.level) : string list =
   tree_first x.lprefix

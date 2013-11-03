@@ -102,16 +102,14 @@ let  delete_rule_in_level_list entry symbols levs =
 
 
 let delete_rule entry sl =
-  match entry.desc with
-  | Dlevels levs ->
-      let levs = delete_rule_in_level_list entry sl levs in begin
-        entry.desc <- Dlevels levs;
-        let start = Gparser.start_parser_of_entry entry in
-        let continue = Gparser.continue_parser_of_entry entry in begin 
-          entry.start <- start;
-          entry.continue <- continue
-        end
-      end
+  let levs = delete_rule_in_level_list entry sl entry.desc  in begin
+    entry.desc <-  levs;
+    let start = Gparser.start_parser_of_entry entry in
+    let continue = Gparser.continue_parser_of_entry entry in begin 
+      entry.start <- start;
+      entry.continue <- continue
+    end
+  end
   
 
 

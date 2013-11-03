@@ -21,13 +21,13 @@ let mk_dynamic g n =
      start = (Gtools.empty_entry n);
      continue =
        (fun _  _  _  (__strm : _ Streamf.t)  -> raise Streamf.NotConsumed);
-     desc = (Dlevels []);
+     desc = [];
      freezed = false
    } : 'a t )
 let clear (e : 'a t) =
   e.start <- (fun _  _  -> raise Streamf.NotConsumed);
   e.continue <- (fun _  _  _  _  -> raise Streamf.NotConsumed);
-  e.desc <- Dlevels []
+  e.desc <- []
 let obj x = x
 let repr x = x
 let gram_of_entry (e : 'a t) = e.gram
@@ -56,7 +56,6 @@ let parse_string ?(lexer= Flex_lib.from_stream)  ?(loc= Locf.string_loc)
 let parse (entry : 'a t) loc cs =
   parse_origin_tokens entry
     (Tokenf.filter (entry.gram).gfilter (Flex_lib.from_stream loc cs))
-let levels_of_entry = Ginsert.levels_of_entry
 let extend = Ginsert.extend
 let extend_single = Ginsert.extend_single
 let copy = Ginsert.copy
