@@ -112,7 +112,8 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | "?" (ocaml_lid as txt) ':' %{
      let loc = !!lexbuf in
      `Optlabel {loc;txt}}
-   (* | "mod"|"land"|"lor"|"lxor" as txt %{`Inf{loc= !!lexbuf; txt ; level = 3}} *)
+   | "mod"|"land"|"lor"|"lxor" as txt %{`Inf{loc= !!lexbuf; txt ; level = 3}}
+   | "lsl"|"lsr" | "asr" as txt %{`Inf{loc= !!lexbuf; txt ; level = 4}}
    | ocaml_lid as txt  %{ `Lid {loc= !!lexbuf;txt}}
    | ocaml_uid as txt  %{ `Uid {loc= !!lexbuf;txt}}
    | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
@@ -148,7 +149,9 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
      `Eident {loc = !!lexbuf;txt}}
    | '(' ocaml_blank*
-       ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
+       ("or"
+       | "mod"|"land"|"lor" |"lxor"
+       |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Eident {loc = !! lexbuf;txt}}
 
    | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}

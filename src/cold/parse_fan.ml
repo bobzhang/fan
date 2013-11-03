@@ -1473,107 +1473,37 @@ let apply () =
                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                         'exp )))))]);
         ((Some "*"), (Some `LA),
-          [([`Self; `Keyword "land"; `Self],
-             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+          [([`Self;
+            `Token
+              (((function
+                 | `Inf ({ level = 3;_} : Tokenf.op) -> true
+                 | _ -> false)), (3654849, (`Level 3)), "Precedence3");
+            `Self],
+             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
+                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ txt = op;_} : Tokenf.txt) ->
-                         (Ast_gen.appl_of_list
-                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                         'exp )))));
-          ([`Self; `Keyword "lor"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                        'exp )))));
-          ([`Self; `Keyword "lxor"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                        'exp )))));
-          ([`Self; `Keyword "mod"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                        'exp )))));
-          ([`Self;
-           `Token
-             (((function
-                | `Inf ({ level = 3;_} : Tokenf.op) -> true
-                | _ -> false)), (3654849, (`Level 3)), "Precedence3");
-           `Self],
-            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                        (let op: FAst.exp = `Lid (xloc, x) in
-                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                        'exp )))))]);
+                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, x) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                         'exp )))))]);
         ((Some "**"), (Some `RA),
-          [([`Self; `Keyword "asr"; `Self],
-             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+          [([`Self;
+            `Token
+              (((function
+                 | `Inf ({ level = 4;_} : Tokenf.op) -> true
+                 | _ -> false)), (3654849, (`Level 4)), "Precedence4");
+            `Self],
+             ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
+                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | ({ txt = op;_} : Tokenf.txt) ->
-                         (Ast_gen.appl_of_list
-                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                         'exp )))));
-          ([`Self; `Keyword "lsl"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                        'exp )))));
-          ([`Self; `Keyword "lsr"; `Self],
-            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = op;_} : Tokenf.txt) ->
-                        (Ast_gen.appl_of_list
-                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
-                        'exp )))));
-          ([`Self;
-           `Token
-             (((function
-                | `Inf ({ level = 4;_} : Tokenf.op) -> true
-                | _ -> false)), (3654849, (`Level 4)), "Precedence4");
-           `Self],
-            ("let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
-                        (let op: FAst.exp = `Lid (xloc, x) in
-                         (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                        'exp )))))]);
+                     | ({ loc = xloc; txt = x;_} : Tokenf.op) ->
+                         (let op: FAst.exp = `Lid (xloc, x) in
+                          (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                         'exp )))))]);
         ((Some "obj"), (Some `RA),
           [([`Keyword "fun";
             `Keyword "|";

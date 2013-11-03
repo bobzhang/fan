@@ -299,6 +299,10 @@ let apply () = begin
        "&&" RA
         [ S as e1; ("&"|"&&" as op) ; S as e2  %{
           Ast_gen.appl_of_list [ %exp{$lid:op}; e1 ;e2]}  ]
+        (* Note that
+           The rule below combined with "(S)" will parse "(+==)" automatically,
+           no need additional productions any more
+         *)   
        "<" LA
         (* idea merge actions ... when bounds are the same ?? *)  
         [ S as e1; Inf@xloc (0,x); S as e2 %{`App(_loc,`App(_loc,`Lid(xloc,x),e1),e2)}
@@ -320,16 +324,12 @@ let apply () = begin
           let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2}}
         ]
        "*" LA
-        [ S as e1; ("land"|"lor"|"lxor"|"mod" as op) ; S as e2
-            %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2] }
-        | S as e1; Inf@xloc (3,x); S as e2 %{
+        [ S as e1; Inf@xloc (3,x); S as e2 %{
           let op = %exp@xloc{$lid:x} in
           %exp{$op $e1 $e2}}
         ]
        "**" RA
-        [ S as e1; ("asr"|"lsl"|"lsr" as op) ; S as e2
-            %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] }
-        | S as e1; Inf@xloc (4,x); S as e2 %{
+        [ S as e1; Inf@xloc (4,x); S as e2 %{
           let op = %exp@xloc{$lid:x} in
           %exp{$op $e1 $e2}}]
 
@@ -443,10 +443,6 @@ let apply () = begin
        | exp as e; ?";" %{fun acc -> %exp{ $e :: $acc }}
        ]
 
-       (* Inline let_in : *)
-       (* [ "let"; opt_rec as rf; bind as bi; "in"; exp as e; sequence'{k} %{ *)
-       (*   k  (`LetIn (_loc, rf, bi, e))} ] *)
-           
        sequence: (*FIXME*)
        [
         "let"; opt_rec as rf; bind as bi; "in"; exp as e; sequence' as k %{
