@@ -1,23 +1,11 @@
 
-(* open Gdefs *)
-
 
 let empty_entry ename _ =
   raise (Streamf.Error ("entry [" ^ ename ^ "] is empty"))
 
 
 
-(* get_cur_loc *must* be used first *)  
-let get_cur_loc (strm:Tokenf.stream) =
-  match Streamf.peek strm with
-  | Some r -> Tokenf.get_loc r 
-  | None -> Locf.ghost 
 
-
-let get_prev_loc strm =
-  match Streamf.get_last strm with
-  |Some l -> Tokenf.get_loc l
-  |None -> Locf.ghost
 
 let is_level_labelled n l =
   match (l:Gdefs.level) with 

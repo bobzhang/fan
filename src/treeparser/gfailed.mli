@@ -2,7 +2,7 @@ open Gdefs
 
 (* val name_of_descr : [> `Antiquot ] * string -> string *)
 
-val name_of_symbol :  entry -> [> symbol ] -> string
+val name_of_symbol :  entry ->  symbol -> string
 val name_of_symbol_failed :  entry -> symbol -> string
 
 val name_of_tree_failed :  entry -> tree -> string

@@ -1,4 +1,4 @@
-open Gdefs
+
 open Format
 
 let pp = fprintf 
@@ -35,16 +35,16 @@ let pp_assoc f  = function
 class type grammar_print  = object
   method set_action : bool -> unit
   (* method description : formatter -> description -> unit *)
-  method entry : formatter -> entry -> unit
-  method level : formatter -> level -> unit
-  method levels : formatter -> level list -> unit
-  method rule : formatter -> symbol list -> unit
-  method production :  formatter -> production -> unit
-  method productions : formatter -> production list -> unit      
-  method rules : formatter -> symbol list list -> unit
-  method symbol : formatter -> symbol -> unit
-  method symbol1 : formatter -> symbol -> unit
-  method tree : formatter -> tree -> unit
+  method entry : formatter -> Gdefs.entry -> unit
+  method level : formatter -> Gdefs.level -> unit
+  method levels : formatter -> Gdefs.level list -> unit
+  method rule : formatter -> Gdefs.symbol list -> unit
+  method production :  formatter -> Gdefs.production -> unit
+  method productions : formatter -> Gdefs.production list -> unit      
+  method rules : formatter -> Gdefs.symbol list list -> unit
+  method symbol : formatter -> Gdefs.symbol -> unit
+  method symbol1 : formatter -> Gdefs.symbol -> unit
+  method tree : formatter -> Gdefs.tree -> unit
 end
 
 
@@ -53,7 +53,8 @@ class text_grammar : grammar_print = object(self:'self)
 
   method set_action v = action <- v
       
-  method symbol f =  function
+  method symbol f (x:Gdefs.symbol) =
+    match x with 
     | `List0 s -> pp f "L0 %a" self#symbol1 s
     | `List0sep (s, t) ->
         pp f "L0 %a SEP %a" self#symbol1 s self#symbol1 t
@@ -68,7 +69,7 @@ class text_grammar : grammar_print = object(self:'self)
         self#symbol1 f s 
           
   method symbol1 f x =
-    match (x:symbol) with 
+    match (x: Gdefs.symbol) with 
     | `Nterm e -> pp f "%s" e.name
     | `Self -> pp f "%s" "S"
     | `Token (_,_,descr) -> pp f "%s" descr
@@ -77,7 +78,7 @@ class text_grammar : grammar_print = object(self:'self)
       `List1sep (_, _) (* | `Opt _ *) | `Try _ | `Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
-      f ((symbols,(annot,_action)):production) =
+      f ((symbols,(annot,_action)):Gdefs.production) =
     if not action then
       pp f "@[<0>%a@]" (* action ignored*)
         (Formatf.pp_list self#symbol ~sep:";@;") symbols
@@ -97,18 +98,18 @@ class text_grammar : grammar_print = object(self:'self)
   method rules f  rules= 
     pp f "@[<hv0>[ %a]@]" (Formatf.pp_list self#rule ~sep:("@;| ")) rules
       
-  method level f {assoc; lname;productions;_} =
+  method level f (x:Gdefs.level) =
     pp f "%a %a@;%a"
-      (Formatf.pp_option (fun f s -> pp f "%S" s)) lname
-      pp_assoc assoc (self#productions ) productions
+      (Formatf.pp_option (fun f s -> pp f "%S" s)) x.lname
+      pp_assoc x.assoc (self#productions ) x.productions
  
           
   method levels f elev:unit =
     pp f "@[<hv0>  %a@]" (Formatf.pp_list self#level ~sep:"@;| ") elev
-  method entry f e :unit= begin
+  method entry f (e:Gdefs.entry) :unit= 
     pp f "@[<2>%s:@;[%a]@]" e.name
-      (fun f e -> self#levels f e.levels) e
-  end
+      (fun f (e:Gdefs.entry) -> self#levels f e.levels) e
+
   (* used in dumping symbol [`Stree] *)    
   method tree f t = self#rules f  @@ Gtools.flatten_tree t
 end
@@ -131,7 +132,7 @@ class dump_grammar : grammar_print  = object(self:'self)
         | Bro (s, ls) -> string_of_symbol s, ls
         | End -> ".",[]) "" f
       @@ Gtools.get_brothers tree
-  method! level f (x:level)  =
+  method! level f (x:Gdefs.level)  =
     pp f "%a %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
       (Formatf.pp_option (fun f s -> pp f "%S" s)) x.lname
       pp_assoc x.assoc

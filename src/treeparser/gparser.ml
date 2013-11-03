@@ -7,9 +7,9 @@ open Util
 
 
 let with_loc (parse_fun: 'b Tokenf.parse ) strm =
-  let bp = Gtools.get_cur_loc strm in
+  let bp = Token_stream.cur_loc strm in
   let x = parse_fun strm in
-  let ep = Gtools.get_prev_loc strm in
+  let ep = Token_stream.prev_loc strm in
   let loc =
     if bp.loc_start.pos_cnum > ep.loc_end.pos_cnum then 
       Location_util.join bp
@@ -73,7 +73,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
         | None ->
             (* [paser_of_symbol] given a stream should always return a value  *) 
             (let ps = parser_of_symbol entry node  in fun strm ->
-              let bp = Gtools.get_cur_loc strm in
+              let bp = Token_stream.cur_loc strm in
               (try
                 let a = ps strm in
                 fun ()  ->
@@ -84,7 +84,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                     (ignore (ArgContainer.pop q);
                      (match e with
                      | Streamf.NotConsumed  ->
-                         if Gtools.get_cur_loc strm = bp
+                         if Token_stream.cur_loc strm = bp
                          then raise Streamf.NotConsumed (* could call brother?*)
                          else
                            raise @@ Streamf.Error (Gfailed.tree_failed  entry a node son)

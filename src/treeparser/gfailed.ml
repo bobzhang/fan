@@ -1,6 +1,6 @@
 
 
-open Gdefs
+
 
 
 
@@ -9,7 +9,8 @@ open Format
 let pp = fprintf 
 
   
-let  name_of_symbol entry : [> symbol] -> string  =  function
+let  name_of_symbol (entry:Gdefs.entry) (x: Gdefs.symbol)   =
+  match x with 
   | `Nterm e -> "[" ^ e.name ^ "]"
   | `Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
   | `Self  -> "[" ^ entry.name ^ "]"
@@ -17,9 +18,9 @@ let  name_of_symbol entry : [> symbol] -> string  =  function
   | `Keyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
 
-let tree_in_entry prev_symb tree = function
+let tree_in_entry prev_symb (tree:Gdefs.tree) = function
     levels ->
-      let rec search_level level =
+      let rec search_level (level:Gdefs.level) : Gdefs.tree option =
         match search_tree level.lsuffix with
         | Some t -> Some (Node {node = `Self; son = t; brother = DeadEnd})
         | None -> search_tree level.lprefix 
@@ -98,7 +99,7 @@ let rec name_of_symbol_failed entry  = function
       name_of_symbol_failed entry s
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
-  match x with 
+  match (x:Gdefs.tree) with 
   | Node ({node ; brother; _ } as y)->
       begin match Gtools.get_terminals y  with
       | None ->
@@ -166,8 +167,8 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
   end
     
 let symb_failed entry prev_symb_result prev_symb symb =
-  let tree = Node {node = symb; brother = DeadEnd; son = DeadEnd} in
-  tree_failed entry prev_symb_result prev_symb tree
+  tree_failed entry prev_symb_result prev_symb @@
+  Node {node = symb; brother = DeadEnd; son = DeadEnd}
 
 let symb_failed_txt e s1 s2 =
   symb_failed e 0 s1 s2

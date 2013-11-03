@@ -1,18 +1,18 @@
 
 
 
-open Gdefs
+
 
 open Util
 open Format
 let higher s1 s2 =
   match (s1, s2) with
-  | (#terminal,#terminal) -> false
-  | (#terminal, _) -> true
+  | (#Gdefs.terminal,#Gdefs.terminal) -> false
+  | (#Gdefs.terminal, _) -> true
   | _ -> false 
 
 
-let rec derive_eps (s:symbol)  =
+let rec derive_eps (s:Gdefs.symbol)  =
   match s with 
   | `List0 _ | `List0sep (_, _)| `Peek _ -> true
   | `Try s -> derive_eps s (* it would consume if succeed *)
@@ -29,7 +29,7 @@ let rec derive_eps (s:symbol)  =
 (*   | DeadEnd -> false  *)
 
 
-let empty_lev lname assoc =
+let empty_lev lname assoc : Gdefs.level =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
 
@@ -62,7 +62,8 @@ let find_level ?position (entry:Gdefs.entry)  levs =
       | lev :: levs -> ([], Some (lev, "<top>"), levs)
       | [] -> ([], None, []) 
 
-let rec check_gram (entry : Gdefs.entry) = function
+let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
+  match x with
   | `Nterm e ->
     if entry.gram  != e.gram  then 
       failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
@@ -77,7 +78,8 @@ let rec check_gram (entry : Gdefs.entry) = function
   | `List0 s | `List1 s | `Try s | `Peek s -> check_gram entry s
   | `Self | `Token _ | `Keyword _ -> ()
         
-and tree_check_gram entry = function
+and tree_check_gram entry (x:Gdefs.tree) =
+  match x with 
   | Node {node ; brother; son } -> begin 
     check_gram entry node;
     tree_check_gram entry brother;
@@ -103,15 +105,15 @@ and  using_symbol symbol acc =
   | `Keyword kwd -> kwd :: acc
   | `Nterm _ | `Snterml _ | `Self | `Token _ -> acc 
 and using_node   node acc =
-  match node with 
+  match (node:Gdefs.tree) with 
   | Node {node = s; brother = bro; son = son} ->
       using_node son (using_node bro (using_symbol s acc))
   | LocAct (_, _) | DeadEnd -> acc 
 
 
-let add_production  ((gsymbols, (annot,action)):production) tree =
+let add_production  ((gsymbols, (annot,action)):Gdefs.production) tree =
   let anno_action =  (List.length gsymbols, gsymbols,annot,action) in
-  let rec try_insert s sl tree =
+  let rec try_insert s sl (tree:Gdefs.tree) : Gdefs.tree option =
     match tree with
     | Node ( {node ; son ; brother} as x) ->
         if Gtools.eq_symbol s node then
@@ -146,7 +148,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
         | DeadEnd -> LocAct (anno_action, [])   in 
   insert gsymbols tree 
     
-let add_production_in_level ((symbols, action) as prod) slev =
+let add_production_in_level ((symbols, action) as prod) (slev : Gdefs.level) =
   let (suffix,symbols1) = get_initial symbols in
   if suffix then
     {slev with
@@ -158,7 +160,7 @@ let add_production_in_level ((symbols, action) as prod) slev =
      productions = prod::slev.productions }
 
 
-let merge_level (la:level) (lb:olevel) = 
+let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
   let rules1 =
     (match lb with
     |(y,Some assoc,x) ->
@@ -179,14 +181,14 @@ let merge_level (la:level) (lb:olevel) =
   List.fold_right add_production_in_level rules1 la
 
     
-let level_of_olevel (lb:olevel) = 
+let level_of_olevel (lb:Gdefs.olevel) = 
   let (lname1,assoc1,_) = lb in
   let la = empty_lev lname1 (Option.default `LA assoc1 )in
   merge_level la lb  
 
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
-let insert_olevels_in_levels entry position olevels =
+let insert_olevels_in_levels (entry:Gdefs.entry) position olevels =
   let elev = entry.levels in
   match olevels with
   | [] -> elev
@@ -210,11 +212,11 @@ let insert_olevel (entry:Gdefs.entry) position olevel =
             
 
 (* This function will be executed in the runtime *)            
-let rec scan_olevels entry (levels: olevel list ) =
+let rec scan_olevels entry (levels: Gdefs.olevel list ) =
   List.map  (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
-and scan_product entry (symbols,x) : production  = 
+and scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  = 
   (List.map
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
@@ -234,11 +236,11 @@ and scan_product entry (symbols,x) : production  =
      ) symbols,x)
 
 
-let rec unsafe_scan_olevels entry (levels: olevel list ) =
+let rec unsafe_scan_olevels entry (levels: Gdefs.olevel list ) =
   List.map  (unsafe_scan_olevel entry) levels
 and unsafe_scan_olevel entry (x,y,prods) =
   (x,y,List.map (unsafe_scan_product entry) prods)
-and unsafe_scan_product entry (symbols,x) : production  = 
+and unsafe_scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  = 
   (List.map
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
@@ -281,7 +283,7 @@ let extend_single entry (position,olevel) =
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
-let copy (e:entry) : entry =
+let copy (e:Gdefs.entry) : Gdefs.entry =
   let result =
     {e with start =  (fun _ -> assert false );
      continue= fun _ -> assert false;
@@ -290,8 +292,8 @@ let copy (e:entry) : entry =
    result.continue <- Gparser.continue_parser_of_entry result;
    result)
 
-let refresh_level ~f {assoc;lname;productions;_}  =
-  level_of_olevel (lname,Some assoc,f productions)
+let refresh_level ~f (x:Gdefs.level)  =
+  level_of_olevel (x.lname,Some x.assoc,f x.productions)
 
 
 (* buggy, it's very hard to inline recursive parsers, take care
@@ -300,7 +302,7 @@ let refresh_level ~f {assoc;lname;productions;_}  =
 let  eoi_entry e =
   let eoi_level  l =
   (* FIXME: the annot seems to be inconsistent now *)
-  let aux (prods:production list) =
+  let aux (prods:Gdefs.production list) =
     List.map
       (fun (symbs,(annot,act)) ->
         let symbs =

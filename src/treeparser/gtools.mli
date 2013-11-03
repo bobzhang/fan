@@ -3,13 +3,9 @@
 (** Internal: Utilities for Fan's grammar *)  
 open Gdefs
   
-open Tokenf
+
 
 val empty_entry: string -> 'a -> 'b
-
-val get_cur_loc:  stream -> loc
-       
-val get_prev_loc:  stream -> loc
         
 val is_level_labelled:  string -> level -> bool
         

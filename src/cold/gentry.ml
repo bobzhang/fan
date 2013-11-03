@@ -21,13 +21,13 @@ let mk_dynamic g n =
      start = (Gtools.empty_entry n);
      continue =
        (fun _  _  _  (__strm : _ Streamf.t)  -> raise Streamf.NotConsumed);
-     desc = [];
+     levels = [];
      freezed = false
    } : 'a t )
 let clear (e : 'a t) =
   e.start <- (fun _  _  -> raise Streamf.NotConsumed);
   e.continue <- (fun _  _  _  _  -> raise Streamf.NotConsumed);
-  e.desc <- []
+  e.levels <- []
 let obj x = x
 let repr x = x
 let gram_of_entry (e : 'a t) = e.gram
@@ -39,10 +39,10 @@ let action_parse (entry : 'a t) (ts : Tokenf.stream) =
       let () = p Format.err_formatter "@]@." in res)
    with
    | Streamf.NotConsumed  ->
-       Locf.raise (Gtools.get_cur_loc ts)
+       Locf.raise (Token_stream.cur_loc ts)
          (Streamf.Error ("illegal begin of " ^ entry.name))
    | Locf.Exc_located (_,_) as exc -> raise exc
-   | exc -> Locf.raise (Gtools.get_cur_loc ts) exc : Gaction.t )
+   | exc -> Locf.raise (Token_stream.cur_loc ts) exc : Gaction.t )
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 let filter_and_parse_tokens (entry : 'a t) ts =

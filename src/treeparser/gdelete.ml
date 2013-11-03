@@ -1,4 +1,4 @@
-open Gdefs
+
 
 (* Deleting a rule *)
 
@@ -11,7 +11,8 @@ open Gdefs
      [None] if failure *)
 
 let delete_rule_in_tree entry =
-  let rec delete_in_tree symbols tree =
+  let rec delete_in_tree (symbols:Gdefs.symbol list) (tree:Gdefs.tree)
+      : (Gdefs.symbol list option * Gdefs.tree) option=
     match (symbols, tree) with
     | (s :: sl, Node ({node;brother;son} as n)) ->
         if Gtools.logically_eq_symbols entry s node then
@@ -50,7 +51,8 @@ let rec decr_keyw_use gram = function (* gram ->symbol -> unit*)
   | `List0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `List1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Self | `Nterm _ | `Snterml (_, _) | `Token _ -> () 
-and decr_keyw_use_in_tree gram =  function
+and decr_keyw_use_in_tree gram (x:Gdefs.tree) =
+  match x with 
   | DeadEnd | LocAct (_, _) -> ()
   | Node n -> begin
         decr_keyw_use gram n.node;
@@ -58,7 +60,8 @@ and decr_keyw_use_in_tree gram =  function
         decr_keyw_use_in_tree gram n.brother
   end 
 
-let rec delete_rule_in_suffix entry symbols = function
+let rec delete_rule_in_suffix entry symbols (xs:Gdefs.level list) =
+  match xs with
   | lev :: levs ->
       (match delete_rule_in_tree entry symbols lev.lsuffix with
       | Some (dsl, t) ->begin 
@@ -76,7 +79,8 @@ let rec delete_rule_in_suffix entry symbols = function
   | [] -> raise Not_found 
 
 
-let rec delete_rule_in_prefix entry symbols = function
+let rec delete_rule_in_prefix entry symbols (xs:Gdefs.level list) =
+  match xs with 
   | lev :: levs ->
       (match delete_rule_in_tree entry symbols lev.lprefix with
       | Some (dsl, t) -> begin 
