@@ -232,15 +232,17 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
        (* $x:id *)
        (* ${}*)
        (******************)
-   | '$' ( lident as name) ':'  antifollowident as txt %{
+   | '$' ( lident as name) (':'  antifollowident as follow)? as txt %{
+     let (kind,shift) =
+       match follow with
+       | None -> ("", 1 )
+       | Some _ -> (name, String.length name + 2) in 
      `Ant{loc = !!lexbuf;
-          kind = name;
+          kind ;
           txt ;
-          shift =  String.length name +  2;
+          shift ;
           retract = 0;
           cxt = None}}
-   | '$' lident as txt  %{
-     `Ant{kind =""; txt ;loc = !!lexbuf; shift = 1; retract = 0; cxt = None}}
    | "$" ( lident as name)? "{"  as txt  %{
      let old = lexbuf.lex_start_p in
      let c = new_cxt () in
