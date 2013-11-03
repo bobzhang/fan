@@ -131,7 +131,7 @@ let apply () = begin
       [ mtyp as x %{ x}  ]  };
 
   %extend{
-  Inline stru_sigi :
+  stru_sigi@Inline :
   [  "open"; ? "!" as bang; module_longident as i
        %{ `Open(_loc,
                 match bang with
@@ -245,7 +245,7 @@ let apply () = begin
           [ fun_def_pat as f; "->"; exp as e %{  f e}
           | fun_def_pat as f; S as e  %{f e}] }
            
-       Inline primitve :
+       primitve@Inline :
        [ Int s   %{`Int(_loc,s)}
        | Int32 s %{ `Int32(_loc,s)}
        | Int64 s %{ `Int64(_loc,s)}
@@ -257,7 +257,7 @@ let apply () = begin
        (************************)
        (*  How to handle S     *)    
        (************************)               
-       Inline let_stru_exp:
+       let_stru_exp@Inline:
        [ "let"; opt_rec as r; bind as bi; "in"; exp as x %{`LetIn(_loc,r,bi,x)}
        | "let"; "module"; a_uident as m; mbind0 as mb; "in"; exp as e
            %{ `LetModule (_loc, m, mb, e)}

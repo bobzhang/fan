@@ -30,8 +30,7 @@ let lex = Gramf.mk_dynamic g "lex"
 let declare_regexp = Gramf.mk_dynamic g "declare_regexp"
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
-  let case: 'case Gramf.t = grammar_entry_create "case"
-  and lid: 'lid Gramf.t = grammar_entry_create "lid" in
+  let case: 'case Gramf.t = grammar_entry_create "case" in
   Gramf.extend_single (lex : 'lex Gramf.t )
     (None,
       ((None, None,
@@ -105,27 +104,21 @@ let _ =
                 (fun ~__fan_1:(x : 'declare_regexp)  ~__fan_0:_ 
                    (_loc : Locf.t)  -> (x : 'declare_regexp )))))]) : 
       Gramf.olevel ));
-  Gramf.extend_single (lid : 'lid Gramf.t )
-    (None,
-      ((None, None,
-         [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                "Lid")],
-            ("(_loc, y)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )))))]) : 
-      Gramf.olevel ));
   Gramf.extend (regexp : 'regexp Gramf.t )
     (None,
       ([((Some "as"), None,
-          [([`Self; `Keyword "as"; `Nterm (Gramf.obj (lid : 'lid Gramf.t ))],
-             ("Bind (r1, z)\n",
+          [([`Self;
+            `Keyword "as";
+            `Token
+              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+                "`Lid y")],
+             ("Bind (r1, (xloc, y))\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(z : 'lid)  ~__fan_1:_ 
+                  (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                      ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                     (Bind (r1, z) : 'regexp )))))]);
+                     match __fan_2 with
+                     | ({ loc = xloc; txt = y;_} : Tokenf.txt) ->
+                         (Bind (r1, (xloc, y)) : 'regexp )))))]);
        ((Some "#"), None,
          [([`Self; `Keyword "#"; `Self],
             ("let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n",

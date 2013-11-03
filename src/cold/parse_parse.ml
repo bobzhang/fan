@@ -6007,18 +6007,19 @@ let _ =
                            "For Group levels the position can not be applied to Level"
                      | _ -> Some { name = p; local = true; pos; levels }) : 
                      'entry )))));
-         ([`Keyword "Inline";
-          `Token
-            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "Lid");
+         ([`Token
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "Lid");
+          `Keyword "@";
+          `Keyword "Inline";
           `Keyword ":";
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
            ("Hashtbl.add inline_rules x rules; None\n",
              (Gramf.mk_action
-                (fun ~__fan_3:(rules : 'rule_list)  ~__fan_2:_ 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                (fun ~__fan_4:(rules : 'rule_list)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
                    (_loc : Locf.t)  ->
-                   match __fan_1 with
+                   match __fan_0 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        ((Hashtbl.add inline_rules x rules; None) : 'entry )))))]) : 
       Gramf.olevel ));

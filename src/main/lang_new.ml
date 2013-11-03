@@ -12,12 +12,12 @@ open FAst
   
 %extend{
 
-str@Local : [Str y  %{y}] (* FIXME -- remove later*)
 type_entry@Local :
       [ Lid x  %{ (_loc,x,None,None)}
       | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
       | "("; Lid x ; Str y; Syntaxf.ctyp as t;  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; Lid x; ":"; Syntaxf.ctyp as t; ? str as y;  ")" %{ (_loc,x,y,Some t)}
+      | "("; Lid x; ":"; Syntaxf.ctyp as t; ? Str as y;  ")"
+          %{ (_loc,x, Option.map (fun (x:Tokenf.txt) -> x.txt) y,Some t)}
       ]      
 
 ty@Local :

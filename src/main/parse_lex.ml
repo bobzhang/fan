@@ -48,12 +48,10 @@ let g =
       %stru{let _ = () }
     end}
   | S; S as x %{x}]
-
-  lid@Local: [ Lid y %{ (_loc, y)} ] (* FIXME remove *)  
   regexp:
   {
    "as"
-   [S as r1;"as"; lid as z %{ Bind(r1,(z))} ] 
+   [S as r1;"as"; (* lid as z *) Lid@xloc y %{ Bind(r1,(xloc,y))} ] 
    "#"
    [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in

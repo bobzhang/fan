@@ -7,21 +7,8 @@ let t_qualid = Gramf.mk "t_qualid"
 let qualuid = Gramf.mk "qualuid"
 let _ =
   let grammar_entry_create x = Gramf.mk x in
-  let str: 'str Gramf.t = grammar_entry_create "str"
-  and type_entry: 'type_entry Gramf.t = grammar_entry_create "type_entry"
+  let type_entry: 'type_entry Gramf.t = grammar_entry_create "type_entry"
   and ty: 'ty Gramf.t = grammar_entry_create "ty" in
-  Gramf.extend_single (str : 'str Gramf.t )
-    (None,
-      ((None, None,
-         [([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "Str")],
-            ("y\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = y;_} : Tokenf.txt) -> (y : 'str )))))]) : 
-      Gramf.olevel ));
   Gramf.extend_single (type_entry : 'type_entry Gramf.t )
     (None,
       ((None, None,
@@ -75,7 +62,7 @@ let _ =
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Keyword ")"],
-           ("(_loc, x, y, (Some t))\n",
+           ("(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -83,26 +70,31 @@ let _ =
                    match __fan_1 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        let y = None in
-                       ((_loc, x, y, (Some t)) : 'type_entry )))));
+                       ((_loc, x,
+                          (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
+                          (Some t)) : 'type_entry )))));
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "Lid");
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
-          `Nterm (Gramf.obj (str : 'str Gramf.t ));
+          `Token
+            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              "Str");
           `Keyword ")"],
-           ("(_loc, x, y, (Some t))\n",
+           ("(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n",
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(y : 'str) 
+                (fun ~__fan_5:_  ~__fan_4:(y : Tokenf.txt) 
                    ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
                    | ({ txt = x;_} : Tokenf.txt) ->
                        let y = Some y in
-                       ((_loc, x, y, (Some t)) : 'type_entry )))))]) : 
-      Gramf.olevel ));
+                       ((_loc, x,
+                          (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
+                          (Some t)) : 'type_entry )))))]) : Gramf.olevel ));
   Gramf.extend_single (ty : 'ty Gramf.t )
     (None,
       ((None, None,

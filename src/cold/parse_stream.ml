@@ -13,46 +13,36 @@ let stream_pat = Gramf.mk "stream_pat"
 let parser_case = Gramf.mk "parser_case"
 let parser_case_list = Gramf.mk "parser_case_list"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let uid: 'uid Gramf.t = grammar_entry_create "uid" in
-  Gramf.extend_single (uid : 'uid Gramf.t )
-    (None,
-      ((None, None,
-         [([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-                "Uid")],
-            ("n\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )))))]) : 
-      Gramf.olevel ));
   Gramf.extend_single (parser_exp : 'parser_exp Gramf.t )
     (None,
       ((None, None,
          [([`Nterm
               (Gramf.obj (parser_case_list : 'parser_case_list Gramf.t ))],
-            ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
+            ("match n with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(pcl : 'parser_case_list)  (_loc : Locf.t)  ->
-                    let name = None in
-                    (match name with
+                    let n = None in
+                    (match n with
                      | Some o ->
                          Ref.protect Compile_stream.grammar_module_name o
                            (fun _  -> cparser _loc pcl)
                      | None  -> cparser _loc pcl : 'parser_exp )))));
-         ([`Nterm (Gramf.obj (uid : 'uid Gramf.t ));
+         ([`Token
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "Uid");
           `Nterm (Gramf.obj (parser_case_list : 'parser_case_list Gramf.t ))],
-           ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
+           ("match n with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(pcl : 'parser_case_list) 
-                   ~__fan_0:(name : 'uid)  (_loc : Locf.t)  ->
-                   let name = Some name in
-                   (match name with
-                    | Some o ->
-                        Ref.protect Compile_stream.grammar_module_name o
-                          (fun _  -> cparser _loc pcl)
-                    | None  -> cparser _loc pcl : 'parser_exp )))))]) : 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = n;_} : Tokenf.txt) ->
+                       let n = Some n in
+                       ((match n with
+                         | Some o ->
+                             Ref.protect Compile_stream.grammar_module_name o
+                               (fun _  -> cparser _loc pcl)
+                         | None  -> cparser _loc pcl) : 'parser_exp )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (parser_ipat : 'parser_ipat Gramf.t )
     (None,

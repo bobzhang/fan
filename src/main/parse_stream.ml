@@ -26,10 +26,9 @@ open FAst
  *)  
 
   %extend{
-     uid@Local: [Uid n %{n}] (* FIXME remove *)
     parser_exp : 
-        [  ? uid as name; parser_case_list as pcl %{
-          match name with
+        [  ? Uid n ; parser_case_list as pcl %{
+          match n with
           | Some o ->
               Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc  pcl)
           | None -> cparser _loc  pcl}

@@ -76,7 +76,7 @@ let query_inline (x:string) =
   (****************************************)        
   (* FIXME bring antiquotation back later*)
   (****************************************)                  
-  Inline simple_token :
+  simple_token @Inline :
   [ ("EOI" as v) %{
     let i = hash_variant v in
     let pred = %exp{function
@@ -178,7 +178,7 @@ let query_inline (x:string) =
        outer_pattern = None 
      }}
   ]
-  Inline simple_symbol:
+  simple_symbol@Inline:
   [  Str s %{
      {text = `Keyword (_loc,s);
       styp= %ctyp'{Tokenf.txt};
@@ -207,11 +207,7 @@ let query_inline (x:string) =
   single_symbol :
   [@simple_token 
   |@simple_symbol]
-          
-  (* or_words@Local : *)
-  (*     [ L1 Str SEP "|" as v %{  (v,None)  } *)
-  (*     | L1 Str SEP "|" as v; "as"; Lid@xloc s %{ *)
-  (*         (v , Some (xloc,s)) } ] *)
+  
   or_strs@Local :
       [ L1  Str SEP "|" as xs %{(xs,None,None)}
       | L1  Str SEP "|" as xs; "as"; Lid@xloc s %{ (xs, None, Some (xloc,s))}
@@ -430,7 +426,7 @@ let query_inline (x:string) =
         | _ -> Some {name=p;local=true;pos;levels}
       end
   }
-  | "Inline"; Lid x ; ":"; rule_list as rules %{
+  | Lid x ; "@"; "Inline"; ":"; rule_list as rules %{
     begin
       Hashtbl.add inline_rules x rules;
       None
@@ -483,7 +479,7 @@ let query_inline (x:string) =
    [ psymbol as x %{[x]}
    | psymbol as x;";" ;S as xs %{ x::xs }
    |    %{[]}]   
-   (* [ L0 psymbol SEP ";"{prod} %{prod}]    *)
+
    opt_action@Local :
       [ Quot x %{
         if x.name = Tokenf.empty_name then 
