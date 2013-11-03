@@ -220,8 +220,8 @@ let  rec token : Lexing.lexbuf -> Tokenf.t  =
    | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
        ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
        [^'\010' '\013']* newline   %{
-         let line = int_of_string num in begin
-           update_loc  lexbuf ?file:name ~line ~absolute:true ;
+         begin
+           update_loc  lexbuf ?file:name ~line:(int_of_string num) ~absolute:true ;
            token lexbuf
          end}
            (* Antiquotation handling *)
