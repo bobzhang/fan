@@ -34,14 +34,14 @@ let mk_dynamic g n : 'a t ={
   name = n;
   start = Gtools.empty_entry n;
   continue _ _ _ = %parser{ | };
-  desc =  [] ;
+  levels =  [] ;
   freezed = false;     
 }
 
 let clear (e:'a t) = begin 
   e.start <- fun _ -> fun _ -> raise Streamf.NotConsumed;
   e.continue <- fun _ _ _ -> fun _-> raise Streamf.NotConsumed;
-  e.desc <- []
+  e.levels <- []
 end
 
 let obj x = x

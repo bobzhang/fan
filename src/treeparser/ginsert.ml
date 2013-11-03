@@ -187,7 +187,7 @@ let level_of_olevel (lb:olevel) =
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
 let insert_olevels_in_levels entry position olevels =
-  let elev = entry.desc in
+  let elev = entry.levels in
   match olevels with
   | [] -> elev
   | _::_ -> 
@@ -199,7 +199,7 @@ let insert_olevels_in_levels entry position olevels =
 
 
 let insert_olevel (entry:Gdefs.entry) position olevel =
-  let elev = entry.desc in
+  let elev = entry.levels in
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
@@ -254,21 +254,21 @@ and unsafe_scan_product entry (symbols,x) : production  =
 let unsafe_extend entry (position,levels) =
   let levels =  unsafe_scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.desc <-  elev;
+  (entry.levels <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
 let unsafe_extend_single entry (position,olevel) = 
   let olevel = unsafe_scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.desc <- elev;
+  (entry.levels <- elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
     
 let extend entry (position, levels) =
   let levels =  scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.desc <-  elev;
+  (entry.levels <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
@@ -277,7 +277,7 @@ let extend entry (position, levels) =
 let extend_single entry (position,olevel) = 
   let olevel = scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.desc <-  elev;
+  (entry.levels <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
@@ -320,7 +320,7 @@ let  eoi_entry e =
     {e with
      start = (fun _ -> assert false) ;
      continue = fun _ -> assert false;} in
-  (result.desc <- List.map eoi_level result.desc ;
+  (result.levels <- List.map eoi_level result.levels ;
    result.start <- Gparser.start_parser_of_entry result;
    result.continue <- Gparser.continue_parser_of_entry result;
    result)

@@ -154,7 +154,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
   begin
     (* it may not necessary fail when  we use try somewhere*)
     if verbose then
-      let tree = tree_in_entry prev_symb tree entry.desc in
+      let tree = tree_in_entry prev_symb tree entry.levels in
       pp err_formatter
         ("@[<v 0>@,----------------------------------@,"^^
          "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^

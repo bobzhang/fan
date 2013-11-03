@@ -15,4 +15,4 @@ val symb_failed :  entry ->  'a -> symbol -> symbol -> string
 
 val symb_failed_txt :  entry -> symbol -> symbol -> string
 
-val tree_in_entry :  symbol -> tree -> desc -> tree
+val tree_in_entry :  symbol -> tree -> level list -> tree

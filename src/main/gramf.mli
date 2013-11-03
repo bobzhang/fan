@@ -38,7 +38,7 @@ type terminal =
     | `Token of token_pattern ]
 
 type entry = Gdefs.entry 
-and desc = Gdefs.desc
+
 and level =Gdefs.level 
 and symbol =
     (* The concrete representation is needed here

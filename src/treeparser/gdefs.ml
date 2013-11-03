@@ -49,9 +49,9 @@ type entry = {
     name     : string;
     mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;
-    mutable desc     :  desc;
+    mutable levels     :  level list;
     mutable freezed :  bool;}
-and desc = level list 
+
 and level = {
     lname   : label;
     assoc   : assoc ;

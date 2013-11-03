@@ -240,7 +240,7 @@ Gfold:
 
 
 let find_level ?position (entry:Gdefs.entry) =
-  let (_,f,_) = Ginsert.find_level ?position entry entry.desc  in f
+  let (_,f,_) = Ginsert.find_level ?position entry entry.levels  in f
 
 
 
