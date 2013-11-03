@@ -29,7 +29,6 @@ let g =
               ";";
               "{";
               "}";
-              "let";
               "[";
               "]";
               "SEP";
@@ -70,7 +69,8 @@ let g =
               "?";
               "=";
               "@";
-              "Inline"] ()
+              "Inline";
+              "Local"] ()
 let inline_rules: (string,Gram_def.rule list) Hashtbl.t = Hashtbl.create 50
 let query_inline (x : string) = Hashtblf.find_opt inline_rules x
 let extend_header = Gramf.mk_dynamic g "extend_header"
@@ -100,8 +100,7 @@ let single_symbol: Gram_def.symbol Gramf.t =
   Gramf.mk_dynamic g "single_symbol"
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
-  let or_words: 'or_words Gramf.t = grammar_entry_create "or_words"
-  and or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
+  let or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
   and level_str: 'level_str Gramf.t = grammar_entry_create "level_str"
   and sep_symbol: 'sep_symbol Gramf.t = grammar_entry_create "sep_symbol" in
   Gramf.extend_single (single_symbol : 'single_symbol Gramf.t )
@@ -2546,32 +2545,6 @@ let _ =
                       bounds = [];
                       outer_pattern = None
                     } : 'single_symbol )))))]) : Gramf.olevel ));
-  Gramf.extend_single (or_words : 'or_words Gramf.t )
-    (None,
-      ((None, None,
-         [([`List1sep
-              ((`Token
-                  (((function | `Str _ -> true | _ -> false)),
-                    (4153489, `Any), "Str")), (`Keyword "|"))],
-            ("(v, None)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(v : Tokenf.txt list)  (_loc : Locf.t)  ->
-                    ((v, None) : 'or_words )))));
-         ([`List1sep
-             ((`Token
-                 (((function | `Str _ -> true | _ -> false)),
-                   (4153489, `Any), "Str")), (`Keyword "|"));
-          `Keyword "as";
-          `Token
-            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid s")],
-           ("(v, (Some (xloc, s)))\n",
-             (Gramf.mk_action
-                (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
-                   ~__fan_0:(v : Tokenf.txt list)  (_loc : Locf.t)  ->
-                   match __fan_2 with
-                   | ({ loc = xloc; txt = s;_} : Tokenf.txt) ->
-                       ((v, (Some (xloc, s))) : 'or_words )))))]) : Gramf.olevel ));
   Gramf.extend_single (or_strs : 'or_strs Gramf.t )
     (None,
       ((None, None,
@@ -5198,16 +5171,16 @@ let _ =
                       } : 'simple )))));
          ([`Keyword "Ant";
           `Keyword "(";
-          `Nterm (Gramf.obj (or_words : 'or_words Gramf.t ));
+          `Nterm (Gramf.obj (or_strs : 'or_strs Gramf.t ));
           `Keyword ",";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid s");
           `Keyword ")"],
-           ("let i = hash_variant v in\nlet p = `Lid (xloc, s) in\nmatch ps with\n| (vs,y) ->\n    vs |>\n      (List.map\n         (fun (x : Tokenf.txt)  ->\n            let (x,xloc) = ((x.txt), (x.loc)) in\n            let z = `Str (xloc, x) in\n            let pred: FAst.exp =\n              `Fun\n                (_loc,\n                  (`Bar\n                     (_loc,\n                       (`Case\n                          (_loc,\n                            (`App\n                               (_loc, (`Vrn (_loc, v)),\n                                 (`Constraint\n                                    (_loc,\n                                      (`Record\n                                         (_loc,\n                                           (`Sem\n                                              (_loc,\n                                                (`RecBind\n                                                   (_loc,\n                                                     (`Lid (_loc, \"kind\")),\n                                                     z)), (`Any _loc))))),\n                                      (`Dot\n                                         (_loc, (`Uid (_loc, \"Tokenf\")),\n                                           (`Lid (_loc, \"ant\")))))))),\n                            (`Lid (_loc, \"true\")))),\n                       (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n            let des: FAst.exp =\n              `Par\n                (_loc,\n                  (`Com\n                     (_loc, (`Int (_loc, (string_of_int i))),\n                       (`App (_loc, (`Vrn (_loc, \"A\")), z))))) in\n            let des_str =\n              Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n            let (pp,bounds) =\n              match y with\n              | None  -> ((z : FAst.pat ), [])\n              | Some ((xloc,u) as v) ->\n                  ((`Alias (xloc, z, (`Lid (xloc, u))) : FAst.pat ), [v]) in\n            ({\n               kind = KNormal;\n               symbol =\n                 {\n                   text = (`Token (_loc, pred, des, des_str));\n                   styp =\n                     (`Dot\n                        (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"ant\"))));\n                   pattern =\n                     (Some\n                        (`Constraint\n                           (_loc,\n                             (`Alias\n                                (_loc,\n                                  (`Record\n                                     (_loc,\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"kind\")),\n                                                 pp)), (`Any _loc))))), p)),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"ant\"))))) : FAst.pat ));\n                   bounds;\n                   outer_pattern = None\n                 }\n             } : Gram_def.psymbol )))\n",
+           ("let i = hash_variant v in\nlet p = `Lid (xloc, s) in\nmatch ps with\n| (vs,loc,y) ->\n    vs |>\n      (List.map\n         (fun (x : Tokenf.txt)  ->\n            let (x,xloc) = ((x.txt), (x.loc)) in\n            let z = `Str (xloc, x) in\n            let pred: FAst.exp =\n              `Fun\n                (_loc,\n                  (`Bar\n                     (_loc,\n                       (`Case\n                          (_loc,\n                            (`App\n                               (_loc, (`Vrn (_loc, v)),\n                                 (`Constraint\n                                    (_loc,\n                                      (`Record\n                                         (_loc,\n                                           (`Sem\n                                              (_loc,\n                                                (`RecBind\n                                                   (_loc,\n                                                     (`Lid (_loc, \"kind\")),\n                                                     z)), (`Any _loc))))),\n                                      (`Dot\n                                         (_loc, (`Uid (_loc, \"Tokenf\")),\n                                           (`Lid (_loc, \"ant\")))))))),\n                            (`Lid (_loc, \"true\")))),\n                       (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n            let des: FAst.exp =\n              `Par\n                (_loc,\n                  (`Com\n                     (_loc, (`Int (_loc, (string_of_int i))),\n                       (`App (_loc, (`Vrn (_loc, \"A\")), z))))) in\n            let des_str =\n              Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n            let (pattern,bounds) =\n              match (loc, y) with\n              | (None ,None ) ->\n                  ((Some\n                      (`Constraint\n                         (_loc,\n                           (`Alias\n                              (_loc,\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"kind\")), z)),\n                                          (`Any _loc))))), p)),\n                           (`Dot\n                              (_loc, (`Uid (_loc, \"Tokenf\")),\n                                (`Lid (_loc, \"ant\"))))) : FAst.pat )), [])\n              | (Some (lloc,ll),None ) ->\n                  let l: FAst.pat = `Lid (lloc, ll) in\n                  ((Some\n                      (`Constraint\n                         (_loc,\n                           (`Alias\n                              (_loc,\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"kind\")), z)),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"loc\")), l)),\n                                               (`Any _loc))))))), p)),\n                           (`Dot\n                              (_loc, (`Uid (_loc, \"Tokenf\")),\n                                (`Lid (_loc, \"ant\"))))) : FAst.pat )),\n                    [(lloc, ll)])\n              | (None ,Some ((xloc,u) as v)) ->\n                  ((Some\n                      (`Constraint\n                         (xloc,\n                           (`Alias\n                              (xloc,\n                                (`Record\n                                   (xloc,\n                                     (`Sem\n                                        (xloc,\n                                          (`RecBind\n                                             (xloc, (`Lid (xloc, \"kind\")),\n                                               (`Alias\n                                                  (xloc, z, (`Lid (xloc, u)))))),\n                                          (`Any xloc))))), p)),\n                           (`Dot\n                              (xloc, (`Uid (xloc, \"Tokenf\")),\n                                (`Lid (xloc, \"ant\"))))) : FAst.pat )), \n                    [v])\n              | (Some (lloc,ll),Some ((xloc,u) as v)) ->\n                  let l: FAst.pat = `Lid (lloc, ll) in\n                  ((Some\n                      (`Constraint\n                         (xloc,\n                           (`Alias\n                              (xloc,\n                                (`Record\n                                   (xloc,\n                                     (`Sem\n                                        (xloc,\n                                          (`RecBind\n                                             (xloc, (`Lid (xloc, \"kind\")),\n                                               (`Alias\n                                                  (xloc, z, (`Lid (xloc, u)))))),\n                                          (`Sem\n                                             (xloc,\n                                               (`RecBind\n                                                  (xloc,\n                                                    (`Lid (xloc, \"loc\")), l)),\n                                               (`Any xloc))))))), p)),\n                           (`Dot\n                              (xloc, (`Uid (xloc, \"Tokenf\")),\n                                (`Lid (xloc, \"ant\"))))) : FAst.pat )),\n                    [(lloc, ll); v]) in\n            ({\n               kind = KNormal;\n               symbol =\n                 {\n                   text = (`Token (_loc, pred, des, des_str));\n                   styp =\n                     (`Dot\n                        (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"ant\"))));\n                   pattern;\n                   bounds;\n                   outer_pattern = None\n                 }\n             } : Gram_def.psymbol )))\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
-                   ~__fan_2:(ps : 'or_words)  ~__fan_1:_ 
+                   ~__fan_2:(ps : 'or_strs)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match (__fan_4, __fan_0) with
                    | (({ loc = xloc; txt = s;_} : Tokenf.txt),({ txt = v;_} :
@@ -5216,7 +5189,7 @@ let _ =
                        (let i = hash_variant v in
                         let p = `Lid (xloc, s) in
                         (match ps with
-                         | (vs,y) ->
+                         | (vs,loc,y) ->
                              vs |>
                                (List.map
                                   (fun (x : Tokenf.txt)  ->
@@ -5274,13 +5247,131 @@ let _ =
                                      let des_str =
                                        Gram_pat.to_string
                                          (`App (_loc, (`Vrn (_loc, v)), p)) in
-                                     let (pp,bounds) =
-                                       match y with
-                                       | None  -> ((z : FAst.pat ), [])
-                                       | Some ((xloc,u) as v) ->
-                                           ((`Alias
-                                               (xloc, z, (`Lid (xloc, u))) : 
-                                             FAst.pat ), [v]) in
+                                     let (pattern,bounds) =
+                                       match (loc, y) with
+                                       | (None ,None ) ->
+                                           ((Some
+                                               (`Constraint
+                                                  (_loc,
+                                                    (`Alias
+                                                       (_loc,
+                                                         (`Record
+                                                            (_loc,
+                                                              (`Sem
+                                                                 (_loc,
+                                                                   (`RecBind
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "kind")),
+                                                                    z)),
+                                                                   (`Any _loc))))),
+                                                         p)),
+                                                    (`Dot
+                                                       (_loc,
+                                                         (`Uid
+                                                            (_loc, "Tokenf")),
+                                                         (`Lid (_loc, "ant"))))) : 
+                                               FAst.pat )), [])
+                                       | (Some (lloc,ll),None ) ->
+                                           let l: FAst.pat = `Lid (lloc, ll) in
+                                           ((Some
+                                               (`Constraint
+                                                  (_loc,
+                                                    (`Alias
+                                                       (_loc,
+                                                         (`Record
+                                                            (_loc,
+                                                              (`Sem
+                                                                 (_loc,
+                                                                   (`RecBind
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "kind")),
+                                                                    z)),
+                                                                   (`Sem
+                                                                    (_loc,
+                                                                    (`RecBind
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "loc")),
+                                                                    l)),
+                                                                    (`Any
+                                                                    _loc))))))),
+                                                         p)),
+                                                    (`Dot
+                                                       (_loc,
+                                                         (`Uid
+                                                            (_loc, "Tokenf")),
+                                                         (`Lid (_loc, "ant"))))) : 
+                                               FAst.pat )), [(lloc, ll)])
+                                       | (None ,Some ((xloc,u) as v)) ->
+                                           ((Some
+                                               (`Constraint
+                                                  (xloc,
+                                                    (`Alias
+                                                       (xloc,
+                                                         (`Record
+                                                            (xloc,
+                                                              (`Sem
+                                                                 (xloc,
+                                                                   (`RecBind
+                                                                    (xloc,
+                                                                    (`Lid
+                                                                    (xloc,
+                                                                    "kind")),
+                                                                    (`Alias
+                                                                    (xloc, z,
+                                                                    (`Lid
+                                                                    (xloc, u)))))),
+                                                                   (`Any xloc))))),
+                                                         p)),
+                                                    (`Dot
+                                                       (xloc,
+                                                         (`Uid
+                                                            (xloc, "Tokenf")),
+                                                         (`Lid (xloc, "ant"))))) : 
+                                               FAst.pat )), [v])
+                                       | (Some (lloc,ll),Some
+                                          ((xloc,u) as v)) ->
+                                           let l: FAst.pat = `Lid (lloc, ll) in
+                                           ((Some
+                                               (`Constraint
+                                                  (xloc,
+                                                    (`Alias
+                                                       (xloc,
+                                                         (`Record
+                                                            (xloc,
+                                                              (`Sem
+                                                                 (xloc,
+                                                                   (`RecBind
+                                                                    (xloc,
+                                                                    (`Lid
+                                                                    (xloc,
+                                                                    "kind")),
+                                                                    (`Alias
+                                                                    (xloc, z,
+                                                                    (`Lid
+                                                                    (xloc, u)))))),
+                                                                   (`Sem
+                                                                    (xloc,
+                                                                    (`RecBind
+                                                                    (xloc,
+                                                                    (`Lid
+                                                                    (xloc,
+                                                                    "loc")),
+                                                                    l)),
+                                                                    (`Any
+                                                                    xloc))))))),
+                                                         p)),
+                                                    (`Dot
+                                                       (xloc,
+                                                         (`Uid
+                                                            (xloc, "Tokenf")),
+                                                         (`Lid (xloc, "ant"))))) : 
+                                               FAst.pat )), [(lloc, ll); v]) in
                                      ({
                                         kind = KNormal;
                                         symbol =
@@ -5293,33 +5384,7 @@ let _ =
                                                  (_loc,
                                                    (`Uid (_loc, "Tokenf")),
                                                    (`Lid (_loc, "ant"))));
-                                            pattern =
-                                              (Some
-                                                 (`Constraint
-                                                    (_loc,
-                                                      (`Alias
-                                                         (_loc,
-                                                           (`Record
-                                                              (_loc,
-                                                                (`Sem
-                                                                   (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "kind")),
-                                                                    pp)),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                           p)),
-                                                      (`Dot
-                                                         (_loc,
-                                                           (`Uid
-                                                              (_loc,
-                                                                "Tokenf")),
-                                                           (`Lid
-                                                              (_loc, "ant"))))) : 
-                                                 FAst.pat ));
+                                            pattern;
                                             bounds;
                                             outer_pattern = None
                                           }
@@ -5661,21 +5726,8 @@ let _ =
                              }) ss : 'psymbol )))))]) : Gramf.olevel ))
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
-  let str: 'str Gramf.t = grammar_entry_create "str"
-  and left_rule: 'left_rule Gramf.t = grammar_entry_create "left_rule"
+  let left_rule: 'left_rule Gramf.t = grammar_entry_create "left_rule"
   and opt_action: 'opt_action Gramf.t = grammar_entry_create "opt_action" in
-  Gramf.extend_single (str : 'str Gramf.t )
-    (None,
-      ((None, None,
-         [([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-                "Str")],
-            ("y\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = y;_} : Tokenf.txt) -> (y : 'str )))))]) : 
-      Gramf.olevel ));
   Gramf.extend_single (extend_header : 'extend_header Gramf.t )
     (None,
       ((None, None,
@@ -5821,37 +5873,43 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))],
-            ("let x =\n  match name with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+            ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"DDSL `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(il : 'qualid)  (_loc : Locf.t)  ->
                     let name = None in
                     (let x =
-                       match name with
+                       match (name : Tokenf.txt option ) with
                        | Some x ->
                            let old = !Ast_quotation.default in
-                           (match Ast_quotation.resolve_name ((`Sub []), x)
+                           (match Ast_quotation.resolve_name
+                                    ((`Sub []), (x.txt))
                             with
                             | None  ->
-                                Locf.failf _loc "DDSL `%s' not resolved" x
+                                Locf.failf x.loc "DDSL `%s' not resolved"
+                                  x.txt
                             | Some x ->
                                 (Ast_quotation.default := (Some x); `name old))
                        | None  -> `non in
                      (x, (mk_name il)) : 'entry_name )))));
          ([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
-          `Nterm (Gramf.obj (str : 'str Gramf.t ))],
-           ("let x =\n  match name with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+          `Token
+            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              "Str")],
+           ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"DDSL `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(name : 'str)  ~__fan_0:(il : 'qualid) 
+                (fun ~__fan_1:(name : Tokenf.txt)  ~__fan_0:(il : 'qualid) 
                    (_loc : Locf.t)  ->
                    let name = Some name in
                    (let x =
-                      match name with
+                      match (name : Tokenf.txt option ) with
                       | Some x ->
                           let old = !Ast_quotation.default in
-                          (match Ast_quotation.resolve_name ((`Sub []), x)
+                          (match Ast_quotation.resolve_name
+                                   ((`Sub []), (x.txt))
                            with
                            | None  ->
-                               Locf.failf _loc "DDSL `%s' not resolved" x
+                               Locf.failf x.loc "DDSL `%s' not resolved"
+                                 x.txt
                            | Some x ->
                                (Ast_quotation.default := (Some x); `name old))
                       | None  -> `non in
@@ -5901,14 +5959,15 @@ let _ =
                            "For Group levels the position can not be applied to Level"
                      | _ -> Some { name = p; local = false; pos; levels }) : 
                      'entry )))));
-         ([`Keyword "let";
-          `Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+         ([`Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+          `Keyword "@";
+          `Keyword "Local";
           `Keyword ":";
           `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
            ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n",
              (Gramf.mk_action
-                (fun ~__fan_3:(levels : 'level_list)  ~__fan_2:_ 
-                   ~__fan_1:(rest : 'entry_name)  ~__fan_0:_  (_loc : Locf.t)
+                (fun ~__fan_4:(levels : 'level_list)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:_  ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)
                     ->
                    let pos = None in
                    (let (n,p) = rest in
@@ -5923,16 +5982,17 @@ let _ =
                            "For Group levels the position can not be applied to Level"
                      | _ -> Some { name = p; local = true; pos; levels }) : 
                      'entry )))));
-         ([`Keyword "let";
-          `Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+         ([`Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+          `Keyword "@";
+          `Keyword "Local";
           `Keyword ":";
           `Nterm (Gramf.obj (position : 'position Gramf.t ));
           `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
            ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n",
              (Gramf.mk_action
-                (fun ~__fan_4:(levels : 'level_list) 
-                   ~__fan_3:(pos : 'position)  ~__fan_2:_ 
-                   ~__fan_1:(rest : 'entry_name)  ~__fan_0:_  (_loc : Locf.t)
+                (fun ~__fan_5:(levels : 'level_list) 
+                   ~__fan_4:(pos : 'position)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:_  ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)
                     ->
                    let pos = Some pos in
                    (let (n,p) = rest in
@@ -6020,36 +6080,60 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-            ("{ label; assoc; rules }\n",
+            ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(rules : 'rule_list)  (_loc : Locf.t)  ->
                     let label = None and assoc = None in
-                    ({ label; assoc; rules } : 'level )))));
-         ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
+                    ({
+                       label =
+                         (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
+                       assoc;
+                       rules
+                     } : 'level )))));
+         ([`Token
+             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+               "Str");
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label; assoc; rules }\n",
+           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(label : 'str) 
-                   (_loc : Locf.t)  ->
+                (fun ~__fan_1:(rules : 'rule_list) 
+                   ~__fan_0:(label : Tokenf.txt)  (_loc : Locf.t)  ->
                    let label = Some label and assoc = None in
-                   ({ label; assoc; rules } : 'level )))));
+                   ({
+                      label =
+                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
+                      assoc;
+                      rules
+                    } : 'level )))));
          ([`Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label; assoc; rules }\n",
+           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(assoc : 'assoc)
                     (_loc : Locf.t)  ->
                    let label = None and assoc = Some assoc in
-                   ({ label; assoc; rules } : 'level )))));
-         ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
+                   ({
+                      label =
+                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
+                      assoc;
+                      rules
+                    } : 'level )))));
+         ([`Token
+             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+               "Str");
           `Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
-           ("{ label; assoc; rules }\n",
+           ("{ label = (Option.map (fun (x : Tokenf.txt)  -> x.txt) label); assoc; rules }\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(rules : 'rule_list)  ~__fan_1:(assoc : 'assoc)
-                    ~__fan_0:(label : 'str)  (_loc : Locf.t)  ->
+                    ~__fan_0:(label : Tokenf.txt)  (_loc : Locf.t)  ->
                    let label = Some label and assoc = Some assoc in
-                   ({ label; assoc; rules } : 'level )))))]) : Gramf.olevel ));
+                   ({
+                      label =
+                        (Option.map (fun (x : Tokenf.txt)  -> x.txt) label);
+                      assoc;
+                      rules
+                    } : 'level )))))]) : Gramf.olevel ));
   Gramf.extend_single (assoc : 'assoc Gramf.t )
     (None,
       ((None, None,

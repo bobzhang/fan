@@ -11,15 +11,16 @@ open FAst
 
   
 %extend{
-let str : [Str y  %{y}]
-let type_entry :
+
+str@Local : [Str y  %{y}] (* FIXME -- remove later*)
+type_entry@Local :
       [ Lid x  %{ (_loc,x,None,None)}
       | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
       | "("; Lid x ; Str y; Syntaxf.ctyp as t;  ")" %{ (_loc,x,Some y,Some t)}
       | "("; Lid x; ":"; Syntaxf.ctyp as t; ? str as y;  ")" %{ (_loc,x,y,Some t)}
       ]      
 
-  let ty :
+ty@Local :
   [ "("; qualid as x ; ":"; t_qualid as t;")" %{ `Dyn(x,t)}
   |  qualuid as t %{ `Static t}
   | %{ `Static (`Uid(_loc,"Gramf")) (** BOOTSTRAP, associated with module [Gramf]*)}

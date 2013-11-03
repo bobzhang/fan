@@ -26,7 +26,7 @@ open FAst
  *)  
 
   %extend{
-    let  uid: [Uid n %{n}]
+     uid@Local: [Uid n %{n}] (* FIXME remove *)
     parser_exp : 
         [  ? uid as name; parser_case_list as pcl %{
           match name with

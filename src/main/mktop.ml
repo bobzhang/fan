@@ -392,7 +392,7 @@ let ()  =
 %create{import} ;;
 
 %extend{
-let a:
+  a@Local:
   [Uid m ; ":"; L1 Lid as ns ; ";" %{
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map

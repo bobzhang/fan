@@ -32,14 +32,19 @@ let mk_name (i:FAst.vid) : Gram_def.name =
 let g =
   Gramf.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["("; ")" ; ","; "as"; "|"; "_"; ":";
-               "."; ";"; "{"; "}"; "let";"[";"]";
+               "."; ";"; "{"; "}"; "[";"]";
                "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
                "Ant";"Quot"; "DirQuotation"; "Str";
                "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint";
                "Flo"; "Pre"; "Inf";
-               "TRY"; "PEEK"; "L0"; "L1"; "First"; "Last";
-               "Before"; "After"; "Level"; "LA"; "RA"; "NA"; "+";"*";"?"; "="; "@";
-               "Inline"] ();;
+               "TRY"; "PEEK";
+               "L0"; "L1"; "First"; "Last";
+               "Before"; "After"; "Level";
+               "LA"; "RA"; "NA"; "+";"*";"?"; "=";
+               "@";
+               "Inline";
+               "Local"
+             ] ();;
 
 
 let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
@@ -203,11 +208,11 @@ let query_inline (x:string) =
   [@simple_token 
   |@simple_symbol]
           
-  let or_words :
-      [ L1 Str SEP "|" as v %{  (v,None)  }
-      | L1 Str SEP "|" as v; "as"; Lid@xloc s %{
-          (v , Some (xloc,s)) } ]
-  let or_strs :
+  (* or_words@Local : *)
+  (*     [ L1 Str SEP "|" as v %{  (v,None)  } *)
+  (*     | L1 Str SEP "|" as v; "as"; Lid@xloc s %{ *)
+  (*         (v , Some (xloc,s)) } ] *)
+  or_strs@Local :
       [ L1  Str SEP "|" as xs %{(xs,None,None)}
       | L1  Str SEP "|" as xs; "as"; Lid@xloc s %{ (xs, None, Some (xloc,s))}
       | L1  Str SEP "|" as xs ; "@"; Lid@lloc l; "as"; Lid@xloc s %{(xs, Some (lloc,l), Some(xloc,s))} ]
@@ -215,11 +220,11 @@ let query_inline (x:string) =
   simple :
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
   | @simple_symbol %{fun (symbol : Gram_def.symbol) -> [({kind = KNormal; symbol}:Gram_def.psymbol)]} 
-  |  ("Ant" as v); "("; or_words as ps;",";Lid@xloc s; ")" %{
+  |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       let i = hash_variant v in
       let p = %pat'@xloc{$lid:s} in
       match ps with
-      | (vs,y) ->
+      | (vs,loc,y) ->
           vs |>
           List.map (fun (x:Tokenf.txt) ->
             let (x,xloc) = (x.txt,x.loc) in
@@ -232,18 +237,26 @@ let query_inline (x:string) =
            
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
-            let (pp,bounds) =
-              match y with
-              | None -> (%pat{$z},[])
-              | Some ((xloc,u) as v) -> (%pat@xloc{( $z as $lid:u)},[v]) in
+            let (pattern,bounds) =
+              match (loc, y) with
+              | (None, None) ->
+                  (Some %pat{(({kind=$z;_} as $p) :Tokenf.ant)},[])
+              | (Some(lloc,ll),None) ->
+                  let l = %pat@lloc{$lid:ll} in
+                  (Some %pat{(({kind = $z; loc = $l; _} as $p) : Tokenf.ant) },[(lloc,ll)])
+              | (None ,Some ((xloc,u) as v)) ->
+                  (Some %pat@xloc{ (({kind = ( $z as $lid:u); _} as $p) : Tokenf.ant)},[v])
+              | (Some(lloc,ll),Some ((xloc,u) as v)) ->
+                  let l = %pat@lloc{$lid:ll} in
+                  (Some %pat@xloc{ (({kind = ( $z as $lid:u); loc = $l;  _} as $p) : Tokenf.ant)},
+                   [(lloc,ll);v]) in
             ({kind = KNormal;
               symbol = {
               text = `Token(_loc,pred,des,des_str);
               styp= %ctyp'{Tokenf.ant};
-              pattern = Some %pat{(* $vrn:v *) (({kind = $pp; _} as $p) :Tokenf.ant)
-              (* BOOTSTRAPPING *)};
-             bounds;
-             outer_pattern = None }}:Gram_def.psymbol))}
+              pattern ;
+              bounds;
+              outer_pattern = None }}:Gram_def.psymbol))}
 
   | "("; or_strs as v; ")" %{
     match v with
@@ -290,9 +303,9 @@ let query_inline (x:string) =
   (*   | (vs,Some x) -> *)
   (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
   ]
-  let level_str :  ["Level"; Str  s %{s} ]      
+  level_str@Local :  ["Level"; Str  s %{s} ]      
  
-  let sep_symbol : [ "SEP"; single_symbol as t %{t}]
+  sep_symbol@Local : [ "SEP"; single_symbol as t %{t}]
   symbol :
   (* be more precise, no recursive grammar? *)
   [("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
@@ -326,7 +339,7 @@ let query_inline (x:string) =
 
 
 %extend{(g:Gramf.t)
-  let str : [Str y  %{y}]
+
   (*****************************)
   (* extend language           *)
   (*****************************)      
@@ -377,15 +390,15 @@ let query_inline (x:string) =
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid as il; ?  str  as name %{
+  [ qualid as il; ?  Str  as name %{
     let x =
-      match name with
+      match (name:Tokenf.txt option) (* FIXME more type annotation needed? *) with
       | Some x ->
           let old = !Ast_quotation.default in
           begin 
-            match Ast_quotation.resolve_name (`Sub [], x)
+            match Ast_quotation.resolve_name (`Sub [], x.txt)
             with
-            | None -> Locf.failf _loc "DDSL `%s' not resolved" x 
+            | None -> Locf.failf x.loc "DDSL `%s' not resolved" x.txt 
             | Some x -> (Ast_quotation.default:= Some x; `name old)
           end
       | None -> `non in
@@ -404,8 +417,9 @@ let query_inline (x:string) =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some {name=p; local=false;pos;levels}
       end}
-  |  "let" ; entry_name as rest; ":";  ? position as pos; level_list as levels %{
-    let (n,p) = rest in
+      
+  |  entry_name as rest; "@"; "Local"; ":";  ? position as pos; level_list as levels %{
+     let (n,p) = rest in
       begin
         (match n with
         |`name old -> Ast_quotation.default := old
@@ -414,7 +428,8 @@ let query_inline (x:string) =
         |(Some %exp{ `Level $_ },`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some {name=p;local=true;pos;levels}
-      end}
+      end
+  }
   | "Inline"; Lid x ; ":"; rule_list as rules %{
     begin
       Hashtbl.add inline_rules x rules;
@@ -429,8 +444,8 @@ let query_inline (x:string) =
   | level as l  %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  ?str as  label ;  ?assoc as assoc; rule_list as rules
-       %{{label;assoc;rules}} ]
+  [  ? Str as  label ;  ?assoc as assoc; rule_list as rules
+       %{{label = Option.map (fun (x:Tokenf.txt) -> x.txt) label ;assoc;rules}} ]
 
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
@@ -464,12 +479,12 @@ let query_inline (x:string) =
             | Some b -> {x with action = Some %exp{ $a $b}}) rules 
   }
   ]
-  let left_rule :
+   left_rule@Local :
    [ psymbol as x %{[x]}
    | psymbol as x;";" ;S as xs %{ x::xs }
    |    %{[]}]   
    (* [ L0 psymbol SEP ";"{prod} %{prod}]    *)
-  let opt_action :
+   opt_action@Local :
       [ Quot x %{
         if x.name = Tokenf.empty_name then 
           let expander loc _ s = Parsef.exp loc s  in

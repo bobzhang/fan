@@ -220,7 +220,7 @@ let apply () = begin
                     let old = !Ast_quotation.map in
                     (Ast_quotation.map := Mapf.String.add_list xys old;
                      old)}]
-      let name_space:
+       name_space@Local:
        [ Lid x;":";dot_lstrings as y %{
              (x,
               match Ast_quotation.resolve_name  y with
@@ -236,7 +236,7 @@ let apply () = begin
             |None ->
                 Locf.failf _loc "DDSL `%s' can not be resolved" x
             | Some  x -> x)} ]  
-       let fun_def_pat:
+       fun_def_pat@Local:
        ["(";"type";a_lident as i;")" %{fun e ->  `LocalTypeFun (_loc, i, e)}
        | ipat as p %{ fun e -> `Fun(_loc,`Case(_loc,p,e))}(* %{ fun $p -> $e } *)
        | ipat as p; "when"; exp as w %{fun e -> `Fun(_loc,`CaseWhen(_loc,p,w,e))} ]
@@ -532,7 +532,7 @@ let apply () = begin
        pat_as_pat_opt:
        [ pat as p1; "as"; a_lident as s %{  `Alias (_loc, p1, s)}
        | pat as p %{p} ]
-       let pat_constr:
+       pat_constr@Local:
        [module_longident as i %{(i :vid :> pat)}
        |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
        |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]

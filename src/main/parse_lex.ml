@@ -32,7 +32,7 @@ let g =
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}
     | "<";L0 case SEP "|" as l %{
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
-  let case:
+  case@Local:
     [ regexp as r;  Quot x  %{
       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
       let e = Tokenf.quot_expand expander x in (r,e)}]  
@@ -49,7 +49,7 @@ let g =
     end}
   | S; S as x %{x}]
 
-  let lid: [ Lid y %{ (_loc, y)} ]  
+  lid@Local: [ Lid y %{ (_loc, y)} ] (* FIXME remove *)  
   regexp:
   {
    "as"

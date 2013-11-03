@@ -18,9 +18,9 @@ with exp
   | "show_code"; "on" %{Typehook.show_code := true}
   | "show_code"; "off" %{Typehook.show_code := false}
  ]
-  let id:
+  id@Local:
   [ Lid x  %{x} | Uid x  %{x}]
-  let fan_quot_semi:
+  fan_quot_semi@Local:
   [ fan_quot;";" ]
   fan_quots:
   [L1 fan_quot_semi %{ %{ ()}} ]
