@@ -1,0 +1,9 @@
+
+
+FILES = lang_error
+.PHONY:lib clean
+    
+lib:$(OCamlLibrary libplugins, $(FILES))
+
+clean:
+    rm -rf $(OCAMLBIN_EXT)

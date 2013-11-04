@@ -3,14 +3,9 @@ OCAMLPPFLAGS = -pp $(PP_FAN)
 OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
 NATIVE_ENABLED=true
 NATIVEPLUGIN_ENABLED = true 
-FILES = lang_error
 
-.PHONY:lib clean
-    
-lib:$(OCamlLibrary libplugins, $(FILES))
-
-clean:
-    rm -rf $(OCAMLBIN_EXT)
+section:
+    .SUBDIRS: plc ounit
     
 # local variables:
 # compile-command: "pmake lib"

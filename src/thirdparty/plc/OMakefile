@@ -1,0 +1,13 @@
+
+OCAMLPPFLAGS = -pp $(PP_FAN)
+OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
+NATIVE_ENABLED=true
+NATIVEPLUGIN_ENABLED = true 
+
+FILES= PlAst PlEnv PlNames PlParser PlVersion PlTranslate PlEnv
+
+.PHONY: lib clean
+
+lib:$(OCamlLibrary libplc, $(FILES))
+clean:
+    rm -rf $(OCAMLBIN_EXT)

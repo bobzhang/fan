@@ -1,3 +1,0 @@
-<**/*.{ml,mlx}>: use_fan
-true:-use_unix
-<*_ppo.ml>: -use_fan

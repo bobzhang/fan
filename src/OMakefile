@@ -324,7 +324,10 @@ MakeThirdParty(maindir,pp) =
     .SUBDIRS: $(DIR_THIRDPARTY)
 
 MakeThirdParty($(DIR_COLD), $(file fan))
-FAN_PLUGIN = $(file thirdparty/libplugins)
+
+OUNIT_PLUGIN = $(file thirdparty/ounit/libplugins)
+
+FAN_PLUGIN = 
 FAN_FLAG = 
 
 ########################
@@ -341,7 +344,8 @@ MakeTest(maindir,mountdir,pp) =
     OCAMLINCLUDES += $(MAINDIR)
     vmount(-l, $(DIR_UNIT), $(mountdir))
     AdditionalDependency($(pp))
-    AdditionalDependency($(FAN_PLUGIN).cmxs)
+    AdditionalDependency($(OUNIT_PLUGIN).cmxs)
+    FAN_PLUGIN += $(OUNIT_PLUGIN)
     # OCAML_LIBS[]+= $(MAINDIR)/libmain
     .SUBDIRS: $(mountdir)
 
