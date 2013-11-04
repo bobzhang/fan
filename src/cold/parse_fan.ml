@@ -47,6 +47,8 @@ let () =
   make_semi exp sem_exp;
   make_semi label_exp label_exp_list;
   make_semi pat sem_pat;
+  make_semi clfield clfield_quot;
+  make_semi clsigi clsigi_quot;
   make_comma pat comma_pat;
   make_comma ipat comma_ipat;
   make_comma exp comma_exp
@@ -933,20 +935,18 @@ let apply () =
    Gramf.extend_single (interf : 'interf Gramf.t )
      (None,
        ((None, None,
-          [([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ));
-            `Keyword ";;";
-            `Self],
+          [([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
              ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(rest : 'interf)  ~__fan_1:_ 
-                     ~__fan_0:(si : 'sigi)  (_loc : Locf.t)  ->
+                  (fun ~__fan_1:(rest : 'interf)  ~__fan_0:(si : 'sigi) 
+                     (_loc : Locf.t)  ->
                      (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                      'interf )))));
-          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
+          ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"; `Self],
             ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(rest : 'interf)  ~__fan_0:(si : 'sigi) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(rest : 'interf)  ~__fan_1:_ 
+                    ~__fan_0:(si : 'sigi)  (_loc : Locf.t)  ->
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                     'interf )))));
           ([`Token
@@ -2236,11 +2236,10 @@ let apply () =
           ([`Keyword "[";
            `Nterm (Gramf.obj (sem_exp_for_list : 'sem_exp_for_list Gramf.t ));
            `Keyword "]"],
-            ("mk_list (`Uid (_loc, \"[]\") : FAst.exp )\n",
+            ("s\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(mk_list : 'sem_exp_for_list) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (mk_list (`Uid (_loc, "[]") : FAst.exp ) : 'exp )))));
+                 (fun ~__fan_2:_  ~__fan_1:(s : 'sem_exp_for_list) 
+                    ~__fan_0:_  (_loc : Locf.t)  -> (s : 'exp )))));
           ([`Keyword "[|"; `Keyword "|]"],
             ("`ArrayEmpty _loc\n",
               (Gramf.mk_action
@@ -2256,19 +2255,18 @@ let apply () =
           ([`Keyword "{";
            `Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "Lid");
+               "`Lid x");
            `Keyword "with";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
            `Keyword "}"],
-            ("(`RecordWith (_loc, el, (`Lid (_loc, x))) : FAst.exp )\n",
+            ("`RecordWith (_loc, el, (`Lid (xloc, x)))\n",
               (Gramf.mk_action
                  (fun ~__fan_4:_  ~__fan_3:(el : 'label_exp_list)  ~__fan_2:_
                      ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        ((`RecordWith (_loc, el, (`Lid (_loc, x))) : 
-                        FAst.exp ) : 'exp )))));
+                    | ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                        (`RecordWith (_loc, el, (`Lid (xloc, x))) : 'exp )))));
           ([`Keyword "{";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
            `Keyword "}"],
@@ -2415,30 +2413,27 @@ let apply () =
      (None,
        ((None, None,
           [([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"; `Self],
-             ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (el acc)) : FAst.exp )\n",
+             ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), el) : FAst.exp )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(el : 'sem_exp_for_list)  ~__fan_1:_ 
                      ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                     (fun acc  ->
-                        (`App
-                           (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
-                             (el acc)) : FAst.exp ) : 'sem_exp_for_list )))));
+                     ((`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), el) : 
+                     FAst.exp ) : 'sem_exp_for_list )))));
           ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
+            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nFAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       (`App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
-                       FAst.exp ) : 'sem_exp_for_list )))));
+                    ((`App
+                        (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
+                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list )))));
           ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
-            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
+            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nFAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       (`App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
-                       FAst.exp ) : 'sem_exp_for_list )))))]) : Gramf.olevel ));
+                    ((`App
+                        (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
+                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list )))))]) : 
+       Gramf.olevel ));
    Gramf.extend_single (sequence : 'sequence Gramf.t )
      (None,
        ((None, None,
@@ -3359,11 +3354,10 @@ let apply () =
           ([`Keyword "[";
            `Nterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
            `Keyword "]"],
-            ("mk_list (`Uid (_loc, \"[]\") : FAst.pat )\n",
+            ("s\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(mk_list : 'sem_pat_for_list) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (mk_list (`Uid (_loc, "[]") : FAst.pat ) : 'pat )))));
+                 (fun ~__fan_2:_  ~__fan_1:(s : 'sem_pat_for_list) 
+                    ~__fan_0:_  (_loc : Locf.t)  -> (s : 'pat )))));
           ([`Keyword "[|"; `Keyword "|]"],
             ("`ArrayEmpty _loc\n",
               (Gramf.mk_action
@@ -3464,11 +3458,6 @@ let apply () =
                     ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
                     'pat )))));
-          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
-            ("(`Vrn (_loc, s) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))));
           ([`Keyword "#";
            `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
             ("(`ClassPath (_loc, i) : FAst.pat )\n",
@@ -3476,20 +3465,15 @@ let apply () =
                  (fun ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
                     ((`ClassPath (_loc, i) : FAst.pat ) : 'pat )))));
-          ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
-            ("Ast_quotation.expand x Dyn_tag.pat\n",
+          ([`Keyword "~";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword ":";
+           `Self],
+            ("(`Label (_loc, i, p) : FAst.pat )\n",
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (x : Tokenf.quot) ->
-                        (Ast_quotation.expand x Dyn_tag.pat : 'pat )))));
-          ([`Keyword "_"],
-            ("(`Any _loc : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Any _loc : FAst.pat ) : 'pat )))));
+                 (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
+                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                    ((`Label (_loc, i, p) : FAst.pat ) : 'pat )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
                 (48004564, `Any), "Label");
@@ -3502,15 +3486,25 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                         'pat )))));
-          ([`Keyword "~";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Self],
-            ("(`Label (_loc, i, p) : FAst.pat )\n",
+          ([`Token
+              (((function | `Quot _ -> true | _ -> false)),
+                (904098089, `Any), "`Quot _")],
+            ("Ast_quotation.expand x Dyn_tag.pat\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Label (_loc, i, p) : FAst.pat ) : 'pat )))));
+                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (x : Tokenf.quot) ->
+                        (Ast_quotation.expand x Dyn_tag.pat : 'pat )))));
+          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
+            ("(`Vrn (_loc, s) : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
+                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))));
+          ([`Keyword "_"],
+            ("(`Any _loc : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                    ((`Any _loc : FAst.pat ) : 'pat )))));
           ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("`LabelS (_loc, i)\n",
               (Gramf.mk_action
@@ -3751,25 +3745,6 @@ let apply () =
                  (fun ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
                     ((s : alident  :>pat) : 'ipat )))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
-            ("Ast_quotation.expand x Dyn_tag.pat\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (x : Tokenf.quot) ->
-                        (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))));
-          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
-            ("(`Vrn (_loc, s) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
-          ([`Keyword "_"],
-            ("(`Any _loc : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Any _loc : FAst.pat ) : 'ipat )))));
-          ([`Token
               (((function | `Label _ -> true | _ -> false)),
                 (48004564, `Any), "Label");
            `Self],
@@ -3790,6 +3765,25 @@ let apply () =
                  (fun ~__fan_3:(p : 'ipat)  ~__fan_2:_ 
                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
+          ([`Token
+              (((function | `Quot _ -> true | _ -> false)),
+                (904098089, `Any), "`Quot _")],
+            ("Ast_quotation.expand x Dyn_tag.pat\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (x : Tokenf.quot) ->
+                        (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))));
+          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
+            ("(`Vrn (_loc, s) : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
+                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
+          ([`Keyword "_"],
+            ("(`Any _loc : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                    ((`Any _loc : FAst.pat ) : 'ipat )))));
           ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("`LabelS (_loc, i)\n",
               (Gramf.mk_action
@@ -3901,30 +3895,27 @@ let apply () =
      (None,
        ((None, None,
           [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
-             ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (pl acc)) : FAst.pat )\n",
+             ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), pl) : FAst.pat )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(pl : 'sem_pat_for_list)  ~__fan_1:_ 
                      ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                     (fun acc  ->
-                        (`App
-                           (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
-                             (pl acc)) : FAst.pat ) : 'sem_pat_for_list )))));
+                     ((`App (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), pl) : 
+                     FAst.pat ) : 'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : FAst.pat )\n",
+            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (`Uid (_loc, \"[]\"))) : \nFAst.pat )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       (`App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
-                       FAst.pat ) : 'sem_pat_for_list )))));
+                    ((`App
+                        (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
+                          (`Uid (_loc, "[]"))) : FAst.pat ) : 'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : FAst.pat )\n",
+            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (`Uid (_loc, \"[]\"))) : \nFAst.pat )\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (fun acc  ->
-                       (`App
-                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
-                       FAst.pat ) : 'sem_pat_for_list )))))]) : Gramf.olevel ));
+                    ((`App
+                        (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
+                          (`Uid (_loc, "[]"))) : FAst.pat ) : 'sem_pat_for_list )))))]) : 
+       Gramf.olevel ));
    Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
      (None,
        ((None, None,
@@ -5088,52 +5079,6 @@ let apply () =
                   (fun ~__fan_0:(x : 'label_longident)  (_loc : Locf.t)  ->
                      ((x : vid  :>ident) : 'class_longident )))))]) : 
        Gramf.olevel ));
-   Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
-     (None,
-       ((None, None,
-          [([`Keyword "method"],
-             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     let bang = None in
-                     (match bang with
-                      | Some _ -> `Positive _loc
-                      | None  -> `Negative _loc : 'method_opt_override )))));
-          ([`Keyword "method"; `Keyword "!"],
-            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    let bang = Some bang in
-                    (match bang with
-                     | Some _ -> `Positive _loc
-                     | None  -> `Negative _loc : 'method_opt_override )))));
-          ([`Keyword "method";
-           `Token
-             (((function
-                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
-            ("mk_ant ~c:\"flag\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"flag" s : 'method_opt_override )
-                    | _ -> assert false))));
-          ([`Keyword "method";
-           `Token
-             (((function
-                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
-            ("mk_ant ~c:\"flag\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (({ kind = "override";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"flag" s : 'method_opt_override )
-                    | _ -> assert false))))]) : Gramf.olevel ));
    Gramf.extend_single (opt_override : 'opt_override Gramf.t )
      (None,
        ((None, None,
@@ -5174,66 +5119,6 @@ let apply () =
                     match __fan_0 with
                     | (({ kind = "override";_} as s) : Tokenf.ant) ->
                         (mk_ant ~c:"flag" s : 'opt_override )
-                    | _ -> assert false))))]) : Gramf.olevel ));
-   Gramf.extend_single
-     (value_val_opt_override : 'value_val_opt_override Gramf.t )
-     (None,
-       ((None, None,
-          [([`Keyword "val"],
-             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     let bang = None in
-                     (match bang with
-                      | Some _ -> `Positive _loc
-                      | None  -> `Negative _loc : 'value_val_opt_override )))));
-          ([`Keyword "val"; `Keyword "!"],
-            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    let bang = Some bang in
-                    (match bang with
-                     | Some _ -> `Positive _loc
-                     | None  -> `Negative _loc : 'value_val_opt_override )))));
-          ([`Keyword "val";
-           `Token
-             (((function
-                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
-            ("mk_ant ~c:\"flag\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
-                    | _ -> assert false))));
-          ([`Keyword "val";
-           `Token
-             (((function
-                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
-            ("mk_ant ~c:\"flag\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (({ kind = "override";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
-                    | _ -> assert false))));
-          ([`Keyword "val";
-           `Token
-             (((function
-                | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "!")), "`Ant s")],
-            ("mk_ant ~c:\"flag\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (({ kind = "!";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
                     | _ -> assert false))))]) : Gramf.olevel ));
    Gramf.extend_single (flag : 'flag Gramf.t )
      (None,
@@ -5764,18 +5649,17 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
                     (st : 'strus )))));
+          ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Self],
+            ("`Sem (_loc, st, xs)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(xs : 'strus)  ~__fan_0:(st : 'stru) 
+                    (_loc : Locf.t)  -> (`Sem (_loc, st, xs) : 'strus )))));
           ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Keyword ";;"; `Self],
             ("`Sem (_loc, st, xs)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(xs : 'strus)  ~__fan_1:_ 
                     ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, st, xs) : 'strus )))));
-          ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Self],
-            ("`Sem (_loc, st, xs)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'strus)  ~__fan_0:(st : 'stru) 
-                    (_loc : Locf.t)  -> (`Sem (_loc, st, xs) : 'strus )))))]) : 
-       Gramf.olevel ));
+                    (`Sem (_loc, st, xs) : 'strus )))))]) : Gramf.olevel ));
    Gramf.extend_single (stru_quot : 'stru_quot Gramf.t )
      (None,
        ((None, None,
@@ -6044,23 +5928,7 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                      (`StExp (_loc, e) : 'stru )))))])] : Gramf.olevel list )));
-  (Gramf.extend_single (clsigi_quot : 'clsigi_quot Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
-            `Keyword ";";
-            `Self],
-             ("`Sem (_loc, x1, x2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(x2 : 'clsigi_quot)  ~__fan_1:_ 
-                     ~__fan_0:(x1 : 'clsigi)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, x1, x2) : 'clsigi_quot )))));
-          ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))],
-            ("x\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'clsigi)  (_loc : Locf.t)  ->
-                    (x : 'clsigi_quot )))))]) : Gramf.olevel ));
-   Gramf.extend_single (class_signature : 'class_signature Gramf.t )
+  (Gramf.extend_single (class_signature : 'class_signature Gramf.t )
      (None,
        ((None, None,
           [([`Token
@@ -6409,6 +6277,112 @@ let apply () =
                     ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
                     (`Sem (_loc, st, xs) : 'class_structure )))))]) : 
        Gramf.olevel ));
+   Gramf.extend_single
+     (value_val_opt_override : 'value_val_opt_override Gramf.t )
+     (None,
+       ((None, None,
+          [([`Keyword "val"],
+             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+               (Gramf.mk_action
+                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                     let bang = None in
+                     (match bang with
+                      | Some _ -> `Positive _loc
+                      | None  -> `Negative _loc : 'value_val_opt_override )))));
+          ([`Keyword "val"; `Keyword "!"],
+            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let bang = Some bang in
+                    (match bang with
+                     | Some _ -> `Positive _loc
+                     | None  -> `Negative _loc : 'value_val_opt_override )))));
+          ([`Keyword "val";
+           `Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+            ("mk_ant ~c:\"flag\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | (({ kind = "";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
+                    | _ -> assert false))));
+          ([`Keyword "val";
+           `Token
+             (((function
+                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
+            ("mk_ant ~c:\"flag\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | (({ kind = "override";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
+                    | _ -> assert false))));
+          ([`Keyword "val";
+           `Token
+             (((function
+                | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "!")), "`Ant s")],
+            ("mk_ant ~c:\"flag\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | (({ kind = "!";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"flag" s : 'value_val_opt_override )
+                    | _ -> assert false))))]) : Gramf.olevel ));
+   Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
+     (None,
+       ((None, None,
+          [([`Keyword "method"],
+             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+               (Gramf.mk_action
+                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                     let bang = None in
+                     (match bang with
+                      | Some _ -> `Positive _loc
+                      | None  -> `Negative _loc : 'method_opt_override )))));
+          ([`Keyword "method"; `Keyword "!"],
+            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let bang = Some bang in
+                    (match bang with
+                     | Some _ -> `Positive _loc
+                     | None  -> `Negative _loc : 'method_opt_override )))));
+          ([`Keyword "method";
+           `Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+            ("mk_ant ~c:\"flag\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | (({ kind = "";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"flag" s : 'method_opt_override )
+                    | _ -> assert false))));
+          ([`Keyword "method";
+           `Token
+             (((function
+                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
+            ("mk_ant ~c:\"flag\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | (({ kind = "override";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"flag" s : 'method_opt_override )
+                    | _ -> assert false))))]) : Gramf.olevel ));
    Gramf.extend_single (clfield : 'clfield Gramf.t )
      (None,
        ((None, None,
@@ -6476,49 +6450,30 @@ let apply () =
                     ->
                     ((`CrVal (_loc, lab, o, mf, e) : FAst.clfield ) : 
                     'clfield )))));
-          ([`Nterm
-              (Gramf.obj
-                 (value_val_opt_override : 'value_val_opt_override Gramf.t ));
+          ([`Keyword "val";
            `Keyword "virtual";
            `Nterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
            `Keyword ":";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("match o with\n| `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )\n| _ -> raise (Streamf.Error \"override (!) is incompatible with virtual\")\n",
+            ("`VirVal (_loc, l, mf, t)\n",
               (Gramf.mk_action
                  (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
                     ~__fan_3:(l : 'a_lident)  ~__fan_2:(mf : 'opt_mutable) 
-                    ~__fan_1:_  ~__fan_0:(o : 'value_val_opt_override) 
-                    (_loc : Locf.t)  ->
-                    (match o with
-                     | `Negative _ ->
-                         (`VirVal (_loc, l, mf, t) : FAst.clfield )
-                     | _ ->
-                         raise
-                           (Streamf.Error
-                              "override (!) is incompatible with virtual") : 
-                    'clfield )))));
-          ([`Nterm
-              (Gramf.obj
-                 (method_opt_override : 'method_opt_override Gramf.t ));
+                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                    (`VirVal (_loc, l, mf, t) : 'clfield )))));
+          ([`Keyword "method";
            `Keyword "virtual";
            `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
            `Keyword ":";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("match o with\n| `Negative _ -> `VirMeth (_loc, l, pf, t)\n| _ -> raise (Streamf.Error \"override (!) is incompatible with virtual\")\n",
+            ("`VirMeth (_loc, l, pf, t)\n",
               (Gramf.mk_action
                  (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
                     ~__fan_3:(l : 'a_lident)  ~__fan_2:(pf : 'opt_private) 
-                    ~__fan_1:_  ~__fan_0:(o : 'method_opt_override) 
-                    (_loc : Locf.t)  ->
-                    (match o with
-                     | `Negative _ -> `VirMeth (_loc, l, pf, t)
-                     | _ ->
-                         raise
-                           (Streamf.Error
-                              "override (!) is incompatible with virtual") : 
-                    'clfield )))));
+                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                    (`VirMeth (_loc, l, pf, t) : 'clfield )))));
           ([`Nterm
               (Gramf.obj
                  (method_opt_override : 'method_opt_override Gramf.t ));
@@ -6559,23 +6514,7 @@ let apply () =
             ("`Initializer (_loc, se)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(se : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Initializer (_loc, se) : 'clfield )))))]) : Gramf.olevel ));
-   Gramf.extend_single (clfield_quot : 'clfield_quot Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ));
-            `Keyword ";";
-            `Self],
-             ("`Sem (_loc, x1, x2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(x2 : 'clfield_quot)  ~__fan_1:_ 
-                     ~__fan_0:(x1 : 'clfield)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, x1, x2) : 'clfield_quot )))));
-          ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ))],
-            ("x\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'clfield)  (_loc : Locf.t)  ->
-                    (x : 'clfield_quot )))))]) : Gramf.olevel )));
+                    (`Initializer (_loc, se) : 'clfield )))))]) : Gramf.olevel )));
   (Gramf.extend_single (clexp_quot : 'clexp_quot Gramf.t )
      (None,
        ((None, None,

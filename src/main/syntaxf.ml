@@ -9,6 +9,7 @@
   bind
   class_declaration
   class_description
+  let_bind
   clexp class_fun_bind class_fun_def  class_info_for_cltyp
   class_longident  class_name_and_param clsigi class_signature
   clfield class_structure cltyp cltyp_declaration
@@ -20,7 +21,7 @@
   fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
   label_pat_list label_pat label_longident
-  let_bind meth_list meth_decl mbind
+   meth_list meth_decl mbind
   mbind  mbind0 mexp  module_longident  module_longident_with_app  module_rec_declaration
   mtyp name_tags opt_class_self_pat opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot
   opt_exp  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private

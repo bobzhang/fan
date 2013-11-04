@@ -26,6 +26,7 @@ let make_semi  atom nt =
   nt:
     [atom as b1; ";"; S as b2 %{`Sem(_loc,b1,b2)}
     |atom as b1; ?";" %{b1}]};;
+
 let make_comma atom nt =
   %extend{
    nt:
@@ -35,8 +36,10 @@ let () =
   begin
     make_semi  field_exp field_exp_list;
     make_semi  exp sem_exp;
-    make_semi label_exp label_exp_list;
+    make_semi  label_exp label_exp_list;
     make_semi  pat sem_pat ;
+    make_semi  clfield clfield_quot;
+    make_semi  clsigi clsigi_quot;
     make_comma pat comma_pat;
     make_comma ipat comma_ipat;
     make_comma exp comma_exp;
@@ -167,7 +170,6 @@ let apply () = begin
   | "external"; a_lident as i;":";ctyp as t;"=" ;string_list as sl %{`External (_loc, i, t, sl)}
    (* | "exception"; constructor_declaration as t; "="; type_longident as i -> *)
    (*     %{ exception $t = $i } *)
-       
   ]};
   %extend{
     sigi_quot:
@@ -188,13 +190,8 @@ let apply () = begin
     ]
     (* mli entrance *)    
     interf:
-    [(*  "#"; a_lident as n;  ";;" -> *)
-    (*   ([ `DirectiveSimple(_loc,n) ],  Some _loc) *)
-    (* | "#"; a_lident as n; exp as dp; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc)  *)
-     sigi as si; ";;";  S as rest %{
-         let (sil,stopped) = rest in (si :: sil, stopped)}
-    |sigi as si; S as rest %{
-        let (sil,stopped) = rest in (si :: sil, stopped)}
+    [ sigi as si; ?";;";  S as rest %{
+      let (sil,stopped) = rest in (si :: sil, stopped)}
     | EOI %{ ([], None)} ]  };
 
     with exp
@@ -319,10 +316,6 @@ let apply () = begin
         [ S as e1; ("&"|"&&" @xloc as op) ; S as e2  %{
           let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
         ]
-        (* Note that
-           The rule below combined with "(S)" will parse "(+==)" automatically,
-           no need additional productions any more
-         *)   
        "<" LA
         (* idea merge actions ... when bounds are the same ?? *)  
         [ S as e1; Inf@xloc (0,op); S as e2 %{
@@ -418,11 +411,12 @@ let apply () = begin
         | vid as i %{(i :vid :>exp) }
         | "`"; luident as s %{ `Vrn(_loc,s)}
         | "["; "]" %{ %{ [] }} (* FIXME *)
-        | "["; sem_exp_for_list as mk_list; "]" %{mk_list %{ [] }}
+        | "["; sem_exp_for_list as s; "]" %{ s }
         | "[|"; "|]" %{ `ArrayEmpty(_loc)}
         | "[|"; sem_exp as el; "|]" %{ `Array (_loc, el)}
-        | "{"; Lid x ; "with"; label_exp_list as el; "}" %{
-            %{ { ($lid:x) with $el }}} (* FIXME add antiquot support *)
+        | "{"; Lid@xloc x ; "with"; label_exp_list as el; "}" %{
+          `RecordWith (_loc, el, `Lid (xloc, x))}
+
         | "{"; label_exp_list as el; "}" %{ `Record (_loc, el)}
         | "{"; "("; S as e; ")"; "with"; label_exp_list as el; "}" %{
             `RecordWith (_loc, el, e)}
@@ -443,8 +437,8 @@ let apply () = begin
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] }
 
        sem_exp_for_list: (* duplicated with [sem_exp] and [make_semi]*)
-       [ exp as e; ";"; S as el %{fun acc -> %exp{ $e :: ${el acc}}}
-       | exp as e; ?";" %{fun acc -> %exp{ $e :: $acc }}
+       [ exp as e; ";"; S as el %exp{ $e :: $el }
+       | exp as e; ?";" %exp{ [$e]}
        ]
 
        sequence: (*FIXME*)
@@ -525,6 +519,27 @@ let apply () = begin
        [module_longident as i %{(i :vid :> pat)}
        |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
        |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
+
+       atom_pat@Inline:
+        [ Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
+        | "`"; luident as s  %pat{$vrn:s}
+        | "_" %{ %{ _ }}
+        | "~"; a_lident as i %{  `LabelS(_loc,i)}
+        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
+        | Optlabel i; "("; pat_tcon as p; ")"  %{
+            `OptLabl(_loc,`Lid(_loc,i),p)}
+        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,i,p,e)}
+        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
+            `OptLablExpr (_loc, i, p, mk_ant s)}
+        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
+            `OptLabl(_loc,i,p)}
+        | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
+        | "?"; "("; ipat_tcon as p; ")" %{
+            `OptLabl(_loc,`Lid(_loc,""),p)}
+        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}]
        pat:
        { "|" LA
         [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
@@ -542,33 +557,14 @@ let apply () = begin
         | pat_constr as p1 %{ p1}
         | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
        "simple"
-        [ Ant (""
-               |"pat"
-               |"par"
-               |"int"
-               |"int32"
-               |"int64"
-               |"vrn"
-               |"flo"
-               |"chr"                   
-               |"nativeint"
-               |"str"
-
-               |"int'"
-               |"int32'"
-               |"int64'"
-               |"nativeint'"
-               |"flo'"
-               |"chr'"
-               |"str'"
-               |"`int"
-               |"`int32"
-               |"`int64"
-               |"`nativeint"
-               |"`flo"
-               |"`chr"
-               |"`str",s)
-
+        [ Ant ("" |"pat" |"par" |"int"
+               |"int32" |"int64" |"vrn" |"flo"
+               |"chr" |"nativeint" |"str"
+               |"int'" |"int32'" |"int64'"
+               |"nativeint'" |"flo'" |"chr'"
+               |"str'" |"`int" |"`int32"
+               |"`int64" |"`nativeint" |"`flo"
+               |"`chr" |"`str",s)
           %{ mk_ant ~c:"pat" s}
         | vid as i %{ (i : vid :> pat)}
         | @primitve
@@ -578,68 +574,38 @@ let apply () = begin
         | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
         | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
         | "["; "]" %{ %{ [] }}
-        | "["; sem_pat_for_list as mk_list; "]" %{ mk_list %{ [] }}
-              
+        | "["; sem_pat_for_list as s; "]" %{ s}
         | "[|"; "|]" %{ `ArrayEmpty(_loc)}
         | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
         | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
-            (* %{ { $((pl : rec_pat :>pat)) } } *)
         | "("; ")" %{ %{ () }}
         | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-            (* %{ (module $m) } *)
-        | "("; "module"; a_uident as m; ":"; (* package_type *)mtyp as pt; ")" %{
+        | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
             `ModuleConstraint(_loc,m, `Package(_loc,pt))}
-              (* %{ ( module $m :  $pt )} *)
         | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
             `ModuleConstraint (_loc, m, mk_ant s)}
         | "("; S as p; ")" %{ p}
         | "("; S as p; ":"; ctyp as t; ")" %{ %{ ($p : $t) }}
         | "("; S as p; "as";  a_lident as s; ")" %{ %{ ($p as $s )}}
         | "("; S as p; ","; comma_pat as pl; ")" %{ %{ ($p, $pl) }}
-        | "`"; luident as s %{ %{$vrn:s}}
-          (* duplicated may be removed later with [pat Level "apply"] *)
-        | "#"; type_longident as i %{ %{ # $i }}
-        | Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
-        | "_" %{ %{ _ }}
-        | Label i; S as p %{ %{ ~ $lid:i : $p }}
-        | "~"; a_lident as i; ":"; S as p %{ (* CHANGE *) %{ ~$i : $p}}
-        | "~"; a_lident as i %{ `LabelS(_loc,i)}
-        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
-            (* %{ ?$lid:i : ($p=$e)} *)
-        | Optlabel i; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,`Lid(_loc,i),p)}
-            (* %{ ? $lid:i : ($p)} *)
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,i,p,e)}
-            (* %{ ?$i:($p=$e)} *)
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
-            `OptLablExpr (_loc, i, p,mk_ant s)}
-            (* %{ ?$i : ($p = $(opt: `Ant(_loc, mk_ant n s )) )} *)
-        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,i,p)}
-            (* %{ ? $i:($p)} *)
-        | "?"; a_lident as i %{ `OptLablS(_loc,i )}
-        | "?"; "("; ipat_tcon as p; ")" %{ `OptLabl(_loc,`Lid(_loc,""),p) (* FIXME*)}
+        | "#"; type_longident as i %{ %{ # $i }}              
 
-        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}
-            (* %{ ? ($p = $e) }; *)
+          (* duplicated may be removed later with [pat Level "apply"] *)
+        
+        | "~"; a_lident as i; ":"; S as p %pat{ ~$i : $p}
+        | Label i; S as p  %pat{ ~ $lid:i : $p }
+        | @atom_pat
         ] }
 
        ipat:
         [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
-          (* %{ { $((pl: rec_pat :>pat)) } } *)
         | Ant (""|"pat"|"par" ,s) %{ mk_ant  ~c:"pat"  s}
         | "("; ")" %{ %{ () }}
         | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-            (* %{ (module $m) } *)
         | "("; "module"; a_uident as m; ":";  mtyp as pt; ")" %{
              `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
-              (* %{ (module $m : $pt )} *)
         | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
              `ModuleConstraint (_loc, m, mk_ant  s)}
-            (* %{ (module $m : $(opt: `Ant(_loc,mk_ant n s)))} *)
         (* when change [pat], we need to take care of the following terms
            for factorization *)      
         | "("; pat as p; ")" %{ p}
@@ -647,33 +613,13 @@ let apply () = begin
         | "("; pat as p; "as"; a_lident as s; ")" %pat{  ($p as $s) }
         | "("; pat as p; ","; comma_ipat as pl; ")"  %pat{ ($p, $pl) }
         | a_lident as s %{  (s: alident :> pat)}
-        | Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
-        | "`"; luident as s  %pat{$vrn:s}
-        | "_" %{ %{ _ }}
         | Label i; S as p %pat{ ~ $lid:i : $p }
         | "~"; a_lident as i;":";S as p  %pat{ ~$i : $p}
-        | "~"; a_lident as i %{  `LabelS(_loc,i)}
-        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
-        | Optlabel i; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,`Lid(_loc,i),p)}
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,i,p,e)}
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
-            `OptLablExpr (_loc, i, p, mk_ant s)}
-        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,i,p)}
-        | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
-        | "?"; "("; ipat_tcon as p; ")" %{
-            `OptLabl(_loc,`Lid(_loc,""),p)}
-        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}
+        | @atom_pat
         ]
        sem_pat_for_list:
-       [ pat as p; ";"; S as pl %{ fun acc ->
-         %pat{  $p :: ${pl acc}  }}
-       | pat as p; ? ";" %{fun acc ->
-            %pat{  $p :: $acc  }} 
+       [ pat as p; ";"; S as pl %pat{  $p :: $pl  }
+       | pat as p; ? ";" %pat{ [ $p ]}
        ]
        pat_tcon:
        [ pat as p; ":"; ctyp as t %{ %{ ($p : $t) }}
@@ -804,23 +750,14 @@ let apply () = begin
       val_longident:[ ident as x %{ x} ]
       class_longident: [ label_longident as x %{(x : vid :>ident)} ]
       
-      method_opt_override:
-      [ "method"; ? "!" as bang  %{
-        match bang with
-        | Some _ ->  `Positive _loc
-        | None -> `Negative _loc }
-      | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}] 
+       
       opt_override:
       [ ? "!" as bang %{
         match bang with
         | Some _ ->  `Positive _loc | None -> `Negative _loc}
       | Ant ("!"|"override" ,s) %{ mk_ant ~c:"flag" s}]
       
-      value_val_opt_override:
-      [ "val"; ? "!" as bang %{
-        match bang with
-        | Some _ -> `Positive _loc | None -> `Negative _loc}
-      | "val"; Ant (""|"override"|"!" ,s) %{ mk_ant ~c:"flag" s}]
+      
       flag:
       [ "to" %{  `Positive _loc}
       | "downto" %{ `Negative _loc }
@@ -891,14 +828,12 @@ let apply () = begin
       (* used by [struct .... end]
          constains at least one element *)
       strus: (* FIXME dump seems to be incorrect *)
-      [ Ant (""|"stri" ,s) %{ mk_ant ~c:"stru" s}
-      | Ant (""|"stri" ,s) ;";;" %{ mk_ant ~c:"stru" s          }
-      | Ant (""|"stri" ,s);  S as st %{ `Sem (_loc, mk_ant ~c:"stru" s, st)}
-      | Ant (""|"stri" ,s); ";;"; S as st %{ `Sem (_loc, mk_ant  ~c:"stru" s, st)}
-      | stru as st %{ st}
-      | stru as st;";;" %{ st}
-      | stru as st;";;"; S as xs %{ `Sem(_loc,st,xs)}
-      | stru as st; S as xs %{`Sem(_loc,st,xs)}]
+      [ Ant (""|"stri" ,s) ;?";;" %{ mk_ant ~c:"stru" s          }
+      | Ant (""|"stri" ,s); ?";;"; S as st
+          %{ `Sem (_loc, mk_ant  ~c:"stru" s, st)}
+      | stru as st; ? ";;" %{ st}
+      | stru as st; ? ";;"; S as xs %{ `Sem(_loc,st,xs)}
+      ]
 
 
       stru_quot:
@@ -928,9 +863,7 @@ let apply () = begin
 
 
     %extend{
-      clsigi_quot:
-      [ clsigi as x1; ";"; S as x2 %{ `Sem(_loc,x1,x2)}
-      | clsigi as x  %{x}]
+      
 
       class_signature:
       [ Ant (""|"csg" ,s); ? ";" %{ mk_ant  ~c:"clsigi" s}
@@ -954,13 +887,22 @@ let apply () = begin
     %extend{
       class_structure:
        [ Ant (""|"cst" ,s); ? ";" %{ mk_ant  ~c:"clfield"  s}
-       | Ant (""|"cst" ,s);? ";"; S as st %{ `Sem(_loc, mk_ant ~c:"clfield"  s,st)  }
-       | clfield as st; ? ";" %{ st}
-       | clfield as st; ? ";";S as xs %{ `Sem(_loc,st,xs)}
+       | Ant (""|"cst" ,s); ? ";"; S as st %{ `Sem(_loc, mk_ant ~c:"clfield"  s,st)  }
+       | clfield as st; ?";" %{ st}
+       | clfield as st; ?";";S as xs %{ `Sem(_loc,st,xs)}
        ]
 
-
-      
+      value_val_opt_override:
+       [ "val"; ? "!" as bang %{
+         match bang with
+         | Some _ -> `Positive _loc | None -> `Negative _loc}
+       | "val"; Ant (""|"override"|"!" ,s) %{ mk_ant ~c:"flag" s}]
+       method_opt_override:
+       [ "method"; ? "!" as bang  %{
+        match bang with
+        | Some _ ->  `Positive _loc
+        | None -> `Negative _loc }
+       | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}]
       clfield:
         [ Ant (""|"cst" ,s) %{ mk_ant ~c:"clfield"  s}
         | Quot x %{ Ast_quotation.expand  x Dyn_tag.clfield}
@@ -968,28 +910,20 @@ let apply () = begin
         | "inherit"; opt_override as o; clexp as ce; "as"; a_lident as i %{`InheritAs(_loc,o,ce,i)}
         | value_val_opt_override as o; opt_mutable as mf; a_lident as lab; cvalue_bind as e %{
           (`CrVal (_loc, lab, o, mf, e) : FAst.clfield )}
-        | value_val_opt_override as o; "virtual"; opt_mutable as mf; a_lident as l; ":";
-                ctyp as t %{
-          match o with
-          | `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )
-          | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}                    
-        | method_opt_override as o; "virtual"; opt_private as pf; a_lident as l; ":";
-                  ctyp as t %{
-          match o with
-          | `Negative _ -> `VirMeth (_loc, l, pf, t)
-          | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}  
 
-       | method_opt_override as o; opt_private as pf; a_lident as l; ":"; ctyp as t ;
-                fun_bind as e %{
-                  `CrMth(_loc,l,o,pf,e,t)}
-       | method_opt_override as o; opt_private as pf;a_lident as l; fun_bind as e %{
-           `CrMthS(_loc,l,o,pf,e)}
+        | "val"; "virtual"; opt_mutable as mf; a_lident as l; ":"; ctyp as t %{
+          `VirVal (_loc, l, mf, t)}                    
+        | "method"; "virtual"; opt_private as pf; a_lident as l; ":"; ctyp as t %{
+          `VirMeth (_loc, l, pf, t)}  
+        | method_opt_override as o; opt_private as pf; a_lident as l; ":"; ctyp as t ;
+          fun_bind as e %{
+          `CrMth(_loc,l,o,pf,e,t)}
+        | method_opt_override as o; opt_private as pf;a_lident as l; fun_bind as e %{
+          `CrMthS(_loc,l,o,pf,e)}
              
-       | "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1,t2)}
-       | "initializer"; exp as se %{ `Initializer(_loc,se)} ]
-      clfield_quot:
-        [ clfield as x1; ";"; S as x2 %{ `Sem(_loc,x1,x2)}
-        | clfield as x %{x}]
+        | "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1,t2)}
+        | "initializer"; exp as se %{ `Initializer(_loc,se)} ]
+      
     };
     
   with clexp

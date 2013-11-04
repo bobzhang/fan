@@ -10,7 +10,7 @@ open FAst
 val interf : (sigi list  * Locf.t option ) Gramf.t 
 
 val implem : (stru list  * Locf.t option ) Gramf.t 
-
+val let_bind : bind Gramf.t
 val top_phrase : stru option Gramf.t 
 
 val a_lident : alident  Gramf.t  (* alident *)
@@ -89,7 +89,6 @@ val label_longident : vid Gramf.t
 val label_pat : rec_pat Gramf.t
 val label_pat_list : rec_pat Gramf.t
     
-val let_bind : bind Gramf.t
 val meth_list : (name_ctyp * flag) Gramf.t 
 val meth_decl : name_ctyp Gramf.t
 val mbind : mbind Gramf.t
@@ -125,9 +124,9 @@ val pat_eoi : pat Gramf.t
 val pat_quot : pat Gramf.t
 val row_field : row_field Gramf.t
 val sem_exp : exp Gramf.t
-val sem_exp_for_list : (exp -> exp) Gramf.t 
+val sem_exp_for_list : exp Gramf.t 
 val sem_pat : pat Gramf.t
-val sem_pat_for_list :  (pat -> pat) Gramf.t
+val sem_pat_for_list :  pat  Gramf.t
 val sequence : exp Gramf.t
 val sigi : sigi Gramf.t
 val sigi_quot : sigi Gramf.t
