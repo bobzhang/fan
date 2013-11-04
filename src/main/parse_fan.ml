@@ -22,15 +22,24 @@ open! Syntaxf
 
 
 let make_semi  atom nt =
-  %extend{ nt:
-             [atom as b1; ";"; S as b2 %{`Sem(_loc,b1,b2)}
-             |atom as b1; ?";" %{b1}]};;
+  %extend{
+  nt:
+    [atom as b1; ";"; S as b2 %{`Sem(_loc,b1,b2)}
+    |atom as b1; ?";" %{b1}]};;
+let make_comma atom nt =
+  %extend{
+   nt:
+    [ S as p1; ","; S as p2 %{`Com(_loc,p1,p2)}
+    | atom as p %{p}]}
 let () = 
   begin
     make_semi  field_exp field_exp_list;
     make_semi  exp sem_exp;
     make_semi label_exp label_exp_list;
-    make_semi  pat sem_pat 
+    make_semi  pat sem_pat ;
+    make_comma pat comma_pat;
+    make_comma ipat comma_ipat;
+    make_comma exp comma_exp;
   end
 
 let apply () = begin 
@@ -457,9 +466,6 @@ let apply () = begin
        sequence':
        [ ?";" %{ fun e -> e}
        | ";"; sequence as el %{ fun e -> `Sem(_loc,e,el)} ]
-       comma_exp:
-       [ S as e1; ","; S as e2  %{`Com(_loc,e1,e2)}
-       | exp as e %{e} ]
       };
   %extend{ with_exp_lang: [ lang as old; ":"; exp as x %{ (Ast_quotation.default := old; x)}] } ;
   %extend{ with_stru_lang: [lang as old;":"; stru as x %{ (Ast_quotation.default:=old;x)}]  };
@@ -676,12 +682,6 @@ let apply () = begin
        [ Ant("" ,s) %{ mk_ant ~c:"pat" s }
        | a_lident as i %{  (i : alident :> pat)}
        | a_lident as i; ":"; ctyp as t %{(`Constraint (_loc, (i : alident :>  pat), t) : pat)}]
-       comma_ipat: (* TODO -- simplify -- *)
-       [ S as p1; ","; S as p2 %{ %{ $p1, $p2 }}
-       | ipat as p %{ p} ]
-       comma_pat:
-       [ S as p1; ","; S as p2 %{ %{ $p1, $p2 }}
-       | pat as p %{ p} ]
        label_pat_list:
        [ label_pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
        | label_pat as p1; ";"; "_"; ? ";"  %{ `Sem(_loc,p1,`Any _loc)}
@@ -694,11 +694,8 @@ let apply () = begin
        | label_longident as i; "="; pat as p %{ (* %{ $i = $p } *)
          `RecBind(_loc,i,p)}
        | label_longident as i %{
-           (* `RecBind(_loc,i,`Id(_loc,`Lid(_loc,Fan_ops.to_lid i))) *)
            `RecBind(_loc,i,`Lid(_loc,Fan_ops.to_lid i))}
-           (* %{ $i = $(lid:Id.to_lid i) } *)
-       ] };
-    
+       ]};
     with ident
     %extend{
       (* parse [a] [B], depreacated  *)
@@ -1294,12 +1291,6 @@ let fill_parsers =
 let () = 
 Ast_parsers.register_parser
     ("revise", fill_parsers);;
-
-
-
-
-
-
 
 
 

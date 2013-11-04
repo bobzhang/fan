@@ -28,11 +28,28 @@ let make_semi atom nt =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(b1 : 'atom)  (_loc : Locf.t)  ->
                    (b1 : 'nt )))))]) : Gramf.olevel ))
+let make_comma atom nt =
+  Gramf.extend_single (nt : 'nt Gramf.t )
+    (None,
+      ((None, None,
+         [([`Self; `Keyword ","; `Self],
+            ("`Com (_loc, p1, p2)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(p2 : 'nt)  ~__fan_1:_  ~__fan_0:(p1 : 'nt) 
+                    (_loc : Locf.t)  -> (`Com (_loc, p1, p2) : 'nt )))));
+         ([`Nterm (Gramf.obj (atom : 'atom Gramf.t ))],
+           ("p\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p : 'atom)  (_loc : Locf.t)  -> (p : 'nt )))))]) : 
+      Gramf.olevel ))
 let () =
   make_semi field_exp field_exp_list;
   make_semi exp sem_exp;
   make_semi label_exp label_exp_list;
-  make_semi pat sem_pat
+  make_semi pat sem_pat;
+  make_comma pat comma_pat;
+  make_comma ipat comma_ipat;
+  make_comma exp comma_exp
 let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
@@ -2526,21 +2543,7 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:(el : 'sequence)  ~__fan_0:_  (_loc : Locf.t) 
                     -> (fun e  -> `Sem (_loc, e, el) : 'sequence' )))))]) : 
-       Gramf.olevel ));
-   Gramf.extend_single (comma_exp : 'comma_exp Gramf.t )
-     (None,
-       ((None, None,
-          [([`Self; `Keyword ","; `Self],
-             ("`Com (_loc, e1, e2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'comma_exp)  ~__fan_1:_ 
-                     ~__fan_0:(e1 : 'comma_exp)  (_loc : Locf.t)  ->
-                     (`Com (_loc, e1, e2) : 'comma_exp )))));
-          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("e\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (e : 'comma_exp )))))]) : Gramf.olevel )));
+       Gramf.olevel )));
   Gramf.extend_single (with_exp_lang : 'with_exp_lang Gramf.t )
     (None,
       ((None, None,
@@ -3966,34 +3969,6 @@ let apply () =
                     ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
                     ((`Constraint (_loc, (i : alident  :>pat), t) : pat ) : 
                     'ipat_tcon )))))]) : Gramf.olevel ));
-   Gramf.extend_single (comma_ipat : 'comma_ipat Gramf.t )
-     (None,
-       ((None, None,
-          [([`Self; `Keyword ","; `Self],
-             ("(`Com (_loc, p1, p2) : FAst.pat )\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'comma_ipat)  ~__fan_1:_ 
-                     ~__fan_0:(p1 : 'comma_ipat)  (_loc : Locf.t)  ->
-                     ((`Com (_loc, p1, p2) : FAst.pat ) : 'comma_ipat )))));
-          ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t ))],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'ipat)  (_loc : Locf.t)  ->
-                    (p : 'comma_ipat )))))]) : Gramf.olevel ));
-   Gramf.extend_single (comma_pat : 'comma_pat Gramf.t )
-     (None,
-       ((None, None,
-          [([`Self; `Keyword ","; `Self],
-             ("(`Com (_loc, p1, p2) : FAst.pat )\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'comma_pat)  ~__fan_1:_ 
-                     ~__fan_0:(p1 : 'comma_pat)  (_loc : Locf.t)  ->
-                     ((`Com (_loc, p1, p2) : FAst.pat ) : 'comma_pat )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'comma_pat )))))]) : Gramf.olevel ));
    Gramf.extend_single (label_pat_list : 'label_pat_list Gramf.t )
      (None,
        ((None, None,
