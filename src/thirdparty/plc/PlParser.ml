@@ -53,7 +53,7 @@ body: [ ":-"; L1 term SEP "," as r %{r} ]
 args: [ "(";  L1 term SEP "," as r; ")" %{r} ]
 term:
   { "relop" NA
-      [ S as x; "=";  S as y %{Comp (PlNames.same,[x;y],_loc)}
+      [ S as x; "=";  S as y %{Comp ("=",[x;y],_loc)}
       | S as x; "\\="; S as y %{Comp (PlNames.diff,[x;y],_loc)}
       | S as x; "is"; S as y %{Comp (PlNames.is,[x;y],_loc)}
       | S as x; "=:="; S as y %{Comp (PlNames.eq,[x;y],_loc)}

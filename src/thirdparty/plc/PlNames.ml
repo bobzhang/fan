@@ -5,7 +5,7 @@
 let nil = "nil" and cons = "cons"
 let add = "add" and sub = "sub" and neg = "neg"
 
-let same = "same" and diff = "diff"
+let same = "=" and diff = "diff"
 let is = "is"
 let eq = "eq" and ne = "ne"
 let lt = "lt" and lte = "lte"

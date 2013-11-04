@@ -58,18 +58,14 @@ let default_keywords =
   "inherit";
   "and";
   "when";
-  "mod";
   "then";
   "initializer";
   "in";
   "downto";
-  "lsr";
   "as";
   "function";
   "begin";
   "class";
-  "land";
-  "lxor";
   "do";
   "end";
   "assert";
@@ -77,7 +73,6 @@ let default_keywords =
   "virtual";
   "to";
   "try";
-  "lsl";
   "struct";
   "else";
   "val";
@@ -92,7 +87,6 @@ let default_keywords =
   "mutable";
   "lazy";
   "with";
-  "asr";
   "if";
   "while";
   "rec";
@@ -101,8 +95,7 @@ let default_keywords =
   "match";
   "open";
   "module";
-  "let";
-  "lor"]
+  "let"]
 let gkeywords = ref (Setf.String.of_list default_keywords)
 let gram =
   {

@@ -9,17 +9,14 @@ let format_loc _loc =
 let warning _loc msg =
   Printf.eprintf "%s:\nWarning: %s\n" (format_loc _loc) msg
 
-(** AST Helpers **)
-(* open AstLoc;; *)
-
 let concat_expr ?sep _loc strs : exp option =
   List.fold_left (fun acc s ->
     match acc with
     | Some e ->
 	begin
 	  match sep with
-		  | Some sep -> Some %exp{$e ^ $str:sep ^ $s}
-		  | None -> Some %exp{$e ^ $s}
+	  | Some sep -> Some %exp{$e ^ $str:sep ^ $s}
+	  | None -> Some %exp{$e ^ $s}
 	end
     | None -> Some s)
     None strs
@@ -54,10 +51,6 @@ let if_expr _loc t body nbody : exp =
   | None -> body
   | Some t -> %exp{if $t then $body else $nbody}
 
-let is_any_patt = fun
-  | %pat{ _ } -> true
-  | _ -> false
-
 let is_always_patt = fun
  | %pat{$lid:_ } -> true
  | _ -> false
@@ -69,7 +62,7 @@ let filter_matches es cases =
   let skip = List.fold_left (fun skip _ -> (true::skip)) [] es in
   let skip = List.fold_left (fun skip (ps,_,_) ->
     List.rev (List.fold_left2 (fun skip p s ->
-      (s && is_any_patt p)::skip) [] ps skip)) skip cases in
+      (s && %p{ %pat{_} } p)::skip) [] ps skip)) skip cases in
   (remove_skip es skip,
    List.map (fun (ps,t,body) -> (remove_skip ps skip,t,body)) cases)
 
@@ -503,7 +496,7 @@ let rec goal acc = fun
   | Integer (_,_loc) -> Locf.raise _loc (Failure ("Integer not callable"))
   | Var (_,_loc) | Anon _loc ->
       Locf.raise _loc (Failure ("Meta-call not supported"))
-  | Comp (n,[t;t'],_loc) when n = PlNames.same -> same_goal _loc acc true t t'
+  | Comp ("=",[t;t'],_loc)  -> same_goal _loc acc true t t'
   | Comp (n,[t;t'],_loc) when n = PlNames.diff -> same_goal _loc acc false t t'
   | Comp (n,[t;t'],_loc) when n = PlNames.is -> is_goal _loc acc t t'
   | Comp (n,[t;t'],_loc) when n = PlNames.eq -> relation_goal _loc acc "=" t t'

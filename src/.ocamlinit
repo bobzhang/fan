@@ -44,7 +44,7 @@ let f = std_formatter;;
 open Fan;;
 open Fan_top;;
 
-open Gstructure;;
+open Gdefs;;
 
 (* let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();; *)
 
