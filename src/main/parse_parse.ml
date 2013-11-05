@@ -78,7 +78,6 @@ let query_inline (x:string) =
   (****************************************)                  
   simple_token @Inline :
   [ ("EOI" as v) %{
-    (* let i = hash_variant v in *)
     let pred = %exp{function
       | `EOI _ -> true
       | _ -> false} in
@@ -90,7 +89,6 @@ let query_inline (x:string) =
      bounds = [];
      outer_pattern = None}}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
-    (* let i = hash_variant v in *)
     let pred = %exp{function (*BOOTSTRAPPING*)
       | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
       | _ -> false} in
@@ -105,7 +103,6 @@ let query_inline (x:string) =
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
      | "Optlabel" |"Str" |"Pre" as v);  ? Lid@xloc x %{
-    (* let i = hash_variant v in                                  *)
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
@@ -124,7 +121,6 @@ let query_inline (x:string) =
      outer_pattern = None}}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
-    (* let i = hash_variant v in *)
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
@@ -136,7 +132,6 @@ let query_inline (x:string) =
      pattern = Some %pat@xloc{({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
-    (* let i = hash_variant v in                                               *)
     let pred = %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
@@ -148,7 +143,6 @@ let query_inline (x:string) =
      pattern = Some %pat{ ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
-     (* let i = hash_variant v in *)
      let pred = %exp{function
        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
        | _ -> false} in
@@ -162,7 +156,6 @@ let query_inline (x:string) =
      }}
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
-     (* let i = hash_variant v in *)
      let pred = %exp{function
        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
        | _ -> false} in
@@ -216,7 +209,6 @@ let query_inline (x:string) =
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
   | @simple_symbol %{fun (symbol : Gram_def.symbol) -> [({kind = KNormal; symbol}:Gram_def.psymbol)]} 
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
-      (* let i = hash_variant v in *)
       let p = %pat'@xloc{$lid:s} in
       match ps with
       | (vs,loc,y) ->
