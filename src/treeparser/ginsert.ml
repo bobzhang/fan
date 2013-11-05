@@ -7,8 +7,8 @@ open Util
 open Format
 let higher s1 s2 =
   match (s1, s2) with
-  | (#Gdefs.terminal,#Gdefs.terminal) -> false
-  | (#Gdefs.terminal, _) -> true
+  | (#Tokenf.terminal,#Tokenf.terminal) -> false
+  | (#Tokenf.terminal, _) -> true
   | _ -> false 
 
 

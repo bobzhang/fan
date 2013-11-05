@@ -23,10 +23,6 @@ type gram = Gdefs.gram = {
 type action = Gaction.t
 
 
-type terminal = 
-    [ `Keyword of string
-    | `Token of Tokenf.pattern ]
-
 type entry = Gdefs.entry 
 
 and level =Gdefs.level 

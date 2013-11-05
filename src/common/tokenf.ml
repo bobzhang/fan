@@ -158,6 +158,13 @@ type word =
 and descr =  (tag * word) (* FIXME duplicate in gram_def *)      
       
 type pattern = ((t -> bool) * descr * string )
+
+(** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
+    a generalized token *)      
+type terminal =
+    [ `Keyword of string
+    | `Token of pattern ]
+      
       
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =

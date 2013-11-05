@@ -13,11 +13,6 @@ type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse
 
 
 
-(** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
-    a generalized token *)      
-type terminal =
-    [ `Keyword of string
-    | `Token of Tokenf.pattern ]
   
 type gram = {
     annot : string;
@@ -55,7 +50,7 @@ and asymbol =
   | `Self
   | `List0sep of (symbol * symbol)        
   | `List1sep of (symbol * symbol)      
-  | terminal ]  
+  | Tokenf.terminal ]  
 and symbol =
   [
     `Nterm of entry
@@ -67,7 +62,7 @@ and symbol =
   | `Try of symbol
   | `Peek of symbol
   | `Self
-  | terminal
+  | Tokenf.terminal
  ]
       
 and tree = (* internal struccture *)

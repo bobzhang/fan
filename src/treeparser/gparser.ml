@@ -118,7 +118,8 @@ let rec parser_of_tree (entry:Gdefs.entry)
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gdefs.terminal list)  : (* Tokenf.t *)Obj.t list option  Tokenf.parse =
+and parser_of_terminals
+    (terminals:Tokenf.terminal list)  :Obj.t list option  Tokenf.parse =
   fun strm ->
     let module M = struct exception X end in
     let n = List.length terminals in

@@ -2,8 +2,8 @@
 (** Internal: Handling functional insertion for Fan's entry *)
 open Gdefs
 
-val higher :
-    [> terminal ] -> [> terminal ] -> bool
+val higher : symbol -> symbol -> bool 
+    (* [> Tokenf.terminal ] -> [> Tokenf.terminal ] -> bool *)
 
 (** {[ symbol -> bool ]}*)      
 val derive_eps : symbol -> bool

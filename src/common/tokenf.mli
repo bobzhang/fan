@@ -170,7 +170,6 @@ and descr =  (tag * word)
 
 
 
-
 (** [arg1] is used for runtime parsing, generated at compile time
     [arg2] is used for runtime merging, generated at compile time
     [arg3] is used for
@@ -178,6 +177,13 @@ and descr =  (tag * word)
     it could be removed later. *)
       
 type pattern = ((t -> bool) * descr * string )
+
+(** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
+    a generalized token *)      
+type terminal =
+    [ `Keyword of string
+    | `Token of pattern ]
+
       
 type stream =  t Streamf.t 
       
