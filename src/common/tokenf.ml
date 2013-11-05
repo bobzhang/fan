@@ -127,7 +127,28 @@ type t =
   | `Quot         of quot
   | `DirQuotation of quot
   | `Ant          of ant ]
-
+type tag =
+  [`Key          
+  | `Sym          
+  | `Lid          
+  | `Uid          
+  | `Eident       (* (+)*)
+  | `Int          
+  | `Int32        
+  | `Int64        
+  | `Nativeint    
+  | `Flo          
+  | `Chr          
+  | `Label        
+  | `Optlabel     
+  | `Str          
+  | `EOI          
+  | `Pre          
+  | `Inf          
+  | `Quot         
+  | `DirQuotation 
+  | `Ant]
+      
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
     Location_util.join
@@ -271,7 +292,9 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 let strip (x:t) : Obj.t  =
   Obj.field (Obj.repr x) 1 
  
-
+let get_tag (x:t ) : tag =
+  (Obj.magic (Obj.field (Obj.repr x) 0 ) : tag)
+    
 let get_string (x:t) :  string =
   match x with
   | `Pre x 

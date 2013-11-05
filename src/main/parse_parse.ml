@@ -54,6 +54,7 @@ let query_inline (x:string) =
   
 %create{(g:Gramf.t)
    extend_header
+   left_rule 
    (qualuid : vid Gramf.t)
    (qualid:vid Gramf.t)
    (t_qualid:vid Gramf.t )
@@ -87,8 +88,7 @@ let query_inline (x:string) =
      styp = %ctyp'{Tokenf.txt};
      pattern = None;
      bounds = [];
-     outer_pattern = None;
-   }}
+     outer_pattern = None}}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let i = hash_variant v in
     let pred = %exp{function (*BOOTSTRAPPING*)
@@ -290,13 +290,6 @@ let query_inline (x:string) =
               pattern ;
               outer_pattern = None}}:Gram_def.psymbol))}
 
-
-  (* |  ("Uid" as v) ; "("; or_words as p; ")" %{ *)
-  (*   match p with *)
-  (*   | (vs,None) -> *)
-  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
-  (*   | (vs,Some x) -> *)
-  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
   ]
   level_str@Local :  ["Level"; Str  s %{s} ]      
  
@@ -315,7 +308,9 @@ let query_inline (x:string) =
      {kind = KSome;
       symbol = {s with outer_pattern = None}
     }]}
-
+  | "?"; "["; left_rule ; "]"%{
+   assert false 
+  }
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
@@ -366,7 +361,6 @@ let query_inline (x:string) =
   qualuid:
   [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
   | Uid x %{ `Uid(_loc,x)}] 
-
   qualid:
   [ Uid x ; "."; S as xs %{ `Dot(_loc,`Uid(_loc,x),xs)}
   | Lid i %{ `Lid(_loc,i)}]
@@ -466,22 +460,19 @@ let query_inline (x:string) =
           (fun (x:Gram_def.rule) ->
             match x.action with
             | None -> {x with action = Some a}
-            | Some b -> {x with action = Some %exp{ $a $b}}) rules 
-  }
-  ]
-   left_rule@Local :
+            | Some b -> {x with action = Some %exp{ $a $b}}) rules}]
+   left_rule:
    [ psymbol as x %{[x]}
    | psymbol as x;";" ;S as xs %{ x::xs }
    |    %{[]}]   
 
    opt_action@Local :
-      [ Quot x %{
-        if x.name = Tokenf.empty_name then 
-          let expander loc _ s = Parsef.exp loc s  in
-          Tokenf.quot_expand expander x
-        else
-          Ast_quotation.expand x Dyn_tag.exp
-      }]
+   [ Quot x %{
+     if x.name = Tokenf.empty_name then 
+       let expander loc _ s = Parsef.exp loc s  in
+       Tokenf.quot_expand expander x
+     else
+       Ast_quotation.expand x Dyn_tag.exp}]
 
   string :
   [ Str  s  %exp{$str:s}
@@ -535,6 +526,13 @@ end;;
 
 
 
+
+  (* |  ("Uid" as v) ; "("; or_words as p; ")" %{ *)
+  (*   match p with *)
+  (*   | (vs,None) -> *)
+  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
+  (*   | (vs,Some x) -> *)
+  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
 
 (* let _loc = Locf.ghost; *)
 (* let u : FanGrammar.entry= {:entry| *)

@@ -1,27 +1,18 @@
 open FAst
 
-class primitive = object
-  method string _loc (i:string) :ep = %ep{$str':i}
-  method int _loc (i:int) : ep = %ep{$int':i}
-end
-type word  =
-  [ `Any
-  | `A of string
-  | `Level of int (* infix operator precedence *)
-  | `Empty (* no token associated *)]
+(* type word  = *)
+(*   [ `Any *)
+(*   | `A of string *)
+(*   | `Level of int (\* infix operator precedence *\) *)
+(*   | `Empty (\* no token associated *\)] *)
 
-and data = (int * word)
-   with ("MetaObj")
+(* and data = (int * word) *)
 
-let meta_data = new meta  ;;
-
-%ocaml{
-
-type name =
-    { id : vid ;
-      tvar : string;
-      loc : loc
-    }
+type name = {
+    id : vid ;
+    tvar : string;
+    loc : loc
+  }
 
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)
@@ -50,6 +41,7 @@ and level  = {
 }
 and rule = {
     prod : symbol list ;
+
     action : exp option ;
 
     env : (pat * exp) list;
@@ -97,7 +89,7 @@ type entries = {
   }
 
       
-  };;
+
 
 
 

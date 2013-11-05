@@ -136,6 +136,27 @@ type t =
   | `Inf            of op
   ]
 
+type tag =
+  [`Key          
+  | `Sym          
+  | `Lid          
+  | `Uid          
+  | `Eident       (* (+)*)
+  | `Int          
+  | `Int32        
+  | `Int64        
+  | `Nativeint    
+  | `Flo          
+  | `Chr          
+  | `Label        
+  | `Optlabel     
+  | `Str          
+  | `EOI          
+  | `Pre          
+  | `Inf          
+  | `Quot         
+  | `DirQuotation 
+  | `Ant]
 
 type stream =  t Streamf.t 
       
@@ -172,7 +193,7 @@ val pp_print_domains : domains Formatf.t
 val pp_print_ant : ant Formatf.t
     
 val get_string : t -> string
-
+val get_tag : t -> tag 
 val get_loc : t  -> loc 
 
 val string_of_name : name -> string
