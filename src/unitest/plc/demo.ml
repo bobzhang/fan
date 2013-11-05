@@ -1,6 +1,6 @@
 
 
-#load "demo/plc/plc.cmxs";;
+
 
 %plc{
 %:nqueens(+N,?Board)

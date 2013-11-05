@@ -1,6 +1,6 @@
 
-FAN_PLUGINS += $(OUNIT_PLUGIN)
-AdditionalDependency($(OUNIT_PLUGIN).cmxs)
+
+
 
 USE_OCAMLFIND = true
 

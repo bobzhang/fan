@@ -1,6 +1,8 @@
 
-OCAMLPPFLAGS = -pp $(PP_FAN)
-OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
+
+USE_FAN = true
+
+
 NATIVE_ENABLED=true
 NATIVEPLUGIN_ENABLED = true 
 
@@ -8,5 +10,5 @@ section:
     .SUBDIRS: plc ounit
     
 # local variables:
-# compile-command: "pmake lib"
+# compile-command: "cd .. && pmake test_hot"
 # end:

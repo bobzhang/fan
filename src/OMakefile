@@ -55,6 +55,12 @@
     if $(not $(test -d unitest1/main))
         mkdir unitest1/main
 
+    if $(not $(test -d unitest_annot/plc))
+        mkdir unitest_annot/plc
+        
+    if $(not $(test -d unitest1/plc))
+        mkdir unitest1/plc
+        
 # public.PREFIXED_OCAMLINCLUDES = $`(mapprefix -I, $(OCAMLINCLUDES))
 
 # USE_OCAMLFIND=true
@@ -337,7 +343,7 @@ MakeThirdParty(maindir,pp) =
 MakeThirdParty($(DIR_COLD), $(file fan))
 
 OUNIT_PLUGIN = $(file thirdparty/ounit/libplugins)
-
+PROLOG_PLUGIN = $(file thirdparty/plc/libplc)
 FAN_PLUGIN = 
 FAN_FLAG = 
 

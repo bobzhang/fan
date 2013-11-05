@@ -1,0 +1,7 @@
+
+FILES = demo1
+.PHONY: test exe1 exe2 
+
+exe1:$(OCamlProgram demo, demo)
+exe2:$(OCamlProgram demo1, demo1)     
+test:exe1 exe2

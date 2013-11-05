@@ -1,12 +1,18 @@
 
-FAN_PLUGINS += $(OUNIT_PLUGIN)
-OCAMLPPFLAGS = -pp $"$(PP_FAN) $(FAN_PLUGIN_OPTIONS)"
 
-OCAMLDEPPPFLAGS = -pp $"$(PP_FAN) $(FAN_PLUGIN_OPTIONS)"
-    # only useful for ml file 
+
+
+USE_FAN = true 
 
 section
+    AdditionalDependency($(OUNIT_PLUGIN).cmxs)
+    FAN_PLUGINS += $(OUNIT_PLUGIN)
     .SUBDIRS: main
 
+section
+    AdditionalDependency($(PROLOG_PLUGIN).cmxs)
+    FAN_PLUGINS += $(PROLOG_PLUGIN)
+    .SUBDIRS: plc
 .PHONY: test
-test:.PHONY/main/test    
+
+test:.PHONY/main/test .PHONY/plc/test    
