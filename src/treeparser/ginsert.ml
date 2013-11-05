@@ -309,13 +309,11 @@ let  eoi_entry e =
           List.map
             (function
               | `Self -> `Nterm e
-              (* | `Snext -> assert false *)
               | x  -> x) symbs in
         (symbs @
          [`Token
             ((function | `EOI _ -> true | _ -> false),
-             (hash_variant "EOI",`Empty)(* (`Vrn "EOI") *), "`EOI"
-            )],
+             (`EOI,`Empty), "`EOI")],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in
   let result =

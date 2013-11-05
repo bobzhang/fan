@@ -11,7 +11,7 @@ let _ =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -22,7 +22,7 @@ let _ =
          ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -31,7 +31,7 @@ let _ =
                        (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
                    | _ -> assert false))));
          ([`Token
-             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+             (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                "Lid")],
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
@@ -62,7 +62,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -74,7 +74,7 @@ let _ =
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
-             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+             (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                "Uid")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action

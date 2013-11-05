@@ -56,7 +56,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("x\n",
               (Gramf.mk_action
@@ -64,7 +64,7 @@ let _ =
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
          ([`Token
-             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+             (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                "Uid")],
            ("x\n",
              (Gramf.mk_action

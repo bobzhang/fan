@@ -15,7 +15,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
@@ -31,7 +31,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
@@ -47,7 +47,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action

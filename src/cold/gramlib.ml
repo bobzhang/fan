@@ -6,7 +6,7 @@ let eoi_entry entry =
       ((None, None,
          [([`Nterm (Gramf.obj (entry : 'entry Gramf.t ));
            `Token
-             (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+             (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                "`EOI")],
             ("x\n",
               (Gramf.mk_action

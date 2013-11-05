@@ -8,7 +8,7 @@ let _ =
       ((None, None,
          [([`Keyword "default";
            `Token
-             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+             (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                "Str")],
             ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
               (Gramf.mk_action
@@ -33,8 +33,7 @@ let _ =
                       (!Ast_quotation.paths)) : 'item )))));
          ([`Keyword "filter";
           `Token
-            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-              "Str")],
+            (((function | `Str _ -> true | _ -> false)), (`Str, `Any), "Str")],
            ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -53,7 +52,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -65,7 +64,7 @@ let _ =
                     | ({ txt = i;_} : Tokenf.txt) -> (i ::
                         xs : 'dot_namespace )))));
          ([`Token
-             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+             (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                "Uid")],
            ("[i]\n",
              (Gramf.mk_action

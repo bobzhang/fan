@@ -137,7 +137,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"mexp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -148,7 +148,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mexp";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mexp")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mexp")), "`Ant s")],
             ("mk_ant ~c:\"mexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -157,8 +157,8 @@ let apply () =
                         (mk_ant ~c:"mexp" s : 'mexp )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.mexp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -221,7 +221,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mbind")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -232,7 +232,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -272,7 +272,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mbind")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -283,7 +283,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -292,8 +292,8 @@ let apply () =
                         (mk_ant ~c:"mbind" s : 'mbind )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.mbind\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -325,7 +325,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -336,7 +336,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mbind")), "`Ant s")],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -345,8 +345,8 @@ let apply () =
                         (mk_ant ~c:"mbind" s : 'module_rec_declaration )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.mbind\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -382,7 +382,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"constr\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -393,7 +393,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "constr";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "constr")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "constr")), "`Ant s")],
             ("mk_ant ~c:\"constr\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -402,8 +402,8 @@ let apply () =
                         (mk_ant ~c:"constr" s : 'constr )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.constr\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -502,7 +502,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"sigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -513,7 +513,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "sigi")), "`Ant s")],
             ("mk_ant ~c:\"sigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -524,7 +524,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
@@ -537,7 +537,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "sigi")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
@@ -550,7 +550,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
@@ -564,7 +564,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "sigi")), "`Ant s");
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
@@ -667,7 +667,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"mtyp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -678,7 +678,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mtyp";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mtyp")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mtyp")), "`Ant s")],
             ("mk_ant ~c:\"mtyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -687,8 +687,8 @@ let apply () =
                         (mk_ant ~c:"mtyp" s : 'mtyp )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.mtyp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -782,7 +782,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"sigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -793,7 +793,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "sigi")), "`Ant s")],
             ("mk_ant ~c:\"sigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -802,8 +802,8 @@ let apply () =
                         (mk_ant ~c:"sigi" s : 'sigi )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.sigi\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -950,7 +950,7 @@ let apply () =
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                     'interf )))));
           ([`Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                 "`EOI")],
             ("([], None)\n",
               (Gramf.mk_action
@@ -1095,7 +1095,7 @@ let apply () =
      (None,
        ((None, None,
           [([`Token
-               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                  "Lid");
             `Keyword ":";
             `Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
@@ -1113,7 +1113,7 @@ let apply () =
                                     (Tokenf.string_of_name y)
                               | Some x -> x))) : 'name_space )))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
               (Gramf.mk_action
@@ -1404,7 +1404,7 @@ let apply () =
             `Token
               (((function
                  | `Inf ({ level = 0;_} : Tokenf.op) -> true
-                 | _ -> false)), (3654849, (`Level 0)), "Precedence0");
+                 | _ -> false)), (`Inf, (`Level 0)), "Precedence0");
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -1460,7 +1460,7 @@ let apply () =
             `Token
               (((function
                  | `Inf ({ level = 1;_} : Tokenf.op) -> true
-                 | _ -> false)), (3654849, (`Level 1)), "Precedence1");
+                 | _ -> false)), (`Inf, (`Level 1)), "Precedence1");
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -1487,7 +1487,7 @@ let apply () =
             `Token
               (((function
                  | `Inf ({ level = 2;_} : Tokenf.op) -> true
-                 | _ -> false)), (3654849, (`Level 2)), "Precedence2");
+                 | _ -> false)), (`Inf, (`Level 2)), "Precedence2");
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -1533,7 +1533,7 @@ let apply () =
             `Token
               (((function
                  | `Inf ({ level = 3;_} : Tokenf.op) -> true
-                 | _ -> false)), (3654849, (`Level 3)), "Precedence3");
+                 | _ -> false)), (`Inf, (`Level 3)), "Precedence3");
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -1549,7 +1549,7 @@ let apply () =
             `Token
               (((function
                  | `Inf ({ level = 4;_} : Tokenf.op) -> true
-                 | _ -> false)), (3654849, (`Level 4)), "Precedence4");
+                 | _ -> false)), (`Inf, (`Level 4)), "Precedence4");
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -1733,8 +1733,8 @@ let apply () =
                  (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
                     -> (`LabelS (_loc, i) : 'exp )))));
           ([`Token
-              (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "Label");
+              (((function | `Label _ -> true | _ -> false)), (`Label, `Any),
+                "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
               (Gramf.mk_action
@@ -1746,7 +1746,7 @@ let apply () =
                         'exp )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "Optlabel");
+                (`Optlabel, `Any), "Optlabel");
            `Self],
             ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
               (Gramf.mk_action
@@ -1818,7 +1818,7 @@ let apply () =
                      | ({ txt = x; loc = xloc;_} : Tokenf.txt) ->
                          (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))));
           ([`Token
-              (((function | `Pre _ -> true | _ -> false)), (4003843, `Any),
+              (((function | `Pre _ -> true | _ -> false)), (`Pre, `Any),
                 "`Pre x");
            `Self],
             ("`App (_loc, (`Lid (xloc, x)), e)\n",
@@ -1830,8 +1830,8 @@ let apply () =
                         (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))))]);
         ((Some "simple"), None,
           [([`Token
-               (((function | `Quot _ -> true | _ -> false)),
-                 (904098089, `Any), "`Quot _")],
+               (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                 "`Quot _")],
              ("Ast_quotation.expand x Dyn_tag.exp\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1841,7 +1841,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "exp";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "exp")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "exp")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1852,7 +1852,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1863,7 +1863,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "par")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1874,7 +1874,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "seq";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "seq")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "seq")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1885,7 +1885,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "chr")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "chr")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1896,7 +1896,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1907,7 +1907,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int32")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int32")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1918,7 +1918,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "str")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "str")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1929,7 +1929,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int64")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int64")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1940,7 +1940,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "flo")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "flo")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1951,7 +1951,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "nativeint")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "nativeint")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1962,7 +1962,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "vrn")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1973,7 +1973,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "chr'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "chr'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1984,7 +1984,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int64'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int64'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1995,7 +1995,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "nativeint'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "nativeint'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2006,7 +2006,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "bool'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "bool'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "bool'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2017,7 +2017,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2028,7 +2028,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int32'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int32'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2039,7 +2039,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "flo'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "flo'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2050,7 +2050,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "str'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "str'")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2061,7 +2061,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`chr")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`chr")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2072,7 +2072,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int64")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int64")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2083,7 +2083,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`nativeint")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`nativeint")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2094,7 +2094,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`bool";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`bool")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`bool")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2105,7 +2105,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2116,7 +2116,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int32")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int32")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2127,7 +2127,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`flo")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`flo")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2138,7 +2138,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`str")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`str")), "`Ant s")],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2147,7 +2147,7 @@ let apply () =
                         (mk_ant ~c:"exp" s : 'exp )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
+              (((function | `Int _ -> true | _ -> false)), (`Int, `Any),
                 "Int")],
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
@@ -2155,8 +2155,8 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'exp )))));
           ([`Token
-              (((function | `Int32 _ -> true | _ -> false)),
-                ((-783416530), `Any), "Int32")],
+              (((function | `Int32 _ -> true | _ -> false)), (`Int32, `Any),
+                "Int32")],
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2164,8 +2164,8 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) ->
                         (`Int32 (_loc, s) : 'exp )))));
           ([`Token
-              (((function | `Int64 _ -> true | _ -> false)),
-                ((-783415859), `Any), "Int64")],
+              (((function | `Int64 _ -> true | _ -> false)), (`Int64, `Any),
+                "Int64")],
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2174,7 +2174,7 @@ let apply () =
                         (`Int64 (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Nativeint _ -> true | _ -> false)),
-                ((-113706088), `Any), "Nativeint")],
+                (`Nativeint, `Any), "Nativeint")],
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2182,7 +2182,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) ->
                         (`Nativeint (_loc, s) : 'exp )))));
           ([`Token
-              (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
+              (((function | `Flo _ -> true | _ -> false)), (`Flo, `Any),
                 "Flo")],
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
@@ -2190,7 +2190,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'exp )))));
           ([`Token
-              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
+              (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
                 "Chr")],
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
@@ -2198,7 +2198,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'exp )))));
           ([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                 "Str")],
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
@@ -2254,7 +2254,7 @@ let apply () =
                     (_loc : Locf.t)  -> (`Array (_loc, el) : 'exp )))));
           ([`Keyword "{";
            `Token
-             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+             (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                "`Lid x");
            `Keyword "with";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
@@ -2577,7 +2577,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "bind";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "bind")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "bind")), "`Ant s")],
              ("mk_ant ~c:\"bind\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2588,7 +2588,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"bind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2599,7 +2599,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword "=";
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`Bind (_loc, (mk_ant ~c:\"pat\" s), e) : FAst.bind )\n",
@@ -2657,7 +2657,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "case";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "case")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "case")), "`Ant s")],
              ("mk_ant ~c:\"case\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2668,7 +2668,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"case\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2679,7 +2679,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword "when";
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
            `Keyword "->";
@@ -2697,7 +2697,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword "->";
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("`Case (_loc, (mk_ant ~c:\"case\" s), e)\n",
@@ -2751,7 +2751,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "rec_exp";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "rec_exp")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "rec_exp")), "`Ant s")],
              ("mk_ant ~c:\"rec_exp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2762,7 +2762,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"rec_exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2789,7 +2789,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"rec_exp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2800,7 +2800,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "bi";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "bi")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "bi")), "`Ant s")],
             ("mk_ant ~c:\"rec_exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2876,7 +2876,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2887,7 +2887,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "pat")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2898,7 +2898,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "vrn")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2955,7 +2955,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"pat\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2966,7 +2966,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "pat")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2977,7 +2977,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "par")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2988,7 +2988,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2999,7 +2999,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int32")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int32")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3010,7 +3010,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int64")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int64")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3021,7 +3021,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "vrn")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3032,7 +3032,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "flo")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "flo")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3043,7 +3043,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "chr")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "chr")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3054,7 +3054,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "nativeint")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "nativeint")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3065,7 +3065,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "str")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "str")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3076,7 +3076,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3087,7 +3087,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int32'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int32'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3098,7 +3098,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "int64'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "int64'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3109,7 +3109,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "nativeint'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "nativeint'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3120,7 +3120,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "flo'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "flo'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3131,7 +3131,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "chr'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "chr'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3142,7 +3142,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "str'")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "str'")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3153,7 +3153,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3164,7 +3164,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int32")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int32")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3175,7 +3175,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`int64")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`int64")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3186,7 +3186,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`nativeint")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`nativeint")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3197,7 +3197,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`flo")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`flo")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3208,7 +3208,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`chr")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`chr")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3219,7 +3219,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "`str")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "`str")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3233,7 +3233,7 @@ let apply () =
                  (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
                     ((i : vid  :>pat) : 'pat )))));
           ([`Token
-              (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
+              (((function | `Int _ -> true | _ -> false)), (`Int, `Any),
                 "Int")],
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
@@ -3241,8 +3241,8 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'pat )))));
           ([`Token
-              (((function | `Int32 _ -> true | _ -> false)),
-                ((-783416530), `Any), "Int32")],
+              (((function | `Int32 _ -> true | _ -> false)), (`Int32, `Any),
+                "Int32")],
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3250,8 +3250,8 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) ->
                         (`Int32 (_loc, s) : 'pat )))));
           ([`Token
-              (((function | `Int64 _ -> true | _ -> false)),
-                ((-783415859), `Any), "Int64")],
+              (((function | `Int64 _ -> true | _ -> false)), (`Int64, `Any),
+                "Int64")],
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3260,7 +3260,7 @@ let apply () =
                         (`Int64 (_loc, s) : 'pat )))));
           ([`Token
               (((function | `Nativeint _ -> true | _ -> false)),
-                ((-113706088), `Any), "Nativeint")],
+                (`Nativeint, `Any), "Nativeint")],
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3268,7 +3268,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) ->
                         (`Nativeint (_loc, s) : 'pat )))));
           ([`Token
-              (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
+              (((function | `Flo _ -> true | _ -> false)), (`Flo, `Any),
                 "Flo")],
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
@@ -3276,7 +3276,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'pat )))));
           ([`Token
-              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
+              (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
                 "Chr")],
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
@@ -3284,7 +3284,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'pat )))));
           ([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                 "Str")],
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
@@ -3293,7 +3293,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) -> (`Str (_loc, s) : 'pat )))));
           ([`Keyword "-";
            `Token
-             (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
+             (((function | `Int _ -> true | _ -> false)), (`Int, `Any),
                "Int")],
             ("`Int (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
@@ -3304,8 +3304,8 @@ let apply () =
                         (`Int (_loc, (Stringf.neg s)) : 'pat )))));
           ([`Keyword "-";
            `Token
-             (((function | `Int32 _ -> true | _ -> false)),
-               ((-783416530), `Any), "Int32")],
+             (((function | `Int32 _ -> true | _ -> false)), (`Int32, `Any),
+               "Int32")],
             ("`Int32 (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -3315,8 +3315,8 @@ let apply () =
                         (`Int32 (_loc, (Stringf.neg s)) : 'pat )))));
           ([`Keyword "-";
            `Token
-             (((function | `Int64 _ -> true | _ -> false)),
-               ((-783415859), `Any), "Int64")],
+             (((function | `Int64 _ -> true | _ -> false)), (`Int64, `Any),
+               "Int64")],
             ("`Int64 (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -3327,7 +3327,7 @@ let apply () =
           ([`Keyword "-";
            `Token
              (((function | `Nativeint _ -> true | _ -> false)),
-               ((-113706088), `Any), "Nativeint")],
+               (`Nativeint, `Any), "Nativeint")],
             ("`Nativeint (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -3337,7 +3337,7 @@ let apply () =
                         (`Nativeint (_loc, (Stringf.neg s)) : 'pat )))));
           ([`Keyword "-";
            `Token
-             (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
+             (((function | `Flo _ -> true | _ -> false)), (`Flo, `Any),
                "Flo")],
             ("`Flo (_loc, (Stringf.neg s))\n",
               (Gramf.mk_action
@@ -3411,7 +3411,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "opt")), "`Ant s");
            `Keyword ")"],
             ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
               (Gramf.mk_action
@@ -3475,8 +3475,8 @@ let apply () =
                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Label (_loc, i, p) : FAst.pat ) : 'pat )))));
           ([`Token
-              (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "Label");
+              (((function | `Label _ -> true | _ -> false)), (`Label, `Any),
+                "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
               (Gramf.mk_action
@@ -3487,8 +3487,8 @@ let apply () =
                         ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                         'pat )))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.pat\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -3512,7 +3512,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'pat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "Optlabel");
+                (`Optlabel, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword "=";
@@ -3529,7 +3529,7 @@ let apply () =
                         'pat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "Optlabel");
+                (`Optlabel, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword ")"],
@@ -3563,7 +3563,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "opt")), "`Ant s");
            `Keyword ")"],
             ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
               (Gramf.mk_action
@@ -3626,7 +3626,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3637,7 +3637,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "pat")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3648,7 +3648,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "par")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3690,7 +3690,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "opt")), "`Ant s");
            `Keyword ")"],
             ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
               (Gramf.mk_action
@@ -3745,8 +3745,8 @@ let apply () =
                  (fun ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
                     ((s : alident  :>pat) : 'ipat )))));
           ([`Token
-              (((function | `Label _ -> true | _ -> false)),
-                (48004564, `Any), "Label");
+              (((function | `Label _ -> true | _ -> false)), (`Label, `Any),
+                "Label");
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
               (Gramf.mk_action
@@ -3766,8 +3766,8 @@ let apply () =
                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.pat\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -3791,7 +3791,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'ipat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "Optlabel");
+                (`Optlabel, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword "=";
@@ -3808,7 +3808,7 @@ let apply () =
                         'ipat )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                (688526593, `Any), "Optlabel");
+                (`Optlabel, `Any), "Optlabel");
            `Keyword "(";
            `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
            `Keyword ")"],
@@ -3842,7 +3842,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "opt")), "`Ant s");
            `Keyword ")"],
             ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
               (Gramf.mk_action
@@ -3938,7 +3938,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"pat\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4005,7 +4005,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"pat\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4016,7 +4016,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "pat")), "`Ant s")],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4042,7 +4042,7 @@ let apply () =
      (None,
        ((None, None,
           [([`Token
-               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                  "Lid")],
              ("i\n",
                (Gramf.mk_action
@@ -4050,7 +4050,7 @@ let apply () =
                      match __fan_0 with
                      | ({ txt = i;_} : Tokenf.txt) -> (i : 'luident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("i\n",
               (Gramf.mk_action
@@ -4075,7 +4075,7 @@ let apply () =
      (None,
        ((None, None,
           [([`Token
-               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                  "Lid")],
              ("`C (_loc, i)\n",
                (Gramf.mk_action
@@ -4083,7 +4083,7 @@ let apply () =
                      match __fan_0 with
                      | ({ txt = i;_} : Tokenf.txt) -> (`C (_loc, i) : 'astr )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`C (_loc, i)\n",
               (Gramf.mk_action
@@ -4093,7 +4093,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4104,7 +4104,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "vrn")), "`Ant s")],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4125,7 +4125,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4136,7 +4136,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4147,7 +4147,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4158,7 +4158,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4169,7 +4169,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4183,7 +4183,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4197,7 +4197,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4209,7 +4209,7 @@ let apply () =
                         (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
@@ -4218,7 +4218,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         ((`Lid (_loc, i) : FAst.ident ) : 'ident_quot )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
@@ -4227,7 +4227,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4252,7 +4252,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4263,7 +4263,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4274,7 +4274,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4285,7 +4285,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4296,7 +4296,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4310,7 +4310,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4324,7 +4324,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4336,7 +4336,7 @@ let apply () =
                         (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
@@ -4345,7 +4345,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         (`Lid (_loc, i) : 'ident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
@@ -4354,7 +4354,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         (`Uid (_loc, i) : 'ident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4372,7 +4372,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4383,7 +4383,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4394,7 +4394,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4405,7 +4405,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4416,7 +4416,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4430,7 +4430,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4444,7 +4444,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4456,7 +4456,7 @@ let apply () =
                         (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
@@ -4464,7 +4464,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = i;_} : Tokenf.txt) -> (`Lid (_loc, i) : 'vid )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
@@ -4472,7 +4472,7 @@ let apply () =
                     match __fan_0 with
                     | ({ txt = i;_} : Tokenf.txt) -> (`Uid (_loc, i) : 'vid )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4488,7 +4488,7 @@ let apply () =
      (None,
        ((None, None,
           [([`Token
-               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                  "Uid")],
              ("`Uid (_loc, s)\n",
                (Gramf.mk_action
@@ -4499,7 +4499,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4510,7 +4510,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4521,7 +4521,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4530,7 +4530,7 @@ let apply () =
                         (mk_ant ~c:"uident" s : 'uident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4544,7 +4544,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4558,7 +4558,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s");
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4572,7 +4572,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4587,7 +4587,7 @@ let apply () =
      (None,
        ((None, None,
           [([`Token
-               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                  "Lid")],
              ("((`Sub []), i)\n",
                (Gramf.mk_action
@@ -4596,7 +4596,7 @@ let apply () =
                      | ({ txt = i;_} : Tokenf.txt) ->
                          (((`Sub []), i) : 'dot_lstrings )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4613,7 +4613,7 @@ let apply () =
                         'dot_lstrings )))));
           ([`Keyword ".";
            `Token
-             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+             (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                "Uid");
            `Keyword ".";
            `Self],
@@ -4636,7 +4636,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s");
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s");
             `Keyword ".";
             `Keyword "("],
              ("mk_ant ~c:\"ident\" s\n",
@@ -4650,7 +4650,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s");
            `Keyword ".";
            `Keyword "("],
             ("mk_ant ~c:\"ident\" s\n",
@@ -4664,7 +4664,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Keyword "("],
             ("mk_ant ~c:\"ident\" s\n",
@@ -4676,7 +4676,7 @@ let apply () =
                         (mk_ant ~c:"ident" s : 'module_longident_dot_lparen )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4689,7 +4689,7 @@ let apply () =
                         ((`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident ) : 
                         'module_longident_dot_lparen )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Keyword "("],
@@ -4703,7 +4703,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
@@ -4718,7 +4718,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
@@ -4736,7 +4736,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4747,7 +4747,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4758,7 +4758,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4767,7 +4767,7 @@ let apply () =
                         (mk_ant ~c:"ident" s : 'module_longident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ".";
            `Self],
@@ -4779,7 +4779,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
@@ -4790,7 +4790,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -4804,7 +4804,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -4838,7 +4838,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4849,7 +4849,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4860,7 +4860,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4869,7 +4869,7 @@ let apply () =
                         (mk_ant ~c:"ident" s : 'module_longident_with_app )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
@@ -4904,7 +4904,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4915,7 +4915,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4926,7 +4926,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4937,7 +4937,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4946,7 +4946,7 @@ let apply () =
                         (mk_ant ~c:"ident" s : 'type_longident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
@@ -4955,7 +4955,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         ((`Lid (_loc, i) : FAst.ident ) : 'type_longident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
@@ -4975,7 +4975,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4986,7 +4986,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4997,7 +4997,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5006,7 +5006,7 @@ let apply () =
                         (mk_ant ~c:"ident" s : 'label_longident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
@@ -5015,7 +5015,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) ->
                         (`Lid (_loc, i) : 'label_longident )))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "`Uid i");
            `Keyword ".";
            `Self],
@@ -5029,7 +5029,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -5043,7 +5043,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s");
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -5101,7 +5101,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "!")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "!")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5112,7 +5112,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "override")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "override")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5136,7 +5136,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "to";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "to")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "to")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5147,7 +5147,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5166,7 +5166,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "private";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "private")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "private")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5190,7 +5190,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "mutable";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "mutable")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "mutable")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5214,7 +5214,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "virtual";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "virtual")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "virtual")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5238,7 +5238,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "..";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "..")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "..")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5262,7 +5262,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "rec";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "rec")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "rec")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5281,7 +5281,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"a_lident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5292,7 +5292,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "lid")), "`Ant s")],
             ("mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5301,7 +5301,7 @@ let apply () =
                         (mk_ant ~c:"a_lident" s : 'a_lident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("`Lid (_loc, s)\n",
               (Gramf.mk_action
@@ -5315,7 +5315,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"a_uident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5326,7 +5326,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "uid")), "`Ant s")],
             ("mk_ant ~c:\"a_uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5335,7 +5335,7 @@ let apply () =
                         (mk_ant ~c:"a_uident" s : 'a_uident )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid")],
             ("`Uid (_loc, s)\n",
               (Gramf.mk_action
@@ -5349,7 +5349,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"str_list\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5360,7 +5360,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Self],
             ("`App (_loc, (mk_ant ~c:\"\" s), xs)\n",
               (Gramf.mk_action
@@ -5371,7 +5371,7 @@ let apply () =
                         (`App (_loc, (mk_ant ~c:"" s), xs) : 'string_list )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                 "Str")],
             ("`Str (_loc, x)\n",
               (Gramf.mk_action
@@ -5380,7 +5380,7 @@ let apply () =
                     | ({ txt = x;_} : Tokenf.txt) ->
                         (`Str (_loc, x) : 'string_list )))));
           ([`Token
-              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                 "Str");
            `Self],
             ("`App (_loc, (`Str (_loc, x)), xs)\n",
@@ -5452,7 +5452,7 @@ let apply () =
        ((None, None,
           [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
             `Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                 "`EOI")],
              ("x\n",
                (Gramf.mk_action
@@ -5463,7 +5463,7 @@ let apply () =
        ((None, None,
           [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
             `Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                 "`EOI")],
              ("x\n",
                (Gramf.mk_action
@@ -5474,7 +5474,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `DirQuotation _ -> true | _ -> false)),
-                 ((-440645089), `Any), "`DirQuotation _")],
+                 (`DirQuotation, `Any), "`DirQuotation _")],
              ("Fdir.handle_quot x; ([], (Some _loc))\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -5496,7 +5496,7 @@ let apply () =
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                     'implem )))));
           ([`Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                 "`EOI")],
             ("([], None)\n",
               (Gramf.mk_action
@@ -5528,7 +5528,7 @@ let apply () =
                  (fun ~__fan_1:_  ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
                     (Some st : 'top_phrase )))));
           ([`Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (`EOI, `Empty),
                 "`EOI")],
             ("None\n",
               (Gramf.mk_action
@@ -5540,7 +5540,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5551,7 +5551,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "stri")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "stri")), "`Ant s")],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5562,7 +5562,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";;"],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
@@ -5575,7 +5575,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "stri")), "`Ant s");
            `Keyword ";;"],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
@@ -5588,7 +5588,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
               (Gramf.mk_action
@@ -5601,7 +5601,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "stri")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
               (Gramf.mk_action
@@ -5614,7 +5614,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
@@ -5628,7 +5628,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "stri")), "`Ant s");
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
@@ -5895,7 +5895,7 @@ let apply () =
            ([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5906,7 +5906,7 @@ let apply () =
            ([`Token
                (((function
                   | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "stri")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "stri")), "`Ant s")],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5915,8 +5915,8 @@ let apply () =
                          (mk_ant ~c:"stru" s : 'stru )
                      | _ -> assert false))));
            ([`Token
-               (((function | `Quot _ -> true | _ -> false)),
-                 (904098089, `Any), "`Quot _")],
+               (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                 "`Quot _")],
              ("Ast_quotation.expand x Dyn_tag.stru\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -5934,7 +5934,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"clsigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5945,7 +5945,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "csg")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "csg")), "`Ant s")],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5956,7 +5956,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";"],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
@@ -5969,7 +5969,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "csg")), "`Ant s");
            `Keyword ";"],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
@@ -5982,7 +5982,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
               (Gramf.mk_action
@@ -5996,7 +5996,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "csg")), "`Ant s");
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
               (Gramf.mk_action
@@ -6010,7 +6010,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";";
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
@@ -6025,7 +6025,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "csg")), "`Ant s");
            `Keyword ";";
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
@@ -6068,7 +6068,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"clsigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6079,7 +6079,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "csg")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "csg")), "`Ant s")],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6088,8 +6088,8 @@ let apply () =
                         (mk_ant ~c:"clsigi" s : 'clsigi )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.clsigi\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6153,7 +6153,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"clfield\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6164,7 +6164,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cst")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "cst")), "`Ant s")],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6175,7 +6175,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";"],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
@@ -6188,7 +6188,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "cst")), "`Ant s");
            `Keyword ";"],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
@@ -6201,7 +6201,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
@@ -6214,7 +6214,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "cst")), "`Ant s");
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
@@ -6227,7 +6227,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s");
            `Keyword ";";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
@@ -6241,7 +6241,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
+                 | _ -> false)), (`Ant, (`A "cst")), "`Ant s");
            `Keyword ";";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
@@ -6302,7 +6302,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6315,7 +6315,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "override")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6328,7 +6328,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "!")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "!")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6361,7 +6361,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6374,7 +6374,7 @@ let apply () =
            `Token
              (((function
                 | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "override")), "`Ant s")],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6389,7 +6389,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"clfield\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6400,7 +6400,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cst")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "cst")), "`Ant s")],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6409,8 +6409,8 @@ let apply () =
                         (mk_ant ~c:"clfield" s : 'clfield )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.clfield\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6535,7 +6535,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6546,7 +6546,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cdcl";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cdcl")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "cdcl")), "`Ant s")],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6657,7 +6657,7 @@ let apply () =
           [([`Token
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                  | _ -> false)), (`Ant, (`A "")), "`Ant s")],
              ("mk_ant ~c:\"clexp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6668,7 +6668,7 @@ let apply () =
           ([`Token
               (((function
                  | `Ant ({ kind = "cexp";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "cexp")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "cexp")), "`Ant s")],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6677,8 +6677,8 @@ let apply () =
                         (mk_ant ~c:"clexp" s : 'clexp )
                     | _ -> assert false))));
           ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                (904098089, `Any), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.clexp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6791,7 +6791,7 @@ let apply () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6802,7 +6802,7 @@ let apply () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6849,7 +6849,7 @@ let apply () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6860,7 +6860,7 @@ let apply () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6927,7 +6927,7 @@ let apply () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"cltyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6938,7 +6938,7 @@ let apply () =
          ([`Token
              (((function
                 | `Ant ({ kind = "ctyp";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "ctyp")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "ctyp")), "`Ant s")],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6947,7 +6947,7 @@ let apply () =
                        (mk_ant ~c:"cltyp" s : 'cltyp )
                    | _ -> assert false))));
          ([`Token
-             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
+             (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.cltyp\n",
              (Gramf.mk_action
@@ -7030,7 +7030,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7041,7 +7041,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7050,7 +7050,7 @@ let apply_ctyp () =
                        (mk_ant ~c:"ctyp" s : 'unquoted_typevars )
                    | _ -> assert false))));
          ([`Token
-             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
+             (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
@@ -7069,7 +7069,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7080,7 +7080,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7179,7 +7179,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant s ~c:\"ctyp\"\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7240,7 +7240,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7251,7 +7251,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7286,7 +7286,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7297,7 +7297,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7308,7 +7308,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "vrn")), "`Ant s")],
            ("`TyVrn (_loc, (mk_ant ~c:\"ctyp\" s))\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7319,7 +7319,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "vrn")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "vrn")), "`Ant s");
           `Keyword "of";
           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`TyVrnOf (_loc, (mk_ant ~c:\"ctyp\" s), t)\n",
@@ -7361,7 +7361,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7372,7 +7372,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7396,7 +7396,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7407,7 +7407,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7574,7 +7574,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7585,7 +7585,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7594,7 +7594,7 @@ let apply_ctyp () =
                        (mk_ant ~c:"ctyp" s : 'typevars )
                    | _ -> assert false))));
          ([`Token
-             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
+             (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
@@ -7648,7 +7648,7 @@ let apply_ctyp () =
                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
                     (`Label (_loc, i, t) : 'ctyp )))));
          ([`Token
-             (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
+             (((function | `Label _ -> true | _ -> false)), (`Label, `Any),
                "Label");
           `Keyword ":";
           `Self],
@@ -7661,7 +7661,7 @@ let apply_ctyp () =
                        (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               (688526593, `Any), "Optlabel");
+               (`Optlabel, `Any), "Optlabel");
           `Self],
            ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
              (Gramf.mk_action
@@ -7698,7 +7698,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7709,7 +7709,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7720,7 +7720,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "par")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "par")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7731,7 +7731,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "id")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "id")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7742,7 +7742,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "id")), "`Ant s");
+                | _ -> false)), (`Ant, (`A "id")), "`Ant s");
           `Keyword ".";
           `Self],
            ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_ant ~c:\"ident\" s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n",
@@ -7762,7 +7762,7 @@ let apply_ctyp () =
                        'ctyp )
                    | _ -> assert false))));
          ([`Token
-             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
+             (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
@@ -7881,7 +7881,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "")), "`Ant s")],
            ("mk_ant ~c:\"ctyp,\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7900,7 +7900,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7911,7 +7911,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7936,7 +7936,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7947,7 +7947,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7973,7 +7973,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7984,7 +7984,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8029,7 +8029,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8040,7 +8040,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8111,7 +8111,7 @@ let apply_ctyp () =
          [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
+                 | _ -> false)), (`Ant, (`A "")), "`Ant s")],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8122,7 +8122,7 @@ let apply_ctyp () =
          ([`Token
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
-                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
+                | _ -> false)), (`Ant, (`A "typ")), "`Ant s")],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->

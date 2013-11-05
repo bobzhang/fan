@@ -11,7 +11,7 @@ let () =
         ((None, None,
            [([`Keyword "require";
              `Token
-               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+               (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
                  "Str")],
               ("add s\n",
                 (Gramf.mk_action

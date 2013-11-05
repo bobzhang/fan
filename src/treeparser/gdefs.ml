@@ -15,7 +15,7 @@ type word =
    | `Empty
    | `Level of int
    ]
-and data = (int * word) (* FIXME duplicate in gram_def *)      
+and data = (Tokenf.tag * word) (* FIXME duplicate in gram_def *)      
 type descr = data
     
 type token_pattern = (Tokenf.t -> bool) * descr * string

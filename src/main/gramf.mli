@@ -27,7 +27,7 @@ type word =
    | `A of string
    | `Level of int 
    | `Empty]
-and data = (int * word) (* FIXME duplicate in gram_def *)      
+and data = (Tokenf.tag * word) (* FIXME duplicate in gram_def *)      
 type descr = data
       
 

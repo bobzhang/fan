@@ -391,7 +391,7 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+              (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
                 "Uid");
            `Keyword ":";
            `List1 (`Nterm (Gramf.obj (n : 'n Gramf.t )));
@@ -423,19 +423,18 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                 "Lid")],
             ("(x, None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
                     ((x, None) : 'n )))));
          ([`Token
-             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+             (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
                "Lid");
           `Keyword "as";
           `Token
-            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "Lid")],
+            (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any), "Lid")],
            ("(x, (Some y))\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(y : Tokenf.txt)  ~__fan_1:_ 
