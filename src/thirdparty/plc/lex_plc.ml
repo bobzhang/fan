@@ -13,7 +13,7 @@ let decimal_literal =
 let int_literal =  decimal_literal 
 };;
 
-let (!!)  = Location_util.from_lexbuf ;;
+
 %import{
 Lexing_util:
   update_loc
@@ -31,7 +31,8 @@ Lexing_util:
   with_store
   ;
 Location_util:
-   (--)
+  (--)
+  from_lexbuf as (!!)
    ;
 };;    
 

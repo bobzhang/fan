@@ -235,8 +235,9 @@ MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 MakeWeakFix(mountdir,pp,exe) =
     OCAML_OTHER_LIBS += dynlink ocamlcommon
     VMOUNTDIR = $(mountdir)
+    USE_FAN = true
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    PP_FAN = $(pp) # use hot to preprocess hot
+    FAN = $(pp) # use hot to preprocess hot
     OCamlAdditionalDigestDependency($(pp))
     # AdditionalDependency($(pp))
     .SUBDIRS: $(VMOUNTDIR)

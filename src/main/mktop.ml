@@ -393,14 +393,23 @@ let ()  =
 
 %extend{
   a@Local:
-  [Uid m ; ":"; L1 Lid as ns ; ";" %{
+  [Uid m ; ":"; L1 n as ns ; ";" %{
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map
-         (fun (l:Tokenf.txt) ->
+         (fun ((l:Tokenf.txt),r)  ->
            let xloc = l.loc in
-           let p = %pat'@xloc{$lid{l.txt}} in
-           %stru{ let $p = $uid:m.$p } ) ns) }]
-import:
+           let pr = %pat'@xloc{$lid{l.txt}} in
+           let pl =
+             match r with
+             | None -> pr
+             | Some (y:Tokenf.txt) ->
+                 let yloc = y.loc in
+                 %exp'@yloc{$lid{y.txt}} in 
+           %stru{ let $pl = $uid:m.$pr } ) ns) }]
+  n@Local:
+  [ Lid as x  %{ (x,None) }
+  | Lid as x ; "as"; Lid as y %{(x, Some y)} ]      
+  import:
   [ L1 a  as xs  %{ Ast_gen.sem_of_list xs} ]  
   };;
 (**

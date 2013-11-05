@@ -385,7 +385,8 @@ let () = of_exp ~name:(d, "p") ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
   let grammar_entry_create x = Gramf.mk x in
-  let a: 'a Gramf.t = grammar_entry_create "a" in
+  let a: 'a Gramf.t = grammar_entry_create "a"
+  and n: 'n Gramf.t = grammar_entry_create "n" in
   Gramf.extend_single (a : 'a Gramf.t )
     (None,
       ((None, None,
@@ -393,28 +394,53 @@ let _ =
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                 "Uid");
            `Keyword ":";
-           `List1
-             (`Token
-                (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-                  "Lid"));
+           `List1 (`Nterm (Gramf.obj (n : 'n Gramf.t )));
            `Keyword ";"],
-            ("Ast_gen.sem_of_list\n  (List.map\n     (fun (l : Tokenf.txt)  ->\n        let xloc = l.loc in\n        let p = `Lid (xloc, (l.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, p, (`Dot (_loc, (`Uid (_loc, m)), p))))) : \n          FAst.stru )) ns)\n",
+            ("Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          FAst.stru )) ns)\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(ns : Tokenf.txt list)  ~__fan_1:_
-                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun ~__fan_3:_  ~__fan_2:(ns : 'n list)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list
                            (List.map
-                              (fun (l : Tokenf.txt)  ->
+                              (fun ((l : Tokenf.txt),r)  ->
                                  let xloc = l.loc in
-                                 let p = `Lid (xloc, (l.txt)) in
+                                 let pr = `Lid (xloc, (l.txt)) in
+                                 let pl =
+                                   match r with
+                                   | None  -> pr
+                                   | Some (y : Tokenf.txt) ->
+                                       let yloc = y.loc in
+                                       `Lid (yloc, (y.txt)) in
                                  (`Value
                                     (_loc, (`Negative _loc),
                                       (`Bind
-                                         (_loc, p,
-                                           (`Dot (_loc, (`Uid (_loc, m)), p))))) : 
+                                         (_loc, pl,
+                                           (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
                                    FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
+  Gramf.extend_single (n : 'n Gramf.t )
+    (None,
+      ((None, None,
+         [([`Token
+              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+                "Lid")],
+            ("(x, None)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
+                    ((x, None) : 'n )))));
+         ([`Token
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "Lid");
+          `Keyword "as";
+          `Token
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              "Lid")],
+           ("(x, (Some y))\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(y : Tokenf.txt)  ~__fan_1:_ 
+                   ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
+                   ((x, (Some y)) : 'n )))))]) : Gramf.olevel ));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       ((None, None,
