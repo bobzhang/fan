@@ -94,5 +94,7 @@ arg_mask:
    ]
 };;
 
-Ast_quotation.of_stru ~name:(`Absolute ["Fan";"Lang"],"plc")  ~entry:prog ()
+Ast_quotation.of_stru
+~lexer:Lex_plc.from_stream
+~name:(`Absolute ["Fan";"Lang"],"plc")  ~entry:prog ()
 

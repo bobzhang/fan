@@ -1,6 +1,6 @@
 
 
-FILES=   PlEnv PlVersion PlAst PlNames PlTranslate PlParser
+FILES=   lex_plc PlEnv PlVersion PlAst PlNames PlTranslate PlParser
 
 
 

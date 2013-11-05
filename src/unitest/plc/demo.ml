@@ -23,8 +23,8 @@ safe([Q|Qs]) :- nodiag(Q,Qs,1), safe(Qs).
 nodiag(_,[],_).
 nodiag(Q1,[Q2|Qs],D) :-  noattack(Q1,Q2,D),  D1 is D+1,  nodiag(Q1,Qs,D1).
 %:noattack(+Queen1,+Queen2,+Dist)
-noattack(Q1,Q2,D) :-  Q2-Q1 =\= D,  Q1-Q2 =\= D. };
-nqueens_co (fun b -> print_endline (string_of_plval b)) (Int 10);
+noattack(Q1,Q2,D) :-  Q2-Q1 =\= D,  Q1-Q2 =\= D. };;
+nqueens_co (fun b -> print_endline (string_of_plval b)) (Int 10);;
 (*
 
 
