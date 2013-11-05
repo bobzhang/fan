@@ -19,23 +19,13 @@ type gram = Gdefs.gram = {
   annot:string;
   gfilter : Tokenf.filter_plugin;
 }
+
 type action = Gaction.t
 
-      
-type word =
-   [ `Any
-   | `A of string
-   | `Level of int 
-   | `Empty]
-and data = (Tokenf.tag * word) (* FIXME duplicate in gram_def *)      
-type descr = data
-      
 
-      
-type token_pattern = ((Tokenf.t -> bool) * descr * string )
 type terminal = 
     [ `Keyword of string
-    | `Token of token_pattern ]
+    | `Token of Tokenf.pattern ]
 
 type entry = Gdefs.entry 
 
