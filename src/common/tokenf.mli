@@ -32,7 +32,8 @@ type ant = {
     txt : string;
     shift : int;
     retract : int;
-  }      
+  }
+      
       
 (** The [loc] is the initial location. The option string is the meta-data
     for example, the [location variable]. The string is the quotation contents. 
@@ -158,6 +159,26 @@ type tag =
   | `DirQuotation 
   | `Ant]
 
+type word =
+   [ `Any
+   | `A of string
+   | `Empty
+   | `Level of int
+   ]
+and descr =  (tag * word)
+
+
+
+
+
+(** [arg1] is used for runtime parsing, generated at compile time
+    [arg2] is used for runtime merging, generated at compile time
+    [arg3] is used for
+    runtime error message and pretty printing,
+    it could be removed later. *)
+      
+type pattern = ((t -> bool) * descr * string )
+      
 type stream =  t Streamf.t 
       
 type 'a parse = stream -> 'a

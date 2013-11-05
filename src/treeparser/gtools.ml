@@ -36,7 +36,7 @@ let get_terminals x =
   | _ -> None 
 
 
-let eq_token  (x : Gdefs.token_pattern)  (y:Gdefs.token_pattern) : bool =
+let eq_token  (x :Tokenf.pattern)  (y:Tokenf.pattern) : bool =
   match x , y with 
   | (_,a,_) , (_,b,_) -> a  =  b
 

@@ -9,24 +9,7 @@ type position =
 (* the [location] and the parsed value *)
 type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
     
-type word =
-   [ `Any
-   | `A of string
-   | `Empty
-   | `Level of int
-   ]
-and data = (Tokenf.tag * word) (* FIXME duplicate in gram_def *)      
-type descr = data
-    
-type token_pattern = (Tokenf.t -> bool) * descr * string
-(** [arg1] is used for runtime parsing, generated at compile time
 
-    [arg2] is used for runtime merging, generated at compile time
-
-    [arg3] is used for
-    runtime error message and pretty printing,
-    it could be removed later.
- *)
 
 
 
@@ -34,7 +17,7 @@ type token_pattern = (Tokenf.t -> bool) * descr * string
     a generalized token *)      
 type terminal =
     [ `Keyword of string
-    | `Token of token_pattern ]
+    | `Token of Tokenf.pattern ]
   
 type gram = {
     annot : string;

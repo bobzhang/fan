@@ -149,6 +149,16 @@ type tag =
   | `DirQuotation 
   | `Ant]
       
+type word =
+   [ `Any
+   | `A of string
+   | `Empty
+   | `Level of int
+   ]
+and descr =  (tag * word) (* FIXME duplicate in gram_def *)      
+      
+type pattern = ((t -> bool) * descr * string )
+      
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
     Location_util.join
