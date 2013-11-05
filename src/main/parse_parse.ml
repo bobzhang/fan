@@ -43,8 +43,7 @@ let g =
                "LA"; "RA"; "NA"; "+";"*";"?"; "=";
                "@";
                "Inline";
-               "Local"
-             ] ();;
+               "Local"] ();;
 
 
 let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
@@ -350,35 +349,30 @@ let query_inline (x:string) =
       (None,old)}
   | %{ (None,gm())} ]
 
+  extend@Inline:
+ [ extend_header as rest;   L1 entry  as el %{
+   fun safe -> 
+   let (gram,old) = rest in
+   let items = Listf.filter_map (fun x -> x) el in
+   let res = make _loc {items ; gram; safe} in 
+   let () = module_name := old in
+   res}      ]
   extend_body :
-  [ extend_header as rest;   L1 entry  as el %{
-    let (gram,old) = rest in
-    let items = Listf.filter_map (fun x -> x) el in
-    let res = make _loc {items ; gram; safe = true} in 
-    let () = module_name := old in
-    res}      ]
-
-  (* see [extend_body] *)
+  [@extend %{fun f -> f true}]
   unsafe_extend_body :
-  [ extend_header as rest;   L1 entry as el %{
-    let (gram,old) = rest in
-    let items = Listf.filter_map (fun x ->x ) el in 
-    let res = make _loc {items ; gram; safe = false} in 
-    let () = module_name := old in
-    res}      ]
+  [@extend %{fun f -> f false}]
       
   (* parse qualified [X.X] *)
   qualuid:
   [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
-  | Uid x %{ `Uid(_loc,x)}
-  ] 
+  | Uid x %{ `Uid(_loc,x)}] 
 
   qualid:
   [ Uid x ; "."; S as xs %{ `Dot(_loc,`Uid(_loc,x),xs)}
   | Lid i %{ `Lid(_loc,i)}]
 
   t_qualid:
-  [ Uid x; ".";  S as xs %{ %ident'{$uid:x.$xs}}
+  [ Uid x; ".";  S as xs %ident'{$uid:x.$xs}
   | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}] 
 
   (* stands for the non-terminal  *)
@@ -386,7 +380,7 @@ let query_inline (x:string) =
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid as il; ?  Str  as name %{
+  [ qualid as il; ?Str  as name %{
     let x =
       match (name:Tokenf.txt option) (* FIXME more type annotation needed? *) with
       | Some x ->
@@ -394,7 +388,7 @@ let query_inline (x:string) =
           begin 
             match Ast_quotation.resolve_name (`Sub [], x.txt)
             with
-            | None -> Locf.failf x.loc "DDSL `%s' not resolved" x.txt 
+            | None -> Locf.failf x.loc "lang `%s' not resolved" x.txt 
             | Some x -> (Ast_quotation.default:= Some x; `name old)
           end
       | None -> `non in

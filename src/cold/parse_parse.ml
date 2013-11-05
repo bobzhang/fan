@@ -5758,28 +5758,32 @@ let _ =
       ((None, None,
          [([`Nterm (Gramf.obj (extend_header : 'extend_header Gramf.t ));
            `List1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
-            ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = true } in\nlet () = module_name := old in res\n",
+            ("(fun f  -> f true)\n  (fun safe  ->\n     let (gram,old) = rest in\n     let items = Listf.filter_map (fun x  -> x) el in\n     let res = make _loc { items; gram; safe } in\n     let () = module_name := old in res)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(el : 'entry list) 
                     ~__fan_0:(rest : 'extend_header)  (_loc : Locf.t)  ->
-                    (let (gram,old) = rest in
-                     let items = Listf.filter_map (fun x  -> x) el in
-                     let res = make _loc { items; gram; safe = true } in
-                     let () = module_name := old in res : 'extend_body )))))]) : 
+                    ((fun f  -> f true)
+                       (fun safe  ->
+                          let (gram,old) = rest in
+                          let items = Listf.filter_map (fun x  -> x) el in
+                          let res = make _loc { items; gram; safe } in
+                          let () = module_name := old in res) : 'extend_body )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (unsafe_extend_body : 'unsafe_extend_body Gramf.t )
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (extend_header : 'extend_header Gramf.t ));
            `List1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
-            ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = false } in\nlet () = module_name := old in res\n",
+            ("(fun f  -> f false)\n  (fun safe  ->\n     let (gram,old) = rest in\n     let items = Listf.filter_map (fun x  -> x) el in\n     let res = make _loc { items; gram; safe } in\n     let () = module_name := old in res)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(el : 'entry list) 
                     ~__fan_0:(rest : 'extend_header)  (_loc : Locf.t)  ->
-                    (let (gram,old) = rest in
-                     let items = Listf.filter_map (fun x  -> x) el in
-                     let res = make _loc { items; gram; safe = false } in
-                     let () = module_name := old in res : 'unsafe_extend_body )))))]) : 
+                    ((fun f  -> f false)
+                       (fun safe  ->
+                          let (gram,old) = rest in
+                          let items = Listf.filter_map (fun x  -> x) el in
+                          let res = make _loc { items; gram; safe } in
+                          let () = module_name := old in res) : 'unsafe_extend_body )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
     (None,
@@ -5873,7 +5877,7 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))],
-            ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"DDSL `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+            ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(il : 'qualid)  (_loc : Locf.t)  ->
                     let name = None in
@@ -5885,7 +5889,7 @@ let _ =
                                     ((`Sub []), (x.txt))
                             with
                             | None  ->
-                                Locf.failf x.loc "DDSL `%s' not resolved"
+                                Locf.failf x.loc "lang `%s' not resolved"
                                   x.txt
                             | Some x ->
                                 (Ast_quotation.default := (Some x); `name old))
@@ -5895,7 +5899,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "Str")],
-           ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"DDSL `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+           ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(name : Tokenf.txt)  ~__fan_0:(il : 'qualid) 
                    (_loc : Locf.t)  ->
@@ -5908,7 +5912,7 @@ let _ =
                                    ((`Sub []), (x.txt))
                            with
                            | None  ->
-                               Locf.failf x.loc "DDSL `%s' not resolved"
+                               Locf.failf x.loc "lang `%s' not resolved"
                                  x.txt
                            | Some x ->
                                (Ast_quotation.default := (Some x); `name old))
