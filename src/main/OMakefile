@@ -1,7 +1,7 @@
 
 
-OCAMLPPFLAGS = -pp $(PP_FAN)
-OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
+# OCAMLPPFLAGS = -pp $(PP_FAN)
+# OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
 
 
 #########################################################################

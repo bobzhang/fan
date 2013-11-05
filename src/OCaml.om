@@ -118,7 +118,11 @@ public.PREFIXED_OCAMLPACKS =\
 #
 
 declare OCAMLDEPFLAGS
-public.OCAMLPPFLAGS  =
+public.USE_FAN       = false 
+public.FAN_PLUGINS   =
+public.FAN           = fan     
+public.FAN_PLUGIN_OPTIONS  = $`(mapprefix -plugin, $(FAN_PLUGINS))
+public.OCAMLPPFLAGS  = 
 public.OCAMLFLAGS    = 
 public.OCAMLCFLAGS   =  -w +a-4-32-30-42-40-41 -short-paths
 public.OCAMLOPTFLAGS =  -w +a-4-32-30-42-40-41 -short-paths
@@ -215,7 +219,7 @@ public.OCAML_LIB_FLAGS =
 public.OCAMLDEP_MODULES_ENABLED = $(OCAMLDEP_MODULES_AVAILABLE)
 
 public.OCAMLDEPFLAGS = $`(if $(and $(NATIVE_ENABLED), $(not $(OCAMLDEP_MODULES_ENABLED))), -native, $(EMPTY))
-public.OCAMLDEPPPFLAGS =
+
     
 .PHONY: OCamlGeneratedFilesTarget
 
@@ -388,7 +392,10 @@ public.OCamlScanner(src_file) =
     if $(equal $(suffix $(src_file)), .mli) # no pp for mli
         value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) -modules $(src_file) | ocamldep-postproc
     else
-        value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(OCAMLDEPPPFLAGS) -modules $(src_file) | ocamldep-postproc
+        if $(USE_FAN)
+            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) -pp "$(FAN) $(FAN_PLUGIN_OPTIONS)"  -modules $(src_file) | ocamldep-postproc
+        else
+            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES)   -modules $(src_file) | ocamldep-postproc
 
 
 
@@ -406,15 +413,25 @@ public.OCamlScanner(src_file) =
 # for the .cmo or .cmx file.
 #
 public.OCamlC() =
-    value $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
-              $(OCAMLCFLAGS) $(OCAMLPPFLAGS) $(PREFIXED_OCAMLINCLUDES)
+    if $(USE_FAN)
+        value $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
+              $(OCAMLCFLAGS) -pp $"$(FAN) $(FAN_PLUGIN_OPTIONS)" $(PREFIXED_OCAMLINCLUDES)
+    else
+        value $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
+              $(OCAMLCFLAGS)  $(PREFIXED_OCAMLINCLUDES)
+              
 public.OCamlCNoPP()=
     value $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
                 $(OCAMLCFLAGS)  $(PREFIXED_OCAMLINCLUDES)
 
 public.OCamlOpt() =
-    value $(OCAMLFIND) $(OCAMLOPT) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
-              $(OCAMLOPTFLAGS) $(OCAMLPPFLAGS) $(PREFIXED_OCAMLINCLUDES)
+    if $(USE_FAN)
+        value $(OCAMLFIND) $(OCAMLOPT) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
+              $(OCAMLOPTFLAGS) -pp $"$(FAN) $(FAN_PLUGIN_OPTIONS)"  $(PREFIXED_OCAMLINCLUDES)
+    else
+        value $(OCAMLFIND) $(OCAMLOPT) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
+              $(OCAMLOPTFLAGS)   $(PREFIXED_OCAMLINCLUDES)
+
 
 %.cmx: %.ml
     section rule

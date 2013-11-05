@@ -48,6 +48,15 @@
     if $(not $(test -d dparsetree))
         mkdir dparsetree
     DIR_DPARSETREE  = $(dir dparsetree)
+
+    if $(not $(test -d unitest_annot/main))
+        mkdir unitest_annot/main
+
+    if $(not $(test -d unitest1/main))
+        mkdir unitest1/main
+
+# public.PREFIXED_OCAMLINCLUDES = $`(mapprefix -I, $(OCAMLINCLUDES))
+
 # USE_OCAMLFIND=true
 # we don't depend on ocamlfind here
 
@@ -193,8 +202,9 @@ section
     OCAMLCFLAGS += -annot
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    PP_FAN = $(file fan)
-    OCamlAdditionalDigestDependency($(PP_FAN))
+    USE_FAN = true 
+    FAN = $(file fan)
+    OCamlAdditionalDigestDependency($(FAN))
     # AdditionalDependency($(PP_FAN))
     # weaker dependency require snapshot from time to time however
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
@@ -205,7 +215,8 @@ MakeFix(mountdir,pp,exe) =
     OCAML_OTHER_LIBS += dynlink ocamlcommon
     VMOUNTDIR = $(mountdir)
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    PP_FAN = $(pp) # use hot to preprocess hot
+    USE_FAN = true
+    FAN = $(pp) # use hot to preprocess hot
     AdditionalDependency($(pp))
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
@@ -344,8 +355,7 @@ MakeTest(maindir,mountdir,pp) =
     OCAMLINCLUDES += $(MAINDIR)
     vmount(-l, $(DIR_UNIT), $(mountdir))
     AdditionalDependency($(pp))
-    AdditionalDependency($(OUNIT_PLUGIN).cmxs)
-    FAN_PLUGIN += $(OUNIT_PLUGIN)
+
     # OCAML_LIBS[]+= $(MAINDIR)/libmain
     .SUBDIRS: $(mountdir)
 
