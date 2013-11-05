@@ -1,6 +1,6 @@
 
 
-FILES=   lex_plc PlEnv PlVersion PlAst PlNames PlTranslate PlParser
+FILES=   lex_plc env_plc version ast_plc names compile_plc parse_plc 
 
 
 

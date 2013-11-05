@@ -61,7 +61,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
       token lexbuf 
     end}
   | eof %{
-      let pos = lexbuf.lex_curr_p in (* FIXME *)
+      let pos = lexbuf.lex_curr_p in 
       (lexbuf.lex_curr_p <-
       { pos with pos_bol  = pos.pos_bol  + 1 ;
         pos_cnum = pos.pos_cnum + 1 };

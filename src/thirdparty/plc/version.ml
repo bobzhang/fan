@@ -28,12 +28,11 @@ let partition v l =
         match l with
         |(e::l) -> if o then (l,cs,(e::os)) else (l,(e::cs),os )
         | [] -> failwith "partition") (l,[],[]) v in
-	if l <> [] then failwith "partition"
-	else (List.rev cs, List.rev os)
+  if l <> [] then failwith "partition"
+  else (List.rev cs, List.rev os)
 
 let to_string (i,k) =
-	let open Stringf in
-		init k (fun j -> if opened (i,k) j then 'o' else 'c');;
+  Stringf.init k (fun j -> if opened (i,k) j then 'o' else 'c');;
 
 let neg (i,k) =
-  ((1 lsl k) - 1 - i, k)
+  (1 lsl k - 1 - i, k)

@@ -1,16 +1,16 @@
-module StringMap = Map.Make(String)
 
-type t = ((int -> string) *  string StringMap.t * int )
 
-let empty f = (f, StringMap.empty, 0)
+type t = ((int -> string) *  string Mapf.String.t * int )
 
-let lookup (_,map,_) v =StringMap.find v map
+let empty f = (f, Mapf.String.empty, 0)
+
+let lookup (_,map,_) v =Mapf.String.find v map
 
 let bind (f,map,c) v id =
-  (f, StringMap.add v id map, c)
+  (f, Mapf.String.add v id map, c)
 
 let bound (_,map,_) v =
-  StringMap.mem v map
+  Mapf.String.mem v map
 
 let fresh_id (f,map,c) =
   let id = f c and c = c + 1 in

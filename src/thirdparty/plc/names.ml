@@ -1,7 +1,6 @@
 (** Names and name functions **)
 
 (** Builtin predicates and compound constructors **)
-
 let nil = "nil" and cons = "cons"
 let add = "add" and sub = "sub" and neg = "neg"
 
@@ -18,6 +17,25 @@ let truep = "true" and fail = "fail"
 let repeat = "repeat"
 let write = "write" and nl = "nl"
 
+let same = "same"
+    
+let tbl =
+  [("=",same);
+   ("\\=",diff);
+   ("is",is);
+   ("=\\=",ne);
+   ("=:=",eq);
+   ("<",lt);
+   ("=<",lte);
+   (">",gt);
+   (">=",gte);
+   ("+",add);
+   ("-",sub)
+ ];;
+let transform (x:string) : string =
+  try List.assoc x tbl
+  with Not_found -> assert false 
+
 let builtin_preds = [
 	(same,2); (diff,2);
 	(is,2);
@@ -33,7 +51,7 @@ let builtin_preds = [
 (** Code generation names **)
 
 let comp n = String.capitalize n
-let pred n v = n ^ "_" ^ (PlVersion.to_string v)
+let pred n v = n ^ "_" ^ (Version.to_string v)
 let pred_var n = "_arg" ^ (string_of_int n)
 
 let f = "_f"

@@ -4,7 +4,7 @@
 
 # need treeparser library for Gstructure (refed by gramf).  Otherwise get odd errrors.
 INCLUDES=-I ../../utils -I ../../common -I ../../treeparser -I ../../cold
-CMOS=PlEnv.cmo PlVersion.cmo PlAst.cmo PlNames.cmo PlTranslate.cmo PlParser.cmo
+CMOS=PlEnv.cmo PlVersion.cmo PlAst.cmo Names.cmo Compile_plc.cmo PlParser.cmo
 
 # Uncomment SHOW to output the result of Fan translation
 # SHOW=-dsource
