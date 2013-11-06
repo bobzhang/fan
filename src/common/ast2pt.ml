@@ -555,8 +555,12 @@ let rec pat (x : pat) : Parsetree.pattern =
     mkpat _loc @@
       Ppat_construct
         (lident_with_loc s sloc, Some (mkpat loc_any Ppat_any), false)
-  | `App(_,p,`Par(_,r)) ->
-      let r = List.map pat @@ list_of_com r [] in
+  | `App(_,p, (* r  *) (`Par _ as r) ) as f->
+      let r =
+        match r with
+        | `Par (_,r) -> 
+            List.map pat @@ list_of_com r []
+        | _ -> [pat r] in
       let r =
         match r with
         |[ v ] ->  v
@@ -567,7 +571,7 @@ let rec pat (x : pat) : Parsetree.pattern =
             mkpat _loc @@ Ppat_variant (s, Some r)
         | Ppat_construct(li,None,_) ->
             mkpat _loc @@ Ppat_construct (li, Some r, false)
-        | _ -> assert false
+        | _ -> Locf.failf _loc "invalid pattern %s" @@ !dump_pat f
       end 
       (* in *)
       (* mkpat _loc (Ppat_variant (p1, Some r )) *)

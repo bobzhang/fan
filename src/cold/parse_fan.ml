@@ -3054,16 +3054,11 @@ let apply () =
                      FAst.pat ) : 'pat )))))]);
         ((Some "apply"), (Some `LA),
           [([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Self],
-             ("match p2 with\n| (`Par (_loc,p) : FAst.pat) ->\n    List.fold_left (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat )) p1\n      (Ast_basic.list_of_com p [])\n| _ -> (`App (_loc, p1, p2) : FAst.pat )\n",
+             ("(`App (_loc, p1, p2) : FAst.pat )\n",
                (Gramf.mk_action
                   (fun ~__fan_1:(p2 : 'pat)  ~__fan_0:(p1 : 'pat_constr) 
                      (_loc : Locf.t)  ->
-                     (match p2 with
-                      | (`Par (_loc,p) : FAst.pat) ->
-                          List.fold_left
-                            (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat ))
-                            p1 (Ast_basic.list_of_com p [])
-                      | _ -> (`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
+                     ((`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
           ([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))],
             ("p1\n",
               (Gramf.mk_action
@@ -3514,10 +3509,10 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) ->
                         (`Flo (_loc, (Stringf.neg s)) : 'pat )))));
           ([`Keyword "["; `Keyword "]"],
-            ("(`Uid (_loc, \"[]\") : FAst.pat )\n",
+            ("`Uid (_loc, \"[]\")\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "[]") : FAst.pat ) : 'pat )))));
+                    (`Uid (_loc, "[]") : 'pat )))));
           ([`Keyword "[";
            `Nterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
            `Keyword "]"],
@@ -3545,10 +3540,10 @@ let apply () =
                  (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_
                      (_loc : Locf.t)  -> (`Record (_loc, pl) : 'pat )))));
           ([`Keyword "("; `Keyword ")"],
-            ("(`Uid (_loc, \"()\") : FAst.pat )\n",
+            ("`Uid (_loc, \"()\")\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.pat ) : 'pat )))));
+                    (`Uid (_loc, "()") : 'pat )))));
           ([`Keyword "(";
            `Keyword "module";
            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
@@ -3600,60 +3595,57 @@ let apply () =
            `Keyword ":";
            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
            `Keyword ")"],
-            ("(`Constraint (_loc, p, t) : FAst.pat )\n",
+            ("`Constraint (_loc, p, t)\n",
               (Gramf.mk_action
                  (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
                     ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Constraint (_loc, p, t) : FAst.pat ) : 'pat )))));
+                    (`Constraint (_loc, p, t) : 'pat )))));
           ([`Keyword "(";
            `Self;
            `Keyword "as";
            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
            `Keyword ")"],
-            ("(`Alias (_loc, p, s) : FAst.pat )\n",
+            ("`Alias (_loc, p, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
                     ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Alias (_loc, p, s) : FAst.pat ) : 'pat )))));
+                    (`Alias (_loc, p, s) : 'pat )))));
           ([`Keyword "(";
            `Self;
            `Keyword ",";
            `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ));
            `Keyword ")"],
-            ("(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n",
+            ("`Par (_loc, (`Com (_loc, p, pl)))\n",
               (Gramf.mk_action
                  (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_pat)  ~__fan_2:_ 
                     ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
-                    'pat )))));
+                    (`Par (_loc, (`Com (_loc, p, pl))) : 'pat )))));
           ([`Keyword "#";
            `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
-            ("(`ClassPath (_loc, i) : FAst.pat )\n",
+            ("`ClassPath (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    ((`ClassPath (_loc, i) : FAst.pat ) : 'pat )))));
+                    (_loc : Locf.t)  -> (`ClassPath (_loc, i) : 'pat )))));
           ([`Keyword "~";
            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
            `Keyword ":";
            `Self],
-            ("(`Label (_loc, i, p) : FAst.pat )\n",
+            ("`Label (_loc, i, p)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Label (_loc, i, p) : FAst.pat ) : 'pat )))));
+                    (`Label (_loc, i, p) : 'pat )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
                 ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
            `Self],
-            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
+            ("`Label (_loc, (`Lid (_loc, i)), p)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(p : 'pat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
                     (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = i;_} : Tokenf.txt) ->
-                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
-                        'pat )))));
+                        (`Label (_loc, (`Lid (_loc, i)), p) : 'pat )))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
                 ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],

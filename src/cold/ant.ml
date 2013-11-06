@@ -13,8 +13,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
-               (`App (_loc, (`App (_loc, (`Vrn (_loc, x)), (mloc _loc))), e) : 
-                 FAst.pat )
+               (`App
+                  (_loc, (`Vrn (_loc, x)),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : FAst.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : exp) =

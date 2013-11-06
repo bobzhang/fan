@@ -554,17 +554,8 @@ let apply () = begin
         [ S as p1; "::"; S as p2 %pat{ $p1:: $p2}]
 
        "apply" LA (* `Pat ((name,tydcl) as  named_type) *)
-        [ pat_constr as p1; S as p2 %{ (*FIXME *)
-          match p2 with
-          | %{ ($par:p) } ->
-              List.fold_left (fun p1 p2 -> %{ $p1 $p2 }) p1
-                (Ast_basic.list_of_com p []) (* precise *)
-          | _ -> %{$p1 $p2 }}
-        (* | pat_constr as p1; "("; comma_pat_list as ps; ")" %{ *)
-        (*   List.fold_left (fun p1 p2 -> %{$p1 $p2}) p1 ps  *)
-        (*   } *)
-        (* | pat_constr as p1; S as p2 %pat{ $p1 $p2} *)
-
+        [ pat_constr as p1; S as p2
+            %pat{$p1 $p2}
         | pat_constr as p1 %{ p1}
         | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
        (* special_pat@Local: *)
@@ -586,27 +577,28 @@ let apply () = begin
         | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
         | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
         | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
-        | "["; "]" %{ %{ [] }}
+        | "["; "]" %{ `Uid (_loc, "[]")}
         | "["; sem_pat_for_list as s; "]" %{ s}
         | "[|"; "|]" %{ `ArrayEmpty(_loc)}
         | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
         | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
-        | "("; ")" %{ %{ () }}
+        | "("; ")" %{ `Uid (_loc, "()")}
         | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
         | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
             `ModuleConstraint(_loc,m, `Package(_loc,pt))}
         | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
             `ModuleConstraint (_loc, m, mk_ant s)}
         | "("; S as p; ")" %{ p}
-        | "("; S as p; ":"; ctyp as t; ")" %{ %{ ($p : $t) }}
-        | "("; S as p; "as";  a_lident as s; ")" %{ %{ ($p as $s )}}
-        | "("; S as p; ","; comma_pat as pl; ")" %{ %{ ($p, $pl) }}
-        | "#"; type_longident as i %{ %{ # $i }}              
+        | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
+        | "("; S as p; "as";  a_lident as s; ")" %{ `Alias (_loc, p, s)}
+        | "("; S as p; ","; comma_pat as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
+        | "#"; type_longident as i %{ `ClassPath(_loc,i)}              
 
           (* duplicated may be removed later with [pat Level "apply"] *)
         
-        | "~"; a_lident as i; ":"; S as p %pat{ ~$i : $p}
-        | Label i; S as p  %pat{ ~ $lid:i : $p }
+        | "~"; a_lident as i; ":"; S as p %{`Label (_loc, i, p)}
+        | Label i; S as p   %{`Label (_loc, (`Lid (_loc, i)), p) }
+
         | @atom_pat
         ] }
 
