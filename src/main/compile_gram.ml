@@ -123,8 +123,8 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
            if n.tvar = tvar then %exp{ `Self} else %exp{ `Nterm $obj })
     | `Try (_loc, t) -> %exp{ `Try ${aux "" t} }
     | `Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
-    | `Token (_loc, match_fun,  mdescr, mstr ) ->
-        %exp{`Token ($match_fun, $mdescr, $str:mstr)} in
+    | `Token (_loc, match_fun,  mdescr ) ->
+        %exp{`Token ($match_fun, $mdescr)} in
   aux  tvar x
 
 

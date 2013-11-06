@@ -1,13 +1,5 @@
 open FAst
 
-(* type word  = *)
-(*   [ `Any *)
-(*   | `A of string *)
-(*   | `Level of int (\* infix operator precedence *\) *)
-(*   | `Empty (\* no token associated *\)] *)
-
-(* and data = (int * word) *)
-
 type name = {
     id : vid ;
     tvar : string;
@@ -75,7 +67,7 @@ and text =
  | `Peek of (loc * text)
  | `Self of loc
  | `Keyword of (loc * string)
- | `Token of (loc * exp * exp * string )
+ | `Token of (loc * exp * exp)
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for
