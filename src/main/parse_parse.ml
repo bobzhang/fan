@@ -92,10 +92,12 @@ let query_inline (x:string) =
     let pred = %exp{function (*BOOTSTRAPPING*)
       | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
       | _ -> false} in
-    let des = %exp{({tag = $vrn:v; word = A $str:x }:Tokenf.descr)} in
-    let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
 
-    {text = `Token(_loc, pred, des,des_str);
+    let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
+    {text = `Token(_loc,
+                   pred,
+                   %exp{({tag = $vrn:v; word = A $str:x }:Tokenf.descr)},
+                   des_str);
      styp = %ctyp'{Tokenf.txt};
      bounds = [];
      pattern = Some %pat@xloc{({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
