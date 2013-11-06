@@ -629,7 +629,7 @@ let apply () = begin
                                        `Uid(_loc,"::"),
                                        `Par(_loc,`Com(_loc,p,pl)))}
 
-       | pat as p; ? ";" %pat{ [ $p ]}
+       | pat as p; ? ";"%{`App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p,`Uid(_loc,"[]"))))}
        ]
        pat_tcon:
        [ pat as p; ":"; ctyp as t %{ %{ ($p : $t) }}
