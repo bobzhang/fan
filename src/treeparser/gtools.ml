@@ -36,10 +36,6 @@ let get_terminals x =
   | _ -> None 
 
 
-let eq_token  (x :Tokenf.pattern)  (y:Tokenf.pattern) : bool =
-  match x , y with 
-  | (_,a,_) , (_,b,_) -> a  =  b
-
 (** used in [Delete], the delete API may be deprecated in the future *)        
 let logically_eq_symbols (entry:Gdefs.entry) =
   let rec eq_symbol (s1:Gdefs.symbol) (s2:Gdefs.symbol) =
@@ -56,7 +52,7 @@ let logically_eq_symbols (entry:Gdefs.entry) =
     | (`List0sep (s1, sep1), `List0sep (s2, sep2))
     | (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | `Token x , `Token  y  -> eq_token x y 
+    | `Token x , `Token  y  -> Tokenf.eq_pattern x y 
     | _ -> s1 = s2 in
   eq_symbol
 
@@ -73,7 +69,7 @@ let rec eq_symbol (s1:Gdefs.symbol) (s2:Gdefs.symbol) =
   | (`List0sep (s1, sep1), `List0sep (s2, sep2))
   | (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
-  | `Token x, `Token y -> eq_token x y
+  | `Token x, `Token y -> Tokenf.eq_pattern  x y
   | _ -> s1 = s2
       
 

@@ -313,7 +313,7 @@ let  eoi_entry e =
         (symbs @
          [`Token
             ((function | `EOI _ -> true | _ -> false),
-             ({tag = `EOI;word=Empty}:Tokenf.descr), "`EOI")],
+             ({tag = `EOI;word=Empty;tag_name="EOI"}:Tokenf.descr))],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in
   let result =

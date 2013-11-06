@@ -72,7 +72,7 @@ class text_grammar : grammar_print = object(self:'self)
     match (x: Gdefs.symbol) with 
     | `Nterm e -> pp f "%s" e.name
     | `Self -> pp f "%s" "S"
-    | `Token (_,_,descr) -> pp f "%s" descr
+    | `Token p -> pp f "%s" (Tokenf.string_of_pattern p )
     | `Keyword s -> pp f "%S" s
     | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
       `List1sep (_, _) (* | `Opt _ *) | `Try _ | `Peek _ as s ->

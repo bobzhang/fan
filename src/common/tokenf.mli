@@ -168,6 +168,7 @@ type word =
 and descr =  {
     tag : tag;
     word : word;
+    tag_name : string
   }
 
 
@@ -179,7 +180,7 @@ and descr =  {
     runtime error message and pretty printing,
     it could be removed later. *)
       
-type pattern = ((t -> bool) * descr * string )
+type pattern = (t -> bool) * descr 
 
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
@@ -234,3 +235,5 @@ val name_of_string : string -> name
 
 val filter : filter_plugin -> filter
 
+val eq_pattern : pattern -> pattern -> bool
+val string_of_pattern : pattern -> string    

@@ -137,7 +137,7 @@ and parser_of_terminals
 
                 if not
                     (match terminal with
-                    |`Token(f,_,_) ->
+                    |`Token(f,_) ->
                         begin
                           acc:= Tokenf.strip t ::!acc;
                           f t
@@ -189,7 +189,7 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
               end
           |_ -> raise Streamf.NotConsumed
         end
-    | `Token (f, _,_) -> fun strm ->  match Streamf.peek strm with
+    | `Token (f, _) -> fun strm ->  match Streamf.peek strm with
       |Some tok when f tok ->
           begin 
             Streamf.junk strm;

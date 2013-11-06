@@ -14,7 +14,7 @@ let  name_of_symbol (entry:Gdefs.entry) (x: Gdefs.symbol)   =
   | `Nterm e -> "[" ^ e.name ^ "]"
   | `Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
   | `Self  -> "[" ^ entry.name ^ "]"
-  | `Token (_, _,descr) -> descr
+  | `Token p  -> Tokenf.string_of_pattern p
   | `Keyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
 
@@ -114,7 +114,7 @@ and name_of_tree_failed entry x =
             (fun s tok ->
               ((if s = "" then "" else s ^ " then ") ^
                (match tok with
-               | `Token (_, _,descr) ->  descr
+               | `Token p ->  Tokenf.string_of_pattern p 
                | `Keyword kwd -> kwd))) "" tokl 
       end
   | DeadEnd | LocAct (_, _) -> "???" 

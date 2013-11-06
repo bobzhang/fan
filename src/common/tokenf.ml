@@ -156,16 +156,33 @@ type word =
 and descr =  {
     tag : tag;
     word : word;
+    tag_name : string;
   }
 
-type pattern = ((t -> bool) * descr * string )
+let rec  string_of_descr (x:descr)=
+  Printf.sprintf "%s %s"
+    x.tag_name (string_of_word x.word)
+and string_of_word  (x:word) =
+  match x with
+  | Any -> "_"
+  | A  s -> Printf.sprintf "%S" s
+  | Empty -> ""
+  | Level d -> Printf.sprintf "Level %d" d
+        
+type pattern = (t -> bool) * descr
 
+let string_of_pattern (_,b) = string_of_descr b
+    
+let eq_pattern  (x :pattern)  (y : pattern) : bool =
+  match x , y with 
+  | (a,_) , (b,_) -> a  =  b
+      
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
 type terminal =
     [ `Keyword of string
     | `Token of pattern ]
-      
+
       
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
