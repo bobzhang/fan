@@ -27,12 +27,12 @@ open Ast_gen
   DoubleColon
  *)
 let list_of_list (loc:loc) =
-  let rec loop top =  with exp' function
-    | [] ->   let ghost = Locf.ghost in %@ghost{ [] }
+  let rec loop top =   function
+    | [] ->   let ghost = Locf.ghost in %exp@ghost{ [] }
     | e1 :: el ->
         let _loc =
           if top then loc else Locf.merge (loc_of e1) loc in
-        %{ $e1 :: ${loop false el} } (* FIXME *)  in
+        %exp{ $e1 :: ${loop false el} } (* FIXME *)  in
   loop true ;;
 
 (* FIXME  double semi colon needed before *)  

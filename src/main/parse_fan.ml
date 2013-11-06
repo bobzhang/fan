@@ -541,9 +541,9 @@ let apply () = begin
        [module_longident as i %{(i :vid :> pat)}
        |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
        |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
-       comma_pat_list@Local:
-       [ pat as p1 ; ","; S as p2 %{p1::p2}
-       | pat as p1 %{[p1]}]                  
+       (* comma_pat_list@Local: *)
+       (* [ pat as p1 ; ","; S as p2 %{p1::p2} *)
+       (* | pat as p1 %{[p1]}]                   *)
                    
        pat:
        { "|" LA
@@ -551,7 +551,9 @@ let apply () = begin
        ".." NA
         [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
         "::" RA
-        [ S as p1; "::"; S as p2 %pat{ $p1:: $p2}]
+        [ S as p1; "::"; S as p2 %{
+          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}
+        ]
 
        "apply" LA (* `Pat ((name,tydcl) as  named_type) *)
         [ pat_constr as p1; S as p2
@@ -623,7 +625,10 @@ let apply () = begin
         | @atom_pat
         ]
        sem_pat_for_list:
-       [ pat as p; ";"; S as pl %pat{  $p :: $pl  }
+       [ pat as p; ";"; S as pl %{`App(_loc,
+                                       `Uid(_loc,"::"),
+                                       `Par(_loc,`Com(_loc,p,pl)))}
+
        | pat as p; ? ";" %pat{ [ $p ]}
        ]
        pat_tcon:
@@ -669,7 +674,7 @@ let apply () = begin
         | Lid i %{ %{ $lid:i }}
         | Uid i %{ %{ $uid:i }}
         | Uid s ; "." ; S as j %{ %{$uid:s.$j}}
-        | "("; S as i;S as j; ")" %{ `Apply _loc i j}  ] }
+        | "("; S as i;S as j; ")" %{ `Apply (_loc, i, j)}  ] }
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:

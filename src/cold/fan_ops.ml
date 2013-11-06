@@ -4,10 +4,11 @@ open Ast_gen
 let list_of_list (loc : loc) =
   let rec loop top =
     function
-    | [] -> let ghost = Locf.ghost in `Uid (ghost, "[]")
+    | [] -> let ghost = Locf.ghost in (`Uid (ghost, "[]") : FAst.exp )
     | e1::el ->
         let _loc = if top then loc else Locf.merge (loc_of e1) loc in
-        `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
+        (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) : 
+          FAst.exp ) in
   loop true
 let meta_int _loc i = `Int (_loc, (string_of_int i))
 let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
