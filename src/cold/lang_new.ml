@@ -14,7 +14,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("(_loc, x, None, None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -24,10 +24,10 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)),
-              ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
+              ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
           `Token
             (((function | `Str _ -> true | _ -> false)),
-              ({ tag = `Str; word = Any } : Tokenf.descr ), "Str");
+              ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ));
           `Keyword ")"],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
@@ -40,10 +40,10 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)),
-              ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
+              ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
           `Token
             (((function | `Str _ -> true | _ -> false)),
-              ({ tag = `Str; word = Any } : Tokenf.descr ), "Str");
+              ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ));
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Keyword ")"],
            ("(_loc, x, (Some y), (Some t))\n",
@@ -58,7 +58,7 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)),
-              ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
+              ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Keyword ")"],
@@ -76,12 +76,12 @@ let _ =
          ([`Keyword "(";
           `Token
             (((function | `Lid _ -> true | _ -> false)),
-              ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
+              ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Token
             (((function | `Str _ -> true | _ -> false)),
-              ({ tag = `Str; word = Any } : Tokenf.descr ), "Str");
+              ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ));
           `Keyword ")"],
            ("(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n",
              (Gramf.mk_action
@@ -123,7 +123,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -135,7 +135,7 @@ let _ =
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -147,7 +147,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -159,7 +159,7 @@ let _ =
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)),
-               ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+               ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -171,7 +171,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -183,13 +183,13 @@ let _ =
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
           `Keyword ".";
           `Token
             (((function
                | `Lid ({ txt = "t";_} : Tokenf.txt) -> true
                | _ -> false)),
-              ({ tag = `Lid; word = (A "t") } : Tokenf.descr ), "`Lid \"t\"")],
+              ({ tag = `Lid; word = (A "t") } : Tokenf.descr ))],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 

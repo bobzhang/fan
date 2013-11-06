@@ -55,8 +55,8 @@ let make_case exp pat =
               (((function
                  | `Ant ({ kind = "case";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "case") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "case"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -68,7 +68,7 @@ let make_case exp pat =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -80,7 +80,7 @@ let make_case exp pat =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword "when";
           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
           `Keyword "->";
@@ -98,7 +98,7 @@ let make_case exp pat =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword "->";
           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Case (_loc, (mk_ant s), e)\n",
@@ -213,7 +213,7 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -225,7 +225,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "pat"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -237,7 +238,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -290,7 +292,7 @@ let make_pat exp =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -302,7 +304,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "pat"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -314,7 +317,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "par"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -326,7 +330,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "int"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -338,8 +343,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int32") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "int32"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -351,8 +356,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int64") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "int64"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -364,7 +369,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -376,7 +382,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "flo") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "flo"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -388,7 +395,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "chr") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "chr"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -400,8 +408,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "nativeint") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "nativeint"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -413,7 +421,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "str") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "str"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -425,7 +434,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int'") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "int'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -437,8 +447,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int32'") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "int32'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -450,8 +460,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "int64'") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "int64'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -463,8 +473,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "nativeint'") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "nativeint'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -476,7 +486,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "flo'") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "flo'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -488,7 +499,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "chr'") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "chr'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -500,7 +512,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "str'") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "str'"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -512,7 +525,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`int") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "`int"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -524,8 +538,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`int32") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "`int32"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -537,8 +551,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`int64") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "`int64"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -550,8 +564,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`nativeint") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "`nativeint"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -563,7 +577,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`flo") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "`flo"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -575,7 +590,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`chr") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "`chr"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -587,7 +603,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "`str") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "`str"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -602,7 +619,7 @@ let make_pat exp =
                    ((i : vid  :>pat) : 'pat )))));
          ([`Token
              (((function | `Int _ -> true | _ -> false)),
-               ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
+               ({ tag = `Int; word = Any; tag_name = "Int" } : Tokenf.descr ))],
            ("`Int (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -610,7 +627,7 @@ let make_pat exp =
                    | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Int32 _ -> true | _ -> false)),
-               ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
+               ({ tag = `Int32; word = Any; tag_name = "Int32" } : Tokenf.descr ))],
            ("`Int32 (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -619,7 +636,7 @@ let make_pat exp =
                        (`Int32 (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Int64 _ -> true | _ -> false)),
-               ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
+               ({ tag = `Int64; word = Any; tag_name = "Int64" } : Tokenf.descr ))],
            ("`Int64 (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -628,8 +645,8 @@ let make_pat exp =
                        (`Int64 (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Nativeint _ -> true | _ -> false)),
-               ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
-               "Nativeint")],
+               ({ tag = `Nativeint; word = Any; tag_name = "Nativeint" } : 
+               Tokenf.descr ))],
            ("`Nativeint (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -638,7 +655,7 @@ let make_pat exp =
                        (`Nativeint (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Flo _ -> true | _ -> false)),
-               ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
+               ({ tag = `Flo; word = Any; tag_name = "Flo" } : Tokenf.descr ))],
            ("`Flo (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -646,7 +663,7 @@ let make_pat exp =
                    | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Chr _ -> true | _ -> false)),
-               ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
+               ({ tag = `Chr; word = Any; tag_name = "Chr" } : Tokenf.descr ))],
            ("`Chr (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -654,7 +671,7 @@ let make_pat exp =
                    | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'pat )))));
          ([`Token
              (((function | `Str _ -> true | _ -> false)),
-               ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+               ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ))],
            ("`Str (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -663,7 +680,7 @@ let make_pat exp =
          ([`Keyword "-";
           `Token
             (((function | `Int _ -> true | _ -> false)),
-              ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
+              ({ tag = `Int; word = Any; tag_name = "Int" } : Tokenf.descr ))],
            ("`Int (_loc, (Stringf.neg s))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -674,7 +691,7 @@ let make_pat exp =
          ([`Keyword "-";
           `Token
             (((function | `Int32 _ -> true | _ -> false)),
-              ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
+              ({ tag = `Int32; word = Any; tag_name = "Int32" } : Tokenf.descr ))],
            ("`Int32 (_loc, (Stringf.neg s))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -685,7 +702,7 @@ let make_pat exp =
          ([`Keyword "-";
           `Token
             (((function | `Int64 _ -> true | _ -> false)),
-              ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
+              ({ tag = `Int64; word = Any; tag_name = "Int64" } : Tokenf.descr ))],
            ("`Int64 (_loc, (Stringf.neg s))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -696,8 +713,8 @@ let make_pat exp =
          ([`Keyword "-";
           `Token
             (((function | `Nativeint _ -> true | _ -> false)),
-              ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
-              "Nativeint")],
+              ({ tag = `Nativeint; word = Any; tag_name = "Nativeint" } : 
+              Tokenf.descr ))],
            ("`Nativeint (_loc, (Stringf.neg s))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -708,7 +725,7 @@ let make_pat exp =
          ([`Keyword "-";
           `Token
             (((function | `Flo _ -> true | _ -> false)),
-              ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
+              ({ tag = `Flo; word = Any; tag_name = "Flo" } : Tokenf.descr ))],
            ("`Flo (_loc, (Stringf.neg s))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -782,7 +799,7 @@ let make_pat exp =
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)),
-              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+              ({ tag = `Ant; word = (A "opt"); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
              (Gramf.mk_action
@@ -845,7 +862,7 @@ let make_pat exp =
                    (`Label (_loc, i, p) : 'pat )))));
          ([`Token
              (((function | `Label _ -> true | _ -> false)),
-               ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+               ({ tag = `Label; word = Any; tag_name = "Label" } : Tokenf.descr ));
           `Self],
            ("`Label (_loc, (`Lid (_loc, i)), p)\n",
              (Gramf.mk_action
@@ -856,7 +873,7 @@ let make_pat exp =
                        (`Label (_loc, (`Lid (_loc, i)), p) : 'pat )))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -879,7 +896,8 @@ let make_pat exp =
                    -> (`LabelS (_loc, i) : 'pat )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+               ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+               Tokenf.descr ));
           `Keyword "(";
           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
           `Keyword "=";
@@ -896,7 +914,8 @@ let make_pat exp =
                        'pat )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+               ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+               Tokenf.descr ));
           `Keyword "(";
           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
           `Keyword ")"],
@@ -931,7 +950,7 @@ let make_pat exp =
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)),
-              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+              ({ tag = `Ant; word = (A "opt"); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
              (Gramf.mk_action
@@ -995,7 +1014,7 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1007,7 +1026,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "pat"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1019,7 +1039,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "par"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1062,7 +1083,7 @@ let make_pat exp =
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)),
-              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+              ({ tag = `Ant; word = (A "opt"); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
              (Gramf.mk_action
@@ -1118,7 +1139,7 @@ let make_pat exp =
                    ((s : alident  :>pat) : 'ipat )))));
          ([`Token
              (((function | `Label _ -> true | _ -> false)),
-               ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+               ({ tag = `Label; word = Any; tag_name = "Label" } : Tokenf.descr ));
           `Self],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Gramf.mk_action
@@ -1139,7 +1160,7 @@ let make_pat exp =
                    ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1162,7 +1183,8 @@ let make_pat exp =
                    -> (`LabelS (_loc, i) : 'ipat )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+               ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+               Tokenf.descr ));
           `Keyword "(";
           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
           `Keyword "=";
@@ -1179,7 +1201,8 @@ let make_pat exp =
                        'ipat )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+               ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+               Tokenf.descr ));
           `Keyword "(";
           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
           `Keyword ")"],
@@ -1214,7 +1237,7 @@ let make_pat exp =
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)),
-              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+              ({ tag = `Ant; word = (A "opt"); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
              (Gramf.mk_action
@@ -1313,7 +1336,7 @@ let make_pat exp =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1381,7 +1404,7 @@ let make_pat exp =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"pat\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1393,7 +1416,8 @@ let make_pat exp =
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "pat"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"pat\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1513,7 +1537,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"mexp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1525,8 +1549,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mexp";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mexp") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mexp"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"mexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1536,7 +1560,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.mexp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1600,8 +1624,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mbind") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mbind"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1613,7 +1637,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1654,8 +1678,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mbind") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mbind"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1667,7 +1691,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1677,7 +1701,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.mbind\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1710,7 +1734,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1722,8 +1746,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mbind") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mbind"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"mbind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1733,7 +1757,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.mbind\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1770,7 +1794,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"constr\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1782,8 +1806,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "constr";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "constr") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "constr"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"constr\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1793,7 +1817,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.constr\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -1893,7 +1917,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"sigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1905,8 +1929,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "sigi") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "sigi"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"sigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -1918,7 +1942,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
@@ -1932,8 +1956,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "sigi") } : Tokenf.descr ),
-                "`Ant s");
+                ({ tag = `Ant; word = (A "sigi"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
               (Gramf.mk_action
@@ -1947,7 +1971,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
@@ -1962,8 +1986,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "sigi") } : Tokenf.descr ),
-                "`Ant s");
+                ({ tag = `Ant; word = (A "sigi"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
@@ -2067,7 +2091,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"mtyp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2079,8 +2103,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mtyp";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mtyp") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mtyp"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"mtyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2090,7 +2114,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.mtyp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -2185,7 +2209,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"sigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2197,8 +2221,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "sigi") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "sigi"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"sigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -2208,7 +2232,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.sigi\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -2356,7 +2380,7 @@ let apply () =
                     'interf )))));
           ([`Token
               (((function | `EOI _ -> true | _ -> false)),
-                ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+                ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
             ("([], None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  -> (([], None) : 'interf )))))]) : 
@@ -2501,7 +2525,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)),
-                 ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
+                 ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
             `Keyword ":";
             `Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
              ("(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Tokenf.string_of_name y)\n   | Some x -> x))\n",
@@ -2519,7 +2543,7 @@ let apply () =
                               | Some x -> x))) : 'name_space )))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2810,8 +2834,8 @@ let apply () =
               (((function
                  | `Inf ({ level = 0;_} : Tokenf.op) -> true
                  | _ -> false)),
-                ({ tag = `Inf; word = (Level 0) } : Tokenf.descr ),
-                "Precedence0");
+                ({ tag = `Inf; word = (Level 0); tag_name = "Inf" } : 
+                Tokenf.descr ));
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -2868,8 +2892,8 @@ let apply () =
               (((function
                  | `Inf ({ level = 1;_} : Tokenf.op) -> true
                  | _ -> false)),
-                ({ tag = `Inf; word = (Level 1) } : Tokenf.descr ),
-                "Precedence1");
+                ({ tag = `Inf; word = (Level 1); tag_name = "Inf" } : 
+                Tokenf.descr ));
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -2897,8 +2921,8 @@ let apply () =
               (((function
                  | `Inf ({ level = 2;_} : Tokenf.op) -> true
                  | _ -> false)),
-                ({ tag = `Inf; word = (Level 2) } : Tokenf.descr ),
-                "Precedence2");
+                ({ tag = `Inf; word = (Level 2); tag_name = "Inf" } : 
+                Tokenf.descr ));
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -2945,8 +2969,8 @@ let apply () =
               (((function
                  | `Inf ({ level = 3;_} : Tokenf.op) -> true
                  | _ -> false)),
-                ({ tag = `Inf; word = (Level 3) } : Tokenf.descr ),
-                "Precedence3");
+                ({ tag = `Inf; word = (Level 3); tag_name = "Inf" } : 
+                Tokenf.descr ));
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -2963,8 +2987,8 @@ let apply () =
               (((function
                  | `Inf ({ level = 4;_} : Tokenf.op) -> true
                  | _ -> false)),
-                ({ tag = `Inf; word = (Level 4) } : Tokenf.descr ),
-                "Precedence4");
+                ({ tag = `Inf; word = (Level 4); tag_name = "Inf" } : 
+                Tokenf.descr ));
             `Self],
              ("let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
                (Gramf.mk_action
@@ -3149,7 +3173,7 @@ let apply () =
                     -> (`LabelS (_loc, i) : 'exp )))));
           ([`Token
               (((function | `Label _ -> true | _ -> false)),
-                ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+                ({ tag = `Label; word = Any; tag_name = "Label" } : Tokenf.descr ));
            `Self],
             ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
               (Gramf.mk_action
@@ -3161,8 +3185,8 @@ let apply () =
                         'exp )))));
           ([`Token
               (((function | `Optlabel _ -> true | _ -> false)),
-                ({ tag = `Optlabel; word = Any } : Tokenf.descr ),
-                "Optlabel");
+                ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+                Tokenf.descr ));
            `Self],
             ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
               (Gramf.mk_action
@@ -3235,7 +3259,7 @@ let apply () =
                          (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))));
           ([`Token
               (((function | `Pre _ -> true | _ -> false)),
-                ({ tag = `Pre; word = Any } : Tokenf.descr ), "`Pre x");
+                ({ tag = `Pre; word = Any; tag_name = "Pre" } : Tokenf.descr ));
            `Self],
             ("`App (_loc, (`Lid (xloc, x)), e)\n",
               (Gramf.mk_action
@@ -3247,7 +3271,7 @@ let apply () =
         ((Some "simple"), None,
           [([`Token
                (((function | `Quot _ -> true | _ -> false)),
-                 ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                 ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
              ("Ast_quotation.expand x Dyn_tag.exp\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -3258,7 +3282,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "exp";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "exp") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "exp"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3270,7 +3295,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3282,7 +3307,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "par"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3294,7 +3320,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "seq";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "seq") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "seq"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3306,7 +3333,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "chr") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "chr"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3318,7 +3346,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "int"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3330,8 +3359,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int32") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "int32"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3343,7 +3372,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "str") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "str"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3355,8 +3385,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int64") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "int64"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3368,7 +3398,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "flo") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "flo"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3380,8 +3411,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "nativeint") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "nativeint"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3393,7 +3424,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3405,8 +3437,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "chr'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "chr'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3418,8 +3450,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int64'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "int64'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3431,8 +3463,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "nativeint'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "nativeint'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3444,8 +3476,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "bool'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "bool'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "bool'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3457,8 +3489,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "int'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3470,8 +3502,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "int32'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "int32'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3483,8 +3515,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "flo'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "flo'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3496,8 +3528,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "str'") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "str'"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3509,8 +3541,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`chr") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`chr"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3522,8 +3554,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`int64") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`int64"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3535,8 +3567,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`nativeint") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`nativeint"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3548,8 +3580,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`bool";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`bool") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`bool"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3561,8 +3593,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`int") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`int"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3574,8 +3606,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`int32") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`int32"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3587,8 +3619,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`flo") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`flo"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3600,8 +3632,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "`str") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "`str"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -3611,7 +3643,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Int _ -> true | _ -> false)),
-                ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
+                ({ tag = `Int; word = Any; tag_name = "Int" } : Tokenf.descr ))],
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3619,7 +3651,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Int32 _ -> true | _ -> false)),
-                ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
+                ({ tag = `Int32; word = Any; tag_name = "Int32" } : Tokenf.descr ))],
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3628,7 +3660,7 @@ let apply () =
                         (`Int32 (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Int64 _ -> true | _ -> false)),
-                ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
+                ({ tag = `Int64; word = Any; tag_name = "Int64" } : Tokenf.descr ))],
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3637,8 +3669,8 @@ let apply () =
                         (`Int64 (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Nativeint _ -> true | _ -> false)),
-                ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
-                "Nativeint")],
+                ({ tag = `Nativeint; word = Any; tag_name = "Nativeint" } : 
+                Tokenf.descr ))],
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3647,7 +3679,7 @@ let apply () =
                         (`Nativeint (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Flo _ -> true | _ -> false)),
-                ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
+                ({ tag = `Flo; word = Any; tag_name = "Flo" } : Tokenf.descr ))],
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3655,7 +3687,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Chr _ -> true | _ -> false)),
-                ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
+                ({ tag = `Chr; word = Any; tag_name = "Chr" } : Tokenf.descr ))],
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3663,7 +3695,7 @@ let apply () =
                     | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'exp )))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)),
-                ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+                ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ))],
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3719,7 +3751,7 @@ let apply () =
           ([`Keyword "{";
            `Token
              (((function | `Lid _ -> true | _ -> false)),
-               ({ tag = `Lid; word = Any } : Tokenf.descr ), "`Lid x");
+               ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ));
            `Keyword "with";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
            `Keyword "}"],
@@ -4042,8 +4074,8 @@ let apply () =
                (((function
                   | `Ant ({ kind = "bind";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "bind") } : Tokenf.descr ),
-                 "`Ant s")],
+                 ({ tag = `Ant; word = (A "bind"); tag_name = "Ant" } : 
+                 Tokenf.descr ))],
              ("mk_ant ~c:\"bind\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4055,7 +4087,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"bind\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4067,7 +4099,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword "=";
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`Bind (_loc, (mk_ant ~c:\"pat\" s), e) : FAst.bind )\n",
@@ -4107,8 +4139,8 @@ let apply () =
                (((function
                   | `Ant ({ kind = "rec_exp";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "rec_exp") } : Tokenf.descr ),
-                 "`Ant s")],
+                 ({ tag = `Ant; word = (A "rec_exp"); tag_name = "Ant" } : 
+                 Tokenf.descr ))],
              ("mk_ant ~c:\"rec_exp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4120,7 +4152,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"rec_exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4148,7 +4180,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"rec_exp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4160,7 +4192,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "bi";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "bi") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "bi"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"rec_exp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4182,7 +4215,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)),
-                 ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                 ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
              ("i\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4190,7 +4223,7 @@ let apply () =
                      | ({ txt = i;_} : Tokenf.txt) -> (i : 'luident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("i\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4215,7 +4248,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)),
-                 ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                 ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
              ("`C (_loc, i)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4223,7 +4256,7 @@ let apply () =
                      | ({ txt = i;_} : Tokenf.txt) -> (`C (_loc, i) : 'astr )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`C (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4233,7 +4266,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4245,7 +4278,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4267,7 +4301,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4279,7 +4313,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4291,7 +4326,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4303,7 +4339,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4315,7 +4352,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4330,7 +4367,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4345,7 +4383,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4358,7 +4397,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4367,7 +4406,7 @@ let apply () =
                         ((`Lid (_loc, i) : FAst.ident ) : 'ident_quot )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4376,7 +4415,7 @@ let apply () =
                         ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n",
@@ -4401,7 +4440,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4413,7 +4452,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4425,7 +4465,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4437,7 +4478,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4449,7 +4491,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4464,7 +4506,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4479,7 +4522,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4492,7 +4536,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4501,7 +4545,7 @@ let apply () =
                         (`Lid (_loc, i) : 'ident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4510,7 +4554,7 @@ let apply () =
                         (`Uid (_loc, i) : 'ident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4528,7 +4572,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4540,7 +4584,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4552,7 +4597,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4564,7 +4610,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4576,7 +4623,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4591,7 +4638,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4606,7 +4654,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
@@ -4619,7 +4668,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4627,7 +4676,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) -> (`Lid (_loc, i) : 'vid )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4635,7 +4684,7 @@ let apply () =
                     | ({ txt = i;_} : Tokenf.txt) -> (`Uid (_loc, i) : 'vid )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4651,7 +4700,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Uid _ -> true | _ -> false)),
-                 ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                 ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
              ("`Uid (_loc, s)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4662,7 +4711,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4674,7 +4723,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4686,7 +4736,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4696,7 +4747,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("dot (`Uid (_loc, s)) l\n",
@@ -4710,7 +4761,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4725,7 +4776,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4740,7 +4792,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("dot (mk_ant ~c:\"uident\" s) i\n",
@@ -4756,7 +4809,7 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `Lid _ -> true | _ -> false)),
-                 ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                 ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
              ("((`Sub []), i)\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4765,7 +4818,7 @@ let apply () =
                          (((`Sub []), i) : 'dot_lstrings )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
@@ -4782,7 +4835,7 @@ let apply () =
           ([`Keyword ".";
            `Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
@@ -4805,7 +4858,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
             `Keyword ".";
             `Keyword "("],
              ("mk_ant ~c:\"ident\" s\n",
@@ -4820,7 +4873,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Keyword "("],
             ("mk_ant ~c:\"ident\" s\n",
@@ -4835,7 +4889,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Keyword "("],
             ("mk_ant ~c:\"ident\" s\n",
@@ -4848,7 +4903,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -4861,7 +4916,7 @@ let apply () =
                         'module_longident_dot_lparen )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Keyword "("],
             ("(`Uid (_loc, i) : FAst.ident )\n",
@@ -4875,7 +4930,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
@@ -4891,7 +4947,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
@@ -4910,7 +4966,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4922,7 +4978,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4934,7 +4991,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -4944,7 +5002,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, i)), l)\n",
@@ -4956,7 +5014,7 @@ let apply () =
                         (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4967,7 +5025,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -4982,7 +5040,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -5017,7 +5076,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5029,7 +5088,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5041,7 +5101,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5051,7 +5112,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`Uid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5086,7 +5147,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5098,7 +5159,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5110,7 +5172,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5122,7 +5185,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5132,7 +5196,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("(`Lid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5141,7 +5205,7 @@ let apply () =
                         ((`Lid (_loc, i) : FAst.ident ) : 'type_longident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("(`Uid (_loc, i) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5161,7 +5225,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"ident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5173,7 +5237,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5185,7 +5250,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5195,7 +5261,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("`Lid (_loc, i)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5204,7 +5270,7 @@ let apply () =
                         (`Lid (_loc, i) : 'label_longident )))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "`Uid i");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (iloc, i)), l)\n",
@@ -5218,7 +5284,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -5233,7 +5299,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
@@ -5292,7 +5359,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "!") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "!"); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5304,8 +5371,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "override") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "override"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5330,7 +5397,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "to";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "to") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "to"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5342,7 +5410,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5362,8 +5430,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "private";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "private") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "private"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5388,8 +5456,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "mutable";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "mutable") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "mutable"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5414,8 +5482,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "virtual";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "virtual") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "virtual"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5440,7 +5508,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "..";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "..") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ".."); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5465,7 +5534,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "rec";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "rec") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "rec"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5485,7 +5555,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"a_lident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5497,7 +5567,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5507,7 +5578,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("`Lid (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5521,7 +5592,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"a_uident\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5533,7 +5604,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "uid") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "uid"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"a_uident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5543,7 +5615,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
             ("`Uid (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5557,7 +5629,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"str_list\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5569,7 +5641,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Self],
             ("`App (_loc, (mk_ant ~c:\"\" s), xs)\n",
               (Gramf.mk_action
@@ -5581,7 +5653,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)),
-                ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+                ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ))],
             ("`Str (_loc, x)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5590,7 +5662,7 @@ let apply () =
                         (`Str (_loc, x) : 'string_list )))));
           ([`Token
               (((function | `Str _ -> true | _ -> false)),
-                ({ tag = `Str; word = Any } : Tokenf.descr ), "Str");
+                ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ));
            `Self],
             ("`App (_loc, (`Str (_loc, x)), xs)\n",
               (Gramf.mk_action
@@ -5662,7 +5734,7 @@ let apply () =
           [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
             `Token
               (((function | `EOI _ -> true | _ -> false)),
-                ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+                ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
              ("x\n",
                (Gramf.mk_action
                   (fun ~__fan_1:_  ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
@@ -5673,7 +5745,7 @@ let apply () =
           [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
             `Token
               (((function | `EOI _ -> true | _ -> false)),
-                ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+                ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
              ("x\n",
                (Gramf.mk_action
                   (fun ~__fan_1:_  ~__fan_0:(x : 'exp)  (_loc : Locf.t)  ->
@@ -5683,8 +5755,11 @@ let apply () =
        ((None, None,
           [([`Token
                (((function | `DirQuotation _ -> true | _ -> false)),
-                 ({ tag = `DirQuotation; word = Any } : Tokenf.descr ),
-                 "`DirQuotation _")],
+                 ({
+                    tag = `DirQuotation;
+                    word = Any;
+                    tag_name = "DirQuotation"
+                  } : Tokenf.descr ))],
              ("Fdir.handle_quot x; ([], (Some _loc))\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -5707,7 +5782,7 @@ let apply () =
                     'implem )))));
           ([`Token
               (((function | `EOI _ -> true | _ -> false)),
-                ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+                ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
             ("([], None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  -> (([], None) : 'implem )))))]) : 
@@ -5739,7 +5814,7 @@ let apply () =
                     (Some st : 'top_phrase )))));
           ([`Token
               (((function | `EOI _ -> true | _ -> false)),
-                ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+                ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
             ("None\n",
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  -> (None : 'top_phrase )))))]) : 
@@ -5751,7 +5826,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5763,8 +5838,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "stri") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "stri"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -5776,7 +5851,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";;"],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
@@ -5790,8 +5865,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "stri") } : Tokenf.descr ),
-                "`Ant s");
+                ({ tag = `Ant; word = (A "stri"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";;"],
             ("mk_ant ~c:\"stru\" s\n",
               (Gramf.mk_action
@@ -5805,7 +5880,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
               (Gramf.mk_action
@@ -5819,8 +5894,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "stri") } : Tokenf.descr ),
-                "`Ant s");
+                ({ tag = `Ant; word = (A "stri"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
               (Gramf.mk_action
@@ -5834,7 +5909,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
@@ -5849,8 +5924,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "stri") } : Tokenf.descr ),
-                "`Ant s");
+                ({ tag = `Ant; word = (A "stri"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";;";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
@@ -6118,7 +6193,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6130,8 +6205,8 @@ let apply () =
                (((function
                   | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "stri") } : Tokenf.descr ),
-                 "`Ant s")],
+                 ({ tag = `Ant; word = (A "stri"); tag_name = "Ant" } : 
+                 Tokenf.descr ))],
              ("mk_ant ~c:\"stru\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6141,7 +6216,7 @@ let apply () =
                      | _ -> assert false))));
            ([`Token
                (((function | `Quot _ -> true | _ -> false)),
-                 ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                 ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
              ("Ast_quotation.expand x Dyn_tag.stru\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6160,7 +6235,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"clsigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6172,7 +6247,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "csg") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "csg"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6184,7 +6260,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";"],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
@@ -6198,7 +6274,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "csg") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "csg"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";"],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
@@ -6212,7 +6289,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
               (Gramf.mk_action
@@ -6227,7 +6304,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "csg") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "csg"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
               (Gramf.mk_action
@@ -6242,7 +6320,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";";
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
@@ -6258,7 +6336,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "csg") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "csg"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";";
            `Self],
             ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
@@ -6302,7 +6381,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"clsigi\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6314,7 +6393,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "csg") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "csg"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clsigi\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6324,7 +6404,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.clsigi\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6389,7 +6469,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"clfield\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6401,7 +6481,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cst") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "cst"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6413,7 +6494,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";"],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
@@ -6427,7 +6508,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cst") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "cst"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";"],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
@@ -6441,7 +6523,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
@@ -6455,7 +6537,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cst") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "cst"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
               (Gramf.mk_action
@@ -6469,7 +6552,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ));
            `Keyword ";";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
@@ -6484,7 +6567,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cst") } : Tokenf.descr ), "`Ant s");
+                ({ tag = `Ant; word = (A "cst"); tag_name = "Ant" } : 
+                Tokenf.descr ));
            `Keyword ";";
            `Self],
             ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
@@ -6546,7 +6630,7 @@ let apply () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6560,8 +6644,8 @@ let apply () =
              (((function
                 | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "override") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "override"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6575,7 +6659,7 @@ let apply () =
              (((function
                 | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "!") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "!"); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6609,7 +6693,7 @@ let apply () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6623,8 +6707,8 @@ let apply () =
              (((function
                 | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "override") } : Tokenf.descr ),
-               "`Ant s")],
+               ({ tag = `Ant; word = (A "override"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
             ("mk_ant ~c:\"flag\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
@@ -6640,7 +6724,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"clfield\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6652,7 +6736,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cst") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A "cst"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clfield\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6662,7 +6747,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.clfield\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -6788,7 +6873,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6800,8 +6885,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cdcl";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cdcl") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "cdcl"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6913,7 +6998,7 @@ let apply () =
                (((function
                   | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                   | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                 ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
              ("mk_ant ~c:\"clexp\" s\n",
                (Gramf.mk_action
                   (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6925,8 +7010,8 @@ let apply () =
               (((function
                  | `Ant ({ kind = "cexp";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "cexp") } : Tokenf.descr ),
-                "`Ant s")],
+                ({ tag = `Ant; word = (A "cexp"); tag_name = "Ant" } : 
+                Tokenf.descr ))],
             ("mk_ant ~c:\"clexp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -6936,7 +7021,7 @@ let apply () =
                     | _ -> assert false))));
           ([`Token
               (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+                ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
             ("Ast_quotation.expand x Dyn_tag.clexp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -7050,7 +7135,7 @@ let apply () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7062,7 +7147,8 @@ let apply () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7110,7 +7196,7 @@ let apply () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7122,7 +7208,8 @@ let apply () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7190,7 +7277,7 @@ let apply () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"cltyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7202,7 +7289,8 @@ let apply () =
              (((function
                 | `Ant ({ kind = "ctyp";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "ctyp") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "ctyp"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"cltyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7212,7 +7300,7 @@ let apply () =
                    | _ -> assert false))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.cltyp\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -7295,7 +7383,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7307,7 +7395,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7317,7 +7406,7 @@ let apply_ctyp () =
                    | _ -> assert false))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -7336,7 +7425,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7348,7 +7437,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7448,7 +7538,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant s ~c:\"ctyp\"\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7510,7 +7600,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7522,7 +7612,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7558,7 +7649,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7570,7 +7661,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7582,7 +7674,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("`TyVrn (_loc, (mk_ant ~c:\"ctyp\" s))\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7594,7 +7687,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s");
+               ({ tag = `Ant; word = (A "vrn"); tag_name = "Ant" } : 
+               Tokenf.descr ));
           `Keyword "of";
           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`TyVrnOf (_loc, (mk_ant ~c:\"ctyp\" s), t)\n",
@@ -7637,7 +7731,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7649,7 +7743,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7674,7 +7769,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7686,7 +7781,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7854,7 +7950,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7866,7 +7962,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7876,7 +7973,7 @@ let apply_ctyp () =
                    | _ -> assert false))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -7930,7 +8027,7 @@ let apply_ctyp () =
                     (`Label (_loc, i, t) : 'ctyp )))));
          ([`Token
              (((function | `Label _ -> true | _ -> false)),
-               ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+               ({ tag = `Label; word = Any; tag_name = "Label" } : Tokenf.descr ));
           `Keyword ":";
           `Self],
            ("`Label (_loc, (`Lid (_loc, s)), t)\n",
@@ -7942,7 +8039,8 @@ let apply_ctyp () =
                        (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )))));
          ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
-               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+               ({ tag = `Optlabel; word = Any; tag_name = "Optlabel" } : 
+               Tokenf.descr ));
           `Self],
            ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
              (Gramf.mk_action
@@ -7980,7 +8078,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -7992,7 +8090,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8004,7 +8103,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "par"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8016,7 +8116,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8028,7 +8128,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "id") } : Tokenf.descr ), "`Ant s");
+               ({ tag = `Ant; word = (A "id"); tag_name = "Ant" } : Tokenf.descr ));
           `Keyword ".";
           `Self],
            ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_ant ~c:\"ident\" s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n",
@@ -8049,7 +8149,7 @@ let apply_ctyp () =
                    | _ -> assert false))));
          ([`Token
              (((function | `Quot _ -> true | _ -> false)),
-               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+               ({ tag = `Quot; word = Any; tag_name = "Quot" } : Tokenf.descr ))],
            ("Ast_quotation.expand x Dyn_tag.ctyp\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -8168,7 +8268,7 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp,\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8188,7 +8288,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8200,7 +8300,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8226,7 +8327,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8238,7 +8339,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8265,7 +8367,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8277,7 +8379,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8323,7 +8426,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8335,7 +8438,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8407,7 +8511,7 @@ let apply_ctyp () =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("mk_ant ~c:\"ctyp\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -8419,7 +8523,8 @@ let apply_ctyp () =
              (((function
                 | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "typ") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "typ"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("mk_ant ~c:\"ctyp\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->

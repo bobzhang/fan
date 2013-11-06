@@ -7,7 +7,7 @@ let eoi_entry entry =
          [([`Nterm (Gramf.obj (entry : 'entry Gramf.t ));
            `Token
              (((function | `EOI _ -> true | _ -> false)),
-               ({ tag = `EOI; word = Empty } : Tokenf.descr ), "`EOI")],
+               ({ tag = `EOI; word = Empty; tag_name = "EOI" } : Tokenf.descr ))],
             ("x\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(x : 'entry)  (_loc : Locf.t)  ->

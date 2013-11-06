@@ -9,7 +9,7 @@ let _ =
          [([`Keyword "default";
            `Token
              (((function | `Str _ -> true | _ -> false)),
-               ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+               ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ))],
             ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -34,7 +34,7 @@ let _ =
          ([`Keyword "filter";
           `Token
             (((function | `Str _ -> true | _ -> false)),
-              ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+              ({ tag = `Str; word = Any; tag_name = "Str" } : Tokenf.descr ))],
            ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -54,7 +54,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("i :: xs\n",
@@ -66,7 +66,7 @@ let _ =
                         xs : 'dot_namespace )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
            ("[i]\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

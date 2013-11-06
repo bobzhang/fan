@@ -12,7 +12,7 @@ let _ =
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+                ({ tag = `Ant; word = (A ""); tag_name = "Ant" } : Tokenf.descr ))],
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -24,7 +24,8 @@ let _ =
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)),
-               ({ tag = `Ant; word = (A "lid") } : Tokenf.descr ), "`Ant s")],
+               ({ tag = `Ant; word = (A "lid"); tag_name = "Ant" } : 
+               Tokenf.descr ))],
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -34,7 +35,7 @@ let _ =
                    | _ -> assert false))));
          ([`Token
              (((function | `Lid _ -> true | _ -> false)),
-               ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+               ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -65,7 +66,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Uid _ -> true | _ -> false)),
-                ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
+                ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -77,7 +78,7 @@ let _ =
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

@@ -57,7 +57,7 @@ let _ =
       ((None, None,
          [([`Token
               (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
+                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
             ("x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -65,7 +65,7 @@ let _ =
                     | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
          ([`Token
              (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
+               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
            ("x\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
