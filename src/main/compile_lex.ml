@@ -10,27 +10,27 @@ let _loc = Locf.mk "x"
 
 let auto_binds =
   [ %bind{
-  __ocaml_lex_init_lexbuf lexbuf mem_size =
+  __ocaml_lex_init_lexbuf (lexbuf:Lexing.lexbuf) mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
-    (lexbuf.Lexing.lex_mem <- Array.create mem_size (-1) ;
-     lexbuf.Lexing.lex_start_pos <- pos ;
-     lexbuf.Lexing.lex_last_pos <- pos ;
-     lexbuf.Lexing.lex_last_action <- (-1))
+    (lexbuf.lex_mem <- Array.create mem_size (-1) ;
+     lexbuf.lex_start_pos <- pos ;
+     lexbuf.lex_last_pos <- pos ;
+     lexbuf.lex_last_action <- (-1))
   };
    %bind{
-   __ocaml_lex_next_char lexbuf =
-    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len then
+   __ocaml_lex_next_char (lexbuf:Lexing.lexbuf) =
+    if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
       begin
-        if lexbuf.Lexing.lex_eof_reached then
+        if lexbuf.lex_eof_reached then
           256
         else begin
-          lexbuf.Lexing.refill_buff lexbuf ;
+          lexbuf.refill_buff lexbuf ;
           __ocaml_lex_next_char lexbuf
         end
       end else begin
-        let i = lexbuf.Lexing.lex_curr_pos in
-        let c = lexbuf.Lexing.lex_buffer.[i] in
-        (lexbuf.Lexing.lex_curr_pos <- i+1 ;
+        let i = lexbuf.lex_curr_pos in
+        let c = lexbuf.lex_buffer.[i] in
+        (lexbuf.lex_curr_pos <- i+1 ;
         Char.code c)
       end
  }
@@ -77,9 +77,6 @@ let (curr_pos,
     %exp{ lexbuf.Lexing.lex_start_pos }
    )
     
-let lex_state i =
-  let state = "__ocaml_lex_state"^string_of_int i in
-  %exp{ $lid:state lexbuf }
     
 let output_memory_actions (mvs:memory_action list) : exp list =
   List.map
@@ -101,7 +98,9 @@ let output_action (mems:memory_action list) (r:automata_move) : exp list  =
   | Backtrack ->
       [ %exp{$curr_pos <- $last_pos };
         last_action]
-  | Goto n -> [lex_state n])
+  | Goto n ->
+      let state = "__ocaml_lex_state"^string_of_int n in
+        [%exp{ $lid:state lexbuf }])
 let output_clause
     (pats:int list)
     (mems:memory_action list)
@@ -145,20 +144,20 @@ let output_moves (moves: (automata_move * memory_action list) array) : case list
         ) t []) @ [output_default_clause !most_mems !most_frequent])
   end
     
-let output_tag_actions (mvs:tag_action list) : exp list =
-  List.map
-    (function
-      | SetTag(t,m) ->
-          let u = output_mem_access t in
-          let v = output_mem_access m in 
-          %exp{ $u <- $v }
-      | EraseTag(t) ->
-          let u = output_mem_access t in 
-          %exp{ $u <- -1 }) mvs
 
     
 let output_trans (i:int) (trans:automata)=
-  let state = "__ocaml_lex_state"^(string_of_int i) in
+  let output_tag_actions (mvs:tag_action list) : exp list =
+    List.map
+      (function
+        | SetTag(t,m) ->
+            let u = output_mem_access t in
+            let v = output_mem_access m in 
+            %exp{ $u <- $v }
+        | EraseTag(t) ->
+            let u = output_mem_access t in 
+            %exp{ $u <- -1 }) mvs in
+
   let e =
     match trans with
   | Perform(n,mvs) ->
@@ -178,7 +177,7 @@ let output_trans (i:int) (trans:automata)=
               ])
           | No_remember ->
               [ %exp{ match __ocaml_lex_next_char lexbuf with | $moves }]) in
-  %bind{ $lid:state lexbuf = $e  }
+  %bind{ $lid{"__ocaml_lex_state"^ string_of_int i} (lexbuf:Lexing.lexbuf) = $e  }
       
 let output_args (args:string list) e =
   List.fold_right (fun a b -> %exp{ fun $lid:a -> $b }) args e
@@ -203,7 +202,7 @@ let output_env (env:t_env) : bind list =
     | (End,d) ->
         %exp{ ($curr_pos + $int':d) } in
   List.map
-    (fun (id,v) ->
+    (fun (((loc,_) as id),v) ->
       let (id : pat) = `Lid id  in
       match v with
       | Ident_string (o,nstart,nend) ->
@@ -222,8 +221,7 @@ let output_env (env:t_env) : bind list =
             if o then %exp{ Lexing.sub_lexeme_char_opt}
             else  %exp{Lexing.sub_lexeme_char} in
           let nstart = output_tag_access nstart in
-          let _loc = loc_of id in (* location *)
-          %bind{ $id = $sub lexbuf $nstart }
+          %bind@loc{ $id = $sub lexbuf $nstart }
     ) env
      
 let output_entry
@@ -234,33 +232,32 @@ let output_entry
   let actions = seq_sem
       (%exp{ __ocaml_lex_init_lexbuf lexbuf $int':auto_mem_size } ::
        output_memory_actions init_moves) in  
-  let state = "__ocaml_lex_state" ^string_of_int init_num in
   let binds =
     and_of_list (auto_binds @ output_automata transitions) in 
   let cases =
     bar_of_list
-     ((auto_actions |> List.map
-      (function (num,env,act) ->
-        let n = string_of_int num in
-        match output_env env with
-        | [] -> %case{ $int:n -> $act }
-        | xs ->
-            let bind = and_of_list xs in
-            %case{ $int:n ->
-              let $bind in
-              $act })) @
-       [ %case{ _ -> failwith   "lexing: empty token" }])  in
+     (
+      (auto_actions
+        |> List.map
+            (function (num,env,act) ->
+              let n = string_of_int num in
+              match output_env env with
+              | [] -> %case{ $int:n -> $act }
+              | xs ->
+                  let bind = and_of_list xs in
+                  %case{ $int:n -> let $bind in $act }))
+      @ [ %case{ _ -> failwith   "lexing: empty token" }])  in
     %exp{
     function (lexbuf:Lexing.lexbuf) ->
       let rec $binds in
       begin
       $actions;
-      let __ocaml_lex_result = $lid:state  lexbuf in
+      let __ocaml_lex_result = $lid{"__ocaml_lex_state" ^string_of_int init_num}  lexbuf in
       begin
-        lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p ;
-        lexbuf.Lexing.lex_curr_p <-
-          { (lexbuf.Lexing.lex_curr_p) with
-            Lexing.pos_cnum = lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos };
+        lexbuf.lex_start_p <- lexbuf.lex_curr_p ;
+        lexbuf.lex_curr_p <-
+          { (lexbuf.lex_curr_p) with
+            pos_cnum = lexbuf.lex_abs_pos + lexbuf.lex_curr_pos };
         match __ocaml_lex_result with
         | $cases
       end
@@ -271,5 +268,5 @@ let output_entry
     
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake compile_lex.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/compile_lex.cmo" *)
 (* end: *)

@@ -78,23 +78,23 @@ let warn error (loc : Locf.t) =
   (Fan_warnings.emitf loc.loc_start "Warning: %s") @@
     (lex_error_to_string error)
 let rec lex_comment c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
+  let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
-    lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
-    lexbuf.Lexing.lex_start_pos <- pos;
-    lexbuf.Lexing.lex_last_pos <- pos;
-    lexbuf.Lexing.lex_last_action <- (-1)
-  and __ocaml_lex_next_char lexbuf =
-    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len
+    lexbuf.lex_mem <- Array.create mem_size (-1);
+    lexbuf.lex_start_pos <- pos;
+    lexbuf.lex_last_pos <- pos;
+    lexbuf.lex_last_action <- (-1)
+  and __ocaml_lex_next_char (lexbuf : Lexing.lexbuf) =
+    if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
-      (if lexbuf.Lexing.lex_eof_reached
+      (if lexbuf.lex_eof_reached
        then 256
-       else (lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
+       else (lexbuf.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
     else
-      (let i = lexbuf.Lexing.lex_curr_pos in
-       let c = (lexbuf.Lexing.lex_buffer).[i] in
-       lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
-  and __ocaml_lex_state0 lexbuf =
+      (let i = lexbuf.lex_curr_pos in
+       let c = (lexbuf.lex_buffer).[i] in
+       lexbuf.lex_curr_pos <- i + 1; Char.code c)
+  and __ocaml_lex_state0 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 13 -> __ocaml_lex_state3 lexbuf
     | 40 -> __ocaml_lex_state6 lexbuf
@@ -102,9 +102,9 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
     | 42 -> __ocaml_lex_state5 lexbuf
     | 256 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 4
-  and __ocaml_lex_state2 lexbuf = 3
-  and __ocaml_lex_state3 lexbuf =
+  and __ocaml_lex_state1 (lexbuf : Lexing.lexbuf) = 4
+  and __ocaml_lex_state2 (lexbuf : Lexing.lexbuf) = 3
+  and __ocaml_lex_state3 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 2;
     (match __ocaml_lex_next_char lexbuf with
@@ -112,8 +112,8 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state4 lexbuf = 2
-  and __ocaml_lex_state5 lexbuf =
+  and __ocaml_lex_state4 (lexbuf : Lexing.lexbuf) = 2
+  and __ocaml_lex_state5 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
@@ -121,7 +121,7 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state6 lexbuf =
+  and __ocaml_lex_state6 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
@@ -129,16 +129,15 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state7 lexbuf = 0
-  and __ocaml_lex_state8 lexbuf = 1 in
+  and __ocaml_lex_state7 (lexbuf : Lexing.lexbuf) = 0
+  and __ocaml_lex_state8 (lexbuf : Lexing.lexbuf) = 1 in
   __ocaml_lex_init_lexbuf lexbuf 0;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
-   lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
-   lexbuf.Lexing.lex_curr_p <-
+   lexbuf.lex_start_p <- lexbuf.lex_curr_p;
+   lexbuf.lex_curr_p <-
      {
-       (lexbuf.Lexing.lex_curr_p) with
-       Lexing.pos_cnum =
-         (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
+       (lexbuf.lex_curr_p) with
+       pos_cnum = (lexbuf.lex_abs_pos + lexbuf.lex_curr_pos)
      };
    (match __ocaml_lex_result with
     | 0 ->
@@ -153,23 +152,23 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
     | 4 -> with_store c lexbuf lex_comment
     | _ -> failwith "lexing: empty token"))
 let rec lex_string c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
+  let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
-    lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
-    lexbuf.Lexing.lex_start_pos <- pos;
-    lexbuf.Lexing.lex_last_pos <- pos;
-    lexbuf.Lexing.lex_last_action <- (-1)
-  and __ocaml_lex_next_char lexbuf =
-    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len
+    lexbuf.lex_mem <- Array.create mem_size (-1);
+    lexbuf.lex_start_pos <- pos;
+    lexbuf.lex_last_pos <- pos;
+    lexbuf.lex_last_action <- (-1)
+  and __ocaml_lex_next_char (lexbuf : Lexing.lexbuf) =
+    if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
-      (if lexbuf.Lexing.lex_eof_reached
+      (if lexbuf.lex_eof_reached
        then 256
-       else (lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
+       else (lexbuf.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
     else
-      (let i = lexbuf.Lexing.lex_curr_pos in
-       let c = (lexbuf.Lexing.lex_buffer).[i] in
-       lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
-  and __ocaml_lex_state0 lexbuf =
+      (let i = lexbuf.lex_curr_pos in
+       let c = (lexbuf.lex_buffer).[i] in
+       lexbuf.lex_curr_pos <- i + 1; Char.code c)
+  and __ocaml_lex_state0 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 13 -> __ocaml_lex_state3 lexbuf
     | 34 -> __ocaml_lex_state6 lexbuf
@@ -177,9 +176,9 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
     | 92 -> __ocaml_lex_state5 lexbuf
     | 256 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 6
-  and __ocaml_lex_state2 lexbuf = 5
-  and __ocaml_lex_state3 lexbuf =
+  and __ocaml_lex_state1 (lexbuf : Lexing.lexbuf) = 6
+  and __ocaml_lex_state2 (lexbuf : Lexing.lexbuf) = 5
+  and __ocaml_lex_state3 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
@@ -187,8 +186,8 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state4 lexbuf = 4
-  and __ocaml_lex_state5 lexbuf =
+  and __ocaml_lex_state4 (lexbuf : Lexing.lexbuf) = 4
+  and __ocaml_lex_state5 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 6;
     (match __ocaml_lex_next_char lexbuf with
@@ -205,9 +204,9 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
          ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
           __ocaml_lex_state12 lexbuf)
      | _ -> __ocaml_lex_state7 lexbuf)
-  and __ocaml_lex_state6 lexbuf = 0
-  and __ocaml_lex_state7 lexbuf = 3
-  and __ocaml_lex_state8 lexbuf =
+  and __ocaml_lex_state6 (lexbuf : Lexing.lexbuf) = 0
+  and __ocaml_lex_state7 (lexbuf : Lexing.lexbuf) = 3
+  and __ocaml_lex_state8 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 3;
     (match __ocaml_lex_next_char lexbuf with
@@ -216,7 +215,7 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state9 lexbuf =
+  and __ocaml_lex_state9 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 3;
     (match __ocaml_lex_next_char lexbuf with
@@ -224,8 +223,8 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state10 lexbuf = 2
-  and __ocaml_lex_state11 lexbuf =
+  and __ocaml_lex_state10 (lexbuf : Lexing.lexbuf) = 2
+  and __ocaml_lex_state11 (lexbuf : Lexing.lexbuf) =
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 1;
@@ -234,7 +233,7 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state12 lexbuf =
+  and __ocaml_lex_state12 (lexbuf : Lexing.lexbuf) =
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 1;
@@ -243,13 +242,13 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state13 lexbuf =
+  and __ocaml_lex_state13 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state10 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state14 lexbuf =
+  and __ocaml_lex_state14 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
         __ocaml_lex_state10 lexbuf
@@ -258,12 +257,11 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
          lexbuf.Lexing.lex_last_action) in
   __ocaml_lex_init_lexbuf lexbuf 2;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
-   lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
-   lexbuf.Lexing.lex_curr_p <-
+   lexbuf.lex_start_p <- lexbuf.lex_curr_p;
+   lexbuf.lex_curr_p <-
      {
-       (lexbuf.Lexing.lex_curr_p) with
-       Lexing.pos_cnum =
-         (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
+       (lexbuf.lex_curr_p) with
+       pos_cnum = (lexbuf.lex_abs_pos + lexbuf.lex_curr_pos)
      };
    (match __ocaml_lex_result with
     | 0 -> pop_loc c
@@ -287,23 +285,23 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
     | 6 -> with_store c lexbuf lex_string
     | _ -> failwith "lexing: empty token"))
 let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
+  let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
-    lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
-    lexbuf.Lexing.lex_start_pos <- pos;
-    lexbuf.Lexing.lex_last_pos <- pos;
-    lexbuf.Lexing.lex_last_action <- (-1)
-  and __ocaml_lex_next_char lexbuf =
-    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len
+    lexbuf.lex_mem <- Array.create mem_size (-1);
+    lexbuf.lex_start_pos <- pos;
+    lexbuf.lex_last_pos <- pos;
+    lexbuf.lex_last_action <- (-1)
+  and __ocaml_lex_next_char (lexbuf : Lexing.lexbuf) =
+    if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
-      (if lexbuf.Lexing.lex_eof_reached
+      (if lexbuf.lex_eof_reached
        then 256
-       else (lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
+       else (lexbuf.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
     else
-      (let i = lexbuf.Lexing.lex_curr_pos in
-       let c = (lexbuf.Lexing.lex_buffer).[i] in
-       lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
-  and __ocaml_lex_state0 lexbuf =
+      (let i = lexbuf.lex_curr_pos in
+       let c = (lexbuf.lex_buffer).[i] in
+       lexbuf.lex_curr_pos <- i + 1; Char.code c)
+  and __ocaml_lex_state0 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 10 -> __ocaml_lex_state6 lexbuf
     | 256 -> __ocaml_lex_state3 lexbuf
@@ -315,8 +313,8 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | 37 -> __ocaml_lex_state10 lexbuf
     | 39 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 8
-  and __ocaml_lex_state2 lexbuf =
+  and __ocaml_lex_state1 (lexbuf : Lexing.lexbuf) = 8
+  and __ocaml_lex_state2 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 8;
     (match __ocaml_lex_next_char lexbuf with
@@ -325,9 +323,9 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
           lexbuf.Lexing.lex_last_action)
      | 92 -> __ocaml_lex_state19 lexbuf
      | _ -> __ocaml_lex_state20 lexbuf)
-  and __ocaml_lex_state3 lexbuf = 6
-  and __ocaml_lex_state4 lexbuf = 5
-  and __ocaml_lex_state5 lexbuf =
+  and __ocaml_lex_state3 (lexbuf : Lexing.lexbuf) = 6
+  and __ocaml_lex_state4 (lexbuf : Lexing.lexbuf) = 5
+  and __ocaml_lex_state5 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
@@ -335,8 +333,8 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state6 lexbuf = 4
-  and __ocaml_lex_state7 lexbuf =
+  and __ocaml_lex_state6 (lexbuf : Lexing.lexbuf) = 4
+  and __ocaml_lex_state7 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 8;
     (match __ocaml_lex_next_char lexbuf with
@@ -344,9 +342,9 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state8 lexbuf = 2
-  and __ocaml_lex_state9 lexbuf = 1
-  and __ocaml_lex_state10 lexbuf =
+  and __ocaml_lex_state8 (lexbuf : Lexing.lexbuf) = 2
+  and __ocaml_lex_state9 (lexbuf : Lexing.lexbuf) = 1
+  and __ocaml_lex_state10 (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 8;
     (match __ocaml_lex_next_char lexbuf with
@@ -467,8 +465,8 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state11 lexbuf = 0
-  and __ocaml_lex_state12 lexbuf =
+  and __ocaml_lex_state11 (lexbuf : Lexing.lexbuf) = 0
+  and __ocaml_lex_state12 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 65
       |66
@@ -639,7 +637,7 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state13 lexbuf =
+  and __ocaml_lex_state13 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 39
       |45
@@ -836,7 +834,7 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state14 lexbuf =
+  and __ocaml_lex_state14 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 46 -> __ocaml_lex_state15 lexbuf
     | 39
@@ -1030,7 +1028,7 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state15 lexbuf =
+  and __ocaml_lex_state15 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 95
       |97
@@ -1145,7 +1143,7 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state16 lexbuf =
+  and __ocaml_lex_state16 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 95
       |97
@@ -1263,7 +1261,7 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state17 lexbuf =
+  and __ocaml_lex_state17 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 123 -> __ocaml_lex_state11 lexbuf
     | 39
@@ -1457,8 +1455,8 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state18 lexbuf = 3
-  and __ocaml_lex_state19 lexbuf =
+  and __ocaml_lex_state18 (lexbuf : Lexing.lexbuf) = 3
+  and __ocaml_lex_state19 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state20 lexbuf
     | 120 -> __ocaml_lex_state22 lexbuf
@@ -1466,33 +1464,33 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state20 lexbuf =
+  and __ocaml_lex_state20 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 39 -> __ocaml_lex_state21 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state21 lexbuf = 7
-  and __ocaml_lex_state22 lexbuf =
+  and __ocaml_lex_state21 (lexbuf : Lexing.lexbuf) = 7
+  and __ocaml_lex_state22 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
         __ocaml_lex_state25 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state23 lexbuf =
+  and __ocaml_lex_state23 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state24 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state24 lexbuf =
+  and __ocaml_lex_state24 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state20 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state25 lexbuf =
+  and __ocaml_lex_state25 (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
         __ocaml_lex_state20 lexbuf
@@ -1501,12 +1499,11 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
          lexbuf.Lexing.lex_last_action) in
   __ocaml_lex_init_lexbuf lexbuf 0;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
-   lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
-   lexbuf.Lexing.lex_curr_p <-
+   lexbuf.lex_start_p <- lexbuf.lex_curr_p;
+   lexbuf.lex_curr_p <-
      {
-       (lexbuf.Lexing.lex_curr_p) with
-       Lexing.pos_cnum =
-         (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
+       (lexbuf.lex_curr_p) with
+       pos_cnum = (lexbuf.lex_abs_pos + lexbuf.lex_curr_pos)
      };
    (match __ocaml_lex_result with
     | 0 ->

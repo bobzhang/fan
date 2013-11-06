@@ -158,7 +158,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Constraint\n    (_loc,\n      (`Record\n         (_loc,\n           (`Sem\n              (_loc,\n                (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                (`RecBind\n                   (_loc, (`Lid (_loc, \"word\")),\n                     (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n      (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text = (`Token (_loc, pred, des, des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
+           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text =\n    (`Token\n       (_loc, pred,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"word\")),\n                             (`App\n                                (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n         FAst.exp ), des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -197,29 +197,34 @@ let _ =
                                    (`Case
                                       (_loc, (`Any _loc),
                                         (`Lid (_loc, "false"))))))) in
-                        let des: FAst.exp =
-                          `Constraint
-                            (_loc,
-                              (`Record
-                                 (_loc,
-                                   (`Sem
-                                      (_loc,
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "tag")),
-                                             (`Vrn (_loc, v)))),
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "word")),
-                                             (`App
-                                                (_loc, (`Uid (_loc, "A")),
-                                                  (`Str (_loc, x)))))))))),
-                              (`Dot
-                                 (_loc, (`Uid (_loc, "Tokenf")),
-                                   (`Lid (_loc, "descr"))))) in
                         let des_str =
                           Gram_pat.to_string
                             (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                         {
-                          text = (`Token (_loc, pred, des, des_str));
+                          text =
+                            (`Token
+                               (_loc, pred,
+                                 (`Constraint
+                                    (_loc,
+                                      (`Record
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "tag")),
+                                                     (`Vrn (_loc, v)))),
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "word")),
+                                                     (`App
+                                                        (_loc,
+                                                          (`Uid (_loc, "A")),
+                                                          (`Str (_loc, x)))))))))),
+                                      (`Dot
+                                         (_loc, (`Uid (_loc, "Tokenf")),
+                                           (`Lid (_loc, "descr"))))) : 
+                                 FAst.exp ), des_str));
                           styp =
                             (`Dot
                                (_loc, (`Uid (_loc, "Tokenf")),
@@ -246,7 +251,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Constraint\n    (_loc,\n      (`Record\n         (_loc,\n           (`Sem\n              (_loc,\n                (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                (`RecBind\n                   (_loc, (`Lid (_loc, \"word\")),\n                     (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n      (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text = (`Token (_loc, pred, des, des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
+           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text =\n    (`Token\n       (_loc, pred,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"word\")),\n                             (`App\n                                (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n         FAst.exp ), des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -285,29 +290,34 @@ let _ =
                                    (`Case
                                       (_loc, (`Any _loc),
                                         (`Lid (_loc, "false"))))))) in
-                        let des: FAst.exp =
-                          `Constraint
-                            (_loc,
-                              (`Record
-                                 (_loc,
-                                   (`Sem
-                                      (_loc,
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "tag")),
-                                             (`Vrn (_loc, v)))),
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "word")),
-                                             (`App
-                                                (_loc, (`Uid (_loc, "A")),
-                                                  (`Str (_loc, x)))))))))),
-                              (`Dot
-                                 (_loc, (`Uid (_loc, "Tokenf")),
-                                   (`Lid (_loc, "descr"))))) in
                         let des_str =
                           Gram_pat.to_string
                             (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                         {
-                          text = (`Token (_loc, pred, des, des_str));
+                          text =
+                            (`Token
+                               (_loc, pred,
+                                 (`Constraint
+                                    (_loc,
+                                      (`Record
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "tag")),
+                                                     (`Vrn (_loc, v)))),
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "word")),
+                                                     (`App
+                                                        (_loc,
+                                                          (`Uid (_loc, "A")),
+                                                          (`Str (_loc, x)))))))))),
+                                      (`Dot
+                                         (_loc, (`Uid (_loc, "Tokenf")),
+                                           (`Lid (_loc, "descr"))))) : 
+                                 FAst.exp ), des_str));
                           styp =
                             (`Dot
                                (_loc, (`Uid (_loc, "Tokenf")),
@@ -334,7 +344,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Constraint\n    (_loc,\n      (`Record\n         (_loc,\n           (`Sem\n              (_loc,\n                (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                (`RecBind\n                   (_loc, (`Lid (_loc, \"word\")),\n                     (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n      (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text = (`Token (_loc, pred, des, des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
+           ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`Vrn (_loc, v)),\n                     (`Constraint\n                        (_loc,\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"txt\")),\n                                         (`Str (_loc, x)))), (`Any _loc))))),\n                          (`Dot\n                             (_loc, (`Uid (_loc, \"Tokenf\")),\n                               (`Lid (_loc, \"txt\")))))))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n{\n  text =\n    (`Token\n       (_loc, pred,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"word\")),\n                             (`App\n                                (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n         FAst.exp ), des_str));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  pattern =\n    (Some\n       (`Constraint\n          (xloc,\n            (`Record\n               (xloc,\n                 (`Sem\n                    (xloc,\n                      (`RecBind\n                         (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                      (`Any xloc))))),\n            (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n       FAst.pat ));\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -373,29 +383,34 @@ let _ =
                                    (`Case
                                       (_loc, (`Any _loc),
                                         (`Lid (_loc, "false"))))))) in
-                        let des: FAst.exp =
-                          `Constraint
-                            (_loc,
-                              (`Record
-                                 (_loc,
-                                   (`Sem
-                                      (_loc,
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "tag")),
-                                             (`Vrn (_loc, v)))),
-                                        (`RecBind
-                                           (_loc, (`Lid (_loc, "word")),
-                                             (`App
-                                                (_loc, (`Uid (_loc, "A")),
-                                                  (`Str (_loc, x)))))))))),
-                              (`Dot
-                                 (_loc, (`Uid (_loc, "Tokenf")),
-                                   (`Lid (_loc, "descr"))))) in
                         let des_str =
                           Gram_pat.to_string
                             (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                         {
-                          text = (`Token (_loc, pred, des, des_str));
+                          text =
+                            (`Token
+                               (_loc, pred,
+                                 (`Constraint
+                                    (_loc,
+                                      (`Record
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "tag")),
+                                                     (`Vrn (_loc, v)))),
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid (_loc, "word")),
+                                                     (`App
+                                                        (_loc,
+                                                          (`Uid (_loc, "A")),
+                                                          (`Str (_loc, x)))))))))),
+                                      (`Dot
+                                         (_loc, (`Uid (_loc, "Tokenf")),
+                                           (`Lid (_loc, "descr"))))) : 
+                                 FAst.exp ), des_str));
                           styp =
                             (`Dot
                                (_loc, (`Uid (_loc, "Tokenf")),
@@ -2982,7 +2997,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des: FAst.exp =\n     `Constraint\n       (_loc,\n         (`Record\n            (_loc,\n              (`Sem\n                 (_loc,\n                   (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"word\")),\n                        (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n         (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text = (`Token (_loc, pred, des, des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
+           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text =\n       (`Token\n          (_loc, pred,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"word\")),\n                                (`App\n                                   (_loc, (`Uid (_loc, \"A\")),\n                                     (`Str (_loc, x)))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n            FAst.exp ), des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3026,30 +3041,36 @@ let _ =
                                       (`Case
                                          (_loc, (`Any _loc),
                                            (`Lid (_loc, "false"))))))) in
-                           let des: FAst.exp =
-                             `Constraint
-                               (_loc,
-                                 (`Record
-                                    (_loc,
-                                      (`Sem
-                                         (_loc,
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "tag")),
-                                                (`Vrn (_loc, v)))),
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "word")),
-                                                (`App
-                                                   (_loc, (`Uid (_loc, "A")),
-                                                     (`Str (_loc, x)))))))))),
-                                 (`Dot
-                                    (_loc, (`Uid (_loc, "Tokenf")),
-                                      (`Lid (_loc, "descr"))))) in
                            let des_str =
                              Gram_pat.to_string
                                (`App
                                   (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                            {
-                             text = (`Token (_loc, pred, des, des_str));
+                             text =
+                               (`Token
+                                  (_loc, pred,
+                                    (`Constraint
+                                       (_loc,
+                                         (`Record
+                                            (_loc,
+                                              (`Sem
+                                                 (_loc,
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "tag")),
+                                                        (`Vrn (_loc, v)))),
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "word")),
+                                                        (`App
+                                                           (_loc,
+                                                             (`Uid
+                                                                (_loc, "A")),
+                                                             (`Str (_loc, x)))))))))),
+                                         (`Dot
+                                            (_loc, (`Uid (_loc, "Tokenf")),
+                                              (`Lid (_loc, "descr"))))) : 
+                                    FAst.exp ), des_str));
                              styp =
                                (`Dot
                                   (_loc, (`Uid (_loc, "Tokenf")),
@@ -3078,7 +3099,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des: FAst.exp =\n     `Constraint\n       (_loc,\n         (`Record\n            (_loc,\n              (`Sem\n                 (_loc,\n                   (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"word\")),\n                        (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n         (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text = (`Token (_loc, pred, des, des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
+           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text =\n       (`Token\n          (_loc, pred,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"word\")),\n                                (`App\n                                   (_loc, (`Uid (_loc, \"A\")),\n                                     (`Str (_loc, x)))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n            FAst.exp ), des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3122,30 +3143,36 @@ let _ =
                                       (`Case
                                          (_loc, (`Any _loc),
                                            (`Lid (_loc, "false"))))))) in
-                           let des: FAst.exp =
-                             `Constraint
-                               (_loc,
-                                 (`Record
-                                    (_loc,
-                                      (`Sem
-                                         (_loc,
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "tag")),
-                                                (`Vrn (_loc, v)))),
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "word")),
-                                                (`App
-                                                   (_loc, (`Uid (_loc, "A")),
-                                                     (`Str (_loc, x)))))))))),
-                                 (`Dot
-                                    (_loc, (`Uid (_loc, "Tokenf")),
-                                      (`Lid (_loc, "descr"))))) in
                            let des_str =
                              Gram_pat.to_string
                                (`App
                                   (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                            {
-                             text = (`Token (_loc, pred, des, des_str));
+                             text =
+                               (`Token
+                                  (_loc, pred,
+                                    (`Constraint
+                                       (_loc,
+                                         (`Record
+                                            (_loc,
+                                              (`Sem
+                                                 (_loc,
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "tag")),
+                                                        (`Vrn (_loc, v)))),
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "word")),
+                                                        (`App
+                                                           (_loc,
+                                                             (`Uid
+                                                                (_loc, "A")),
+                                                             (`Str (_loc, x)))))))))),
+                                         (`Dot
+                                            (_loc, (`Uid (_loc, "Tokenf")),
+                                              (`Lid (_loc, "descr"))))) : 
+                                    FAst.exp ), des_str));
                              styp =
                                (`Dot
                                   (_loc, (`Uid (_loc, "Tokenf")),
@@ -3174,7 +3201,7 @@ let _ =
           `Token
             (((function | `Str _ -> true | _ -> false)),
               ({ tag = `Str; word = Any } : Tokenf.descr ), "`Str x")],
-           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des: FAst.exp =\n     `Constraint\n       (_loc,\n         (`Record\n            (_loc,\n              (`Sem\n                 (_loc,\n                   (`RecBind (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"word\")),\n                        (`App (_loc, (`Uid (_loc, \"A\")), (`Str (_loc, x)))))))))),\n         (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text = (`Token (_loc, pred, des, des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
+           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = Gram_def.KNormal; symbol } : Gram_def.psymbol )])\n  (let pred: FAst.exp =\n     `Fun\n       (_loc,\n         (`Bar\n            (_loc,\n              (`Case\n                 (_loc,\n                   (`App\n                      (_loc, (`Vrn (_loc, v)),\n                        (`Constraint\n                           (_loc,\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"txt\")),\n                                            (`Str (_loc, x)))), (`Any _loc))))),\n                             (`Dot\n                                (_loc, (`Uid (_loc, \"Tokenf\")),\n                                  (`Lid (_loc, \"txt\")))))))),\n                   (`Lid (_loc, \"true\")))),\n              (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n   let des_str =\n     Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\n   {\n     text =\n       (`Token\n          (_loc, pred,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"tag\")), (`Vrn (_loc, v)))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"word\")),\n                                (`App\n                                   (_loc, (`Uid (_loc, \"A\")),\n                                     (`Str (_loc, x)))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"descr\"))))) : \n            FAst.exp ), des_str));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds = [];\n     pattern =\n       (Some\n          (`Constraint\n             (xloc,\n               (`Record\n                  (xloc,\n                    (`Sem\n                       (xloc,\n                         (`RecBind\n                            (xloc, (`Lid (xloc, \"txt\")), (`Str (xloc, x)))),\n                         (`Any xloc))))),\n               (`Dot (xloc, (`Uid (xloc, \"Tokenf\")), (`Lid (xloc, \"txt\"))))) : \n          FAst.pat ));\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3218,30 +3245,36 @@ let _ =
                                       (`Case
                                          (_loc, (`Any _loc),
                                            (`Lid (_loc, "false"))))))) in
-                           let des: FAst.exp =
-                             `Constraint
-                               (_loc,
-                                 (`Record
-                                    (_loc,
-                                      (`Sem
-                                         (_loc,
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "tag")),
-                                                (`Vrn (_loc, v)))),
-                                           (`RecBind
-                                              (_loc, (`Lid (_loc, "word")),
-                                                (`App
-                                                   (_loc, (`Uid (_loc, "A")),
-                                                     (`Str (_loc, x)))))))))),
-                                 (`Dot
-                                    (_loc, (`Uid (_loc, "Tokenf")),
-                                      (`Lid (_loc, "descr"))))) in
                            let des_str =
                              Gram_pat.to_string
                                (`App
                                   (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in
                            {
-                             text = (`Token (_loc, pred, des, des_str));
+                             text =
+                               (`Token
+                                  (_loc, pred,
+                                    (`Constraint
+                                       (_loc,
+                                         (`Record
+                                            (_loc,
+                                              (`Sem
+                                                 (_loc,
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "tag")),
+                                                        (`Vrn (_loc, v)))),
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid (_loc, "word")),
+                                                        (`App
+                                                           (_loc,
+                                                             (`Uid
+                                                                (_loc, "A")),
+                                                             (`Str (_loc, x)))))))))),
+                                         (`Dot
+                                            (_loc, (`Uid (_loc, "Tokenf")),
+                                              (`Lid (_loc, "descr"))))) : 
+                                    FAst.exp ), des_str));
                              styp =
                                (`Dot
                                   (_loc, (`Uid (_loc, "Tokenf")),
