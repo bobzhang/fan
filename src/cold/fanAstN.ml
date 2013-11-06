@@ -912,9 +912,12 @@ class meta =
         function
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#strings _loc _a0))),
-                (self#strings _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#strings _loc _a0),
+                          (self#strings _loc _a1))))))
         | `Str _a0 ->
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -948,28 +951,38 @@ class meta =
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#uident _loc _a0))),
-                (self#uident _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#uident _loc _a0),
+                          (self#uident _loc _a1))))))
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#uident _loc _a0))),
-                (self#uident _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#uident _loc _a0),
+                          (self#uident _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
     method ident : 'loc -> ident -> FAst.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#ident _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | `Apply (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Apply")), (self#ident _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Apply")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | #alident as _a0 -> (self#alident _loc _a0 :>FAst.ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
     method ident' : 'loc -> ident' -> FAst.ep=
@@ -977,14 +990,18 @@ class meta =
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#ident _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | `Apply (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Apply")), (self#ident _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Apply")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | `Lid _a0 ->
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
@@ -994,9 +1011,10 @@ class meta =
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#vid _loc _a0))),
-                (self#vid _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#vid _loc _a1))))))
         | `Lid _a0 ->
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
@@ -1007,9 +1025,10 @@ class meta =
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#vid _loc _a0))),
-                (self#vid _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#vid _loc _a1))))))
         | `Lid _a0 ->
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
@@ -1019,18 +1038,24 @@ class meta =
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#dupath _loc _a0))),
-                (self#dupath _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#dupath _loc _a0),
+                          (self#dupath _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
     method dlpath : 'loc -> dlpath -> FAst.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Dot")), (self#dupath _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Dot")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#dupath _loc _a0),
+                          (self#alident _loc _a1))))))
         | #alident as _a0 -> (self#alident _loc _a0 :>FAst.ep)
     method any : 'loc -> any -> FAst.ep=
       fun _loc  `Any  -> `Vrn (_loc, "Any")
@@ -1039,62 +1064,73 @@ class meta =
         function
         | `Alias (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Alias")), (self#ctyp _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Alias")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ctyp _loc _a0), (self#alident _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `Arrow (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Arrow")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Arrow")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `ClassPath _a0 ->
             `App (_loc, (`Vrn (_loc, "ClassPath")), (self#ident _loc _a0))
         | `Label (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Label")), (self#alident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Label")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
         | `OptLabl (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "OptLabl")), (self#alident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "OptLabl")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
         | #ident' as _a0 -> (self#ident' _loc _a0 :>FAst.ep)
         | `TyObj (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TyObj")), (self#name_ctyp _loc _a0))),
-                (self#flag _loc _a1))
+              (_loc, (`Vrn (_loc, "TyObj")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#name_ctyp _loc _a0),
+                          (self#flag _loc _a1))))))
         | `TyObjEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "TyObjEnd")), (self#flag _loc _a0))
         | `TyPol (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TyPol")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyPol")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `TyPolEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "TyPolEnd")), (self#ctyp _loc _a0))
         | `TyTypePol (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TyTypePol")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyTypePol")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `Quote (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Quote")),
-                     (self#position_flag _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Quote")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#position_flag _loc _a0),
+                          (self#alident _loc _a1))))))
         | `QuoteAny _a0 ->
             `App
               (_loc, (`Vrn (_loc, "QuoteAny")),
@@ -1102,9 +1138,10 @@ class meta =
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#ctyp _loc _a0))
         | `Sta (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sta")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Sta")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `PolyEq _a0 ->
             `App (_loc, (`Vrn (_loc, "PolyEq")), (self#row_field _loc _a0))
         | `PolySup _a0 ->
@@ -1113,15 +1150,18 @@ class meta =
             `App (_loc, (`Vrn (_loc, "PolyInf")), (self#row_field _loc _a0))
         | `Com (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Com")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `PolyInfSup (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "PolyInfSup")),
-                     (self#row_field _loc _a0))), (self#tag_names _loc _a1))
+              (_loc, (`Vrn (_loc, "PolyInfSup")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#row_field _loc _a0),
+                          (self#tag_names _loc _a1))))))
         | `Package _a0 ->
             `App (_loc, (`Vrn (_loc, "Package")), (self#mtyp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -1130,11 +1170,12 @@ class meta =
         function
         | `Com (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Com")),
-                     (self#type_parameters _loc _a0))),
-                (self#type_parameters _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#type_parameters _loc _a0),
+                          (self#type_parameters _loc _a1))))))
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -1144,17 +1185,21 @@ class meta =
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
         | `Bar (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Bar")), (self#row_field _loc _a0))),
-                (self#row_field _loc _a1))
+              (_loc, (`Vrn (_loc, "Bar")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#row_field _loc _a0),
+                          (self#row_field _loc _a1))))))
         | `TyVrn _a0 ->
             `App (_loc, (`Vrn (_loc, "TyVrn")), (self#astring _loc _a0))
         | `TyVrnOf (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TyVrnOf")), (self#astring _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyVrnOf")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#astring _loc _a0), (self#ctyp _loc _a1))))))
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
     method tag_names : 'loc -> tag_names -> FAst.ep=
@@ -1163,9 +1208,12 @@ class meta =
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#tag_names _loc _a0))),
-                (self#tag_names _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#tag_names _loc _a0),
+                          (self#tag_names _loc _a1))))))
         | `TyVrn _a0 ->
             `App (_loc, (`Vrn (_loc, "TyVrn")), (self#astring _loc _a0))
     method typedecl : 'loc -> typedecl -> FAst.ep=
@@ -1173,47 +1221,52 @@ class meta =
         function
         | `TyDcl (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "TyDcl")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "TyDcl")),
-                               (self#alident _loc _a0))),
-                          (self#opt_decl_params _loc _a1))),
-                     (self#type_info _loc _a2))),
-                (self#opt_type_constr _loc _a3))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#opt_decl_params _loc _a1),
+                               (`Com
+                                  (_loc, (self#type_info _loc _a2),
+                                    (self#opt_type_constr _loc _a3))))))))))
         | `TyAbstr (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "TyAbstr")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "TyAbstr")),
-                          (self#alident _loc _a0))),
-                     (self#opt_decl_params _loc _a1))),
-                (self#opt_type_constr _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#opt_decl_params _loc _a1),
+                               (self#opt_type_constr _loc _a2))))))))
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#typedecl _loc _a0))),
-                (self#typedecl _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#typedecl _loc _a0),
+                          (self#typedecl _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method type_constr : 'loc -> type_constr -> FAst.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "And")), (self#type_constr _loc _a0))),
-                (self#type_constr _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#type_constr _loc _a0),
+                          (self#type_constr _loc _a1))))))
         | `Eq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Eq")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Eq")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method opt_type_constr : 'loc -> opt_type_constr -> FAst.ep=
       fun _loc  ->
@@ -1226,11 +1279,12 @@ class meta =
         function
         | `Quote (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Quote")),
-                     (self#position_flag _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Quote")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#position_flag _loc _a0),
+                          (self#alident _loc _a1))))))
         | `QuoteAny _a0 ->
             `App
               (_loc, (`Vrn (_loc, "QuoteAny")),
@@ -1242,11 +1296,12 @@ class meta =
         function
         | `Quote (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Quote")),
-                     (self#position_flag _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Quote")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#position_flag _loc _a0),
+                          (self#alident _loc _a1))))))
         | `QuoteAny _a0 ->
             `App
               (_loc, (`Vrn (_loc, "QuoteAny")),
@@ -1254,10 +1309,12 @@ class meta =
         | `Any -> `Vrn (_loc, "Any")
         | `Com (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Com")), (self#decl_params _loc _a0))),
-                (self#decl_params _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#decl_params _loc _a0),
+                          (self#decl_params _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method opt_decl_params : 'loc -> opt_decl_params -> FAst.ep=
       fun _loc  ->
@@ -1270,22 +1327,28 @@ class meta =
         function
         | `TyMan (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "TyMan")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "TyMan")), (self#ctyp _loc _a0))),
-                     (self#flag _loc _a1))), (self#type_repr _loc _a2))
+                     (`Com
+                        (_loc, (self#ctyp _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (self#type_repr _loc _a2))))))))
         | `TyRepr (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TyRepr")), (self#flag _loc _a0))),
-                (self#type_repr _loc _a1))
+              (_loc, (`Vrn (_loc, "TyRepr")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (self#type_repr _loc _a1))))))
         | `TyEq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TyEq")), (self#flag _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyEq")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#flag _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method type_repr : 'loc -> type_repr -> FAst.ep=
       fun _loc  ->
@@ -1300,47 +1363,62 @@ class meta =
         function
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#name_ctyp _loc _a0))),
-                (self#name_ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#name_ctyp _loc _a0),
+                          (self#name_ctyp _loc _a1))))))
         | `TyCol (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TyCol")), (self#alident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyCol")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
         | `TyColMut (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TyColMut")), (self#alident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyColMut")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method or_ctyp : 'loc -> or_ctyp -> FAst.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Bar")), (self#or_ctyp _loc _a0))),
-                (self#or_ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Bar")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#or_ctyp _loc _a0),
+                          (self#or_ctyp _loc _a1))))))
         | `TyCol (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TyCol")), (self#auident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TyCol")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
         | `Of (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Of")), (self#auident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Of")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
     method of_ctyp : 'loc -> of_ctyp -> FAst.ep=
       fun _loc  ->
         function
         | `Of (_a0,_a1) ->
             `App
-              (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (self#vid _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Of")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#ctyp _loc _a1))))))
         | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method pat : 'loc -> pat -> FAst.ep=
@@ -1349,21 +1427,24 @@ class meta =
         | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#pat _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `Vrn _a0 ->
             `App (_loc, (`Vrn (_loc, "Vrn")), (self#string _loc _a0))
         | `Com (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Com")), (self#pat _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#pat _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#pat _loc _a0))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | `Record _a0 ->
@@ -1371,9 +1452,11 @@ class meta =
         | #literal as _a0 -> (self#literal _loc _a0 :>FAst.ep)
         | `Alias (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Alias")), (self#pat _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Alias")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#pat _loc _a0), (self#alident _loc _a1))))))
         | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
         | `Array _a0 ->
             `App (_loc, (`Vrn (_loc, "Array")), (self#pat _loc _a0))
@@ -1381,42 +1464,47 @@ class meta =
             `App (_loc, (`Vrn (_loc, "LabelS")), (self#alident _loc _a0))
         | `Label (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Label")), (self#alident _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "Label")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#pat _loc _a1))))))
         | `OptLabl (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "OptLabl")), (self#alident _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "OptLabl")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#pat _loc _a1))))))
         | `OptLablS _a0 ->
             `App (_loc, (`Vrn (_loc, "OptLablS")), (self#alident _loc _a0))
         | `OptLablExpr (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "OptLablExpr")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "OptLablExpr")),
-                          (self#alident _loc _a0))), (self#pat _loc _a1))),
-                (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#pat _loc _a1), (self#exp _loc _a2))))))))
         | `Bar (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Bar")), (self#pat _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "Bar")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `PaRng (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "PaRng")), (self#pat _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "PaRng")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `Constraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Constraint")), (self#pat _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#ctyp _loc _a1))))))
         | `ClassPath _a0 ->
             `App (_loc, (`Vrn (_loc, "ClassPath")), (self#ident _loc _a0))
         | `Lazy _a0 ->
@@ -1426,23 +1514,28 @@ class meta =
               (_loc, (`Vrn (_loc, "ModuleUnpack")), (self#auident _loc _a0))
         | `ModuleConstraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleConstraint")),
-                     (self#auident _loc _a0))), (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "ModuleConstraint")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
     method rec_pat : 'loc -> rec_pat -> FAst.ep=
       fun _loc  ->
         function
         | `RecBind (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
-                (self#pat _loc _a1))
+              (_loc, (`Vrn (_loc, "RecBind")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#pat _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#rec_pat _loc _a0))),
-                (self#rec_pat _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#rec_pat _loc _a0),
+                          (self#rec_pat _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method exp : 'loc -> exp -> FAst.ep=
@@ -1451,21 +1544,24 @@ class meta =
         | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `Vrn _a0 ->
             `App (_loc, (`Vrn (_loc, "Vrn")), (self#string _loc _a0))
         | `Com (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Com")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#exp _loc _a0))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | `Record _a0 ->
@@ -1473,20 +1569,23 @@ class meta =
         | #literal as _a0 -> (self#literal _loc _a0 :>FAst.ep)
         | `RecordWith (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "RecordWith")),
-                     (self#rec_exp _loc _a0))), (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "RecordWith")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#rec_exp _loc _a0), (self#exp _loc _a1))))))
         | `Field (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Field")), (self#exp _loc _a0))),
-                (self#vid _loc _a1))
+              (_loc, (`Vrn (_loc, "Field")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#vid _loc _a1))))))
         | `ArrayDot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ArrayDot")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "ArrayDot")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
         | `Array _a0 ->
             `App (_loc, (`Vrn (_loc, "Array")), (self#exp _loc _a0))
@@ -1494,80 +1593,89 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Assert")), (self#exp _loc _a0))
         | `Assign (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Assign")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Assign")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `For (_a0,_a1,_a2,_a3,_a4) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "For")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc,
-                               (`App
-                                  (_loc, (`Vrn (_loc, "For")),
-                                    (self#alident _loc _a0))),
-                               (self#exp _loc _a1))), (self#exp _loc _a2))),
-                     (self#flag _loc _a3))), (self#exp _loc _a4))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#exp _loc _a1),
+                               (`Com
+                                  (_loc, (self#exp _loc _a2),
+                                    (`Com
+                                       (_loc, (self#flag _loc _a3),
+                                         (self#exp _loc _a4))))))))))))
         | `Fun _a0 -> `App (_loc, (`Vrn (_loc, "Fun")), (self#case _loc _a0))
         | `IfThenElse (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "IfThenElse")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "IfThenElse")),
-                          (self#exp _loc _a0))), (self#exp _loc _a1))),
-                (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#exp _loc _a0),
+                          (`Com
+                             (_loc, (self#exp _loc _a1), (self#exp _loc _a2))))))))
         | `IfThen (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "IfThen")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "IfThen")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `LabelS _a0 ->
             `App (_loc, (`Vrn (_loc, "LabelS")), (self#alident _loc _a0))
         | `Label (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Label")), (self#alident _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Label")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Lazy _a0 ->
             `App (_loc, (`Vrn (_loc, "Lazy")), (self#exp _loc _a0))
         | `LetIn (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "LetIn")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "LetIn")), (self#flag _loc _a0))),
-                     (self#bind _loc _a1))), (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#bind _loc _a1),
+                               (self#exp _loc _a2))))))))
         | `LetTryInWith (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "LetTryInWith")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "LetTryInWith")),
-                               (self#flag _loc _a0))), (self#bind _loc _a1))),
-                     (self#exp _loc _a2))), (self#case _loc _a3))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#bind _loc _a1),
+                               (`Com
+                                  (_loc, (self#exp _loc _a2),
+                                    (self#case _loc _a3))))))))))
         | `LetModule (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "LetModule")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "LetModule")),
-                          (self#auident _loc _a0))), (self#mexp _loc _a1))),
-                (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#auident _loc _a0),
+                          (`Com
+                             (_loc, (self#mexp _loc _a1),
+                               (self#exp _loc _a2))))))))
         | `Match (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Match")), (self#exp _loc _a0))),
-                (self#case _loc _a1))
+              (_loc, (`Vrn (_loc, "Match")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#case _loc _a1))))))
         | `New _a0 ->
             `App (_loc, (`Vrn (_loc, "New")), (self#ident _loc _a0))
         | `Obj _a0 ->
@@ -1575,17 +1683,20 @@ class meta =
         | `ObjEnd -> `Vrn (_loc, "ObjEnd")
         | `ObjPat (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ObjPat")), (self#pat _loc _a0))),
-                (self#clfield _loc _a1))
+              (_loc, (`Vrn (_loc, "ObjPat")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#pat _loc _a0), (self#clfield _loc _a1))))))
         | `ObjPatEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (self#pat _loc _a0))
         | `OptLabl (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "OptLabl")), (self#alident _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "OptLabl")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `OptLablS _a0 ->
             `App (_loc, (`Vrn (_loc, "OptLablS")), (self#alident _loc _a0))
         | `OvrInst _a0 ->
@@ -1594,59 +1705,68 @@ class meta =
         | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (self#exp _loc _a0))
         | `Send (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Send")), (self#exp _loc _a0))),
-                (self#alident _loc _a1))
+              (_loc, (`Vrn (_loc, "Send")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#exp _loc _a0), (self#alident _loc _a1))))))
         | `StringDot (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "StringDot")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "StringDot")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `Try (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Try")), (self#exp _loc _a0))),
-                (self#case _loc _a1))
+              (_loc, (`Vrn (_loc, "Try")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#case _loc _a1))))))
         | `Constraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Constraint")), (self#exp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#ctyp _loc _a1))))))
         | `Coercion (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "Coercion")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Coercion")),
-                          (self#exp _loc _a0))), (self#ctyp _loc _a1))),
-                (self#ctyp _loc _a2))
+                     (`Com
+                        (_loc, (self#exp _loc _a0),
+                          (`Com
+                             (_loc, (self#ctyp _loc _a1),
+                               (self#ctyp _loc _a2))))))))
         | `Subtype (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Subtype")), (self#exp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Subtype")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#ctyp _loc _a1))))))
         | `While (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "While")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "While")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `LetOpen (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "LetOpen")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "LetOpen")),
-                          (self#flag _loc _a0))), (self#ident _loc _a1))),
-                (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#ident _loc _a1),
+                               (self#exp _loc _a2))))))))
         | `LocalTypeFun (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "LocalTypeFun")),
-                     (self#alident _loc _a0))), (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "LocalTypeFun")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Package_exp _a0 ->
             `App (_loc, (`Vrn (_loc, "Package_exp")), (self#mexp _loc _a0))
     method rec_exp : 'loc -> rec_exp -> FAst.ep=
@@ -1654,14 +1774,18 @@ class meta =
         function
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#rec_exp _loc _a0))),
-                (self#rec_exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#rec_exp _loc _a0),
+                          (self#rec_exp _loc _a1))))))
         | `RecBind (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "RecBind")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#exp _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method mtyp : 'loc -> mtyp -> FAst.ep=
@@ -1672,18 +1796,21 @@ class meta =
         | `SigEnd -> `Vrn (_loc, "SigEnd")
         | `Functor (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "Functor")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Functor")),
-                          (self#auident _loc _a0))), (self#mtyp _loc _a1))),
-                (self#mtyp _loc _a2))
+                     (`Com
+                        (_loc, (self#auident _loc _a0),
+                          (`Com
+                             (_loc, (self#mtyp _loc _a1),
+                               (self#mtyp _loc _a2))))))))
         | `With (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "With")), (self#mtyp _loc _a0))),
-                (self#constr _loc _a1))
+              (_loc, (`Vrn (_loc, "With")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#mtyp _loc _a0), (self#constr _loc _a1))))))
         | `ModuleTypeOf _a0 ->
             `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (self#mexp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -1692,18 +1819,21 @@ class meta =
         function
         | `Val (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Val")), (self#alident _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Val")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
         | `External (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "External")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "External")),
-                          (self#alident _loc _a0))), (self#ctyp _loc _a1))),
-                (self#strings _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#ctyp _loc _a1),
+                               (self#strings _loc _a2))))))))
         | `Type _a0 ->
             `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
         | `Exception _a0 ->
@@ -1714,39 +1844,45 @@ class meta =
             `App (_loc, (`Vrn (_loc, "ClassType")), (self#cltdecl _loc _a0))
         | `Module (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Module")), (self#auident _loc _a0))),
-                (self#mtyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Module")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
         | `ModuleTypeEnd _a0 ->
             `App
               (_loc, (`Vrn (_loc, "ModuleTypeEnd")), (self#auident _loc _a0))
         | `ModuleType (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleType")),
-                     (self#auident _loc _a0))), (self#mtyp _loc _a1))
+              (_loc, (`Vrn (_loc, "ModuleType")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#sigi _loc _a0))),
-                (self#sigi _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#sigi _loc _a0), (self#sigi _loc _a1))))))
         | `DirectiveSimple _a0 ->
             `App
               (_loc, (`Vrn (_loc, "DirectiveSimple")),
                 (self#alident _loc _a0))
         | `Directive (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Directive")),
-                     (self#alident _loc _a0))), (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Directive")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Open (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Open")), (self#flag _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Open")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#flag _loc _a0), (self#ident _loc _a1))))))
         | `Include _a0 ->
             `App (_loc, (`Vrn (_loc, "Include")), (self#mtyp _loc _a0))
         | `RecModule _a0 ->
@@ -1757,99 +1893,113 @@ class meta =
         function
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#mbind _loc _a0))),
-                (self#mbind _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#mbind _loc _a0), (self#mbind _loc _a1))))))
         | `ModuleBind (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "ModuleBind")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "ModuleBind")),
-                          (self#auident _loc _a0))), (self#mtyp _loc _a1))),
-                (self#mexp _loc _a2))
+                     (`Com
+                        (_loc, (self#auident _loc _a0),
+                          (`Com
+                             (_loc, (self#mtyp _loc _a1),
+                               (self#mexp _loc _a2))))))))
         | `Constraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Constraint")),
-                     (self#auident _loc _a0))), (self#mtyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method constr : 'loc -> constr -> FAst.ep=
       fun _loc  ->
         function
         | `TypeEq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "TypeEq")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TypeEq")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `ModuleEq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleEq")), (self#ident _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "ModuleEq")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | `TypeEqPriv (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TypeEqPriv")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TypeEqPriv")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `TypeSubst (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TypeSubst")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "TypeSubst")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `ModuleSubst (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleSubst")),
-                     (self#ident _loc _a0))), (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "ModuleSubst")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#constr _loc _a0))),
-                (self#constr _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#constr _loc _a0),
+                          (self#constr _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method bind : 'loc -> bind -> FAst.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#bind _loc _a0))),
-                (self#bind _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#bind _loc _a0), (self#bind _loc _a1))))))
         | `Bind (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Bind")), (self#pat _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Bind")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#exp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method case : 'loc -> case -> FAst.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Bar")), (self#case _loc _a0))),
-                (self#case _loc _a1))
+              (_loc, (`Vrn (_loc, "Bar")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#case _loc _a0), (self#case _loc _a1))))))
         | `Case (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Case")), (self#pat _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Case")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#exp _loc _a1))))))
         | `CaseWhen (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CaseWhen")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "CaseWhen")),
-                          (self#pat _loc _a0))), (self#exp _loc _a1))),
-                (self#exp _loc _a2))
+                     (`Com
+                        (_loc, (self#pat _loc _a0),
+                          (`Com
+                             (_loc, (self#exp _loc _a1), (self#exp _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method mexp : 'loc -> mexp -> FAst.ep=
       fun _loc  ->
@@ -1857,27 +2007,29 @@ class meta =
         | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "App")), (self#mexp _loc _a0))),
-                (self#mexp _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#mexp _loc _a0), (self#mexp _loc _a1))))))
         | `Functor (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "Functor")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Functor")),
-                          (self#auident _loc _a0))), (self#mtyp _loc _a1))),
-                (self#mexp _loc _a2))
+                     (`Com
+                        (_loc, (self#auident _loc _a0),
+                          (`Com
+                             (_loc, (self#mtyp _loc _a1),
+                               (self#mexp _loc _a2))))))))
         | `Struct _a0 ->
             `App (_loc, (`Vrn (_loc, "Struct")), (self#stru _loc _a0))
         | `StructEnd -> `Vrn (_loc, "StructEnd")
         | `Constraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Constraint")), (self#mexp _loc _a0))),
-                (self#mtyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#mexp _loc _a0), (self#mtyp _loc _a1))))))
         | `PackageModule _a0 ->
             `App (_loc, (`Vrn (_loc, "PackageModule")), (self#exp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -1890,96 +2042,110 @@ class meta =
             `App (_loc, (`Vrn (_loc, "ClassType")), (self#cltdecl _loc _a0))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#stru _loc _a0))),
-                (self#stru _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#stru _loc _a0), (self#stru _loc _a1))))))
         | `DirectiveSimple _a0 ->
             `App
               (_loc, (`Vrn (_loc, "DirectiveSimple")),
                 (self#alident _loc _a0))
         | `Directive (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Directive")),
-                     (self#alident _loc _a0))), (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "Directive")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Exception _a0 ->
             `App (_loc, (`Vrn (_loc, "Exception")), (self#of_ctyp _loc _a0))
         | `StExp _a0 ->
             `App (_loc, (`Vrn (_loc, "StExp")), (self#exp _loc _a0))
         | `External (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "External")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "External")),
-                          (self#alident _loc _a0))), (self#ctyp _loc _a1))),
-                (self#strings _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#ctyp _loc _a1),
+                               (self#strings _loc _a2))))))))
         | `Include _a0 ->
             `App (_loc, (`Vrn (_loc, "Include")), (self#mexp _loc _a0))
         | `Module (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Module")), (self#auident _loc _a0))),
-                (self#mexp _loc _a1))
+              (_loc, (`Vrn (_loc, "Module")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#mexp _loc _a1))))))
         | `RecModule _a0 ->
             `App (_loc, (`Vrn (_loc, "RecModule")), (self#mbind _loc _a0))
         | `ModuleType (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleType")),
-                     (self#auident _loc _a0))), (self#mtyp _loc _a1))
+              (_loc, (`Vrn (_loc, "ModuleType")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
         | `Open (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Open")), (self#flag _loc _a0))),
-                (self#ident _loc _a1))
+              (_loc, (`Vrn (_loc, "Open")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#flag _loc _a0), (self#ident _loc _a1))))))
         | `Type _a0 ->
             `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
         | `TypeWith (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "TypeWith")),
-                     (self#typedecl _loc _a0))), (self#strings _loc _a1))
+              (_loc, (`Vrn (_loc, "TypeWith")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#typedecl _loc _a0),
+                          (self#strings _loc _a1))))))
         | `Value (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Value")), (self#flag _loc _a0))),
-                (self#bind _loc _a1))
+              (_loc, (`Vrn (_loc, "Value")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#flag _loc _a0), (self#bind _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method cltdecl : 'loc -> cltdecl -> FAst.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#cltdecl _loc _a0))),
-                (self#cltdecl _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#cltdecl _loc _a0),
+                          (self#cltdecl _loc _a1))))))
         | `CtDecl (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CtDecl")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "CtDecl")),
-                               (self#flag _loc _a0))), (self#ident _loc _a1))),
-                     (self#type_parameters _loc _a2))),
-                (self#cltyp _loc _a3))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#ident _loc _a1),
+                               (`Com
+                                  (_loc, (self#type_parameters _loc _a2),
+                                    (self#cltyp _loc _a3))))))))))
         | `CtDeclS (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CtDeclS")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "CtDeclS")),
-                          (self#flag _loc _a0))), (self#ident _loc _a1))),
-                (self#cltyp _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#ident _loc _a1),
+                               (self#cltyp _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method cltyp : 'loc -> cltyp -> FAst.ep=
       fun _loc  ->
@@ -1987,19 +2153,26 @@ class meta =
         | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
         | `ClApply (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ClApply")), (self#vid _loc _a0))),
-                (self#type_parameters _loc _a1))
+              (_loc, (`Vrn (_loc, "ClApply")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#vid _loc _a0),
+                          (self#type_parameters _loc _a1))))))
         | `CtFun (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "CtFun")), (self#ctyp _loc _a0))),
-                (self#cltyp _loc _a1))
+              (_loc, (`Vrn (_loc, "CtFun")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ctyp _loc _a0), (self#cltyp _loc _a1))))))
         | `ObjTy (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ObjTy")), (self#ctyp _loc _a0))),
-                (self#clsigi _loc _a1))
+              (_loc, (`Vrn (_loc, "ObjTy")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#ctyp _loc _a0), (self#clsigi _loc _a1))))))
         | `ObjTyEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjTyEnd")), (self#ctyp _loc _a0))
         | `Obj _a0 ->
@@ -2007,213 +2180,244 @@ class meta =
         | `ObjEnd -> `Vrn (_loc, "ObjEnd")
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#cltyp _loc _a0))),
-                (self#cltyp _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#cltyp _loc _a0), (self#cltyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method clsigi : 'loc -> clsigi -> FAst.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#clsigi _loc _a0))),
-                (self#clsigi _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#clsigi _loc _a0),
+                          (self#clsigi _loc _a1))))))
         | `SigInherit _a0 ->
             `App (_loc, (`Vrn (_loc, "SigInherit")), (self#cltyp _loc _a0))
         | `CgVal (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CgVal")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "CgVal")),
-                               (self#alident _loc _a0))),
-                          (self#flag _loc _a1))), (self#flag _loc _a2))),
-                (self#ctyp _loc _a3))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (`Com
+                                  (_loc, (self#flag _loc _a2),
+                                    (self#ctyp _loc _a3))))))))))
         | `Method (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "Method")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Method")),
-                          (self#alident _loc _a0))), (self#flag _loc _a1))),
-                (self#ctyp _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (self#ctyp _loc _a2))))))))
         | `VirMeth (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "VirMeth")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "VirMeth")),
-                          (self#alident _loc _a0))), (self#flag _loc _a1))),
-                (self#ctyp _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (self#ctyp _loc _a2))))))))
         | `Eq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Eq")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Eq")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method cldecl : 'loc -> cldecl -> FAst.ep=
       fun _loc  ->
         function
         | `ClDecl (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "ClDecl")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "ClDecl")),
-                               (self#flag _loc _a0))), (self#ident _loc _a1))),
-                     (self#type_parameters _loc _a2))),
-                (self#clexp _loc _a3))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#ident _loc _a1),
+                               (`Com
+                                  (_loc, (self#type_parameters _loc _a2),
+                                    (self#clexp _loc _a3))))))))))
         | `ClDeclS (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "ClDeclS")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "ClDeclS")),
-                          (self#flag _loc _a0))), (self#ident _loc _a1))),
-                (self#clexp _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#ident _loc _a1),
+                               (self#clexp _loc _a2))))))))
         | `And (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "And")), (self#cldecl _loc _a0))),
-                (self#cldecl _loc _a1))
+              (_loc, (`Vrn (_loc, "And")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#cldecl _loc _a0),
+                          (self#cldecl _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method clexp : 'loc -> clexp -> FAst.ep=
       fun _loc  ->
         function
         | `CeApp (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "CeApp")), (self#clexp _loc _a0))),
-                (self#exp _loc _a1))
+              (_loc, (`Vrn (_loc, "CeApp")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#clexp _loc _a0), (self#exp _loc _a1))))))
         | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
         | `ClApply (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ClApply")), (self#vid _loc _a0))),
-                (self#type_parameters _loc _a1))
+              (_loc, (`Vrn (_loc, "ClApply")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#vid _loc _a0),
+                          (self#type_parameters _loc _a1))))))
         | `CeFun (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "CeFun")), (self#pat _loc _a0))),
-                (self#clexp _loc _a1))
+              (_loc, (`Vrn (_loc, "CeFun")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#pat _loc _a0), (self#clexp _loc _a1))))))
         | `LetIn (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "LetIn")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "LetIn")), (self#flag _loc _a0))),
-                     (self#bind _loc _a1))), (self#clexp _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#bind _loc _a1),
+                               (self#clexp _loc _a2))))))))
         | `Obj _a0 ->
             `App (_loc, (`Vrn (_loc, "Obj")), (self#clfield _loc _a0))
         | `ObjEnd -> `Vrn (_loc, "ObjEnd")
         | `ObjPat (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "ObjPat")), (self#pat _loc _a0))),
-                (self#clfield _loc _a1))
+              (_loc, (`Vrn (_loc, "ObjPat")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#pat _loc _a0), (self#clfield _loc _a1))))))
         | `ObjPatEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (self#pat _loc _a0))
         | `Constraint (_a0,_a1) ->
             `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Constraint")), (self#clexp _loc _a0))),
-                (self#cltyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#clexp _loc _a0), (self#cltyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method clfield : 'loc -> clfield -> FAst.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#clfield _loc _a0))),
-                (self#clfield _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#clfield _loc _a0),
+                          (self#clfield _loc _a1))))))
         | `Inherit (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Inherit")), (self#flag _loc _a0))),
-                (self#clexp _loc _a1))
+              (_loc, (`Vrn (_loc, "Inherit")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#flag _loc _a0), (self#clexp _loc _a1))))))
         | `InheritAs (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "InheritAs")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "InheritAs")),
-                          (self#flag _loc _a0))), (self#clexp _loc _a1))),
-                (self#alident _loc _a2))
+                     (`Com
+                        (_loc, (self#flag _loc _a0),
+                          (`Com
+                             (_loc, (self#clexp _loc _a1),
+                               (self#alident _loc _a2))))))))
         | `CrVal (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CrVal")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "CrVal")),
-                               (self#alident _loc _a0))),
-                          (self#flag _loc _a1))), (self#flag _loc _a2))),
-                (self#exp _loc _a3))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (`Com
+                                  (_loc, (self#flag _loc _a2),
+                                    (self#exp _loc _a3))))))))))
         | `VirVal (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "VirVal")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "VirVal")),
-                          (self#alident _loc _a0))), (self#flag _loc _a1))),
-                (self#ctyp _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (self#ctyp _loc _a2))))))))
         | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CrMth")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc,
-                               (`App
-                                  (_loc, (`Vrn (_loc, "CrMth")),
-                                    (self#alident _loc _a0))),
-                               (self#flag _loc _a1))), (self#flag _loc _a2))),
-                     (self#exp _loc _a3))), (self#ctyp _loc _a4))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (`Com
+                                  (_loc, (self#flag _loc _a2),
+                                    (`Com
+                                       (_loc, (self#exp _loc _a3),
+                                         (self#ctyp _loc _a4))))))))))))
         | `CrMthS (_a0,_a1,_a2,_a3) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "CrMthS")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "CrMthS")),
-                               (self#alident _loc _a0))),
-                          (self#flag _loc _a1))), (self#flag _loc _a2))),
-                (self#exp _loc _a3))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (`Com
+                                  (_loc, (self#flag _loc _a2),
+                                    (self#exp _loc _a3))))))))))
         | `VirMeth (_a0,_a1,_a2) ->
             `App
-              (_loc,
-                (`App
+              (_loc, (`Vrn (_loc, "VirMeth")),
+                (`Par
                    (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "VirMeth")),
-                          (self#alident _loc _a0))), (self#flag _loc _a1))),
-                (self#ctyp _loc _a2))
+                     (`Com
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#flag _loc _a1),
+                               (self#ctyp _loc _a2))))))))
         | `Eq (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Eq")), (self#ctyp _loc _a0))),
-                (self#ctyp _loc _a1))
+              (_loc, (`Vrn (_loc, "Eq")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `Initializer _a0 ->
             `App (_loc, (`Vrn (_loc, "Initializer")), (self#exp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -2223,18 +2427,24 @@ class meta =
         | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
         | `App (_a0,_a1) ->
             `App
-              (_loc, (`App (_loc, (`Vrn (_loc, "App")), (self#ep _loc _a0))),
-                (self#ep _loc _a1))
+              (_loc, (`Vrn (_loc, "App")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ep _loc _a0), (self#ep _loc _a1))))))
         | `Vrn _a0 ->
             `App (_loc, (`Vrn (_loc, "Vrn")), (self#string _loc _a0))
         | `Com (_a0,_a1) ->
             `App
-              (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (self#ep _loc _a0))),
-                (self#ep _loc _a1))
+              (_loc, (`Vrn (_loc, "Com")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ep _loc _a0), (self#ep _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (self#ep _loc _a0))),
-                (self#ep _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#ep _loc _a0), (self#ep _loc _a1))))))
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#ep _loc _a0))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
@@ -2248,14 +2458,18 @@ class meta =
         function
         | `RecBind (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
-                (self#ep _loc _a1))
+              (_loc, (`Vrn (_loc, "RecBind")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#vid _loc _a0), (self#ep _loc _a1))))))
         | `Sem (_a0,_a1) ->
             `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (self#rec_bind _loc _a0))),
-                (self#rec_bind _loc _a1))
+              (_loc, (`Vrn (_loc, "Sem")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#rec_bind _loc _a0),
+                          (self#rec_bind _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
   end

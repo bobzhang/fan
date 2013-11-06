@@ -27,9 +27,11 @@ let mk_record label_exps =
        label_exps in
    `Record (sem_of_list rec_exps) : exp )
 let mee_comma x y =
-  (`App ((`App ((`App ((`Vrn "Com"), (`Lid "_loc"))), x)), y) : FAstN.exp )
+  (`App ((`Vrn "Com"), (`Par (`Com ((`Lid "_loc"), (`Com (x, y)))))) : 
+  FAstN.exp )
 let mee_app x y =
-  (`App ((`App ((`App ((`Vrn "App"), (`Lid "_loc"))), x)), y) : FAstN.exp )
+  (`App ((`Vrn "App"), (`Par (`Com ((`Lid "_loc"), (`Com (x, y)))))) : 
+  FAstN.exp )
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
@@ -47,15 +49,21 @@ let mk_tuple_ee =
       (`App ((`Vrn "Par"), (`Par (`Com ((`Lid "_loc"), v)))) : FAstN.exp )
 let mee_record_col label exp =
   (`App
-     ((`App
-         ((`App ((`Vrn "RecBind"), (`Lid "_loc"))),
-           (`App ((`Vrn "Lid"), (`Par (`Com ((`Lid "_loc"), (`Str label)))))))),
-       exp) : FAstN.exp )
+     ((`Vrn "RecBind"),
+       (`Par
+          (`Com
+             ((`Lid "_loc"),
+               (`Com
+                  ((`App
+                      ((`Vrn "Lid"),
+                        (`Par (`Com ((`Lid "_loc"), (`Str label)))))), exp)))))) : 
+  FAstN.exp )
 let mee_record_semi a b =
-  (`App ((`App ((`App ((`Vrn "Sem"), (`Lid "_loc"))), a)), b) : FAstN.exp )
+  (`App ((`Vrn "Sem"), (`Par (`Com ((`Lid "_loc"), (`Com (a, b)))))) : 
+  FAstN.exp )
 let mk_record_ee label_exps =
   (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
     |>
     (fun es  ->
        let x = Listf.reduce_right mee_record_semi es in
-       (`App ((`App ((`Vrn "Record"), (`Lid "_loc"))), x) : FAstN.exp ))
+       (`App ((`Vrn "Record"), (`Par (`Com ((`Lid "_loc"), x)))) : FAstN.exp ))

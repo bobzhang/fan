@@ -100,13 +100,12 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
          let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name (x : FAst.pat) =
            (match x with
-            | `App (loc,`Vrn (_,u),`Par (_,`Com (_,_,rest))) ->
+            | `App (loc,`Vrn (_,u),`Par (_,`Com (_,`Any _,rest))) ->
                 `App
                   (loc, (`Vrn (loc, u)),
                     (`Par (loc, (`Com (loc, (`Lid (_loc, name)), rest)))))
             | `App (_loc,`Vrn (_,u),`Any _) ->
                 `App (_loc, (`Vrn (_loc, u)), (`Lid (_loc, name)))
-            | `App (_loc,a,b) -> `App (_loc, (subst_first_loc name a), b)
             | `Constraint (_loc,a,ty) ->
                 `Constraint (_loc, (subst_first_loc name a), ty)
             | p -> p : FAst.pat ) in

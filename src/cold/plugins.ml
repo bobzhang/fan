@@ -102,7 +102,7 @@ let gen_strip =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
-           |(`Dot (`Uid "Tokenf",`Lid "ant") : FAstN.ctyp) -> res
+           |`Dot (`Uid "Tokenf",`Lid "ant") -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
@@ -176,8 +176,12 @@ let mk_variant cons params =
   if Stringf.ends_with cons "Ant"
   then (EpN.of_vstr_number "Ant" len :>exp)
   else
-    (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
-      (List.fold_left ExpN.mee_app (ExpN.mee_of_str cons))
+    (let params =
+       params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp)) in
+     let a = ExpN.mee_of_str cons in
+     match params with
+     | [] -> a
+     | _ -> let r = ExpN.mk_tuple_ee params in ExpN.mee_app a r)
 let mk_record cols =
   (cols |>
      (List.map
@@ -405,7 +409,7 @@ let generate (mtyps : mtyps) =
      if name <> "ant"
      then
        let obj =
-         ObjsN.map_row_field
+         ObjsN.map_row_field @@
            (function
             | (`TyVrnOf (x,`Lid "loc") : FAstN.row_field) ->
                 (`TyVrn x : FAstN.row_field )
