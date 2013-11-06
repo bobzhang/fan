@@ -179,8 +179,11 @@ and descr =  {
     [arg3] is used for
     runtime error message and pretty printing,
     it could be removed later. *)
-      
-type pattern = (t -> bool) * descr 
+type pattern = {
+    pred : (t -> bool);
+    descr : descr
+  }      
+
 
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      

@@ -78,22 +78,21 @@ let query_inline (x:string) =
   (****************************************)                  
   simple_token @Inline :
   [ ("EOI" as v) %{
-    let pred = %exp{function
+    let des = %exp{({pred = function
       | `EOI _ -> true
-      | _ -> false} in
-    let des = %exp{({ tag = $vrn:v ; word = Empty; tag_name = $str:v }:Tokenf.descr)} in
-    {text = `Token(_loc,pred,des);
+      | _ -> false ;
+          descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)} in
+    {text = `Token(_loc,des);
      styp = %ctyp'{Tokenf.txt};
      pattern = None;
      bounds = [];
      outer_pattern = None}}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
-    let pred = %exp{function (*BOOTSTRAPPING*)
-      | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
-      | _ -> false} in
     {text = `Token(_loc,
-                   pred,
-                   %exp{({tag = $vrn:v; word = A $str:x; tag_name = $str:s }:Tokenf.descr)});
+                   %exp{({ pred = (function (*BOOTSTRAPPING*)
+                             | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
+                             | _ -> false) ;
+                           descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [];
      pattern = Some %pat@xloc{({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
@@ -101,48 +100,54 @@ let query_inline (x:string) =
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
      | "Optlabel" |"Str" |"Pre" as v);  ? Lid@xloc x %{
-    let pred =  %exp{function
-      | $vrn:v _ -> true
-      | _ -> false} in
-    let des = %exp{({ tag = $vrn:v ; word = Any; tag_name = $str:v }:Tokenf.descr)} in
+    let des = %exp{({pred =
+                     (function
+                       | $vrn:v _ -> true
+                       | _ -> false);
+                     descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)} in
     let (pattern,bounds)  =
       match (x,xloc) with
       | (Some x, Some xloc) -> 
           (Some %pat@xloc{({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
                     , [(xloc,x)])
       | _ -> (None, [])in
-    {text = `Token(_loc, pred,des);
+    {text = `Token(_loc, des);
      styp = %ctyp'{Tokenf.txt};
      pattern;
      bounds ;
      outer_pattern = None}}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
-    let pred =  %exp{function
-      | $vrn:v _ -> true
-      | _ -> false} in
-    let des = %exp{({tag = $vrn:v; word = Any; tag_name = $str:v}:Tokenf.descr)} in
-    {text = `Token(_loc, pred,des);
+    let des = %exp{({pred =
+                     (function
+                       | $vrn:v _ -> true
+                       | _ -> false);
+                     descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)} in
+    {text = `Token(_loc,des);
      styp = %ctyp'{Tokenf.txt};
      bounds = [(xloc,x);(lloc,loc)];
      pattern = Some %pat@xloc{({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      outer_pattern = None}}
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
-    let pred = %exp{function
-      | $vrn:v _ -> true
-      | _ -> false} in
-    let des = %exp{({tag = $vrn:v; word = Any; tag_name = $str:v}:Tokenf.descr)} in
-    {text = `Token(_loc,pred,des);
+    let des = %exp{({pred =
+                     (function
+                       | $vrn:v _ -> true
+                       | _ -> false);
+                     descr =
+                     {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)} in
+    {text = `Token(_loc,des);
      styp = %ctyp'{Tokenf.quot};
      bounds = [(loc,x)];
      pattern = Some %pat{ ($lid:x : Tokenf.quot)};
      outer_pattern = None}}
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
-     let pred = %exp{function
-       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-       | _ -> false} in
-     let des = %exp{({tag = $vrn:v; word = Level $int:level; tag_name = $str:v}:Tokenf.descr)} in
-     { text = `Token(_loc,pred,des);
+     let des = %exp{({pred =
+                      (function
+                        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+                        | _ -> false);
+                      descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}
+                       :Tokenf.pattern)} in
+     { text = `Token(_loc,des);
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
        pattern = Some %pat@xloc{({txt = $lid:x;_} : Tokenf.op)};
@@ -150,13 +155,15 @@ let query_inline (x:string) =
      }}
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
-     let pred = %exp{function
-       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-       | _ -> false} in
-     let des = %exp{({tag = $vrn:v; word = Level $int:level; tag_name = $str:v}:Tokenf.descr)} in
+     let des = %exp{({pred =
+                      (function
+                        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+                        | _ -> false);
+                      descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)
+                  } in
      let p = %pat@xloc{$lid:x} in
      let lp = %pat@lloc{$lid:l} in 
-     { text = `Token(_loc,pred,des);
+     { text = `Token(_loc,des);
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
        pattern = Some %pat{({loc = $lp; txt = $p ;_} : Tokenf.op)};
@@ -209,10 +216,12 @@ let query_inline (x:string) =
           List.map (fun (x:Tokenf.txt) ->
             let (x,xloc) = (x.txt,x.loc) in
             let  z = %pat'@xloc{$str:x} in
-            let pred = %exp{function
-              | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
-              | _ -> false} in
-            let des = %exp{({tag = $vrn:v; word = A $z; tag_name = $str:v}:Tokenf.descr)} in
+            let des = %exp{({pred =
+                             (function
+                               | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
+                               | _ -> false);
+                             descr =
+                             {tag = $vrn:v; word = A $z; tag_name = $str:v}}:Tokenf.pattern)} in
            
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
@@ -231,7 +240,7 @@ let query_inline (x:string) =
                    [(lloc,ll);v]) in
             ({kind = KNormal;
               symbol = {
-              text = `Token(_loc,pred,des);
+              text = `Token(_loc,des);
               styp= %ctyp'{Tokenf.ant};
               pattern ;
               bounds;

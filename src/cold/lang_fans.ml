@@ -56,16 +56,20 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Lid _ -> true | _ -> false)),
-                ({ tag = `Lid; word = Any; tag_name = "Lid" } : Tokenf.descr ))],
+              ({
+                 pred = ((function | `Lid _ -> true | _ -> false));
+                 descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+               } : Tokenf.pattern )],
             ("x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
          ([`Token
-             (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ))],
+             ({
+                pred = ((function | `Uid _ -> true | _ -> false));
+                descr = { tag = `Uid; word = Any; tag_name = "Uid" }
+              } : Tokenf.pattern )],
            ("x\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

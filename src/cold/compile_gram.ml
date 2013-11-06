@@ -133,15 +133,8 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (`App (_loc, (`Vrn (_loc, "Try")), (aux "" t)) : FAst.exp )
     | `Peek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Peek")), (aux "" t)) : FAst.exp )
-    | `Token (_loc,match_fun,mdescr,mstr) ->
-        (`App
-           (_loc, (`Vrn (_loc, "Token")),
-             (`Par
-                (_loc,
-                  (`Com
-                     (_loc, match_fun,
-                       (`Com (_loc, mdescr, (`Str (_loc, mstr))))))))) : 
-        FAst.exp ) in
+    | `Token (_loc,meta) ->
+        (`App (_loc, (`Vrn (_loc, "Token")), meta) : FAst.exp ) in
   aux tvar x
 and make_exp_rules (_loc : loc)
   (rl : (Gram_def.text list* exp* exp option) list) (tvar : string) =

@@ -128,7 +128,7 @@ and parser_of_terminals
         terminals
         |>
           List.iteri
-            (fun i terminal  -> 
+            (fun i (terminal:Tokenf.terminal)  -> 
               let t  =
                 match Streamf.peek_nth strm i with
                 | Some t -> t 
@@ -137,10 +137,10 @@ and parser_of_terminals
 
                 if not
                     (match terminal with
-                    |`Token(f,_) ->
+                    |`Token x  ->
                         begin
                           acc:= Tokenf.strip t ::!acc;
-                          f t
+                          x.pred t
                         end
                     |`Keyword kwd ->
                         begin match t with
@@ -189,8 +189,8 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
               end
           |_ -> raise Streamf.NotConsumed
         end
-    | `Token (f, _) -> fun strm ->  match Streamf.peek strm with
-      |Some tok when f tok ->
+    | `Token (x:Tokenf.pattern) -> fun strm ->  match Streamf.peek strm with
+      |Some tok when x.pred tok ->
           begin 
             Streamf.junk strm;
             Gaction.mk (Tokenf.strip tok) 

@@ -67,7 +67,7 @@ and text =
  | `Peek of (loc * text)
  | `Self of loc
  | `Keyword of (loc * string)
- | `Token of (loc * exp * exp)
+ | `Token of (loc * exp )
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for

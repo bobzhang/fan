@@ -28,8 +28,10 @@ let _ =
                            (fun _  -> cparser _loc pcl)
                      | None  -> cparser _loc pcl : 'parser_exp )))));
          ([`Token
-             (((function | `Uid _ -> true | _ -> false)),
-               ({ tag = `Uid; word = Any; tag_name = "Uid" } : Tokenf.descr ));
+             ({
+                pred = ((function | `Uid _ -> true | _ -> false));
+                descr = { tag = `Uid; word = Any; tag_name = "Uid" }
+              } : Tokenf.pattern );
           `Nterm (Gramf.obj (parser_case_list : 'parser_case_list Gramf.t ))],
            ("match n with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
              (Gramf.mk_action

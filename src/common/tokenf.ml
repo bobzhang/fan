@@ -169,13 +169,15 @@ and string_of_word  (x:word) =
   | Empty -> ""
   | Level d -> Printf.sprintf "Level %d" d
         
-type pattern = (t -> bool) * descr
+type pattern = {
+    pred : (t -> bool);
+    descr : descr
+  }
 
-let string_of_pattern (_,b) = string_of_descr b
+let string_of_pattern (x:pattern) = string_of_descr x.descr
     
 let eq_pattern  (x :pattern)  (y : pattern) : bool =
-  match x , y with 
-  | (a,_) , (b,_) -> a  =  b
+  x.descr = y.descr
       
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
