@@ -4057,20 +4057,21 @@ let apply () =
                         (_loc, (`Uid (_loc, "::")),
                           (`Par (_loc, (`Com (_loc, p, pl))))) : 'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (`Uid (_loc, \"[]\"))) : \nFAst.pat )\n",
+            ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    ((`App
-                        (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
-                          (`Uid (_loc, "[]"))) : FAst.pat ) : 'sem_pat_for_list )))));
+                    (`App
+                       (_loc, (`Uid (_loc, "::")),
+                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                    'sem_pat_for_list )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (`Uid (_loc, \"[]\"))) : \nFAst.pat )\n",
+            ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    ((`App
-                        (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
-                          (`Uid (_loc, "[]"))) : FAst.pat ) : 'sem_pat_for_list )))))]) : 
-       Gramf.olevel ));
+                    (`App
+                       (_loc, (`Uid (_loc, "::")),
+                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                    'sem_pat_for_list )))))]) : Gramf.olevel ));
    Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
      (None,
        ((None, None,
