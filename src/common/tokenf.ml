@@ -148,15 +148,18 @@ type tag =
   | `Quot         
   | `DirQuotation 
   | `Ant]
-      
+
 type word =
-   [ `Any
-   | `A of string
-   | `Empty
-   | `Level of int
-   ]
-and descr =  (tag * word) (* FIXME duplicate in gram_def *)      
-      
+  | Any
+  | A of string
+  | Empty
+  | Level of int
+
+and descr =  {
+    tag : tag;
+    word : word;
+  }
+
 type pattern = ((t -> bool) * descr * string )
 
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or

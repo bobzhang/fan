@@ -160,12 +160,15 @@ type tag =
   | `Ant]
 
 type word =
-   [ `Any
-   | `A of string
-   | `Empty
-   | `Level of int
-   ]
-and descr =  (tag * word)
+  | Any
+  | A of string
+  | Empty
+  | Level of int
+
+and descr =  {
+    tag : tag;
+    word : word;
+  }
 
 
 
