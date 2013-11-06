@@ -81,7 +81,7 @@ let query_inline (x:string) =
     let pred = %exp{function
       | `EOI _ -> true
       | _ -> false} in
-    let des = %exp{($vrn:v, `Empty)} in
+    let des = %exp{({ tag = $vrn:v ; word = Empty }:Tokenf.descr)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
     {text = `Token(_loc,pred,des,des_str);
      styp = %ctyp'{Tokenf.txt};
@@ -92,7 +92,7 @@ let query_inline (x:string) =
     let pred = %exp{function (*BOOTSTRAPPING*)
       | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
       | _ -> false} in
-    let des = %exp{($vrn:v,`A $str:x)} in
+    let des = %exp{({tag = $vrn:v; word = A $str:x }:Tokenf.descr)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
 
     {text = `Token(_loc, pred, des,des_str);
@@ -106,12 +106,12 @@ let query_inline (x:string) =
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($vrn:v,`Any)} in
+    let des = %exp{({ tag = $vrn:v ; word = Any }:Tokenf.descr)} in
     let des_str =  v in
     let (pattern,bounds)  =
       match (x,xloc) with
       | (Some x, Some xloc) -> 
-          (Some %pat@xloc{(* $vrn:v *) ({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
+          (Some %pat@xloc{({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
                     , [(xloc,x)])
       | _ -> (None, [])in
     {text = `Token(_loc, pred,des,des_str);
@@ -124,7 +124,7 @@ let query_inline (x:string) =
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($vrn:v,`Any)} in
+    let des = %exp{({tag = $vrn:v; word = Any}:Tokenf.descr)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     {text = `Token(_loc, pred,des,des_str);
      styp = %ctyp'{Tokenf.txt};
@@ -135,7 +135,7 @@ let query_inline (x:string) =
     let pred = %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($vrn:v,`Any)} in
+    let des = %exp{({tag = $vrn:v; word = Any}:Tokenf.descr)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     {text = `Token(_loc,pred,des,des_str);
      styp = %ctyp'{Tokenf.quot};
@@ -146,7 +146,7 @@ let query_inline (x:string) =
      let pred = %exp{function
        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
        | _ -> false} in
-     let des = %exp{($vrn:v, `Level $int:level)} in
+     let des = %exp{({tag = $vrn:v; word = Level $int:level}:Tokenf.descr)} in
      let des_str = "Precedence" ^level in
      { text = `Token(_loc,pred,des,des_str);
        styp = %ctyp'{Tokenf.op};
@@ -159,7 +159,7 @@ let query_inline (x:string) =
      let pred = %exp{function
        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
        | _ -> false} in
-     let des = %exp{($vrn:v, `Level $int:level)} in
+     let des = %exp{({tag = $vrn:v; word = Level $int:level}:Tokenf.descr)} in
      let des_str = "Precedence" ^level in
      let p = %pat@xloc{$lid:x} in
      let lp = %pat@lloc{$lid:l} in 
@@ -219,7 +219,7 @@ let query_inline (x:string) =
             let pred = %exp{function
               | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
               | _ -> false} in
-            let des = %exp{($vrn:v,`A $z)} in
+            let des = %exp{({tag = $vrn:v; word = A $z}:Tokenf.descr)} in
             let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
            
            (** FIXME why $ is allowed to lex here, should
