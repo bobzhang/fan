@@ -69,8 +69,6 @@ let make_pat exp =
        [ pat as x; ","; comma_pat as y %{ `Com(_loc,x,y)}
        | pat as x; ";"; sem_pat as y %{ `Sem(_loc,x,y)}
        | pat as x %{ x}]
-       
-       
        atom_pat@Inline:
         [ Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
         | "`"; luident as s  %pat{$vrn:s}
