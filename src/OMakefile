@@ -60,6 +60,12 @@
         
     if $(not $(test -d unitest1/plc))
         mkdir unitest1/plc
+
+    if $(not $(test -d unitest1/cmd))
+        mkdir unitest1/cmd
+
+    if $(not $(test -d unitest_annot/cmd))
+        mkdir unitest_annot/cmd
         
 # public.PREFIXED_OCAMLINCLUDES = $`(mapprefix -I, $(OCAMLINCLUDES))
 

@@ -2921,7 +2921,9 @@ let apply () =
                     (`RecBind (_loc, (l :>vid), e) : 'field_exp )))))]) : 
        Gramf.olevel )));
   (let grammar_entry_create x = Gramf.mk x in
-   let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
+   let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr"
+   and comma_pat_list: 'comma_pat_list Gramf.t =
+     grammar_entry_create "comma_pat_list" in
    Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
      (None,
        ((None, None,
@@ -3012,6 +3014,20 @@ let apply () =
                     | (({ kind = "vrn";_} as s) : Tokenf.ant) ->
                         (mk_ant ~c:"pat" s : 'pat_constr )
                     | _ -> assert false))))]) : Gramf.olevel ));
+   Gramf.extend_single (comma_pat_list : 'comma_pat_list Gramf.t )
+     (None,
+       ((None, None,
+          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ","; `Self],
+             ("p1 :: p2\n",
+               (Gramf.mk_action
+                  (fun ~__fan_2:(p2 : 'comma_pat_list)  ~__fan_1:_ 
+                     ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  -> (p1 ::
+                     p2 : 'comma_pat_list )))));
+          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+            ("[p1]\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
+                    ([p1] : 'comma_pat_list )))))]) : Gramf.olevel ));
    Gramf.extend (pat : 'pat Gramf.t )
      (None,
        ([((Some "|"), (Some `LA),
@@ -3029,12 +3045,13 @@ let apply () =
                       (_loc : Locf.t)  -> (`PaRng (_loc, p1, p2) : 'pat )))))]);
         ((Some "::"), (Some `RA),
           [([`Self; `Keyword "::"; `Self],
-             ("`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p1)), p2)\n",
+             ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p1)), p2) : FAst.pat )\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat)
                       (_loc : Locf.t)  ->
-                     (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), p1)), p2) : 
-                     'pat )))))]);
+                     ((`App
+                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p1)), p2) : 
+                     FAst.pat ) : 'pat )))))]);
         ((Some "apply"), (Some `LA),
           [([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Self],
              ("match p2 with\n| (`Par (_loc,p) : FAst.pat) ->\n    List.fold_left (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat )) p1\n      (Ast_basic.list_of_com p [])\n| _ -> (`App (_loc, p1, p2) : FAst.pat )\n",

@@ -345,7 +345,7 @@ let output_env (env : t_env) =
             (_loc, (`App (_loc, (`Lid (_loc, "+")), curr_pos)),
               (`Int (_loc, (string_of_int d)))) : FAst.exp ) in
    List.map
-     (fun (((loc,s) as id),v)  ->
+     (fun (((loc,_) as id),v)  ->
         let (id :pat)= `Lid id in
         match v with
         | Ident_string (o,nstart,nend) ->

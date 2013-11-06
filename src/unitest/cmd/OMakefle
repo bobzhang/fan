@@ -1,0 +1,8 @@
+
+
+
+FILES = a1
+
+.PHONY:test clean
+rm -rf $(OCAMLBIN_EXT)
+

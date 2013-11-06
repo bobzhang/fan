@@ -515,11 +515,7 @@ let apply () = begin
        pat_as_pat_opt:
        [ pat as p1; "as"; a_lident as s %{  `Alias (_loc, p1, s)}
        | pat as p %{p} ]
-       pat_constr@Local:
-       [module_longident as i %{(i :vid :> pat)}
-       |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
-       |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
-
+       
        atom_pat@Inline:
         [ Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
         | "`"; luident as s  %pat{$vrn:s}
@@ -540,22 +536,39 @@ let apply () = begin
             `OptLabl(_loc,`Lid(_loc,""),p)}
         | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)}]
+
+       pat_constr@Local:
+       [module_longident as i %{(i :vid :> pat)}
+       |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
+       |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
+       comma_pat_list@Local:
+       [ pat as p1 ; ","; S as p2 %{p1::p2}
+       | pat as p1 %{[p1]}]                  
+                   
        pat:
        { "|" LA
         [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
        ".." NA
         [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
         "::" RA
-        [ S as p1; "::"; S as p2 %{`App (_loc, `App (_loc, `Uid (_loc, "::"), p1), p2)}]   
-       "apply" LA
+        [ S as p1; "::"; S as p2 %pat{ $p1:: $p2}]
+
+       "apply" LA (* `Pat ((name,tydcl) as  named_type) *)
         [ pat_constr as p1; S as p2 %{ (*FIXME *)
           match p2 with
           | %{ ($par:p) } ->
               List.fold_left (fun p1 p2 -> %{ $p1 $p2 }) p1
                 (Ast_basic.list_of_com p []) (* precise *)
-          | _ -> %{$p1 $p2 }}  
+          | _ -> %{$p1 $p2 }}
+        (* | pat_constr as p1; "("; comma_pat_list as ps; ")" %{ *)
+        (*   List.fold_left (fun p1 p2 -> %{$p1 $p2}) p1 ps  *)
+        (*   } *)
+        (* | pat_constr as p1; S as p2 %pat{ $p1 $p2} *)
+
         | pat_constr as p1 %{ p1}
         | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
+       (* special_pat@Local: *)
+       (*  [ ; pat as p ]               *)
        "simple"
         [ Ant ("" |"pat" |"par" |"int"
                |"int32" |"int64" |"vrn" |"flo"

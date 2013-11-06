@@ -13,6 +13,9 @@ section
     AdditionalDependency($(PROLOG_PLUGIN).cmxs)
     FAN_PLUGINS += $(PROLOG_PLUGIN)
     .SUBDIRS: plc
+
+section
+    .SUBDIRS: cmd
 .PHONY: test
 
-test:.PHONY/main/test .PHONY/plc/test    
+test:.PHONY/main/test .PHONY/plc/test .PHONY/cmd/test    

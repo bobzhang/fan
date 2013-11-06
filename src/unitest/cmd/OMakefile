@@ -1,0 +1,12 @@
+
+
+
+FILES = a1
+
+
+.PHONY:test clean
+
+test:$(OCamlLibrary libcmd , $(FILES))
+    
+rm -rf $(OCAMLBIN_EXT)
+

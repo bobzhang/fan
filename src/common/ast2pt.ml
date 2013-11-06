@@ -5,9 +5,6 @@
 
 
 
-open Parsetree
-open Longident
-open Asttypes
 open Util
 open Parsetree_util
 open! FAst (* FIXME later*)
@@ -87,7 +84,7 @@ let mkvirtual  (x:flag)  : Asttypes.virtual_flag =
   | `Negative _  -> Concrete
   | `Ant (_loc,_) -> ant_error _loc 
 
-let flag loc (x:flag) =
+let flag loc (x:flag) : Asttypes.override_flag =
   match x with
   | `Positive _ -> Override
   | `Negative _  -> Fresh
@@ -307,7 +304,7 @@ let mktype loc tl cl ~type_kind ~priv ~manifest =
     ptype_loc =  loc;
     ptype_variance = variance} 
 
-let mkprivate (x:flag)=
+let mkprivate (x:flag) : Asttypes.private_flag =
   match x with 
   | `Positive _ -> Private
   | `Negative _ -> Public
@@ -363,7 +360,7 @@ let mkvalue_desc loc t (p:  strings list) : Parsetree.value_description =
    pval_loc =  loc}
 
 
-let mkmutable (x:flag)=
+let mkmutable (x:flag) : Asttypes.mutable_flag =
   match x with
   |`Positive _ -> Mutable
   | `Negative _ -> Immutable
@@ -444,10 +441,6 @@ let type_parameters_and_type_name (t:ctyp)  =
 
 
 
-let rec pat_fa (al: pat list) (x:pat) =
-  match x with
-  | `App (_,f,a) -> pat_fa (a :: al) f
-  | f -> (f, al) 
 
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2 then mkghpat loc (Ppat_constant (Const_char c1))
@@ -562,7 +555,27 @@ let rec pat (x : pat) : Parsetree.pattern =
     mkpat _loc @@
       Ppat_construct
         (lident_with_loc s sloc, Some (mkpat loc_any Ppat_any), false)
+  | `App(_,p,`Par(_,r)) ->
+      let r = List.map pat @@ list_of_com r [] in
+      let r =
+        match r with
+        |[ v ] ->  v
+        | _ -> mkpat _loc (Ppat_tuple r) in
+      begin
+        match (pat p).ppat_desc  with
+        | Ppat_variant (s,None) ->
+            mkpat _loc @@ Ppat_variant (s, Some r)
+        | Ppat_construct(li,None,_) ->
+            mkpat _loc @@ Ppat_construct (li, Some r, false)
+        | _ -> assert false
+      end 
+      (* in *)
+      (* mkpat _loc (Ppat_variant (p1, Some r )) *)
   | `App (_,_,_) as f ->
+      let rec pat_fa (al: pat list) (x:pat) =
+        match x with
+        | `App (_,f,a) -> pat_fa (a :: al) f
+        | f -> (f, al)  in
     let (f,al) = pat_fa [] f in
     let al = List.map pat al in
     (match (pat f).ppat_desc with
@@ -596,12 +609,14 @@ let rec pat (x : pat) : Parsetree.pattern =
     let ps = list_of_sem p [] in
     let (wildcards,ps) =
       List.partition (function | `Any _ -> true | _ -> false) ps in
-    let is_closed = if wildcards = [] then Closed else Open in
     let mklabpat (p : rec_pat) =
       match p with
       | `RecBind (_loc,i,p) -> ident (i:>ident), pat p
       | p -> error (unsafe_loc_of p) "invalid pattern" in
-    mkpat _loc (Ppat_record ((List.map mklabpat ps), is_closed))
+    mkpat _loc
+      (Ppat_record
+         (List.map mklabpat ps,
+          if wildcards = [] then Closed else Open ))
   | `Par (_,`Com (_,p1,p2)) ->
     mkpat _loc
       (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
@@ -714,7 +729,7 @@ let rec exp (x : exp) : Parsetree.expression =
   | `Assert(_,`Lid(_,"false")) -> mkexp _loc Pexp_assertfalse
   | `Assert(_,e) -> mkexp _loc (Pexp_assert (exp e)) 
   | `Assign (_,e,v) ->   (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
-    let e =
+    let (e:Parsetree.expression_desc) =
       match (e:exp) with
       | `Field (loc,x,`Lid (_,"contents")) ->
         Pexp_apply
@@ -1010,7 +1025,8 @@ and mktype_decl (x:typedecl)  =
         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
 and mtyp : FAst.mtyp -> Parsetree.module_type =
   let  mkwithc (wc:constr)  =
-    let mkwithtyp pwith_type loc priv id_tpl ct =
+    let mkwithtyp (pwith_type: Parsetree.type_declaration -> Parsetree.with_constraint)
+        loc priv id_tpl ct =
       let (id, tpl) = type_parameters_and_type_name id_tpl in
       let (params, variance) = List.split tpl in
       (id, pwith_type
@@ -1043,7 +1059,7 @@ and mtyp : FAst.mtyp -> Parsetree.module_type =
   | `ModuleTypeOf(_loc,me) ->
     mkmty _loc (Pmty_typeof (mexp me))
   | t -> Locf.failf (unsafe_loc_of t) "mtyp: %s" (!dump_mtyp t) 
-and sigi (s:sigi) (l:signature) :signature =
+and sigi (s:sigi) (l:Parsetree.signature) : Parsetree.signature =
   match s with 
   | `Class (loc,cd) ->
     mksig loc (Psig_class
@@ -1075,8 +1091,7 @@ and sigi (s:sigi) (l:signature) :signature =
   | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
     mksig loc (Psig_modtype (with_loc n sloc , Pmodtype_abstract) ) :: l
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
-    let si =  Pmodtype_manifest (mtyp mt)  in
-    mksig loc (Psig_modtype (with_loc n sloc, si)) :: l
+    mksig loc (Psig_modtype (with_loc n sloc,Pmodtype_manifest (mtyp mt))) :: l
   | `Open (loc,g,id) ->
     mksig loc (Psig_open (flag loc g, long_uident id)) :: l
   | `Type (loc,tdl) -> mksig loc (Psig_type (mktype_decl tdl )) :: l
@@ -1116,7 +1131,7 @@ and mexp (x:FAst.mexp)=
                (exp e, Some (mktyp loc (Ptyp_package (package_type pt))), None))))
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (exp e))
   | t -> Locf.failf (unsafe_loc_of t) "mexp: %s" (!dump_mexp t) 
-and stru (s:stru) (l:structure) : structure =
+and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
   let loc = unsafe_loc_of s in
   match s with
   (* ad-hoc removing the empty statement, a more elegant way is in need*)
@@ -1238,7 +1253,7 @@ and class_info_cltyp (ci:cltdecl)  =
      pci_loc =  loc;
      pci_variance = []}
   | ct -> Locf.failf (unsafe_loc_of ct) "bad class/class type declaration/definition %s " (!dump_cltdecl ct)
-and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
+and clsigi (c:clsigi) (l:  Parsetree.class_type_field list) : Parsetree.class_type_field list =
   match c with 
   |`Eq (loc, t1, t2) ->
     mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l
@@ -1324,10 +1339,10 @@ and clfield (c:clfield) l =
     mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l
   | x  -> Locf.failf  loc "clfield: %s" @@ !dump_clfield x
 
-let sigi (ast:sigi) : signature = sigi ast []
+let sigi (ast:sigi) : Parsetree.signature = sigi ast []
 let stru ast = stru ast []
 
-let directive (x:exp) =
+let directive (x:exp) : Parsetree.directive_argument =
   match x with 
   |`Str(_,s) -> Pdir_string s
   |`Int(_,i) -> Pdir_int (int_of_string i)
@@ -1351,7 +1366,7 @@ let directive (x:exp) =
       | t -> self t  in
     Pdir_ident (ident_noloc (ident_of_exp e)) 
 
-let phrase (x: stru) =
+let phrase (x: stru) : Parsetree.toplevel_phrase =
   match x with 
   | `Directive (_, `Lid(_,d),dp) -> Ptop_dir (d ,directive dp)
   | `DirectiveSimple(_,`Lid(_,d)) -> Ptop_dir (d, Pdir_none)
