@@ -316,19 +316,6 @@ let abstract_list (x:typedecl)=
         (* Some (List.length lst) *)
   | _ -> None
         
-(* let eq t1 t2 = *)
-(*   let strip_locs t = (ObjsN.map_loc (fun _ -> Locf.ghost))#ctyp t in *)
-(*   strip_locs t1 = strip_locs t2 *)
-
-    
-(* FIXME add hoc *)  
-(* let eq_list t1 t2 = *)
-(*   let rec loop = function *)
-(*     | ([],[]) -> true *)
-(*     | (x::xs,y::ys) -> eq x y && loop (xs,ys) *)
-(*     | (_,_) -> false in loop (t1,t2) *)
-    
-
 
     
 (* 
@@ -480,5 +467,5 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/ctypN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/ctyp.cmo" *)
 (* end: *)

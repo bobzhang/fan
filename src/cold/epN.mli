@@ -8,11 +8,8 @@ val tuple_of_number : ep -> int -> ep
 
 val of_vstr_number : string -> int -> ep
 
-(** {[
-   gen_tuple_first 3 2  |> eprint;
-   (c0, c1, c2)
-   ]} *)
 
+(** used by [Derive.exp_of_ctyp] to generate patterns *)
 val gen_tuple_n :
   ?cons_transform:(string -> string) -> arity:int -> string -> int -> ep
 

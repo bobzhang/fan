@@ -83,7 +83,7 @@ let of_vstr_number name i : ep=
     (X a0 a1 a2 a3, X b0 b1 b2 b3)
 
     gen_tuple_n "`X" 4 ~arity:2 |> opr#pat std_formatter ;
-   (`X a0 a1 a2 a3, `X b0 b1 b2 b3)
+   (`X (a0, a1, a2, a3), `X (b0, b1, b2, b3))
 
     gen_tuplen "`X" 4 ~arity:1 |> opr#pat std_formatter ;
    `X a0 a1 a2 a3
@@ -94,7 +94,11 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = Listf.init arity
       (fun i -> Listf.init n (fun j -> %{ $id{xid ~off:i j} } )) in
   let pat = of_str @@ cons_transform cons in 
-  args |> List.map (fun lst -> appl_of_list (pat:: lst)) |> tuple_com 
+  args |> List.map
+    (function
+      | [] -> pat
+      | lst ->
+          %pat-'{ $pat ${tuple_com lst}} ) |> tuple_com 
     
 
   

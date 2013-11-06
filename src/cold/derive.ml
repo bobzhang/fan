@@ -221,7 +221,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
     | None  -> (None, result)
     | Some f -> let (a,b) = f name in ((Some a), b) in
   let fun_exp =
-    if not (Ctyp.is_abstract tydcl)
+    if not @@ (Ctyp.is_abstract tydcl)
     then
       fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record ~result
         simple_exp_of_ctyp
@@ -230,7 +230,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
            ~destination simple_exp_of_ctyp) tydcl
     else
-      (eprintf "Warning: %s as a abstract type no structure generated\n"
+      ((eprintf "Warning: %s as a abstract type no structure generated\n") @@
          (ObjsN.dump_typedecl tydcl);
        (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) : 
        FAstN.exp )) in

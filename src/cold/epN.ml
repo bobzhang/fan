@@ -42,7 +42,9 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     Listf.init arity (fun i  -> Listf.init n (fun j  -> xid ~off:i j)) in
   let pat = of_str @@ (cons_transform cons) in
-  (args |> (List.map (fun lst  -> appl_of_list (pat :: lst)))) |> tuple_com
+  (args |>
+     (List.map (function | [] -> pat | lst -> `App (pat, (tuple_com lst)))))
+    |> tuple_com
 let mk_record ?(arity= 1)  cols =
   (let mk_list off =
      Listf.mapi

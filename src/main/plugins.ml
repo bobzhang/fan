@@ -234,13 +234,6 @@ let mk_variant cons params =
     | _ ->
         let r = ExpN.mk_tuple_ee params in
         ExpN.mee_app a r
-        (* | `App (_a0,_a1) -> *)
-        (*     `App(_loc, *)
-        (*          `Vrn(_loc,"App"), *)
-        (*          `Par(_loc, *)
-        (*              `Com(_loc, self#strings _loc _a0, *)
-        (*                   self#strings _loc _a1))) *)
-          
 
     
 let mk_record cols = cols |> List.map

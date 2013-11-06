@@ -157,8 +157,8 @@ let exp_of_ctyp
       let t = (* only under this case we need defaulting  *)
         if List.length res >= 2 && arity >= 2 then
           match default info with
-          | Some x-> x::res | None -> res 
-          (* [ default info :: res ] *)
+          | Some x-> x::res
+          | None -> res 
         else res in
       List.rev t in 
     ExpN.currying ~arity res 
@@ -294,7 +294,7 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     |Some f -> let (a,b) = f name in (Some a, b) in 
 
   let fun_exp =
-    if not ( Ctyp.is_abstract tydcl) then 
+    if not @@  Ctyp.is_abstract tydcl then 
       fun_of_tydcl 
         ~names ~arity ~left_type_variable ~mk_record
         ~result
@@ -306,8 +306,10 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
            ~destination simple_exp_of_ctyp)
         tydcl
     else
-      (eprintf "Warning: %s as a abstract type no structure generated\n" (ObjsN.dump_typedecl tydcl);
-       %exp-{ failwith "Abstract data type not implemented" }) in
+      begin 
+        eprintf "Warning: %s as a abstract type no structure generated\n" @@ ObjsN.dump_typedecl tydcl;
+        %exp-{ failwith "Abstract data type not implemented" }
+      end in
   match annot with
   | None -> 
       %bind-{ $lid:fname = $fun_exp }
@@ -530,5 +532,5 @@ let gen_object
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/deriveN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/derive.cmo" *)
 (* end: *)

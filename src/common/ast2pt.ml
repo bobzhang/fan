@@ -555,7 +555,7 @@ let rec pat (x : pat) : Parsetree.pattern =
     mkpat _loc @@
       Ppat_construct
         (lident_with_loc s sloc, Some (mkpat loc_any Ppat_any), false)
-  | `App(_,p, (* r  *) (`Par _ as r) ) as f->
+  | `App(_,p, r) as f->
       let r =
         match r with
         | `Par (_,r) -> 
@@ -573,28 +573,6 @@ let rec pat (x : pat) : Parsetree.pattern =
             mkpat _loc @@ Ppat_construct (li, Some r, false)
         | _ -> Locf.failf _loc "invalid pattern %s" @@ !dump_pat f
       end 
-      (* in *)
-      (* mkpat _loc (Ppat_variant (p1, Some r )) *)
-  | `App (_,_,_) as f ->
-      let rec pat_fa (al: pat list) (x:pat) =
-        match x with
-        | `App (_,f,a) -> pat_fa (a :: al) f
-        | f -> (f, al)  in
-    let (f,al) = pat_fa [] f in
-    let al = List.map pat al in
-    (match (pat f).ppat_desc with
-     | Ppat_construct (li,None ,_) ->
-       let a =
-         match al with | a::[] -> a | _ -> mkpat _loc @@ Ppat_tuple al in
-       mkpat _loc @@ Ppat_construct (li, (Some a), false)
-     | Ppat_variant (s,None ) ->
-       let a =
-         match al with
-         | [a] -> a
-         | _ -> mkpat _loc (Ppat_tuple al) in
-       mkpat _loc @@ Ppat_variant (s, (Some a))
-     | _ ->
-       error _loc "this is not a constructor, it cannot be applied in a pattern")
   | `Array (_,p)  ->
     mkpat _loc @@ Ppat_array (List.map pat (list_of_sem p []))
   | `ArrayEmpty _ -> mkpat _loc @@ Ppat_array []
