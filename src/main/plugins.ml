@@ -142,7 +142,8 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [Tokenf] *)
+        | `Dot (`Uid  "Tokenf", `Lid "ant") ->
+        (* | %ctyp-{Tokenf.ant} -> *) (** BOOTSTRAPING, associated with module [Tokenf] *)
              res
         | _ ->
             let pat0 = (x.ep0:>pat) in
@@ -224,9 +225,23 @@ let mk_variant cons params =
   if Stringf.ends_with cons "Ant" then
     (EpN.of_vstr_number "Ant" len :> exp)
   else
-    params
-    |> List.map (fun  (x:Ctyp.ty_info) -> x.info_exp )
-    |> List.fold_left ExpN.mee_app (ExpN.mee_of_str cons)  
+    let params =
+      params
+         |> List.map (fun  (x:Ctyp.ty_info) -> x.info_exp ) in
+    let a = (ExpN.mee_of_str cons) in
+    match params with
+    | [] -> a
+    | _ ->
+        let r = ExpN.mk_tuple_ee params in
+        ExpN.mee_app a r
+        (* | `App (_a0,_a1) -> *)
+        (*     `App(_loc, *)
+        (*          `Vrn(_loc,"App"), *)
+        (*          `Par(_loc, *)
+        (*              `Com(_loc, self#strings _loc _a0, *)
+        (*                   self#strings _loc _a1))) *)
+          
+
     
 let mk_record cols = cols |> List.map
   (fun  (x : Ctyp.record_col)
@@ -475,7 +490,7 @@ Typehook.register
       ("PrintWrapper",some generate);; (* double registration should complain*)
 
 
-    
+(* %exp{`TyVrnOf (x, (`Lid "loc"))} *)
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
@@ -483,14 +498,13 @@ Typehook.register
 let generate (mtyps:mtyps) : stru option = 
   let f (name,ty) =
     if  name <> "ant" then 
-     let obj = ObjsN.map_row_field begin function
+     let obj = ObjsN.map_row_field @@ function
        | %row_field-{ $vrn:x of loc } -> %row_field-{ $vrn:x }
        | %row_field-{ $vrn:x of (loc * $y ) }->
            (match y with
            | %ctyp-{ $_ * $_ } -> %row_field-{ $vrn:x of $par:y }
            | _ -> %row_field-{ $vrn:x of $y })
-       | x -> x 
-     end in 
+       | x -> x in 
      obj#typedecl ty
   else ty  in
   (fun x ->  stru_from_mtyps ~f x) mtyps;;

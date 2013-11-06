@@ -20,5 +20,5 @@ end
 
 
 (* local variables: *)
-(* compile-command: "pmake objsN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/objsN.cmo" *)
 (* end: *)
