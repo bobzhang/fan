@@ -26,7 +26,9 @@
   mtyp name_tags opt_class_self_pat opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot
   opt_exp  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
-  override_flag_quot  pat  pat_as_pat_opt  pat_eoi
+  override_flag_quot
+  pat
+  pat_eoi
   row_field  sem_exp  sem_exp_for_list  sem_pat  sem_pat_for_list  semi  sequence
   sigi  sigis  star_ctyp  stru  strus  top_phrase
   type_declaration  type_ident_and_parameters  type_longident  type_longident_and_parameters

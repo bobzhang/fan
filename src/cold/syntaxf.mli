@@ -119,7 +119,7 @@ val rec_flag_quot : flag Gramf.t
 val opt_virtual : flag Gramf.t
 val virtual_flag_quot : flag Gramf.t
 val pat : pat Gramf.t
-val pat_as_pat_opt : pat Gramf.t
+
 val pat_eoi : pat Gramf.t
 val pat_quot : pat Gramf.t
 val row_field : row_field Gramf.t

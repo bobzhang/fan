@@ -551,10 +551,6 @@ let rec pat (x : pat) : Parsetree.pattern =
      | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant _ -> error _loc "antiquotation not allowed here"
   | `Any _  -> mkpat _loc Ppat_any
-  | `App (_,`Uid (sloc,s),`Par (_,`Any loc_any )) ->
-    mkpat _loc @@
-      Ppat_construct
-        (lident_with_loc s sloc, Some (mkpat loc_any Ppat_any), false)
   | `App(_,p, r) as f->
       let r =
         match r with
@@ -785,15 +781,14 @@ let rec exp (x : exp) : Parsetree.expression =
   | `Fun (_,a) -> mkexp _loc @@ Pexp_function ("", None ,case a )
 
   | `IfThenElse (_, e1, e2, e3) ->
-    mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2,Some (exp e3))
-
+      mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2,Some (exp e3))
   | `IfThen (_,e1,e2) -> mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2, None)
   | #literal as x -> exp_literal _loc x 
   | `Any _ -> Locf.failf _loc "Any should not appear in the position of expression"
   | `Label _ | `LabelS _ -> error _loc "labeled expression not allowed here"
   | `Lazy (_loc,e) -> mkexp _loc @@ Pexp_lazy (exp e)
   | `LetIn (_,rf,bi,e) ->
-    mkexp _loc @@ Pexp_let (mkrf rf,bind bi [], exp e)
+      mkexp _loc @@ Pexp_let (mkrf rf,bind bi [], exp e)
   | `LetTryInWith(_,rf,bi,e,cas) ->
     let cas =
       let rec f (x:case)  : case=
@@ -907,7 +902,7 @@ and bind (x:bind) acc =
     let rec id_to_string (x : ctyp) =
       match x with
       | `Lid (_,x) -> [x]
-      | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
+      | `App (_loc,x,y) -> id_to_string x @ id_to_string y
       | x ->
         Locf.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in
     let vars = id_to_string vs in

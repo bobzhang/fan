@@ -10,6 +10,133 @@ let appl_of_list = Ast_gen.appl_of_list
 open FAst
 open! Syntaxf
 let pos_exps = Gramf.mk "pos_exps"
+let make_case exp pat =
+  let grammar_entry_create x = Gramf.mk x in
+  let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t =
+    grammar_entry_create "pat_as_pat_opt" in
+  Gramf.extend_single (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword "as";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+            ("`Alias (_loc, p1, s)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(s : 'a_lident)  ~__fan_1:_ 
+                    ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
+                    (`Alias (_loc, p1, s) : 'pat_as_pat_opt )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("p\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                   (p : 'pat_as_pat_opt )))))]) : Gramf.olevel ));
+  Gramf.extend_single (case : 'case Gramf.t )
+    (None,
+      ((None, None,
+         [([`Keyword "|";
+           `List1sep
+             ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
+            ("bar_of_list l\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(l : 'case0 list)  ~__fan_0:_  (_loc : Locf.t)
+                     -> (bar_of_list l : 'case )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+           ("`Case (_loc, p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
+                   (_loc : Locf.t)  -> (`Case (_loc, p, e) : 'case )))))]) : 
+      Gramf.olevel ));
+  Gramf.extend_single (case0 : 'case0 Gramf.t )
+    (None,
+      ((None, None,
+         [([`Token
+              (((function
+                 | `Ant ({ kind = "case";_} : Tokenf.ant) -> true
+                 | _ -> false)),
+                ({ tag = `Ant; word = (A "case") } : Tokenf.descr ),
+                "`Ant s")],
+            ("mk_ant s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (({ kind = "case";_} as s) : Tokenf.ant) ->
+                        (mk_ant s : 'case0 )
+                    | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "";_} as s) : Tokenf.ant) ->
+                       (mk_ant s : 'case0 )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+           ("`CaseWhen (_loc, (mk_ant s), w, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
+                   ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
+                   (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "";_} as s) : Tokenf.ant) ->
+                       (`CaseWhen (_loc, (mk_ant s), w, e) : 'case0 )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+           ("`Case (_loc, (mk_ant s), e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "";_} as s) : Tokenf.ant) ->
+                       (`Case (_loc, (mk_ant s), e) : 'case0 )
+                   | _ -> assert false))));
+         ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+           ("`CaseWhen (_loc, p, w, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
+                   ~__fan_1:_  ~__fan_0:(p : 'pat_as_pat_opt) 
+                   (_loc : Locf.t)  -> (`CaseWhen (_loc, p, w, e) : 'case0 )))));
+         ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+           ("`Case (_loc, p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
+                   ~__fan_0:(p : 'pat_as_pat_opt)  (_loc : Locf.t)  ->
+                   (`Case (_loc, p, e) : 'case0 )))))]) : Gramf.olevel ));
+  Gramf.extend_single (case_quot : 'case_quot Gramf.t )
+    (None,
+      ((None, None,
+         [([`List1sep
+              ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
+                (`Keyword "|"))],
+            ("bar_of_list x\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(x : 'case0 list)  (_loc : Locf.t)  ->
+                    (bar_of_list x : 'case_quot )))))]) : Gramf.olevel ))
 let make_semi atom nt =
   Gramf.extend_single (nt : 'nt Gramf.t )
     (None,
@@ -42,6 +169,1252 @@ let make_comma atom nt =
              (Gramf.mk_action
                 (fun ~__fan_0:(p : 'atom)  (_loc : Locf.t)  -> (p : 'nt )))))]) : 
       Gramf.olevel ))
+let make_pat exp =
+  let grammar_entry_create x = Gramf.mk x in
+  let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
+  Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword ",";
+           `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ))],
+            ("`Com (_loc, x, y)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(y : 'comma_pat)  ~__fan_1:_ 
+                    ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
+                    (`Com (_loc, x, y) : 'pat_quot )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ";";
+          `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ))],
+           ("`Sem (_loc, x, y)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(y : 'sem_pat)  ~__fan_1:_  ~__fan_0:(x : 'pat)
+                    (_loc : Locf.t)  -> (`Sem (_loc, x, y) : 'pat_quot )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("x\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
+                   (x : 'pat_quot )))))]) : Gramf.olevel ));
+  Gramf.extend_single (pat_constr : 'pat_constr Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm
+              (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+            ("(i : vid  :>pat)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(i : 'module_longident)  (_loc : Locf.t)  ->
+                    ((i : vid  :>pat) : 'pat_constr )))));
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
+           ("(`Vrn (_loc, s) : pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : pat ) : 'pat_constr )))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat_constr )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "pat";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat_constr )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "vrn";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat_constr )
+                   | _ -> assert false))))]) : Gramf.olevel ));
+  Gramf.extend (pat : 'pat Gramf.t )
+    (None,
+      ([((Some "|"), (Some `LA),
+          [([`Self; `Keyword "|"; `Self],
+             ("`Bar (_loc, p1, p2)\n",
+               (Gramf.mk_action
+                  (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat)
+                      (_loc : Locf.t)  -> (`Bar (_loc, p1, p2) : 'pat )))))]);
+       ((Some ".."), (Some `NA),
+         [([`Self; `Keyword ".."; `Self],
+            ("`PaRng (_loc, p1, p2)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
+                    (_loc : Locf.t)  -> (`PaRng (_loc, p1, p2) : 'pat )))))]);
+       ((Some "::"), (Some `RA),
+         [([`Self; `Keyword "::"; `Self],
+            ("`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p1, p2)))))\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
+                    (_loc : Locf.t)  ->
+                    (`App
+                       (_loc, (`Uid (_loc, "::")),
+                         (`Par (_loc, (`Com (_loc, p1, p2))))) : 'pat )))))]);
+       ((Some "apply"), (Some `LA),
+         [([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Self],
+            ("(`App (_loc, p1, p2) : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(p2 : 'pat)  ~__fan_0:(p1 : 'pat_constr) 
+                    (_loc : Locf.t)  ->
+                    ((`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
+         ([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))],
+           ("p1\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p1 : 'pat_constr)  (_loc : Locf.t)  ->
+                   (p1 : 'pat )))));
+         ([`Keyword "lazy"; `Self],
+           ("`Lazy (_loc, p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Lazy (_loc, p) : 'pat )))))]);
+       ((Some "simple"), None,
+         [([`Token
+              (((function
+                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                 | _ -> false)),
+                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+            ("mk_ant ~c:\"pat\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (({ kind = "";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"pat" s : 'pat )
+                    | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "pat";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "par";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int32") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int32";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int64") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int64";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "vrn";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "flo") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "flo";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "chr") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "chr";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "nativeint") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "nativeint";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "str") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "str";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int'") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int32'") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int32'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "int64'") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "int64'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "nativeint'") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "nativeint'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "flo'") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "flo'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "chr'") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "chr'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "str'") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "str'";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`int") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`int";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`int32") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`int32";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`int64") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`int64";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`nativeint") } : Tokenf.descr ),
+               "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`nativeint";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`flo") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`flo";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`chr") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`chr";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "`str") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "`str";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'pat )
+                   | _ -> assert false))));
+         ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
+           ("(i : vid  :>pat)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
+                   ((i : vid  :>pat) : 'pat )))));
+         ([`Token
+             (((function | `Int _ -> true | _ -> false)),
+               ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
+           ("`Int (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Int32 _ -> true | _ -> false)),
+               ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
+           ("`Int32 (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Int32 (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Int64 _ -> true | _ -> false)),
+               ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
+           ("`Int64 (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Int64 (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Nativeint _ -> true | _ -> false)),
+               ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
+               "Nativeint")],
+           ("`Nativeint (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Nativeint (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Flo _ -> true | _ -> false)),
+               ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
+           ("`Flo (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Chr _ -> true | _ -> false)),
+               ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
+           ("`Chr (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'pat )))));
+         ([`Token
+             (((function | `Str _ -> true | _ -> false)),
+               ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
+           ("`Str (_loc, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = s;_} : Tokenf.txt) -> (`Str (_loc, s) : 'pat )))));
+         ([`Keyword "-";
+          `Token
+            (((function | `Int _ -> true | _ -> false)),
+              ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
+           ("`Int (_loc, (Stringf.neg s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Int (_loc, (Stringf.neg s)) : 'pat )))));
+         ([`Keyword "-";
+          `Token
+            (((function | `Int32 _ -> true | _ -> false)),
+              ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
+           ("`Int32 (_loc, (Stringf.neg s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Int32 (_loc, (Stringf.neg s)) : 'pat )))));
+         ([`Keyword "-";
+          `Token
+            (((function | `Int64 _ -> true | _ -> false)),
+              ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
+           ("`Int64 (_loc, (Stringf.neg s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Int64 (_loc, (Stringf.neg s)) : 'pat )))));
+         ([`Keyword "-";
+          `Token
+            (((function | `Nativeint _ -> true | _ -> false)),
+              ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
+              "Nativeint")],
+           ("`Nativeint (_loc, (Stringf.neg s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Nativeint (_loc, (Stringf.neg s)) : 'pat )))));
+         ([`Keyword "-";
+          `Token
+            (((function | `Flo _ -> true | _ -> false)),
+              ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
+           ("`Flo (_loc, (Stringf.neg s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | ({ txt = s;_} : Tokenf.txt) ->
+                       (`Flo (_loc, (Stringf.neg s)) : 'pat )))));
+         ([`Keyword "["; `Keyword "]"],
+           ("`Uid (_loc, \"[]\")\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Uid (_loc, "[]") : 'pat )))));
+         ([`Keyword "[";
+          `Nterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
+          `Keyword "]"],
+           ("s\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(s : 'sem_pat_for_list)  ~__fan_0:_
+                    (_loc : Locf.t)  -> (s : 'pat )))));
+         ([`Keyword "[|"; `Keyword "|]"],
+           ("`ArrayEmpty _loc\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`ArrayEmpty _loc : 'pat )))));
+         ([`Keyword "[|";
+          `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ));
+          `Keyword "|]"],
+           ("`Array (_loc, pl)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(pl : 'sem_pat)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (`Array (_loc, pl) : 'pat )))));
+         ([`Keyword "{";
+          `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
+          `Keyword "}"],
+           ("`Record (_loc, pl)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (`Record (_loc, pl) : 'pat )))));
+         ([`Keyword "("; `Keyword ")"],
+           ("`Uid (_loc, \"()\")\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Uid (_loc, "()") : 'pat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ")"],
+           ("`ModuleUnpack (_loc, m)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`ModuleUnpack (_loc, m) : 'pat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
+           ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
+                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
+                   'pat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Token
+            (((function
+               | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
+               | _ -> false)),
+              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+          `Keyword ")"],
+           ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_ 
+                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_4 with
+                   | (({ kind = "opt";_} as s) : Tokenf.ant) ->
+                       (`ModuleConstraint (_loc, m, (mk_ant s)) : 'pat )
+                   | _ -> assert false))));
+         ([`Keyword "("; `Self; `Keyword ")"],
+           ("p\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (p : 'pat )))));
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
+           ("`Constraint (_loc, p, t)\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Constraint (_loc, p, t) : 'pat )))));
+         ([`Keyword "(";
+          `Self;
+          `Keyword "as";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ")"],
+           ("`Alias (_loc, p, s)\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Alias (_loc, p, s) : 'pat )))));
+         ([`Keyword "(";
+          `Self;
+          `Keyword ",";
+          `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ));
+          `Keyword ")"],
+           ("`Par (_loc, (`Com (_loc, p, pl)))\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_pat)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Par (_loc, (`Com (_loc, p, pl))) : 'pat )))));
+         ([`Keyword "#";
+          `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+           ("`ClassPath (_loc, i)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (`ClassPath (_loc, i) : 'pat )))));
+         ([`Keyword "~";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
+           ("`Label (_loc, i, p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Label (_loc, i, p) : 'pat )))));
+         ([`Token
+             (((function | `Label _ -> true | _ -> false)),
+               ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+          `Self],
+           ("`Label (_loc, (`Lid (_loc, i)), p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(p : 'pat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`Label (_loc, (`Lid (_loc, i)), p) : 'pat )))));
+         ([`Token
+             (((function | `Quot _ -> true | _ -> false)),
+               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+           ("Ast_quotation.expand x Dyn_tag.pat\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (x : Tokenf.quot) ->
+                       (Ast_quotation.expand x Dyn_tag.pat : 'pat )))));
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
+           ("(`Vrn (_loc, s) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))));
+         ([`Keyword "_"],
+           ("`Any _loc\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:_  (_loc : Locf.t)  -> (`Any _loc : 'pat )))));
+         ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("`LabelS (_loc, i)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
+                   -> (`LabelS (_loc, i) : 'pat )))));
+         ([`Token
+             (((function | `Optlabel _ -> true | _ -> false)),
+               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
+                   ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
+                       'pat )))));
+         ([`Token
+             (((function | `Optlabel _ -> true | _ -> false)),
+               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'pat )))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, i, p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
+                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`OptLablExpr (_loc, i, p, e) : 'pat )))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Token
+            (((function
+               | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
+               | _ -> false)),
+              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_ 
+                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   match __fan_6 with
+                   | (({ kind = "opt";_} as s) : Tokenf.ant) ->
+                       (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'pat )
+                   | _ -> assert false))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, i, p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
+                   ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'pat )))));
+         ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("`OptLablS (_loc, i)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
+                   -> (`OptLablS (_loc, i) : 'pat )))));
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'pat )))));
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
+                   ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   (`OptLablExpr (_loc, (`Lid (_loc, "")), p, e) : 'pat )))))])] : 
+      Gramf.olevel list ));
+  Gramf.extend_single (ipat : 'ipat Gramf.t )
+    (None,
+      ((None, None,
+         [([`Keyword "{";
+           `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
+           `Keyword "}"],
+            ("(`Record (_loc, pl) : FAst.pat )\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_
+                     (_loc : Locf.t)  ->
+                    ((`Record (_loc, pl) : FAst.pat ) : 'ipat )))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'ipat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "pat";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'ipat )
+                   | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "par";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'ipat )
+                   | _ -> assert false))));
+         ([`Keyword "("; `Keyword ")"],
+           ("`Uid (_loc, \"()\")\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`Uid (_loc, "()") : 'ipat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ")"],
+           ("`ModuleUnpack (_loc, m)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`ModuleUnpack (_loc, m) : 'ipat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
+           ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
+                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
+                   'ipat )))));
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Token
+            (((function
+               | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
+               | _ -> false)),
+              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+          `Keyword ")"],
+           ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_ 
+                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   match __fan_4 with
+                   | (({ kind = "opt";_} as s) : Tokenf.ant) ->
+                       (`ModuleConstraint (_loc, m, (mk_ant s)) : 'ipat )
+                   | _ -> assert false))));
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")"],
+           ("p\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (p : 'ipat )))));
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
+           ("(`Constraint (_loc, p, t) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat )))));
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword "as";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ")"],
+           ("(`Alias (_loc, p, s) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat )))));
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ",";
+          `Nterm (Gramf.obj (comma_ipat : 'comma_ipat Gramf.t ));
+          `Keyword ")"],
+           ("(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_ipat)  ~__fan_2:_ 
+                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
+                   'ipat )))));
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("(s : alident  :>pat)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
+                   ((s : alident  :>pat) : 'ipat )))));
+         ([`Token
+             (((function | `Label _ -> true | _ -> false)),
+               ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
+          `Self],
+           ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(p : 'ipat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
+                       'ipat )))));
+         ([`Keyword "~";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
+           ("(`Label (_loc, i, p) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:(p : 'ipat)  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
+         ([`Token
+             (((function | `Quot _ -> true | _ -> false)),
+               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
+           ("Ast_quotation.expand x Dyn_tag.pat\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (x : Tokenf.quot) ->
+                       (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))));
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
+           ("(`Vrn (_loc, s) : FAst.pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
+         ([`Keyword "_"],
+           ("`Any _loc\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:_  (_loc : Locf.t)  -> (`Any _loc : 'ipat )))));
+         ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("`LabelS (_loc, i)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
+                   -> (`LabelS (_loc, i) : 'ipat )))));
+         ([`Token
+             (((function | `Optlabel _ -> true | _ -> false)),
+               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
+                   ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
+                       'ipat )))));
+         ([`Token
+             (((function | `Optlabel _ -> true | _ -> false)),
+               ({ tag = `Optlabel; word = Any } : Tokenf.descr ), "Optlabel");
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | ({ txt = i;_} : Tokenf.txt) ->
+                       (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'ipat )))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, i, p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
+                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`OptLablExpr (_loc, i, p, e) : 'ipat )))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Token
+            (((function
+               | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
+               | _ -> false)),
+              ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
+             (Gramf.mk_action
+                (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_ 
+                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
+                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                   match __fan_6 with
+                   | (({ kind = "opt";_} as s) : Tokenf.ant) ->
+                       (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'ipat )
+                   | _ -> assert false))));
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, i, p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
+                   ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'ipat )))));
+         ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("`OptLablS (_loc, i)\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
+                   -> (`OptLablS (_loc, i) : 'ipat )))));
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword ")"],
+           ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
+                   ~__fan_0:_  (_loc : Locf.t)  ->
+                   (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'ipat )))));
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
+           ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
+                   ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   (`OptLablExpr (_loc, (`Lid (_loc, "")), p, e) : 'ipat )))))]) : 
+      Gramf.olevel ));
+  Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
+            ("`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p, pl)))))\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(pl : 'sem_pat_for_list)  ~__fan_1:_ 
+                    ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                    (`App
+                       (_loc, (`Uid (_loc, "::")),
+                         (`Par (_loc, (`Com (_loc, p, pl))))) : 'sem_pat_for_list )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                   (`App
+                      (_loc, (`Uid (_loc, "::")),
+                        (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                   'sem_pat_for_list )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
+           ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                   (`App
+                      (_loc, (`Uid (_loc, "::")),
+                        (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                   'sem_pat_for_list )))))]) : Gramf.olevel ));
+  Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword ":";
+           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+            ("`Constraint (_loc, p, t)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
+                    (_loc : Locf.t)  ->
+                    (`Constraint (_loc, p, t) : 'pat_tcon )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("p\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                   (p : 'pat_tcon )))))]) : Gramf.olevel ));
+  Gramf.extend_single (ipat_tcon : 'ipat_tcon Gramf.t )
+    (None,
+      ((None, None,
+         [([`Token
+              (((function
+                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                 | _ -> false)),
+                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+            ("mk_ant ~c:\"pat\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (({ kind = "";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"pat" s : 'ipat_tcon )
+                    | _ -> assert false))));
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+           ("(i : alident  :>pat)\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((i : alident  :>pat) : 'ipat_tcon )))));
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+           ("(`Constraint (_loc, (i : alident  :>pat), t) : pat )\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
+                   ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((`Constraint (_loc, (i : alident  :>pat), t) : pat ) : 
+                   'ipat_tcon )))))]) : Gramf.olevel ));
+  Gramf.extend_single (label_pat_list : 'label_pat_list Gramf.t )
+    (None,
+      ((None, None,
+         [([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+           `Keyword ";";
+           `Self],
+            ("`Sem (_loc, p1, p2)\n",
+              (Gramf.mk_action
+                 (fun ~__fan_2:(p2 : 'label_pat_list)  ~__fan_1:_ 
+                    ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, p1, p2) : 'label_pat_list )))));
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";";
+          `Keyword "_"],
+           ("`Sem (_loc, p1, (`Any _loc))\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(p1 : 'label_pat) 
+                   (_loc : Locf.t)  ->
+                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";";
+          `Keyword "_";
+          `Keyword ";"],
+           ("`Sem (_loc, p1, (`Any _loc))\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:_ 
+                   ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
+           ("p1\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (p1 : 'label_pat_list )))));
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";"],
+           ("p1\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:_  ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t) 
+                   -> (p1 : 'label_pat_list )))))]) : Gramf.olevel ));
+  Gramf.extend_single (label_pat : 'label_pat Gramf.t )
+    (None,
+      ((None, None,
+         [([`Token
+              (((function
+                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                 | _ -> false)),
+                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
+            ("mk_ant ~c:\"pat\" s\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | (({ kind = "";_} as s) : Tokenf.ant) ->
+                        (mk_ant ~c:"pat" s : 'label_pat )
+                    | _ -> assert false))));
+         ([`Token
+             (((function
+                | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
+                | _ -> false)),
+               ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
+           ("mk_ant ~c:\"pat\" s\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | (({ kind = "pat";_} as s) : Tokenf.ant) ->
+                       (mk_ant ~c:"pat" s : 'label_pat )
+                   | _ -> assert false))));
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("`RecBind (_loc, i, p)\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(p : 'pat)  ~__fan_1:_ 
+                   ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
+                   (`RecBind (_loc, i, p) : 'label_pat )))));
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
+           ("`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
+                   (`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i)))) : 
+                   'label_pat )))))]) : Gramf.olevel ))
 let () =
   make_semi field_exp field_exp_list;
   make_semi exp sem_exp;
@@ -51,7 +1424,9 @@ let () =
   make_semi clsigi clsigi_quot;
   make_comma pat comma_pat;
   make_comma ipat comma_ipat;
-  make_comma exp comma_exp
+  make_comma exp comma_exp;
+  make_case exp pat;
+  make_pat exp
 let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
@@ -2710,131 +4085,13 @@ let apply () =
                  (fun ~__fan_2:(b2 : 'bind)  ~__fan_1:_ 
                     ~__fan_0:(b1 : 'bind)  (_loc : Locf.t)  ->
                     (`And (_loc, b1, b2) : 'bind )))));
-          ([`Nterm (Gramf.obj (let_bind : 'let_bind Gramf.t ))],
-            ("b\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(b : 'let_bind)  (_loc : Locf.t)  ->
-                    (b : 'bind )))))]) : Gramf.olevel ));
-   Gramf.extend_single (let_bind : 'let_bind Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-            `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
-             ("`Bind (_loc, p, e)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'fun_bind)  ~__fan_0:(p : 'pat) 
-                     (_loc : Locf.t)  -> (`Bind (_loc, p, e) : 'let_bind )))))]) : 
-       Gramf.olevel )));
-  (Gramf.extend_single (case : 'case Gramf.t )
-     (None,
-       ((None, None,
-          [([`Keyword "|";
-            `List1sep
-              ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-                (`Keyword "|"))],
-             ("bar_of_list l\n",
-               (Gramf.mk_action
-                  (fun ~__fan_1:(l : 'case0 list)  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (bar_of_list l : 'case )))));
           ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword "->";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("`Case (_loc, p, e)\n",
+           `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
+            ("`Bind (_loc, p, e)\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                    (_loc : Locf.t)  -> (`Case (_loc, p, e) : 'case )))))]) : 
-       Gramf.olevel ));
-   Gramf.extend_single (case0 : 'case0 Gramf.t )
-     (None,
-       ((None, None,
-          [([`Token
-               (((function
-                  | `Ant ({ kind = "case";_} : Tokenf.ant) -> true
-                  | _ -> false)),
-                 ({ tag = `Ant; word = (A "case") } : Tokenf.descr ),
-                 "`Ant s")],
-             ("mk_ant ~c:\"case\" s\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     match __fan_0 with
-                     | (({ kind = "case";_} as s) : Tokenf.ant) ->
-                         (mk_ant ~c:"case" s : 'case0 )
-                     | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"case\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"case" s : 'case0 )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
-           `Keyword "when";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword "->";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("`CaseWhen (_loc, (mk_ant ~c:\"case\" s), w, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
-                    ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (`CaseWhen (_loc, (mk_ant ~c:"case" s), w, e) : 
-                        'case0 )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s");
-           `Keyword "->";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("`Case (_loc, (mk_ant ~c:\"case\" s), e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (`Case (_loc, (mk_ant ~c:"case" s), e) : 'case0 )
-                    | _ -> assert false))));
-          ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
-           `Keyword "when";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword "->";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("`CaseWhen (_loc, p, w, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
-                    ~__fan_1:_  ~__fan_0:(p : 'pat_as_pat_opt) 
-                    (_loc : Locf.t)  -> (`CaseWhen (_loc, p, w, e) : 
-                    'case0 )))));
-          ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
-           `Keyword "->";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("`Case (_loc, p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(p : 'pat_as_pat_opt)  (_loc : Locf.t)  ->
-                    (`Case (_loc, p, e) : 'case0 )))))]) : Gramf.olevel ));
-   Gramf.extend_single (case_quot : 'case_quot Gramf.t )
-     (None,
-       ((None, None,
-          [([`List1sep
-               ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-                 (`Keyword "|"))],
-             ("bar_of_list x\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'case0 list)  (_loc : Locf.t)  ->
-                     (bar_of_list x : 'case_quot )))))]) : Gramf.olevel )));
+                 (fun ~__fan_1:(e : 'fun_bind)  ~__fan_0:(p : 'pat) 
+                    (_loc : Locf.t)  -> (`Bind (_loc, p, e) : 'bind )))))]) : 
+       Gramf.olevel )));
   (Gramf.extend_single (rec_exp_quot : 'rec_exp_quot Gramf.t )
      (None,
        ((None, None,
@@ -2920,1283 +4177,6 @@ let apply () =
                     ~__fan_0:(l : 'a_lident)  (_loc : Locf.t)  ->
                     (`RecBind (_loc, (l :>vid), e) : 'field_exp )))))]) : 
        Gramf.olevel )));
-  (let grammar_entry_create x = Gramf.mk x in
-   let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
-   Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-            `Keyword ",";
-            `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ))],
-             ("`Com (_loc, x, y)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(y : 'comma_pat)  ~__fan_1:_ 
-                     ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                     (`Com (_loc, x, y) : 'pat_quot )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword ";";
-           `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ))],
-            ("`Sem (_loc, x, y)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(y : 'sem_pat)  ~__fan_1:_ 
-                    ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, x, y) : 'pat_quot )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("x\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                    (x : 'pat_quot )))))]) : Gramf.olevel ));
-   Gramf.extend_single (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-            `Keyword "as";
-            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-             ("`Alias (_loc, p1, s)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(s : 'a_lident)  ~__fan_1:_ 
-                     ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
-                     (`Alias (_loc, p1, s) : 'pat_as_pat_opt )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'pat_as_pat_opt )))))]) : Gramf.olevel ));
-   Gramf.extend_single (pat_constr : 'pat_constr Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm
-               (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
-             ("(i : vid  :>pat)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(i : 'module_longident)  (_loc : Locf.t)  ->
-                     ((i : vid  :>pat) : 'pat_constr )))));
-          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
-            ("(`Vrn (_loc, s) : pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> ((`Vrn (_loc, s) : pat ) : 'pat_constr )))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat_constr )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "pat";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat_constr )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "vrn";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat_constr )
-                    | _ -> assert false))))]) : Gramf.olevel ));
-   Gramf.extend (pat : 'pat Gramf.t )
-     (None,
-       ([((Some "|"), (Some `LA),
-           [([`Self; `Keyword "|"; `Self],
-              ("`Bar (_loc, p1, p2)\n",
-                (Gramf.mk_action
-                   (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_ 
-                      ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
-                      (`Bar (_loc, p1, p2) : 'pat )))))]);
-        ((Some ".."), (Some `NA),
-          [([`Self; `Keyword ".."; `Self],
-             ("`PaRng (_loc, p1, p2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat)
-                      (_loc : Locf.t)  -> (`PaRng (_loc, p1, p2) : 'pat )))))]);
-        ((Some "::"), (Some `RA),
-          [([`Self; `Keyword "::"; `Self],
-             ("`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p1, p2)))))\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat)
-                      (_loc : Locf.t)  ->
-                     (`App
-                        (_loc, (`Uid (_loc, "::")),
-                          (`Par (_loc, (`Com (_loc, p1, p2))))) : 'pat )))))]);
-        ((Some "apply"), (Some `LA),
-          [([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Self],
-             ("(`App (_loc, p1, p2) : FAst.pat )\n",
-               (Gramf.mk_action
-                  (fun ~__fan_1:(p2 : 'pat)  ~__fan_0:(p1 : 'pat_constr) 
-                     (_loc : Locf.t)  ->
-                     ((`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
-          ([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))],
-            ("p1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p1 : 'pat_constr)  (_loc : Locf.t)  ->
-                    (p1 : 'pat )))));
-          ([`Keyword "lazy"; `Self],
-            ("`Lazy (_loc, p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Lazy (_loc, p) : 'pat )))))]);
-        ((Some "simple"), None,
-          [([`Token
-               (((function
-                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-             ("mk_ant ~c:\"pat\" s\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     match __fan_0 with
-                     | (({ kind = "";_} as s) : Tokenf.ant) ->
-                         (mk_ant ~c:"pat" s : 'pat )
-                     | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "pat";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "par";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int32") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int32";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int64") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int64";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "vrn") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "vrn";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "flo") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "flo";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "chr") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "chr";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "nativeint") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "nativeint";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "str") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "str";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int32'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int32'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "int64'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "int64'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "nativeint'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "nativeint'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "flo'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "flo'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "chr'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "chr'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "str'") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "str'";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`int") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`int";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`int32") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`int32";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`int64") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`int64";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`nativeint") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`nativeint";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`flo") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`flo";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`chr") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`chr";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "`str") } : Tokenf.descr ),
-                "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "`str";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'pat )
-                    | _ -> assert false))));
-          ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
-            ("(i : vid  :>pat)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
-                    ((i : vid  :>pat) : 'pat )))));
-          ([`Token
-              (((function | `Int _ -> true | _ -> false)),
-                ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
-            ("`Int (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) -> (`Int (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Int32 _ -> true | _ -> false)),
-                ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
-            ("`Int32 (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Int32 (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Int64 _ -> true | _ -> false)),
-                ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
-            ("`Int64 (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Int64 (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Nativeint _ -> true | _ -> false)),
-                ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
-                "Nativeint")],
-            ("`Nativeint (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Nativeint (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Flo _ -> true | _ -> false)),
-                ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
-            ("`Flo (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) -> (`Flo (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Chr _ -> true | _ -> false)),
-                ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
-            ("`Chr (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) -> (`Chr (_loc, s) : 'pat )))));
-          ([`Token
-              (((function | `Str _ -> true | _ -> false)),
-                ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
-            ("`Str (_loc, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = s;_} : Tokenf.txt) -> (`Str (_loc, s) : 'pat )))));
-          ([`Keyword "-";
-           `Token
-             (((function | `Int _ -> true | _ -> false)),
-               ({ tag = `Int; word = Any } : Tokenf.descr ), "Int")],
-            ("`Int (_loc, (Stringf.neg s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Int (_loc, (Stringf.neg s)) : 'pat )))));
-          ([`Keyword "-";
-           `Token
-             (((function | `Int32 _ -> true | _ -> false)),
-               ({ tag = `Int32; word = Any } : Tokenf.descr ), "Int32")],
-            ("`Int32 (_loc, (Stringf.neg s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Int32 (_loc, (Stringf.neg s)) : 'pat )))));
-          ([`Keyword "-";
-           `Token
-             (((function | `Int64 _ -> true | _ -> false)),
-               ({ tag = `Int64; word = Any } : Tokenf.descr ), "Int64")],
-            ("`Int64 (_loc, (Stringf.neg s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Int64 (_loc, (Stringf.neg s)) : 'pat )))));
-          ([`Keyword "-";
-           `Token
-             (((function | `Nativeint _ -> true | _ -> false)),
-               ({ tag = `Nativeint; word = Any } : Tokenf.descr ),
-               "Nativeint")],
-            ("`Nativeint (_loc, (Stringf.neg s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Nativeint (_loc, (Stringf.neg s)) : 'pat )))));
-          ([`Keyword "-";
-           `Token
-             (((function | `Flo _ -> true | _ -> false)),
-               ({ tag = `Flo; word = Any } : Tokenf.descr ), "Flo")],
-            ("`Flo (_loc, (Stringf.neg s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = s;_} : Tokenf.txt) ->
-                        (`Flo (_loc, (Stringf.neg s)) : 'pat )))));
-          ([`Keyword "["; `Keyword "]"],
-            ("`Uid (_loc, \"[]\")\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Uid (_loc, "[]") : 'pat )))));
-          ([`Keyword "[";
-           `Nterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
-           `Keyword "]"],
-            ("s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(s : 'sem_pat_for_list) 
-                    ~__fan_0:_  (_loc : Locf.t)  -> (s : 'pat )))));
-          ([`Keyword "[|"; `Keyword "|]"],
-            ("`ArrayEmpty _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ArrayEmpty _loc : 'pat )))));
-          ([`Keyword "[|";
-           `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ));
-           `Keyword "|]"],
-            ("`Array (_loc, pl)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(pl : 'sem_pat)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Array (_loc, pl) : 'pat )))));
-          ([`Keyword "{";
-           `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
-           `Keyword "}"],
-            ("`Record (_loc, pl)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_
-                     (_loc : Locf.t)  -> (`Record (_loc, pl) : 'pat )))));
-          ([`Keyword "("; `Keyword ")"],
-            ("`Uid (_loc, \"()\")\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Uid (_loc, "()") : 'pat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ")"],
-            ("`ModuleUnpack (_loc, m)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ModuleUnpack (_loc, m) : 'pat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-           `Keyword ")"],
-            ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
-                    'pat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ":";
-           `Token
-             (((function
-                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)),
-               ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
-           `Keyword ")"],
-            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_
-                     ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_4 with
-                    | (({ kind = "opt";_} as s) : Tokenf.ant) ->
-                        (`ModuleConstraint (_loc, m, (mk_ant s)) : 'pat )
-                    | _ -> assert false))));
-          ([`Keyword "("; `Self; `Keyword ")"],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (p : 'pat )))));
-          ([`Keyword "(";
-           `Self;
-           `Keyword ":";
-           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-           `Keyword ")"],
-            ("`Constraint (_loc, p, t)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, p, t) : 'pat )))));
-          ([`Keyword "(";
-           `Self;
-           `Keyword "as";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ")"],
-            ("`Alias (_loc, p, s)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Alias (_loc, p, s) : 'pat )))));
-          ([`Keyword "(";
-           `Self;
-           `Keyword ",";
-           `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ));
-           `Keyword ")"],
-            ("`Par (_loc, (`Com (_loc, p, pl)))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_pat)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Par (_loc, (`Com (_loc, p, pl))) : 'pat )))));
-          ([`Keyword "#";
-           `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
-            ("`ClassPath (_loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ClassPath (_loc, i) : 'pat )))));
-          ([`Keyword "~";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Self],
-            ("`Label (_loc, i, p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Label (_loc, i, p) : 'pat )))));
-          ([`Token
-              (((function | `Label _ -> true | _ -> false)),
-                ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
-           `Self],
-            ("`Label (_loc, (`Lid (_loc, i)), p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(p : 'pat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        (`Label (_loc, (`Lid (_loc, i)), p) : 'pat )))));
-          ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
-            ("Ast_quotation.expand x Dyn_tag.pat\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (x : Tokenf.quot) ->
-                        (Ast_quotation.expand x Dyn_tag.pat : 'pat )))));
-          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
-            ("(`Vrn (_loc, s) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))));
-          ([`Keyword "_"],
-            ("(`Any _loc : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Any _loc : FAst.pat ) : 'pat )))));
-          ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("`LabelS (_loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`LabelS (_loc, i) : 'pat )))));
-          ([`Token
-              (((function | `Optlabel _ -> true | _ -> false)),
-                ({ tag = `Optlabel; word = Any } : Tokenf.descr ),
-                "Optlabel");
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
-                        'pat )))));
-          ([`Token
-              (((function | `Optlabel _ -> true | _ -> false)),
-                ({ tag = `Optlabel; word = Any } : Tokenf.descr ),
-                "Optlabel");
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'pat )))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, i, p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
-                    ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OptLablExpr (_loc, i, p, e) : 'pat )))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Token
-             (((function
-                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)),
-               ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_
-                     ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    match __fan_6 with
-                    | (({ kind = "opt";_} as s) : Tokenf.ant) ->
-                        (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'pat )
-                    | _ -> assert false))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, i, p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
-                    ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'pat )))));
-          ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("`OptLablS (_loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`OptLablS (_loc, i) : 'pat )))));
-          ([`Keyword "?";
-           `Keyword "(";
-           `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'pat )))));
-          ([`Keyword "?";
-           `Keyword "(";
-           `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`OptLablExpr (_loc, (`Lid (_loc, "")), p, e) : 'pat )))))])] : 
-       Gramf.olevel list ));
-   Gramf.extend_single (ipat : 'ipat Gramf.t )
-     (None,
-       ((None, None,
-          [([`Keyword "{";
-            `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
-            `Keyword "}"],
-             ("(`Record (_loc, pl) : FAst.pat )\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list) 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     ((`Record (_loc, pl) : FAst.pat ) : 'ipat )))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'ipat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "pat";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'ipat )
-                    | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "par") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "par";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'ipat )
-                    | _ -> assert false))));
-          ([`Keyword "("; `Keyword ")"],
-            ("(`Uid (_loc, \"()\") : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.pat ) : 'ipat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ")"],
-            ("`ModuleUnpack (_loc, m)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ModuleUnpack (_loc, m) : 'ipat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-           `Keyword ")"],
-            ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
-                    'ipat )))));
-          ([`Keyword "(";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Keyword ":";
-           `Token
-             (((function
-                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)),
-               ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
-           `Keyword ")"],
-            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_
-                     ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_4 with
-                    | (({ kind = "opt";_} as s) : Tokenf.ant) ->
-                        (`ModuleConstraint (_loc, m, (mk_ant s)) : 'ipat )
-                    | _ -> assert false))));
-          ([`Keyword "(";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword ")"],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (p : 'ipat )))));
-          ([`Keyword "(";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-           `Keyword ")"],
-            ("(`Constraint (_loc, p, t) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat )))));
-          ([`Keyword "(";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword "as";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ")"],
-            ("(`Alias (_loc, p, s) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat )))));
-          ([`Keyword "(";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword ",";
-           `Nterm (Gramf.obj (comma_ipat : 'comma_ipat Gramf.t ));
-           `Keyword ")"],
-            ("(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_ipat)  ~__fan_2:_ 
-                    ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
-                    'ipat )))));
-          ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("(s : alident  :>pat)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
-                    ((s : alident  :>pat) : 'ipat )))));
-          ([`Token
-              (((function | `Label _ -> true | _ -> false)),
-                ({ tag = `Label; word = Any } : Tokenf.descr ), "Label");
-           `Self],
-            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(p : 'ipat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
-                        'ipat )))));
-          ([`Keyword "~";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Self],
-            ("(`Label (_loc, i, p) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:(p : 'ipat)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
-          ([`Token
-              (((function | `Quot _ -> true | _ -> false)),
-                ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
-            ("Ast_quotation.expand x Dyn_tag.pat\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (x : Tokenf.quot) ->
-                        (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))));
-          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
-            ("(`Vrn (_loc, s) : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
-          ([`Keyword "_"],
-            ("(`Any _loc : FAst.pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Any _loc : FAst.pat ) : 'ipat )))));
-          ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("`LabelS (_loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`LabelS (_loc, i) : 'ipat )))));
-          ([`Token
-              (((function | `Optlabel _ -> true | _ -> false)),
-                ({ tag = `Optlabel; word = Any } : Tokenf.descr ),
-                "Optlabel");
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
-                        'ipat )))));
-          ([`Token
-              (((function | `Optlabel _ -> true | _ -> false)),
-                ({ tag = `Optlabel; word = Any } : Tokenf.descr ),
-                "Optlabel");
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = i;_} : Tokenf.txt) ->
-                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'ipat )))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, i, p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
-                    ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OptLablExpr (_loc, i, p, e) : 'ipat )))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword "=";
-           `Token
-             (((function
-                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
-                | _ -> false)),
-               ({ tag = `Ant; word = (A "opt") } : Tokenf.descr ), "`Ant s");
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_
-                     ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    match __fan_6 with
-                    | (({ kind = "opt";_} as s) : Tokenf.ant) ->
-                        (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'ipat )
-                    | _ -> assert false))));
-          ([`Keyword "?";
-           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Keyword "(";
-           `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, i, p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
-                    ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'ipat )))));
-          ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("`OptLablS (_loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`OptLablS (_loc, i) : 'ipat )))));
-          ([`Keyword "?";
-           `Keyword "(";
-           `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-           `Keyword ")"],
-            ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'ipat )))));
-          ([`Keyword "?";
-           `Keyword "(";
-           `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword ")"],
-            ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`OptLablExpr (_loc, (`Lid (_loc, "")), p, e) : 'ipat )))))]) : 
-       Gramf.olevel ));
-   Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
-             ("`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p, pl)))))\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(pl : 'sem_pat_for_list)  ~__fan_1:_ 
-                     ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                     (`App
-                        (_loc, (`Uid (_loc, "::")),
-                          (`Par (_loc, (`Com (_loc, p, pl))))) : 'sem_pat_for_list )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (`App
-                       (_loc, (`Uid (_loc, "::")),
-                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
-                    'sem_pat_for_list )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
-            ("`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (`App
-                       (_loc, (`Uid (_loc, "::")),
-                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
-                    'sem_pat_for_list )))))]) : Gramf.olevel ));
-   Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-            `Keyword ":";
-            `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-             ("(`Constraint (_loc, p, t) : FAst.pat )\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                     (_loc : Locf.t)  ->
-                     ((`Constraint (_loc, p, t) : FAst.pat ) : 'pat_tcon )))));
-          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("p\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                    (p : 'pat_tcon )))))]) : Gramf.olevel ));
-   Gramf.extend_single (ipat_tcon : 'ipat_tcon Gramf.t )
-     (None,
-       ((None, None,
-          [([`Token
-               (((function
-                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-             ("mk_ant ~c:\"pat\" s\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     match __fan_0 with
-                     | (({ kind = "";_} as s) : Tokenf.ant) ->
-                         (mk_ant ~c:"pat" s : 'ipat_tcon )
-                     | _ -> assert false))));
-          ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
-            ("(i : alident  :>pat)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                    ((i : alident  :>pat) : 'ipat_tcon )))));
-          ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Keyword ":";
-           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
-            ("(`Constraint (_loc, (i : alident  :>pat), t) : pat )\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                    ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                    ((`Constraint (_loc, (i : alident  :>pat), t) : pat ) : 
-                    'ipat_tcon )))))]) : Gramf.olevel ));
-   Gramf.extend_single (label_pat_list : 'label_pat_list Gramf.t )
-     (None,
-       ((None, None,
-          [([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-            `Keyword ";";
-            `Self],
-             ("`Sem (_loc, p1, p2)\n",
-               (Gramf.mk_action
-                  (fun ~__fan_2:(p2 : 'label_pat_list)  ~__fan_1:_ 
-                     ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                     (`Sem (_loc, p1, p2) : 'label_pat_list )))));
-          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-           `Keyword ";";
-           `Keyword "_"],
-            ("`Sem (_loc, p1, (`Any _loc))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(p1 : 'label_pat) 
-                    (_loc : Locf.t)  ->
-                    (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
-          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-           `Keyword ";";
-           `Keyword "_";
-           `Keyword ";"],
-            ("`Sem (_loc, p1, (`Any _loc))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:_ 
-                    ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
-          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
-            ("p1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                    (p1 : 'label_pat_list )))));
-          ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-           `Keyword ";"],
-            ("p1\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)
-                     -> (p1 : 'label_pat_list )))))]) : Gramf.olevel ));
-   Gramf.extend_single (label_pat : 'label_pat Gramf.t )
-     (None,
-       ((None, None,
-          [([`Token
-               (((function
-                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                  | _ -> false)),
-                 ({ tag = `Ant; word = (A "") } : Tokenf.descr ), "`Ant s")],
-             ("mk_ant ~c:\"pat\" s\n",
-               (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     match __fan_0 with
-                     | (({ kind = "";_} as s) : Tokenf.ant) ->
-                         (mk_ant ~c:"pat" s : 'label_pat )
-                     | _ -> assert false))));
-          ([`Token
-              (((function
-                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
-                 | _ -> false)),
-                ({ tag = `Ant; word = (A "pat") } : Tokenf.descr ), "`Ant s")],
-            ("mk_ant ~c:\"pat\" s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "pat";_} as s) : Tokenf.ant) ->
-                        (mk_ant ~c:"pat" s : 'label_pat )
-                    | _ -> assert false))));
-          ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
-           `Keyword "=";
-           `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-            ("`RecBind (_loc, i, p)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:(p : 'pat)  ~__fan_1:_ 
-                    ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
-                    (`RecBind (_loc, i, p) : 'label_pat )))));
-          ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
-            ("`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
-                    (`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i)))) : 
-                    'label_pat )))))]) : Gramf.olevel )));
   (Gramf.extend_single (luident : 'luident Gramf.t )
      (None,
        ((None, None,

@@ -483,7 +483,7 @@ Typehook.register
       ("PrintWrapper",some generate);; (* double registration should complain*)
 
 
-(* %exp{`TyVrnOf (x, (`Lid "loc"))} *)
+
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)

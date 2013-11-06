@@ -20,6 +20,36 @@ open! Syntaxf
 
 %create{Gramf pos_exps};;
 
+%extend{primitve@Inline :
+       [ Int s   %{`Int(_loc,s)}
+       | Int32 s %{ `Int32(_loc,s)}
+       | Int64 s %{ `Int64(_loc,s)}
+       | Nativeint s %{ `Nativeint (_loc, s)}
+       | Flo s %{  `Flo (_loc, s)}
+       | Chr s %{ `Chr (_loc, s)}
+       | Str s %{ `Str (_loc, s)}]};;
+
+
+let make_case exp pat =
+  %extend{
+  pat_as_pat_opt@Local:
+  [ pat as p1; "as"; a_lident as s %{  `Alias (_loc, p1, s)}
+  | pat as p %{p} ]
+  case:
+  [ "|"; L1 case0 SEP "|" as l %{ bar_of_list l }
+  | pat as p; "->"; exp as e %{ `Case(_loc,p,e)}]
+  case0:
+  [ Ant ("case" | "", s) %{ mk_ant  s}
+  | Ant ("",s) ;"when";exp as w;"->"; exp as e %{
+    `CaseWhen(_loc,mk_ant  s, w,e )}
+  | Ant ("",s); "->"; exp as e %{
+    `Case(_loc,mk_ant  s ,e)}
+  | pat_as_pat_opt as p; "when"; exp as w;  "->"; exp as e %{
+           `CaseWhen (_loc, p, w, e)}
+  | pat_as_pat_opt as p; "->";exp as e %{ `Case(_loc,p,e)}]
+  case_quot:
+  [ L1 case0 SEP "|" as x %{ bar_of_list x}]  };;
+
 
 let make_semi  atom nt =
   %extend{
@@ -32,6 +62,141 @@ let make_comma atom nt =
    nt:
     [ S as p1; ","; S as p2 %{`Com(_loc,p1,p2)}
     | atom as p %{p}]}
+
+let make_pat exp =
+  %extend{
+       pat_quot:
+       [ pat as x; ","; comma_pat as y %{ `Com(_loc,x,y)}
+       | pat as x; ";"; sem_pat as y %{ `Sem(_loc,x,y)}
+       | pat as x %{ x}]
+       
+       
+       atom_pat@Inline:
+        [ Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
+        | "`"; luident as s  %pat{$vrn:s}
+        | "_" %{ `Any _loc}
+        | "~"; a_lident as i %{  `LabelS(_loc,i)}
+        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
+        | Optlabel i; "("; pat_tcon as p; ")"  %{
+            `OptLabl(_loc,`Lid(_loc,i),p)}
+        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,i,p,e)}
+        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
+            `OptLablExpr (_loc, i, p, mk_ant s)}
+        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
+            `OptLabl(_loc,i,p)}
+        | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
+        | "?"; "("; ipat_tcon as p; ")" %{
+            `OptLabl(_loc,`Lid(_loc,""),p)}
+        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
+            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}]
+
+       pat_constr@Local:
+       [module_longident as i %{(i :vid :> pat)}
+       |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
+       |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
+       pat:
+       { "|" LA
+        [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
+       ".." NA
+        [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
+        "::" RA
+        [ S as p1; "::"; S as p2 %{
+          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}
+        ]
+
+       "apply" LA (* `Pat ((name,tydcl) as  named_type) *)
+        [ pat_constr as p1; S as p2
+            %pat{$p1 $p2}
+        | pat_constr as p1 %{ p1}
+        | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
+       (* special_pat@Local: *)
+       (*  [ ; pat as p ]               *)
+       "simple"
+        [ Ant ("" |"pat" |"par" |"int"
+               |"int32" |"int64" |"vrn" |"flo"
+               |"chr" |"nativeint" |"str"
+               |"int'" |"int32'" |"int64'"
+               |"nativeint'" |"flo'" |"chr'"
+               |"str'" |"`int" |"`int32"
+               |"`int64" |"`nativeint" |"`flo"
+               |"`chr" |"`str",s)
+          %{ mk_ant ~c:"pat" s}
+        | vid as i %{ (i : vid :> pat)}
+        | @primitve
+        | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
+        | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
+        | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
+        | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
+        | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
+        | "["; "]" %{ `Uid (_loc, "[]")}
+        | "["; sem_pat_for_list as s; "]" %{ s}
+        | "[|"; "|]" %{ `ArrayEmpty(_loc)}
+        | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
+        | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
+        | "("; ")" %{ `Uid (_loc, "()")}
+        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
+        | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
+            `ModuleConstraint(_loc,m, `Package(_loc,pt))}
+        | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
+            `ModuleConstraint (_loc, m, mk_ant s)}
+        | "("; S as p; ")" %{ p}
+        | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
+        | "("; S as p; "as";  a_lident as s; ")" %{ `Alias (_loc, p, s)}
+        | "("; S as p; ","; comma_pat as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
+        | "#"; type_longident as i %{ `ClassPath(_loc,i)}              
+
+          (* duplicated may be removed later with [pat Level "apply"] *)
+        
+        | "~"; a_lident as i; ":"; S as p %{`Label (_loc, i, p)}
+        | Label i; S as p   %{`Label (_loc, (`Lid (_loc, i)), p) }
+
+        | @atom_pat
+        ] }
+
+       ipat:
+        [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
+        | Ant (""|"pat"|"par" ,s) %{ mk_ant  ~c:"pat"  s}
+        | "("; ")" %{ `Uid(_loc,"()")}
+        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
+        | "("; "module"; a_uident as m; ":";  mtyp as pt; ")" %{
+             `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
+        | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
+             `ModuleConstraint (_loc, m, mk_ant  s)}
+        (* when change [pat], we need to take care of the following terms
+           for factorization *)      
+        | "("; pat as p; ")" %{ p}
+        | "("; pat as p; ":"; ctyp as t; ")" %pat{ ($p : $t) }
+        | "("; pat as p; "as"; a_lident as s; ")" %pat{  ($p as $s) }
+        | "("; pat as p; ","; comma_ipat as pl; ")"  %pat{ ($p, $pl) }
+        | a_lident as s %{  (s: alident :> pat)}
+        | Label i; S as p %pat{ ~ $lid:i : $p }
+        | "~"; a_lident as i;":";S as p  %pat{ ~$i : $p}
+        | @atom_pat
+        ]
+       sem_pat_for_list:
+       [ pat as p; ";"; S as pl %{`App(_loc, `Uid(_loc,"::"), `Par(_loc,`Com(_loc,p,pl)))}
+       | pat as p; ? ";"%{`App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p,`Uid(_loc,"[]"))))}]
+       pat_tcon:
+       [ pat as p; ":"; ctyp as t %{ `Constraint(_loc,p,t)}
+       | pat as p %{ p} ]
+       ipat_tcon:
+       [ Ant("" ,s) %{ mk_ant ~c:"pat" s }
+       | a_lident as i %{  (i : alident :> pat)}
+       | a_lident as i; ":"; ctyp as t %{(`Constraint (_loc, (i : alident :>  pat), t) : pat)}]
+       label_pat_list:
+       [ label_pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
+       | label_pat as p1; ";"; "_"; ? ";"  %{ `Sem(_loc,p1,`Any _loc)}
+       | label_pat as p1; ?";"            %{ p1}
+       ] 
+       label_pat:
+       [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
+       | label_longident as i; "="; pat as p %{`RecBind(_loc,i,p)}
+       | label_longident as i %{`RecBind(_loc,i,`Lid(_loc,Fan_ops.to_lid i))}
+       ]};;
+
+
 let () = 
   begin
     make_semi  field_exp field_exp_list;
@@ -43,10 +208,11 @@ let () =
     make_comma pat comma_pat;
     make_comma ipat comma_ipat;
     make_comma exp comma_exp;
+    make_case exp pat ;
+    make_pat exp;
   end
 
 let apply () = begin 
-  (* with mexp *)
   %extend{
       mexp_quot:
       [ mexp as x %{ x}]
@@ -77,7 +243,7 @@ let apply () = begin
         | "("; "val"; exp as e; ":"; mtyp as p; ")"
             %{ `PackageModule
                  (_loc,
-                  `Constraint (_loc, e, `Package (_loc, p)))}] } };
+                  `Constraint (_loc, e, `Package (_loc, p)))}]}};
 
   with mbind
       %extend{
@@ -96,7 +262,7 @@ let apply () = begin
         | Ant (""|"mbind",s) %{mk_ant ~c:"mbind"  s}
         | Quot x %{Ast_quotation.expand  x Dyn_tag.mbind}
         | a_uident as m; ":"; mtyp as mt %{`Constraint(_loc,m,mt)} ] };
-  (* with constr *)
+
      %extend{
         constr_quot:
         [ constr as x %{x}   ]
@@ -263,15 +429,7 @@ let apply () = begin
           [ fun_def_pat as f; "->"; exp as e %{  f e}
           | fun_def_pat as f; S as e  %{f e}] }
            
-       primitve@Inline :
-       [ Int s   %{`Int(_loc,s)}
-       | Int32 s %{ `Int32(_loc,s)}
-       | Int64 s %{ `Int64(_loc,s)}
-       | Nativeint s %{ `Nativeint (_loc, s)}
-       | Flo s %{  `Flo (_loc, s)}
-       | Chr s %{ `Chr (_loc, s)}
-       | Str s %{ `Str (_loc, s)}]
-
+       
        (************************)
        (*  How to handle S     *)    
        (************************)               
@@ -466,33 +624,16 @@ let apply () = begin
   with bind
       %extend{
         bind_quot:
-        [ bind as x  %{x}  ] 
+        [ bind as x  %{x}  ]
         bind:
         [ Ant ("bind"|"",s)  %{mk_ant  ~c:"bind" s}
         | Ant ("" ,s); "="; exp as e %{
             %{ ${mk_ant  ~c:"pat" s} = $e }}
         | S as b1; "and"; S as b2 %{ `And (_loc, b1, b2)}
-        | let_bind as b %{b} ] 
-        let_bind:
-        [ pat as p; fun_bind as e %{ `Bind (_loc, p, e)} ] };
+        | pat as p; fun_bind as e %{ `Bind (_loc, p, e)}
+        ]};
 
-  with case
-    %extend{
-      case:
-      [ "|"; L1 case0 SEP "|" as l %{ bar_of_list l }
-      | pat as p; "->"; exp as e %{ `Case(_loc,p,e)}]
-      case0:
-      [ Ant ("case" | "", s) %{ mk_ant  ~c:"case" s}
-      | Ant ("",s) ;"when";exp as w;"->"; exp as e %{
-          `CaseWhen(_loc,mk_ant  ~c:"case"  s, w,e )}
-      | Ant ("",s); "->"; exp as e %{
-          `Case(_loc,mk_ant  ~c:"case" s ,e)}
-            
-      | pat_as_pat_opt as p; "when"; exp as w;  "->"; exp as e %{
-           `CaseWhen (_loc, p, w, e)}
-      | pat_as_pat_opt as p; "->";exp as e %{ `Case(_loc,p,e)}]
-      case_quot:
-      [ L1 case0 SEP "|" as x %{ bar_of_list x}]  };
+
   with rec_exp
       %extend{
         rec_exp_quot:
@@ -506,152 +647,7 @@ let apply () = begin
         field_exp :
         [ Ant (""|"bi",s) %{ mk_ant  ~c:"rec_exp" s}
         | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]};
-  with pat
-    %extend{
-       pat_quot:
-       [ pat as x; ","; comma_pat as y %{ `Com(_loc,x,y)}
-       | pat as x; ";"; sem_pat as y %{ `Sem(_loc,x,y)}
-       | pat as x %{ x}]
-       pat_as_pat_opt:
-       [ pat as p1; "as"; a_lident as s %{  `Alias (_loc, p1, s)}
-       | pat as p %{p} ]
-       
-       atom_pat@Inline:
-        [ Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
-        | "`"; luident as s  %pat{$vrn:s}
-        | "_" %{ %{ _ }}
-        | "~"; a_lident as i %{  `LabelS(_loc,i)}
-        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
-        | Optlabel i; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,`Lid(_loc,i),p)}
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,i,p,e)}
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
-            `OptLablExpr (_loc, i, p, mk_ant s)}
-        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,i,p)}
-        | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
-        | "?"; "("; ipat_tcon as p; ")" %{
-            `OptLabl(_loc,`Lid(_loc,""),p)}
-        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}]
 
-       pat_constr@Local:
-       [module_longident as i %{(i :vid :> pat)}
-       |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
-       |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
-       (* comma_pat_list@Local: *)
-       (* [ pat as p1 ; ","; S as p2 %{p1::p2} *)
-       (* | pat as p1 %{[p1]}]                   *)
-                   
-       pat:
-       { "|" LA
-        [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
-       ".." NA
-        [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
-        "::" RA
-        [ S as p1; "::"; S as p2 %{
-          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}
-        ]
-
-       "apply" LA (* `Pat ((name,tydcl) as  named_type) *)
-        [ pat_constr as p1; S as p2
-            %pat{$p1 $p2}
-        | pat_constr as p1 %{ p1}
-        | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
-       (* special_pat@Local: *)
-       (*  [ ; pat as p ]               *)
-       "simple"
-        [ Ant ("" |"pat" |"par" |"int"
-               |"int32" |"int64" |"vrn" |"flo"
-               |"chr" |"nativeint" |"str"
-               |"int'" |"int32'" |"int64'"
-               |"nativeint'" |"flo'" |"chr'"
-               |"str'" |"`int" |"`int32"
-               |"`int64" |"`nativeint" |"`flo"
-               |"`chr" |"`str",s)
-          %{ mk_ant ~c:"pat" s}
-        | vid as i %{ (i : vid :> pat)}
-        | @primitve
-        | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
-        | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
-        | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
-        | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
-        | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
-        | "["; "]" %{ `Uid (_loc, "[]")}
-        | "["; sem_pat_for_list as s; "]" %{ s}
-        | "[|"; "|]" %{ `ArrayEmpty(_loc)}
-        | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
-        | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
-        | "("; ")" %{ `Uid (_loc, "()")}
-        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-        | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
-            `ModuleConstraint(_loc,m, `Package(_loc,pt))}
-        | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
-            `ModuleConstraint (_loc, m, mk_ant s)}
-        | "("; S as p; ")" %{ p}
-        | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
-        | "("; S as p; "as";  a_lident as s; ")" %{ `Alias (_loc, p, s)}
-        | "("; S as p; ","; comma_pat as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
-        | "#"; type_longident as i %{ `ClassPath(_loc,i)}              
-
-          (* duplicated may be removed later with [pat Level "apply"] *)
-        
-        | "~"; a_lident as i; ":"; S as p %{`Label (_loc, i, p)}
-        | Label i; S as p   %{`Label (_loc, (`Lid (_loc, i)), p) }
-
-        | @atom_pat
-        ] }
-
-       ipat:
-        [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
-        | Ant (""|"pat"|"par" ,s) %{ mk_ant  ~c:"pat"  s}
-        | "("; ")" %{ %{ () }}
-        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-        | "("; "module"; a_uident as m; ":";  mtyp as pt; ")" %{
-             `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
-        | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
-             `ModuleConstraint (_loc, m, mk_ant  s)}
-        (* when change [pat], we need to take care of the following terms
-           for factorization *)      
-        | "("; pat as p; ")" %{ p}
-        | "("; pat as p; ":"; ctyp as t; ")" %pat{ ($p : $t) }
-        | "("; pat as p; "as"; a_lident as s; ")" %pat{  ($p as $s) }
-        | "("; pat as p; ","; comma_ipat as pl; ")"  %pat{ ($p, $pl) }
-        | a_lident as s %{  (s: alident :> pat)}
-        | Label i; S as p %pat{ ~ $lid:i : $p }
-        | "~"; a_lident as i;":";S as p  %pat{ ~$i : $p}
-        | @atom_pat
-        ]
-       sem_pat_for_list:
-       [ pat as p; ";"; S as pl %{`App(_loc,
-                                       `Uid(_loc,"::"),
-                                       `Par(_loc,`Com(_loc,p,pl)))}
-
-       | pat as p; ? ";"%{`App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p,`Uid(_loc,"[]"))))}
-       ]
-       pat_tcon:
-       [ pat as p; ":"; ctyp as t %{ %{ ($p : $t) }}
-       | pat as p %{ p} ]
-       ipat_tcon:
-       [ Ant("" ,s) %{ mk_ant ~c:"pat" s }
-       | a_lident as i %{  (i : alident :> pat)}
-       | a_lident as i; ":"; ctyp as t %{(`Constraint (_loc, (i : alident :>  pat), t) : pat)}]
-       label_pat_list:
-       [ label_pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
-       | label_pat as p1; ";"; "_"; ? ";"  %{ `Sem(_loc,p1,`Any _loc)}
-       | label_pat as p1; ?";"            %{ p1}
-       ] 
-       label_pat:
-       [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
-       (* | `Quot x -> Ast_quotation.expand _loc x Dyn_tag.pat
-        *) (* FIXME restore it later *)
-       | label_longident as i; "="; pat as p %{ (* %{ $i = $p } *)
-         `RecBind(_loc,i,p)}
-       | label_longident as i %{
-           `RecBind(_loc,i,`Lid(_loc,Fan_ops.to_lid i))}
-       ]};
     with ident
     %extend{
       (* parse [a] [B], depreacated  *)
