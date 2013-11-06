@@ -60,8 +60,8 @@ let _ =
       ((None, None,
          [([`Nterm (Gramf.obj (regexp : 'regexp Gramf.t ));
            `Token
-             (((function | `Quot _ -> true | _ -> false)), (`Quot, `Any),
-               "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)),
+               ({ tag = `Quot; word = Any } : Tokenf.descr ), "`Quot _")],
             ("let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\nlet e = Tokenf.quot_expand expander x in (r, e)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.quot) 
@@ -77,8 +77,8 @@ let _ =
       ((None, None,
          [([`Keyword "let";
            `Token
-             (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
-               "Lid");
+             (((function | `Lid _ -> true | _ -> false)),
+               ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid");
            `Keyword "=";
            `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
             ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
@@ -110,8 +110,8 @@ let _ =
           [([`Self;
             `Keyword "as";
             `Token
-              (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
-                "`Lid y")],
+              (((function | `Lid _ -> true | _ -> false)),
+                ({ tag = `Lid; word = Any } : Tokenf.descr ), "`Lid y")],
              ("Bind (r1, (xloc, y))\n",
                (Gramf.mk_action
                   (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -148,8 +148,8 @@ let _ =
                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
                     (Characters Fcset.all_chars : 'regexp )))));
          ([`Token
-             (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
-               "Chr")],
+             (((function | `Chr _ -> true | _ -> false)),
+               ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
            ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -159,8 +159,8 @@ let _ =
                           (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
                        'regexp )))));
          ([`Token
-             (((function | `Str _ -> true | _ -> false)), (`Str, `Any),
-               "Str")],
+             (((function | `Str _ -> true | _ -> false)),
+               ({ tag = `Str; word = Any } : Tokenf.descr ), "Str")],
            ("regexp_for_string @@ (TokenEval.string s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -199,8 +199,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:_  (_loc : Locf.t)  -> (Eof : 'regexp )))));
          ([`Token
-             (((function | `Lid _ -> true | _ -> false)), (`Lid, `Any),
-               "Lid")],
+             (((function | `Lid _ -> true | _ -> false)),
+               ({ tag = `Lid; word = Any } : Tokenf.descr ), "Lid")],
            ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -232,12 +232,12 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
-                "Chr");
+              (((function | `Chr _ -> true | _ -> false)),
+                ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr");
            `Keyword "-";
            `Token
-             (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
-               "Chr")],
+             (((function | `Chr _ -> true | _ -> false)),
+               ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
             ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -250,8 +250,8 @@ let _ =
                          let c2 = Char.code @@ (TokenEval.char c2) in
                          Fcset.interval c1 c2 : 'char_class1 )))));
          ([`Token
-             (((function | `Chr _ -> true | _ -> false)), (`Chr, `Any),
-               "Chr")],
+             (((function | `Chr _ -> true | _ -> false)),
+               ({ tag = `Chr; word = Any } : Tokenf.descr ), "Chr")],
            ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

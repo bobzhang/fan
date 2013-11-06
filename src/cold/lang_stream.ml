@@ -9,8 +9,8 @@ let _ =
       ((None, None,
          [([`Keyword "!";
            `Token
-             (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any),
-               "Uid")],
+             (((function | `Uid _ -> true | _ -> false)),
+               ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid")],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -21,7 +21,8 @@ let _ =
                            (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
          ([`Keyword "!";
           `Token
-            (((function | `Uid _ -> true | _ -> false)), (`Uid, `Any), "Uid");
+            (((function | `Uid _ -> true | _ -> false)),
+              ({ tag = `Uid; word = Any } : Tokenf.descr ), "Uid");
           `Nterm
             (Gramf.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
