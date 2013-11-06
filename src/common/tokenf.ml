@@ -14,12 +14,10 @@ let pp_print_domains : domains Formatf.t =
     | `Sub _a0 ->
         Format.fprintf fmt "%s" (String.concat "." _a0)
 
-let pp_print_name : Format.formatter -> name -> unit =
-  fun fmt  _a0  ->
-    (fun fmt  (_a0,_a1)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a)@]"
-        pp_print_domains _a0
-        Format.pp_print_string _a1) fmt _a0
+let pp_print_name : name Formatf.t =
+  (fun fmt  (a0,a1)  ->
+      Format.fprintf fmt "%a.%a" pp_print_domains a0 Format.pp_print_string a1)
+      
 
 
 let string_of_name = Formatf.to_string pp_print_name
