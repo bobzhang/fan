@@ -7,7 +7,8 @@ let eoi_entry entry =
          [([`Nterm (Gramf.obj (entry : 'entry Gramf.t ));
            `Token
              ({
-                pred = ((function | `EOI _ -> true | _ -> false));
+                pred =
+                  ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                 descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
               } : Tokenf.pattern )],
             ("x\n",

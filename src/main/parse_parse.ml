@@ -83,20 +83,15 @@ let query_inline (x:string) =
   (****************************************)                  
   simple_token @Inline :
   [ ("EOI" as v) %{
-    {text = `Token(_loc,%exp{
-                   ({pred = (function
-                     | $vrn:v _ -> true
-                     | _ -> false) ;
-                     descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)});
+    {text = `Token(_loc,
+                   %exp{({pred = %p{ ($vrn:v _ : Tokenf.t) };
+                          descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
-     pattern = (* None *) [];
-     bounds = []
-     }}
+     pattern = [];
+     bounds =[]}}
   | ("Lid"|"Uid"|"Str" as v); Str x %{
     {text = `Token(_loc,
-                   %exp{({ pred = (function
-                             | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
-                             | _ -> false) ;
+                   %exp{({ pred = %p{ ($vrn:v ({txt=$str:x;_} : Tokenf.txt)) } ;
                            descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [];
@@ -110,10 +105,7 @@ let query_inline (x:string) =
           ([((xloc,x),Some "txt") ] , [(xloc,x)])
       | _ -> ([], [])in
     {text = `Token(_loc,
-                   %exp{({pred =
-                          (function
-                            | $vrn:v _ -> true
-                            | _ -> false);
+                   %exp{({pred = %p{ $vrn:v _};
                           descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      pattern;
@@ -122,32 +114,22 @@ let query_inline (x:string) =
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
     {text = `Token(_loc,
-                   %exp{({pred =
-                          (function
-                            | $vrn:v _ -> true
-                            | _ -> false);
+                   %exp{({pred = %p{ $vrn:v _};
                           descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [(xloc,x);(lloc,loc)];
      pattern = [((lloc,loc),Some "loc");((xloc,x),Some "txt")]}}
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Str x %{
     {text = `Token(_loc,
-                   %exp{({pred =
-                          (function
-                            | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
-                            | _ -> false);
+                   %exp{({pred = %p{$vrn:v ({txt=$str:x;_}:Tokenf.txt)};
                           descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [(lloc,loc)];
      pattern = [((lloc,loc),Some "loc")]}} 
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
     {text = `Token(_loc,
-                   %exp{({pred =
-                          (function
-                            | $vrn:v _ -> true
-                            | _ -> false);
-                          descr =
-                          {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
+                   %exp{({pred = %p{$vrn:v _};
+                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.quot};
      bounds = [(loc,x)];
      pattern = [((loc,x),None)] (* FIXME *)
@@ -155,12 +137,8 @@ let query_inline (x:string) =
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
      { text =
        `Token(_loc,
-              %exp{({pred =
-                     (function
-                       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-                       | _ -> false);
-                     descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}
-                      :Tokenf.pattern)});
+              %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)};
+                     descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}} :Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
        pattern = [((xloc,x),Some "txt")];
@@ -168,10 +146,7 @@ let query_inline (x:string) =
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
      { text = `Token(_loc,
-                     %exp{({pred =
-                            (function
-                              | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-                              | _ -> false);
+                     %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)} ;
                             descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x); (lloc,l)];
@@ -240,10 +215,7 @@ let query_inline (x:string) =
             ({kind = KNormal;
               txt = {
               text = `Token(_loc,
-                            %exp{({pred =
-                                   (function
-                                     | $vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant) -> true
-                                     | _ -> false);
+                            %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
                                    descr = {tag = $vrn:v; word = A $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
               pattern ;

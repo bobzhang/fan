@@ -26,12 +26,12 @@ let string_of_name = Formatf.to_string pp_print_name
 
 
 type quot = {
-    name:name;
-    loc: loc; (* the starting location of the quot *) 
-    meta:string option;(* a piece of small meta data, like loc name*)
-    shift:int;
-    (* content:string; *)
+    loc : loc; (* the starting location of the quot *)
     txt : string;
+    name : name;
+    meta : string option;(* a piece of small meta data, like loc name*)
+    shift : int;
+    (* content:string; *)
     retract:int; 
   }
 
@@ -47,9 +47,9 @@ type op = {
       
 type ant = {
     loc : loc ;
+    txt : string; (* whole *)
     cxt : string option;
     kind : string;
-    txt : string; (* whole *)
     shift : int;
     retract : int;
   }
@@ -109,7 +109,7 @@ type t =
   | `Sym          of txt
   | `Lid          of txt
   | `Uid          of txt
-  | `Eident       of txt (* (+)*)
+  | `Eident       of txt 
   | `Int          of txt
   | `Int32        of txt
   | `Int64        of txt
@@ -159,6 +159,12 @@ and descr =  {
     tag_name : string;
   }
 
+type pattern = {
+    pred : (t -> bool);
+    descr : descr
+  }
+
+      
 let rec  string_of_descr (x:descr)=
   Printf.sprintf "%s %s"
     x.tag_name (string_of_word x.word)
@@ -169,10 +175,6 @@ and string_of_word  (x:word) =
   | Empty -> ""
   | Level d -> Printf.sprintf "Level %d" d
         
-type pattern = {
-    pred : (t -> bool);
-    descr : descr
-  }
 
 let string_of_pattern (x:pattern) = string_of_descr x.descr
     

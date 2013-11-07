@@ -11,15 +11,14 @@ type loc = Locf.t
     The last one, q_shift is equal to the length of "%q_name@q_loc{"
  *)
 type quot = {
-    name    :name;
-    loc     : loc;
-    meta    : string option;
-    shift   : int;
-
+    loc : loc; (* the starting location of the quot *)
     txt : string;
-    retract : int
-    (* the letter to be retracted *)
+    name : name;
+    meta : string option;(* a piece of small meta data, like loc name*)
+    shift : int;
+    retract:int; 
   }
+      
 
 (** $x
     $lid:x
@@ -27,9 +26,9 @@ type quot = {
 
 type ant = {
     loc : loc ;
+    txt : string; (* whole *)
     cxt : string option;
     kind : string;
-    txt : string;
     shift : int;
     retract : int;
   }

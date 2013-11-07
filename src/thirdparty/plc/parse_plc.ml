@@ -45,7 +45,6 @@ prog:
     %stru{ ${Ast_gen.sem_of_list (Compile_plc.prog_statics _loc res)} ;;
         ${Ast_gen.sem_of_list (Compile_plc.prog_rules _loc !group_rs res)} }
     }]
-  
 rule_or_mask: [ rule as x %{`Rule x} | mask as x %{`Mask x} ]
 rule:
   [ Lid x; ? args as t;  ? body as b;  "." %{
@@ -75,7 +74,6 @@ term:
       | "["; L0 S SEP "," as t; ? bar_term as e; "]" %{ term_list _loc t e}
       ]}
 bar_term: [ "|"; term as t %{t} ]
-
 mask: [ "%:"; Lid x; "(";  L1 arg_mask SEP "," as t; ")" %{((x, List.length t),t,_loc)} ]
 arg_mask:
    [ "+"; ? Uid %{ArgClosed _loc}

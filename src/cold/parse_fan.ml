@@ -2379,7 +2379,8 @@ let apply () =
                     'interf )))));
           ([`Token
               ({
-                 pred = ((function | `EOI _ -> true | _ -> false));
+                 pred =
+                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                  descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
                } : Tokenf.pattern )],
             ("([], None)\n",
@@ -5762,7 +5763,8 @@ let apply () =
           [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
             `Token
               ({
-                 pred = ((function | `EOI _ -> true | _ -> false));
+                 pred =
+                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                  descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
                } : Tokenf.pattern )],
              ("x\n",
@@ -5775,7 +5777,8 @@ let apply () =
           [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
             `Token
               ({
-                 pred = ((function | `EOI _ -> true | _ -> false));
+                 pred =
+                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                  descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
                } : Tokenf.pattern )],
              ("x\n",
@@ -5816,7 +5819,8 @@ let apply () =
                     'implem )))));
           ([`Token
               ({
-                 pred = ((function | `EOI _ -> true | _ -> false));
+                 pred =
+                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                  descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
                } : Tokenf.pattern )],
             ("([], None)\n",
@@ -5850,7 +5854,8 @@ let apply () =
                     (Some st : 'top_phrase )))));
           ([`Token
               ({
-                 pred = ((function | `EOI _ -> true | _ -> false));
+                 pred =
+                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
                  descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
                } : Tokenf.pattern )],
             ("None\n",
