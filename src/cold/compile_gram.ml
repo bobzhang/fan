@@ -14,6 +14,10 @@ let gm () =
   match !Configf.compilation_unit with
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
+let check_add ((loc,id),v) env =
+  if List.exists (fun ((_,i),_)  -> i = id) (!env)
+  then Locf.failf loc "This variable %s is bound several times" id
+  else env := (((loc, id), v) :: (!env))
 let mk_prule ~prod  ~action  =
   let env = ref [] in
   let inner_env = ref [] in
@@ -24,54 +28,43 @@ let mk_prule ~prod  ~action  =
          match p with
          | { kind = KSome ;
              txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
-             (inner_env :=
-                ((List.map
-                    (fun (xloc,id)  ->
-                       ((`Lid (xloc, id) : FAst.pat ),
-                         (`App
-                            (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                         FAst.exp ))) bounds)
-                   @ (!inner_env));
+             (List.iter
+                (fun ((xloc,id) as z)  ->
+                   check_add
+                     (z,
+                       (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                       FAst.exp )) inner_env) bounds;
               incr i;
               Some symbol)
          | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
-             txt = ({ outer_pattern = Some (xloc,id); bounds;_} as s) } ->
-             (env :=
-                (((`Lid (xloc, id) : FAst.pat ),
-                   (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                   FAst.exp ))
-                :: (!env));
-              inner_env :=
-                ((List.map
-                    (fun (xloc,id)  ->
-                       ((`Lid (xloc, id) : FAst.pat ),
-                         (`App
-                            (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                         FAst.exp ))) bounds)
-                   @ (!inner_env));
+             txt = ({ outer_pattern = Some ((xloc,id) as z); bounds;_} as s)
+             } ->
+             (check_add
+                (z,
+                  (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                  FAst.exp )) env;
+              List.iter
+                (fun ((xloc,id) as z)  ->
+                   check_add
+                     (z,
+                       (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                       FAst.exp )) inner_env) bounds;
               incr i;
               Some s)
          | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
-             (inner_env :=
-                ((List.map
-                    (fun (xloc,id)  ->
-                       ((`Lid (xloc, id) : FAst.pat ),
-                         (`Uid (xloc, "None") : FAst.exp ))) bounds)
-                   @ (!inner_env));
+             (List.iter
+                (fun ((xloc,_) as z)  ->
+                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) inner_env)
+                bounds;
               None)
-         | { kind = KNone ; txt = { outer_pattern = Some (xloc,id); bounds;_}
-             } ->
-             (env :=
-                (((`Lid (xloc, id) : FAst.pat ),
-                   (`Uid (xloc, "None") : FAst.exp ))
-                :: (!env));
-              inner_env :=
-                ((List.map
-                    (fun (xloc,id)  ->
-                       ((`Lid (xloc, id) : FAst.pat ),
-                         (`Uid (xloc, "None") : FAst.exp ))) bounds)
-                   @ (!inner_env));
+         | { kind = KNone ;
+             txt = { outer_pattern = Some ((xloc,_) as z); bounds;_} } ->
+             (check_add (z, (`Uid (xloc, "None") : FAst.exp )) env;
+              List.iter
+                (fun ((xloc,_) as z)  ->
+                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) inner_env)
+                bounds;
               None)) prod in
   ({
      prod;
@@ -177,11 +170,13 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                  (((`Lid (xloc, id) : FAst.exp ) :: oe), (p :: op))
              | _ -> acc) ([], []) x.prod) in
    let e =
-     let binds =
-       x.env |> (List.map (fun (p,e)  -> (`Bind (_loc, p, e) : FAst.bind ))) in
-     let inner_binds =
-       x.inner_env |>
-         (List.map (fun (p,e)  -> (`Bind (_loc, p, e) : FAst.bind ))) in
+     let make_env env =
+       env |>
+         (List.map
+            (fun ((loc,id),e)  ->
+               (`Bind (_loc, (`Lid (loc, id) : FAst.pat ), e) : FAst.bind ))) in
+     let binds = make_env x.env in
+     let inner_binds = make_env x.inner_env in
      let e1: FAst.exp =
        `Constraint
          (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in

@@ -35,7 +35,12 @@ let gm () =
   | None -> !module_name
 
   
-
+let check_add ((loc,id),v) env  =
+  if List.exists (fun ((_,i),_) -> i = id)  !env then
+    Locf.failf loc "This variable %s is bound several times" id
+  else
+    env := ((loc,id),v) :: !env
+                        
 let mk_prule ~prod ~action =
   let env = ref [] in
   let inner_env = ref [] in
@@ -43,15 +48,12 @@ let mk_prule ~prod ~action =
   let prod =
     Listf.filter_map
       (function  (p:Gram_def.osymbol Gram_def.decorate) ->
-        match p with
-          (* ? Lid i
-             ? Lid 
-           *)
+        match p with (* ? Lid i ? Lid *)
         | {kind = KSome;   txt = ({outer_pattern = None; bounds  ; _} as symbol) } ->
             begin
-              inner_env :=
-                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id}))
-                  bounds @ !inner_env;
+              List.iter
+                (fun ((xloc,id) as z) ->
+                  check_add (z, %exp@xloc{Some $lid:id}) inner_env) bounds ;
               incr i;
               Some symbol;
             end
@@ -62,29 +64,25 @@ let mk_prule ~prod ~action =
             end
         (* ? Lid i as v 
          *)      
-        | {kind = KSome; txt = ({outer_pattern = Some (xloc,id) ; bounds; _} as s)} ->
+        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ; bounds; _} as s)} ->
             begin 
-              env := (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id } ) :: !env;
-              inner_env :=
-                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id}))
-                  bounds @ !inner_env;
+              check_add (z, %exp@xloc{Some $lid:id } ) env;
+              List.iter
+                  (fun ((xloc,id) as z) ->  check_add (z, %exp@xloc{Some $lid:id}) inner_env)
+                bounds;
               incr i;
               Some s
             end
               
         | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
             begin
-              inner_env :=
-                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{None})) bounds
-                @ !inner_env;
+              List.iter (fun ((xloc,_) as z) -> check_add (z, %exp@xloc{None}) inner_env) bounds;
               None
             end
-        | {kind = KNone; txt = {outer_pattern = Some (xloc,id); bounds; _}} ->
+        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z); bounds; _}} ->
             begin
-              env := (%pat@xloc{$lid:id}, %exp@xloc{None}) :: !env ;
-              inner_env :=
-                List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{None})) bounds
-                @ !inner_env;
+              check_add (z, %exp@xloc{None}) env;
+              List.iter (fun ((xloc,_) as z) -> check_add (z , %exp@xloc{None}) inner_env) bounds;
               None 
             end) prod in
   ({prod;
@@ -172,10 +170,11 @@ let make_action (_loc:loc)
             (%exp@xloc{$lid:id}::oe, p::op)
         | _ ->  acc) ([],[])  x.prod in
   let e =
-    let binds =
-        x.env |> List.map (fun (p,e) -> %bind{$p = $e}) in
-    let inner_binds =
-      x.inner_env |> List.map (fun (p,e) -> %bind{$p = $e}) in
+    let make_env env =
+      env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
+    let binds = make_env x.env in
+    let inner_binds = make_env x.inner_env in
+
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
     let e1 = Ast_gen.binds inner_binds e1 in
     let e1 = Ast_gen.binds binds e1 in

@@ -6,7 +6,7 @@ open Lexgen
 
   
 (** FIXME *)
-let _loc = Locf.mk "x"
+let _loc = Locf.ghost
 
 let auto_binds =
   [ %bind{

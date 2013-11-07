@@ -613,7 +613,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -724,7 +724,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -835,7 +835,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -946,7 +946,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1057,7 +1057,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1168,7 +1168,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1279,7 +1279,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1390,7 +1390,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1501,7 +1501,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1612,7 +1612,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1723,7 +1723,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1834,7 +1834,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -1953,7 +1953,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2072,7 +2072,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2191,7 +2191,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2310,7 +2310,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2429,7 +2429,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2548,7 +2548,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2667,7 +2667,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2786,7 +2786,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -2905,7 +2905,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -3024,7 +3024,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -3143,7 +3143,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -3262,7 +3262,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (let (pattern,bounds) =
                           match (x, xloc) with
                           | (Some x,Some xloc) ->
@@ -5055,7 +5055,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5162,7 +5162,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5269,7 +5269,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5376,7 +5376,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5483,7 +5483,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5590,7 +5590,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5697,7 +5697,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5804,7 +5804,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -5911,7 +5911,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6018,7 +6018,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6125,7 +6125,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6232,7 +6232,7 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | ({ txt = v;_} : Tokenf.txt) ->
-                       let xloc = None and x = None in
+                       let x = None and xloc = None in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6347,7 +6347,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6462,7 +6462,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6577,7 +6577,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6692,7 +6692,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6807,7 +6807,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -6922,7 +6922,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7037,7 +7037,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7152,7 +7152,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7267,7 +7267,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7382,7 +7382,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7497,7 +7497,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))
@@ -7612,7 +7612,7 @@ let _ =
                    | (({ loc = xloc; txt = x;_} : Tokenf.txt),({ txt = v;_} :
                                                                 Tokenf.txt))
                        ->
-                       let xloc = Some xloc and x = Some x in
+                       let x = Some x and xloc = Some xloc in
                        (((fun (txt : Gram_def.symbol)  ->
                             [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                                    Gram_def.decorate )]))

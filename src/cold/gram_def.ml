@@ -20,8 +20,8 @@ and rule =
   {
   prod: osymbol list;
   action: exp option;
-  env: (pat* exp) list;
-  inner_env: (pat* exp) list} 
+  env: (locid* exp) list;
+  inner_env: (locid* exp) list} 
 and kind =  
   | KNone
   | KSome

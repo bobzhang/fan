@@ -36,9 +36,9 @@ and rule = {
 
     action : exp option ;
 
-    env : (pat * exp) list;
+    env : (locid * exp) list;
     
-    inner_env :(pat*exp) list;
+    inner_env :(locid * exp) list;
 }
 and kind =
   | KNone
@@ -48,12 +48,8 @@ and locid = (loc * string)
 and symbol = {
     text : text;
     styp : styp;
-  (* the inferred type of the result parsed by the current symbol *)
-
     pattern : pat option; (* inner destruction *)
     bounds : locid list; (* inner bounded variables *) 
-    
-    (* outer_pattern :  locid option; (\* [as outer_pattern] *\) *)
 }
 and 'a decorate = {
     kind : kind;

@@ -2,7 +2,7 @@ open FAst
 open Ast_gen
 open Automata_def
 open Lexgen
-let _loc = Locf.mk "x"
+let _loc = Locf.ghost
 let auto_binds =
   [(`Bind
       (_loc, (`Lid (_loc, "__ocaml_lex_init_lexbuf")),

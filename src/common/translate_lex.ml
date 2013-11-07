@@ -44,24 +44,24 @@ let as_cset = function
   | _ -> raise Bad
         
   
-module Id =   struct
-  type t = (Locf.t * string)
-  let compare (_,x) (_,y) = String.compare x  y
-end
+(* module Id =   struct *)
+(*   type t = (Locf.t * string) *)
+(*   let compare (_,x) (_,y) = String.compare x  y *)
+(* end *)
   
-module IdSet = Set.Make (Id)
+(* module IdSet = Set.Make (Id) *)
 
 
 
 (* Silently eliminate nested variables *)
 let remove_nested_as e : concrete_regexp = 
-  let rec do_remove_nested (to_remove:IdSet.t) x : concrete_regexp =
+  let rec do_remove_nested (to_remove:Id_set.t) x : concrete_regexp =
     match x with
     | Bind (e,x) ->
-        if IdSet.mem x to_remove then
+        if Id_set.mem x to_remove then
           do_remove_nested to_remove e
         else
-          Bind (do_remove_nested (IdSet.add x to_remove) e, x)
+          Bind (do_remove_nested (Id_set.add x to_remove) e, x)
     | Epsilon
     | Eof
     | Characters _ as e -> e
@@ -73,7 +73,7 @@ let remove_nested_as e : concrete_regexp =
           (do_remove_nested to_remove  e1, do_remove_nested to_remove  e2)
     | Repetition e ->
         Repetition (do_remove_nested to_remove  e) in
-  do_remove_nested IdSet.empty e    
+  do_remove_nested Id_set.empty e    
 
 
 
@@ -84,8 +84,8 @@ let remove_nested_as e : concrete_regexp =
 
 
 
-let rec find_all_vars (x:concrete_regexp) : IdSet.t=
-  let open IdSet in
+let rec find_all_vars (x:concrete_regexp) : Id_set.t=
+  let open Id_set in
   match x with 
   | Characters _ | Epsilon |Eof ->
       empty
@@ -104,8 +104,8 @@ let rec find_all_vars (x:concrete_regexp) : IdSet.t=
   ("" as x | 'a' as x) -> non-optional
  *)
 let find_optional e = 
-  let rec do_find_opt x : IdSet.t * IdSet.t =
-    let open IdSet in
+  let rec do_find_opt x : Id_set.t * Id_set.t =
+    let open Id_set in
     match x with 
     | Characters _|Epsilon|Eof -> (empty, empty)
     | Bind (e,x) ->
@@ -136,8 +136,8 @@ let find_optional e =
 
  *)
 
-let rec do_find_double x : IdSet.t * IdSet.t =
-  let open IdSet in
+let rec do_find_double x : Id_set.t * Id_set.t =
+  let open Id_set in
   match x with 
   | Characters _|Epsilon|Eof -> (empty, empty)
   | Bind (e,x) ->
@@ -178,7 +178,7 @@ let add_some_some x y =
      The typical case is:
        (_ as x) -> char *)        
 let find_chars e =
-  let open IdSet in
+  let open Id_set in
   let rec do_find_chars (sz : int option) x =
     match x with 
     | Epsilon|Eof    -> (empty, empty, sz)
@@ -215,7 +215,7 @@ let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
 (* the first argument [char_vars] is produced by [find_chars] *)
-let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : regexp =
+let rec encode_regexp (char_vars : Id_set.t) ( act : int) x : regexp =
   match x with
   | Epsilon -> Empty
   | Characters cl ->
@@ -242,7 +242,7 @@ let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : regexp =
       Star ( encode_regexp char_vars act r )
   | Bind (r,((_,name) as y)) ->
       let r = encode_regexp char_vars act r in
-      if IdSet.mem y char_vars then
+      if Id_set.mem y char_vars then
         Seq (Tag {id=name ; start=true ; action=act},r)
       else
         Seq (Tag {id=name ; start=true ; action=act},
@@ -271,8 +271,8 @@ let add_pos p i =
   | Some (a,n) -> Some (a,n+i)
   | None -> None
 
-let mem_name name (id_set:IdSet.t) : bool =
-  IdSet.exists (function (_,id_name) -> name = id_name) id_set 
+let mem_name name (id_set:Id_set.t) : bool =
+  Id_set.exists (function (_,id_name) -> name = id_name) id_set 
 
 
 (* First static optimizations, from start position *)
@@ -311,7 +311,7 @@ let rec size_backward pos (x:regexp) =
 
 (* type dir = Backward | Forward          *)
 let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
-    (IdSet.elt * ident_info) list * regexp * int=
+    (Id_set.elt * ident_info) list * regexp * int=
 (* From removed tags to their addresses *)
   let env = Hashtbl.create 17 in
   let rec simple_forward pos r double_vars=
@@ -409,15 +409,15 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
     | Action _ -> assert false in
   let (r,_) = alloc_exp None r in
   let m =
-    IdSet.fold
+    Id_set.fold
       (fun ((_,name) as x) r ->
         let v =
-          if IdSet.mem x char_vars then
+          if Id_set.mem x char_vars then
             Ident_char
-              (IdSet.mem x optional_vars, get_tag_addr (name,true))
+              (Id_set.mem x optional_vars, get_tag_addr (name,true))
           else
             Ident_string
-              (IdSet.mem x optional_vars,
+              (Id_set.mem x optional_vars,
                get_tag_addr (name,true),
                get_tag_addr (name,false)) in
         (x,v)::r)

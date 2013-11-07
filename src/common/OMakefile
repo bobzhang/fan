@@ -6,7 +6,11 @@ LocalFiles=oconfig.ml
 $(LocalFiles): oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" $< > $@
 
-FILES =  ast2pt oconfig astPrint ast_basic  configf\
+FILES = \
+    ast2pt oconfig \
+    astPrint ast_basic\
+    id_set\
+    configf\
     locf  fcset fdir foptions\
     tokenf lex_util lexgen location_util parsetree_util\
     tokenEval translate_lex fan_util \
