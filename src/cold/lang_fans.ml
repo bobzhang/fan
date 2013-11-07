@@ -63,8 +63,7 @@ let _ =
             ("x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))));
+                    let x = __fan_0.txt in (x : 'id )))));
          ([`Token
              ({
                 pred = ((function | `Uid _ -> true | _ -> false));
@@ -73,9 +72,7 @@ let _ =
            ("x\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | ({ txt = x;_} : Tokenf.txt) -> (x : 'id )))))]) : 
-      Gramf.olevel ));
+                   let x = __fan_0.txt in (x : 'id )))))]) : Gramf.olevel ));
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
     (None,
       ((None, None,

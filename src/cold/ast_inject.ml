@@ -22,13 +22,11 @@ let _ =
             ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        ((try Hashtbl.find inject_exp_tbl x
-                          with
-                          | Not_found  ->
-                              failwithf "inject.exp %s not found" x) : 
-                        'inject_exp )))))]) : Gramf.olevel ));
+                    let x = __fan_0.txt in
+                    (try Hashtbl.find inject_exp_tbl x
+                     with
+                     | Not_found  -> failwithf "inject.exp %s not found" x : 
+                      'inject_exp )))))]) : Gramf.olevel ));
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
     (None,
       ((None, None,
@@ -40,13 +38,11 @@ let _ =
             ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        ((try Hashtbl.find inject_stru_tbl x
-                          with
-                          | Not_found  ->
-                              failwithf "inject.exp %s not found" x) : 
-                        'inject_stru )))))]) : Gramf.olevel ));
+                    let x = __fan_0.txt in
+                    (try Hashtbl.find inject_stru_tbl x
+                     with
+                     | Not_found  -> failwithf "inject.exp %s not found" x : 
+                      'inject_stru )))))]) : Gramf.olevel ));
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
     (None,
       ((None, None,
@@ -58,13 +54,11 @@ let _ =
             ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        ((try Hashtbl.find inject_clfield_tbl x
-                          with
-                          | Not_found  ->
-                              failwithf "inject.exp %s not found" x) : 
-                        'inject_clfield )))))]) : Gramf.olevel ))
+                    let x = __fan_0.txt in
+                    (try Hashtbl.find inject_clfield_tbl x
+                     with
+                     | Not_found  -> failwithf "inject.exp %s not found" x : 
+                      'inject_clfield )))))]) : Gramf.olevel ))
 let _ =
   let open Ast_quotation in
     let d = Ns.inject in

@@ -88,7 +88,13 @@ let binds bs (e: FAst.exp) =
       let _loc = binds <+> e in
       %exp{let $binds in $e } 
 
+let seq_binds bs (e:FAst.exp) =
+  List.fold_right
+    (fun b e ->
+      let _loc = b <+> e in 
+      %exp{let $b in $e}) bs e
 
+    
 let lid _loc n = `Lid(_loc,n)
     
 let uid _loc n = `Uid(_loc,n)

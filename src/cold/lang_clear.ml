@@ -19,10 +19,8 @@ let _ =
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | (({ kind = "";_} as s) : Tokenf.ant) ->
-                        (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
-                    | _ -> assert false))));
+                    let s = __fan_0 in
+                    (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
          ([`Token
              ({
                 pred =
@@ -34,10 +32,8 @@ let _ =
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | (({ kind = "lid";_} as s) : Tokenf.ant) ->
-                       (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )
-                   | _ -> assert false))));
+                   let s = __fan_0 in
+                   (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
          ([`Token
              ({
                 pred = ((function | `Lid _ -> true | _ -> false));
@@ -46,9 +42,8 @@ let _ =
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | ({ txt = s;_} : Tokenf.txt) ->
-                       (`Lid (_loc, s) : 'a_lident )))))]) : Gramf.olevel ));
+                   let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident )))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
     (None,
       ((None, None,
@@ -82,9 +77,8 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = x;_} : Tokenf.txt) ->
-                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
+                    let x = __fan_0.txt in
+                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
              ({
                 pred = ((function | `Uid _ -> true | _ -> false));
@@ -93,9 +87,8 @@ let _ =
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | ({ txt = x;_} : Tokenf.txt) ->
-                       (`Uid (_loc, x) : 'qualuid )))))]) : Gramf.olevel ))
+                   let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid )))))]) : 
+      Gramf.olevel ))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()

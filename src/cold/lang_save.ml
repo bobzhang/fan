@@ -20,66 +20,62 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.quot) 
                     ~__fan_0:(ls : Tokenf.txt list)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | (x : Tokenf.quot) ->
-                        (let b =
-                           if x.name = Tokenf.empty_name
-                           then
-                             let expander loc _ s =
-                               Gramf.parse_string ~loc Syntaxf.exp s in
-                             Tokenf.quot_expand expander x
-                           else Ast_quotation.expand x Dyn_tag.exp in
-                         let symbs =
-                           List.map
-                             (fun (x : Tokenf.txt)  -> State.gensym x.txt) ls in
-                         let res = State.gensym "res" in
-                         let exc = State.gensym "e" in
-                         let binds =
-                           and_of_list
-                             (List.map2
-                                (fun x  (y : Tokenf.txt)  ->
-                                   (`Bind
-                                      (_loc, (`Lid (_loc, x)),
-                                        (`App
-                                           (_loc, (`Lid (_loc, "!")),
-                                             (`Lid (_loc, (y.txt)))))) : 
-                                   FAst.bind )) symbs ls) in
-                         let restore =
-                           seq_sem
-                             (List.map2
-                                (fun (x : Tokenf.txt)  y  ->
-                                   (`App
-                                      (_loc,
-                                        (`App
-                                           (_loc, (`Lid (_loc, ":=")),
-                                             (`Lid (_loc, (x.txt))))),
-                                        (`Lid (_loc, y))) : FAst.exp )) ls
-                                symbs) in
-                         (`LetIn
-                            (_loc, (`Negative _loc), binds,
-                              (`Try
-                                 (_loc,
-                                   (`Seq
-                                      (_loc,
-                                        (`LetIn
-                                           (_loc, (`Negative _loc),
-                                             (`Bind
-                                                (_loc, (`Lid (_loc, res)), b)),
-                                             (`LetIn
-                                                (_loc, (`Negative _loc),
-                                                  (`Bind
-                                                     (_loc, (`Any _loc),
-                                                       restore)),
-                                                  (`Lid (_loc, res)))))))),
-                                   (`Case
-                                      (_loc, (`Lid (_loc, exc)),
-                                        (`Seq
-                                           (_loc,
-                                             (`Sem
-                                                (_loc, restore,
-                                                  (`App
-                                                     (_loc,
-                                                       (`Lid (_loc, "raise")),
-                                                       (`Lid (_loc, exc))))))))))))) : 
-                           FAst.exp ) : 'save_quot )))))]) : Gramf.olevel ))
+                    let x = __fan_1 in
+                    (let b =
+                       if x.name = Tokenf.empty_name
+                       then
+                         let expander loc _ s =
+                           Gramf.parse_string ~loc Syntaxf.exp s in
+                         Tokenf.quot_expand expander x
+                       else Ast_quotation.expand x Dyn_tag.exp in
+                     let symbs =
+                       List.map (fun (x : Tokenf.txt)  -> State.gensym x.txt)
+                         ls in
+                     let res = State.gensym "res" in
+                     let exc = State.gensym "e" in
+                     let binds =
+                       and_of_list
+                         (List.map2
+                            (fun x  (y : Tokenf.txt)  ->
+                               (`Bind
+                                  (_loc, (`Lid (_loc, x)),
+                                    (`App
+                                       (_loc, (`Lid (_loc, "!")),
+                                         (`Lid (_loc, (y.txt)))))) : 
+                               FAst.bind )) symbs ls) in
+                     let restore =
+                       seq_sem
+                         (List.map2
+                            (fun (x : Tokenf.txt)  y  ->
+                               (`App
+                                  (_loc,
+                                    (`App
+                                       (_loc, (`Lid (_loc, ":=")),
+                                         (`Lid (_loc, (x.txt))))),
+                                    (`Lid (_loc, y))) : FAst.exp )) ls symbs) in
+                     (`LetIn
+                        (_loc, (`Negative _loc), binds,
+                          (`Try
+                             (_loc,
+                               (`Seq
+                                  (_loc,
+                                    (`LetIn
+                                       (_loc, (`Negative _loc),
+                                         (`Bind (_loc, (`Lid (_loc, res)), b)),
+                                         (`LetIn
+                                            (_loc, (`Negative _loc),
+                                              (`Bind
+                                                 (_loc, (`Any _loc), restore)),
+                                              (`Lid (_loc, res)))))))),
+                               (`Case
+                                  (_loc, (`Lid (_loc, exc)),
+                                    (`Seq
+                                       (_loc,
+                                         (`Sem
+                                            (_loc, restore,
+                                              (`App
+                                                 (_loc,
+                                                   (`Lid (_loc, "raise")),
+                                                   (`Lid (_loc, exc))))))))))))) : 
+                       FAst.exp ) : 'save_quot )))))]) : Gramf.olevel ))
 let _ = Ast_quotation.of_exp ~name:(Ns.lang, "save") ~entry:save_quot ()

@@ -14,10 +14,7 @@ let gm () =
   match !Configf.compilation_unit with
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
-let check_add ((loc,id),v) env =
-  if List.exists (fun ((_,i),_)  -> i = id) (!env)
-  then Locf.failf loc "This variable %s is bound several times" id
-  else env := (((loc, id), v) :: (!env))
+let check_add ((loc,id),v) env = env := (((loc, id), v) :: (!env))
 let mk_prule ~prod  ~action  =
   let env = ref [] in
   let i = ref 0 in
@@ -140,29 +137,35 @@ and make_exp_rules (_loc : loc)
                           (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
              FAst.exp ))))
     |> (list_of_list _loc)
+let enhance_env (x : Gram_def.rule) (s : string)
+  (xs : (Gram_def.locid* Gram_def.label) list) =
+  xs |>
+    (List.iter
+       (fun (((loc,_) as v),opt)  ->
+          match opt with
+          | None  -> x.env <- (v, (`Lid (loc, s) : FAst.exp )) :: (x.env)
+          | Some l ->
+              x.env <-
+                (v,
+                  (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : FAst.exp ))
+                :: (x.env)))
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (!Locf.name)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
-   let tok_match_pl =
-     snd @@
-       (Listf.fold_lefti
-          (fun i  ((oe,op) as acc)  x  ->
-             match (x : Gram_def.osymbol ) with
-             | { pattern = Some p; text = `Token _; outer_pattern = None ;_}
-                 ->
-                 let id = prefix ^ (string_of_int i) in
-                 (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-             | { pattern = Some p; text = `Token _;
-                 outer_pattern = Some (xloc,id);_} ->
-                 (((`Lid (xloc, id) : FAst.exp ) :: oe), (p :: op))
-             | { pattern = Some p; text = `Keyword _;
-                 outer_pattern = None ;_} ->
-                 let id = prefix ^ (string_of_int i) in
-                 (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-             | { pattern = Some p; text = `Keyword _;
-                 outer_pattern = Some (xloc,id);_} ->
-                 (((`Lid (xloc, id) : FAst.exp ) :: oe), (p :: op))
-             | _ -> acc) ([], []) x.prod) in
+   let () =
+     Listf.iteri
+       (fun i  y  ->
+          let id = prefix ^ (string_of_int i) in
+          match (y : Gram_def.osymbol ) with
+          | { pattern; text = `Token _; outer_pattern = None ;_} ->
+              enhance_env x id pattern
+          | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
+              enhance_env x id pattern
+          | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
+              let id = prefix ^ (string_of_int i) in enhance_env x id pattern
+          | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
+              enhance_env x id pattern
+          | _ -> ()) x.prod in
    let e =
      let make_env env =
        env |>
@@ -173,44 +176,15 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
      let e1: FAst.exp =
        `Constraint
          (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
-     let e1 = Ast_gen.binds binds e1 in
-     match tok_match_pl with
-     | ([],_) ->
-         (`Fun
-            (_loc,
-              (`Case
-                 (_loc,
-                   (`Constraint
-                      (_loc, locid,
-                        (`Dot
-                           (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
-                   e1))) : FAst.exp )
-     | (e,p) ->
-         let (exp,pat) =
-           match (e, p) with
-           | (x::[],y::[]) -> (x, y)
-           | _ -> ((tuple_com e), (tuple_com p)) in
-         let e =
-           if Fan_ops.is_irrefut_pat pat
-           then (`Match (_loc, exp, (`Case (_loc, pat, e1))) : FAst.exp )
-           else
-             (`Match
-                (_loc, exp,
-                  (`Bar
-                     (_loc, (`Case (_loc, pat, e1)),
-                       (`Case
-                          (_loc, (`Any _loc),
-                            (`Assert (_loc, (`Lid (_loc, "false"))))))))) : 
-             FAst.exp ) in
-         (`Fun
-            (_loc,
-              (`Case
-                 (_loc,
-                   (`Constraint
-                      (_loc, locid,
-                        (`Dot
-                           (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
-                   e))) : FAst.exp ) in
+     let e1 = Ast_gen.seq_binds binds e1 in
+     (`Fun
+        (_loc,
+          (`Case
+             (_loc,
+               (`Constraint
+                  (_loc, locid,
+                    (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
+               e1))) : FAst.exp ) in
    let make_ctyp (styp : Gram_def.styp) tvar =
      (let rec aux v =
         match (v : Gram_def.styp ) with
@@ -239,16 +213,17 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                  let p =
                    (`Lid (xloc, id) : FAst.pat ) +: (make_ctyp s.styp rtvar) in
                  (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
-             | (None ,Some _) ->
-                 let p =
-                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat ) +:
-                     (make_ctyp s.styp rtvar) in
-                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
-             | (None ,None ) ->
+             | (None ,[]) ->
                  (`Fun
                     (_loc,
                       (`Case (_loc, (mk_arg (`Any _loc : FAst.pat )), txt))) : 
-                 FAst.exp )) e x.prod) in
+                 FAst.exp )
+             | (None ,_) ->
+                 let p =
+                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat ) +:
+                     (make_ctyp s.styp rtvar) in
+                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp ))
+          e x.prod) in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
 let make_extend safe (e : Gram_def.entry) =

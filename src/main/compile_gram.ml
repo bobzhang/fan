@@ -36,9 +36,9 @@ let gm () =
 
   
 let check_add ((loc,id),v) env  =
-  if List.exists (fun ((_,i),_) -> i = id)  !env then
-    Locf.failf loc "This variable %s is bound several times" id
-  else
+  (* if List.exists (fun ((_,i),_) -> i = id)  !env then *)
+  (*   Locf.failf loc "This variable %s is bound several times" id *)
+  (* else *)
     env := ((loc,id),v) :: !env
                         
 let mk_prule ~prod ~action =
@@ -185,7 +185,7 @@ let make_action (_loc:loc)
       env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
     let binds = make_env x.env in
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
-    let e1 = Ast_gen.binds binds e1 in
+    let e1 = Ast_gen.seq_binds binds e1 in
     %exp{fun ($locid : Locf.t) -> $e1 } in
   let make_ctyp (styp:Gram_def.styp) tvar : ctyp  =
     let rec aux  v = 

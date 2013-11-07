@@ -37,14 +37,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(pcl : 'parser_case_list) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | ({ txt = n;_} : Tokenf.txt) ->
-                       let n = Some n in
-                       ((match n with
-                         | Some o ->
-                             Ref.protect Compile_stream.grammar_module_name o
-                               (fun _  -> cparser _loc pcl)
-                         | None  -> cparser _loc pcl) : 'parser_exp )))))]) : 
+                   let n = __fan_0.txt in
+                   let n = Some n in
+                   (match n with
+                    | Some o ->
+                        Ref.protect Compile_stream.grammar_module_name o
+                          (fun _  -> cparser _loc pcl)
+                    | None  -> cparser _loc pcl : 'parser_exp )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (parser_ipat : 'parser_ipat Gramf.t )
     (None,

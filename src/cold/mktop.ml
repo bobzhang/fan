@@ -402,25 +402,23 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(ns : 'n list)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    match __fan_0 with
-                    | ({ txt = m;_} : Tokenf.txt) ->
-                        (Ast_gen.sem_of_list
-                           (List.map
-                              (fun ((l : Tokenf.txt),r)  ->
-                                 let xloc = l.loc in
-                                 let pr = `Lid (xloc, (l.txt)) in
-                                 let pl =
-                                   match r with
-                                   | None  -> pr
-                                   | Some (y : Tokenf.txt) ->
-                                       let yloc = y.loc in
-                                       `Lid (yloc, (y.txt)) in
-                                 (`Value
-                                    (_loc, (`Negative _loc),
-                                      (`Bind
-                                         (_loc, pl,
-                                           (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
-                                   FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
+                    let m = __fan_0.txt in
+                    (Ast_gen.sem_of_list
+                       (List.map
+                          (fun ((l : Tokenf.txt),r)  ->
+                             let xloc = l.loc in
+                             let pr = `Lid (xloc, (l.txt)) in
+                             let pl =
+                               match r with
+                               | None  -> pr
+                               | Some (y : Tokenf.txt) ->
+                                   let yloc = y.loc in `Lid (yloc, (y.txt)) in
+                             (`Value
+                                (_loc, (`Negative _loc),
+                                  (`Bind
+                                     (_loc, pl,
+                                       (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
+                               FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
   Gramf.extend_single (n : 'n Gramf.t )
     (None,
       ((None, None,

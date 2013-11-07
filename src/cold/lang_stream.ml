@@ -17,10 +17,9 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | ({ txt = n;_} : Tokenf.txt) ->
-                        (Ref.protect Compile_stream.grammar_module_name n
-                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
+                    let n = __fan_1.txt in
+                    (Ref.protect Compile_stream.grammar_module_name n
+                       (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
          ([`Keyword "!";
           `Token
             ({
@@ -35,10 +34,9 @@ let _ =
                 (fun ~__fan_2:(sel : 'stream_exp_comp_list) 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   match __fan_1 with
-                   | ({ txt = n;_} : Tokenf.txt) ->
-                       (Ref.protect Compile_stream.grammar_module_name n
-                          (fun _  -> cstream _loc sel) : 'stream_exp )))));
+                   let n = __fan_1.txt in
+                   (Ref.protect Compile_stream.grammar_module_name n
+                      (fun _  -> cstream _loc sel) : 'stream_exp )))));
          ([`Nterm
              (Gramf.obj
                 (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
