@@ -141,6 +141,16 @@ and make_exp_rules (_loc:loc)
       %exp{ ($sl,($str:action_string,$action)) } )
   |> list_of_list _loc
 
+let enhance_env (x:Gram_def.rule) (s:string)
+    (xs:(Gram_def.locid * Gram_def.label) list) =
+  xs |>
+  List.iter
+    (fun (((loc,_) as v),opt) ->
+      match opt with
+      | None -> x.env <-  (v, %exp@loc{$lid:s}) :: x.env
+      | Some l ->
+          x.env <- (v, %exp@loc{$lid:s.$lid:l}) :: x.env
+    )
 (**********************************************)
 (* generate action of the right side   *)
 (**********************************************)      
@@ -152,56 +162,31 @@ let make_action (_loc:loc)
 
   (* collect the patterns
      it is used for further destruction *)
-  let tok_match_pl =
-    snd @@
-    Listf.fold_lefti
-      (fun i ((oe,op) as acc)  x ->
-        match (x:Gram_def.osymbol) with 
-        | {pattern=Some p ; text=`Token _; outer_pattern = None; _ } ->
+  (* let tok_match_pl = *)
+    (* snd @@ *)
+   let () =  Listf.iteri
+      (fun i (* ((oe,op) as acc) *)  y ->
+        let id = prefix ^ string_of_int i in
+        match (y:Gram_def.osymbol) with 
+        | {pattern ; text=`Token _; outer_pattern = None; _ } ->
+            enhance_env x id pattern
+        | {pattern ; text=`Token _;outer_pattern = Some (_,id) ;_ } ->
+            enhance_env x id pattern (* FIXME duplicated here -- could be simplified *)
+        | {pattern; text = `Keyword _;outer_pattern = None;  _} ->
             let id = prefix ^ string_of_int i in
-            ( %exp{$lid:id} :: oe, p:: op)
-        | {pattern=Some p ; text=`Token _;outer_pattern = Some (xloc,id) ;_ } ->
-            ( %exp@xloc{$lid:id} :: oe, p:: op)
-        | {pattern = Some p; text = `Keyword _;outer_pattern = None;  _} ->
-            let id = prefix ^ string_of_int i in 
-            (%exp{$lid:id}::oe, p :: op) (* TO be improved*)
-        | {pattern = Some p; text = `Keyword _;outer_pattern = Some(xloc,id);  _} ->
+            enhance_env x id  pattern
+        | {pattern; text = `Keyword _;outer_pattern = Some(_,id);  _} ->
+            (* could be simplified *)
+            enhance_env x id pattern 
             (* FIXME when the percent is replaced with '$',  a weird error message*)
-            (%exp@xloc{$lid:id}::oe, p::op)
-        | _ ->  acc) ([],[])  x.prod in
+        | _ ->  ())   x.prod in
   let e =
     let make_env env =
       env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
     let binds = make_env x.env in
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
     let e1 = Ast_gen.binds binds e1 in
-    match tok_match_pl with
-    | ([],_) ->
-        (* let e1 = Ast_gen.binds binds e1  in *)
-        %exp{fun ($locid : Locf.t) -> $e1 }
-          (* BOOTSTRAPING, associated with module name [Locf] *)
-    | (e,p) ->
-        let (exp,pat) =
-          match (e,p) with
-          | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
-        (* let len = List.length e in *)
-        (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
-        (* let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in *)
-        (* let es = *)
-        (*   (\* BOOTSTRAPING, associated with module name [Tokenf] *\) *)
-        (*   List.map (fun x -> %exp{Tokenf.to_string $x}) e in *)
-        (* let error = *)
-        (*   Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in *)
-        let e =
-          (* Ast_gen.binds binds *)
-          if Fan_ops.is_irrefut_pat pat then
-            %exp{match $exp with $pat -> $e1}
-          else 
-            %exp{match $exp with
-            | $pat -> $e1 (* record -- irrefutable pattern ? Prove *)
-            | _ -> assert false
-            (* | _ -> failwith $error *)} in 
-        %exp{fun ($locid : Locf.t) (* BOOTSTRAPING, associated with module name [Locf] *) -> $e } in
+    %exp{fun ($locid : Locf.t) -> $e1 } in
   let make_ctyp (styp:Gram_def.styp) tvar : ctyp  =
     let rec aux  v = 
       match (v:Gram_def.styp) with
@@ -224,11 +209,12 @@ let make_action (_loc:loc)
         | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
             let p =  %pat@xloc{$lid:id} +: make_ctyp s.styp rtvar in
             %exp{ fun ${mk_arg p} -> $txt }
-        | (None, Some _) -> (* __fan_i, since we have inner binding*)            
+        | (None, [] ) ->
+            %exp{ fun ${mk_arg %pat{_}} -> $txt }
+        | (None, _ ) -> (* __fan_i, since we have inner binding*)            
             let p =
               %pat{ $lid{prefix^string_of_int i} } +: make_ctyp s.styp rtvar  in
-            %exp{ fun ${mk_arg p} -> $txt }
-        | (None,None) -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
+            %exp{ fun ${mk_arg p} -> $txt })  e x.prod in
   %exp{ $id{(gm())}.mk_action $txt }
 
 

@@ -32,12 +32,14 @@ and level  = {
   rules : rule list
 }
 and rule = {
+
     prod : osymbol list ;
 
     action : exp option ;
 
-    env : (locid * exp) list;
+    mutable  env : (locid * exp) list;
 }
+and label = string option
 and kind =
   | KNone
   | KSome
@@ -46,7 +48,7 @@ and locid = (loc * string)
 and symbol = {
     text : text;
     styp : styp;
-    pattern : pat option; (* inner destruction *)
+    pattern : (* pat option *) (locid * label) list ; (* inner destruction *)
     bounds : locid list; (* inner bounded variables *) 
 }
 and 'a decorate = {
@@ -56,7 +58,7 @@ and 'a decorate = {
 and osymbol = {
     text : text;
     styp : styp;
-    pattern : pat option;
+    pattern : (* pat option *) (locid * label) list ;
     bounds : locid list ;
     outer_pattern : locid option;
   }
