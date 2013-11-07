@@ -20,7 +20,6 @@ let check_add ((loc,id),v) env =
   else env := (((loc, id), v) :: (!env))
 let mk_prule ~prod  ~action  =
   let env = ref [] in
-  let inner_env = ref [] in
   let i = ref 0 in
   let prod =
     Listf.filter_map
@@ -33,7 +32,7 @@ let mk_prule ~prod  ~action  =
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) inner_env) bounds;
+                       FAst.exp )) env) bounds;
               incr i;
               Some symbol)
          | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
@@ -49,13 +48,13 @@ let mk_prule ~prod  ~action  =
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) inner_env) bounds;
+                       FAst.exp )) env) bounds;
               incr i;
               Some s)
          | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
              (List.iter
                 (fun ((xloc,_) as z)  ->
-                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) inner_env)
+                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
                 bounds;
               None)
          | { kind = KNone ;
@@ -63,15 +62,10 @@ let mk_prule ~prod  ~action  =
              (check_add (z, (`Uid (xloc, "None") : FAst.exp )) env;
               List.iter
                 (fun ((xloc,_) as z)  ->
-                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) inner_env)
+                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
                 bounds;
               None)) prod in
-  ({
-     prod;
-     action;
-     inner_env = (List.rev (!inner_env));
-     env = (List.rev (!env))
-   } : Gram_def.rule )
+  ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (!(gensym ())))
@@ -176,11 +170,9 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
             (fun ((loc,id),e)  ->
                (`Bind (_loc, (`Lid (loc, id) : FAst.pat ), e) : FAst.bind ))) in
      let binds = make_env x.env in
-     let inner_binds = make_env x.inner_env in
      let e1: FAst.exp =
        `Constraint
          (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
-     let e1 = Ast_gen.binds inner_binds e1 in
      let e1 = Ast_gen.binds binds e1 in
      match tok_match_pl with
      | ([],_) ->

@@ -132,6 +132,17 @@ let query_inline (x:string) =
      bounds = [(xloc,x);(lloc,loc)];
      pattern = Some %pat@xloc{({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
      }}
+  | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Str@xloc x %{
+    {text = `Token(_loc,
+                   %exp{({pred =
+                          (function
+                            | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
+                            | _ -> false);
+                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
+     styp = %ctyp'{Tokenf.txt};
+     bounds = [(xloc,x);(lloc,loc)];
+     pattern = Some %pat@xloc{({loc = $lid:loc; txt = $str:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
+     }}                                                                 
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
     {text = `Token(_loc,
                    %exp{({pred =

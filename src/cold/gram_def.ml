@@ -16,12 +16,10 @@ and level =  {
   label: string option;
   assoc: exp option;
   rules: rule list} 
-and rule = 
-  {
+and rule =  {
   prod: osymbol list;
   action: exp option;
-  env: (locid* exp) list;
-  inner_env: (locid* exp) list} 
+  env: (locid* exp) list} 
 and kind =  
   | KNone
   | KSome

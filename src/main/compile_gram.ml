@@ -43,7 +43,7 @@ let check_add ((loc,id),v) env  =
                         
 let mk_prule ~prod ~action =
   let env = ref [] in
-  let inner_env = ref [] in
+  (* let inner_env = ref [] in *)
   let i = ref 0 in 
   let prod =
     Listf.filter_map
@@ -53,7 +53,7 @@ let mk_prule ~prod ~action =
             begin
               List.iter
                 (fun ((xloc,id) as z) ->
-                  check_add (z, %exp@xloc{Some $lid:id}) inner_env) bounds ;
+                  check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
               incr i;
               Some symbol;
             end
@@ -68,7 +68,7 @@ let mk_prule ~prod ~action =
             begin 
               check_add (z, %exp@xloc{Some $lid:id } ) env;
               List.iter
-                  (fun ((xloc,id) as z) ->  check_add (z, %exp@xloc{Some $lid:id}) inner_env)
+                  (fun ((xloc,id) as z) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
                 bounds;
               incr i;
               Some s
@@ -76,18 +76,18 @@ let mk_prule ~prod ~action =
               
         | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
             begin
-              List.iter (fun ((xloc,_) as z) -> check_add (z, %exp@xloc{None}) inner_env) bounds;
+              List.iter (fun ((xloc,_) as z) -> check_add (z, %exp@xloc{None}) env) bounds;
               None
             end
         | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z); bounds; _}} ->
             begin
               check_add (z, %exp@xloc{None}) env;
-              List.iter (fun ((xloc,_) as z) -> check_add (z , %exp@xloc{None}) inner_env) bounds;
+              List.iter (fun ((xloc,_) as z) -> check_add (z , %exp@xloc{None}) env) bounds;
               None 
             end) prod in
   ({prod;
     action;
-    inner_env = List.rev !inner_env;
+    (* inner_env = List.rev !inner_env; *)
     env = List.rev !env}:Gram_def.rule)
 
 
@@ -173,10 +173,7 @@ let make_action (_loc:loc)
     let make_env env =
       env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
     let binds = make_env x.env in
-    let inner_binds = make_env x.inner_env in
-
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
-    let e1 = Ast_gen.binds inner_binds e1 in
     let e1 = Ast_gen.binds binds e1 in
     match tok_match_pl with
     | ([],_) ->

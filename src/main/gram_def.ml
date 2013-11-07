@@ -37,8 +37,6 @@ and rule = {
     action : exp option ;
 
     env : (locid * exp) list;
-    
-    inner_env :(locid * exp) list;
 }
 and kind =
   | KNone
