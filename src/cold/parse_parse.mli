@@ -9,6 +9,7 @@ open FAst
 
 
 
+
 (**  parse the header, return the current [grammar] and
      previous module name, it has side effect, and can not
      be used alone
@@ -81,10 +82,10 @@ val string : exp Gramf.t
 (* val psymbol : Gram_def.symbol Gramf.t *)
     
 (** return symbol with pattern(inferred) or None  *)    
-val symbol :  Gram_def.psymbol list Gramf.t
+val symbol :  Gram_def.symbol Gram_def.decorate list Gramf.t
 
 (** Required export for unittest *)
-val simple :  Gram_def.psymbol list Gramf.t
+val simple :  Gram_def.symbol Gram_def.decorate list Gramf.t
     
 (** return a [rule]
     {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };

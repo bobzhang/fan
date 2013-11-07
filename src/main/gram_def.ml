@@ -32,7 +32,7 @@ and level  = {
   rules : rule list
 }
 and rule = {
-    prod : symbol list ;
+    prod : osymbol list ;
 
     action : exp option ;
 
@@ -53,12 +53,20 @@ and symbol = {
     pattern : pat option; (* inner destruction *)
     bounds : locid list; (* inner bounded variables *) 
     
-    outer_pattern :  locid option; (* [as outer_pattern] *)
+    (* outer_pattern :  locid option; (\* [as outer_pattern] *\) *)
 }
-and psymbol = {
-    kind : kind ;
-    symbol : symbol
+and 'a decorate = {
+    kind : kind;
+    txt : 'a;
+  }      
+and osymbol = {
+    text : text;
+    styp : styp;
+    pattern : pat option;
+    bounds : locid list ;
+    outer_pattern : locid option;
   }
+
 and text =
  [
    `List of (loc * bool * symbol * symbol option )

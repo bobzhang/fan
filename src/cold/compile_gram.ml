@@ -20,10 +20,10 @@ let mk_prule ~prod  ~action  =
   let i = ref 0 in
   let prod =
     Listf.filter_map
-      (fun (p : Gram_def.psymbol)  ->
+      (fun (p : Gram_def.osymbol Gram_def.decorate)  ->
          match p with
          | { kind = KSome ;
-             symbol = ({ outer_pattern = None ; bounds;_} as symbol) } ->
+             txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
              (inner_env :=
                 ((List.map
                     (fun (xloc,id)  ->
@@ -34,9 +34,9 @@ let mk_prule ~prod  ~action  =
                    @ (!inner_env));
               incr i;
               Some symbol)
-         | { kind = KNormal ; symbol } -> (incr i; Some symbol)
+         | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
-             symbol = ({ outer_pattern = Some (xloc,id); bounds;_} as s) } ->
+             txt = ({ outer_pattern = Some (xloc,id); bounds;_} as s) } ->
              (env :=
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
@@ -52,7 +52,7 @@ let mk_prule ~prod  ~action  =
                    @ (!inner_env));
               incr i;
               Some s)
-         | { kind = KNone ; symbol = { outer_pattern = None ; bounds;_} } ->
+         | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
              (inner_env :=
                 ((List.map
                     (fun (xloc,id)  ->
@@ -60,8 +60,8 @@ let mk_prule ~prod  ~action  =
                          (`Uid (xloc, "None") : FAst.exp ))) bounds)
                    @ (!inner_env));
               None)
-         | { kind = KNone ;
-             symbol = { outer_pattern = Some (xloc,id); bounds;_} } ->
+         | { kind = KNone ; txt = { outer_pattern = Some (xloc,id); bounds;_}
+             } ->
              (env :=
                 (((`Lid (xloc, id) : FAst.pat ),
                    (`Uid (xloc, "None") : FAst.exp ))
@@ -160,7 +160,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
      snd @@
        (Listf.fold_lefti
           (fun i  ((oe,op) as acc)  x  ->
-             match (x : Gram_def.symbol ) with
+             match (x : Gram_def.osymbol ) with
              | { pattern = Some p; text = `Token _; outer_pattern = None ;_}
                  ->
                  let id = prefix ^ (string_of_int i) in
@@ -243,7 +243,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
    let txt =
      snd @@
        (Listf.fold_lefti
-          (fun i  txt  (s : Gram_def.symbol)  ->
+          (fun i  txt  (s : Gram_def.osymbol)  ->
              let mk_arg p =
                (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
                FAst.pat ) in
@@ -293,7 +293,7 @@ let make_extend safe (e : Gram_def.entry) =
          (List.map
             (fun (r : Gram_def.rule)  ->
                let sl =
-                 r.prod |> (List.map (fun (s : Gram_def.symbol)  -> s.text)) in
+                 r.prod |> (List.map (fun (s : Gram_def.osymbol)  -> s.text)) in
                (sl, (make_action _loc r (e.name).tvar), (r.action)))) in
      let prod = make_exp_rules _loc rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in

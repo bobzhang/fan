@@ -42,12 +42,12 @@ let mk_prule ~prod ~action =
   let i = ref 0 in 
   let prod =
     Listf.filter_map
-      (function  (p:Gram_def.psymbol) ->
+      (function  (p:Gram_def.osymbol Gram_def.decorate) ->
         match p with
           (* ? Lid i
              ? Lid 
            *)
-        | {kind = KSome;  symbol = ({outer_pattern = None; bounds  ; _} as symbol) } ->
+        | {kind = KSome;   txt = ({outer_pattern = None; bounds  ; _} as symbol) } ->
             begin
               inner_env :=
                 List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id}))
@@ -55,14 +55,14 @@ let mk_prule ~prod ~action =
               incr i;
               Some symbol;
             end
-        | {kind = KNormal; symbol} ->
+        | {kind = KNormal; txt = symbol} ->
             begin
               incr i;
               Some symbol 
             end
         (* ? Lid i as v 
          *)      
-        | {kind = KSome; symbol = ({outer_pattern = Some (xloc,id) ; bounds; _} as s)} ->
+        | {kind = KSome; txt = ({outer_pattern = Some (xloc,id) ; bounds; _} as s)} ->
             begin 
               env := (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id } ) :: !env;
               inner_env :=
@@ -72,14 +72,14 @@ let mk_prule ~prod ~action =
               Some s
             end
               
-        | {kind = KNone; symbol = {outer_pattern = None ; bounds; _}} ->
+        | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
             begin
               inner_env :=
                 List.map (fun (xloc,id) -> (%pat@xloc{$lid:id}, %exp@xloc{None})) bounds
                 @ !inner_env;
               None
             end
-        | {kind = KNone; symbol = {outer_pattern = Some (xloc,id); bounds; _}} ->
+        | {kind = KNone; txt = {outer_pattern = Some (xloc,id); bounds; _}} ->
             begin
               env := (%pat@xloc{$lid:id}, %exp@xloc{None}) :: !env ;
               inner_env :=
@@ -158,8 +158,8 @@ let make_action (_loc:loc)
     snd @@
     Listf.fold_lefti
       (fun i ((oe,op) as acc)  x ->
-        match (x:Gram_def.symbol) with 
-        | {pattern=Some p ; text=`Token _;outer_pattern = None; _ } ->
+        match (x:Gram_def.osymbol) with 
+        | {pattern=Some p ; text=`Token _; outer_pattern = None; _ } ->
             let id = prefix ^ string_of_int i in
             ( %exp{$lid:id} :: oe, p:: op)
         | {pattern=Some p ; text=`Token _;outer_pattern = Some (xloc,id) ;_ } ->
@@ -222,7 +222,7 @@ let make_action (_loc:loc)
   let txt =
     snd @@
     Listf.fold_lefti
-      (fun i txt (s:Gram_def.symbol) ->
+      (fun i txt (s:Gram_def.osymbol) ->
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
         match (s.outer_pattern, s.pattern) with
         | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
@@ -273,7 +273,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
           (fun (r:Gram_def.rule) ->
           let sl =
             r.prod
-            |> List.map (fun (s:Gram_def.symbol) -> s.text) in
+            |> List.map (fun (s:Gram_def.osymbol) -> s.text) in
           (sl,
            make_action _loc r e.name.tvar, (* compose the right side *)
            r.action)) in

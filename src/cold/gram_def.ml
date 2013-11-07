@@ -18,7 +18,7 @@ and level =  {
   rules: rule list} 
 and rule = 
   {
-  prod: symbol list;
+  prod: osymbol list;
   action: exp option;
   env: (pat* exp) list;
   inner_env: (pat* exp) list} 
@@ -27,16 +27,21 @@ and kind =
   | KSome
   | KNormal 
 and locid = (loc* string) 
-and symbol = 
+and symbol =  {
+  text: text;
+  styp: styp;
+  pattern: pat option;
+  bounds: locid list} 
+and 'a decorate =  {
+  kind: kind;
+  txt: 'a} 
+and osymbol = 
   {
   text: text;
   styp: styp;
   pattern: pat option;
   bounds: locid list;
   outer_pattern: locid option} 
-and psymbol =  {
-  kind: kind;
-  symbol: symbol} 
 and text =
   [ `List of (loc* bool* symbol* symbol option)
   | `Nterm of (loc* name* string option) | `Try of (loc* text)

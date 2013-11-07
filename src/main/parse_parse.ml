@@ -16,7 +16,12 @@ Ast_gen:
   ;
 }
 
-  
+
+
+type outer_symbol = {
+    psymbols : Gram_def.symbol Gram_def.decorate list ;
+    outer_pattern : Gram_def.locid option;
+  }
   
 open FAst
 open Util
@@ -54,148 +59,137 @@ let query_inline (x:string) =
   
 %create{(g:Gramf.t)
    extend_header
-   left_rule 
+   (left_rule : outer_symbol list  Gramf.t)
    (qualuid : vid Gramf.t)
    (qualid:vid Gramf.t)
    (t_qualid:vid Gramf.t )
    (entry_name : ([`name of Tokenf.name option | `non] * Gram_def.name) Gramf.t )
     position assoc name string rules
-    (symbol:Gram_def.psymbol list Gramf.t)
-    rule meta_rule rule_list psymbol level level_list
+    (symbol:Gram_def.symbol Gram_def.decorate list Gramf.t)
+    rule meta_rule rule_list
+   (psymbol: outer_symbol  Gramf.t)
+   level level_list
    (entry: Gram_def.entry option Gramf.t)
    extend_body
    unsafe_extend_body
-  (simple : Gram_def.psymbol list Gramf.t)
+  (simple : Gram_def.symbol Gram_def.decorate list Gramf.t)
   (single_symbol : Gram_def.symbol Gramf.t)        
 }
 
 
 %extend{(g:Gramf.t)
-
-
   (****************************************)        
   (* FIXME bring antiquotation back later*)
   (****************************************)                  
   simple_token @Inline :
   [ ("EOI" as v) %{
-    let des = %exp{({pred = function
-      | `EOI _ -> true
-      | _ -> false ;
-          descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)} in
-    {text = `Token(_loc,des);
+    {text = `Token(_loc,%exp{
+                   ({pred = (function
+                     | $vrn:v _ -> true
+                     | _ -> false) ;
+                     descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      pattern = None;
-     bounds = [];
-     outer_pattern = None}}
+     bounds = []
+     }}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     {text = `Token(_loc,
-                   %exp{({ pred = (function (*BOOTSTRAPPING*)
+                   %exp{({ pred = (function
                              | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
                              | _ -> false) ;
                            descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [];
-     pattern = Some %pat@xloc{({ txt = $str:x; _ }:Tokenf.txt)}; (* BOOTSTRAPING *)
-     outer_pattern = None;}}
+     pattern = Some %pat@xloc{({ txt = $str:x; _ }:Tokenf.txt)}; 
+     }}
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
      | "Optlabel" |"Str" |"Pre" as v);  ? Lid@xloc x %{
-    let des = %exp{({pred =
-                     (function
-                       | $vrn:v _ -> true
-                       | _ -> false);
-                     descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)} in
     let (pattern,bounds)  =
       match (x,xloc) with
       | (Some x, Some xloc) -> 
-          (Some %pat@xloc{({ txt = $lid:x; _ }:Tokenf.txt) (* BOOTSTRAPING *)}
-                    , [(xloc,x)])
+          (Some %pat@xloc{({ txt = $lid:x; _ }:Tokenf.txt)} , [(xloc,x)])
       | _ -> (None, [])in
-    {text = `Token(_loc, des);
+    {text = `Token(_loc,
+                   %exp{({pred =
+                          (function
+                            | $vrn:v _ -> true
+                            | _ -> false);
+                          descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      pattern;
      bounds ;
-     outer_pattern = None}}
+     }}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
-    let des = %exp{({pred =
-                     (function
-                       | $vrn:v _ -> true
-                       | _ -> false);
-                     descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)} in
-    {text = `Token(_loc,des);
+    {text = `Token(_loc,
+                   %exp{({pred =
+                          (function
+                            | $vrn:v _ -> true
+                            | _ -> false);
+                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [(xloc,x);(lloc,loc)];
      pattern = Some %pat@xloc{({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)  (* BOOTSTRAPING*)};
-     outer_pattern = None}}
+     }}
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
-    let des = %exp{({pred =
-                     (function
-                       | $vrn:v _ -> true
-                       | _ -> false);
-                     descr =
-                     {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)} in
-    {text = `Token(_loc,des);
+    {text = `Token(_loc,
+                   %exp{({pred =
+                          (function
+                            | $vrn:v _ -> true
+                            | _ -> false);
+                          descr =
+                          {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.quot};
      bounds = [(loc,x)];
      pattern = Some %pat{ ($lid:x : Tokenf.quot)};
-     outer_pattern = None}}
+     }}
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
-     let des = %exp{({pred =
-                      (function
-                        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-                        | _ -> false);
-                      descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}
-                       :Tokenf.pattern)} in
-     { text = `Token(_loc,des);
+     { text =
+       `Token(_loc,
+              %exp{({pred =
+                     (function
+                       | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+                       | _ -> false);
+                     descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}
+                      :Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
        pattern = Some %pat@xloc{({txt = $lid:x;_} : Tokenf.op)};
-       outer_pattern = None 
      }}
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
-     let des = %exp{({pred =
-                      (function
-                        | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
-                        | _ -> false);
-                      descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)
-                  } in
-     let p = %pat@xloc{$lid:x} in
-     let lp = %pat@lloc{$lid:l} in 
-     { text = `Token(_loc,des);
+     { text = `Token(_loc,
+                     %exp{({pred =
+                            (function
+                              | $vrn:v ({ level = $int:level; _}:Tokenf.op) -> true
+                              | _ -> false);
+                            descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [(xloc,x)];
-       pattern = Some %pat{({loc = $lp; txt = $p ;_} : Tokenf.op)};
-       outer_pattern = None 
-     }}
+       pattern = Some %pat{({loc = ${%pat@lloc{$lid:l}}; txt = ${%pat@xloc{$lid:x}} ;_} : Tokenf.op)}}}
   ]
   simple_symbol@Inline:
   [  Str s %{
      {text = `Keyword (_loc,s);
       styp= %ctyp'{Tokenf.txt};
       pattern= None;
-      bounds = [];
-      outer_pattern = None}}
+      bounds = []}}
   | Str s ; "@"; Lid@xloc i %{
      {text = `Keyword (_loc,s);
       styp = %ctyp'{Tokenf.txt};
-      pattern = Some %pat@xloc{({loc = $lid:i; _ } : Tokenf.txt ) (*BOOTSTRAPING*)};
-      bounds  =[(xloc,i)] ;
-      outer_pattern = None;
-    }}
+      pattern = Some %pat@xloc{({loc = $lid:i; _ } : Tokenf.txt )};
+      bounds  =[(xloc,i)] ;}}
   | name as n;  ? level_str as lev %{
     { text = `Nterm (_loc ,n, lev);
       styp = %ctyp'{'$lid{n.tvar}};
       bounds = [];
-      pattern = None;
-      outer_pattern = None}}
+      pattern = None}}
   | "S" %{
     {text = `Self _loc;
      styp = `Self _loc;
      pattern = None;
-     bounds = [];
-     outer_pattern = None}}]        
+     bounds = []}}]        
   single_symbol :
   [@simple_token 
   |@simple_symbol]
@@ -206,23 +200,19 @@ let query_inline (x:string) =
       | L1  Str SEP "|" as xs ; "@"; Lid@lloc l; "as"; Lid@xloc s %{(xs, Some (lloc,l), Some(xloc,s))} ]
 
   simple :
-  [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
-  | @simple_symbol %{fun (symbol : Gram_def.symbol) -> [({kind = KNormal; symbol}:Gram_def.psymbol)]} 
+  [ @simple_token %{fun (txt :Gram_def.symbol) ->
+    [ ({kind = Gram_def.KNormal; txt}:Gram_def.symbol Gram_def.decorate) ]}
+  | @simple_symbol %{fun (txt : Gram_def.symbol) ->
+      [({kind = KNormal; txt }:Gram_def.symbol Gram_def.decorate)]} 
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       let p = %pat'@xloc{$lid:s} in
       match ps with
       | (vs,loc,y) ->
           vs |>
-          List.map (fun (x:Tokenf.txt) ->
-            let (x,xloc) = (x.txt,x.loc) in
-            let  z = %pat'@xloc{$str:x} in
-            let des = %exp{({pred =
-                             (function
-                               | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
-                               | _ -> false);
-                             descr =
-                             {tag = $vrn:v; word = A $z; tag_name = $str:v}}:Tokenf.pattern)} in
-           
+          List.map
+            (fun (x:Tokenf.txt) ->
+              let (x,xloc) = (x.txt,x.loc) in
+              let  z = %pat'@xloc{$str:x} in
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
             let (pattern,bounds) =
@@ -239,12 +229,16 @@ let query_inline (x:string) =
                   (Some %pat@xloc{ (({kind = ( $z as $lid:u); loc = $l;  _} as $p) : Tokenf.ant)},
                    [(lloc,ll);v]) in
             ({kind = KNormal;
-              symbol = {
-              text = `Token(_loc,des);
+              txt = {
+              text = `Token(_loc,
+                            %exp{({pred =
+                                   (function
+                                     | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
+                                     | _ -> false);
+                                   descr = {tag = $vrn:v; word = A $z; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
               pattern ;
-              bounds;
-              outer_pattern = None }}:Gram_def.psymbol))}
+              bounds}}:Gram_def.symbol Gram_def.decorate))}
 
   | "("; or_strs as v; ")" %{
     match v with
@@ -258,12 +252,11 @@ let query_inline (x:string) =
                   ([(loc,l)], Some %pat@loc{({loc= $lid:l;_}:Tokenf.txt)} )
               | None -> ([],None) in
             ({kind = KNormal;
-              symbol = {
-              text = `Keyword(x.loc,x.txt);
-              styp = %ctyp'{Tokenf.txt};
-              bounds ;
-              pattern ;
-              outer_pattern = None}}:Gram_def.psymbol))
+              txt =
+              {text = `Keyword(x.loc,x.txt);
+               styp = %ctyp'{Tokenf.txt};
+               bounds ;
+               pattern}}:Gram_def.symbol Gram_def.decorate))
     | (vs, loc, Some ((xloc,v) as b)) -> (* ("a"|"b"|"c"@loc as v)*)
         let p = %pat@xloc{$lid:v} in
         let (bounds,pattern) =
@@ -276,12 +269,11 @@ let query_inline (x:string) =
         List.map
           (fun (x:Tokenf.txt) ->
             ({kind = KNormal;
-             symbol = {
-              text = `Keyword (x.loc,x.txt);
-              styp = %ctyp'{Tokenf.txt};
-              bounds ;
-              pattern ;
-              outer_pattern = None}}:Gram_def.psymbol))}
+              txt  =
+              {text = `Keyword (x.loc,x.txt);
+               styp = %ctyp'{Tokenf.txt};
+               bounds ;
+               pattern}}:Gram_def.symbol Gram_def.decorate))}
 
   ]
   level_str@Local :  ["Level"; Str  s %{s} ]      
@@ -294,29 +286,23 @@ let query_inline (x:string) =
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
     [{kind =KNormal; (* FIXME More precise, or meaning full warning message *)
-      symbol = {text; styp; pattern=None; outer_pattern = None; bounds = [] }}]}
+      txt = {text; styp; pattern=None;  bounds = [] }}]}
   | "?"; single_symbol as s  %{
     [{kind = KNone;
-      symbol = {s with outer_pattern = None }};
+      txt =  s };
      {kind = KSome;
-      symbol = {s with outer_pattern = None}
-    }]}
-  | "?"; "["; left_rule ; "]"%{
-   assert false 
-  }
+      txt = s}]}
+  | "?"; "["; left_rule ; "]"%{  assert false}
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     (* FIXME more precise *)
-    [{kind = KNormal; symbol= {text;styp=s.styp;pattern=None;outer_pattern = None; bounds = s.bounds}
-    }]}
+    [{ kind = KNormal; txt = {text;styp=s.styp;pattern=None; bounds = s.bounds}}]}
   | simple as p %{ p}   ]
   psymbol :
-  [ symbol as ss %{ss}
+  [ symbol as ss %{ {psymbols = ss; outer_pattern = None}}
   | symbol as ss; "as"; Lid@xloc i %{
-    List.map (fun (s:Gram_def.psymbol) ->
-      {s with symbol = {(s.symbol) with outer_pattern = Some (xloc,i)}}) ss }]
-}
+                             {psymbols = ss; outer_pattern = Some(xloc,i)} }]}
 
 
 
@@ -434,11 +420,26 @@ let query_inline (x:string) =
 
   rule :
   [ left_rule as prod; ? opt_action as action %{
-    let prods = Listf.cross prod in
-    List.map
-      (fun
-        (prod:Gram_def.psymbol list) ->
-          mk_prule ~prod ~action) prods}
+    let rec cross (prod: outer_symbol list) :
+        Gram_def.osymbol Gram_def.decorate list list =
+      match prod with
+      | [] -> [[]]
+      | x:: xs ->
+          Listf.concat_map
+            (fun (y:Gram_def.osymbol Gram_def.decorate  list) ->
+              List.map
+                (fun (z: Gram_def.symbol Gram_def.decorate) ->
+                  (({kind = z.kind;
+                     txt = {
+                     text = z.txt.text ;
+                     styp = z.txt.styp;
+                     pattern = z.txt.pattern;
+                     bounds = z.txt.bounds;
+                     outer_pattern = x.outer_pattern}}
+                       :
+                     Gram_def.osymbol Gram_def.decorate)::y)) x.psymbols
+                ) (cross xs) in
+    List.map (fun prod -> mk_prule ~prod ~action) @@  cross prod}
 
   | "@"; Lid@xloc x ; ? opt_action as action %{
     let rules =
