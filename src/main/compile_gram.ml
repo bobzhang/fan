@@ -40,10 +40,17 @@ let check_add ((loc,id),v) env  =
   (*   Locf.failf loc "This variable %s is bound several times" id *)
   (* else *)
     env := ((loc,id),v) :: !env
+
+let enhance_env  (s:string) (xs:(Gram_def.locid * Gram_def.label) list) env  =
+  xs |>
+  List.iter
+    (fun (((loc,_) as v),opt) ->
+      match opt with
+      | None -> env :=   (v, %exp@loc{$lid:s}) ::! env
+      | Some l -> env := (v, %exp@loc{$lid:s.$lid:l}) :: !env)
                         
 let mk_prule ~prod ~action =
   let env = ref [] in
-  (* let inner_env = ref [] in *)
   let i = ref 0 in 
   let prod =
     Listf.filter_map
@@ -85,10 +92,28 @@ let mk_prule ~prod ~action =
               List.iter (fun ((xloc,_) as z) -> check_add (z , %exp@xloc{None}) env) bounds;
               None 
             end) prod in
+  let () = env := List.rev !env in 
+  let () =
+    Listf.iteri
+      (fun i y ->
+        let id = prefix ^ string_of_int i in
+        match (y:Gram_def.osymbol) with 
+        | {pattern ; text=`Token _; outer_pattern = None; _ } ->
+            enhance_env  id pattern env
+        | {pattern ; text=`Token _;outer_pattern = Some (_,id) ;_ } ->
+            enhance_env  id pattern env  (* FIXME duplicated here -- could be simplified *)
+        | {pattern; text = `Keyword _;outer_pattern = None;  _} ->
+            let id = prefix ^ string_of_int i in
+            enhance_env  id  pattern env 
+        | {pattern; text = `Keyword _;outer_pattern = Some(_,id);  _} ->
+            (* could be simplified *)
+            enhance_env  id pattern  env
+            (* FIXME when the percent is replaced with '$',  a weird error message*)
+        | _ ->  ())   prod in
   ({prod;
     action;
     (* inner_env = List.rev !inner_env; *)
-    env = List.rev !env}:Gram_def.rule)
+    env =  !env}:Gram_def.rule)
 
 
 let gen_lid ()=
@@ -141,16 +166,6 @@ and make_exp_rules (_loc:loc)
       %exp{ ($sl,($str:action_string,$action)) } )
   |> list_of_list _loc
 
-let enhance_env (x:Gram_def.rule) (s:string)
-    (xs:(Gram_def.locid * Gram_def.label) list) =
-  xs |>
-  List.iter
-    (fun (((loc,_) as v),opt) ->
-      match opt with
-      | None -> x.env <-  (v, %exp@loc{$lid:s}) :: x.env
-      | Some l ->
-          x.env <- (v, %exp@loc{$lid:s.$lid:l}) :: x.env
-    )
 (**********************************************)
 (* generate action of the right side   *)
 (**********************************************)      
@@ -164,22 +179,7 @@ let make_action (_loc:loc)
      it is used for further destruction *)
   (* let tok_match_pl = *)
     (* snd @@ *)
-   let () =  Listf.iteri
-      (fun i (* ((oe,op) as acc) *)  y ->
-        let id = prefix ^ string_of_int i in
-        match (y:Gram_def.osymbol) with 
-        | {pattern ; text=`Token _; outer_pattern = None; _ } ->
-            enhance_env x id pattern
-        | {pattern ; text=`Token _;outer_pattern = Some (_,id) ;_ } ->
-            enhance_env x id pattern (* FIXME duplicated here -- could be simplified *)
-        | {pattern; text = `Keyword _;outer_pattern = None;  _} ->
-            let id = prefix ^ string_of_int i in
-            enhance_env x id  pattern
-        | {pattern; text = `Keyword _;outer_pattern = Some(_,id);  _} ->
-            (* could be simplified *)
-            enhance_env x id pattern 
-            (* FIXME when the percent is replaced with '$',  a weird error message*)
-        | _ ->  ())   x.prod in
+  
   let e =
     let make_env env =
       env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in

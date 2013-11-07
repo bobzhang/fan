@@ -15,6 +15,19 @@ let gm () =
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
 let check_add ((loc,id),v) env = env := (((loc, id), v) :: (!env))
+let enhance_env (s : string) (xs : (Gram_def.locid* Gram_def.label) list) env
+  =
+  xs |>
+    (List.iter
+       (fun (((loc,_) as v),opt)  ->
+          match opt with
+          | None  -> env := ((v, (`Lid (loc, s) : FAst.exp )) :: (!env))
+          | Some l ->
+              env :=
+                ((v,
+                   (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : 
+                   FAst.exp ))
+                :: (!env))))
 let mk_prule ~prod  ~action  =
   let env = ref [] in
   let i = ref 0 in
@@ -62,7 +75,23 @@ let mk_prule ~prod  ~action  =
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
                 bounds;
               None)) prod in
-  ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
+  let () = env := (List.rev (!env)) in
+  let () =
+    Listf.iteri
+      (fun i  y  ->
+         let id = prefix ^ (string_of_int i) in
+         match (y : Gram_def.osymbol ) with
+         | { pattern; text = `Token _; outer_pattern = None ;_} ->
+             enhance_env id pattern env
+         | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
+             enhance_env id pattern env
+         | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
+             let id = prefix ^ (string_of_int i) in
+             enhance_env id pattern env
+         | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
+             enhance_env id pattern env
+         | _ -> ()) prod in
+  ({ prod; action; env = (!env) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (!(gensym ())))
@@ -137,35 +166,9 @@ and make_exp_rules (_loc : loc)
                           (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
              FAst.exp ))))
     |> (list_of_list _loc)
-let enhance_env (x : Gram_def.rule) (s : string)
-  (xs : (Gram_def.locid* Gram_def.label) list) =
-  xs |>
-    (List.iter
-       (fun (((loc,_) as v),opt)  ->
-          match opt with
-          | None  -> x.env <- (v, (`Lid (loc, s) : FAst.exp )) :: (x.env)
-          | Some l ->
-              x.env <-
-                (v,
-                  (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : FAst.exp ))
-                :: (x.env)))
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (!Locf.name)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
-   let () =
-     Listf.iteri
-       (fun i  y  ->
-          let id = prefix ^ (string_of_int i) in
-          match (y : Gram_def.osymbol ) with
-          | { pattern; text = `Token _; outer_pattern = None ;_} ->
-              enhance_env x id pattern
-          | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
-              enhance_env x id pattern
-          | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
-              let id = prefix ^ (string_of_int i) in enhance_env x id pattern
-          | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
-              enhance_env x id pattern
-          | _ -> ()) x.prod in
    let e =
      let make_env env =
        env |>

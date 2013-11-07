@@ -242,8 +242,6 @@ let apply () = begin
             %{ `PackageModule
                  (_loc,
                   `Constraint (_loc, e, `Package (_loc, p)))}]}};
-
-  with mbind
       %extend{
         mbind_quot:
         [ S as b1; "and"; S as b2 %{  `And(_loc,b1,b2)}
@@ -358,7 +356,6 @@ let apply () = begin
       let (sil,stopped) = rest in (si :: sil, stopped)}
     | EOI %{ ([], None)} ]  };
 
-    with exp
     %extend{
       exp_quot:
       [ exp as e1; ","; comma_exp as e2 %{ `Com(_loc,e1,e2)}
@@ -373,13 +370,13 @@ let apply () = begin
       cvalue_bind:
       [ "="; exp as e %{ e}
       | ":"; "type"; unquoted_typevars as t1; "." ; ctyp as t2 ; "="; exp as e %{
-          let u = %ctyp{ ! $t1 . $t2 } in  %{ ($e : $u) }}
+          let u = %ctyp{ ! $t1 . $t2 } in  %exp{ ($e : $u) }}
       | ":"; ctyp as t; "="; exp as e %exp{ ($e : $t) }
       | ":"; ctyp as t; ":>"; ctyp as t2; "="; exp as e %{
         match t with
         | %ctyp{ ! $_ . $_ } ->
             raise (Streamf.Error "unexpected polytype here")
-        | _ -> %{ ($e : $t :> $t2) } }
+        | _ -> %exp{ ($e : $t :> $t2) } }
       | ":>"; ctyp as t; "="; exp as e %{ `Subtype(_loc,e,t)} ]
       fun_bind:
       { RA
@@ -534,7 +531,7 @@ let apply () = begin
         [ "~"; a_lident as i; ":"; S as e %{ `Label (_loc, i, e)}
         | "~"; a_lident as i %{ `LabelS(_loc,i)}
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
-        | Label i; S as e %{ %{ ~ $lid:i : $e }}
+        | Label i; S as e %exp{ ~ $lid:i : $e }
         (* Same remark for ?a:b *)
         | Optlabel i; S as e %{  `OptLabl(_loc,`Lid(_loc,i),e)}
         | "?"; a_lident as i; ":"; S as e %{ `OptLabl(_loc,i,e)}
@@ -562,11 +559,9 @@ let apply () = begin
         | @primitve 
         | TRY module_longident_dot_lparen as i;S as e; ")" %{
             `LetOpen (_loc,`Negative _loc, i, e)}
-        (* | TRY val_longident as i -> %{ $id:i } *)
-        (* | ident as i -> i  (\* FIXME logic was splitted here *\) *)
         | vid as i %{(i :vid :>exp) }
         | "`"; luident as s %{ `Vrn(_loc,s)}
-        | "["; "]" %{ %{ [] }} (* FIXME *)
+        | "["; "]"  %exp{ [] }
         | "["; sem_exp_for_list as s; "]" %{ s }
         | "[|"; "|]" %{ `ArrayEmpty(_loc)}
         | "[|"; sem_exp as el; "|]" %{ `Array (_loc, el)}
@@ -578,7 +573,7 @@ let apply () = begin
             `RecordWith (_loc, el, e)}
         | "{<"; ">}" %{ `OvrInstEmpty(_loc)}
         | "{<"; field_exp_list as fel; ">}" %{ `OvrInst(_loc,fel) }
-        | "("; ")" %{ %{ () }}
+        | "("; ")"  %exp{ () }
         | "("; S as e; ":"; ctyp as t; ")" %{ `Constraint (_loc, e, t)}
         | "("; S as e; ","; comma_exp as el; ")" %{`Par (_loc, `Com (_loc, e, el))}
         | "("; S as e; ";"; sequence as seq; ")"  %{`Seq(_loc,`Sem(_loc,e,seq))}
@@ -1182,7 +1177,6 @@ let apply_ctyp () = begin
       ]
       constructor_declarations:
       [ Ant (""|"typ" ,s) %{ mk_ant  ~c:"ctyp"  s}
-      (* | `Quot x -> Ast_quotation.expand  x Dyn_tag.ctyp *)
       | S as t1; "|"; S as t2 %{    `Bar(_loc,t1,t2)}
       | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,s,t)}
       | a_uident as s; ":"; ctyp as t %{ (* GADT  *) `TyCol(_loc,s,t)}
@@ -1190,7 +1184,6 @@ let apply_ctyp () = begin
       ]
       constructor_declaration:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
-      (* | `Quot x -> Ast_quotation.expand  x Dyn_tag.ctyp *)
       | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,(s:>vid),t)}
       | a_uident as s %{ (s:>of_ctyp)}
       ]
@@ -1205,7 +1198,6 @@ let apply_ctyp () = begin
   
       label_declaration:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
-      (* | `Quot x -> Ast_quotation.expand  x Dyn_tag.ctyp *)
       | a_lident as s; ":"; ctyp as t %{ `TyCol(_loc,s,t)}
       | "mutable"; a_lident as s; ":";  ctyp as t %{ `TyColMut(_loc,s,t)}
       ]

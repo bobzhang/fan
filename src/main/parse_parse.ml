@@ -180,9 +180,12 @@ let query_inline (x:string) =
   |@simple_symbol]
   
   or_strs@Local :
-      [ L1  Str SEP "|" as xs %{(xs,None,None)}
-      | L1  Str SEP "|" as xs; "as"; Lid@xloc s %{ (xs, None, Some (xloc,s))}
-      | L1  Str SEP "|" as xs ; "@"; Lid@lloc l; "as"; Lid@xloc s %{(xs, Some (lloc,l), Some(xloc,s))} ]
+      [ L1  Str SEP "|" as xs
+          %{(xs,None,None)}
+      | L1  Str SEP "|" as xs; "as"; Lid@xloc s
+          %{ (xs, None, Some (xloc,s))}
+      | L1  Str SEP "|" as xs ; "@"; Lid@lloc l; "as"; Lid@xloc s
+          %{(xs, Some (lloc,l), Some(xloc,s))} ]
 
   simple :
   [ @simple_token %{fun (txt :Gram_def.symbol) ->

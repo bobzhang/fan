@@ -1159,7 +1159,6 @@ let make_pat exp =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                    let x = __fan_0 in
-                   let x = __fan_0 in
                    (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))));
          ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("(`Vrn (_loc, s) : FAst.pat )\n",
@@ -1192,7 +1191,6 @@ let make_pat exp =
                    ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
-                   let i = __fan_0.txt in
                    (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 'ipat )))));
          ([`Token
              ({
@@ -1207,7 +1205,6 @@ let make_pat exp =
              (Gramf.mk_action
                 (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_0.txt in
                    let i = __fan_0.txt in
                    (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'ipat )))));
          ([`Keyword "?";
@@ -1244,7 +1241,6 @@ let make_pat exp =
                 (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_ 
                    ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   let s = __fan_6 in
                    let s = __fan_6 in
                    (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'ipat )))));
          ([`Keyword "?";
@@ -3640,7 +3636,6 @@ let apply () =
             ("`Int (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Int (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3650,7 +3645,6 @@ let apply () =
             ("`Int32 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Int32 (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3660,7 +3654,6 @@ let apply () =
             ("`Int64 (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Int64 (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3671,7 +3664,6 @@ let apply () =
             ("`Nativeint (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Nativeint (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3681,7 +3673,6 @@ let apply () =
             ("`Flo (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Flo (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3691,7 +3682,6 @@ let apply () =
             ("`Chr (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Chr (_loc, s) : 'exp )))));
           ([`Token
               ({
@@ -3701,7 +3691,6 @@ let apply () =
             ("`Str (_loc, s)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
                     let s = __fan_0.txt in (`Str (_loc, s) : 'exp )))));
           ([`Try
               (`Nterm

@@ -16,11 +16,10 @@ and level =  {
   label: string option;
   assoc: exp option;
   rules: rule list} 
-and rule = 
-  {
+and rule =  {
+  env: (locid* exp) list;
   prod: osymbol list;
-  action: exp option;
-  mutable env: (locid* exp) list} 
+  action: exp option} 
 and label = string option 
 and kind =  
   | KNone
