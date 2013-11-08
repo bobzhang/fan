@@ -123,8 +123,8 @@ val gen_lid : unit -> string
 
 (** the [rhs] was computed, compute the [lhs]
    the generated expession has type [production] *)        
-val make_exp_rules :
-    loc -> (text list * exp * exp option) list -> string -> exp
+(* val make_exp_rules : *)
+(*     loc -> (text list * exp * exp option) list -> string -> exp *)
 
 
 

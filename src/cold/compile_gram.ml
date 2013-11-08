@@ -142,14 +142,15 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
     | `Token (_loc,meta) ->
         (`App (_loc, (`Vrn (_loc, "Token")), meta) : FAst.exp ) in
   aux tvar x
-and make_exp_rules (_loc : loc)
-  (rl : (Gram_def.text list* exp* exp option) list) (tvar : string) =
+and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)
+  (tvar : string) =
   (rl |>
      (List.map
         (fun (sl,action,raw)  ->
            let action_string =
              match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
-           let sl = (sl |> (List.map (make_exp tvar))) |> (list_of_list _loc) in
+           let sl = (sl |> (List.map (make_exp tvar))) |> list_of_list in
+           let _loc = Ast_loc.loc_of sl in
            (`Par
               (_loc,
                 (`Com
@@ -158,7 +159,7 @@ and make_exp_rules (_loc : loc)
                         (_loc,
                           (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
              FAst.exp ))))
-    |> (list_of_list _loc)
+    |> list_of_list
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (!Locf.name)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
@@ -253,7 +254,7 @@ let make_extend safe (e : Gram_def.entry) =
                let sl =
                  r.prod |> (List.map (fun (s : Gram_def.osymbol)  -> s.text)) in
                (sl, (make_action _loc r (e.name).tvar), (r.action)))) in
-     let prod = make_exp_rules _loc rl (e.name).tvar in
+     let prod = make_exp_rules rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
    match e.levels with
    | `Single l ->
@@ -276,7 +277,7 @@ let make_extend safe (e : Gram_def.entry) =
                               (_loc, (gm () : vid  :>ident),
                                 (`Lid (_loc, "olevel"))))))))))) : FAst.exp )
    | `Group ls ->
-       let txt = list_of_list _loc (List.map apply ls) in
+       let txt = list_of_list (List.map apply ls) in
        let f =
          if safe
          then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend"))) : FAst.exp )

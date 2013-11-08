@@ -152,7 +152,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
   aux  tvar x
 
 
-and make_exp_rules (_loc:loc)
+and make_exp_rules 
     (rl : (Gram_def.text list  * exp * exp option) list) (tvar:string) =
   rl
   |> List.map (fun (sl,action,raw) ->
@@ -163,9 +163,10 @@ and make_exp_rules (_loc:loc)
       let sl =
         sl
         |> List.map (make_exp tvar)
-        |> list_of_list _loc in
+        |> list_of_list  in
+      let _loc = Ast_loc.loc_of sl in 
       %exp{ ($sl,($str:action_string,$action)) } )
-  |> list_of_list _loc
+  |> list_of_list 
 
 (**********************************************)
 (* generate action of the right side   *)
@@ -260,7 +261,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
           (sl,
            make_action _loc r e.name.tvar, (* compose the right side *)
            r.action)) in
-    let prod = make_exp_rules _loc rl e.name.tvar in
+    let prod = make_exp_rules  rl e.name.tvar in
     (* generated code of type [olevel] *)
     %exp{ ($lab, $ass, $prod) } in
   match e.levels with
@@ -271,7 +272,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
         else %exp{$id{gm()}.unsafe_extend_single} in
         %exp{$f $ent ($pos, (${apply l} : $id{(gm() : vid :> ident)}.olevel ))}
   |`Group ls ->
-      let txt = list_of_list _loc (List.map apply ls) in
+      let txt = list_of_list (List.map apply ls) in
       let f =
         if safe then %exp{$id{gm()}.extend}
         else %exp{$id{gm()}.unsafe_extend} in
