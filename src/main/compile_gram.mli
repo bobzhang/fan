@@ -29,7 +29,7 @@ val gen_lid : unit -> string
    {[
    (Gramf.mk_action
                (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t) 
-                  -> (`Try (_loc, e, a) : 'exp )))
+                  -> (Try (_loc, e, a) : 'exp )))
    ]} *)
 
 (* val text_of_action : *)
@@ -40,25 +40,25 @@ val gen_lid : unit -> string
    it generates code which has type [Gramf.symbol]
    tvar provides type informatoin
    {[
-   `Keyword "let"
+   Keyword "let"
 
-   `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))
+   Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))
 
    `Smeta
       (["FOLD1"; "SEP"],
           [Gramf.srules declare_regexp
-                [([`Token
+                [([Token
                     (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
-                     `Keyword ":";
-                     `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
+                     Keyword ":";
+                     Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
                       (Gramf.mk_action
                          (fun (r : 'regexp)  _  (__fan_0 : [> Tokenf.t]) 
                             (_loc : Locf.t)  ->
                             match __fan_0 with
                             | `Lid x -> ((x, r) : 'e__2 )
                             | _ -> assert false)))];
-                `Keyword ";"],
+                Keyword ";"],
                (Gramf.Action.mk
                    (Gramf.sfold1sep
                       (fun (x,r)  ()  ->
@@ -72,24 +72,24 @@ val gen_lid : unit -> string
                    (_,'e__2,'e__3) Gramf.foldsep )))
    `List0
      (Gramf.srules sigis
-                 [([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ));
-                   `Nterm (Gramf.obj (semi : 'semi Gramf.t ))],
+                 [([Nterm (Gramf.obj (sigi : 'sigi Gramf.t ));
+                   Nterm (Gramf.obj (semi : 'semi Gramf.t ))],
                     (Gramf.mk_action
                        (fun _  (sg : 'sigi)  (_loc : Locf.t)  ->
                           (sg : 'e__1 ))))])
 
    `List0sep
-       ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-        (`Keyword "|"))
+       ((Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
+        (Keyword "|"))
 
 
    `List1sep
         ((Gramf.srules pos_exps
-          [([`Token
+          [([Token
                         (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
-                     `Keyword ":";
-                     `Nterm
+                     Keyword ":";
+                     Nterm
                        (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
                       (Gramf.mk_action
                          (fun (y : 'dot_lstrings)  _ 
@@ -99,7 +99,7 @@ val gen_lid : unit -> string
                                 (((x : string ), (Tokenf.resolve_name y)) : 
                                 'e__2 )
                             | _ -> assert false)));
-                   ([`Token
+                   ([Token
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
                      (Gramf.mk_action
@@ -110,11 +110,11 @@ val gen_lid : unit -> string
                                (((x : string ),
                                   (Tokenf.resolve_name ((`Sub []), x))) : 
                                'e__2 )
-                           | _ -> assert false)))]), (`Keyword ";"))
+                           | _ -> assert false)))]), (Keyword ";"))
    `Snext
-   `Self
+   Self
    `Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "top")
-   `Token
+   Token
      (((function | `Ant ((""|"mexp"|"anti"|"list"),_) -> true
         | _ -> false)),
        (`Normal, "`Ant ((\"\"|\"mexp\"|\"anti\"|\"list\"),_)"))

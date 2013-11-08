@@ -107,7 +107,7 @@ let gen_lid () =
 let rec make_exp (tvar : string) (x : Gram_def.text) =
   let rec aux tvar (x : Gram_def.text) =
     match x with
-    | `List (_loc,min,t,ts) ->
+    | List (_loc,min,t,ts) ->
         let txt = aux "" t.text in
         (match ts with
          | None  ->
@@ -125,11 +125,11 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
                (`App
                   (_loc, (`Vrn (_loc, "List0sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp ))
-    | `Self _loc -> (`Vrn (_loc, "Self") : FAst.exp )
-    | `Keyword (_loc,kwd) ->
+    | Self _loc -> (`Vrn (_loc, "Self") : FAst.exp )
+    | Keyword (_loc,kwd) ->
         (`App (_loc, (`Vrn (_loc, "Keyword")), (`Str (_loc, kwd))) : 
         FAst.exp )
-    | `Nterm (_loc,n,lev) ->
+    | Nterm (_loc,n,lev) ->
         let obj: FAst.exp =
           `App
             (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
@@ -151,11 +151,11 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
              if n.tvar = tvar
              then (`Vrn (_loc, "Self") : FAst.exp )
              else (`App (_loc, (`Vrn (_loc, "Nterm")), obj) : FAst.exp ))
-    | `Try (_loc,t) ->
+    | Try (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Try")), (aux "" t)) : FAst.exp )
-    | `Peek (_loc,t) ->
+    | Peek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Peek")), (aux "" t)) : FAst.exp )
-    | `Token (_loc,meta) ->
+    | Token (_loc,meta) ->
         (`App (_loc, (`Vrn (_loc, "Token")), meta) : FAst.exp ) in
   aux tvar x
 and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)

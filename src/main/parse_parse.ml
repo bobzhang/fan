@@ -77,13 +77,13 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   (****************************************)                  
   simple_token @Inline :
   [ ("EOI" as v) %{
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({pred = %p{ ($vrn:v _ : Tokenf.t) };
                           descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = []; outer_pattern = None  }}
   | ("Lid"|"Uid"|"Str" as v); Str x %{
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({ pred = %p{ ($vrn:v ({txt=$str:x;_} : Tokenf.txt)) } ;
                            descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
@@ -95,7 +95,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       match (x,xloc) with
       | (Some x, Some xloc) -> [((xloc,x),Some "txt") ]
       | _ -> [] in
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({pred = %p{ $vrn:v _};
                           descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
@@ -103,33 +103,33 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
      }}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({pred = %p{ $vrn:v _};
                           descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [((lloc,loc),Some "loc");((xloc,x),Some "txt")]; outer_pattern = None  }}
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Str x %{
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({pred = %p{$vrn:v ({txt=$str:x;_}:Tokenf.txt)};
                           descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [((lloc,loc),Some "loc")]; outer_pattern = None  }} 
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
-    {text = `Token(_loc,
+    {text = Token(_loc,
                    %exp{({pred = %p{$vrn:v _};
                           descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.quot};
      bounds = [((loc,x),None)] ; outer_pattern = None}}
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
      { text =
-       `Token(_loc,
+       Token(_loc,
               %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)};
                      descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}} :Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [((xloc,x),Some "txt")]; outer_pattern = None}}
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
-     { text = `Token(_loc,
+     { text = Token(_loc,
                      %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)} ;
                             descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
@@ -137,21 +137,21 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   ]
   simple_symbol@Inline:
   [  Str s %{
-     {text = `Keyword (_loc,s);
+     {text = Keyword (_loc,s);
       styp= %ctyp'{Tokenf.txt};
       bounds= []; outer_pattern = None  }}
   | Str s ; "@"; Lid@xloc i %{
-     {text = `Keyword (_loc,s);
+     {text = Keyword (_loc,s);
       styp = %ctyp'{Tokenf.txt};
       bounds =
       [((xloc,i),Some "loc")]; outer_pattern = None  }}
 
   | name as n;  ? ["Level"; Str s ] %{
-    { text = `Nterm (_loc ,n, s);
+    { text = Nterm (_loc ,n, s);
       styp = %ctyp'{'$lid{n.tvar}};
       bounds = []; outer_pattern = None  }}
   | "S" %{
-    {text = `Self _loc;
+    {text = Self _loc;
      styp = `Self _loc;
      bounds = []; outer_pattern = None  }}]        
   single_symbol :
@@ -193,7 +193,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
             ({kind = KNormal;
               txt =
               [{
-              text = `Token(_loc,
+              text = Token(_loc,
                             %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
                                    descr = {tag = $vrn:v; word = A $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
@@ -212,7 +212,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               | None -> [] in
             ({kind = KNormal;
               txt =
-              [{text = `Keyword(x.loc,x.txt);
+              [{text = Keyword(x.loc,x.txt);
                styp = %ctyp'{Tokenf.txt};
                bounds; outer_pattern = None}]}:Gram_def.osymbol list Gram_def.decorate))
     | (vs, loc, Some  b) -> (* ("a"|"b"|"c"@loc as v)*)
@@ -225,7 +225,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
           (fun (x:Tokenf.txt) ->
             ({kind = KNormal;
               txt  =
-              [{text = `Keyword (x.loc,x.txt);
+              [{text = Keyword (x.loc,x.txt);
                styp = %ctyp'{Tokenf.txt}; bounds;
                 outer_pattern = None
               }]}:Gram_def.osymbol list Gram_def.decorate))}
@@ -238,8 +238,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   (* be more precise, no recursive grammar? *)
   [("L0"|"L1" as l) ; single_symbol as s; ? ["SEP"; single_symbol as sep]  %{
     let styp = %ctyp'{ ${s.styp} list   } in
-    let text =
-      `List(_loc, (if l = "L0" then false else true), s, sep) in
+    let (text : Gram_def.text) =
+      List(_loc, (if l = "L0" then false else true), s, sep) in
     [ { kind =KNormal; (* FIXME More precise, or meaning full warning message *)
       txt = [{text; styp; bounds= [] ;outer_pattern = None }]} ]
    }
@@ -257,7 +257,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
 
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
-    let text = if p = "TRY" then `Try v else `Peek v  in
+    let (text:Gram_def.text)  =
+      if p = "TRY" then Try v else Peek v  in
     (* FIXME more precise *)
     [{ kind = KNormal; txt = [{text;styp=s.styp;bounds= s.bounds;outer_pattern = None}]}]}
   | simple as p %{ p}

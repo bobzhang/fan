@@ -156,9 +156,9 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
         | Some s ->
             let x = aux tvar s.text in
             if min then %exp{ `List1sep ($txt,$x)} else %exp{ `List0sep ($txt,$x) })
-    | `Self _loc ->  %exp{ `Self}
-    | `Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
-    | `Nterm (_loc, n, lev) ->
+    | Self _loc ->  %exp{ `Self}
+    | Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
+    | Nterm (_loc, n, lev) ->
         let obj =
           %exp{ ($id{gm()}.obj
                    (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
@@ -166,10 +166,10 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
         | Some lab -> %exp{ `Snterml ($obj,$str:lab)}
         | None ->
            if n.tvar = tvar then %exp{ `Self} else %exp{ `Nterm $obj })
-    | `Try (_loc, t) -> %exp{ `Try ${aux "" t} }
-    | `Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
-    | `Token (_loc, meta) ->
-        %exp{`Token $meta} in
+    | Try (_loc, t) -> %exp{ `Try ${aux "" t} }
+    | Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
+    | Token (_loc, meta) ->
+        %exp{ `Token $meta} in
   aux  tvar x
 
 
@@ -216,7 +216,7 @@ let make_action (_loc:loc)
       | #vid' as x -> (x : vid' :>ctyp) 
       | `Quote _ as x -> x
       | %ctyp'{ $t2 $t1}-> %ctyp{${aux t2} ${aux t1}}
-      | Self _loc ->
+      | `Self _loc ->
           if tvar = "" then
             Locf.raise _loc @@ Streamf.Error ("S: illegal in anonymous entry level")
           else %ctyp{ '$lid:tvar }

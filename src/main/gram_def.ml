@@ -66,19 +66,19 @@ and osymbol = {
   }
 
 and text =
- [
-   `List of (loc * bool * osymbol * osymbol option ) (* should be symbol?*)
- | `Nterm of (loc * name  * string option )
- | `Try of (loc * text )
- | `Peek of (loc * text)
- | `Self of loc
- | `Keyword of (loc * string)
- | `Token of (loc * exp )
+  |
+   List of (loc * bool * osymbol * osymbol option ) (* should be symbol?*)
+ | Nterm of (loc * name  * string option )
+ | Try of (loc * text )
+ | Peek of (loc * text)
+ | Self of loc
+ | Keyword of (loc * string)
+ | Token of (loc * exp )
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for
     grammar insertion and left factoring.
-    Keep this string [normalized] and well *comparable*. *) ]
+    Keep this string [normalized] and well *comparable*. *) 
 
 type entries = {
     items : entry list;
