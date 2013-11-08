@@ -198,13 +198,15 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
               end
           |_ -> raise Streamf.NotConsumed
         end
-    | `Token (x:Tokenf.pattern) -> fun strm ->  match Streamf.peek strm with
-      |Some tok when x.pred tok ->
-          begin 
-            Streamf.junk strm;
-            Gaction.mk (Tokenf.strip tok) 
-          end
-      |_ -> raise Streamf.NotConsumed
+    | `Token (x:Tokenf.pattern) ->
+        fun strm ->
+          match Streamf.peek strm with
+          |Some tok when x.pred tok ->
+              begin 
+                Streamf.junk strm;
+                Gaction.mk (Tokenf.strip tok) 
+              end
+          |_ -> raise Streamf.NotConsumed
   in with_loc (aux s)
 
 
