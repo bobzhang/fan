@@ -138,17 +138,26 @@ and parser_of_terminals
                 if not
                     (match terminal with
                     |`Token x  ->
-                        begin
-                          acc:= Tokenf.strip t ::!acc;
-                          x.pred t
+                        let obj = Tokenf.strip t in
+                          begin 
+                          acc:= obj ::!acc;
+                          let descr = x.descr in 
+                          if Tokenf.get_tag t = descr.tag then
+                            match descr.word with
+                            | Any  
+                            | Empty -> true  
+                            | A s -> (Obj.magic (Obj.field obj 1) : string)  = s
+                            | Level i -> (Obj.magic (Obj.field obj 2) : int)  = i  
+                          else false
                         end
                     |`Keyword kwd ->
-                        begin match t with
-                        |`Key u ->
-                            acc := (Obj.repr u) :: !acc;
-                            kwd =u.txt  
-                        | _ -> false
-                        end)
+                        if Tokenf.get_tag t = `Key then 
+                          let obj = Tokenf.strip t in
+                          begin
+                            acc := Obj.repr obj :: !acc;
+                            (Obj.magic (Obj.field obj 1 ) : string) = kwd
+                          end
+                        else  false)
                 then raise M.X
               end);
         Streamf.njunk n strm;
