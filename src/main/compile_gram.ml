@@ -149,7 +149,7 @@ let gen_lid ()=
 let rec make_exp (tvar : string) (x:Gram_def.text) =
   let rec aux tvar (x:Gram_def.text) =
     match x with
-    | `List (_loc, min, t, ts) ->
+    | List (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         (match  ts with
         |  None -> if min then  %exp{ `List1 $txt } else %exp{ `List0 $txt } 
@@ -216,7 +216,7 @@ let make_action (_loc:loc)
       | #vid' as x -> (x : vid' :>ctyp) 
       | `Quote _ as x -> x
       | %ctyp'{ $t2 $t1}-> %ctyp{${aux t2} ${aux t1}}
-      | `Self _loc ->
+      | Self _loc ->
           if tvar = "" then
             Locf.raise _loc @@ Streamf.Error ("S: illegal in anonymous entry level")
           else %ctyp{ '$lid:tvar }
