@@ -19,7 +19,7 @@ Ast_gen:
 
 
 type outer_symbol = {
-    psymbols : Gram_def.symbol Gram_def.decorate list list ;
+    psymbols : Gram_def.symbol list Gram_def.decorate  list ;
     outer_pattern : Gram_def.locid option;
   }
   
@@ -65,14 +65,14 @@ let query_inline (x:string) =
    (t_qualid:vid Gramf.t )
    (entry_name : ([`name of Tokenf.name option | `non] * Gram_def.name) Gramf.t )
     position assoc name string rules
-    (symbol:Gram_def.symbol Gram_def.decorate list list Gramf.t)
+    (symbol:Gram_def.symbol  list Gram_def.decorate list Gramf.t)
     rule meta_rule rule_list
    (psymbol: outer_symbol  Gramf.t)
    level level_list
    (entry: Gram_def.entry option Gramf.t)
    extend_body
    unsafe_extend_body
-  (simple : Gram_def.symbol Gram_def.decorate list list Gramf.t)
+  (simple : Gram_def.symbol  list Gram_def.decorate list Gramf.t)
   (single_symbol : Gram_def.symbol Gramf.t)        
 }
 
@@ -175,9 +175,9 @@ let query_inline (x:string) =
 
   simple :
   [ @simple_token %{fun (txt :Gram_def.symbol) ->
-    [[ ({kind = Gram_def.KNormal; txt}:Gram_def.symbol Gram_def.decorate) ]]}
+    [ (({kind = Gram_def.KNormal; txt= [txt]}) : Gram_def.symbol list Gram_def.decorate) ]}
   | @simple_symbol %{fun (txt : Gram_def.symbol) ->
-      [[({kind = KNormal; txt }:Gram_def.symbol Gram_def.decorate)]]} 
+      [({kind = KNormal; txt = [txt] } : Gram_def.symbol list Gram_def.decorate)]} 
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       match ps with
       | (vs,loc,y) ->
@@ -197,13 +197,14 @@ let query_inline (x:string) =
                   [(v,Some "kind");
                    ((lloc,ll),Some "loc");
                    ((xloc,s),None)] in
-            [({kind = KNormal;
-              txt = {
+            ({kind = KNormal;
+              txt =
+              [{
               text = `Token(_loc,
                             %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
                                    descr = {tag = $vrn:v; word = A $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
-              bounds}}:Gram_def.symbol Gram_def.decorate)])}
+              bounds}]} : Gram_def.symbol list Gram_def.decorate))}
 
   | "("; or_strs as v; ")" %{
     match v with
@@ -216,26 +217,24 @@ let query_inline (x:string) =
               | Some(loc,l) ->
                   [((loc,l),Some "loc")]
               | None -> [] in
-            [({kind = KNormal;
+            ({kind = KNormal;
               txt =
-              {text = `Keyword(x.loc,x.txt);
+              [{text = `Keyword(x.loc,x.txt);
                styp = %ctyp'{Tokenf.txt};
-               bounds}}:Gram_def.symbol Gram_def.decorate)])
+               bounds}]}:Gram_def.symbol list Gram_def.decorate))
     | (vs, loc, Some  b) -> (* ("a"|"b"|"c"@loc as v)*)
         let bounds =
           match loc with
           | None -> [(b,Some "txt")]
-          | Some(loc,l) ->
-              [((loc,l),Some "loc");(b,Some "txt")] in
+          | Some(loc,l) -> [((loc,l),Some "loc");(b,Some "txt")] in
         vs |>
         List.map
           (fun (x:Tokenf.txt) ->
-            [({kind = KNormal;
+            ({kind = KNormal;
               txt  =
-              {text = `Keyword (x.loc,x.txt);
+              [{text = `Keyword (x.loc,x.txt);
                styp = %ctyp'{Tokenf.txt};
-               bounds}}:Gram_def.symbol Gram_def.decorate)])}
-
+               bounds}]}:Gram_def.symbol list Gram_def.decorate))}
   ]
   level_str@Local :  ["Level"; Str  s %{s} ]      
  
@@ -247,20 +246,28 @@ let query_inline (x:string) =
     let styp = %ctyp'{ ${s.styp} list   } in
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
-    [[{kind =KNormal; (* FIXME More precise, or meaning full warning message *)
-      txt = {text; styp; bounds= [] }}]]
+    [ { kind =KNormal; (* FIXME More precise, or meaning full warning message *)
+      txt = [{text; styp; bounds= [] }]} ]
    }
   | "?"; single_symbol as s  %{
-    [[{kind = KNone;
-      txt =  s }];
-     [{kind = KSome;
-      txt = s}]]}
-  | "?"; "["; left_rule ; "]"%{  assert false}
+    [
+     {kind = KNone;
+      txt =  [s] };
+     {kind = KSome;
+      txt = [s]} ]}
+  | "?"; "["; left_rule   ; "]"%{
+   (* [[{kind = KNone; *)
+   (*   txt = s}]; *)
+   (*  [{kind = KSome; *)
+   (*    txt = s}] *)
+   (* ] *)
+   assert false 
+   }
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     (* FIXME more precise *)
-    [[{ kind = KNormal; txt = {text;styp=s.styp;bounds= s.bounds}}]]}
+    [{ kind = KNormal; txt = [{text;styp=s.styp;bounds= s.bounds}]}]}
   | simple as p %{ p}
   (* | "["; L1 simple SEP "|" as ss ; "]" %{Listf.concat ss } *)
   ]
@@ -393,16 +400,16 @@ let query_inline (x:string) =
           Listf.concat_map
             (fun (y:Gram_def.osymbol Gram_def.decorate  list) ->
               List.map
-                (fun (zs: Gram_def.symbol Gram_def.decorate list) ->
+                (fun (zs: Gram_def.symbol list Gram_def.decorate) ->
                   List.map
-                    (fun (z : Gram_def.symbol Gram_def.decorate) ->
-                      (({kind = z.kind;
+                    (fun (z : Gram_def.symbol) ->
+                      (({kind = zs.kind;
                          txt = {
-                         text = z.txt.text ;
-                         styp = z.txt.styp;
-                         bounds = z.txt.bounds;
+                         text = z.text ;
+                         styp = z.styp;
+                         bounds = z.bounds;
                          outer_pattern = x.outer_pattern}} :
-                          Gram_def.osymbol Gram_def.decorate))) zs @ y) x.psymbols
+                          Gram_def.osymbol Gram_def.decorate))) zs.txt @ y) x.psymbols
                 ) (cross xs) in
     List.map (fun prod -> mk_prule ~prod ~action) @@  cross prod}
 
