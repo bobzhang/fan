@@ -108,7 +108,6 @@ let single_symbol: Gram_def.symbol Gramf.t =
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
   let or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
-  and level_str: 'level_str Gramf.t = grammar_entry_create "level_str"
   and sep_symbol: 'sep_symbol Gramf.t = grammar_entry_create "sep_symbol" in
   Gramf.extend_single (single_symbol : 'single_symbol Gramf.t )
     (None,
@@ -3965,26 +3964,32 @@ let _ =
                       bounds = [((xloc, i), (Some "loc"))]
                     } : 'single_symbol )))));
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ))],
-           ("{\n  text = (`Nterm (_loc, n, lev));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = []\n}\n",
+           ("{\n  text = (`Nterm (_loc, n, s));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = []\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
-                   let lev = None in
+                   let s = None in
                    ({
-                      text = (`Nterm (_loc, n, lev));
+                      text = (`Nterm (_loc, n, s));
                       styp =
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
                       bounds = []
                     } : 'single_symbol )))));
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
-          `Nterm (Gramf.obj (level_str : 'level_str Gramf.t ))],
-           ("{\n  text = (`Nterm (_loc, n, lev));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = []\n}\n",
+          `Keyword "Level";
+          `Token
+            ({
+               pred = ((function | `Str _ -> true | _ -> false));
+               descr = { tag = `Str; word = Any; tag_name = "Str" }
+             } : Tokenf.pattern )],
+           ("{\n  text = (`Nterm (_loc, n, s));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = []\n}\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(lev : 'level_str)  ~__fan_0:(n : 'name) 
-                   (_loc : Locf.t)  ->
-                   let lev = Some lev in
+                (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
+                   ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
+                   let s = __fan_2.txt in
+                   let s = Some s in
                    ({
-                      text = (`Nterm (_loc, n, lev));
+                      text = (`Nterm (_loc, n, s));
                       styp =
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -8158,34 +8163,40 @@ let _ =
                         bounds = [((xloc, i), (Some "loc"))]
                       } : 'simple )))));
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ))],
-           ("(fun (txt : Gram_def.symbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.symbol list Gram_def.decorate )])\n  {\n    text = (`Nterm (_loc, n, lev));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = []\n  }\n",
+           ("(fun (txt : Gram_def.symbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.symbol list Gram_def.decorate )])\n  {\n    text = (`Nterm (_loc, n, s));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = []\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
-                   let lev = None in
+                   let s = None in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = KNormal; txt = [txt] } : Gram_def.symbol
                                                              list
                                                              Gram_def.decorate )])
                       {
-                        text = (`Nterm (_loc, n, lev));
+                        text = (`Nterm (_loc, n, s));
                         styp =
                           (`Quote
                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
                         bounds = []
                       } : 'simple )))));
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
-          `Nterm (Gramf.obj (level_str : 'level_str Gramf.t ))],
-           ("(fun (txt : Gram_def.symbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.symbol list Gram_def.decorate )])\n  {\n    text = (`Nterm (_loc, n, lev));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = []\n  }\n",
+          `Keyword "Level";
+          `Token
+            ({
+               pred = ((function | `Str _ -> true | _ -> false));
+               descr = { tag = `Str; word = Any; tag_name = "Str" }
+             } : Tokenf.pattern )],
+           ("(fun (txt : Gram_def.symbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.symbol list Gram_def.decorate )])\n  {\n    text = (`Nterm (_loc, n, s));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = []\n  }\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(lev : 'level_str)  ~__fan_0:(n : 'name) 
-                   (_loc : Locf.t)  ->
-                   let lev = Some lev in
+                (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
+                   ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
+                   let s = __fan_2.txt in
+                   let s = Some s in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = KNormal; txt = [txt] } : Gram_def.symbol
                                                              list
                                                              Gram_def.decorate )])
                       {
-                        text = (`Nterm (_loc, n, lev));
+                        text = (`Nterm (_loc, n, s));
                         styp =
                           (`Quote
                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -8402,21 +8413,6 @@ let _ =
                                       }]
                                  } : Gram_def.symbol list Gram_def.decorate ))) : 
                    'simple )))))]) : Gramf.olevel ));
-  Gramf.extend_single (level_str : 'level_str Gramf.t )
-    (None,
-      ((None, None,
-         [([`Keyword "Level";
-           `Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern )],
-            ("s\n",
-              (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    let s = __fan_1.txt in (s : 'level_str )))))]) : 
-      Gramf.olevel ));
   Gramf.extend_single (sep_symbol : 'sep_symbol Gramf.t )
     (None,
       ((None, None,
@@ -8499,12 +8495,16 @@ let _ =
                     { kind = KSome; txt = [s] }] : 'symbol )))));
          ([`Keyword "?";
           `Keyword "[";
-          `Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ));
+          `List1sep
+            ((`Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))),
+              (`Keyword ";"));
           `Keyword "]"],
-           ("assert false\n",
+           ("[{ kind = KNone; txt = s }; { kind = KSome; txt = s }]\n",
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:_  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (assert false : 'symbol )))));
+                (fun ~__fan_3:_  ~__fan_2:(s : 'single_symbol list) 
+                   ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                   ([{ kind = KNone; txt = s }; { kind = KSome; txt = s }] : 
+                   'symbol )))));
          ([`Keyword "TRY";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let v = (_loc, (s.text)) in\nlet text = if p = \"TRY\" then `Try v else `Peek v in\n[{ kind = KNormal; txt = [{ text; styp = (s.styp); bounds = (s.bounds) }] }]\n",

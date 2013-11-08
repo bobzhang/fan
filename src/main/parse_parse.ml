@@ -153,8 +153,9 @@ let query_inline (x:string) =
       styp = %ctyp'{Tokenf.txt};
       bounds =
       [((xloc,i),Some "loc")]}}
-  | name as n;  ? level_str as lev %{
-    { text = `Nterm (_loc ,n, lev);
+
+  | name as n;  ? ["Level"; Str s ] %{
+    { text = `Nterm (_loc ,n, s);
       styp = %ctyp'{'$lid{n.tvar}};
       bounds = []}}
   | "S" %{
@@ -236,13 +237,12 @@ let query_inline (x:string) =
                styp = %ctyp'{Tokenf.txt};
                bounds}]}:Gram_def.symbol list Gram_def.decorate))}
   ]
-  level_str@Local :  ["Level"; Str  s %{s} ]      
- 
-  sep_symbol@Local : [ "SEP"; single_symbol as t %{t}]
 
+  sep_symbol@Local : [ "SEP"; single_symbol as t %{t}]
+                
   symbol :
   (* be more precise, no recursive grammar? *)
-  [("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
+  [("L0"|"L1" as l) ; single_symbol as s; ? sep_symbol as sep  %{
     let styp = %ctyp'{ ${s.styp} list   } in
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
@@ -255,21 +255,18 @@ let query_inline (x:string) =
       txt =  [s] };
      {kind = KSome;
       txt = [s]} ]}
-  | "?"; "["; left_rule   ; "]"%{
-   (* [[{kind = KNone; *)
-   (*   txt = s}]; *)
-   (*  [{kind = KSome; *)
-   (*    txt = s}] *)
-   (* ] *)
-   assert false 
-   }
+  | "?"; "["; L1 single_symbol SEP ";" as s   ; "]"%{
+   [{kind = KNone;
+     txt = s};
+    {kind = KSome;
+      txt = s}]}
+
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     (* FIXME more precise *)
     [{ kind = KNormal; txt = [{text;styp=s.styp;bounds= s.bounds}]}]}
   | simple as p %{ p}
-  (* | "["; L1 simple SEP "|" as ss ; "]" %{Listf.concat ss } *)
   ]
   psymbol :
   [ symbol as ss %{ {psymbols = ss; outer_pattern = None}}
