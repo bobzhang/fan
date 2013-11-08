@@ -40,7 +40,7 @@ and osymbol =
   bounds: (locid* label) list;
   outer_pattern: locid option} 
 and text =
-  [ `List of (loc* bool* symbol* symbol option)
+  [ `List of (loc* bool* osymbol* osymbol option)
   | `Nterm of (loc* name* string option) | `Try of (loc* text)
   | `Peek of (loc* text) | `Self of loc | `Keyword of (loc* string)
   | `Token of (loc* exp)] 

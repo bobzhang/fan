@@ -7455,16 +7455,6 @@ let apply_ctyp () =
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
                    (mk_ant ~c:"ctyp" s : 'unquoted_typevars )))));
-         ([`Token
-             ({
-                pred = ((function | `Quot _ -> true | _ -> false));
-                descr = { tag = `Quot; word = Any; tag_name = "Quot" }
-              } : Tokenf.pattern )],
-           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                   let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.ctyp : 'unquoted_typevars )))));
          ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("(i :>ctyp)\n",
              (Gramf.mk_action
@@ -8013,16 +8003,6 @@ let apply_ctyp () =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'typevars )))));
-         ([`Token
-             ({
-                pred = ((function | `Quot _ -> true | _ -> false));
-                descr = { tag = `Quot; word = Any; tag_name = "Quot" }
-              } : Tokenf.pattern )],
-           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                   let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.ctyp : 'typevars )))));
          ([`Keyword "'"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`Quote (_loc, (`Normal _loc), i)\n",
              (Gramf.mk_action
@@ -8189,16 +8169,6 @@ let apply_ctyp () =
                      with
                      | Invalid_argument s ->
                          (fun ()  -> raise (Streamf.Error s))) () : 'ctyp )))));
-         ([`Token
-             ({
-                pred = ((function | `Quot _ -> true | _ -> false));
-                descr = { tag = `Quot; word = Any; tag_name = "Quot" }
-              } : Tokenf.pattern )],
-           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                   let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.ctyp : 'ctyp )))));
          ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
           `Keyword ".";
           `Self],

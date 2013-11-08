@@ -1012,7 +1012,7 @@ let apply_ctyp () = begin
       unquoted_typevars:
       [ S as t1; S as t2 %{ `App(_loc,t1,t2)(* %{ $t1 $t2 } *) (* FIXME order matters ?*)}
       | Ant (""|"typ" ,s) %{  mk_ant ~c:"ctyp"  s}
-      | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp}
+      (* | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp} *)
       | a_lident as i %{ (i:>ctyp)} ]
       type_parameter:
       [ Ant (""|"typ" ,s) %{ mk_ant s}
@@ -1102,7 +1102,7 @@ let apply_ctyp () = begin
       typevars:
       [ S as t1; S as t2 %{ `App(_loc,t1,t2)}
       | Ant (""|"typ" ,s) %{  mk_ant  ~c:"ctyp"  s}
-      | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp}
+      (* | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp} *)
       | "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
       ctyp:
       {
@@ -1140,7 +1140,7 @@ let apply_ctyp () = begin
             let try id = ident_of_ctyp t  in
               (`Dot(_loc,mk_ant ~c:"ident"  s,id) :ctyp)
             with Invalid_argument s -> raise (Streamf.Error s)}
-        | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp}
+        (* | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp} *)
         | a_uident as i; "."; S as t %{
             let try id = ident_of_ctyp t in
               `Dot(_loc,(i:>ident),id)

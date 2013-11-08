@@ -59,59 +59,80 @@ let mk_prule ~prod ~action =
   let i = ref 0 in 
   let prod =
     Listf.filter_map
-      (function  (p:Gram_def.osymbol Gram_def.decorate) ->
+      (function  (p:Gram_def.osymbol list  Gram_def.decorate) ->
         match p with (* ? Lid i ? Lid *)
-        | {kind = KSome;   txt = ({outer_pattern = None; bounds; _} as symbol) } ->
-              let id = prefix ^ string_of_int !i in
-               begin
-                 enhance_env  id bounds env;
-                 List.iter
-                   (fun (((xloc,id) as z),_) -> add ~check:false (z, %exp@xloc{Some $lid:id}) env) bounds ;
-                 incr i;
-                 Some symbol;
-               end
-        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ;
-                                 bounds;  _} as s)}
+        | {kind = KSome;   txt } ->
+            begin 
+              Some
+                (txt |> List.map 
+                  (fun (symbol:Gram_def.osymbol) ->
+                    match symbol with
+                    | {outer_pattern = None; bounds; _} -> 
+                        let id = prefix ^ string_of_int !i in
+                        begin
+                          enhance_env  id bounds env;
+                          List.iter
+                            (fun (((xloc,id) as z),_) -> add ~check:false (z, %exp@xloc{Some $lid:id}) env) bounds ;
+                          incr i;
+                          symbol;
+                        end
+                    | ({outer_pattern = Some ((xloc,id) as z) ;
+                        bounds;  _} as s)
+                      -> 
+                    begin
+                      enhance_env id bounds env ;
+                      add ~check:false (z, %exp@xloc{Some $lid:id } ) env;
+                      List.iter
+                        (fun (((xloc,id) as z),_) ->  add ~check:false (z, %exp@xloc{Some $lid:id}) env)
+                        bounds;
+                      incr i;
+                      s
+                    end ))
+            end
+              
+        | {kind = KNormal; txt}
           ->
-            begin
-              enhance_env id bounds env ;
-              add ~check:false (z, %exp@xloc{Some $lid:id } ) env;
+            Some
+              (List.map (fun (symbol:Gram_def.osymbol)  -> 
+                match symbol with 
+                | {outer_pattern = None; bounds;_} -> 
+                    let id = prefix ^ string_of_int !i in
+                    begin
+                      enhance_env id bounds env ;
+                      incr i;
+                      symbol 
+                    end
+                | ({outer_pattern = Some (_,id); bounds;_} as symbol) ->
+                    begin
+                      enhance_env id bounds env;
+                      incr i;
+                      symbol
+                    end) txt )
+
+        | {kind = KNone; txt}
+          ->
+            begin 
               List.iter
-                  (fun (((xloc,id) as z),_) ->  add ~check:false (z, %exp@xloc{Some $lid:id}) env)
-                bounds;
-              incr i;
-              Some s
-            end                
-        | {kind = KNormal; txt = ({outer_pattern = None; bounds;_} as symbol)} ->
-            let id = prefix ^ string_of_int !i in
-            begin
-              enhance_env id bounds env ;
-              incr i;
-              Some symbol 
-            end
-        |{kind = KNormal; txt = ({outer_pattern = Some (_,id); bounds;_} as symbol)} ->
-            begin
-              enhance_env id bounds env;
-              incr i;
-              Some symbol
-            end
-        | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
-            begin
-              List.iter
-                (fun (((xloc,_) as z),_) ->
-                  add (z, %exp@xloc{None}) env) bounds;
+              (fun (symbol:Gram_def.osymbol) ->
+                  match symbol with
+                  | {outer_pattern = None ; bounds; _} ->
+                      begin
+                        List.iter
+                          (fun (((xloc,_) as z),_) ->
+                            add (z, %exp@xloc{None}) env) bounds
+                      end
+
+                  | {outer_pattern = Some ((xloc,_) as z);
+                     bounds; _} ->
+                       begin
+                         add (z, %exp@xloc{None}) env;
+                         List.iter
+                           (fun (((xloc,_) as z),_) ->
+                             add (z , %exp@xloc{None}) env) bounds
+                       end) txt;
               None
-            end
-        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z);
-                                bounds; _}} ->
-            begin
-              add (z, %exp@xloc{None}) env;
-              List.iter
-                (fun (((xloc,_) as z),_) ->
-                  add (z , %exp@xloc{None}) env) bounds;
-              None 
             end) prod in
-    ({prod;
+    ({prod = List.concat prod ;
       action;
       env = List.rev !env }:Gram_def.rule)
 

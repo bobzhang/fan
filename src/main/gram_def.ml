@@ -67,7 +67,7 @@ and osymbol = {
 
 and text =
  [
-   `List of (loc * bool * symbol * symbol option )
+   `List of (loc * bool * osymbol * osymbol option ) (* should be symbol?*)
  | `Nterm of (loc * name  * string option )
  | `Try of (loc * text )
  | `Peek of (loc * text)

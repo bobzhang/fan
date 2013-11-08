@@ -12,7 +12,7 @@ val gm : unit -> vid
 
       
 val mk_prule :
-    prod:osymbol decorate list -> action:exp option -> rule    
+    prod:osymbol list decorate list -> action:exp option -> rule    
 
 val gen_lid : unit -> string
     
