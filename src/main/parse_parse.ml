@@ -222,7 +222,6 @@ let query_inline (x:string) =
                styp = %ctyp'{Tokenf.txt};
                bounds}}:Gram_def.symbol Gram_def.decorate))
     | (vs, loc, Some  b) -> (* ("a"|"b"|"c"@loc as v)*)
-        (* let p = %pat@xloc{$lid:v} in *)
         let bounds =
           match loc with
           | None -> [(b,Some "txt")]
@@ -241,6 +240,7 @@ let query_inline (x:string) =
   level_str@Local :  ["Level"; Str  s %{s} ]      
  
   sep_symbol@Local : [ "SEP"; single_symbol as t %{t}]
+
   symbol :
   (* be more precise, no recursive grammar? *)
   [("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
@@ -260,7 +260,8 @@ let query_inline (x:string) =
     let text = if p = "TRY" then `Try v else `Peek v  in
     (* FIXME more precise *)
     [{ kind = KNormal; txt = {text;styp=s.styp;bounds= s.bounds}}]}
-  | simple as p %{ p}   ]
+  | simple as p %{ p}
+  | "["; L1 simple SEP "|" as ss ; "]" %{Listf.concat ss }]
   psymbol :
   [ symbol as ss %{ {psymbols = ss; outer_pattern = None}}
   | symbol as ss; "as"; Lid@xloc i %{

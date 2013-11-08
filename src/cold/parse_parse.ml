@@ -8491,7 +8491,17 @@ let _ =
            ("p\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(p : 'simple)  (_loc : Locf.t)  ->
-                   (p : 'symbol )))))]) : Gramf.olevel ));
+                   (p : 'symbol )))));
+         ([`Keyword "[";
+          `List1sep
+            ((`Nterm (Gramf.obj (simple : 'simple Gramf.t ))),
+              (`Keyword "|"));
+          `Keyword "]"],
+           ("Listf.concat ss\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:_  ~__fan_1:(ss : 'simple list)  ~__fan_0:_ 
+                   (_loc : Locf.t)  -> (Listf.concat ss : 'symbol )))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (psymbol : 'psymbol Gramf.t )
     (None,
       ((None, None,
