@@ -41,13 +41,13 @@ let check_add ((loc,id),v) env  =
   (* else *)
     env := ((loc,id),v) :: !env
 
-let enhance_env  (s:string) (xs:(Gram_def.locid * Gram_def.label) list) env  =
+let enhance_env  (s:string) xs env  =
   xs |>
   List.iter
     (fun (((loc,_) as v),opt) ->
       match opt with
-      | None -> env :=   (v, %exp@loc{$lid:s}) ::! env
-      | Some l -> env := (v, %exp@loc{$lid:s.$lid:l}) :: !env)
+      | None -> check_add (v, %exp@loc{$lid:s}) env
+      | Some l -> check_add (v, %exp@loc{$lid:s.$lid:l}) env )
                         
 let mk_prule ~prod ~action =
   let env = ref [] in
@@ -56,11 +56,10 @@ let mk_prule ~prod ~action =
     Listf.filter_map
       (function  (p:Gram_def.osymbol Gram_def.decorate) ->
         match p with (* ? Lid i ? Lid *)
-        | {kind = KSome;   txt = ({outer_pattern = None; bounds  ; _} as symbol) } ->
+        | {kind = KSome;   txt = ({outer_pattern = None; pattern; _} as symbol) } ->
             begin
               List.iter
-                (fun ((xloc,id) as z) ->
-                  check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
+                (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) pattern ;
               incr i;
               Some symbol;
             end
@@ -71,29 +70,29 @@ let mk_prule ~prod ~action =
             end
         (* ? Lid i as v 
          *)      
-        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ; bounds; _} as s)} ->
+        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ; pattern;  _} as s)} ->
             begin 
               check_add (z, %exp@xloc{Some $lid:id } ) env;
               List.iter
-                  (fun ((xloc,id) as z) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
-                bounds;
+                  (fun (((xloc,id) as z),_) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
+                pattern;
               incr i;
               Some s
             end
               
-        | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
+        | {kind = KNone; txt = {outer_pattern = None ; pattern; _}} ->
             begin
-              List.iter (fun ((xloc,_) as z) -> check_add (z, %exp@xloc{None}) env) bounds;
+              List.iter (fun (((xloc,_) as z),_) -> check_add (z, %exp@xloc{None}) env) pattern;
               None
             end
-        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z); bounds; _}} ->
+        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z); pattern; _}} ->
             begin
               check_add (z, %exp@xloc{None}) env;
-              List.iter (fun ((xloc,_) as z) -> check_add (z , %exp@xloc{None}) env) bounds;
+              List.iter (fun (((xloc,_) as z),_) -> check_add (z , %exp@xloc{None}) env) pattern;
               None 
             end) prod in
-  let () = env := List.rev !env in 
-  let () =
+  begin 
+    env := List.rev !env ;
     Listf.iteri
       (fun i y ->
         let id = prefix ^ string_of_int i in
@@ -109,11 +108,11 @@ let mk_prule ~prod ~action =
             (* could be simplified *)
             enhance_env  id pattern  env
             (* FIXME when the percent is replaced with '$',  a weird error message*)
-        | _ ->  ())   prod in
-  ({prod;
-    action;
-    (* inner_env = List.rev !inner_env; *)
-    env =  !env}:Gram_def.rule)
+        | _ ->  ())   prod ;
+    ({prod;
+      action;
+      env =  !env}:Gram_def.rule)
+  end
 
 
 let gen_lid ()=

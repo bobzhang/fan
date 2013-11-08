@@ -15,19 +15,17 @@ let gm () =
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
 let check_add ((loc,id),v) env = env := (((loc, id), v) :: (!env))
-let enhance_env (s : string) (xs : (Gram_def.locid* Gram_def.label) list) env
-  =
+let enhance_env (s : string) xs env =
   xs |>
     (List.iter
        (fun (((loc,_) as v),opt)  ->
           match opt with
-          | None  -> env := ((v, (`Lid (loc, s) : FAst.exp )) :: (!env))
+          | None  -> check_add (v, (`Lid (loc, s) : FAst.exp )) env
           | Some l ->
-              env :=
-                ((v,
-                   (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : 
-                   FAst.exp ))
-                :: (!env))))
+              check_add
+                (v,
+                  (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : FAst.exp ))
+                env))
 let mk_prule ~prod  ~action  =
   let env = ref [] in
   let i = ref 0 in
@@ -36,61 +34,59 @@ let mk_prule ~prod  ~action  =
       (fun (p : Gram_def.osymbol Gram_def.decorate)  ->
          match p with
          | { kind = KSome ;
-             txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
+             txt = ({ outer_pattern = None ; pattern;_} as symbol) } ->
              (List.iter
-                (fun ((xloc,id) as z)  ->
+                (fun (((xloc,id) as z),_)  ->
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) env) bounds;
+                       FAst.exp )) env) pattern;
               incr i;
               Some symbol)
          | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
-             txt = ({ outer_pattern = Some ((xloc,id) as z); bounds;_} as s)
+             txt = ({ outer_pattern = Some ((xloc,id) as z); pattern;_} as s)
              } ->
              (check_add
                 (z,
                   (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                   FAst.exp )) env;
               List.iter
-                (fun ((xloc,id) as z)  ->
+                (fun (((xloc,id) as z),_)  ->
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) env) bounds;
+                       FAst.exp )) env) pattern;
               incr i;
               Some s)
-         | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
+         | { kind = KNone ; txt = { outer_pattern = None ; pattern;_} } ->
              (List.iter
-                (fun ((xloc,_) as z)  ->
+                (fun (((xloc,_) as z),_)  ->
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                bounds;
+                pattern;
               None)
          | { kind = KNone ;
-             txt = { outer_pattern = Some ((xloc,_) as z); bounds;_} } ->
+             txt = { outer_pattern = Some ((xloc,_) as z); pattern;_} } ->
              (check_add (z, (`Uid (xloc, "None") : FAst.exp )) env;
               List.iter
-                (fun ((xloc,_) as z)  ->
+                (fun (((xloc,_) as z),_)  ->
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                bounds;
+                pattern;
               None)) prod in
-  let () = env := (List.rev (!env)) in
-  let () =
-    Listf.iteri
-      (fun i  y  ->
-         let id = prefix ^ (string_of_int i) in
-         match (y : Gram_def.osymbol ) with
-         | { pattern; text = `Token _; outer_pattern = None ;_} ->
-             enhance_env id pattern env
-         | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
-             enhance_env id pattern env
-         | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
-             let id = prefix ^ (string_of_int i) in
-             enhance_env id pattern env
-         | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
-             enhance_env id pattern env
-         | _ -> ()) prod in
+  env := (List.rev (!env));
+  Listf.iteri
+    (fun i  y  ->
+       let id = prefix ^ (string_of_int i) in
+       match (y : Gram_def.osymbol ) with
+       | { pattern; text = `Token _; outer_pattern = None ;_} ->
+           enhance_env id pattern env
+       | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
+           enhance_env id pattern env
+       | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
+           let id = prefix ^ (string_of_int i) in enhance_env id pattern env
+       | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
+           enhance_env id pattern env
+       | _ -> ()) prod;
   ({ prod; action; env = (!env) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
