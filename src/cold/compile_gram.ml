@@ -39,7 +39,9 @@ let mk_prule ~prod  ~action  =
          match p with
          | { kind = KSome ;
              txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
-             (List.iter
+             let id = prefix ^ (string_of_int (!i)) in
+             (enhance_env id bounds env;
+              List.iter
                 (fun (((xloc,id) as z),_)  ->
                    check_add
                      (z,
@@ -47,11 +49,11 @@ let mk_prule ~prod  ~action  =
                        FAst.exp )) env) bounds;
               incr i;
               Some symbol)
-         | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
              txt = ({ outer_pattern = Some ((xloc,id) as z); bounds;_} as s)
              } ->
-             (check_add
+             (enhance_env id bounds env;
+              check_add
                 (z,
                   (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                   FAst.exp )) env;
@@ -63,6 +65,13 @@ let mk_prule ~prod  ~action  =
                        FAst.exp )) env) bounds;
               incr i;
               Some s)
+         | { kind = KNormal ;
+             txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
+             let id = prefix ^ (string_of_int (!i)) in
+             (enhance_env id bounds env; incr i; Some symbol)
+         | { kind = KNormal ;
+             txt = ({ outer_pattern = Some (_,id); bounds;_} as symbol) } ->
+             (enhance_env id bounds env; incr i; Some symbol)
          | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
              (List.iter
                 (fun (((xloc,_) as z),_)  ->
@@ -77,15 +86,7 @@ let mk_prule ~prod  ~action  =
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
                 bounds;
               None)) prod in
-  env := (List.rev (!env));
-  Listf.iteri
-    (fun i  y  ->
-       match (y : Gram_def.osymbol ) with
-       | { bounds; outer_pattern = None ;_} ->
-           let id = prefix ^ (string_of_int i) in enhance_env id bounds env
-       | { bounds; outer_pattern = Some (_,id);_} ->
-           enhance_env id bounds env) prod;
-  ({ prod; action; env = (!env) } : Gram_def.rule )
+  ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (!(gensym ())))

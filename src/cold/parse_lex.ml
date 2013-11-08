@@ -120,9 +120,8 @@ let _ =
                (Gramf.mk_action
                   (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                      ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                     let y = __fan_2.txt in
                      let xloc = __fan_2.loc in
-                     (Bind (r1, (xloc, y)) : 'regexp )))))]);
+                     let y = __fan_2.txt in (Bind (r1, (xloc, y)) : 'regexp )))))]);
        ((Some "#"), None,
          [([`Self; `Keyword "#"; `Self],
             ("let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n",
@@ -253,8 +252,8 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let c2 = __fan_2.txt in
                     let c1 = __fan_0.txt in
+                    let c2 = __fan_2.txt in
                     (let c1 = Char.code @@ (TokenEval.char c1) in
                      let c2 = Char.code @@ (TokenEval.char c2) in
                      Fcset.interval c1 c2 : 'char_class1 )))));

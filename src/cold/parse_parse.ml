@@ -212,8 +212,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ({
                       text =
                         (`Token
@@ -322,8 +322,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ({
                       text =
                         (`Token
@@ -432,8 +432,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ({
                       text =
                         (`Token
@@ -1550,9 +1550,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -1642,9 +1642,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -1734,9 +1734,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -1826,9 +1826,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -1918,9 +1918,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2010,9 +2010,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2102,9 +2102,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2194,9 +2194,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2286,9 +2286,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2378,9 +2378,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2470,9 +2470,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2562,9 +2562,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    (let bounds =
@@ -2661,11 +2661,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -2758,11 +2758,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -2855,11 +2855,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -2952,11 +2952,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -3049,10 +3049,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -3164,10 +3164,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -3279,10 +3279,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -3394,10 +3394,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ({
                       text =
                         (`Token
@@ -3502,9 +3502,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let loc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let loc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    ({
                       text =
                         (`Token
@@ -3588,9 +3588,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let loc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let loc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    ({
                       text =
                         (`Token
@@ -3683,10 +3683,10 @@ let _ =
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_4.txt in
-                   let xloc = __fan_4.loc in
-                   let level = __fan_2.txt in
                    let v = __fan_0.txt in
+                   let level = __fan_2.txt in
+                   let xloc = __fan_4.loc in
+                   let x = __fan_4.txt in
                    ({
                       text =
                         (`Token
@@ -3813,12 +3813,12 @@ let _ =
                    ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_6.txt in
-                   let xloc = __fan_6.loc in
-                   let level = __fan_4.txt in
-                   let l = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let l = __fan_2.txt in
+                   let level = __fan_4.txt in
+                   let xloc = __fan_6.loc in
+                   let x = __fan_6.txt in
                    ({
                       text =
                         (`Token
@@ -3953,9 +3953,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_2.txt in
-                   let xloc = __fan_2.loc in
                    let s = __fan_0.txt in
+                   let xloc = __fan_2.loc in
+                   let i = __fan_2.txt in
                    ({
                       text = (`Keyword (_loc, s));
                       styp =
@@ -4025,8 +4025,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(xs : Tokenf.txt list)  (_loc : Locf.t)  ->
-                   let s = __fan_2.txt in
                    let xloc = __fan_2.loc in
+                   let s = __fan_2.txt in
                    ((xs, None, (Some (xloc, s))) : 'or_strs )))));
          ([`List1sep
              ((`Token
@@ -4051,10 +4051,10 @@ let _ =
                 (fun ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(xs : Tokenf.txt list)  (_loc : Locf.t)  ->
-                   let s = __fan_4.txt in
-                   let xloc = __fan_4.loc in
-                   let l = __fan_2.txt in
                    let lloc = __fan_2.loc in
+                   let l = __fan_2.txt in
+                   let xloc = __fan_4.loc in
+                   let s = __fan_4.txt in
                    ((xs, (Some (lloc, l)), (Some (xloc, s))) : 'or_strs )))))]) : 
       Gramf.olevel ));
   Gramf.extend_single (simple : 'simple Gramf.t )
@@ -4163,8 +4163,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -4278,8 +4278,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -4393,8 +4393,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let v = __fan_0.txt in
+                   let x = __fan_1.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -5576,9 +5576,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -5673,9 +5673,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -5770,9 +5770,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -5867,9 +5867,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -5964,9 +5964,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6061,9 +6061,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6158,9 +6158,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6255,9 +6255,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6352,9 +6352,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6449,9 +6449,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6546,9 +6546,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6643,9 +6643,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let xloc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let xloc = Some xloc in
                    let x = Some x in
                    ((fun (txt : Gram_def.symbol)  ->
@@ -6747,11 +6747,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -6849,11 +6849,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -6951,11 +6951,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7053,11 +7053,11 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let xloc = __fan_3.loc in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let xloc = __fan_3.loc in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7155,10 +7155,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7275,10 +7275,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7395,10 +7395,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7515,10 +7515,10 @@ let _ =
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_3.txt in
-                   let loc = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let loc = __fan_2.txt in
+                   let x = __fan_3.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7628,9 +7628,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let loc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let loc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7719,9 +7719,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
-                   let loc = __fan_1.loc in
                    let v = __fan_0.txt in
+                   let loc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7819,10 +7819,10 @@ let _ =
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_4.txt in
-                   let xloc = __fan_4.loc in
-                   let level = __fan_2.txt in
                    let v = __fan_0.txt in
+                   let level = __fan_2.txt in
+                   let xloc = __fan_4.loc in
+                   let x = __fan_4.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -7954,12 +7954,12 @@ let _ =
                    ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_6.txt in
-                   let xloc = __fan_6.loc in
-                   let level = __fan_4.txt in
-                   let l = __fan_2.txt in
-                   let lloc = __fan_2.loc in
                    let v = __fan_0.txt in
+                   let lloc = __fan_2.loc in
+                   let l = __fan_2.txt in
+                   let level = __fan_4.txt in
+                   let xloc = __fan_6.loc in
+                   let x = __fan_6.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = Gram_def.KNormal; txt } : Gram_def.symbol
                                                               Gram_def.decorate )])
@@ -8102,9 +8102,9 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_2.txt in
-                   let xloc = __fan_2.loc in
                    let s = __fan_0.txt in
+                   let xloc = __fan_2.loc in
+                   let i = __fan_2.txt in
                    ((fun (txt : Gram_def.symbol)  ->
                        [({ kind = KNormal; txt } : Gram_def.symbol
                                                      Gram_def.decorate )])
@@ -8172,9 +8172,9 @@ let _ =
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(ps : 'or_strs)  ~__fan_1:_ 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_4.txt in
-                   let xloc = __fan_4.loc in
                    let v = __fan_0.txt in
+                   let xloc = __fan_4.loc in
+                   let s = __fan_4.txt in
                    (match ps with
                     | (vs,loc,y) ->
                         vs |>
@@ -8511,8 +8511,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(ss : 'symbol)  (_loc : Locf.t)  ->
-                   let i = __fan_2.txt in
                    let xloc = __fan_2.loc in
+                   let i = __fan_2.txt in
                    ({ psymbols = ss; outer_pattern = (Some (xloc, i)) } : 
                      'psymbol )))))]) : Gramf.olevel ))
 let _ =
@@ -9041,8 +9041,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let action = None in
                    (let rules =
                       match query_inline x with
@@ -9074,8 +9074,8 @@ let _ =
                 (fun ~__fan_2:(action : 'opt_action) 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   let x = __fan_1.txt in
                    let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
                    let action = Some action in
                    (let rules =
                       match query_inline x with

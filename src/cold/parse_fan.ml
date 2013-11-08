@@ -2769,8 +2769,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))));
@@ -2788,8 +2788,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))));
@@ -2798,8 +2798,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let op = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))))]);
@@ -2809,8 +2809,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))));
@@ -2819,8 +2819,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let op = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))))]);
@@ -2839,8 +2839,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))));
@@ -2849,8 +2849,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let x = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, x) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))));
@@ -2859,8 +2859,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let x = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, x) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))));
@@ -2869,8 +2869,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let x = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, x) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))));
@@ -2879,8 +2879,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let x = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, x) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))))]);
@@ -2899,8 +2899,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))))]);
@@ -2910,8 +2910,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Uid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))))]);
@@ -2930,8 +2930,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))));
@@ -2940,8 +2940,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let op = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))));
@@ -2950,8 +2950,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let op = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))));
@@ -2960,8 +2960,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let op = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))))]);
@@ -2980,8 +2980,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))))]);
@@ -3000,8 +3000,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
                      ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let op = __fan_1.txt in
                      let xloc = __fan_1.loc in
+                     let op = __fan_1.txt in
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))))]);
@@ -3258,8 +3258,8 @@ let apply () =
                (Gramf.mk_action
                   (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
                      (_loc : Locf.t)  ->
-                     let x = __fan_0.txt in
                      let xloc = __fan_0.loc in
+                     let x = __fan_0.txt in
                      (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))));
           ([`Token
               ({
@@ -3271,8 +3271,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
                     (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in
                     let xloc = __fan_0.loc in
+                    let x = __fan_0.txt in
                     (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))))]);
         ((Some "simple"), None,
           [([`Token
@@ -3753,8 +3753,8 @@ let apply () =
                  (fun ~__fan_4:_  ~__fan_3:(el : 'label_exp_list)  ~__fan_2:_
                      ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    let x = __fan_1.txt in
                     let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
                     (`RecordWith (_loc, el, (`Lid (xloc, x))) : 'exp )))));
           ([`Keyword "{";
            `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
@@ -5291,8 +5291,8 @@ let apply () =
               (Gramf.mk_action
                  (fun ~__fan_2:(l : 'label_longident)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in
                     let iloc = __fan_0.loc in
+                    let i = __fan_0.txt in
                     (`Dot (_loc, (`Uid (iloc, i)), l) : 'label_longident )))));
           ([`Token
               ({

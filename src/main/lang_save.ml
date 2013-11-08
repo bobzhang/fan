@@ -1,5 +1,3 @@
-
-(* open Ast_gen *)
 %import{
 Ast_gen:
   and_of_list
@@ -9,8 +7,6 @@ Ast_gen:
 
 
 %create{save_quot};;
-
-    
 %extend{save_quot:
   [ L1 Lid as ls ; Quot x  %{
    let b =

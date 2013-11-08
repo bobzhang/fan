@@ -39,8 +39,8 @@ let _ =
                 (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.txt) 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   let y = __fan_2.txt in
                    let x = __fan_1.txt in
+                   let y = __fan_2.txt in
                    ((_loc, x, (Some y), None) : 'type_entry )))));
          ([`Keyword "(";
           `Token
@@ -61,8 +61,8 @@ let _ =
                    ~__fan_2:(__fan_2 : Tokenf.txt) 
                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   let y = __fan_2.txt in
                    let x = __fan_1.txt in
+                   let y = __fan_2.txt in
                    ((_loc, x, (Some y), (Some t)) : 'type_entry )))));
          ([`Keyword "(";
           `Token

@@ -62,32 +62,40 @@ let mk_prule ~prod ~action =
       (function  (p:Gram_def.osymbol Gram_def.decorate) ->
         match p with (* ? Lid i ? Lid *)
         | {kind = KSome;   txt = ({outer_pattern = None; bounds; _} as symbol) } ->
-            begin
-              List.iter
-                (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
-              incr i;
-              Some symbol;
-            end
-        | {kind = KNormal; txt = symbol} ->
-            begin
-              incr i;
-              Some symbol 
-            end
-        (* ? Lid i as v 
-         *)      
+              let id = prefix ^ string_of_int !i in
+               begin
+                 enhance_env  id bounds env;
+                 List.iter
+                   (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
+                 incr i;
+                 Some symbol;
+               end
         | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ;
-                                 bounds;  _} as s)} ->
-            begin 
+                                 bounds;  _} as s)}
+          ->
+            begin
+              enhance_env id bounds env ;
               check_add (z, %exp@xloc{Some $lid:id } ) env;
               List.iter
                   (fun (((xloc,id) as z),_) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
                 bounds;
               incr i;
               Some s
+            end                
+        | {kind = KNormal; txt = ({outer_pattern = None; bounds;_} as symbol)} ->
+            let id = prefix ^ string_of_int !i in
+            begin
+              enhance_env id bounds env ;
+              incr i;
+              Some symbol 
             end
-              
-        | {kind = KNone; txt = {outer_pattern = None ;
-                                bounds; _}} ->
+        |{kind = KNormal; txt = ({outer_pattern = Some (_,id); bounds;_} as symbol)} ->
+            begin
+              enhance_env id bounds env;
+              incr i;
+              Some symbol
+            end
+        | {kind = KNone; txt = {outer_pattern = None ; bounds; _}} ->
             begin
               List.iter
                 (fun (((xloc,_) as z),_) ->
@@ -103,21 +111,10 @@ let mk_prule ~prod ~action =
                   check_add (z , %exp@xloc{None}) env) bounds;
               None 
             end) prod in
-  begin 
-    env := List.rev !env ;
-    Listf.iteri
-      (fun i y ->
-        match (y:Gram_def.osymbol) with 
-        | {bounds ; outer_pattern = None; _ } ->
-            let id = prefix ^ string_of_int i in
-            enhance_env  id bounds env
-        | {bounds ; outer_pattern = Some (_,id) ;_ } ->
-            enhance_env  id bounds env  (* FIXME duplicated here -- could be simplified *)
-        )   prod ;
     ({prod;
       action;
-      env =  !env}:Gram_def.rule)
-  end
+      env = List.rev !env }:Gram_def.rule)
+
 
 
 let gen_lid ()=
