@@ -20,13 +20,7 @@ let rec derive_eps (s:Gdefs.symbol)  =
       (* For sure we cannot derive epsilon from these *)
       false
   | `Nterm _ | `Snterml (_, _) | `Self -> (* Approximation *)
-      false 
-
-(* and tree_derive_eps : tree -> bool = function *)
-(*   | LocAct (_, _) -> true *)
-(*   | Node {node = s; brother = bro; son = son} -> *)
-(*       (derive_eps s && tree_derive_eps son || tree_derive_eps bro) *)
-(*   | DeadEnd -> false  *)
+      false  (* could be fixed *)
 
 
 let empty_lev lname assoc : Gdefs.level =
