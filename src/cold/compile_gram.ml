@@ -81,11 +81,10 @@ let mk_prule ~prod  ~action  =
   Listf.iteri
     (fun i  y  ->
        match (y : Gram_def.osymbol ) with
-       | { bounds; text = (`Token _|`Keyword _); outer_pattern = None ;_} ->
+       | { bounds; outer_pattern = None ;_} ->
            let id = prefix ^ (string_of_int i) in enhance_env id bounds env
-       | { bounds; text = (`Token _|`Keyword _);
-           outer_pattern = Some (_,id);_} -> enhance_env id bounds env
-       | _ -> ()) prod;
+       | { bounds; outer_pattern = Some (_,id);_} ->
+           enhance_env id bounds env) prod;
   ({ prod; action; env = (!env) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
