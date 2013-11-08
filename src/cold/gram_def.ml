@@ -29,7 +29,7 @@ and locid = (loc* string)
 and symbol =  {
   text: text;
   styp: styp;
-  pattern: (locid* label) list} 
+  bounds: (locid* label) list} 
 and 'a decorate =  {
   kind: kind;
   txt: 'a} 
@@ -37,7 +37,7 @@ and osymbol =
   {
   text: text;
   styp: styp;
-  pattern: (locid* label) list;
+  bounds: (locid* label) list;
   outer_pattern: locid option} 
 and text =
   [ `List of (loc* bool* symbol* symbol option)

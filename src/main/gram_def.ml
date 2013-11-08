@@ -49,8 +49,8 @@ and locid = (loc * string)
 and symbol = {
     text : text;
     styp : styp;
-    pattern : (locid * label) list ; (* inner destruction *)
-    (* bounds : locid list; (\* inner bounded variables *\)  *)
+    bounds : (locid * label) list ; (* inner destruction *)
+
 }
 and 'a decorate = {
     kind : kind;
@@ -61,8 +61,7 @@ and 'a decorate = {
 and osymbol = {
     text : text;
     styp : styp;
-    pattern :  (locid * label) list ;
-    (* bounds : locid list ; *)
+    bounds :  (locid * label) list ;
     outer_pattern : locid option;
   }
 

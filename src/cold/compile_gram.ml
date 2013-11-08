@@ -34,18 +34,18 @@ let mk_prule ~prod  ~action  =
       (fun (p : Gram_def.osymbol Gram_def.decorate)  ->
          match p with
          | { kind = KSome ;
-             txt = ({ outer_pattern = None ; pattern;_} as symbol) } ->
+             txt = ({ outer_pattern = None ; bounds;_} as symbol) } ->
              (List.iter
                 (fun (((xloc,id) as z),_)  ->
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) env) pattern;
+                       FAst.exp )) env) bounds;
               incr i;
               Some symbol)
          | { kind = KNormal ; txt = symbol } -> (incr i; Some symbol)
          | { kind = KSome ;
-             txt = ({ outer_pattern = Some ((xloc,id) as z); pattern;_} as s)
+             txt = ({ outer_pattern = Some ((xloc,id) as z); bounds;_} as s)
              } ->
              (check_add
                 (z,
@@ -56,36 +56,36 @@ let mk_prule ~prod  ~action  =
                    check_add
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
-                       FAst.exp )) env) pattern;
+                       FAst.exp )) env) bounds;
               incr i;
               Some s)
-         | { kind = KNone ; txt = { outer_pattern = None ; pattern;_} } ->
+         | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
              (List.iter
                 (fun (((xloc,_) as z),_)  ->
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                pattern;
+                bounds;
               None)
          | { kind = KNone ;
-             txt = { outer_pattern = Some ((xloc,_) as z); pattern;_} } ->
+             txt = { outer_pattern = Some ((xloc,_) as z); bounds;_} } ->
              (check_add (z, (`Uid (xloc, "None") : FAst.exp )) env;
               List.iter
                 (fun (((xloc,_) as z),_)  ->
                    check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                pattern;
+                bounds;
               None)) prod in
   env := (List.rev (!env));
   Listf.iteri
     (fun i  y  ->
        let id = prefix ^ (string_of_int i) in
        match (y : Gram_def.osymbol ) with
-       | { pattern; text = `Token _; outer_pattern = None ;_} ->
-           enhance_env id pattern env
-       | { pattern; text = `Token _; outer_pattern = Some (_,id);_} ->
-           enhance_env id pattern env
-       | { pattern; text = `Keyword _; outer_pattern = None ;_} ->
-           let id = prefix ^ (string_of_int i) in enhance_env id pattern env
-       | { pattern; text = `Keyword _; outer_pattern = Some (_,id);_} ->
-           enhance_env id pattern env
+       | { bounds; text = `Token _; outer_pattern = None ;_} ->
+           enhance_env id bounds env
+       | { bounds; text = `Token _; outer_pattern = Some (_,id);_} ->
+           enhance_env id bounds env
+       | { bounds; text = `Keyword _; outer_pattern = None ;_} ->
+           let id = prefix ^ (string_of_int i) in enhance_env id bounds env
+       | { bounds; text = `Keyword _; outer_pattern = Some (_,id);_} ->
+           enhance_env id bounds env
        | _ -> ()) prod;
   ({ prod; action; env = (!env) } : Gram_def.rule )
 let gen_lid () =
@@ -207,7 +207,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
              let mk_arg p =
                (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
                FAst.pat ) in
-             match ((s.outer_pattern), (s.pattern)) with
+             match ((s.outer_pattern), (s.bounds)) with
              | (Some (xloc,id),_) ->
                  let p =
                    (`Lid (xloc, id) : FAst.pat ) +: (make_ctyp s.styp rtvar) in

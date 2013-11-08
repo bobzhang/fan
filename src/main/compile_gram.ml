@@ -56,10 +56,10 @@ let mk_prule ~prod ~action =
     Listf.filter_map
       (function  (p:Gram_def.osymbol Gram_def.decorate) ->
         match p with (* ? Lid i ? Lid *)
-        | {kind = KSome;   txt = ({outer_pattern = None; pattern; _} as symbol) } ->
+        | {kind = KSome;   txt = ({outer_pattern = None; bounds; _} as symbol) } ->
             begin
               List.iter
-                (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) pattern ;
+                (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
               incr i;
               Some symbol;
             end
@@ -70,25 +70,32 @@ let mk_prule ~prod ~action =
             end
         (* ? Lid i as v 
          *)      
-        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ; pattern;  _} as s)} ->
+        | {kind = KSome; txt = ({outer_pattern = Some ((xloc,id) as z) ;
+                                 bounds;  _} as s)} ->
             begin 
               check_add (z, %exp@xloc{Some $lid:id } ) env;
               List.iter
                   (fun (((xloc,id) as z),_) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
-                pattern;
+                bounds;
               incr i;
               Some s
             end
               
-        | {kind = KNone; txt = {outer_pattern = None ; pattern; _}} ->
+        | {kind = KNone; txt = {outer_pattern = None ;
+                                bounds; _}} ->
             begin
-              List.iter (fun (((xloc,_) as z),_) -> check_add (z, %exp@xloc{None}) env) pattern;
+              List.iter
+                (fun (((xloc,_) as z),_) ->
+                  check_add (z, %exp@xloc{None}) env) bounds;
               None
             end
-        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z); pattern; _}} ->
+        | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z);
+                                bounds; _}} ->
             begin
               check_add (z, %exp@xloc{None}) env;
-              List.iter (fun (((xloc,_) as z),_) -> check_add (z , %exp@xloc{None}) env) pattern;
+              List.iter
+                (fun (((xloc,_) as z),_) ->
+                  check_add (z , %exp@xloc{None}) env) bounds;
               None 
             end) prod in
   begin 
@@ -97,16 +104,16 @@ let mk_prule ~prod ~action =
       (fun i y ->
         let id = prefix ^ string_of_int i in
         match (y:Gram_def.osymbol) with 
-        | {pattern ; text=`Token _; outer_pattern = None; _ } ->
-            enhance_env  id pattern env
-        | {pattern ; text=`Token _;outer_pattern = Some (_,id) ;_ } ->
-            enhance_env  id pattern env  (* FIXME duplicated here -- could be simplified *)
-        | {pattern; text = `Keyword _;outer_pattern = None;  _} ->
+        | {bounds ; text=`Token _; outer_pattern = None; _ } ->
+            enhance_env  id bounds env
+        | {bounds ; text=`Token _;outer_pattern = Some (_,id) ;_ } ->
+            enhance_env  id bounds env  (* FIXME duplicated here -- could be simplified *)
+        | {bounds; text = `Keyword _;outer_pattern = None;  _} ->
             let id = prefix ^ string_of_int i in
-            enhance_env  id  pattern env 
-        | {pattern; text = `Keyword _;outer_pattern = Some(_,id);  _} ->
+            enhance_env  id bounds env 
+        | {bounds; text = `Keyword _;outer_pattern = Some(_,id);  _} ->
             (* could be simplified *)
-            enhance_env  id pattern  env
+            enhance_env  id bounds  env
             (* FIXME when the percent is replaced with '$',  a weird error message*)
         | _ ->  ())   prod ;
     ({prod;
@@ -204,7 +211,7 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i txt (s:Gram_def.osymbol) ->
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
-        match (s.outer_pattern, s.pattern) with
+        match (s.outer_pattern, s.bounds) with
         | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
             let p =  %pat@xloc{$lid:id} +: make_ctyp s.styp rtvar in
             %exp{ fun ${mk_arg p} -> $txt }
