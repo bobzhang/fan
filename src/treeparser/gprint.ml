@@ -61,7 +61,6 @@ class text_grammar : grammar_print = object(self:'self)
     | `List1 s -> pp f "L1 %a" self#symbol1 s
     | `List1sep (s, t) ->
         pp f "L1 %a SEP %a" self#symbol1 s self#symbol1 t
-    (* | `Opt s -> pp f "OPT %a" self#symbol1 s *)
     | `Try s -> pp f "TRY %a" self#symbol1 s
     | `Peek s -> pp f "PEEK %a" self#symbol1 s 
     | `Snterml (e, l) -> pp f "%s Level %S" e.name l
@@ -75,7 +74,7 @@ class text_grammar : grammar_print = object(self:'self)
     | `Token p -> pp f "%s" (Tokenf.string_of_pattern p )
     | `Keyword s -> pp f "%S" s
     | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
-      `List1sep (_, _) (* | `Opt _ *) | `Try _ | `Peek _ as s ->
+      `List1sep (_, _) | `Try _ | `Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
       f ((symbols,(annot,_action)):Gdefs.production) =
