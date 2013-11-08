@@ -14,7 +14,6 @@ let gm () =
   match !Configf.compilation_unit with
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
-let check_add ((loc,id),v) env = env := (((loc, id), v) :: (!env))
 let add ?(check= true)  ((loc,id),v) env =
   if check && (List.exists (fun ((_,i),_)  -> i = id) (!env))
   then Locf.failf loc "This variable %s is bound several times" id
