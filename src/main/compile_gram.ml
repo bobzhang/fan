@@ -35,11 +35,6 @@ let gm () =
   | None -> !module_name
 
   
-let check_add ((loc,id),v) env  =
-  (* if List.exists (fun ((_,i),_) -> i = id)  !env then *)
-  (*   Locf.failf loc "This variable %s is bound several times" id *)
-  (* else *)
-    env := ((loc,id),v) :: !env
 let add ?(check=true) ((loc,id),v) env =
   if check && List.exists (fun ((_,i),_) -> i = id)  !env then
     Locf.failf loc "This variable %s is bound several times" id
