@@ -16,13 +16,6 @@ Ast_gen:
   ;
 }
 
-
-
-
-(* type outer_symbol = { *)
-(*     psymbols :  matrix ; *)
-(*     outer_pattern : Gram_def.locid option; *)
-(*   } *)
   
 open FAst
 open Util
@@ -238,11 +231,12 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               }]}:Gram_def.osymbol list Gram_def.decorate))}
   ]
 
-  sep_symbol@Local : [ "SEP"; single_symbol as t %{t}]
-                
+  single_symbol_as@Local :
+   [ single_symbol as t %{t}
+   | single_symbol as t ; "as"; Lid@xloc s %{ {t with outer_pattern = Some (xloc,s) }}]             
   symbol :
   (* be more precise, no recursive grammar? *)
-  [("L0"|"L1" as l) ; single_symbol as s; ? sep_symbol as sep  %{
+  [("L0"|"L1" as l) ; single_symbol as s; ? ["SEP"; single_symbol as sep]  %{
     let styp = %ctyp'{ ${s.styp} list   } in
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
@@ -255,7 +249,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       txt =  [s] };
      {kind = KSome;
       txt = [s]} ]}
-  | "?"; "["; L1 single_symbol SEP ";" as s   ; "]"%{
+  | "?"; "["; L1 single_symbol_as SEP ";" as s   ; "]"%{
    [{kind = KNone;
      txt = s};
     {kind = KSome;
@@ -269,7 +263,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   | simple as p %{ p}
   ]
   psymbol :
-  [ symbol as ss %{ (* {psymbols = ss; outer_pattern = None} *) ss }
+  [ symbol as ss %{ ss }
   | symbol as ss; "as"; Lid@xloc i %{
     List.map (fun (x:Gram_def.osymbol list Gram_def.decorate) ->
       match x.txt with

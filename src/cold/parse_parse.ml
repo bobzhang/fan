@@ -103,7 +103,8 @@ let single_symbol: Gram_def.osymbol Gramf.t =
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
   let or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
-  and sep_symbol: 'sep_symbol Gramf.t = grammar_entry_create "sep_symbol" in
+  and single_symbol_as: 'single_symbol_as Gramf.t =
+    grammar_entry_create "single_symbol_as" in
   Gramf.extend_single (single_symbol : 'single_symbol Gramf.t )
     (None,
       ((None, None,
@@ -8507,15 +8508,29 @@ let _ =
                                       }]
                                  } : Gram_def.osymbol list Gram_def.decorate ))) : 
                    'simple )))))]) : Gramf.olevel ));
-  Gramf.extend_single (sep_symbol : 'sep_symbol Gramf.t )
+  Gramf.extend_single (single_symbol_as : 'single_symbol_as Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "SEP";
-           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
+         [([`Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
             ("t\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'single_symbol)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (t : 'sep_symbol )))))]) : Gramf.olevel ));
+                 (fun ~__fan_0:(t : 'single_symbol)  (_loc : Locf.t)  ->
+                    (t : 'single_symbol_as )))));
+         ([`Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
+          `Keyword "as";
+          `Token
+            ({
+               pred = ((function | `Lid _ -> true | _ -> false));
+               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+             } : Tokenf.pattern )],
+           ("{ t with outer_pattern = (Some (xloc, s)) }\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
+                   ~__fan_0:(t : 'single_symbol)  (_loc : Locf.t)  ->
+                   let xloc = __fan_2.loc in
+                   let s = __fan_2.txt in
+                   ({ t with outer_pattern = (Some (xloc, s)) } : 'single_symbol_as )))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (symbol : 'symbol Gramf.t )
     (None,
       ((None, None,
@@ -8555,10 +8570,11 @@ let _ =
                      }] : 'symbol )))));
          ([`Keyword "L0";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
-          `Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t ))],
+          `Keyword "SEP";
+          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{ kind = KNormal; txt = [{ text; styp; bounds = []; outer_pattern = None }]\n }]\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(sep : 'sep_symbol) 
+                (fun ~__fan_3:(sep : 'single_symbol)  ~__fan_2:_ 
                    ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let l = __fan_0.txt in
@@ -8574,10 +8590,11 @@ let _ =
                      }] : 'symbol )))));
          ([`Keyword "L1";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
-          `Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t ))],
+          `Keyword "SEP";
+          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{ kind = KNormal; txt = [{ text; styp; bounds = []; outer_pattern = None }]\n }]\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(sep : 'sep_symbol) 
+                (fun ~__fan_3:(sep : 'single_symbol)  ~__fan_2:_ 
                    ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let l = __fan_0.txt in
@@ -8602,12 +8619,13 @@ let _ =
          ([`Keyword "?";
           `Keyword "[";
           `List1sep
-            ((`Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))),
+            ((`Nterm
+                (Gramf.obj (single_symbol_as : 'single_symbol_as Gramf.t ))),
               (`Keyword ";"));
           `Keyword "]"],
            ("[{ kind = KNone; txt = s }; { kind = KSome; txt = s }]\n",
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(s : 'single_symbol list) 
+                (fun ~__fan_3:_  ~__fan_2:(s : 'single_symbol_as list) 
                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    ([{ kind = KNone; txt = s }; { kind = KSome; txt = s }] : 
                    'symbol )))));

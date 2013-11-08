@@ -74,21 +74,25 @@ let make_pat exp =
         | "`"; luident as s  %pat{$vrn:s}
         | "_" %{ `Any _loc}
         | "~"; a_lident as i %{  `LabelS(_loc,i)}
-        | Optlabel i; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
-        | Optlabel i; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,`Lid(_loc,i),p)}
-        | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,i,p,e)}
+        | Optlabel i; "("; pat_tcon as p; ?["="; exp as e]; ")" %{
+            match e with
+            |Some e -> `OptLablExpr(_loc,`Lid(_loc,i),p,e)
+            | None -> `OptLabl(_loc,`Lid(_loc,i),p) }
+        | "?"; a_lident as i;":"; "("; pat_tcon as p; ?[ "="; exp as e]; ")" %{
+          match e with (* has a boolean binding so compiler could optimize it? *)
+          | None -> `OptLabl(_loc,i,p)
+          | Some e -> `OptLablExpr(_loc,i,p,e)
+        }
         | "?"; a_lident as i;":"; "("; pat_tcon as p; "="; Ant("opt",s); ")" %{
             `OptLablExpr (_loc, i, p, mk_ant s)}
-        | "?"; a_lident as i; ":"; "("; pat_tcon as p; ")"  %{
-            `OptLabl(_loc,i,p)}
+
         | "?"; a_lident as i %{ `OptLablS(_loc,i ) }
-        | "?"; "("; ipat_tcon as p; ")" %{
-            `OptLabl(_loc,`Lid(_loc,""),p)}
-        | "?"; "("; ipat_tcon as p; "="; exp as e; ")" %{
-            `OptLablExpr(_loc,`Lid(_loc,""),p,e)}]
+
+        | "?"; "("; ipat_tcon as p; ? ["="; exp as e]; ")" %{
+          match e with
+          | Some e -> `OptLablExpr(_loc,`Lid(_loc,""),p,e)
+          | None   -> `OptLabl(_loc,`Lid(_loc,""),p)}
+        ]
 
        pat_constr@Local:
        [module_longident as i %{(i :vid :> pat)}
@@ -157,13 +161,15 @@ let make_pat exp =
         [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
         | Ant (""|"pat"|"par" ,s) %{ mk_ant  ~c:"pat"  s}
         | "("; ")" %{ `Uid(_loc,"()")}
-        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-        | "("; "module"; a_uident as m; ":";  mtyp as pt; ")" %{
-             `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
+        | "("; "module"; a_uident as m; ?[":";  mtyp as pt]; ")" %{
+          match pt with
+          | None -> `ModuleUnpack(_loc,m)
+          | Some pt -> `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))}
         | "(" ; "module"; a_uident as m;":"; Ant("opt", s); ")" %{
              `ModuleConstraint (_loc, m, mk_ant  s)}
         (* when change [pat], we need to take care of the following terms
            for factorization *)      
+
         | "("; pat as p; ")" %{ p}
         | "("; pat as p; ":"; ctyp as t; ")" %pat{ ($p : $t) }
         | "("; pat as p; "as"; a_lident as s; ")" %pat{  ($p as $s) }
@@ -190,8 +196,10 @@ let make_pat exp =
        ] 
        label_pat:
        [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
-       | label_longident as i; "="; pat as p %{`RecBind(_loc,i,p)}
-       | label_longident as i %{`RecBind(_loc,i,`Lid(_loc,Fan_ops.to_lid i))}
+       | label_longident as i; ?["="; pat as p] %{
+         let p = match p with
+         | None ->   `Lid(_loc,Fan_ops.to_lid i)
+         | Some p -> p in `RecBind(_loc,i,p)}
        ]};;
 
 
@@ -272,9 +280,8 @@ let apply () = begin
         | "type"; type_longident_and_parameters as t1; ":="; ctyp as t2 %{
             `TypeSubst (_loc, t1, t2)}
         | "module"; module_longident as i1; ("="|":=" as v); module_longident_with_app as i2 %{
-          let i = (i1:vid:>ident) in 
-          if v = "=" then 
-            `ModuleEq (_loc, i, i2)
+          let i = (i1:vid:>ident) in
+          if v = "=" then `ModuleEq (_loc, i, i2)
           else `ModuleSubst(_loc, i,i2)}]};
     %extend{
       sigis:
@@ -1154,8 +1161,12 @@ let apply_ctyp () = begin
         | "["; row_field as rfl; "]" %{ `PolyEq(_loc,rfl)}
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field as rfl; "]" %{   `PolySup (_loc, rfl)}
-        | "[<"; row_field as rfl; "]" %{ `PolyInf(_loc,rfl)}
-        | "[<"; row_field as rfl; ">"; name_tags as ntl; "]" %{ `PolyInfSup(_loc,rfl,ntl)}
+
+        | "[<"; row_field as rfl; ? [ ">"; name_tags as ntl ] ; "]" %{
+          match ntl with
+          | None -> `PolyInf(_loc,rfl)
+          | Some ntl -> `PolyInfSup(_loc,rfl,ntl)}
+
         | "#"; class_longident as i %{  `ClassPath (_loc, i)}
         | "<"; opt_meth_list as t; ">" %{ t}
         | "("; "module"; mtyp as p; ")" %{ `Package(_loc,p)}
