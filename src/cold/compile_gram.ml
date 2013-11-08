@@ -24,9 +24,9 @@ let enhance_env (s : string) xs env =
     (List.iter
        (fun (((loc,_) as v),opt)  ->
           match opt with
-          | None  -> check_add (v, (`Lid (loc, s) : FAst.exp )) env
+          | None  -> add (v, (`Lid (loc, s) : FAst.exp )) env
           | Some l ->
-              check_add
+              add
                 (v,
                   (`Field (loc, (`Lid (loc, s)), (`Lid (loc, l))) : FAst.exp ))
                 env))
@@ -43,7 +43,7 @@ let mk_prule ~prod  ~action  =
              (enhance_env id bounds env;
               List.iter
                 (fun (((xloc,id) as z),_)  ->
-                   check_add
+                   add ~check:false
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                        FAst.exp )) env) bounds;
@@ -53,13 +53,13 @@ let mk_prule ~prod  ~action  =
              txt = ({ outer_pattern = Some ((xloc,id) as z); bounds;_} as s)
              } ->
              (enhance_env id bounds env;
-              check_add
+              add ~check:false
                 (z,
                   (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                   FAst.exp )) env;
               List.iter
                 (fun (((xloc,id) as z),_)  ->
-                   check_add
+                   add ~check:false
                      (z,
                        (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
                        FAst.exp )) env) bounds;
@@ -75,16 +75,14 @@ let mk_prule ~prod  ~action  =
          | { kind = KNone ; txt = { outer_pattern = None ; bounds;_} } ->
              (List.iter
                 (fun (((xloc,_) as z),_)  ->
-                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                bounds;
+                   add (z, (`Uid (xloc, "None") : FAst.exp )) env) bounds;
               None)
          | { kind = KNone ;
              txt = { outer_pattern = Some ((xloc,_) as z); bounds;_} } ->
-             (check_add (z, (`Uid (xloc, "None") : FAst.exp )) env;
+             (add (z, (`Uid (xloc, "None") : FAst.exp )) env;
               List.iter
                 (fun (((xloc,_) as z),_)  ->
-                   check_add (z, (`Uid (xloc, "None") : FAst.exp )) env)
-                bounds;
+                   add (z, (`Uid (xloc, "None") : FAst.exp )) env) bounds;
               None)) prod in
   ({ prod; action; env = (List.rev (!env)) } : Gram_def.rule )
 let gen_lid () =

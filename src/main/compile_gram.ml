@@ -51,8 +51,8 @@ let enhance_env  (s:string) xs env  =
   List.iter
     (fun (((loc,_) as v),opt) ->
       match opt with
-      | None -> check_add (v, %exp@loc{$lid:s}) env
-      | Some l -> check_add (v, %exp@loc{$lid:s.$lid:l}) env )
+      | None -> add  (v, %exp@loc{$lid:s}) env
+      | Some l -> add (v, %exp@loc{$lid:s.$lid:l}) env )
                         
 let mk_prule ~prod ~action =
   let env = ref [] in
@@ -66,7 +66,7 @@ let mk_prule ~prod ~action =
                begin
                  enhance_env  id bounds env;
                  List.iter
-                   (fun (((xloc,id) as z),_) -> check_add (z, %exp@xloc{Some $lid:id}) env) bounds ;
+                   (fun (((xloc,id) as z),_) -> add ~check:false (z, %exp@xloc{Some $lid:id}) env) bounds ;
                  incr i;
                  Some symbol;
                end
@@ -75,9 +75,9 @@ let mk_prule ~prod ~action =
           ->
             begin
               enhance_env id bounds env ;
-              check_add (z, %exp@xloc{Some $lid:id } ) env;
+              add ~check:false (z, %exp@xloc{Some $lid:id } ) env;
               List.iter
-                  (fun (((xloc,id) as z),_) ->  check_add (z, %exp@xloc{Some $lid:id}) env)
+                  (fun (((xloc,id) as z),_) ->  add ~check:false (z, %exp@xloc{Some $lid:id}) env)
                 bounds;
               incr i;
               Some s
@@ -99,16 +99,16 @@ let mk_prule ~prod ~action =
             begin
               List.iter
                 (fun (((xloc,_) as z),_) ->
-                  check_add (z, %exp@xloc{None}) env) bounds;
+                  add (z, %exp@xloc{None}) env) bounds;
               None
             end
         | {kind = KNone; txt = {outer_pattern = Some ((xloc,_) as z);
                                 bounds; _}} ->
             begin
-              check_add (z, %exp@xloc{None}) env;
+              add (z, %exp@xloc{None}) env;
               List.iter
                 (fun (((xloc,_) as z),_) ->
-                  check_add (z , %exp@xloc{None}) env) bounds;
+                  add (z , %exp@xloc{None}) env) bounds;
               None 
             end) prod in
     ({prod;
