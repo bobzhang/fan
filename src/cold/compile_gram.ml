@@ -15,6 +15,10 @@ let gm () =
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> !module_name
 let check_add ((loc,id),v) env = env := (((loc, id), v) :: (!env))
+let add ?(check= true)  ((loc,id),v) env =
+  if check && (List.exists (fun ((_,i),_)  -> i = id) (!env))
+  then Locf.failf loc "This variable %s is bound several times" id
+  else env := (((loc, id), v) :: (!env))
 let enhance_env (s : string) xs env =
   xs |>
     (List.iter
@@ -76,16 +80,11 @@ let mk_prule ~prod  ~action  =
   env := (List.rev (!env));
   Listf.iteri
     (fun i  y  ->
-       let id = prefix ^ (string_of_int i) in
        match (y : Gram_def.osymbol ) with
-       | { bounds; text = `Token _; outer_pattern = None ;_} ->
-           enhance_env id bounds env
-       | { bounds; text = `Token _; outer_pattern = Some (_,id);_} ->
-           enhance_env id bounds env
-       | { bounds; text = `Keyword _; outer_pattern = None ;_} ->
+       | { bounds; text = (`Token _|`Keyword _); outer_pattern = None ;_} ->
            let id = prefix ^ (string_of_int i) in enhance_env id bounds env
-       | { bounds; text = `Keyword _; outer_pattern = Some (_,id);_} ->
-           enhance_env id bounds env
+       | { bounds; text = (`Token _|`Keyword _);
+           outer_pattern = Some (_,id);_} -> enhance_env id bounds env
        | _ -> ()) prod;
   ({ prod; action; env = (!env) } : Gram_def.rule )
 let gen_lid () =
