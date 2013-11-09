@@ -57,7 +57,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ".";
+           `Token
+             ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action

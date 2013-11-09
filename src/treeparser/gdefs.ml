@@ -50,7 +50,7 @@ and asymbol =
   | `Self
   | `List0sep of (symbol * symbol)        
   | `List1sep of (symbol * symbol)      
-  | Tokenf.terminal ]  
+  | `Token of Tokenf.pattern ]  
 and symbol =
   [
     `Nterm of entry
@@ -62,7 +62,7 @@ and symbol =
   | `Try of symbol
   | `Peek of symbol
   | `Self
-  | Tokenf.terminal
+  | `Token of Tokenf.pattern
  ]
       
 and tree = (* internal struccture *)
@@ -97,5 +97,5 @@ type delete_statment = symbol list
   
 
 (* local variables: *)
-(* compile-command: "cd .. &&  pmake treeparser/gstructure.cmo" *)
+(* compile-command: "cd .. &&  pmake treeparser/gdefs.cmo" *)
 (* end: *)

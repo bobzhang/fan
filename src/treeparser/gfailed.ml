@@ -15,7 +15,7 @@ let  name_of_symbol (entry:Gdefs.entry) (x: Gdefs.symbol)   =
   | `Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
   | `Self  -> "[" ^ entry.name ^ "]"
   | `Token p  -> Tokenf.string_of_pattern p
-  | `Keyword kwd -> "\"" ^ kwd ^ "\""
+  (* | `Keyword kwd -> "\"" ^ kwd ^ "\"" *)
   | _ -> "???" 
 
 let tree_in_entry prev_symb (tree:Gdefs.tree) = function
@@ -43,8 +43,8 @@ let tree_in_entry prev_symb (tree:Gdefs.tree) = function
           | LocAct (_, _) | DeadEnd -> None 
       and search_symbol symb =
         match symb with
-        | `Nterm _ | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
-          `List1sep (_, _)  | `Try _ | `Token _ | `Keyword _
+        | `Nterm _ | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _
+        | `List1sep (_, _)  | `Try _ | `Token _ 
         | `Peek _
           when symb == prev_symb ->
             Some symb
@@ -113,9 +113,9 @@ and name_of_tree_failed entry x =
           List.fold_left
             (fun s tok ->
               ((if s = "" then "" else s ^ " then ") ^
-               (match tok with
-               | `Token p ->  Tokenf.string_of_pattern p 
-               | `Keyword kwd -> kwd))) "" tokl 
+               ((* match tok with *)
+               (* | `Token p -> *)  Tokenf.string_of_pattern tok
+               (* | `Keyword kwd -> kwd *)))) "" tokl 
       end
   | DeadEnd | LocAct (_, _) -> "???" 
 

@@ -129,11 +129,17 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   ]
   simple_symbol@Inline:
   [  Str s %{
-     {text = Keyword (_loc,s);
+     {text = (* Keyword (_loc,s) *)
+      Token(_loc,
+           %exp{({descr = {tag = `Key ; word = A $str:s ; tag_name = "Key"}}
+                   : Tokenf.pattern)}) ;
       styp= %ctyp'{Tokenf.txt};
       bounds= []; outer_pattern = None  }}
   | Str s ; "@"; Lid@xloc i %{
-     {text = Keyword (_loc,s);
+     {text = (* Keyword (_loc,s) *)
+      Token(_loc,
+           %exp{({descr = {tag = `Key; word = A $str:s; tag_name = "Key"}}
+                   : Tokenf.pattern)}) ;
       styp = %ctyp'{Tokenf.txt};
       bounds =
       [((xloc,i),Some "loc")]; outer_pattern = None  }}
@@ -203,7 +209,11 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               | None -> [] in
             ({kind = KNormal;
               txt =
-              [{text = Keyword(x.loc,x.txt);
+              [{text =
+                Token(x.loc,
+                     %exp{({descr = {tag = `Key; word = A $str{x.txt}; tag_name = "Key"}}
+                          : Tokenf.pattern)});
+                (* Keyword(x.loc,x.txt); *)
                styp = %ctyp'{Tokenf.txt};
                bounds; outer_pattern = None}]}:Gram_def.osymbol list Gram_def.decorate))
     | (vs, loc, Some  b) -> (* ("a"|"b"|"c"@loc as v)*)
@@ -216,7 +226,12 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
           (fun (x:Tokenf.txt) ->
             ({kind = KNormal;
               txt  =
-              [{text = Keyword (x.loc,x.txt);
+              [{text =
+                (* Keyword (x.loc,x.txt) *)
+                Token(x.loc,
+                     %exp{({descr = {tag = `Key; word = A $str{x.txt}; tag_name = "Key"}}
+                          : Tokenf.pattern)})
+                ;
                styp = %ctyp'{Tokenf.txt}; bounds;
                 outer_pattern = None
               }]}:Gram_def.osymbol list Gram_def.decorate))}

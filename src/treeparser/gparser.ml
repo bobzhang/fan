@@ -105,7 +105,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                      (match e with
                      | Streamf.NotConsumed  ->
                          raise (Streamf.Error
-                              (Gfailed.tree_failed  entry e (node :>Gdefs.symbol) son))
+                              (Gfailed.tree_failed  entry e (`Token node) son))
                      | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
@@ -119,7 +119,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
 
 
 and parser_of_terminals
-    (terminals:Tokenf.terminal list)  :Obj.t list option  Tokenf.parse =
+    (terminals:Tokenf.pattern list)  :Obj.t list option  Tokenf.parse =
   fun strm ->
     let module M = struct exception X end in
     let n = List.length terminals in
@@ -128,30 +128,29 @@ and parser_of_terminals
         terminals
         |>
           List.iteri
-            (fun i (terminal:Tokenf.terminal)  -> 
+            (fun i (terminal : Tokenf.pattern)  -> 
               let t  =
                 match Streamf.peek_nth strm i with
                 | Some t -> t 
                 | None -> raise M.X  in
-              let ((tag,obj) as v) = Tokenf.destruct t in
+              let ((_,obj) as v) = Tokenf.destruct t in
               begin
-
                 if not
-                    (match terminal with
-                    |`Token x  ->
-                        let p  =Tokenf.match_token x in
+                    ((* match terminal with *)
+                    (* |`Token x  -> *)
+                        let p  =Tokenf.match_token terminal in
                         (* let obj = Tokenf.strip t in *)
                         begin
                           acc:= obj ::!acc;
                           p v 
                         end
-                    |`Keyword kwd ->
-                        if tag  = `Key then 
-                          begin
-                            acc := Obj.repr obj :: !acc;
-                            (Obj.magic (Obj.field obj 1 ) : string) = kwd
-                          end
-                        else  false)
+                    (* |`Keyword kwd -> *)
+                    (*     if tag  = `Key then  *)
+                    (*       begin *)
+                    (*         acc := Obj.repr obj :: !acc; *)
+                    (*         (Obj.magic (Obj.field obj 1 ) : string) = kwd *)
+                    (*       end *)
+                    (*     else  false *))
                 then raise M.X
               end);
         Streamf.njunk n strm;
@@ -180,18 +179,18 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
     | `Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
     | `Self -> fun strm -> entry.start 0 strm 
-    | `Keyword kwd -> fun strm ->
-        (** remember here -- it could be optimized, it could be optimized..
-            ... *)
-        begin  (* interaction with stream *)
-          match Streamf.peek strm with
-          | Some (`Key u  )  when u.txt = kwd ->
-              begin 
-                Streamf.junk strm ;
-                Gaction.mk u
-              end
-          |_ -> raise Streamf.NotConsumed
-        end
+    (* | `Keyword kwd -> fun strm -> *)
+    (*     (\** remember here -- it could be optimized, it could be optimized.. *)
+    (*         ... *\) *)
+    (*     begin  (\* interaction with stream *\) *)
+    (*       match Streamf.peek strm with *)
+    (*       | Some (`Key u  )  when u.txt = kwd -> *)
+    (*           begin  *)
+    (*             Streamf.junk strm ; *)
+    (*             Gaction.mk u *)
+    (*           end *)
+    (*       |_ -> raise Streamf.NotConsumed *)
+    (*     end *)
     | `Token (x:Tokenf.pattern) ->
         let p = Tokenf.match_token x in 
         fun strm ->

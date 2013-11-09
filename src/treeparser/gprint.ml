@@ -64,7 +64,7 @@ class text_grammar : grammar_print = object(self:'self)
     | `Try s -> pp f "TRY %a" self#symbol1 s
     | `Peek s -> pp f "PEEK %a" self#symbol1 s 
     | `Snterml (e, l) -> pp f "%s Level %S" e.name l
-    | `Nterm _  | `Self  | `Token _ | `Keyword _ as s ->
+    | `Nterm _  | `Self  | `Token _  as s ->
         self#symbol1 f s 
           
   method symbol1 f x =
@@ -72,7 +72,7 @@ class text_grammar : grammar_print = object(self:'self)
     | `Nterm e -> pp f "%s" e.name
     | `Self -> pp f "%s" "S"
     | `Token p -> pp f "%s" (Tokenf.string_of_pattern p )
-    | `Keyword s -> pp f "%S" s
+    (* | `Keyword s -> pp f "%S" s *)
     | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
       `List1sep (_, _) | `Try _ | `Peek _ as s ->
         pp f "(%a)" self#symbol s

@@ -51,7 +51,9 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
                     ((i : alident  :>pat) : 'parser_ipat )))));
-         ([`Keyword "_"],
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "_"); tag_name = "Key" } } : 
+             Tokenf.pattern )],
            ("(`Any _loc : FAst.pat )\n",
              (Gramf.mk_action
                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
@@ -60,10 +62,14 @@ let _ =
   Gramf.extend_single (parser_case_list : 'parser_case_list Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "|";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `List0sep
              ((`Nterm (Gramf.obj (parser_case : 'parser_case Gramf.t ))),
-               (`Keyword "|"))],
+               (`Token
+                  ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
+                   } : Tokenf.pattern )))],
             ("pcl\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(pcl : 'parser_case list)  ~__fan_0:_ 
@@ -73,7 +79,9 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (stream_pat : 'stream_pat Gramf.t ));
-           `Keyword "->";
+           `Token
+             ({ descr = { tag = `Key; word = (A "->"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(sp, None, e)\n",
               (Gramf.mk_action
@@ -89,7 +97,9 @@ let _ =
                  (fun ~__fan_0:(spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
                     ([(spc, None)] : 'stream_pat )))));
          ([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
-          `Keyword ";";
+          `Token
+            ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Nterm
             (Gramf.obj
                (stream_pat_comp_err_list : 'stream_pat_comp_err_list Gramf.t ))],
@@ -106,7 +116,9 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword "when";
+           `Token
+             ({ descr = { tag = `Key; word = (A "when"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("When (_loc, p, (Some e))\n",
               (Gramf.mk_action
@@ -119,14 +131,19 @@ let _ =
                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                    (When (_loc, p, None) : 'stream_pat_comp )))));
          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Keyword "=";
+          `Token
+            ({ descr = { tag = `Key; word = (A "="); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("Match (_loc, p, e)\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
                    (_loc : Locf.t)  ->
                    (Match (_loc, p, e) : 'stream_pat_comp )))));
-         ([`Keyword "'"; `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "'"); tag_name = "Key" } } : 
+             Tokenf.pattern );
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("Str (_loc, p)\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
@@ -135,7 +152,9 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
-           `Keyword "??";
+           `Token
+             ({ descr = { tag = `Key; word = (A "??"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(spc, (Some e))\n",
               (Gramf.mk_action
@@ -160,14 +179,18 @@ let _ =
                     -> ([spc] : 'stream_pat_comp_err_list )))));
          ([`Nterm
              (Gramf.obj (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t ));
-          `Keyword ";"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("[spc]\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(spc : 'stream_pat_comp_err) 
                    (_loc : Locf.t)  -> ([spc] : 'stream_pat_comp_err_list )))));
          ([`Nterm
              (Gramf.obj (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t ));
-          `Keyword ";";
+          `Token
+            ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Self],
            ("spc :: sp\n",
              (Gramf.mk_action

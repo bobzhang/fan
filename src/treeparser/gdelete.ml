@@ -45,8 +45,10 @@ let removing _gram _kwd =  ()
    the revised syntax could parse
    `Snterml _ _ => `Snterml(_,_)
  *)
-let rec decr_keyw_use gram = function (* gram ->symbol -> unit*)
-  | `Keyword kwd -> removing gram kwd
+let rec decr_keyw_use gram (x:Gdefs.symbol) =
+  match x with 
+  (* | `Keyword kwd -> removing gram kwd *)
+  | `Token ({descr = {tag = `Key ; word = A kwd; _}}:Tokenf.pattern) -> removing gram kwd
   | `List0 s | `List1 s  | `Try s | `Peek s -> decr_keyw_use gram s
   | `List0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `List1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end

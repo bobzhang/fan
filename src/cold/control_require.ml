@@ -9,7 +9,11 @@ let () =
     Gramf.unsafe_extend_single (item : 'item Gramf.t )
       (None,
         ((None, None,
-           [([`Keyword "require";
+           [([`Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "require"); tag_name = "Key" }
+                 } : Tokenf.pattern );
              `Token
                ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
                Tokenf.pattern )],

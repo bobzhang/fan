@@ -20,14 +20,18 @@ let _ =
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     ((_loc, x, None, None) : 'type_entry )))));
-         ([`Keyword "(";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
             Tokenf.pattern );
-          `Keyword ")"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
                 (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.txt) 
@@ -36,7 +40,9 @@ let _ =
                    let x = __fan_1.txt in
                    let y = __fan_2.txt in
                    ((_loc, x, (Some y), None) : 'type_entry )))));
-         ([`Keyword "(";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
             Tokenf.pattern );
@@ -44,7 +50,9 @@ let _ =
             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
             Tokenf.pattern );
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
-          `Keyword ")"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("(_loc, x, (Some y), (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp) 
@@ -54,13 +62,19 @@ let _ =
                    let x = __fan_1.txt in
                    let y = __fan_2.txt in
                    ((_loc, x, (Some y), (Some t)) : 'type_entry )))));
-         ([`Keyword "(";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
             Tokenf.pattern );
-          `Keyword ":";
+          `Token
+            ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
-          `Keyword ")"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
@@ -71,16 +85,22 @@ let _ =
                    ((_loc, x,
                       (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
                       (Some t)) : 'type_entry )))));
-         ([`Keyword "(";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
             Tokenf.pattern );
-          `Keyword ":";
+          `Token
+            ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
           `Token
             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
             Tokenf.pattern );
-          `Keyword ")"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(y : Tokenf.txt) 
@@ -95,11 +115,17 @@ let _ =
   Gramf.extend_single (ty : 'ty Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "(";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
-           `Keyword ":";
+           `Token
+             ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (t_qualid : 't_qualid Gramf.t ));
-           `Keyword ")"],
+           `Token
+             ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+             Tokenf.pattern )],
             ("`Dyn (x, t)\n",
               (Gramf.mk_action
                  (fun ~__fan_4:_  ~__fan_3:(t : 't_qualid)  ~__fan_2:_ 
@@ -121,7 +147,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ".";
+           `Token
+             ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
@@ -143,7 +171,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ".";
+           `Token
+             ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
@@ -165,7 +195,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ".";
+           `Token
+             ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
@@ -176,7 +208,9 @@ let _ =
          ([`Token
              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
              Tokenf.pattern );
-          `Keyword ".";
+          `Token
+            ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = (A "t"); tag_name = "Lid" } } : 
             Tokenf.pattern )],
@@ -249,11 +283,17 @@ let _ =
   Gramf.extend_single (newterminals : 'newterminals Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "(";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
-           `Keyword ":";
+           `Token
+             ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (t_qualid : 't_qualid Gramf.t ));
-           `Keyword ")";
+           `Token
+             ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `List1 (`Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))],
             ("let mk: FAst.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n",
               (Gramf.mk_action

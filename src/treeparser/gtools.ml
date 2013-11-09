@@ -24,15 +24,15 @@ let is_level_labelled n l =
 let get_terminals x =
   let rec aux tokl last_tok  x =
     match (x:Gdefs.tree) with 
-    | Node {node = (#Tokenf.terminal as tok); son; brother = DeadEnd}
+    | Node {node = `Token tok (* (#Tokenf.terminal as tok) *); son; brother = DeadEnd}
       ->  aux (last_tok :: tokl) tok son
     | tree ->
         if tokl = [] then None (* FIXME?*)
         else Some (List.rev (last_tok :: tokl), last_tok, tree)  in
   match (x:Gdefs.node) with
-  | {node=(#Tokenf.terminal as x);son;_} ->
+  | {node=`Token tok;son;_} ->
     (* first case we don't require anything on [brother] *)
-     (aux [] x son)
+     (aux [] tok son)
   | _ -> None 
 
 
@@ -101,7 +101,7 @@ and symbol_first (x:Gdefs.symbol) : string list  =
   | `Self -> assert false
   | `Try s 
   | `Peek s ->symbol_first s
-  | `Keyword s -> [s ]
+  (* | `Keyword s -> [s ] (\* FIXME *\) *)
   | `Token _ -> []
 
 

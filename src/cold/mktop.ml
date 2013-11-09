@@ -356,7 +356,9 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Keyword "when";
+           `Token
+             ({ descr = { tag = `Key; word = (A "when"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
               (Gramf.mk_action
@@ -393,9 +395,13 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ":";
+           `Token
+             ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `List1 (`Nterm (Gramf.obj (n : 'n Gramf.t )));
-           `Keyword ";"],
+           `Token
+             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+             Tokenf.pattern )],
             ("Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          FAst.stru )) ns)\n",
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(ns : 'n list)  ~__fan_1:_ 
@@ -430,7 +436,9 @@ let _ =
          ([`Token
              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
              Tokenf.pattern );
-          `Keyword "as";
+          `Token
+            ({ descr = { tag = `Key; word = (A "as"); tag_name = "Key" } } : 
+            Tokenf.pattern );
           `Token
             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
             Tokenf.pattern )],

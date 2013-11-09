@@ -7,7 +7,9 @@ let _ =
   Gramf.extend_single (stream_exp : 'stream_exp Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "!";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "!"); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `Token
              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
              Tokenf.pattern )],
@@ -18,7 +20,9 @@ let _ =
                     let n = __fan_1.txt in
                     (Ref.protect Compile_stream.grammar_module_name n
                        (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
-         ([`Keyword "!";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "!"); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Token
             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
             Tokenf.pattern );
@@ -54,7 +58,10 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp )))));
-         ([`Keyword "'"; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "'"); tag_name = "Key" } } : 
+             Tokenf.pattern );
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("Ntr (_loc, e)\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
@@ -63,7 +70,9 @@ let _ =
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-           `Keyword ";";
+           `Token
+             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("se :: sel\n",
               (Gramf.mk_action
@@ -71,7 +80,9 @@ let _ =
                     ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se
                     :: sel : 'stream_exp_comp_list )))));
          ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-          `Keyword ";"],
+          `Token
+            ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("[se]\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(se : 'stream_exp_comp) 

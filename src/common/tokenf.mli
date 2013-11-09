@@ -186,9 +186,9 @@ type pattern = {
 
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
-type terminal =
-    [ `Keyword of string
-    | `Token of pattern ]
+(* type terminal = *)
+(*     [ `Keyword of string *)
+(*     | `Token of pattern ] *)
 
       
 type stream =  t Streamf.t 

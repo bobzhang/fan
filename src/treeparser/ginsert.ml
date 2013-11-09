@@ -5,10 +5,12 @@
 
 open Util
 open Format
+
 let higher s1 s2 =
   match (s1, s2) with
-  | (#Tokenf.terminal,#Tokenf.terminal) -> false
-  | (#Tokenf.terminal, _) -> true
+  | `Token (({descr  ={word = A _ ; _ }}):Tokenf.pattern) ,
+            `Token ({descr = {word = Any ; _ }} : Tokenf.pattern)  -> false
+  | `Token _ , _ -> true
   | _ -> false 
 
 
@@ -16,7 +18,7 @@ let rec derive_eps (s:Gdefs.symbol)  =
   match s with 
   | `List0 _ | `List0sep (_, _)| `Peek _ -> true
   | `Try s -> derive_eps s (* it would consume if succeed *)
-  | `List1 _ | `List1sep (_, _) | `Token _ | `Keyword _ ->
+  | `List1 _ | `List1sep (_, _) | `Token _  ->
       (* For sure we cannot derive epsilon from these *)
       false
   | `Nterm _ | `Snterml (_, _) | `Self -> (* Approximation *)
@@ -70,7 +72,7 @@ let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
   | `List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `List0 s | `List1 s | `Try s | `Peek s -> check_gram entry s
-  | `Self | `Token _ | `Keyword _ -> ()
+  | `Self | `Token _  -> ()
         
 and tree_check_gram entry (x:Gdefs.tree) =
   match x with 
@@ -96,7 +98,8 @@ and  using_symbol symbol acc =
       using_symbol s acc
   | `List0sep (s, t) -> using_symbol  t (using_symbol s acc)
   | `List1sep (s, t) -> using_symbol  t (using_symbol  s acc)
-  | `Keyword kwd -> kwd :: acc
+  | `Token ({descr = {tag = `Key; word = A kwd;_}} : Tokenf.pattern)
+    -> kwd :: acc
   | `Nterm _ | `Snterml _ | `Self | `Token _ -> acc 
 and using_node   node acc =
   match (node:Gdefs.tree) with 

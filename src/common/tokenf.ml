@@ -182,9 +182,9 @@ let eq_pattern  (x :pattern)  (y : pattern) : bool =
       
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
-type terminal =
-    [ `Keyword of string
-    | `Token of pattern ]
+(* type terminal = *)
+(*     [(\*  `Keyword of string *\) *)
+(*     (\* | *\) `Token of pattern ] *)
 
   
 let quot_expand (expander:'a expand_fun) (x:quot) =

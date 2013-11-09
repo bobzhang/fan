@@ -6,7 +6,11 @@ let _ =
   Gramf.unsafe_extend_single (item : 'item Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "default";
+         [([`Token
+              ({
+                 descr =
+                   { tag = `Key; word = (A "default"); tag_name = "Key" }
+               } : Tokenf.pattern );
            `Token
              ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
              Tokenf.pattern )],
@@ -19,7 +23,9 @@ let _ =
                      | None  ->
                          Locf.failf _loc "DDSL `%s' can not be resolved" s
                      | Some x -> Ast_quotation.set_default x : 'item )))));
-         ([`Keyword "import";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "import"); tag_name = "Key" }
+              } : Tokenf.pattern );
           `Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
            ("Ast_quotation.paths := ((`Absolute xs) :: (!Ast_quotation.paths))\n",
              (Gramf.mk_action
@@ -27,7 +33,9 @@ let _ =
                    (_loc : Locf.t)  ->
                    (Ast_quotation.paths := ((`Absolute xs) ::
                       (!Ast_quotation.paths)) : 'item )))));
-         ([`Keyword "filter";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "filter"); tag_name = "Key" }
+              } : Tokenf.pattern );
           `Token
             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
             Tokenf.pattern )],
@@ -37,7 +45,11 @@ let _ =
                    (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
                    (Ast_filters.use_implem_filter s : 'item )))));
-         ([`Keyword "lang_clear"],
+         ([`Token
+             ({
+                descr =
+                  { tag = `Key; word = (A "lang_clear"); tag_name = "Key" }
+              } : Tokenf.pattern )],
            ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
              (Gramf.mk_action
                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
@@ -50,7 +62,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
               Tokenf.pattern );
-           `Keyword ".";
+           `Token
+             ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Self],
             ("i :: xs\n",
               (Gramf.mk_action
@@ -68,12 +82,19 @@ let _ =
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"],
+         [([`Nterm (Gramf.obj (item : 'item Gramf.t ));
+           `Token
+             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+             Tokenf.pattern )],
             ("()\n",
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                     (() : 'items )))));
-         ([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"; `Self],
+         ([`Nterm (Gramf.obj (item : 'item Gramf.t ));
+          `Token
+            ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+            Tokenf.pattern );
+          `Self],
            ("()\n",
              (Gramf.mk_action
                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->

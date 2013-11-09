@@ -40,7 +40,7 @@ and symbol =
     | `Try of symbol
     | `Peek of symbol
     | `Self
-    | terminal
+    | `Token of Tokenf.pattern
    ]
 
 and tree = Gdefs.tree 

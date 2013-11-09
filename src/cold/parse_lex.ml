@@ -34,9 +34,14 @@ let _ =
   Gramf.extend_single (lex : 'lex Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "|";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `List0sep
-             ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
+             ((`Nterm (Gramf.obj (case : 'case Gramf.t ))),
+               (`Token
+                  ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
+                   } : Tokenf.pattern )))],
             ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
@@ -44,9 +49,14 @@ let _ =
                     (Compile_lex.output_entry @@
                        (Lexgen.make_single_dfa
                           { shortest = false; clauses = l }) : 'lex )))));
-         ([`Keyword "<";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `List0sep
-            ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
+            ((`Nterm (Gramf.obj (case : 'case Gramf.t ))),
+              (`Token
+                 ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
+                  } : Tokenf.pattern )))],
            ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
@@ -74,11 +84,15 @@ let _ =
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "let";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "let"); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `Token
              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
              Tokenf.pattern );
-           `Keyword "=";
+           `Token
+             ({ descr = { tag = `Key; word = (A "="); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
             ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
               (Gramf.mk_action
@@ -106,7 +120,9 @@ let _ =
     (None,
       ([((Some "as"), None,
           [([`Self;
-            `Keyword "as";
+            `Token
+              ({ descr = { tag = `Key; word = (A "as"); tag_name = "Key" } } : 
+              Tokenf.pattern );
             `Token
               ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
               Tokenf.pattern )],
@@ -117,7 +133,11 @@ let _ =
                      let xloc = __fan_2.loc in
                      let y = __fan_2.txt in (Bind (r1, (xloc, y)) : 'regexp )))))]);
        ((Some "#"), None,
-         [([`Self; `Keyword "#"; `Self],
+         [([`Self;
+           `Token
+             ({ descr = { tag = `Key; word = (A "#"); tag_name = "Key" } } : 
+             Tokenf.pattern );
+           `Self],
             ("let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(r2 : 'regexp)  ~__fan_1:_ 
@@ -126,7 +146,11 @@ let _ =
                      let s2 = as_cset r2 in Characters (Fcset.diff s1 s2) : 
                     'regexp )))))]);
        ((Some "|"), None,
-         [([`Self; `Keyword "|"; `Self],
+         [([`Self;
+           `Token
+             ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" } } : 
+             Tokenf.pattern );
+           `Self],
             ("Alternative (r1, r2)\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(r2 : 'regexp)  ~__fan_1:_ 
@@ -139,7 +163,9 @@ let _ =
                  (fun ~__fan_1:(r2 : 'regexp)  ~__fan_0:(r1 : 'regexp) 
                     (_loc : Locf.t)  -> (Sequence (r1, r2) : 'regexp )))))]);
        ((Some "basic"), None,
-         [([`Keyword "_"],
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "_"); tag_name = "Key" } } : 
+              Tokenf.pattern )],
             ("Characters Fcset.all_chars\n",
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
@@ -162,34 +188,55 @@ let _ =
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let s = __fan_0.txt in
                    (regexp_for_string @@ (TokenEval.string s) : 'regexp )))));
-         ([`Keyword "[";
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "["); tag_name = "Key" } } : 
+             Tokenf.pattern );
           `Nterm (Gramf.obj (char_class : 'char_class Gramf.t ));
-          `Keyword "]"],
+          `Token
+            ({ descr = { tag = `Key; word = (A "]"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("Characters cc\n",
              (Gramf.mk_action
                 (fun ~__fan_2:_  ~__fan_1:(cc : 'char_class)  ~__fan_0:_ 
                    (_loc : Locf.t)  -> (Characters cc : 'regexp )))));
-         ([`Self; `Keyword "*"],
+         ([`Self;
+          `Token
+            ({ descr = { tag = `Key; word = (A "*"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("Repetition r1\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
                    (Repetition r1 : 'regexp )))));
-         ([`Self; `Keyword "?"],
+         ([`Self;
+          `Token
+            ({ descr = { tag = `Key; word = (A "?"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("Alternative (Epsilon, r1)\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
                    (Alternative (Epsilon, r1) : 'regexp )))));
-         ([`Self; `Keyword "+"],
+         ([`Self;
+          `Token
+            ({ descr = { tag = `Key; word = (A "+"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("Sequence ((Repetition (remove_as r1)), r1)\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
                    (Sequence ((Repetition (remove_as r1)), r1) : 'regexp )))));
-         ([`Keyword "("; `Self; `Keyword ")"],
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+             Tokenf.pattern );
+          `Self;
+          `Token
+            ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+            Tokenf.pattern )],
            ("r1\n",
              (Gramf.mk_action
                 (fun ~__fan_2:_  ~__fan_1:(r1 : 'regexp)  ~__fan_0:_ 
                    (_loc : Locf.t)  -> (r1 : 'regexp )))));
-         ([`Keyword "eof"],
+         ([`Token
+             ({ descr = { tag = `Key; word = (A "eof"); tag_name = "Key" } } : 
+             Tokenf.pattern )],
            ("Eof\n",
              (Gramf.mk_action
                 (fun ~__fan_0:_  (_loc : Locf.t)  -> (Eof : 'regexp )))));
@@ -211,7 +258,9 @@ let _ =
   Gramf.extend_single (char_class : 'char_class Gramf.t )
     (None,
       ((None, None,
-         [([`Keyword "^";
+         [([`Token
+              ({ descr = { tag = `Key; word = (A "^"); tag_name = "Key" } } : 
+              Tokenf.pattern );
            `Nterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))],
             ("Fcset.complement r\n",
               (Gramf.mk_action
@@ -228,7 +277,9 @@ let _ =
          [([`Token
               ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" } } : 
               Tokenf.pattern );
-           `Keyword "-";
+           `Token
+             ({ descr = { tag = `Key; word = (A "-"); tag_name = "Key" } } : 
+             Tokenf.pattern );
            `Token
              ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" } } : 
              Tokenf.pattern )],
