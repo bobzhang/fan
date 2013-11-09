@@ -78,14 +78,12 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   simple_token @Inline :
   [ ("EOI" as v) %{
     {text = Token(_loc,
-                   %exp{({pred = %p{ ($vrn:v _ : Tokenf.t) };
-                          descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
+                   %exp{({descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = []; outer_pattern = None  }}
   | ("Lid"|"Uid"|"Str" as v); Str x %{
     {text = Token(_loc,
-                   %exp{({ pred = %p{ ($vrn:v ({txt=$str:x;_} : Tokenf.txt)) } ;
-                           descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
+                   %exp{({descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = []; outer_pattern = None  }}
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
@@ -96,42 +94,36 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       | (Some x, Some xloc) -> [((xloc,x),Some "txt") ]
       | _ -> [] in
     {text = Token(_loc,
-                   %exp{({pred = %p{ $vrn:v _};
-                          descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
+                   %exp{({descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds; outer_pattern = None  
      }}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Lid@xloc x %{
     {text = Token(_loc,
-                   %exp{({pred = %p{ $vrn:v _};
-                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
+                   %exp{({descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [((lloc,loc),Some "loc");((xloc,x),Some "txt")]; outer_pattern = None  }}
   | ("Lid"|"Uid"|"Str" | "Pre" as v); "@"; Lid@lloc loc ; Str x %{
     {text = Token(_loc,
-                   %exp{({pred = %p{$vrn:v ({txt=$str:x;_}:Tokenf.txt)};
-                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
+                   %exp{({descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = [((lloc,loc),Some "loc")]; outer_pattern = None  }} 
   |  ("Quot"|"DirQuotation" as v) ; Lid@loc x %{
     {text = Token(_loc,
-                   %exp{({pred = %p{$vrn:v _};
-                          descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
+                   %exp{({descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.quot};
      bounds = [((loc,x),None)] ; outer_pattern = None}}
   | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
      { text =
        Token(_loc,
-              %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)};
-                     descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}} :Tokenf.pattern)});
+              %exp{({descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}} :Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [((xloc,x),Some "txt")]; outer_pattern = None}}
                           
   | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
      { text = Token(_loc,
-                     %exp{({pred = %p{$vrn:v ({ level = $int:level; _}:Tokenf.op)} ;
-                            descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
+                     %exp{({descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [((lloc,l),Some "loc"); ((xloc,x),Some "txt")]; outer_pattern = None  }}
   ]
@@ -194,8 +186,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               txt =
               [{
               text = Token(_loc,
-                            %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
-                                   descr = {tag = $vrn:v; word = Kind $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
+                            %exp{({descr = {tag = $vrn:v; word = Kind $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
               bounds; outer_pattern = None}]} : Gram_def.osymbol list Gram_def.decorate))}
 

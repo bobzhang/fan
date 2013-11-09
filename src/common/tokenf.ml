@@ -160,7 +160,7 @@ and descr =  {
   }
 
 type pattern = {
-    pred : (t -> bool);
+    (* pred : (t -> bool); *)
     descr : descr
   }
 

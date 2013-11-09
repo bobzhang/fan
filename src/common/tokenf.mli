@@ -179,7 +179,7 @@ and descr =  {
     runtime error message and pretty printing,
     it could be removed later. *)
 type pattern = {
-    pred : (t -> bool);
+    (* pred : (t -> bool); *)
     descr : descr
   }      
 

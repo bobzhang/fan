@@ -9,25 +9,15 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred =
-                   ((function
-                     | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                     | _ -> false));
-                 descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" } } : 
+              Tokenf.pattern )],
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
          ([`Token
-             ({
-                pred =
-                  ((function
-                    | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
-                    | _ -> false));
-                descr = { tag = `Ant; word = (Kind "lid"); tag_name = "Ant" }
+             ({ descr = { tag = `Ant; word = (Kind "lid"); tag_name = "Ant" }
               } : Tokenf.pattern )],
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action
@@ -35,10 +25,8 @@ let _ =
                    let s = __fan_0 in
                    (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))));
          ([`Token
-             ({
-                pred = ((function | `Lid _ -> true | _ -> false));
-                descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+             Tokenf.pattern )],
            ("`Lid (_loc, s)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -67,10 +55,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Uid _ -> true | _ -> false));
-                 descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-               } : Tokenf.pattern );
+              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+              Tokenf.pattern );
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -80,10 +66,8 @@ let _ =
                     let x = __fan_0.txt in
                     (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
-             ({
-                pred = ((function | `Uid _ -> true | _ -> false));
-                descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+             Tokenf.pattern )],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

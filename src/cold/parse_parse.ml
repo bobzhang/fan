@@ -109,7 +109,7 @@ let _ =
     (None,
       ((None, None,
          [([`Keyword "EOI"],
-            ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`Constraint\n                                               (_loc,\n                                                 (`App\n                                                    (_loc, (`Vrn (_loc, v)),\n                                                      (`Any _loc))),\n                                                 (`Dot\n                                                    (_loc,\n                                                      (`Uid (_loc, \"Tokenf\")),\n                                                      (`Lid (_loc, \"t\")))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
+            ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let v = __fan_0.txt in
@@ -121,72 +121,34 @@ let _ =
                                  (_loc,
                                    (`Record
                                       (_loc,
-                                        (`Sem
-                                           (_loc,
-                                             (`RecBind
-                                                (_loc, (`Lid (_loc, "pred")),
-                                                  (`Fun
-                                                     (_loc,
-                                                       (`Bar
-                                                          (_loc,
-                                                            (`Case
-                                                               (_loc,
-                                                                 (`Constraint
-                                                                    (_loc,
-                                                                    (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "t")))))),
-                                                                 (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                            (`Case
-                                                               (_loc,
-                                                                 (`Any _loc),
-                                                                 (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                             (`RecBind
+                                        (`RecBind
+                                           (_loc, (`Lid (_loc, "descr")),
+                                             (`Record
                                                 (_loc,
-                                                  (`Lid (_loc, "descr")),
-                                                  (`Record
+                                                  (`Sem
                                                      (_loc,
+                                                       (`RecBind
+                                                          (_loc,
+                                                            (`Lid
+                                                               (_loc, "tag")),
+                                                            (`Vrn (_loc, v)))),
                                                        (`Sem
                                                           (_loc,
                                                             (`RecBind
                                                                (_loc,
                                                                  (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                 (`Vrn
-                                                                    (_loc, v)))),
-                                                            (`Sem
-                                                               (_loc,
-                                                                 (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                 (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                 (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                            (`RecBind
+                                                               (_loc,
+                                                                 (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                 (`Str
+                                                                    (_loc, v)))))))))))))),
                                    (`Dot
                                       (_loc, (`Uid (_loc, "Tokenf")),
                                         (`Lid (_loc, "pattern"))))) : 
@@ -200,11 +162,9 @@ let _ =
                      } : 'single_symbol )))));
          ([`Keyword "Lid";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`App\n                                                    (_loc,\n                                                      (`Uid (_loc, \"A\")),\n                                                      (`Str (_loc, x)))))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -218,86 +178,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
-                                                                    (_loc,
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                (`RecBind
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -311,11 +223,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Uid";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`App\n                                                    (_loc,\n                                                      (`Uid (_loc, \"A\")),\n                                                      (`Str (_loc, x)))))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -329,86 +239,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
-                                                                    (_loc,
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                (`RecBind
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -422,11 +284,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Str";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`App\n                                                    (_loc,\n                                                      (`Uid (_loc, \"A\")),\n                                                      (`Str (_loc, x)))))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -440,86 +300,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
-                                                                    (_loc,
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                (`RecBind
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -532,7 +344,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Lid"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -550,61 +362,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -617,7 +402,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Uid"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -635,61 +420,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -702,7 +460,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Int"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -720,61 +478,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -787,7 +518,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Int32"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -805,61 +536,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -872,7 +576,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Int64"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -890,61 +594,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -957,7 +634,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Nativeint"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -975,61 +652,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1042,7 +692,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Flo"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1060,61 +710,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1127,7 +750,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Chr"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1145,61 +768,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1212,7 +808,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Label"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1230,61 +826,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1297,7 +866,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Optlabel"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1315,61 +884,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1382,7 +924,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Str"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1400,61 +942,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1467,7 +982,7 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Keyword "Pre"],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -1485,61 +1000,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1553,11 +1041,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Lid";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -1578,61 +1064,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1646,11 +1105,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Uid";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -1671,61 +1128,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1739,11 +1169,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Int";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -1764,61 +1192,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1832,11 +1233,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Int32";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -1857,61 +1256,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -1925,11 +1297,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Int64";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -1950,61 +1320,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2018,11 +1361,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Nativeint";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2043,61 +1384,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2111,11 +1425,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Flo";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2136,61 +1448,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2204,11 +1489,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Chr";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2229,61 +1512,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2297,11 +1553,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Label";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2322,61 +1576,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2390,11 +1617,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Optlabel";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2415,61 +1640,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2483,11 +1681,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Str";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2508,61 +1704,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2576,11 +1745,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Pre";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("let bounds =\n  match (x, xloc) with\n  | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n  | _ -> [] in\n{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -2601,61 +1768,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2670,16 +1810,12 @@ let _ =
          ([`Keyword "Lid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -2697,61 +1833,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2768,16 +1877,12 @@ let _ =
          ([`Keyword "Uid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -2795,61 +1900,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2866,16 +1944,12 @@ let _ =
          ([`Keyword "Str";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -2893,61 +1967,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -2964,16 +2011,12 @@ let _ =
          ([`Keyword "Pre";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -2991,61 +2034,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3062,16 +2078,12 @@ let _ =
          ([`Keyword "Lid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3088,82 +2100,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "tag_name")),
+                                                                    "A")),
                                                                     (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                    (_loc, x)))))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
+                                                                    "tag_name")),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3178,16 +2146,12 @@ let _ =
          ([`Keyword "Uid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3204,82 +2168,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "tag_name")),
+                                                                    "A")),
                                                                     (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                    (_loc, x)))))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
+                                                                    "tag_name")),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3294,16 +2214,12 @@ let _ =
          ([`Keyword "Str";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3320,82 +2236,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "tag_name")),
+                                                                    "A")),
                                                                     (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                    (_loc, x)))))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
+                                                                    "tag_name")),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3410,16 +2282,12 @@ let _ =
          ([`Keyword "Pre";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid\n                                                              (_loc, \"txt\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((lloc, loc), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3436,82 +2304,38 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "tag_name")),
+                                                                    "A")),
                                                                     (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                    (_loc, x)))))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
+                                                                    "tag_name")),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3525,11 +2349,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "Quot";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n  bounds = [((loc, x), None)];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n  bounds = [((loc, x), None)];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3544,61 +2366,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3612,11 +2407,9 @@ let _ =
                     } : 'single_symbol )))));
          ([`Keyword "DirQuotation";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Any _loc))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`Uid (_loc, \"Any\")))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n  bounds = [((loc, x), None)];\n  outer_pattern = None\n}\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n  bounds = [((loc, x), None)];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3631,61 +2424,34 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Any")))),
-                                                                (`RecBind
+                                                                (`Uid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
+                                                                    "Any")))),
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3700,18 +2466,14 @@ let _ =
          ([`Keyword "Inf";
           `Keyword "(";
           `Token
-            ({
-               pred = ((function | `Int _ -> true | _ -> false));
-               descr = { tag = `Int; word = Any; tag_name = "Int" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+            Tokenf.pattern );
           `Keyword ",";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword ")"],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"level\")),\n                                                                    (`Int\n                                                                    (_loc,\n                                                                    level)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid (_loc, \"op\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`App\n                                                    (_loc,\n                                                      (`Uid (_loc, \"Level\")),\n                                                      (`Int (_loc, level)))))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n  bounds = [((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"Level\")),\n                                                 (`Int (_loc, level)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n  bounds = [((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3728,88 +2490,39 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "level")),
-                                                                    (`Int
-                                                                    (_loc,
-                                                                    level)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "op")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
-                                                                    (_loc,
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "Level")),
                                                                     (`Int
                                                                     (_loc,
                                                                     level)))))),
-                                                                (`RecBind
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3824,24 +2537,18 @@ let _ =
          ([`Keyword "Inf";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword "(";
           `Token
-            ({
-               pred = ((function | `Int _ -> true | _ -> false));
-               descr = { tag = `Int; word = Any; tag_name = "Int" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+            Tokenf.pattern );
           `Keyword ",";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword ")"],
-           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`Sem\n                      (_loc,\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"pred\")),\n                             (`Fun\n                                (_loc,\n                                  (`Bar\n                                     (_loc,\n                                       (`Case\n                                          (_loc,\n                                            (`App\n                                               (_loc, (`Vrn (_loc, v)),\n                                                 (`Constraint\n                                                    (_loc,\n                                                      (`Record\n                                                         (_loc,\n                                                           (`Sem\n                                                              (_loc,\n                                                                (`RecBind\n                                                                   (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"level\")),\n                                                                    (`Int\n                                                                    (_loc,\n                                                                    level)))),\n                                                                (`Any _loc))))),\n                                                      (`Dot\n                                                         (_loc,\n                                                           (`Uid\n                                                              (_loc,\n                                                                \"Tokenf\")),\n                                                           (`Lid (_loc, \"op\")))))))),\n                                            (`Lid (_loc, \"true\")))),\n                                       (`Case\n                                          (_loc, (`Any _loc),\n                                            (`Lid (_loc, \"false\")))))))))),\n                        (`RecBind\n                           (_loc, (`Lid (_loc, \"descr\")),\n                             (`Record\n                                (_loc,\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag\")),\n                                            (`Vrn (_loc, v)))),\n                                       (`Sem\n                                          (_loc,\n                                            (`RecBind\n                                               (_loc, (`Lid (_loc, \"word\")),\n                                                 (`App\n                                                    (_loc,\n                                                      (`Uid (_loc, \"Level\")),\n                                                      (`Int (_loc, level)))))),\n                                            (`RecBind\n                                               (_loc,\n                                                 (`Lid (_loc, \"tag_name\")),\n                                                 (`Str (_loc, v)))))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n  bounds = [((lloc, l), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
+           ("{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"Level\")),\n                                                 (`Int (_loc, level)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         FAst.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n  bounds = [((lloc, l), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.txt)  ~__fan_5:_ 
                    ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
@@ -3861,88 +2568,39 @@ let _ =
                                 (_loc,
                                   (`Record
                                      (_loc,
-                                       (`Sem
-                                          (_loc,
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "pred")),
-                                                 (`Fun
+                                       (`RecBind
+                                          (_loc, (`Lid (_loc, "descr")),
+                                            (`Record
+                                               (_loc,
+                                                 (`Sem
                                                     (_loc,
-                                                      (`Bar
+                                                      (`RecBind
                                                          (_loc,
-                                                           (`Case
-                                                              (_loc,
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "level")),
-                                                                    (`Int
-                                                                    (_loc,
-                                                                    level)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "op")))))))),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "true")))),
-                                                           (`Case
-                                                              (_loc,
-                                                                (`Any _loc),
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "false")))))))))),
-                                            (`RecBind
-                                               (_loc, (`Lid (_loc, "descr")),
-                                                 (`Record
-                                                    (_loc,
+                                                           (`Lid
+                                                              (_loc, "tag")),
+                                                           (`Vrn (_loc, v)))),
                                                       (`Sem
                                                          (_loc,
                                                            (`RecBind
                                                               (_loc,
                                                                 (`Lid
                                                                    (_loc,
-                                                                    "tag")),
-                                                                (`Vrn
-                                                                   (_loc, v)))),
-                                                           (`Sem
-                                                              (_loc,
-                                                                (`RecBind
-                                                                   (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
-                                                                    (_loc,
+                                                                (`App
+                                                                   (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "Level")),
                                                                     (`Int
                                                                     (_loc,
                                                                     level)))))),
-                                                                (`RecBind
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                (`Str
+                                                                   (_loc, v)))))))))))))),
                                   (`Dot
                                      (_loc, (`Uid (_loc, "Tokenf")),
                                        (`Lid (_loc, "pattern"))))) : 
@@ -3957,10 +2615,8 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern )],
            ("{\n  text = (Keyword (_loc, s));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -3975,16 +2631,12 @@ let _ =
                       outer_pattern = None
                     } : 'single_symbol )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern );
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("{\n  text = (Keyword (_loc, s));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [((xloc, i), (Some \"loc\"))];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -4017,10 +2669,8 @@ let _ =
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
           `Keyword "Level";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
            ("{\n  text = (Nterm (_loc, n, s));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = [];\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -4050,26 +2700,20 @@ let _ =
       ((None, None,
          [([`List1sep
               ((`Token
-                  ({
-                     pred = ((function | `Str _ -> true | _ -> false));
-                     descr = { tag = `Str; word = Any; tag_name = "Str" }
-                   } : Tokenf.pattern )), (`Keyword "|"))],
+                  ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                  Tokenf.pattern )), (`Keyword "|"))],
             ("(xs, None, None)\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(xs : Tokenf.txt list)  (_loc : Locf.t)  ->
                     ((xs, None, None) : 'or_strs )))));
          ([`List1sep
              ((`Token
-                 ({
-                    pred = ((function | `Str _ -> true | _ -> false));
-                    descr = { tag = `Str; word = Any; tag_name = "Str" }
-                  } : Tokenf.pattern )), (`Keyword "|"));
+                 ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                 Tokenf.pattern )), (`Keyword "|"));
           `Keyword "as";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("(xs, None, (Some (xloc, s)))\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -4079,22 +2723,16 @@ let _ =
                    ((xs, None, (Some (xloc, s))) : 'or_strs )))));
          ([`List1sep
              ((`Token
-                 ({
-                    pred = ((function | `Str _ -> true | _ -> false));
-                    descr = { tag = `Str; word = Any; tag_name = "Str" }
-                  } : Tokenf.pattern )), (`Keyword "|"));
+                 ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                 Tokenf.pattern )), (`Keyword "|"));
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword "as";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("(xs, (Some (lloc, l)), (Some (xloc, s)))\n",
              (Gramf.mk_action
                 (fun ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
@@ -4110,7 +2748,7 @@ let _ =
     (None,
       ((None, None,
          [([`Keyword "EOI"],
-            ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`Constraint\n                                                 (_loc,\n                                                   (`App\n                                                      (_loc,\n                                                        (`Vrn (_loc, v)),\n                                                        (`Any _loc))),\n                                                   (`Dot\n                                                      (_loc,\n                                                        (`Uid\n                                                           (_loc, \"Tokenf\")),\n                                                        (`Lid (_loc, \"t\")))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
+            ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let v = __fan_0.txt in
@@ -4125,73 +2763,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`Constraint
-                                                                    (_loc,
-                                                                    (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "t")))))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -4205,11 +2805,9 @@ let _ =
                        } : 'simple )))));
          ([`Keyword "Lid";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`App\n                                                      (_loc,\n                                                        (`Uid (_loc, \"A\")),\n                                                        (`Str (_loc, x)))))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4227,88 +2825,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
+                                                                  (`App
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -4322,11 +2870,9 @@ let _ =
                       } : 'simple )))));
          ([`Keyword "Uid";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`App\n                                                      (_loc,\n                                                        (`Uid (_loc, \"A\")),\n                                                        (`Str (_loc, x)))))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4344,88 +2890,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
+                                                                  (`App
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -4439,11 +2935,9 @@ let _ =
                       } : 'simple )))));
          ([`Keyword "Str";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`App\n                                                      (_loc,\n                                                        (`Uid (_loc, \"A\")),\n                                                        (`Str (_loc, x)))))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -4461,88 +2955,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
+                                                                  (`App
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "A")),
                                                                     (`Str
                                                                     (_loc, x)))))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -4555,7 +2999,7 @@ let _ =
                         outer_pattern = None
                       } : 'simple )))));
          ([`Keyword "Lid"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -4577,63 +3021,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -4646,7 +3062,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Uid"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -4668,63 +3084,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -4737,7 +3125,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Int"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -4759,63 +3147,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -4828,7 +3188,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Int32"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -4850,63 +3210,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -4919,7 +3251,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Int64"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -4941,63 +3273,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5010,7 +3314,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Nativeint"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5032,63 +3336,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5101,7 +3377,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Flo"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5123,63 +3399,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5192,7 +3440,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Chr"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5214,63 +3462,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5283,7 +3503,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Label"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5305,63 +3525,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5374,7 +3566,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Optlabel"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5396,63 +3588,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5465,7 +3629,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Str"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5487,63 +3651,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5556,7 +3692,7 @@ let _ =
                          outer_pattern = None
                        }) : 'simple )))));
          ([`Keyword "Pre"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let v = __fan_0.txt in
@@ -5578,63 +3714,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5648,11 +3756,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Lid";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5677,63 +3783,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5747,11 +3825,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Uid";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5776,63 +3852,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5846,11 +3894,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Int";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5875,63 +3921,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -5945,11 +3963,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Int32";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -5974,63 +3990,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6044,11 +4032,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Int64";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6073,63 +4059,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6143,11 +4101,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Nativeint";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6172,63 +4128,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6242,11 +4170,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Flo";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6271,63 +4197,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6341,11 +4239,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Chr";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6370,63 +4266,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6440,11 +4308,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Label";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6469,63 +4335,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6539,11 +4377,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Optlabel";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6568,63 +4404,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6638,11 +4446,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Str";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6667,63 +4473,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6737,11 +4515,9 @@ let _ =
                        }) : 'simple )))));
          ([`Keyword "Pre";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`Sem\n                         (_loc,\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"pred\")),\n                                (`Fun\n                                   (_loc,\n                                     (`Bar\n                                        (_loc,\n                                          (`Case\n                                             (_loc,\n                                               (`App\n                                                  (_loc, (`Vrn (_loc, v)),\n                                                    (`Any _loc))),\n                                               (`Lid (_loc, \"true\")))),\n                                          (`Case\n                                             (_loc, (`Any _loc),\n                                               (`Lid (_loc, \"false\")))))))))),\n                           (`RecBind\n                              (_loc, (`Lid (_loc, \"descr\")),\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"tag\")),\n                                               (`Vrn (_loc, v)))),\n                                          (`Sem\n                                             (_loc,\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"word\")),\n                                                    (`Uid (_loc, \"Any\")))),\n                                               (`RecBind\n                                                  (_loc,\n                                                    (`Lid (_loc, \"tag_name\")),\n                                                    (`Str (_loc, v)))))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  (let bounds =\n     match (x, xloc) with\n     | (Some x,Some xloc) -> [((xloc, x), (Some \"txt\"))]\n     | _ -> [] in\n   {\n     text =\n       (Token\n          (_loc,\n            (`Constraint\n               (_loc,\n                 (`Record\n                    (_loc,\n                      (`RecBind\n                         (_loc, (`Lid (_loc, \"descr\")),\n                           (`Record\n                              (_loc,\n                                (`Sem\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"tag\")),\n                                          (`Vrn (_loc, v)))),\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"word\")),\n                                               (`Uid (_loc, \"Any\")))),\n                                          (`RecBind\n                                             (_loc,\n                                               (`Lid (_loc, \"tag_name\")),\n                                               (`Str (_loc, v)))))))))))))),\n                 (`Dot\n                    (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n            FAst.exp )));\n     styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n     bounds;\n     outer_pattern = None\n   })\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -6766,63 +4542,35 @@ let _ =
                                    (_loc,
                                      (`Record
                                         (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "descr")),
+                                               (`Record
                                                   (_loc,
-                                                    (`Lid (_loc, "pred")),
-                                                    (`Fun
+                                                    (`Sem
                                                        (_loc,
-                                                         (`Bar
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`Case
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                              (`Case
-                                                                 (_loc,
-                                                                   (`Any _loc),
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "descr")),
-                                                    (`Record
-                                                       (_loc,
+                                                                   "tag")),
+                                                              (`Vrn (_loc, v)))),
                                                          (`Sem
                                                             (_loc,
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                   (`Vrn
-                                                                    (_loc, v)))),
-                                                              (`Sem
-                                                                 (_loc,
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                   (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                   (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                   (`Str
+                                                                    (_loc, v)))))))))))))),
                                      (`Dot
                                         (_loc, (`Uid (_loc, "Tokenf")),
                                           (`Lid (_loc, "pattern"))))) : 
@@ -6837,16 +4585,12 @@ let _ =
          ([`Keyword "Lid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -6868,63 +4612,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -6941,16 +4656,12 @@ let _ =
          ([`Keyword "Uid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -6972,63 +4683,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7045,16 +4727,12 @@ let _ =
          ([`Keyword "Str";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7076,63 +4754,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7149,16 +4798,12 @@ let _ =
          ([`Keyword "Pre";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7180,63 +4825,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7253,16 +4869,12 @@ let _ =
          ([`Keyword "Lid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7283,84 +4895,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                  (`App
+                                                                    (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7375,16 +4941,12 @@ let _ =
          ([`Keyword "Uid";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7405,84 +4967,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                  (`App
+                                                                    (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7497,16 +5013,12 @@ let _ =
          ([`Keyword "Str";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7527,84 +5039,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                  (`App
+                                                                    (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7619,16 +5085,12 @@ let _ =
          ([`Keyword "Pre";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"txt\")),\n                                                                    (`Str\n                                                                    (_loc, x)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"txt\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((lloc, loc), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_3:(__fan_3 : Tokenf.txt) 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7649,84 +5111,38 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")),
-                                                                    (`Str
-                                                                    (_loc, x)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "txt")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
+                                                                  (`App
+                                                                    (_loc,
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7740,11 +5156,9 @@ let _ =
                       } : 'simple )))));
          ([`Keyword "Quot";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n    bounds = [((loc, x), None)];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n    bounds = [((loc, x), None)];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -7763,63 +5177,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7833,11 +5218,9 @@ let _ =
                       } : 'simple )))));
          ([`Keyword "DirQuotation";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Any _loc))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`Uid (_loc, \"Any\")))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n    bounds = [((loc, x), None)];\n    outer_pattern = None\n  }\n",
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"quot\"))));\n    bounds = [((loc, x), None)];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt) 
                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -7856,63 +5239,34 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Any
-                                                                    _loc))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`Uid
+                                                                  (`Uid
                                                                     (_loc,
                                                                     "Any")))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -7927,18 +5281,14 @@ let _ =
          ([`Keyword "Inf";
           `Keyword "(";
           `Token
-            ({
-               pred = ((function | `Int _ -> true | _ -> false));
-               descr = { tag = `Int; word = Any; tag_name = "Int" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+            Tokenf.pattern );
           `Keyword ",";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword ")"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"level\")),\n                                                                    (`Int\n                                                                    (_loc,\n                                                                    level)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"op\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`App\n                                                      (_loc,\n                                                        (`Uid (_loc, \"Level\")),\n                                                        (`Int (_loc, level)))))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n    bounds = [((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc,\n                                                   (`Uid (_loc, \"Level\")),\n                                                   (`Int (_loc, level)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n    bounds = [((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -7959,76 +5309,25 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "level")),
-                                                                    (`Int
-                                                                    (_loc,
-                                                                    level)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "op")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
+                                                                  (`App
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
@@ -8036,13 +5335,13 @@ let _ =
                                                                     (`Int
                                                                     (_loc,
                                                                     level)))))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -8057,24 +5356,18 @@ let _ =
          ([`Keyword "Inf";
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword "(";
           `Token
-            ({
-               pred = ((function | `Int _ -> true | _ -> false));
-               descr = { tag = `Int; word = Any; tag_name = "Int" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+            Tokenf.pattern );
           `Keyword ",";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword ")"],
-           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`Sem\n                        (_loc,\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"pred\")),\n                               (`Fun\n                                  (_loc,\n                                    (`Bar\n                                       (_loc,\n                                         (`Case\n                                            (_loc,\n                                              (`App\n                                                 (_loc, (`Vrn (_loc, v)),\n                                                   (`Constraint\n                                                      (_loc,\n                                                        (`Record\n                                                           (_loc,\n                                                             (`Sem\n                                                                (_loc,\n                                                                  (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"level\")),\n                                                                    (`Int\n                                                                    (_loc,\n                                                                    level)))),\n                                                                  (`Any _loc))))),\n                                                        (`Dot\n                                                           (_loc,\n                                                             (`Uid\n                                                                (_loc,\n                                                                  \"Tokenf\")),\n                                                             (`Lid\n                                                                (_loc, \"op\")))))))),\n                                              (`Lid (_loc, \"true\")))),\n                                         (`Case\n                                            (_loc, (`Any _loc),\n                                              (`Lid (_loc, \"false\")))))))))),\n                          (`RecBind\n                             (_loc, (`Lid (_loc, \"descr\")),\n                               (`Record\n                                  (_loc,\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag\")),\n                                              (`Vrn (_loc, v)))),\n                                         (`Sem\n                                            (_loc,\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"word\")),\n                                                   (`App\n                                                      (_loc,\n                                                        (`Uid (_loc, \"Level\")),\n                                                        (`Int (_loc, level)))))),\n                                              (`RecBind\n                                                 (_loc,\n                                                   (`Lid (_loc, \"tag_name\")),\n                                                   (`Str (_loc, v)))))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n    bounds = [((lloc, l), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
+           ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc,\n                                                   (`Uid (_loc, \"Level\")),\n                                                   (`Int (_loc, level)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           FAst.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"op\"))));\n    bounds = [((lloc, l), (Some \"loc\")); ((xloc, x), (Some \"txt\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.txt)  ~__fan_5:_ 
                    ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
@@ -8098,76 +5391,25 @@ let _ =
                                   (_loc,
                                     (`Record
                                        (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
+                                         (`RecBind
+                                            (_loc, (`Lid (_loc, "descr")),
+                                              (`Record
                                                  (_loc,
-                                                   (`Lid (_loc, "pred")),
-                                                   (`Fun
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Bar
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "level")),
-                                                                    (`Int
-                                                                    (_loc,
-                                                                    level)))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "op")))))))),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                             (`Case
-                                                                (_loc,
-                                                                  (`Any _loc),
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "descr")),
-                                                   (`Record
-                                                      (_loc,
+                                                             (`Lid
+                                                                (_loc, "tag")),
+                                                             (`Vrn (_loc, v)))),
                                                         (`Sem
                                                            (_loc,
                                                              (`RecBind
                                                                 (_loc,
                                                                   (`Lid
                                                                     (_loc,
-                                                                    "tag")),
-                                                                  (`Vrn
-                                                                    (_loc, v)))),
-                                                             (`Sem
-                                                                (_loc,
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
                                                                     "word")),
-                                                                    (`App
+                                                                  (`App
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
@@ -8175,13 +5417,13 @@ let _ =
                                                                     (`Int
                                                                     (_loc,
                                                                     level)))))),
-                                                                  (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
+                                                             (`RecBind
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "tag_name")),
-                                                                    (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                  (`Str
+                                                                    (_loc, v)))))))))))))),
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Tokenf")),
                                          (`Lid (_loc, "pattern"))))) : 
@@ -8196,10 +5438,8 @@ let _ =
                         outer_pattern = None
                       } : 'simple )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern )],
            ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text = (Keyword (_loc, s));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -8218,16 +5458,12 @@ let _ =
                         outer_pattern = None
                       } : 'simple )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern );
           `Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text = (Keyword (_loc, s));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [((xloc, i), (Some \"loc\"))];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -8268,10 +5504,8 @@ let _ =
          ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
           `Keyword "Level";
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
            ("(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text = (Nterm (_loc, n, s));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = [];\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -8309,12 +5543,10 @@ let _ =
           `Nterm (Gramf.obj (or_strs : 'or_strs Gramf.t ));
           `Keyword ",";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Keyword ")"],
-           ("match ps with\n| (vs,loc,y) ->\n    vs |>\n      (List.map\n         (fun (x : Tokenf.txt)  ->\n            let bounds =\n              match (loc, y) with\n              | (None ,None ) -> [((xloc, s), None)]\n              | (Some (lloc,ll),None ) ->\n                  [((lloc, ll), (Some \"loc\")); ((xloc, s), None)]\n              | (None ,Some v) -> [(v, (Some \"kind\")); ((xloc, s), None)]\n              | (Some (lloc,ll),Some v) ->\n                  [(v, (Some \"kind\"));\n                  ((lloc, ll), (Some \"loc\"));\n                  ((xloc, s), None)] in\n            ({\n               kind = KNormal;\n               txt =\n                 [{\n                    text =\n                      (Token\n                         (_loc,\n                           (`Constraint\n                              (_loc,\n                                (`Record\n                                   (_loc,\n                                     (`Sem\n                                        (_loc,\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"pred\")),\n                                               (`Fun\n                                                  (_loc,\n                                                    (`Bar\n                                                       (_loc,\n                                                         (`Case\n                                                            (_loc,\n                                                              (`App\n                                                                 (_loc,\n                                                                   (`Vrn\n                                                                    (_loc, v)),\n                                                                   (`Constraint\n                                                                    (_loc,\n                                                                    (`Record\n                                                                    (_loc,\n                                                                    (`Sem\n                                                                    (_loc,\n                                                                    (`RecBind\n                                                                    (_loc,\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"kind\")),\n                                                                    (`Str\n                                                                    (_loc,\n                                                                    (x.txt))))),\n                                                                    (`Any\n                                                                    _loc))))),\n                                                                    (`Dot\n                                                                    (_loc,\n                                                                    (`Uid\n                                                                    (_loc,\n                                                                    \"Tokenf\")),\n                                                                    (`Lid\n                                                                    (_loc,\n                                                                    \"ant\")))))))),\n                                                              (`Lid\n                                                                 (_loc,\n                                                                   \"true\")))),\n                                                         (`Case\n                                                            (_loc,\n                                                              (`Any _loc),\n                                                              (`Lid\n                                                                 (_loc,\n                                                                   \"false\")))))))))),\n                                          (`RecBind\n                                             (_loc, (`Lid (_loc, \"descr\")),\n                                               (`Record\n                                                  (_loc,\n                                                    (`Sem\n                                                       (_loc,\n                                                         (`RecBind\n                                                            (_loc,\n                                                              (`Lid\n                                                                 (_loc,\n                                                                   \"tag\")),\n                                                              (`Vrn (_loc, v)))),\n                                                         (`Sem\n                                                            (_loc,\n                                                              (`RecBind\n                                                                 (_loc,\n                                                                   (`Lid\n                                                                    (_loc,\n                                                                    \"word\")),\n                                                                   (`App\n                                                                    (_loc,\n                                                                    (`Uid\n                                                                    (_loc,\n                                                                    \"Kind\")),\n                                                                    (`Str\n                                                                    (_loc,\n                                                                    (x.txt))))))),\n                                                              (`RecBind\n                                                                 (_loc,\n                                                                   (`Lid\n                                                                    (_loc,\n                                                                    \"tag_name\")),\n                                                                   (`Str\n                                                                    (_loc, v)))))))))))))))),\n                                (`Dot\n                                   (_loc, (`Uid (_loc, \"Tokenf\")),\n                                     (`Lid (_loc, \"pattern\"))))) : FAst.exp )));\n                    styp =\n                      (`Dot\n                         (_loc, (`Uid (_loc, \"Tokenf\")),\n                           (`Lid (_loc, \"ant\"))));\n                    bounds;\n                    outer_pattern = None\n                  }]\n             } : Gram_def.osymbol list Gram_def.decorate )))\n",
+           ("match ps with\n| (vs,loc,y) ->\n    vs |>\n      (List.map\n         (fun (x : Tokenf.txt)  ->\n            let bounds =\n              match (loc, y) with\n              | (None ,None ) -> [((xloc, s), None)]\n              | (Some (lloc,ll),None ) ->\n                  [((lloc, ll), (Some \"loc\")); ((xloc, s), None)]\n              | (None ,Some v) -> [(v, (Some \"kind\")); ((xloc, s), None)]\n              | (Some (lloc,ll),Some v) ->\n                  [(v, (Some \"kind\"));\n                  ((lloc, ll), (Some \"loc\"));\n                  ((xloc, s), None)] in\n            ({\n               kind = KNormal;\n               txt =\n                 [{\n                    text =\n                      (Token\n                         (_loc,\n                           (`Constraint\n                              (_loc,\n                                (`Record\n                                   (_loc,\n                                     (`RecBind\n                                        (_loc, (`Lid (_loc, \"descr\")),\n                                          (`Record\n                                             (_loc,\n                                               (`Sem\n                                                  (_loc,\n                                                    (`RecBind\n                                                       (_loc,\n                                                         (`Lid (_loc, \"tag\")),\n                                                         (`Vrn (_loc, v)))),\n                                                    (`Sem\n                                                       (_loc,\n                                                         (`RecBind\n                                                            (_loc,\n                                                              (`Lid\n                                                                 (_loc,\n                                                                   \"word\")),\n                                                              (`App\n                                                                 (_loc,\n                                                                   (`Uid\n                                                                    (_loc,\n                                                                    \"Kind\")),\n                                                                   (`Str\n                                                                    (_loc,\n                                                                    (x.txt))))))),\n                                                         (`RecBind\n                                                            (_loc,\n                                                              (`Lid\n                                                                 (_loc,\n                                                                   \"tag_name\")),\n                                                              (`Str (_loc, v)))))))))))))),\n                                (`Dot\n                                   (_loc, (`Uid (_loc, \"Tokenf\")),\n                                     (`Lid (_loc, \"pattern\"))))) : FAst.exp )));\n                    styp =\n                      (`Dot\n                         (_loc, (`Uid (_loc, \"Tokenf\")),\n                           (`Lid (_loc, \"ant\"))));\n                    bounds;\n                    outer_pattern = None\n                  }]\n             } : Gram_def.osymbol list Gram_def.decorate )))\n",
              (Gramf.mk_action
                 (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.txt)  ~__fan_3:_ 
                    ~__fan_2:(ps : 'or_strs)  ~__fan_1:_ 
@@ -8350,65 +5582,14 @@ let _ =
                                                   (_loc,
                                                     (`Record
                                                        (_loc,
-                                                         (`Sem
+                                                         (`RecBind
                                                             (_loc,
-                                                              (`RecBind
+                                                              (`Lid
                                                                  (_loc,
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "pred")),
-                                                                   (`Fun
-                                                                    (_loc,
-                                                                    (`Bar
-                                                                    (_loc,
-                                                                    (`Case
-                                                                    (_loc,
-                                                                    (`App
-                                                                    (_loc,
-                                                                    (`Vrn
-                                                                    (_loc, v)),
-                                                                    (`Constraint
-                                                                    (_loc,
-                                                                    (`Record
-                                                                    (_loc,
-                                                                    (`Sem
-                                                                    (_loc,
-                                                                    (`RecBind
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "kind")),
-                                                                    (`Str
-                                                                    (_loc,
-                                                                    (x.txt))))),
-                                                                    (`Any
-                                                                    _loc))))),
-                                                                    (`Dot
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "Tokenf")),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "ant")))))))),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "true")))),
-                                                                    (`Case
-                                                                    (_loc,
-                                                                    (`Any
-                                                                    _loc),
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "false")))))))))),
-                                                              (`RecBind
+                                                                   "descr")),
+                                                              (`Record
                                                                  (_loc,
-                                                                   (`Lid
-                                                                    (_loc,
-                                                                    "descr")),
-                                                                   (`Record
-                                                                    (_loc,
-                                                                    (`Sem
+                                                                   (`Sem
                                                                     (_loc,
                                                                     (`RecBind
                                                                     (_loc,
@@ -8438,7 +5619,7 @@ let _ =
                                                                     (_loc,
                                                                     "tag_name")),
                                                                     (`Str
-                                                                    (_loc, v)))))))))))))))),
+                                                                    (_loc, v)))))))))))))),
                                                     (`Dot
                                                        (_loc,
                                                          (`Uid
@@ -8519,10 +5700,8 @@ let _ =
          ([`Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
           `Keyword "as";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("{ t with outer_pattern = (Some (xloc, s)) }\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -8682,10 +5861,8 @@ let _ =
          ([`Nterm (Gramf.obj (symbol : 'symbol Gramf.t ));
           `Keyword "as";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("List.map\n  (fun (x : Gram_def.osymbol list Gram_def.decorate)  ->\n     match x.txt with\n     | v::[] ->\n         { x with txt = [{ v with outer_pattern = (Some (xloc, i)) }] }\n     | _ -> Locf.failf xloc \"as can not be applied here\") ss\n",
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -8767,10 +5944,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Uid _ -> true | _ -> false));
-                 descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-               } : Tokenf.pattern );
+              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+              Tokenf.pattern );
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -8780,10 +5955,8 @@ let _ =
                     let x = __fan_0.txt in
                     (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))));
          ([`Token
-             ({
-                pred = ((function | `Uid _ -> true | _ -> false));
-                descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+             Tokenf.pattern )],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -8793,10 +5966,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Uid _ -> true | _ -> false));
-                 descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-               } : Tokenf.pattern );
+              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+              Tokenf.pattern );
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -8806,10 +5977,8 @@ let _ =
                     let x = __fan_0.txt in
                     (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )))));
          ([`Token
-             ({
-                pred = ((function | `Lid _ -> true | _ -> false));
-                descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+             Tokenf.pattern )],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -8819,10 +5988,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Uid _ -> true | _ -> false));
-                 descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-               } : Tokenf.pattern );
+              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+              Tokenf.pattern );
            `Keyword ".";
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -8832,19 +5999,12 @@ let _ =
                     let x = __fan_0.txt in
                     (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )))));
          ([`Token
-             ({
-                pred = ((function | `Uid _ -> true | _ -> false));
-                descr = { tag = `Uid; word = Any; tag_name = "Uid" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+             Tokenf.pattern );
           `Keyword ".";
           `Token
-            ({
-               pred =
-                 ((function
-                   | `Lid ({ txt = "t";_} : Tokenf.txt) -> true
-                   | _ -> false));
-               descr = { tag = `Lid; word = (A "t"); tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = (A "t"); tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
@@ -8883,10 +6043,8 @@ let _ =
                      (x, (mk_name il)) : 'entry_name )))));
          ([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
           `Token
-            ({
-               pred = ((function | `Str _ -> true | _ -> false));
-               descr = { tag = `Str; word = Any; tag_name = "Str" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+            Tokenf.pattern )],
            ("let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name ((`Sub []), (x.txt)) with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(name : Tokenf.txt)  ~__fan_0:(il : 'qualid) 
@@ -9000,10 +6158,8 @@ let _ =
                      | _ -> Some { name = p; local = true; pos; levels }) : 
                      'entry )))));
          ([`Token
-             ({
-                pred = ((function | `Lid _ -> true | _ -> false));
-                descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+             Tokenf.pattern );
           `Keyword "@";
           `Keyword "Inline";
           `Keyword ":";
@@ -9075,10 +6231,8 @@ let _ =
                     let label = None in
                     let assoc = None in ({ label; assoc; rules } : 'level )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern );
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
            ("{ label; assoc; rules }\n",
              (Gramf.mk_action
@@ -9097,10 +6251,8 @@ let _ =
                    let assoc = Some assoc in
                    ({ label; assoc; rules } : 'level )))));
          ([`Token
-             ({
-                pred = ((function | `Str _ -> true | _ -> false));
-                descr = { tag = `Str; word = Any; tag_name = "Str" }
-              } : Tokenf.pattern );
+             ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+             Tokenf.pattern );
           `Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
            ("{ label; assoc; rules }\n",
@@ -9212,10 +6364,8 @@ let _ =
                       (cross prod) : 'rule )))));
          ([`Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern )],
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern )],
            ("let rules =\n  match query_inline x with\n  | Some x -> x\n  | None  -> Locf.failf xloc \"inline rules %s not found\" x in\nmatch action with\n| None  -> rules\n| Some a ->\n    List.map\n      (fun (x : Gram_def.rule)  ->\n         match x.action with\n         | None  -> { x with action = (Some a) }\n         | Some b ->\n             { x with action = (Some (`App (_loc, a, b) : FAst.exp )) })\n      rules\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -9243,10 +6393,8 @@ let _ =
                                  }) rules : 'rule )))));
          ([`Keyword "@";
           `Token
-            ({
-               pred = ((function | `Lid _ -> true | _ -> false));
-               descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-             } : Tokenf.pattern );
+            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+            Tokenf.pattern );
           `Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t ))],
            ("let rules =\n  match query_inline x with\n  | Some x -> x\n  | None  -> Locf.failf xloc \"inline rules %s not found\" x in\nmatch action with\n| None  -> rules\n| Some a ->\n    List.map\n      (fun (x : Gram_def.rule)  ->\n         match x.action with\n         | None  -> { x with action = (Some a) }\n         | Some b ->\n             { x with action = (Some (`App (_loc, a, b) : FAst.exp )) })\n      rules\n",
              (Gramf.mk_action
@@ -9298,10 +6446,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Quot _ -> true | _ -> false));
-                 descr = { tag = `Quot; word = Any; tag_name = "Quot" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
+              Tokenf.pattern )],
             ("if x.name = Tokenf.empty_name\nthen let expander loc _ s = Parsef.exp loc s in Tokenf.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
@@ -9316,23 +6462,16 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Str _ -> true | _ -> false));
-                 descr = { tag = `Str; word = Any; tag_name = "Str" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+              Tokenf.pattern )],
             ("(`Str (_loc, s) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let s = __fan_0.txt in
                     ((`Str (_loc, s) : FAst.exp ) : 'string )))));
          ([`Token
-             ({
-                pred =
-                  ((function
-                    | `Ant ({ kind = "";_} : Tokenf.ant) -> true
-                    | _ -> false));
-                descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-              } : Tokenf.pattern )],
+             ({ descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" } } : 
+             Tokenf.pattern )],
            ("Tokenf.ant_expand Parsef.exp s\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->

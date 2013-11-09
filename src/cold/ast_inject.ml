@@ -15,10 +15,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Lid _ -> true | _ -> false));
-                 descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+              Tokenf.pattern )],
             ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -31,10 +29,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Lid _ -> true | _ -> false));
-                 descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+              Tokenf.pattern )],
             ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -47,10 +43,8 @@ let _ =
     (None,
       ((None, None,
          [([`Token
-              ({
-                 pred = ((function | `Lid _ -> true | _ -> false));
-                 descr = { tag = `Lid; word = Any; tag_name = "Lid" }
-               } : Tokenf.pattern )],
+              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+              Tokenf.pattern )],
             ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->

@@ -11,10 +11,8 @@ let () =
         ((None, None,
            [([`Keyword "require";
              `Token
-               ({
-                  pred = ((function | `Str _ -> true | _ -> false));
-                  descr = { tag = `Str; word = Any; tag_name = "Str" }
-                } : Tokenf.pattern )],
+               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+               Tokenf.pattern )],
               ("add s\n",
                 (Gramf.mk_action
                    (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
