@@ -150,7 +150,7 @@ type tag =
 type word =
   | Any
   | A of string
-  | Empty
+  (* | Empty *)
   | Level of int
 
 and descr =  {
@@ -172,7 +172,6 @@ and string_of_word  (x:word) =
   match x with
   | Any -> "_"
   | A  s -> Printf.sprintf "%S" s
-  | Empty -> ""
   | Level d -> Printf.sprintf "Level %d" d
         
 

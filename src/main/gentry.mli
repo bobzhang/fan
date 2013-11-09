@@ -78,7 +78,6 @@ val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * Locf.t) Tokenf.parse
     
 val copy : 'a t -> 'a t
 
-val eoi_entry : 'a t -> 'a t
 
 val map : name:string -> ('a -> 'b) -> 'a t -> 'b t     
 val entry_first : 'a t -> string list
