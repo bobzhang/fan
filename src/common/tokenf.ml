@@ -160,7 +160,6 @@ and descr =  {
   }
 
 type pattern = {
-    (* pred : (t -> bool); *)
     descr : descr
   }
 
@@ -187,7 +186,7 @@ type terminal =
     [ `Keyword of string
     | `Token of pattern ]
 
-      
+  
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
     Location_util.join
@@ -333,7 +332,10 @@ let strip (x:t) : Obj.t  =
  
 let get_tag (x:t ) : tag =
   (Obj.magic (Obj.field (Obj.repr x) 0 ) : tag)
-    
+
+let destruct (x:t) =
+  ((Obj.magic (Obj.field (Obj.repr x) 0 ) : tag), Obj.field (Obj.repr x) 1 )
+  
 let get_string (x:t) :  string =
   match x with
   | `Pre x 
@@ -399,6 +401,24 @@ let name_of_string s : name =
       | x::xs -> (`Sub (List.rev xs),x )
       | _ -> assert false)
   | _ -> (`Sub [],s)
+
+(** partial evaluation --
+    pattern will be gottern first, while t is retrived later
+    pervasive tests needed
+ *)      
+let match_token (x:pattern)  =
+  let tag = x.descr.tag in
+  let word = x.descr.word in
+  fun (token_tag, obj)  ->
+    (tag = token_tag  &&
+     (match word with
+     | Any -> true
+     | Kind s -> (Obj.magic (Obj.field obj 3) : string) = s
+     | A s -> (Obj.magic (Obj.field obj 1) : string) = s
+     | Level i -> (Obj.magic (Obj.field obj 2) : int) = i))
+
+
+  
         
 let () =
   Printexc.register_printer @@ function

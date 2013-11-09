@@ -239,3 +239,5 @@ val filter : filter_plugin -> filter
 
 val eq_pattern : pattern -> pattern -> bool
 val string_of_pattern : pattern -> string    
+val match_token : pattern -> tag * Obj.t -> bool
+val destruct : t -> tag * Obj.t

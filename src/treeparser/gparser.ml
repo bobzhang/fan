@@ -133,27 +133,20 @@ and parser_of_terminals
                 match Streamf.peek_nth strm i with
                 | Some t -> t 
                 | None -> raise M.X  in
+              let ((tag,obj) as v) = Tokenf.destruct t in
               begin
 
                 if not
                     (match terminal with
                     |`Token x  ->
-                        let obj = Tokenf.strip t in
+                        let p  =Tokenf.match_token x in
+                        (* let obj = Tokenf.strip t in *)
                         begin
                           acc:= obj ::!acc;
-                          let descr = x.descr in 
-                          if Tokenf.get_tag t = descr.tag then
-                            match descr.word with
-                            | Any -> true
-                            | Kind s ->
-                                (Obj.magic (Obj.field obj 3) : string) = s
-                            | A s -> (Obj.magic (Obj.field obj 1) : string)  = s
-                            | Level i -> (Obj.magic (Obj.field obj 2) : int)  = i  
-                          else false
+                          p v 
                         end
                     |`Keyword kwd ->
-                        if Tokenf.get_tag t = `Key then 
-                          let obj = Tokenf.strip t in
+                        if tag  = `Key then 
                           begin
                             acc := Obj.repr obj :: !acc;
                             (Obj.magic (Obj.field obj 1 ) : string) = kwd
@@ -200,27 +193,16 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
           |_ -> raise Streamf.NotConsumed
         end
     | `Token (x:Tokenf.pattern) ->
-        let tag =  x.descr.tag in
-        let word = x.descr.word in
+        let p = Tokenf.match_token x in 
         fun strm ->
           match Streamf.peek strm with
           |Some tok ->
-              let obj = Tokenf.strip tok in
-              let b0 =
-                (Tokenf.get_tag tok = tag) &&
-                (match  word with
-                | Any  -> true
-                | Kind s -> (Obj.magic (Obj.field obj 3) : string) = s
-                | A s -> (Obj.magic (Obj.field obj 1) : string) = s
-                | Level i -> (Obj.magic (Obj.field obj 2 ) :int ) = i) in
-              if b0 then
-                  begin 
-                    Streamf.junk strm;
-                    Gaction.mk (Tokenf.strip tok) 
-                  end
+              let ((_,obj) as v) = Tokenf.destruct tok in
+              if p v then
+                (Streamf.junk strm; obj )
               else  raise Streamf.NotConsumed
-          |_ -> raise Streamf.NotConsumed
-  in with_loc (aux s)
+          |_ -> raise Streamf.NotConsumed in
+  with_loc (aux s)
 
 
 
