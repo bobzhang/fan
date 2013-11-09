@@ -67,4 +67,3 @@ let delete_rule = Gdelete.delete_rule
 let symb_failed = Gfailed.symb_failed
 let symb_failed_txt = Gfailed.symb_failed_txt
 let parser_of_symbol = Gparser.parser_of_symbol
-let eoi_entry = Ginsert.eoi_entry

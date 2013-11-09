@@ -9,7 +9,7 @@ let eoi_entry entry =
              ({
                 pred =
                   ((function | (`EOI _ : Tokenf.t) -> true | _ -> false));
-                descr = { tag = `EOI; word = Empty; tag_name = "EOI" }
+                descr = { tag = `EOI; word = Any; tag_name = "EOI" }
               } : Tokenf.pattern )],
             ("x\n",
               (Gramf.mk_action

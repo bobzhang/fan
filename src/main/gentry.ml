@@ -112,9 +112,7 @@ Gfailed:
   symb_failed_txt;
 Gparser:
    parser_of_symbol;
-Ginsert:
-   (* buggy *)
-   eoi_entry;
+
 };;
 
 (* local variables: *)

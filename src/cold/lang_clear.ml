@@ -14,7 +14,7 @@ let _ =
                    ((function
                      | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                      | _ -> false));
-                 descr = { tag = `Ant; word = (A ""); tag_name = "Ant" }
+                 descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                } : Tokenf.pattern )],
             ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
               (Gramf.mk_action
@@ -27,7 +27,7 @@ let _ =
                   ((function
                     | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                     | _ -> false));
-                descr = { tag = `Ant; word = (A "lid"); tag_name = "Ant" }
+                descr = { tag = `Ant; word = (Kind "lid"); tag_name = "Ant" }
               } : Tokenf.pattern )],
            ("Tokenf.mk_ant ~c:\"a_lident\" s\n",
              (Gramf.mk_action

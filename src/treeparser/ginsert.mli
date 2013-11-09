@@ -104,4 +104,4 @@ val unsafe_extend_single : entry ->  position option * olevel -> unit
 val copy : entry -> entry
 
 (** [FIXME] the annotation seems to be inconsistent *)    
-val eoi_entry : entry -> entry
+(* val eoi_entry : entry -> entry *)

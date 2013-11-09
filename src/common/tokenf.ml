@@ -150,7 +150,7 @@ type tag =
 type word =
   | Any
   | A of string
-  | Empty
+  | Kind of string
   | Level of int
 
 and descr =  {
@@ -171,8 +171,8 @@ let rec  string_of_descr (x:descr)=
 and string_of_word  (x:word) =
   match x with
   | Any -> "_"
+  | Kind s         
   | A  s -> Printf.sprintf "%S" s
-  | Empty -> ""
   | Level d -> Printf.sprintf "Level %d" d
         
 

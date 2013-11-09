@@ -79,7 +79,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   [ ("EOI" as v) %{
     {text = Token(_loc,
                    %exp{({pred = %p{ ($vrn:v _ : Tokenf.t) };
-                          descr = { tag = $vrn:v ; word = Empty; tag_name = $str:v }}:Tokenf.pattern)});
+                          descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
      bounds = []; outer_pattern = None  }}
   | ("Lid"|"Uid"|"Str" as v); Str x %{
@@ -195,7 +195,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               [{
               text = Token(_loc,
                             %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
-                                   descr = {tag = $vrn:v; word = A $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
+                                   descr = {tag = $vrn:v; word = Kind $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
               bounds; outer_pattern = None}]} : Gram_def.osymbol list Gram_def.decorate))}
 

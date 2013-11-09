@@ -293,32 +293,32 @@ let refresh_level ~f (x:Gdefs.level)  =
 (* buggy, it's very hard to inline recursive parsers, take care
    with Self, and implicit Self
  *)    
-let  eoi_entry e =
-  let eoi_level  l =
-  (* FIXME: the annot seems to be inconsistent now *)
-  let aux (prods:Gdefs.production list) =
-    List.map
-      (fun (symbs,(annot,act)) ->
-        let symbs =
-          List.map
-            (function
-              | `Self -> `Nterm e
-              | x  -> x) symbs in
-        (symbs @
-         [`Token
-            ({pred = (function | `EOI _ -> true | _ -> false);
-              descr =
-              {tag = `EOI;word=Empty;tag_name="EOI"}}:Tokenf.pattern)],
-         (annot, Gaction.mk (fun _ -> act)))) prods in
-  refresh_level ~f:aux l in
-  let result =
-    {e with
-     start = (fun _ -> assert false) ;
-     continue = fun _ -> assert false;} in
-  (result.levels <- List.map eoi_level result.levels ;
-   result.start <- Gparser.start_parser_of_entry result;
-   result.continue <- Gparser.continue_parser_of_entry result;
-   result)
+(* let  eoi_entry e = *)
+(*   let eoi_level  l = *)
+(*   (\* FIXME: the annot seems to be inconsistent now *\) *)
+(*   let aux (prods:Gdefs.production list) = *)
+(*     List.map *)
+(*       (fun (symbs,(annot,act)) -> *)
+(*         let symbs = *)
+(*           List.map *)
+(*             (function *)
+(*               | `Self -> `Nterm e *)
+(*               | x  -> x) symbs in *)
+(*         (symbs @ *)
+(*          [`Token *)
+(*             ({pred = (function | `EOI _ -> true | _ -> false); *)
+(*               descr = *)
+(*               {tag = `EOI;word= Any;tag_name="EOI"}}:Tokenf.pattern)], *)
+(*          (annot, Gaction.mk (fun _ -> act)))) prods in *)
+(*   refresh_level ~f:aux l in *)
+(*   let result = *)
+(*     {e with *)
+(*      start = (fun _ -> assert false) ; *)
+(*      continue = fun _ -> assert false;} in *)
+(*   (result.levels <- List.map eoi_level result.levels ; *)
+(*    result.start <- Gparser.start_parser_of_entry result; *)
+(*    result.continue <- Gparser.continue_parser_of_entry result; *)
+(*    result) *)
 
 
 (**
