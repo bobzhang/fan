@@ -144,8 +144,9 @@ and parser_of_terminals
                           let descr = x.descr in 
                           if Tokenf.get_tag t = descr.tag then
                             match descr.word with
-                            | Any  
-                            | Empty -> true  
+                            | Any -> true
+                            | Kind s ->
+                                (Obj.magic (Obj.field obj 3) : string) = s
                             | A s -> (Obj.magic (Obj.field obj 1) : string)  = s
                             | Level i -> (Obj.magic (Obj.field obj 2) : int)  = i  
                           else false
@@ -199,22 +200,20 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
           |_ -> raise Streamf.NotConsumed
         end
     | `Token (x:Tokenf.pattern) ->
+        let tag =  x.descr.tag in
+        let word = x.descr.word in
         fun strm ->
           match Streamf.peek strm with
           |Some tok ->
               let obj = Tokenf.strip tok in
               let b0 =
-                (Tokenf.get_tag tok = x.descr.tag) &&
-                (match x.descr.word with
-                | Any | Empty -> true
+                (Tokenf.get_tag tok = tag) &&
+                (match  word with
+                | Any  -> true
+                | Kind s -> (Obj.magic (Obj.field obj 3) : string) = s
                 | A s -> (Obj.magic (Obj.field obj 1) : string) = s
                 | Level i -> (Obj.magic (Obj.field obj 2 ) :int ) = i) in
-              let b1 = (x.pred tok) in
-              let () =
-                if b0 <> b1 then
-                  prerr_endlinef "weird thing:\n%s\n%s\n" (Tokenf.to_string tok) (Tokenf.string_of_pattern x )
-              in
-              if b1 then
+              if b0 then
                   begin 
                     Streamf.junk strm;
                     Gaction.mk (Tokenf.strip tok) 
