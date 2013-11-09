@@ -31,17 +31,17 @@ and symbol =
        at least for polymorphic variant, otherwise the
        compile does not know how to destruct symbol
      *)
-    [`Nterm of entry
-    | `Snterml of (entry * string) (* the second argument is the level name *)
-    | `List0 of symbol
-    | `List0sep of (symbol * symbol)
-    | `List1 of symbol
-    | `List1sep of (symbol * symbol)
-    | `Try of symbol
-    | `Peek of symbol
-    | `Self
-    | `Token of Tokenf.pattern
-   ]
+  | Nterm of entry
+  | Snterml of (entry * string) (* the second argument is the level name *)
+  | List0 of symbol
+  | List0sep of (symbol * symbol)
+  | List1 of symbol
+  | List1sep of (symbol * symbol)
+  | Try of symbol
+  | Peek of symbol
+  | Self
+  | Token of Tokenf.pattern
+
 
 and tree = Gdefs.tree 
 and node = Gdefs.node 

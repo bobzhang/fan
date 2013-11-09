@@ -147,24 +147,24 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | List (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         (match  ts with
-        |  None -> if min then  %exp{ `List1 $txt } else %exp{ `List0 $txt } 
+        |  None -> if min then  %exp{ List1 $txt } else %exp{ List0 $txt } 
         | Some s ->
             let x = aux tvar s.text in
-            if min then %exp{ `List1sep ($txt,$x)} else %exp{ `List0sep ($txt,$x) })
-    | Self _loc ->  %exp{ `Self}
+            if min then %exp{ List1sep ($txt,$x)} else %exp{ List0sep ($txt,$x) })
+    | Self _loc ->  %exp{ Self}
     | Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
     | Nterm (_loc, n, lev) ->
         let obj =
           %exp{ ($id{gm()}.obj
                    (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
-        | Some lab -> %exp{ `Snterml ($obj,$str:lab)}
+        | Some lab -> %exp{ Snterml ($obj,$str:lab)}
         | None ->
-           if n.tvar = tvar then %exp{ `Self} else %exp{ `Nterm $obj })
-    | Try (_loc, t) -> %exp{ `Try ${aux "" t} }
-    | Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
+           if n.tvar = tvar then %exp{Self} else %exp{ Nterm $obj })
+    | Try (_loc, t) -> %exp{ Try ${aux "" t} }
+    | Peek (_loc, t) -> %exp{ Peek ${aux "" t} }
     | Token (_loc, meta) ->
-        %exp{ `Token $meta} in
+        %exp{ Token $meta} in
   aux  tvar x
 
 

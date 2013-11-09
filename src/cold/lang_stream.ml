@@ -7,10 +7,10 @@ let _ =
   Gramf.extend_single (stream_exp : 'stream_exp Gramf.t )
     (None,
       ((None, None,
-         [([`Token
+         [([Token
               ({ descr = { tag = `Key; word = (A "!"); tag_name = "Key" } } : 
               Tokenf.pattern );
-           `Token
+           Token
              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
              Tokenf.pattern )],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
@@ -20,13 +20,13 @@ let _ =
                     let n = __fan_1.txt in
                     (Ref.protect Compile_stream.grammar_module_name n
                        (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))));
-         ([`Token
+         ([Token
              ({ descr = { tag = `Key; word = (A "!"); tag_name = "Key" } } : 
              Tokenf.pattern );
-          `Token
+          Token
             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
             Tokenf.pattern );
-          `Nterm
+          Nterm
             (Gramf.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
            ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
@@ -37,7 +37,7 @@ let _ =
                    let n = __fan_1.txt in
                    (Ref.protect Compile_stream.grammar_module_name n
                       (fun _  -> cstream _loc sel) : 'stream_exp )))));
-         ([`Nterm
+         ([Nterm
              (Gramf.obj
                 (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
            ("cstream _loc sel\n",
@@ -53,15 +53,15 @@ let _ =
   Gramf.extend_single (stream_exp_comp : 'stream_exp_comp Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         [([Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(Trm (_loc, e) : Compile_stream.sexp_comp )\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp )))));
-         ([`Token
+         ([Token
              ({ descr = { tag = `Key; word = (A "'"); tag_name = "Key" } } : 
              Tokenf.pattern );
-          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("Ntr (_loc, e)\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
@@ -69,25 +69,25 @@ let _ =
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-           `Token
+         [([Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
+           Token
              ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
              Tokenf.pattern );
-           `Self],
+           Self],
             ("se :: sel\n",
               (Gramf.mk_action
                  (fun ~__fan_2:(sel : 'stream_exp_comp_list)  ~__fan_1:_ 
                     ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se
                     :: sel : 'stream_exp_comp_list )))));
-         ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-          `Token
+         ([Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
+          Token
             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
             Tokenf.pattern )],
            ("[se]\n",
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:(se : 'stream_exp_comp) 
                    (_loc : Locf.t)  -> ([se] : 'stream_exp_comp_list )))));
-         ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ))],
+         ([Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ))],
            ("[se]\n",
              (Gramf.mk_action
                 (fun ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  ->

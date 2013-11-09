@@ -41,29 +41,28 @@ and level = {
     lsuffix : tree ;
     lprefix : tree}
 and asymbol =
-  [ `Nterm of entry
-  | `Snterml of (entry * string) (* the second argument is the level name *)
-  | `List0 of symbol
-  | `List1 of symbol
-  | `Try of symbol
-  | `Peek of symbol
-  | `Self
-  | `List0sep of (symbol * symbol)        
-  | `List1sep of (symbol * symbol)      
-  | `Token of Tokenf.pattern ]  
+  | Nterm of entry
+  | Snterml of (entry * string) (* the second argument is the level name *)
+  | List0 of symbol
+  | List1 of symbol
+  | Try of symbol
+  | Peek of symbol
+  | Self
+  | List0sep of (symbol * symbol)        
+  | List1sep of (symbol * symbol)      
+  | Token of Tokenf.pattern 
 and symbol =
-  [
-    `Nterm of entry
-  | `Snterml of (entry * string) (* the second argument is the level name *)
-  | `List0 of symbol
-  | `List0sep of (symbol * symbol)
-  | `List1 of symbol
-  | `List1sep of (symbol * symbol)
-  | `Try of symbol
-  | `Peek of symbol
-  | `Self
-  | `Token of Tokenf.pattern
- ]
+  | Nterm of entry
+  | Snterml of (entry * string) (* the second argument is the level name *)
+  | List0 of symbol
+  | List0sep of (symbol * symbol)
+  | List1 of symbol
+  | List1sep of (symbol * symbol)
+  | Try of symbol
+  | Peek of symbol
+  | Self
+  | Token of Tokenf.pattern
+
       
 and tree = (* internal struccture *)
   | Node of node

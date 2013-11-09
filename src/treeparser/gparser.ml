@@ -49,7 +49,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
           (* rules ending with [S] , for this last symbol there's a call to the [start] function:
              of the current level if the level is [`RA] or of the next level otherwise. (This can be
              verified by [start_parser_of_levels]) *)      
-    | Node {node = `Self; son = LocAct (act, _); brother = bro} ->  fun strm ->
+    | Node {node = Self; son = LocAct (act, _); brother = bro} ->  fun strm ->
         begin 
           let alevn =
             match assoc with
@@ -105,7 +105,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                      (match e with
                      | Streamf.NotConsumed  ->
                          raise (Streamf.Error
-                              (Gfailed.tree_failed  entry e (`Token node) son))
+                              (Gfailed.tree_failed  entry e (Token node) son))
                      | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
@@ -136,21 +136,11 @@ and parser_of_terminals
               let ((_,obj) as v) = Tokenf.destruct t in
               begin
                 if not
-                    ((* match terminal with *)
-                    (* |`Token x  -> *)
-                        let p  =Tokenf.match_token terminal in
-                        (* let obj = Tokenf.strip t in *)
-                        begin
-                          acc:= obj ::!acc;
-                          p v 
-                        end
-                    (* |`Keyword kwd -> *)
-                    (*     if tag  = `Key then  *)
-                    (*       begin *)
-                    (*         acc := Obj.repr obj :: !acc; *)
-                    (*         (Obj.magic (Obj.field obj 1 ) : string) = kwd *)
-                    (*       end *)
-                    (*     else  false *))
+                    (let p  =Tokenf.match_token terminal in
+                    begin
+                      acc:= obj ::!acc;
+                      p v 
+                    end)
                 then raise M.X
               end);
         Streamf.njunk n strm;
@@ -160,25 +150,25 @@ and parser_of_terminals
 (* functional and re-entrant *)
 and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =
-  let rec aux s = 
+  let rec aux (s:Gdefs.symbol) = 
     match s with 
-    | `List0 s ->
+    | List0 s ->
         let ps = aux s in  Gcomb.slist0 ps ~f:(fun l -> Gaction.mk (List.rev l))
-    | `List0sep (symb, sep) ->
+    | List0sep (symb, sep) ->
         let ps = aux symb and pt =  aux sep  in
         Gcomb.slist0sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    | `List1 s -> let ps =  aux s  in
+    | List1 s -> let ps =  aux s  in
       Gcomb.slist1 ps ~f:(fun l -> Gaction.mk (List.rev l))
-    | `List1sep (symb, sep) ->
+    | List1sep (symb, sep) ->
         let ps = aux symb and pt = aux sep  in
         Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Try s -> let ps = aux s in Gcomb.tryp ps
-    | `Peek s -> let ps = aux s in Gcomb.peek ps
-    | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
-    | `Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
-    | `Self -> fun strm -> entry.start 0 strm 
+    | Try s -> let ps = aux s in Gcomb.tryp ps
+    | Peek s -> let ps = aux s in Gcomb.peek ps
+    | Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
+    | Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
+    | Self -> fun strm -> entry.start 0 strm 
     (* | `Keyword kwd -> fun strm -> *)
     (*     (\** remember here -- it could be optimized, it could be optimized.. *)
     (*         ... *\) *)
@@ -191,7 +181,7 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     (*           end *)
     (*       |_ -> raise Streamf.NotConsumed *)
     (*     end *)
-    | `Token (x:Tokenf.pattern) ->
+    | Token (x:Tokenf.pattern) ->
         let p = Tokenf.match_token x in 
         fun strm ->
           match Streamf.peek strm with

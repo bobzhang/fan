@@ -70,7 +70,7 @@ val gen_lid : unit -> string
                          else ();
                          Hashtbl.add FanLexTools.named_regexps x r) () : 
                    (_,'e__2,'e__3) Gramf.foldsep )))
-   `List0
+   List0
      (Gramf.srules sigis
                  [([Nterm (Gramf.obj (sigi : 'sigi Gramf.t ));
                    Nterm (Gramf.obj (semi : 'semi Gramf.t ))],
@@ -78,12 +78,12 @@ val gen_lid : unit -> string
                        (fun _  (sg : 'sigi)  (_loc : Locf.t)  ->
                           (sg : 'e__1 ))))])
 
-   `List0sep
+   List0sep
        ((Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
         (Keyword "|"))
 
 
-   `List1sep
+   List1sep
         ((Gramf.srules pos_exps
           [([Token
                         (((function | `Lid _ -> true | _ -> false)),
@@ -113,7 +113,7 @@ val gen_lid : unit -> string
                            | _ -> assert false)))]), (Keyword ";"))
    `Snext
    Self
-   `Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "top")
+   Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "top")
    Token
      (((function | `Ant ((""|"mexp"|"anti"|"list"),_) -> true
         | _ -> false)),

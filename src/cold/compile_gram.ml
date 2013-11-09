@@ -111,20 +111,20 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (match ts with
          | None  ->
              if min
-             then (`App (_loc, (`Vrn (_loc, "List1")), txt) : FAst.exp )
-             else (`App (_loc, (`Vrn (_loc, "List0")), txt) : FAst.exp )
+             then (`App (_loc, (`Uid (_loc, "List1")), txt) : FAst.exp )
+             else (`App (_loc, (`Uid (_loc, "List0")), txt) : FAst.exp )
          | Some s ->
              let x = aux tvar s.text in
              if min
              then
                (`App
-                  (_loc, (`Vrn (_loc, "List1sep")),
+                  (_loc, (`Uid (_loc, "List1sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp )
              else
                (`App
-                  (_loc, (`Vrn (_loc, "List0sep")),
+                  (_loc, (`Uid (_loc, "List0sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp ))
-    | Self _loc -> (`Vrn (_loc, "Self") : FAst.exp )
+    | Self _loc -> (`Uid (_loc, "Self") : FAst.exp )
     | Keyword (_loc,kwd) ->
         (`App (_loc, (`Vrn (_loc, "Keyword")), (`Str (_loc, kwd))) : 
         FAst.exp )
@@ -143,19 +143,19 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (match lev with
          | Some lab ->
              (`App
-                (_loc, (`Vrn (_loc, "Snterml")),
+                (_loc, (`Uid (_loc, "Snterml")),
                   (`Par (_loc, (`Com (_loc, obj, (`Str (_loc, lab))))))) : 
              FAst.exp )
          | None  ->
              if n.tvar = tvar
-             then (`Vrn (_loc, "Self") : FAst.exp )
-             else (`App (_loc, (`Vrn (_loc, "Nterm")), obj) : FAst.exp ))
+             then (`Uid (_loc, "Self") : FAst.exp )
+             else (`App (_loc, (`Uid (_loc, "Nterm")), obj) : FAst.exp ))
     | Try (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Try")), (aux "" t)) : FAst.exp )
+        (`App (_loc, (`Uid (_loc, "Try")), (aux "" t)) : FAst.exp )
     | Peek (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Peek")), (aux "" t)) : FAst.exp )
+        (`App (_loc, (`Uid (_loc, "Peek")), (aux "" t)) : FAst.exp )
     | Token (_loc,meta) ->
-        (`App (_loc, (`Vrn (_loc, "Token")), meta) : FAst.exp ) in
+        (`App (_loc, (`Uid (_loc, "Token")), meta) : FAst.exp ) in
   aux tvar x
 and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)
   (tvar : string) =

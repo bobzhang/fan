@@ -43,16 +43,15 @@ let removing _gram _kwd =  ()
 (* FIXME
    there's a bug
    the revised syntax could parse
-   `Snterml _ _ => `Snterml(_,_)
+   Snterml _ _ => Snterml(_,_)
  *)
 let rec decr_keyw_use gram (x:Gdefs.symbol) =
   match x with 
-  (* | `Keyword kwd -> removing gram kwd *)
-  | `Token ({descr = {tag = `Key ; word = A kwd; _}}:Tokenf.pattern) -> removing gram kwd
-  | `List0 s | `List1 s  | `Try s | `Peek s -> decr_keyw_use gram s
-  | `List0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
-  | `List1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
-  | `Self | `Nterm _ | `Snterml (_, _) | `Token _ -> () 
+  | Token ({descr = {tag = `Key ; word = A kwd; _}}:Tokenf.pattern) -> removing gram kwd
+  | List0 s | List1 s  | Try s | Peek s -> decr_keyw_use gram s
+  | List0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
+  | List1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
+  | Self | Nterm _ | Snterml (_, _) | Token _ -> () 
 and decr_keyw_use_in_tree gram (x:Gdefs.tree) =
   match x with 
   | DeadEnd | LocAct (_, _) -> ()
@@ -98,10 +97,10 @@ let rec delete_rule_in_prefix entry symbols (xs:Gdefs.level list) =
   | [] -> raise Not_found 
         
 
-let  delete_rule_in_level_list entry symbols levs =
+let  delete_rule_in_level_list entry (symbols:Gdefs.symbol list) levs =
   match symbols with
-  | `Self :: symbols -> delete_rule_in_suffix entry symbols levs
-  | `Nterm e :: symbols when e == entry ->
+  | Self :: symbols -> delete_rule_in_suffix entry symbols levs
+  | Nterm e :: symbols when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs 
 

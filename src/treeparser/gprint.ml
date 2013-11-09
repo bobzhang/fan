@@ -55,26 +55,26 @@ class text_grammar : grammar_print = object(self:'self)
       
   method symbol f (x:Gdefs.symbol) =
     match x with 
-    | `List0 s -> pp f "L0 %a" self#symbol1 s
-    | `List0sep (s, t) ->
+    | List0 s -> pp f "L0 %a" self#symbol1 s
+    | List0sep (s, t) ->
         pp f "L0 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `List1 s -> pp f "L1 %a" self#symbol1 s
-    | `List1sep (s, t) ->
+    | List1 s -> pp f "L1 %a" self#symbol1 s
+    | List1sep (s, t) ->
         pp f "L1 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `Try s -> pp f "TRY %a" self#symbol1 s
-    | `Peek s -> pp f "PEEK %a" self#symbol1 s 
-    | `Snterml (e, l) -> pp f "%s Level %S" e.name l
-    | `Nterm _  | `Self  | `Token _  as s ->
+    | Try s -> pp f "TRY %a" self#symbol1 s
+    | Peek s -> pp f "PEEK %a" self#symbol1 s 
+    | Snterml (e, l) -> pp f "%s Level %S" e.name l
+    | Nterm _  | Self  | Token _  as s ->
         self#symbol1 f s 
           
   method symbol1 f x =
     match (x: Gdefs.symbol) with 
-    | `Nterm e -> pp f "%s" e.name
-    | `Self -> pp f "%s" "S"
-    | `Token p -> pp f "%s" (Tokenf.string_of_pattern p )
+    | Nterm e -> pp f "%s" e.name
+    | Self -> pp f "%s" "S"
+    | Token p -> pp f "%s" (Tokenf.string_of_pattern p )
     (* | `Keyword s -> pp f "%S" s *)
-    | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
-      `List1sep (_, _) | `Try _ | `Peek _ as s ->
+    | Snterml (_, _) | List0 _ | List0sep (_, _) | List1 _ |
+      List1sep (_, _) | Try _ | Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
       f ((symbols,(annot,_action)):Gdefs.production) =

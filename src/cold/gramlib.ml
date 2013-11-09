@@ -4,8 +4,8 @@ let eoi_entry entry =
   Gramf.extend_single (entry_eoi : 'entry_eoi Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (entry : 'entry Gramf.t ));
-           `Token
+         [([Nterm (Gramf.obj (entry : 'entry Gramf.t ));
+           Token
              ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
              Tokenf.pattern )],
             ("x\n",

@@ -6,22 +6,22 @@
 open Util
 open Format
 
-let higher s1 s2 =
+let higher (s1 : Gdefs.symbol) (s2 : Gdefs.symbol)  =
   match (s1, s2) with
-  | `Token (({descr  ={word = A _ ; _ }}):Tokenf.pattern) ,
-            `Token ({descr = {word = Any ; _ }} : Tokenf.pattern)  -> false
-  | `Token _ , _ -> true
+  | Token (({descr  ={word = A _ ; _ }}):Tokenf.pattern) ,
+            Token ({descr = {word = Any ; _ }} : Tokenf.pattern)  -> false
+  | Token _ , _ -> true
   | _ -> false 
 
 
 let rec derive_eps (s:Gdefs.symbol)  =
   match s with 
-  | `List0 _ | `List0sep (_, _)| `Peek _ -> true
-  | `Try s -> derive_eps s (* it would consume if succeed *)
-  | `List1 _ | `List1sep (_, _) | `Token _  ->
+  | List0 _ | List0sep (_, _)| Peek _ -> true
+  | Try s -> derive_eps s (* it would consume if succeed *)
+  | List1 _ | List1sep (_, _) | Token _  ->
       (* For sure we cannot derive epsilon from these *)
       false
-  | `Nterm _ | `Snterml (_, _) | `Self -> (* Approximation *)
+  | Nterm _ | Snterml (_, _) | Self -> (* Approximation *)
       false  (* could be fixed *)
 
 
@@ -60,19 +60,19 @@ let find_level ?position (entry:Gdefs.entry)  levs =
 
 let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
   match x with
-  | `Nterm e ->
+  | Nterm e ->
     if entry.gram  != e.gram  then 
       failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
         entry.name e.name
-  | `Snterml (e, _) ->
+  | Snterml (e, _) ->
       if e.gram != entry.gram then 
         failwithf
           "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.name e.name
-  | `List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `List0 s | `List1 s | `Try s | `Peek s -> check_gram entry s
-  | `Self | `Token _  -> ()
+  | List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
+  | List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
+  | List0 s | List1 s | Try s | Peek s -> check_gram entry s
+  | Self | Token _  -> ()
         
 and tree_check_gram entry (x:Gdefs.tree) =
   match x with 
@@ -86,21 +86,21 @@ and tree_check_gram entry (x:Gdefs.tree) =
 
   
 let get_initial = function
-  | `Self :: symbols -> (true, symbols)
+  | (Self:Gdefs.symbol) :: symbols -> (true, symbols)
   | symbols -> (false, symbols) 
 
 
 let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
-and  using_symbol symbol acc =
+and  using_symbol (symbol:Gdefs.symbol) acc =
   match symbol with 
-  | `List0 s | `List1 s  | `Try s | `Peek s ->
+  | List0 s | List1 s  | Try s | Peek s ->
       using_symbol s acc
-  | `List0sep (s, t) -> using_symbol  t (using_symbol s acc)
-  | `List1sep (s, t) -> using_symbol  t (using_symbol  s acc)
-  | `Token ({descr = {tag = `Key; word = A kwd;_}} : Tokenf.pattern)
+  | List0sep (s, t) -> using_symbol  t (using_symbol s acc)
+  | List1sep (s, t) -> using_symbol  t (using_symbol  s acc)
+  | Token ({descr = {tag = `Key; word = A kwd;_}} : Tokenf.pattern)
     -> kwd :: acc
-  | `Nterm _ | `Snterml _ | `Self | `Token _ -> acc 
+  | Nterm _ | Snterml _ | Self | Token _ -> acc 
 and using_node   node acc =
   match (node:Gdefs.tree) with 
   | Node {node = s; brother = bro; son = son} ->
@@ -228,7 +228,7 @@ and scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  =
            @@ Listf.reduce_left (^) diff in
        let () = check_gram entry symbol in
        match symbol with
-       |`Nterm e when e == entry -> `Self
+       |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol
      ) symbols,x)
 
@@ -245,7 +245,7 @@ and unsafe_scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  =
          Setf.String.add_list entry.gram.gfilter.kwds keywords in
        let () = check_gram entry symbol in
        match symbol with
-       |`Nterm e when e == entry -> `Self
+       |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol
      ) symbols,x)
     
@@ -305,10 +305,10 @@ let refresh_level ~f (x:Gdefs.level)  =
 (*         let symbs = *)
 (*           List.map *)
 (*             (function *)
-(*               | `Self -> `Nterm e *)
+(*               | Self -> Nterm e *)
 (*               | x  -> x) symbs in *)
 (*         (symbs @ *)
-(*          [`Token *)
+(*          [Token *)
 (*             ({pred = (function | `EOI _ -> true | _ -> false); *)
 (*               descr = *)
 (*               {tag = `EOI;word= Any;tag_name="EOI"}}:Tokenf.pattern)], *)
