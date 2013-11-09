@@ -161,7 +161,7 @@ type tag =
 type word =
   | Any
   | A of string
-  (* | Empty *)
+  | Kind of string
   | Level of int
 
 and descr =  {

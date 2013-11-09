@@ -195,7 +195,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               [{
               text = Token(_loc,
                             %exp{({pred = %p{$vrn:v ({ kind = $str{x.txt}; _}:Tokenf.ant)};
-                                   descr = {tag = $vrn:v; word = A $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
+                                   descr = {tag = $vrn:v; word = Kind $str{x.txt}; tag_name = $str:v}}:Tokenf.pattern)});
               styp= %ctyp'{Tokenf.ant};
               bounds; outer_pattern = None}]} : Gram_def.osymbol list Gram_def.decorate))}
 
