@@ -7469,12 +7469,12 @@ let _ =
                     descr =
                       { tag = `Key; word = (A "First"); tag_name = "Key" }
                   } : Tokenf.pattern )];
-            annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+            annot = "(`Uid (_loc, x) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
+                    ((`Uid (_loc, x) : FAst.exp ) : 'position )))
           };
          {
            symbols =
@@ -7483,12 +7483,12 @@ let _ =
                    descr =
                      { tag = `Key; word = (A "Last"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+           annot = "(`Uid (_loc, x) : FAst.exp )\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
+                   ((`Uid (_loc, x) : FAst.exp ) : 'position )))
          };
          {
            symbols =
@@ -7497,12 +7497,12 @@ let _ =
                    descr =
                      { tag = `Key; word = (A "Before"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+           annot = "(`Uid (_loc, x) : FAst.exp )\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
+                   ((`Uid (_loc, x) : FAst.exp ) : 'position )))
          };
          {
            symbols =
@@ -7511,12 +7511,12 @@ let _ =
                    descr =
                      { tag = `Key; word = (A "After"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+           annot = "(`Uid (_loc, x) : FAst.exp )\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
+                   ((`Uid (_loc, x) : FAst.exp ) : 'position )))
          };
          {
            symbols =
@@ -7525,12 +7525,12 @@ let _ =
                    descr =
                      { tag = `Key; word = (A "Level"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+           annot = "(`Uid (_loc, x) : FAst.exp )\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
+                   ((`Uid (_loc, x) : FAst.exp ) : 'position )))
          }]) : Gramf.olevel ));
   Gramf.extend_single (level_list : 'level_list Gramf.t )
     (None,

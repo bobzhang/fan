@@ -3,7 +3,11 @@ type assoc =
   | LA |RA
 
 type position =
-    [ `First | `Last | `Before of string | `After of string | `Level of string]
+  | First
+  | Last
+  | Before of string
+  | After of string
+  | Level of string
 
 
 

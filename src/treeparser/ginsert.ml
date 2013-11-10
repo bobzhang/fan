@@ -32,26 +32,27 @@ let empty_lev lname assoc : Gdefs.level =
     
 
 let find_level ?position (entry:Gdefs.entry)  levs =
-  let find x n  ls = 
+  let find (x:Gdefs.position) n  ls = 
     let rec get = function
       | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name
       | lev::levs ->
       if Gtools.is_level_labelled n lev then
         match x with
-        |`Level _ ->
+        |Level _ ->
             ([],  Some(lev,n), levs)
-        |`Before _ ->
+        |Before _ ->
             ([],  None , lev::levs)
-        |`After _ ->
-           ([lev],None , levs)  
+        |After _ ->
+           ([lev],None , levs)
+        | _ -> assert false (* FIXME *)
       else
         let (levs1,rlev,levs2) = get levs in
         (lev::levs1, rlev, levs2)  in
     get ls in 
-  match position with
-  | Some `First -> ([], None , levs)
-  | Some `Last -> (levs, None , [])
-  | Some ((`Level n | `Before n | `After n)  as x) ->
+  match (position: Gdefs.position option) with
+  | Some First -> ([], None , levs)
+  | Some Last -> (levs, None , [])
+  | Some ((Level n | Before n | After n)  as x) ->
       find x n levs
   | None ->      (* default behavior*)   
       match levs with

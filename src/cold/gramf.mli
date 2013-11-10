@@ -7,11 +7,11 @@ type assoc =
   | LA | RA 
 
 type position =
-    [ `After of string
-    | `Before of string
-    | `First
-    | `Last
-    | `Level of string ]
+  | First
+  | Last
+  | Before of string
+  | After of string
+  | Level of string
 
 val filter: stream -> stream      
 
