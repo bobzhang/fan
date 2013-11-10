@@ -9,11 +9,6 @@ type position =
 (* the [location] and the parsed value *)
 type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
     
-
-
-
-
-  
 type gram = {
     annot : string;
     gfilter         : Tokenf.filter_plugin;
@@ -72,21 +67,32 @@ and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
+
 and production= symbol list  *   (string * Gaction.t)
 
 (* number * symbols * action_as_tring * action *)
-and anno_action = (int  * symbol list  * string  * Gaction.t) 
+and anno_action =
+    {arity : int ;
+     symbols : symbol list;
+     annot : string;
+     fn : Gaction.t
+   }
+    (* (int  * symbol list  * string  * Gaction.t)  *)
 
 
 
-(* FIXME duplciate with Fgram.mli*)
+
+
+
 
 (**
    [olevel] is the [processed output] from the Fgram DDSL, the runtime representation
    is [level], there is a function [Ginsert.level_of_olevel] which converts the
    processed output into the runtime
+   BOOTSTRAPING
  *)      
 type olevel = (label * assoc option  * production list )
+      
 type extend_statment = (position option  * olevel list )
 type single_extend_statement =  (position option  * olevel)
 type delete_statment = symbol list 

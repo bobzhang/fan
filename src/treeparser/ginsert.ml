@@ -109,7 +109,9 @@ and using_node   node acc =
 
 
 let add_production  ((gsymbols, (annot,action)):Gdefs.production) tree =
-  let anno_action =  (List.length gsymbols, gsymbols,annot,action) in
+  let (anno_action : Gdefs.anno_action) =
+    {arity = List.length gsymbols; symbols =  gsymbols;
+     annot=  annot; fn = action} in
   let rec try_insert s sl (tree:Gdefs.tree) : Gdefs.tree option =
     match tree with
     | Node ( {node ; son ; brother} as x) ->

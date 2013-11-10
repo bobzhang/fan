@@ -44,11 +44,10 @@ let rec parser_of_tree (entry:Gdefs.entry)
     match tree  with
     | DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
-          (* | LocActAppend(act,_,n) -> *)
-
-          (* rules ending with [S] , for this last symbol there's a call to the [start] function:
-             of the current level if the level is [`RA] or of the next level otherwise. (This can be
-             verified by [start_parser_of_levels]) *)      
+          (* rules ending with [S] , for this last symbol there's a call to the [start]
+             function:
+             of the current level if the level is [`RA] or of the next level otherwise.
+                 (see [start_parser_of_levels]) *)      
     | Node {node = Self; son = LocAct (act, _); brother = bro} ->  fun strm ->
         begin 
           let alevn =
@@ -60,15 +59,8 @@ let rec parser_of_tree (entry:Gdefs.entry)
             act 
           with Streamf.NotConsumed -> from_tree bro strm
         end
-          (* [son] will never be [DeadEnd] *)        
+     (* invariant: [son] will never be [DeadEnd] *)        
     | Node ({ node ; son; brother } as y) ->
-        (*
-          Handle the problem
-          {[
-          `-OPT assoc---rule_list---.
-          `-OPT [ `STR (_,_)]---OPT assoc---rule_list---.
-          ]}
-         *)
         match Gtools.get_terminals  y with
         | None ->
             (* [paser_of_symbol] given a stream should always return a value  *) 
@@ -109,11 +101,11 @@ let rec parser_of_tree (entry:Gdefs.entry)
                      | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
-    let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
-    let ans = ref parse in
-    (for _i = 1 to arity do
+    let ((* (arity,_symbols,_,parse) *)x,loc) =  with_loc parse strm in 
+    let ans = ref x.fn in
+    (for _i = 1 to x.arity do
       let  v = ArgContainer.pop q in
-      ans:=Gaction.apply !ans v;   
+      ans := Gaction.apply !ans v;   
     done;
      (!ans,loc))
 
@@ -169,18 +161,6 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     | Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
     | Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
     | Self -> fun strm -> entry.start 0 strm 
-    (* | `Keyword kwd -> fun strm -> *)
-    (*     (\** remember here -- it could be optimized, it could be optimized.. *)
-    (*         ... *\) *)
-    (*     begin  (\* interaction with stream *\) *)
-    (*       match Streamf.peek strm with *)
-    (*       | Some (`Key u  )  when u.txt = kwd -> *)
-    (*           begin  *)
-    (*             Streamf.junk strm ; *)
-    (*             Gaction.mk u *)
-    (*           end *)
-    (*       |_ -> raise Streamf.NotConsumed *)
-    (*     end *)
     | Token (x:Tokenf.pattern) ->
         let p = Tokenf.match_token x in 
         fun strm ->
@@ -261,9 +241,8 @@ let rec continue_parser_of_levels entry clevn (xs:Gdefs.level list) =
 
   
 let continue_parser_of_entry (entry:Gdefs.entry) =
-  (* debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
-    let p = continue_parser_of_levels entry 0 entry.levels  in
-    (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
+  let p = continue_parser_of_levels entry 0 entry.levels  in
+  (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
 
 
 (* local variables: *)

@@ -46,9 +46,13 @@ and symbol =
 and tree = Gdefs.tree 
 and node = Gdefs.node 
 
-type anno_action = int * symbol list * string * action (* Action.t        *)
+type anno_action = {
+    arity : int ;
+    symbols : symbol list ;
+    annot : string ;
+    fn : action}
 
-type production = symbol list * (string * action (* Action.t *))
+type production = symbol list * (string * action )
       
 type label = string option
 
