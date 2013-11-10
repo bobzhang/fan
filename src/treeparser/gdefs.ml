@@ -28,11 +28,7 @@ type entry = {
 and level = {
     lname   : label;
     assoc   : assoc ;
-    productions : production list ;
-   (* (assoc, lname, production) triple composes
-      olevel which can be used by [Ginsert.level_of_olevel]
-      to deduce  the whole level *)
-    (* the raw productions stored in the level*)
+    productions : production list ; (* the raw productions stored in the level*)
     lsuffix : tree ;
     lprefix : tree}
 and asymbol =
@@ -61,7 +57,7 @@ and symbol =
       
 and tree = (* internal struccture *)
   | Node of node
-  | LocAct of anno_action *  anno_action list
+  | LocAct of anno_action (* *  anno_action list *)
   | DeadEnd 
 and node = {
     node    : symbol ;

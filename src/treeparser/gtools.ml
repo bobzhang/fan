@@ -113,7 +113,7 @@ let mk_action=Gaction.mk
 let rec flatten_tree (x: Gdefs.tree ) =
   match x with 
   | DeadEnd -> []
-  | LocAct (_, _) -> [[]]
+  | LocAct _ -> [[]]
   | Node {node = n; brother = b; son = s} ->
       List.map (fun l -> n::l) (flatten_tree s) @ flatten_tree b 
 
@@ -144,7 +144,7 @@ let get_first =
     match x with 
     |Node {node;brother;_} ->
         aux (node::acc) brother
-    |LocAct (_,_) | DeadEnd -> acc  in
+    |LocAct _ | DeadEnd -> acc  in
   aux []
 
 let get_first_from levels set =

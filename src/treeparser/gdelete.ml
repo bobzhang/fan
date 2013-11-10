@@ -32,8 +32,7 @@ let delete_rule_in_tree entry =
         | Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
         | None -> None )
     | ([], DeadEnd) -> None
-    | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
-    | ([], LocAct (_, action :: list)) -> Some (None, LocAct (action, list))  in
+    | ([], LocAct _) -> Some (Some [], DeadEnd) in
   delete_in_tree
 
 
@@ -54,7 +53,7 @@ let rec decr_keyw_use gram (x:Gdefs.symbol) =
   | Self | Nterm _ | Snterml (_, _) | Token _ -> () 
 and decr_keyw_use_in_tree gram (x:Gdefs.tree) =
   match x with 
-  | DeadEnd | LocAct (_, _) -> ()
+  | DeadEnd | LocAct _ -> ()
   | Node n -> begin
         decr_keyw_use gram n.node;
         decr_keyw_use_in_tree gram n.son;

@@ -43,12 +43,12 @@ let rec parser_of_tree (entry:Gdefs.entry)
   let rec from_tree (tree:Gdefs.tree) : Gdefs.anno_action Tokenf.parse =
     match tree  with
     | DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
-    | LocAct (act, _) -> fun _ -> act
+    | LocAct act -> fun _ -> act
           (* rules ending with [S] , for this last symbol there's a call to the [start]
              function:
              of the current level if the level is [`RA] or of the next level otherwise.
                  (see [start_parser_of_levels]) *)      
-    | Node {node = Self; son = LocAct (act, _); brother = bro} ->  fun strm ->
+    | Node {node = Self; son = LocAct act; brother = bro} ->  fun strm ->
         begin 
           let alevn =
             match assoc with

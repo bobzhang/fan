@@ -40,7 +40,7 @@ let tree_in_entry prev_symb (tree:Gdefs.tree) = function
                   | None -> search_tree n.brother
                   end
               end
-          | LocAct (_, _) | DeadEnd -> None 
+          | LocAct _ | DeadEnd -> None 
       and search_symbol symb =
         match symb with
         | Nterm _ | Snterml (_, _) | List0 _ | List0sep (_, _) | List1 _
@@ -107,7 +107,7 @@ and name_of_tree_failed entry x =
           let txt = name_of_symbol_failed entry node in
           let txt =
             match brother with
-            | DeadEnd | LocAct (_, _) -> txt
+            | DeadEnd | LocAct _ -> txt
             | Node _ -> txt ^ " or " ^ name_of_tree_failed entry brother  in
           txt
       | Some (tokl, _, _) ->
@@ -118,9 +118,9 @@ and name_of_tree_failed entry x =
                (* | Token p -> *)  Tokenf.string_of_pattern tok
                (* | `Keyword kwd -> kwd *)))) "" tokl 
       end
-  | DeadEnd | LocAct (_, _) -> "???" 
+  | DeadEnd | LocAct _ -> "???" 
 
-let magic _s x = (* debug magic "Obj.magic: %s@." _s in *) Obj.magic x
+let magic _s x =  Obj.magic x
 
 (* [prev_symb_result] is cast by [Obj.magic] *)
 let tree_failed ?(verbose=false) entry prev_symb_result (prev_symb:Gdefs.symbol)
