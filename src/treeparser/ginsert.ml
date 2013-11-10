@@ -108,11 +108,10 @@ and using_node   node acc =
   | LocAct _ | DeadEnd -> acc 
 
 
-let add_production  ({symbols = gsymbols; annot; fn = action;_}:Gdefs.production) tree =
+let add_production  ({symbols; annot; fn;_}:Gdefs.production) tree =
   let (anno_action : Gdefs.anno_action) =
-    {arity = List.length gsymbols; symbols =  gsymbols;
-     annot=  annot; fn = action;
-     inlines = []} in
+    {arity = List.length symbols;
+     symbols; annot; fn ; inlines = []} in
   let rec try_insert s sl (tree:Gdefs.tree) : Gdefs.tree option =
     match tree with
     | Node ( {node ; son ; brother} as x) ->
@@ -145,9 +144,48 @@ let add_production  ({symbols = gsymbols; annot; fn = action;_}:Gdefs.production
                 "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Gprint.dump#rule symbols;
              LocAct anno_action)
-              
         | DeadEnd -> LocAct anno_action   in 
-  insert gsymbols tree 
+  insert symbols tree
+
+let add_anno_action (({symbols;_} as anno_action) :Gdefs.anno_action) tree =
+  let rec try_insert s sl (tree:Gdefs.tree) : Gdefs.tree option =
+    match tree with
+    | Node ( {node ; son ; brother} as x) ->
+        if Gtools.eq_symbol s node then
+          Some (Node { x with son = insert sl son})
+        else
+          (match try_insert s sl brother with
+          | Some y -> Some (Node {x with brother=y})
+          | None ->
+              if higher node s || (derive_eps s && not (derive_eps node)) then
+                (* node has higher priority *)
+                Some (Node {x with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
+              else None )
+    | LocAct _ | DeadEnd -> None 
+  and  insert_in_tree s sl tree =
+    match try_insert s sl tree with
+    | Some t -> t
+    | None -> Node {node = s; son = insert sl DeadEnd; brother = tree} 
+  and  insert symbols tree =
+    match symbols with
+    | s :: sl -> insert_in_tree s sl tree 
+    | [] ->
+        match tree with
+        | Node ({ brother;_} as x) ->
+            Node {x with brother = insert [] brother }
+        | LocAct _ -> 
+            (if !(Configf.gram_warning_verbose) then
+              (* the old action is discarded, and can not be recovered anymore *)
+              eprintf
+                "<W> Grammar extension: in @[%a@] some rule has been masked@."
+                Gprint.dump#rule symbols;
+             LocAct anno_action)
+        | DeadEnd -> LocAct anno_action   in 
+  insert symbols tree
+
+
+(* let inline_add_production (p:Gdefs.production) tree = *)
+(*   add_production  *)
     
 let add_production_in_level (x :  Gdefs.production) (slev : Gdefs.level) =
   let (suffix,symbols1) = get_initial x.symbols in

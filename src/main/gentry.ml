@@ -35,7 +35,8 @@ let mk_dynamic g n : 'a t ={
   start = Gtools.empty_entry n;
   continue _ _ _ = %parser{ | };
   levels =  [] ;
-  freezed = false;     
+  freezed = false;
+  inline = false; (* FIXME *)
 }
 
 let clear (e:'a t) = begin 

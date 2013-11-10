@@ -23,7 +23,9 @@ type entry = {
     mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;
     mutable levels     :  level list;
-    mutable freezed :  bool;}
+    mutable freezed :  bool;
+    mutable inline : bool ;
+  }
 
 and level = {
     lname   : label;

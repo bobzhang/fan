@@ -114,25 +114,40 @@ let rec parser_of_tree (entry:Gdefs.entry)
     | _ -> 
         let inline ({offset;fn;arity;_}:Gdefs.inline_production) =
           begin
-            let v = ArgContainer.create () in
+            let cont = ArgContainer.create () in
             for _i =  1 to offset do
-              ArgContainer.push (ArgContainer.pop q) v ;
+              ArgContainer.push (ArgContainer.pop q) cont ;
             done;
             let ans = ref fn in
-            for _i = 1 to arity do
-              let v = ArgContainer.pop q in
+            (* arity should be positive *)
+            let start_loc =
+              let (v,start_loc)  = ArgContainer.pop q  in
+              let () = ans := Gaction.apply !ans v in
+              start_loc in
+            for _i = 2 to arity - 1  do
+              let (v,_) = ArgContainer.pop q in
               ans := Gaction.apply !ans v ;
             done;
+            let end_loc = 
+              if arity >= 2 then
+                let (v, end_loc) = ArgContainer.pop q in
+                let () = ans := Gaction.apply !ans v in
+                end_loc 
+              else
+                  start_loc  in
+            let loc_range = Locf.merge start_loc end_loc in
+            let () =
+              ans := Gaction.apply !ans loc_range in 
             (** capture the location ... *)
             for _i = 1 to offset do
-              ArgContainer.push (ArgContainer.pop v) q ;
+              ArgContainer.push (ArgContainer.pop cont) q ;
             done ;
-            ArgContainer.push (!ans,Locf.ghost) q;
+            ArgContainer.push (!ans,loc_range) q;
           end in
         begin
           List.iter inline x.inlines;
           (for _i = 1 to x.arity do
-            let  v = ArgContainer.pop q in
+            let  (v,_) = ArgContainer.pop q in
             ans := Gaction.apply !ans v;
           done;
            (!ans,loc))
