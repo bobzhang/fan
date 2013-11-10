@@ -33,7 +33,7 @@ let level_number (entry:Gdefs.entry) lab =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gdefs.entry)
-    (lev,assoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
+    (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
@@ -55,7 +55,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
             | `LA|`NA -> lev + 1 | `RA -> lev  in
           try
             let a = with_loc (entry.start alevn) strm in
-            ArgContainer.push (fst a) q;
+            ArgContainer.push a q;
             act 
           with Streamf.NotConsumed -> from_tree bro strm
         end
@@ -69,7 +69,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
               (try
                 let a = ps strm in
                 fun ()  ->
-                  ArgContainer.push (fst a) q;
+                  ArgContainer.push a q;
                   (let pson = from_tree son in
                   try pson strm
                   with  e ->
@@ -88,7 +88,8 @@ let rec parser_of_tree (entry:Gdefs.entry)
             | None -> from_tree brother strm
             | Some args ->
                 let args = List.rev args in
-                List.iter (fun a  -> ArgContainer.push (Gaction.mk a) q) args;
+                List.iter (fun a  -> ArgContainer.push ((Gaction.mk a),
+                                                        (Obj.magic (Obj.field a 0))) q) args;
                 (let len = List.length args in
                 let p = from_tree son in
                 try p strm
@@ -106,37 +107,36 @@ let rec parser_of_tree (entry:Gdefs.entry)
     match x.inlines with 
     | [] ->
         (for _i = 1 to x.arity do
-          let  v = ArgContainer.pop q in
+          let  (v,_) = ArgContainer.pop q in
           ans := Gaction.apply !ans v;   
         done;
          (!ans,loc))
-    | _ -> assert false 
-
-        (* let inline ({offset;fn;arity;_}:Gdefs.inline_production) =  *)
-        (*   begin  *)
-        (*     let v = ArgContainer.create () in  *)
-        (*     for _i =  1 to offset do *)
-        (*       ArgContainer.push (ArgContainer.pop q) v ; *)
-        (*     done; *)
-        (*     let ans = ref fn in  *)
-        (*     for _i = 1 to arity do *)
-        (*       let v = ArgContainer.pop q in *)
-        (*       ans := Gaction.apply !ans v ; *)
-        (*     done; *)
-        (*     (\** capture the location ... *\)  *)
-        (*     for _i = 1 to offset do *)
-        (*       ArgContainer.push (ArgContainer.pop v) q ; *)
-        (*     done ; *)
-        (*     ArgContainer.push (!ans,Locf.ghost) q; *)
-        (*   end in *)
-        (* begin  *)
-        (*   List.iter inline x.inlines; *)
-        (*   (for _i = 1 to x.arity do *)
-        (*     let  v = ArgContainer.pop q in *)
-        (*     ans := Gaction.apply !ans v;    *)
-        (*   done; *)
-        (*    (!ans,loc)) *)
-        (* end *)
+    | _ -> 
+        let inline ({offset;fn;arity;_}:Gdefs.inline_production) =
+          begin
+            let v = ArgContainer.create () in
+            for _i =  1 to offset do
+              ArgContainer.push (ArgContainer.pop q) v ;
+            done;
+            let ans = ref fn in
+            for _i = 1 to arity do
+              let v = ArgContainer.pop q in
+              ans := Gaction.apply !ans v ;
+            done;
+            (** capture the location ... *)
+            for _i = 1 to offset do
+              ArgContainer.push (ArgContainer.pop v) q ;
+            done ;
+            ArgContainer.push (!ans,Locf.ghost) q;
+          end in
+        begin
+          List.iter inline x.inlines;
+          (for _i = 1 to x.arity do
+            let  v = ArgContainer.pop q in
+            ans := Gaction.apply !ans v;
+          done;
+           (!ans,loc))
+        end
 
 and parser_of_terminals
     (terminals:Tokenf.pattern list)  :Obj.t list option  Tokenf.parse =

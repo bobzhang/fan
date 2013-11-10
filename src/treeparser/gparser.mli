@@ -18,7 +18,7 @@ val level_number: entry -> string -> int
 
 (** It outputs a stateful parser, but its generation process is functional *)    
 val parser_of_tree :
-    entry -> int * assoc -> Gaction.t Stack.t ->  tree ->
+    entry -> int * assoc -> (Gaction.t * Locf.t) Stack.t ->  tree ->
       (Gaction.t * Locf.t) Tokenf.parse
 
 
