@@ -50,7 +50,15 @@ type anno_action = {
     arity : int ;
     symbols : symbol list ;
     annot : string ;
-    fn : action}
+    fn : action;
+    inlines : inline_production list;
+  }
+and inline_production = {
+    offset :  int;
+    fn : Gaction.t;
+    arity : int;
+  }
+      
 
 type production = {
     symbols : symbol list ;

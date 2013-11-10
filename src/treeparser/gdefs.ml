@@ -57,7 +57,7 @@ and symbol =
       
 and tree = (* internal struccture *)
   | Node of node
-  | LocAct of anno_action (* *  anno_action list *)
+  | LocAct of anno_action
   | DeadEnd 
 and node = {
     node    : symbol ;
@@ -67,22 +67,23 @@ and node = {
 and production= {
     symbols : symbol list;
     annot : string;
-    fn : Gaction.t
+    fn : Gaction.t;
+   
    }
+and inline_production = {
+    offset :  int;
+    fn : Gaction.t;
+    arity : int;
+  }
 
-
-(* number * symbols * action_as_tring * action *)
+(* Note that [anno_action] is isolated from compiler *)
 and anno_action =
     {arity : int ;
      symbols : symbol list;
      annot : string;
-     fn : Gaction.t
+     fn : Gaction.t;
+     inlines : inline_production list 
    }
-    (* (int  * symbol list  * string  * Gaction.t)  *)
-
-
-
-
 
 
 

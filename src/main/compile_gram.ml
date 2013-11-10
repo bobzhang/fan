@@ -181,7 +181,6 @@ and make_exp_rules
         |> List.map (make_exp tvar)
         |> list_of_list  in
       let _loc = Ast_loc.loc_of sl in 
-      (* %exp{ ($sl,($str:action_string,$action)) } *)
       %exp{{symbols = $sl; annot  = $str:action_string; fn = $action}}
               )
   |> list_of_list 

@@ -108,10 +108,11 @@ and using_node   node acc =
   | LocAct _ | DeadEnd -> acc 
 
 
-let add_production  ({symbols = gsymbols; annot; fn = action}:Gdefs.production) tree =
+let add_production  ({symbols = gsymbols; annot; fn = action;_}:Gdefs.production) tree =
   let (anno_action : Gdefs.anno_action) =
     {arity = List.length gsymbols; symbols =  gsymbols;
-     annot=  annot; fn = action} in
+     annot=  annot; fn = action;
+     inlines = []} in
   let rec try_insert s sl (tree:Gdefs.tree) : Gdefs.tree option =
     match tree with
     | Node ( {node ; son ; brother} as x) ->
