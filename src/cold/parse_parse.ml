@@ -63,7 +63,6 @@ let g =
               "Level";
               "LA";
               "RA";
-              "NA";
               "+";
               "*";
               "?";
@@ -7624,36 +7623,24 @@ let _ =
               [Token
                  ({ descr = { tag = `Key; word = (A "LA"); tag_name = "Key" }
                   } : Tokenf.pattern )];
-            annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+            annot = "(`Uid (_loc, x) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )))
+                    ((`Uid (_loc, x) : FAst.exp ) : 'assoc )))
           };
          {
            symbols =
              [Token
                 ({ descr = { tag = `Key; word = (A "RA"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+           annot = "(`Uid (_loc, x) : FAst.exp )\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )))
-         };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Key; word = (A "NA"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )))
+                   ((`Uid (_loc, x) : FAst.exp ) : 'assoc )))
          }]) : Gramf.olevel ));
   Gramf.extend_single (rule_list : 'rule_list Gramf.t )
     (None,

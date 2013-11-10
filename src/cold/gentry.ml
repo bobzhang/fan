@@ -22,7 +22,8 @@ let mk_dynamic g n =
      continue =
        (fun _  _  _  (__strm : _ Streamf.t)  -> raise Streamf.NotConsumed);
      levels = [];
-     freezed = false
+     freezed = false;
+     inline = false
    } : 'a t )
 let clear (e : 'a t) =
   e.start <- (fun _  _  -> raise Streamf.NotConsumed);

@@ -1,6 +1,7 @@
 
 type assoc =
-    [ `NA|`RA|`LA]
+  | LA |RA
+
 type position =
     [ `First | `Last | `Before of string | `After of string | `Level of string]
 
@@ -70,7 +71,6 @@ and production= {
     symbols : symbol list;
     annot : string;
     fn : Gaction.t;
-   
    }
 and inline_production = {
     offset :  int;

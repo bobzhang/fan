@@ -27,7 +27,7 @@ let level_number (entry:Gdefs.entry) lab =
 
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
-   so there's no behavior difference between [LA] and [NA]
+   so there's no behavior difference between [LA] and [LA]
  *)
         
 module ArgContainer= Stack
@@ -51,8 +51,8 @@ let rec parser_of_tree (entry:Gdefs.entry)
     | Node {node = Self; son = LocAct act; brother = bro} ->  fun strm ->
         begin 
           let alevn =
-            match assoc with
-            | `LA|`NA -> lev + 1 | `RA -> lev  in
+            match (assoc:Gdefs.assoc) with
+            | LA -> lev + 1 | RA -> lev  in
           try
             let a = with_loc (entry.start alevn) strm in
             ArgContainer.push a q;

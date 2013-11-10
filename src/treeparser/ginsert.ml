@@ -222,7 +222,7 @@ let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) =
     
 let level_of_olevel (lb:Gdefs.olevel) = 
   let (lname1,assoc1,_) = lb in
-  let la = empty_lev lname1 (Option.default `LA assoc1 )in
+  let la = empty_lev lname1 (Option.default (LA:Gdefs.assoc) assoc1 )in
   merge_level la lb  
 
 

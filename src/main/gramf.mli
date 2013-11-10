@@ -3,7 +3,8 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-type assoc = [ `LA | `NA | `RA ]
+type assoc =
+  | LA | RA 
 
 type position =
     [ `After of string

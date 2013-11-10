@@ -101,7 +101,7 @@ let make_pat exp =
        pat:
        { "|" LA
         [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
-       ".." NA
+       ".." LA
         [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
         "::" RA
         [ S as p1; "::"; S as p2 %{
@@ -461,7 +461,7 @@ let apply () = begin
               `For (_loc, i, e1, e2, df, seq)}
         | "while"; S as e; "do"; sequence as seq; "done" %{
             `While (_loc, e, seq)}]  
-       ":=" NA
+       ":=" LA
         [ S as e1; (":="@xloc as op); S as e2 %{
           let op = %exp@xloc{$lid:op} in %exp{ $op $e1 $e2 }}
         | S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
@@ -526,7 +526,7 @@ let apply () = begin
            | Some cst -> `Obj(_loc,cst)
            | None -> `ObjEnd _loc}
         ]
-       "unary minus" NA
+       "unary minus" LA
         [ ("-"|"-." as x); S as e %{ Fan_ops.mkumin _loc x e} (* Delayed into Dump *)
         ]
        "apply" LA
@@ -534,7 +534,7 @@ let apply () = begin
         | "assert"; S as e %{ `Assert(_loc,e)}
         | "new"; class_longident as i %{ `New (_loc,i)} 
         | "lazy"; S as e %{ `Lazy(_loc,e)} ]
-       "label" NA
+       "label" LA
         [ "~"; a_lident as i; ":"; S as e %{ `Label (_loc, i, e)}
         | "~"; a_lident as i %{ `LabelS(_loc,i)}
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
@@ -549,7 +549,7 @@ let apply () = begin
         | S as e1; "."; "{"; comma_exp as e2; "}" %{ Fan_ops.bigarray_get _loc e1 e2}
         | S as e1; "."; label_longident as e2 %{ `Field(_loc,e1,e2)}
         | S as e; "#"; a_lident as lab %{ `Send (_loc, e, lab)} ]
-       "~-" NA
+       "~-" LA
         [ ("!"@xloc as x); S as e %{`App(_loc,`Lid(xloc,x),e )}
         | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}]
        "simple"
@@ -955,7 +955,7 @@ let apply () = begin
       { "top"
           [ ("fun"|"function"); ipat as p; class_fun_def as ce %{  `CeFun (_loc, p, ce)}
           | "let"; opt_rec as rf; bind as bi; "in"; S as ce %{ `LetIn(_loc,rf,bi,ce)}]
-        "apply" NA
+        "apply" LA
           [ S as ce; exp Level "label" as e %{ `CeApp (_loc, ce, e)}]
         "simple"
           [ Ant (""|"cexp" ,s) %{ mk_ant ~c:"clexp"  s}
@@ -1119,7 +1119,7 @@ let apply_ctyp () = begin
         [ "!"; typevars as t1; "."; ctyp as t2 %{ `TyPol (_loc, t1, t2)} ]
        "arrow" RA
         [ S as t1; "->"; S as t2 %{  `Arrow(_loc,t1,t2)} ]
-       "label" NA
+       "label" LA
         [ "~"; a_lident as i; ":"; S as t %{ `Label (_loc, i, t)}
         | Label s ; ":"; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
         | Optlabel s ; S as t %{ `OptLabl(_loc,`Lid(_loc,s),t)}

@@ -353,7 +353,7 @@ let make_pat exp =
          }]) : Gramf.olevel ));
   Gramf.extend (pat : 'pat Gramf.t )
     (None,
-      ([((Some "|"), (Some `LA),
+      ([((Some "|"), (Some LA),
           [{
              symbols =
                [Self;
@@ -367,7 +367,7 @@ let make_pat exp =
                   (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat)
                       (_loc : Locf.t)  -> (`Bar (_loc, p1, p2) : 'pat )))
            }]);
-       ((Some ".."), (Some `NA),
+       ((Some ".."), (Some LA),
          [{
             symbols =
               [Self;
@@ -381,7 +381,7 @@ let make_pat exp =
                  (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
                     (_loc : Locf.t)  -> (`PaRng (_loc, p1, p2) : 'pat )))
           }]);
-       ((Some "::"), (Some `RA),
+       ((Some "::"), (Some RA),
          [{
             symbols =
               [Self;
@@ -399,7 +399,7 @@ let make_pat exp =
                        (_loc, (`Uid (_loc, "::")),
                          (`Par (_loc, (`Com (_loc, p1, p2))))) : 'pat )))
           }]);
-       ((Some "apply"), (Some `LA),
+       ((Some "apply"), (Some LA),
          [{
             symbols =
               [Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); Self];
@@ -2300,7 +2300,7 @@ let apply () =
            }]) : Gramf.olevel ));
    Gramf.extend (mbind0 : 'mbind0 Gramf.t )
      (None,
-       ([(None, (Some `RA),
+       ([(None, (Some RA),
            [{
               symbols =
                 [Token
@@ -3965,7 +3965,7 @@ let apply () =
           }]) : Gramf.olevel ));
    Gramf.extend (fun_bind : 'fun_bind Gramf.t )
      (None,
-       ([(None, (Some `RA),
+       ([(None, (Some RA),
            [{
               symbols =
                 [Token
@@ -4142,7 +4142,7 @@ let apply () =
           }]) : Gramf.olevel ));
    Gramf.extend (fun_def : 'fun_def Gramf.t )
      (None,
-       ([(None, (Some `RA),
+       ([(None, (Some RA),
            [{
               symbols =
                 [Nterm (Gramf.obj (fun_def_pat : 'fun_def_pat Gramf.t ));
@@ -4171,7 +4171,7 @@ let apply () =
            }])] : Gramf.olevel list ));
    Gramf.extend (exp : 'exp Gramf.t )
      (None,
-       ([((Some "top"), (Some `RA),
+       ([((Some "top"), (Some RA),
            [{
               symbols =
                 [Token
@@ -4529,7 +4529,7 @@ let apply () =
                      ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
                      (`While (_loc, e, seq) : 'exp )))
            }]);
-        ((Some ":="), (Some `NA),
+        ((Some ":="), (Some LA),
           [{
              symbols =
                [Self;
@@ -4566,7 +4566,7 @@ let apply () =
                      | Some e -> e
                      | None  -> `Assign (_loc, e1, e2) : 'exp )))
           }]);
-        ((Some "||"), (Some `RA),
+        ((Some "||"), (Some RA),
           [{
              symbols =
                [Self;
@@ -4605,7 +4605,7 @@ let apply () =
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))
           }]);
-        ((Some "&&"), (Some `RA),
+        ((Some "&&"), (Some RA),
           [{
              symbols =
                [Self;
@@ -4644,7 +4644,7 @@ let apply () =
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))
           }]);
-        ((Some "<"), (Some `LA),
+        ((Some "<"), (Some LA),
           [{
              symbols =
                [Self;
@@ -4742,7 +4742,7 @@ let apply () =
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))
           }]);
-        ((Some "^"), (Some `RA),
+        ((Some "^"), (Some RA),
           [{
              symbols =
                [Self;
@@ -4764,7 +4764,7 @@ let apply () =
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
            }]);
-        ((Some "::"), (Some `RA),
+        ((Some "::"), (Some RA),
           [{
              symbols =
                [Self;
@@ -4784,7 +4784,7 @@ let apply () =
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
            }]);
-        ((Some "+"), (Some `LA),
+        ((Some "+"), (Some LA),
           [{
              symbols =
                [Self;
@@ -4863,7 +4863,7 @@ let apply () =
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                       'exp )))
           }]);
-        ((Some "*"), (Some `LA),
+        ((Some "*"), (Some LA),
           [{
              symbols =
                [Self;
@@ -4885,7 +4885,7 @@ let apply () =
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
            }]);
-        ((Some "**"), (Some `RA),
+        ((Some "**"), (Some RA),
           [{
              symbols =
                [Self;
@@ -4907,7 +4907,7 @@ let apply () =
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
            }]);
-        ((Some "obj"), (Some `RA),
+        ((Some "obj"), (Some RA),
           [{
              symbols =
                [Token
@@ -5158,7 +5158,7 @@ let apply () =
                      | Some cst -> `Obj (_loc, cst)
                      | None  -> `ObjEnd _loc : 'exp )))
           }]);
-        ((Some "unary minus"), (Some `NA),
+        ((Some "unary minus"), (Some LA),
           [{
              symbols =
                [Token
@@ -5185,7 +5185,7 @@ let apply () =
                     (_loc : Locf.t)  ->
                     let x = __fan_0.txt in (Fan_ops.mkumin _loc x e : 'exp )))
           }]);
-        ((Some "apply"), (Some `LA),
+        ((Some "apply"), (Some LA),
           [{
              symbols = [Self; Self];
              annot = "`App (_loc, e1, e2)\n";
@@ -5236,7 +5236,7 @@ let apply () =
                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
                     (`Lazy (_loc, e) : 'exp )))
           }]);
-        ((Some "label"), (Some `NA),
+        ((Some "label"), (Some LA),
           [{
              symbols =
                [Token
@@ -5326,7 +5326,7 @@ let apply () =
                  (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
                     -> (`OptLablS (_loc, i) : 'exp )))
           }]);
-        ((Some "."), (Some `LA),
+        ((Some "."), (Some LA),
           [{
              symbols =
                [Self;
@@ -5415,7 +5415,7 @@ let apply () =
                     ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
                     (`Send (_loc, e, lab) : 'exp )))
           }]);
-        ((Some "~-"), (Some `NA),
+        ((Some "~-"), (Some LA),
           [{
              symbols =
                [Token
@@ -10714,7 +10714,7 @@ let apply () =
                      ~__fan_0:_  (_loc : Locf.t)  ->
                      (`LetIn (_loc, rf, bi, ce) : 'clexp )))
            }]);
-        ((Some "apply"), (Some `NA),
+        ((Some "apply"), (Some LA),
           [{
              symbols =
                [Self; Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "label")];
@@ -12214,7 +12214,7 @@ let apply_ctyp () =
          }]) : Gramf.olevel ));
   Gramf.extend (ctyp : 'ctyp Gramf.t )
     (None,
-      ([((Some "alias"), (Some `LA),
+      ([((Some "alias"), (Some LA),
           [{
              symbols =
                [Self;
@@ -12232,7 +12232,7 @@ let apply_ctyp () =
                      ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
                      (`Alias (_loc, t1, i) : 'ctyp )))
            }]);
-       ((Some "forall"), (Some `LA),
+       ((Some "forall"), (Some LA),
          [{
             symbols =
               [Token
@@ -12250,7 +12250,7 @@ let apply_ctyp () =
                     ~__fan_1:(t1 : 'typevars)  ~__fan_0:_  (_loc : Locf.t) 
                     -> (`TyPol (_loc, t1, t2) : 'ctyp )))
           }]);
-       ((Some "arrow"), (Some `RA),
+       ((Some "arrow"), (Some RA),
          [{
             symbols =
               [Self;
@@ -12265,7 +12265,7 @@ let apply_ctyp () =
                     ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
                     (`Arrow (_loc, t1, t2) : 'ctyp )))
           }]);
-       ((Some "label"), (Some `NA),
+       ((Some "label"), (Some LA),
          [{
             symbols =
               [Token
@@ -12333,7 +12333,7 @@ let apply_ctyp () =
                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
                    (`OptLabl (_loc, i, t) : 'ctyp )))
          }]);
-       ((Some "apply"), (Some `LA),
+       ((Some "apply"), (Some LA),
          [{
             symbols = [Self; Self];
             annot = "`App (_loc, t2, t1)\n";

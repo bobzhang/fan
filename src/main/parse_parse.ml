@@ -39,7 +39,7 @@ let g =
                "TRY"; "PEEK";
                "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level";
-               "LA"; "RA"; "NA"; "+";"*";"?"; "=";
+               "LA"; "RA" (* "NA" *); "+";"*";"?"; "=";
                "@";
                "Inline";
                "Local"] ();;
@@ -386,7 +386,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
        %{{label ;assoc;rules}} ]
 
   assoc :
-  [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
+  [ ("LA"|"RA" as x) %exp{$uid:x} ]
 
       
   rule_list :

@@ -27,10 +27,11 @@ and print_sons (start:string) (decomp:'a -> (string * 'a list))
           pp f "%s%a@\n%s%a"
             start (print_node decomp (pref ^ "| ")) s
             pref  (print_sons "|-"  decomp  pref ) sons 
-let pp_assoc f  = function
-    | `LA -> pp f "LA"
-    | `RA -> pp f "RA"
-    | `NA -> pp f "NA"           
+let pp_assoc f  (x:Gdefs.assoc) =
+  match x with 
+  | LA -> pp f "LA"
+  | RA -> pp f "RA"
+
 
 class type grammar_print  = object
   method set_action : bool -> unit
