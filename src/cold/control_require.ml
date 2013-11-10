@@ -9,17 +9,21 @@ let () =
     Gramf.unsafe_extend_single (item : 'item Gramf.t )
       (None,
         ((None, None,
-           [([Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "require"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-               Tokenf.pattern )],
-              ("add s\n",
+           [{
+              symbols =
+                [Token
+                   ({
+                      descr =
+                        { tag = `Key; word = (A "require"); tag_name = "Key"
+                        }
+                    } : Tokenf.pattern );
+                Token
+                  ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                  Tokenf.pattern )];
+              annot = "add s\n";
+              fn =
                 (Gramf.mk_action
                    (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                       (_loc : Locf.t)  ->
-                      let s = __fan_1.txt in (add s : 'item )))))]) : 
-        Gramf.olevel ))
+                      let s = __fan_1.txt in (add s : 'item )))
+            }]) : Gramf.olevel ))

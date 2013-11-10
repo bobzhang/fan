@@ -9,126 +9,178 @@ let _ =
   Gramf.unsafe_extend_single (fan_quot : 'fan_quot Gramf.t )
     (None,
       ((None, None,
-         [([Token
-              ({
-                 descr =
-                   { tag = `Key; word = (A "derive"); tag_name = "Key" }
-               } : Tokenf.pattern );
-           Token
-             ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
-             Tokenf.pattern );
-           List1 (Nterm (Gramf.obj (id : 'id Gramf.t )));
-           Token
-             ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
-             Tokenf.pattern )],
-            ("List.iter Typehook.plugin_add plugins\n",
+         [{
+            symbols =
+              [Token
+                 ({
+                    descr =
+                      { tag = `Key; word = (A "derive"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              List1 (Nterm (Gramf.obj (id : 'id Gramf.t )));
+              Token
+                ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+                Tokenf.pattern )];
+            annot = "List.iter Typehook.plugin_add plugins\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(plugins : 'id list)  ~__fan_1:_ 
                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (List.iter Typehook.plugin_add plugins : 'fan_quot )))));
-         ([Token
-             ({ descr = { tag = `Key; word = (A "unload"); tag_name = "Key" }
-              } : Tokenf.pattern );
-          List1sep
-            ((Nterm (Gramf.obj (id : 'id Gramf.t ))),
-              (Token
-                 ({ descr = { tag = `Key; word = (A ","); tag_name = "Key" }
-                  } : Tokenf.pattern )))],
-           ("List.iter Typehook.plugin_remove plugins\n",
+                    (List.iter Typehook.plugin_add plugins : 'fan_quot )))
+          };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "unload"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             List1sep
+               ((Nterm (Gramf.obj (id : 'id Gramf.t ))),
+                 (Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ","); tag_name = "Key" }
+                     } : Tokenf.pattern )))];
+           annot = "List.iter Typehook.plugin_remove plugins\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_1:(plugins : 'id list)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   (List.iter Typehook.plugin_remove plugins : 'fan_quot )))));
-         ([Token
-             ({ descr = { tag = `Key; word = (A "clear"); tag_name = "Key" }
-              } : Tokenf.pattern )],
-           ("State.reset_current_filters ()\n",
+                   (List.iter Typehook.plugin_remove plugins : 'fan_quot )))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "clear"); tag_name = "Key" }
+                 } : Tokenf.pattern )];
+           annot = "State.reset_current_filters ()\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.reset_current_filters () : 'fan_quot )))));
-         ([Token
-             ({ descr = { tag = `Key; word = (A "keep"); tag_name = "Key" } } : 
-             Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
-            Tokenf.pattern )],
-           ("State.keep := true\n",
+                   (State.reset_current_filters () : 'fan_quot )))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "keep"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
+               Tokenf.pattern )];
+           annot = "State.keep := true\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.keep := true : 'fan_quot )))));
-         ([Token
-             ({ descr = { tag = `Key; word = (A "keep"); tag_name = "Key" } } : 
-             Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" } } : 
-            Tokenf.pattern )],
-           ("State.keep := false\n",
+                   (State.keep := true : 'fan_quot )))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "keep"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" }
+                } : Tokenf.pattern )];
+           annot = "State.keep := false\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.keep := false : 'fan_quot )))));
-         ([Token
-             ({
-                descr =
-                  { tag = `Key; word = (A "show_code"); tag_name = "Key" }
-              } : Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
-            Tokenf.pattern )],
-           ("Typehook.show_code := true\n",
+                   (State.keep := false : 'fan_quot )))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "show_code"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
+               Tokenf.pattern )];
+           annot = "Typehook.show_code := true\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Typehook.show_code := true : 'fan_quot )))));
-         ([Token
-             ({
-                descr =
-                  { tag = `Key; word = (A "show_code"); tag_name = "Key" }
-              } : Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" } } : 
-            Tokenf.pattern )],
-           ("Typehook.show_code := false\n",
+                   (Typehook.show_code := true : 'fan_quot )))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "show_code"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" }
+                } : Tokenf.pattern )];
+           annot = "Typehook.show_code := false\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Typehook.show_code := false : 'fan_quot )))))]) : 
-      Gramf.olevel ));
+                   (Typehook.show_code := false : 'fan_quot )))
+         }]) : Gramf.olevel ));
   Gramf.unsafe_extend_single (id : 'id Gramf.t )
     (None,
       ((None, None,
-         [([Token
-              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-              Tokenf.pattern )],
-            ("x\n",
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+                 Tokenf.pattern )];
+            annot = "x\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in (x : 'id )))));
-         ([Token
-             ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
-             Tokenf.pattern )],
-           ("x\n",
+                    let x = __fan_0.txt in (x : 'id )))
+          };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+                Tokenf.pattern )];
+           annot = "x\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (x : 'id )))))]) : Gramf.olevel ));
+                   let x = __fan_0.txt in (x : 'id )))
+         }]) : Gramf.olevel ));
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
     (None,
       ((None, None,
-         [([Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t ));
-           Token
-             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
-             Tokenf.pattern )],
-            ("",
+         [{
+            symbols =
+              [Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t ));
+              Token
+                ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+                Tokenf.pattern )];
+            annot = "";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (() : 'fan_quot_semi )))))]) : Gramf.olevel ));
+                    (() : 'fan_quot_semi )))
+          }]) : Gramf.olevel ));
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
     (None,
       ((None, None,
-         [([List1
-              (Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))],
-            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
+         [{
+            symbols =
+              [List1
+                 (Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))];
+            annot = "(`Uid (_loc, \"()\") : FAst.exp )\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))))]) : 
-      Gramf.olevel ))
+                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))
+          }]) : Gramf.olevel ))
 let _ =
   Foptions.add
     ("-keep", (Arg.Set State.keep), "Keep the included type definitions");

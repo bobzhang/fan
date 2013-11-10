@@ -4,12 +4,16 @@ let eoi_entry entry =
   Gramf.extend_single (entry_eoi : 'entry_eoi Gramf.t )
     (None,
       ((None, None,
-         [([Nterm (Gramf.obj (entry : 'entry Gramf.t ));
-           Token
-             ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-             Tokenf.pattern )],
-            ("x\n",
+         [{
+            symbols =
+              [Nterm (Gramf.obj (entry : 'entry Gramf.t ));
+              Token
+                ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
+                Tokenf.pattern )];
+            annot = "x\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(x : 'entry)  (_loc : Locf.t)  ->
-                    (x : 'entry_eoi )))))]) : Gramf.olevel ));
+                    (x : 'entry_eoi )))
+          }]) : Gramf.olevel ));
   entry_eoi

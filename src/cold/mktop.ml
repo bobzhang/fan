@@ -355,12 +355,18 @@ let _ =
   Gramf.extend_single (p : 'p Gramf.t )
     (None,
       ((None, None,
-         [([Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-           Token
-             ({ descr = { tag = `Key; word = (A "when"); tag_name = "Key" } } : 
-             Tokenf.pattern );
-           Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
+         [{
+            symbols =
+              [Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+              Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "when"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+              Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
+            annot =
+              "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
                     (_loc : Locf.t)  ->
@@ -371,9 +377,13 @@ let _ =
                                (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
                                (`Case
                                   (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                    FAst.exp ) : 'p )))));
-         ([Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-           ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
+                    FAst.exp ) : 'p )))
+          };
+         {
+           symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
+           annot =
+             "`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                    (`Fun
@@ -382,7 +392,8 @@ let _ =
                            (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
                              (`Case
                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                   'p )))))]) : Gramf.olevel ))
+                   'p )))
+         }]) : Gramf.olevel ))
 let () = of_exp ~name:(d, "p") ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
@@ -392,17 +403,21 @@ let _ =
   Gramf.extend_single (a : 'a Gramf.t )
     (None,
       ((None, None,
-         [([Token
-              ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
-              Tokenf.pattern );
-           Token
-             ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
-             Tokenf.pattern );
-           List1 (Nterm (Gramf.obj (n : 'n Gramf.t )));
-           Token
-             ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
-             Tokenf.pattern )],
-            ("Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          FAst.stru )) ns)\n",
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
+                 Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              List1 (Nterm (Gramf.obj (n : 'n Gramf.t )));
+              Token
+                ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
+                Tokenf.pattern )];
+            annot =
+              "Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          FAst.stru )) ns)\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_3:_  ~__fan_2:(ns : 'n list)  ~__fan_1:_ 
                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -422,39 +437,51 @@ let _ =
                                   (`Bind
                                      (_loc, pl,
                                        (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
-                               FAst.stru )) ns) : 'a )))))]) : Gramf.olevel ));
+                               FAst.stru )) ns) : 'a )))
+          }]) : Gramf.olevel ));
   Gramf.extend_single (n : 'n Gramf.t )
     (None,
       ((None, None,
-         [([Token
-              ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-              Tokenf.pattern )],
-            ("(x, None)\n",
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+                 Tokenf.pattern )];
+            annot = "(x, None)\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
-                    ((x, None) : 'n )))));
-         ([Token
-             ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-             Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Key; word = (A "as"); tag_name = "Key" } } : 
-            Tokenf.pattern );
-          Token
-            ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-            Tokenf.pattern )],
-           ("(x, (Some y))\n",
+                    ((x, None) : 'n )))
+          };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+                Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "as"); tag_name = "Key" } } : 
+               Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+               Tokenf.pattern )];
+           annot = "(x, (Some y))\n";
+           fn =
              (Gramf.mk_action
                 (fun ~__fan_2:(y : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
-                   ((x, (Some y)) : 'n )))))]) : Gramf.olevel ));
+                   ((x, (Some y)) : 'n )))
+         }]) : Gramf.olevel ));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       ((None, None,
-         [([List1 (Nterm (Gramf.obj (a : 'a Gramf.t )))],
-            ("Ast_gen.sem_of_list xs\n",
+         [{
+            symbols = [List1 (Nterm (Gramf.obj (a : 'a Gramf.t )))];
+            annot = "Ast_gen.sem_of_list xs\n";
+            fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(xs : 'a list)  (_loc : Locf.t)  ->
-                    (Ast_gen.sem_of_list xs : 'import )))))]) : Gramf.olevel ))
+                    (Ast_gen.sem_of_list xs : 'import )))
+          }]) : Gramf.olevel ))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

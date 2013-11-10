@@ -68,7 +68,12 @@ and node = {
     son     : tree   ;
     brother : tree   }
 
-and production= symbol list  *   (string * Gaction.t)
+and production= {
+    symbols : symbol list;
+    annot : string;
+    fn : Gaction.t
+   }
+
 
 (* number * symbols * action_as_tring * action *)
 and anno_action =

@@ -108,7 +108,7 @@ and using_node   node acc =
   | LocAct (_, _) | DeadEnd -> acc 
 
 
-let add_production  ((gsymbols, (annot,action)):Gdefs.production) tree =
+let add_production  ({symbols = gsymbols; annot; fn = action}:Gdefs.production) tree =
   let (anno_action : Gdefs.anno_action) =
     {arity = List.length gsymbols; symbols =  gsymbols;
      annot=  annot; fn = action} in
@@ -147,16 +147,16 @@ let add_production  ((gsymbols, (annot,action)):Gdefs.production) tree =
         | DeadEnd -> LocAct (anno_action, [])   in 
   insert gsymbols tree 
     
-let add_production_in_level ((symbols, action) as prod) (slev : Gdefs.level) =
-  let (suffix,symbols1) = get_initial symbols in
+let add_production_in_level ((* (symbols, action) *)x :  Gdefs.production) (slev : Gdefs.level) =
+  let (suffix,symbols1) = get_initial x.symbols in
   if suffix then
     {slev with
-     lsuffix = add_production  (symbols1, action) slev.lsuffix;
-     productions = prod::slev.productions }
+     lsuffix = add_production  {x with symbols = symbols1} slev.lsuffix;
+     productions = x::slev.productions }
   else
     {slev with
-     lprefix = add_production  (symbols1 ,action) slev.lprefix;
-     productions = prod::slev.productions }
+     lprefix = add_production  {x with symbols = symbols1}  slev.lprefix;
+     productions = x::slev.productions }
 
 
 let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
@@ -215,8 +215,9 @@ let rec scan_olevels entry (levels: Gdefs.olevel list ) =
   List.map  (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
-and scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  = 
-  (List.map
+and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gdefs.production  = 
+  {x with symbols =
+   (List.map
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
        let diff =
@@ -232,15 +233,17 @@ and scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  =
        match symbol with
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol
-     ) symbols,x)
+     ) symbols)}
 
 
 let rec unsafe_scan_olevels entry (levels: Gdefs.olevel list ) =
   List.map  (unsafe_scan_olevel entry) levels
 and unsafe_scan_olevel entry (x,y,prods) =
   (x,y,List.map (unsafe_scan_product entry) prods)
-and unsafe_scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  = 
-  (List.map
+and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production)
+    : Gdefs.production  = 
+  {x with symbols =
+   (List.map
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
        let () = entry.gram.gfilter.kwds <-
@@ -248,8 +251,7 @@ and unsafe_scan_product (entry:Gdefs.entry) (symbols,x) : Gdefs.production  =
        let () = check_gram entry symbol in
        match symbol with
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
-       | _ -> symbol
-     ) symbols,x)
+       | _ -> symbol) symbols)}
     
 
 let unsafe_extend entry (position,levels) =

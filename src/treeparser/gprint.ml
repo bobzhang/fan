@@ -77,7 +77,7 @@ class text_grammar : grammar_print = object(self:'self)
       List1sep (_, _) | Try _ | Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
-      f ((symbols,(annot,_action)):Gdefs.production) =
+      f ({symbols;annot;_}:Gdefs.production) =
     if not action then
       pp f "@[<0>%a@]" (* action ignored*)
         (Formatf.pp_list self#symbol ~sep:";@;") symbols

@@ -52,7 +52,11 @@ type anno_action = {
     annot : string ;
     fn : action}
 
-type production = symbol list * (string * action )
+type production = {
+    symbols : symbol list ;
+    annot : string ;
+    fn : action }
+
       
 type label = string option
 

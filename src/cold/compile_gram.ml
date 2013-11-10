@@ -166,13 +166,16 @@ and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)
              match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
            let sl = (sl |> (List.map (make_exp tvar))) |> list_of_list in
            let _loc = Ast_loc.loc_of sl in
-           (`Par
+           (`Record
               (_loc,
-                (`Com
-                   (_loc, sl,
-                     (`Par
+                (`Sem
+                   (_loc, (`RecBind (_loc, (`Lid (_loc, "symbols")), sl)),
+                     (`Sem
                         (_loc,
-                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
+                          (`RecBind
+                             (_loc, (`Lid (_loc, "annot")),
+                               (`Str (_loc, action_string)))),
+                          (`RecBind (_loc, (`Lid (_loc, "fn")), action))))))) : 
              FAst.exp ))))
     |> list_of_list
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
