@@ -5,37 +5,14 @@ let quotation_name = '.' ? (uppercase  identchar* '.') *
     (lowercase (identchar | '-') * )
 
 let locname = ident
-let lident = lowercase identchar *
+
 let antifollowident =   identchar +   
-let uident = uppercase identchar *
-
-
-(* let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f'] *)
-let decimal_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-let hex_literal =
-  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
-let oct_literal =
-  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
-let bin_literal =
-  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
-let int_literal =
-  decimal_literal | hex_literal | oct_literal | bin_literal
-let float_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-    ('.' ['0'-'9' '_']* )?
-    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?
-  
 
 let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 
 let symbolchar = '*'|not_star_symbolchar
 
-let left_delimitor = (* At least a safe_delimchars *)
-   '(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>'
-
-let right_delimitor = ')' | [ '|' ]? ']' | '>' ']'
 
   
 
@@ -153,7 +130,11 @@ let  rec token   = %lex_fan{
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
-   | left_delimitor | right_delimitor
+
+   |     (* At least a safe_delimchars *)
+     ('(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>')
+   | (')' | [ '|' ]? ']' | '>' ']')
+
    | ['!' '~' '?']    )
        as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
@@ -218,7 +199,7 @@ let  rec token   = %lex_fan{
        (* $x:id                  *)
        (* ${}                    *)
        (**************************)
-   | '$' ( lident as name) (':'  antifollowident as follow)? as txt %{
+   | '$' ( ocaml_lid as name) (':'  antifollowident as follow)? as txt %{
      let (kind,shift) =
        match follow with
        | None -> ("", 1 )
@@ -229,7 +210,7 @@ let  rec token   = %lex_fan{
           shift ;
           retract = 0;
           cxt = None}}
-   | "$" ( lident as name)? "{"  as txt  %{
+   | "$" ( ocaml_lid as name)? "{"  as txt  %{
      let old = lexbuf.lex_start_p in
      let c = new_cxt () in
      begin

@@ -113,7 +113,83 @@ let _ =
                (97, 122);
                (192, 214);
                (216, 246);
-               (248, 255)]))))
+               (248, 255)]))));
+  "decimal_literal" +>
+    (Sequence
+       ((Characters [(48, 57)]),
+         (Repetition (Characters [(48, 57); (95, 95)]))));
+  "hex_literal" +>
+    (Sequence
+       ((Sequence
+           ((Sequence
+               ((Characters [(48, 48)]), (Characters [(88, 88); (120, 120)]))),
+             (Characters [(48, 57); (65, 70); (97, 102)]))),
+         (Repetition (Characters [(48, 57); (65, 70); (95, 95); (97, 102)]))));
+  "oct_literal" +>
+    (Sequence
+       ((Sequence
+           ((Sequence
+               ((Characters [(48, 48)]), (Characters [(79, 79); (111, 111)]))),
+             (Characters [(48, 55)]))),
+         (Repetition (Characters [(48, 55); (95, 95)]))));
+  "bin_literal" +>
+    (Sequence
+       ((Sequence
+           ((Sequence
+               ((Characters [(48, 48)]), (Characters [(66, 66); (98, 98)]))),
+             (Characters [(48, 49)]))),
+         (Repetition (Characters [(48, 49); (95, 95)]))));
+  "int_literal" +>
+    (Alternative
+       ((Alternative
+           ((Alternative
+               ((Sequence
+                   ((Characters [(48, 57)]),
+                     (Repetition (Characters [(48, 57); (95, 95)])))),
+                 (Sequence
+                    ((Sequence
+                        ((Sequence
+                            ((Characters [(48, 48)]),
+                              (Characters [(88, 88); (120, 120)]))),
+                          (Characters [(48, 57); (65, 70); (97, 102)]))),
+                      (Repetition
+                         (Characters
+                            [(48, 57); (65, 70); (95, 95); (97, 102)])))))),
+             (Sequence
+                ((Sequence
+                    ((Sequence
+                        ((Characters [(48, 48)]),
+                          (Characters [(79, 79); (111, 111)]))),
+                      (Characters [(48, 55)]))),
+                  (Repetition (Characters [(48, 55); (95, 95)])))))),
+         (Sequence
+            ((Sequence
+                ((Sequence
+                    ((Characters [(48, 48)]),
+                      (Characters [(66, 66); (98, 98)]))),
+                  (Characters [(48, 49)]))),
+              (Repetition (Characters [(48, 49); (95, 95)]))))));
+  "float_literal" +>
+    (Sequence
+       ((Sequence
+           ((Sequence
+               ((Characters [(48, 57)]),
+                 (Repetition (Characters [(48, 57); (95, 95)])))),
+             (Alternative
+                (Epsilon,
+                  (Sequence
+                     ((Characters [(46, 46)]),
+                       (Repetition (Characters [(48, 57); (95, 95)])))))))),
+         (Alternative
+            (Epsilon,
+              (Sequence
+                 ((Sequence
+                     ((Sequence
+                         ((Characters [(69, 69); (101, 101)]),
+                           (Alternative
+                              (Epsilon, (Characters [(43, 43); (45, 45)]))))),
+                       (Characters [(48, 57)]))),
+                   (Repetition (Characters [(48, 57); (95, 95)]))))))))
 let named_cases: (string,(Translate_lex.concrete_regexp* FAst.exp)) Hashtbl.t
   = Hashtbl.create 13
 let meta_cset _loc (x : Fcset.t) =

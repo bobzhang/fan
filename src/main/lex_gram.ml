@@ -5,18 +5,6 @@ let quotation_name = '.' ? (uppercase  identchar* '.') *
     (lowercase (identchar | '-') * )
 let antifollowident =   identchar +       
 let locname = ident
-let decimal_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-let hex_literal =
-  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
-let oct_literal =
-  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
-let bin_literal =
-  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
-let int_literal =
-  decimal_literal | hex_literal | oct_literal | bin_literal
-
-    
 };;
 
 

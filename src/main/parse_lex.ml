@@ -27,7 +27,19 @@ let _ =
    "ocaml_lid" +> %re{ lowercase identchar *};
    "ocaml_uid" +> %re{uppercase identchar *};
 
+   "decimal_literal" +> %re{ ['0'-'9'] ['0'-'9' '_']*};
+   "hex_literal" +> %re{  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*};
+   "oct_literal" +> %re{  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*};
+   "bin_literal" +> %re{ '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*};
+   "int_literal" +> %re{decimal_literal | hex_literal | oct_literal | bin_literal};
+   "float_literal" +> %re{
+   ['0'-'9'] ['0'-'9' '_']*
+   ('.' ['0'-'9' '_']* )?
+   (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?}
+  
+
 end
+ 
 let named_cases =
   (Hashtbl.create 13 : (string, (Translate_lex.concrete_regexp * FAst.exp)) Hashtbl.t )
 
