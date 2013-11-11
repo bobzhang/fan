@@ -58,28 +58,70 @@ let meta_here _loc (location : Locf.t) =
         loc_end = { pos_lnum = e; pos_bol = f; pos_cnum = g;_}; loc_ghost = h
         }
     = location in
-  `App
-    (_loc, (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "of_tuple")))),
-      (`Par
-         (_loc,
-           (`Com
-              (_loc, (`Str (_loc, (String.escaped a))),
-                (`Com
-                   (_loc,
-                     (`Com
-                        (_loc,
-                          (`Com
-                             (_loc,
-                               (`Com
-                                  (_loc,
-                                    (`Com
-                                       (_loc,
-                                         (`Com
-                                            (_loc,
-                                              (`Int (_loc, (string_of_int b))),
-                                              (`Int (_loc, (string_of_int c))))),
-                                         (`Int (_loc, (string_of_int d))))),
-                                    (`Int (_loc, (string_of_int e))))),
-                               (`Int (_loc, (string_of_int f))))),
-                          (`Int (_loc, (string_of_int g))))),
-                     (if h then `Lid (_loc, "true") else `Lid (_loc, "false")))))))))
+  (`Constraint
+     (_loc,
+       (`Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "loc_start")),
+                      (`Record
+                         (_loc,
+                           (`Sem
+                              (_loc,
+                                (`RecBind
+                                   (_loc, (`Lid (_loc, "pos_fname")),
+                                     (`Str (_loc, (String.escaped a))))),
+                                (`Sem
+                                   (_loc,
+                                     (`RecBind
+                                        (_loc, (`Lid (_loc, "pos_lnum")),
+                                          (`Int (_loc, (string_of_int b))))),
+                                     (`Sem
+                                        (_loc,
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "pos_bol")),
+                                               (`Int
+                                                  (_loc, (string_of_int c))))),
+                                          (`RecBind
+                                             (_loc,
+                                               (`Lid (_loc, "pos_cnum")),
+                                               (`Int
+                                                  (_loc, (string_of_int d))))))))))))))),
+                 (`Sem
+                    (_loc,
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "loc_end")),
+                           (`Record
+                              (_loc,
+                                (`Sem
+                                   (_loc,
+                                     (`RecBind
+                                        (_loc, (`Lid (_loc, "pos_fname")),
+                                          (`Str (_loc, (String.escaped a))))),
+                                     (`Sem
+                                        (_loc,
+                                          (`RecBind
+                                             (_loc,
+                                               (`Lid (_loc, "pos_lnum")),
+                                               (`Int
+                                                  (_loc, (string_of_int e))))),
+                                          (`Sem
+                                             (_loc,
+                                               (`RecBind
+                                                  (_loc,
+                                                    (`Lid (_loc, "pos_bol")),
+                                                    (`Int
+                                                       (_loc,
+                                                         (string_of_int f))))),
+                                               (`RecBind
+                                                  (_loc,
+                                                    (`Lid (_loc, "pos_cnum")),
+                                                    (`Int
+                                                       (_loc,
+                                                         (string_of_int g))))))))))))))),
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "loc_ghost")),
+                           (`Lid (_loc, (if h then "true" else "false"))))))))))),
+       (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))) : FAst.ep )

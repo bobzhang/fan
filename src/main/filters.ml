@@ -27,7 +27,7 @@ let map_exp = with exp function
   | %{ __PWD__ } ->
       %{$str'{Filename.dirname (Locf.file_name _loc) }}
   | %{ __LOCATION__ } ->
-      Ast_gen.meta_here _loc _loc
+      (Ast_gen.meta_here _loc _loc :> exp)
   | e -> e ;;
 
 Ast_filters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;

@@ -2459,6 +2459,15 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#loc _loc _a0), (self#ep _loc _a1))))))
+        | `Constraint (_a0,_a1,_a2) ->
+            `App
+              (_loc, (`Vrn (_loc, "Constraint")),
+                (`Par
+                   (_loc,
+                     (`Com
+                        (_loc, (self#loc _loc _a0),
+                          (`Com
+                             (_loc, (self#ep _loc _a1), (self#ctyp _loc _a2))))))))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | `ArrayEmpty _a0 ->
             `App (_loc, (`Vrn (_loc, "ArrayEmpty")), (self#loc _loc _a0))

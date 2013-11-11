@@ -69,7 +69,7 @@ let  rec token = %lex_fan{
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
 
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as txt %{
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" | "@" as txt %{
     let loc = !! lexbuf in `Sym {loc;txt}}
 
   | ocaml_blank + %{ token lexbuf }

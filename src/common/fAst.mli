@@ -602,6 +602,7 @@ type ep =
   | `Com of (loc * ep * ep)
   | `Sem of (loc * ep * ep)
   | `Par of (loc * ep)
+  | `Constraint of (loc * ep * ctyp)
   | any
   | `ArrayEmpty of loc 
   | `Array of (loc * ep )

@@ -5,9 +5,13 @@ Translate_lex:
   remove_as
   ;
 };;
-open Util
+(* open Util *)
 let named_regexps =
   (Hashtbl.create 13 : (string, Translate_lex.concrete_regexp) Hashtbl.t)
+
+let named_cases =
+  (Hashtbl.create 13 : (string, (Translate_lex.concrete_regexp * FAst.exp)) Hashtbl.t )
+
 let _ =
   let (+>) = Hashtbl.add named_regexps in
   begin
@@ -36,12 +40,14 @@ let _ =
    ['0'-'9'] ['0'-'9' '_']*
    ('.' ['0'-'9' '_']* )?
    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?}
-  
+   end
 
-end
- 
-let named_cases =
-  (Hashtbl.create 13 : (string, (Translate_lex.concrete_regexp * FAst.exp)) Hashtbl.t )
+
+let _ =
+  let (+>) = Hashtbl.add named_cases in
+  begin
+  "ocaml_lid" +> (%re{ocaml_uid as txt}, %exp@here{`Uid{loc = !!lexbuf; txt }} )
+  end
 
 let meta_cset _loc (x:Fcset.t)=
   Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
@@ -57,7 +63,10 @@ let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp )  =
   | Alternative(a0,a1) ->
       %ep{Alternative ${meta_concrete_regexp _loc a0} ${meta_concrete_regexp _loc a1}}
   | Repetition a -> %ep{Repetition ${meta_concrete_regexp _loc a}}
-  | Bind _ -> failwithf "Bind not supported yet"
+  | Bind (a,(loc,s)) ->
+  %ep{Bind (${meta_concrete_regexp _loc  a},
+  (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))}
+  (* failwithf "Bind not supported yet" *)
         
 let _ = begin
   Hashtbl.add named_regexps "eof" Eof ;

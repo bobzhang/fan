@@ -162,7 +162,7 @@ and clfield =
   | `Eq of (ctyp* ctyp) | `Initializer of exp | ant] 
 type ep =
   [ vid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
-  | `Sem of (ep* ep) | `Par of ep | any | `ArrayEmpty | `Array of ep
-  | `Record of rec_bind | literal] 
+  | `Sem of (ep* ep) | `Par of ep | `Constraint of (ep* ctyp) | any
+  | `ArrayEmpty | `Array of ep | `Record of rec_bind | literal] 
 and rec_bind =
   [ `RecBind of (vid* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

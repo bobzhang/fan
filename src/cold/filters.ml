@@ -29,7 +29,8 @@ let map_exp =
   | (`Lid (_loc,"__PWD__") : FAst.exp) ->
       (`Str (_loc, (String.escaped (Filename.dirname (Locf.file_name _loc)))) : 
       FAst.exp )
-  | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> Ast_gen.meta_here _loc _loc
+  | (`Lid (_loc,"__LOCATION__") : FAst.exp) ->
+      (Ast_gen.meta_here _loc _loc :>exp)
   | e -> e
 let _ =
   Ast_filters.register_stru_filter

@@ -845,6 +845,9 @@ let rec pp_print_ep: Format.formatter -> ep -> unit =
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" pp_print_ep _a0
           pp_print_ep _a1
     | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" pp_print_ep _a0
+    | `Constraint (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" pp_print_ep _a0
+          pp_print_ctyp _a1
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
     | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" pp_print_ep _a0
@@ -1705,6 +1708,9 @@ class print =
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#ep _a0 self#ep
               _a1
         | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" self#ep _a0
+        | `Constraint (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#ep _a0
+              self#ctyp _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#ep _a0
@@ -2489,6 +2495,9 @@ class map =
       | `Sem (_a0,_a1) ->
           let _a0 = self#ep _a0 in let _a1 = self#ep _a1 in `Sem (_a0, _a1)
       | `Par _a0 -> let _a0 = self#ep _a0 in `Par _a0
+      | `Constraint (_a0,_a1) ->
+          let _a0 = self#ep _a0 in
+          let _a1 = self#ctyp _a1 in `Constraint (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>ep)
       | `ArrayEmpty -> `ArrayEmpty
       | `Array _a0 -> let _a0 = self#ep _a0 in `Array _a0
@@ -3008,6 +3017,7 @@ class fold =
       | `Com (_a0,_a1) -> let self = self#ep _a0 in self#ep _a1
       | `Sem (_a0,_a1) -> let self = self#ep _a0 in self#ep _a1
       | `Par _a0 -> self#ep _a0
+      | `Constraint (_a0,_a1) -> let self = self#ep _a0 in self#ctyp _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `ArrayEmpty -> self
       | `Array _a0 -> self#ep _a0

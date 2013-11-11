@@ -154,10 +154,26 @@ let meta_here _loc (location:Locf.t)  =
        pos_cnum = g;
        _};
        loc_ghost=h;} = location in
-  %exp'{ Locf.of_tuple
-     ($str':a, $int':b, $int':c, $int':d,
-      $int':e, $int':f, $int':g,
-      ${if h then %exp'{ true } else %exp'{ false } }) }
+  %ep{({
+         loc_start = {
+         pos_fname = $str':a;
+         pos_lnum = $int':b;
+         pos_bol = $int':c;
+         pos_cnum = $int':d
+       };
+         loc_end = {
+         pos_fname=$str':a;
+         pos_lnum = $int':e;
+         pos_bol = $int':f;
+         pos_cnum = $int':g
+       };
+         loc_ghost = $bool':h;
+         
+       } : Locf.t)}
+  (* %exp'{ Locf.of_tuple *)
+  (*    ($str':a, $int':b, $int':c, $int':d, *)
+  (*     $int':e, $int':f, $int':g, *)
+  (*     ${if h then %exp'{ true } else %exp'{ false } }) } *)
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/ast_gen.cmo" *)

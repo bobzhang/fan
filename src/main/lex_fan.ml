@@ -77,6 +77,7 @@ let  rec token   = %lex_fan{
        `Inf{loc= !!lexbuf; txt ; level = 4}
      else 
        `Lid {loc= !!lexbuf;txt}}
+   (* | @ocaml_lid *)
    | ocaml_uid as txt  %{ `Uid {loc= !!lexbuf;txt}}
    | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
        (* FIXME - int_of_string ("-" ^ s) ??

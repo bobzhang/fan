@@ -985,6 +985,9 @@ let rec pp_print_ep: Format.formatter -> ep -> unit =
     | `Par (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
           pp_print_ep _a1
+    | `Constraint (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc
+          _a0 pp_print_ep _a1 pp_print_ctyp _a2
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | `ArrayEmpty _a0 ->
         Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
@@ -1990,6 +1993,9 @@ class print =
         | `Par (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" self#loc _a0 self#ep
               _a1
+        | `Constraint (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
+              _a0 self#ep _a1 self#ctyp _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `ArrayEmpty _a0 ->
             Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
@@ -3117,6 +3123,10 @@ class map =
           let _a2 = self#ep _a2 in `Sem (_a0, _a1, _a2)
       | `Par (_a0,_a1) ->
           let _a0 = self#loc _a0 in let _a1 = self#ep _a1 in `Par (_a0, _a1)
+      | `Constraint (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ep _a1 in
+          let _a2 = self#ctyp _a2 in `Constraint (_a0, _a1, _a2)
       | #any as _a0 -> (self#any _a0 : any  :>ep)
       | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
@@ -3888,6 +3898,8 @@ class fold =
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
       | `Par (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
+      | `Constraint (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in let self = self#ep _a1 in self#ctyp _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
@@ -4645,6 +4657,9 @@ let rec strip_ep: FAst.ep -> FAstN.ep =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_ep _a1 in let _a2 = strip_ep _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = strip_ep _a1 in `Par _a1
+  | `Constraint (_a0,_a1,_a2) ->
+      let _a1 = strip_ep _a1 in
+      let _a2 = strip_ctyp _a2 in `Constraint (_a1, _a2)
   | #any as _a0 -> (strip_any _a0 :>FAstN.ep)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_ep _a1 in `Array _a1
