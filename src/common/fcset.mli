@@ -1,6 +1,6 @@
 
 (** a list of intervals *)  
-type t 
+type t = (int * int) list
 
 val empty : t
 

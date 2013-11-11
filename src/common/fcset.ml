@@ -1,7 +1,7 @@
 
 
-type t = (int * int) list
-
+type t = (int * int) list 
+  
 let empty = []
 
 let is_empty = function

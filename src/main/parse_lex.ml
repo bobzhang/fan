@@ -1,14 +1,58 @@
-
-open Translate_lex
+%import{
+Translate_lex:
+  as_cset
+  regexp_for_string
+  remove_as
+  ;
+};;
+open Util
 let named_regexps =
-  (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
+  (Hashtbl.create 13 : (string, Translate_lex.concrete_regexp) Hashtbl.t)
+let _ =
+  let (+>) = Hashtbl.add named_regexps in
+  begin
+    "newline"  +> %re{('\010' | '\013' | "\013\010")};
+    "ocaml_blank" +> %re{[' ' '\009' '\012']};
+    "lowercase" +> %re{['a'-'z' '\223'-'\246' '\248'-'\255' '_']};
+    "uppercase"  +> %re{['A'-'Z' '\192'-'\214' '\216'-'\222']};
+    "identchar" +> %re{['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']};
 
+    "hexa_char" +> %re{['0'-'9' 'A'-'F' 'a'-'f']};
+    "ident" +> %re{(lowercase|uppercase) identchar*};
+    "ocaml_escaped_char" +>
+    %re{  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+       | ['0'-'9'] ['0'-'9'] ['0'-'9']
+       |'x' hexa_char hexa_char)};
+    (* "ocaml_char" +> %re{( [^ '\\' '\010' '\013'] | ocaml_escaped_char)}; *)
+      "ocaml_lid" +> %re{ lowercase identchar *};
+      "ocaml_uid" +> %re{uppercase identchar *};
+
+end
+let named_cases =
+  (Hashtbl.create 13 : (string, (Translate_lex.concrete_regexp * FAst.exp)) Hashtbl.t )
+
+let meta_cset _loc (x:Fcset.t)=
+  Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
+    
+(** FIXME derive later *)    
+let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp )  =
+  match x with
+  | Epsilon -> %ep{ Epsilon}
+  | Eof -> %ep{Eof}
+  | Characters a -> %ep{Characters ${meta_cset _loc a}}
+  | Sequence (a0,a1) ->
+      %ep{Sequence ${meta_concrete_regexp _loc a0} ${meta_concrete_regexp _loc a1}}
+  | Alternative(a0,a1) ->
+      %ep{Alternative ${meta_concrete_regexp _loc a0} ${meta_concrete_regexp _loc a1}}
+  | Repetition a -> %ep{Repetition ${meta_concrete_regexp _loc a}}
+  | Bind _ -> failwithf "Bind not supported yet"
+        
 let _ = begin
   Hashtbl.add named_regexps "eof" Eof ;
 end
 
 exception UnboundRegexp;;
-
+exception UnboundCase;;
 let g =
   Gramf.create_lexer ~annot:"Lexer's lexer"
     ~keywords:["as";"eof";"let";
@@ -17,7 +61,7 @@ let g =
                "_" ; "*" ; "[" ;
                "]" ; "*" ; "?" ;
                "+" ; "(" ; ")" ;
-               "-"] ();;
+               "-" ; "@" ] ();;
 
 %create{(g:Gramf.t) regexp
           char_class
@@ -27,10 +71,10 @@ let g =
           lex_fan
       };;
 
-(* open Parse_lex2,
-   it will suck eof handling, to be investigated.
+(*
    since we do unsafe_extend on top of Gramf...
  *)
+
 
 %extend{(g:Gramf.t)  (* FIXME location wrong *)
     lex:
@@ -51,13 +95,21 @@ let g =
   case@Local:
     [ regexp as r;  Quot x  %{
       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
-      let e = Tokenf.quot_expand expander x in (r,e)}]  
+      let e = Tokenf.quot_expand expander x in (r,e)}
+    | "@"; Lid@xloc x %{
+        try Hashtbl.find named_cases x
+        with Not_found ->
+          begin
+            Fan_warnings.emitf xloc.loc_start
+              "Reference to unbound case name %s" x;
+            raise UnboundCase
+          end}]  
   declare_regexp:
   ["let"; Lid x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 
       Printf.eprintf
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
-      exit 2 
+       %stru{let _ = ()}
     end
     else begin
       Hashtbl.add named_regexps x r;
@@ -91,14 +143,15 @@ let g =
 
    | "("; S as r1; ")" %{ r1}
    | "eof" %{ Eof}
-   | Lid x %{ begin (* FIXME token with location *)
+   | Lid@xloc x %{
        try Hashtbl.find named_regexps x
        with Not_found ->
-         let p = _loc.loc_start in begin
-           Fan_warnings.emitf p  "Reference to unbound regexp name `%s'" x ;
+         begin 
+           Fan_warnings.emitf xloc.loc_start
+             "Reference to unbound regexp name `%s'" x ;
            raise UnboundRegexp
         end
-    end}
+    }
   ] (* FIXME rule mask more friendly error message *) }
   
   char_class:
@@ -127,7 +180,12 @@ let () =
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
       ~name:(d,"regex")
-      ~entry:declare_regexp ();  
+      ~entry:declare_regexp ();
+    Ast_quotation.add_quotation (d,"re") regexp
+      ~mexp:meta_concrete_regexp
+      ~mpat:meta_concrete_regexp
+      ~exp_filter:(fun x -> (x : FAst.ep :>FAst.exp))
+      ~pat_filter:(fun x -> (x : FAst.ep :>FAst.pat));
   end;;
 
 

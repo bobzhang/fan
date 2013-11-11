@@ -44,12 +44,6 @@ let as_cset = function
   | _ -> raise Bad
         
   
-(* module Id =   struct *)
-(*   type t = (Locf.t * string) *)
-(*   let compare (_,x) (_,y) = String.compare x  y *)
-(* end *)
-  
-(* module IdSet = Set.Make (Id) *)
 
 
 

@@ -1,7 +1,132 @@
-open Translate_lex
-let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13
+let as_cset = Translate_lex.as_cset
+let regexp_for_string = Translate_lex.regexp_for_string
+let remove_as = Translate_lex.remove_as
+open Util
+let named_regexps: (string,Translate_lex.concrete_regexp) Hashtbl.t =
+  Hashtbl.create 13
+let _ =
+  let (+>) = Hashtbl.add named_regexps in
+  "newline" +>
+    (Alternative
+       ((Alternative ((Characters [(10, 10)]), (Characters [(13, 13)]))),
+         (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)])))));
+  "ocaml_blank" +> (Characters [(9, 9); (12, 12); (32, 32)]);
+  "lowercase" +> (Characters [(95, 95); (97, 122); (223, 246); (248, 255)]);
+  "uppercase" +> (Characters [(65, 90); (192, 214); (216, 222)]);
+  "identchar" +>
+    (Characters
+       [(39, 39);
+       (48, 57);
+       (65, 90);
+       (95, 95);
+       (97, 122);
+       (192, 214);
+       (216, 246);
+       (248, 255)]);
+  "hexa_char" +> (Characters [(48, 57); (65, 70); (97, 102)]);
+  "ident" +>
+    (Sequence
+       ((Alternative
+           ((Characters [(95, 95); (97, 122); (223, 246); (248, 255)]),
+             (Characters [(65, 90); (192, 214); (216, 222)]))),
+         (Repetition
+            (Characters
+               [(39, 39);
+               (48, 57);
+               (65, 90);
+               (95, 95);
+               (97, 122);
+               (192, 214);
+               (216, 246);
+               (248, 255)]))));
+  "ocaml_escaped_char" +>
+    (Sequence
+       ((Characters [(92, 92)]),
+         (Alternative
+            ((Alternative
+                ((Characters
+                    [(32, 32);
+                    (34, 34);
+                    (39, 39);
+                    (92, 92);
+                    (98, 98);
+                    (110, 110);
+                    (114, 114);
+                    (116, 116)]),
+                  (Sequence
+                     ((Sequence
+                         ((Characters [(48, 57)]), (Characters [(48, 57)]))),
+                       (Characters [(48, 57)]))))),
+              (Sequence
+                 ((Sequence
+                     ((Characters [(120, 120)]),
+                       (Characters [(48, 57); (65, 70); (97, 102)]))),
+                   (Characters [(48, 57); (65, 70); (97, 102)])))))));
+  "ocaml_lid" +>
+    (Sequence
+       ((Characters [(95, 95); (97, 122); (223, 246); (248, 255)]),
+         (Repetition
+            (Characters
+               [(39, 39);
+               (48, 57);
+               (65, 90);
+               (95, 95);
+               (97, 122);
+               (192, 214);
+               (216, 246);
+               (248, 255)]))));
+  "ocaml_uid" +>
+    (Sequence
+       ((Characters [(65, 90); (192, 214); (216, 222)]),
+         (Repetition
+            (Characters
+               [(39, 39);
+               (48, 57);
+               (65, 90);
+               (95, 95);
+               (97, 122);
+               (192, 214);
+               (216, 246);
+               (248, 255)]))))
+let named_cases: (string,(Translate_lex.concrete_regexp* FAst.exp)) Hashtbl.t
+  = Hashtbl.create 13
+let meta_cset _loc (x : Fcset.t) =
+  Fan_ops.meta_list
+    (fun _loc  (a,b)  ->
+       (`Par
+          (_loc,
+            (`Com
+               (_loc, (`Int (_loc, (string_of_int a))),
+                 (`Int (_loc, (string_of_int b)))))) : FAst.ep )) _loc x
+let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
+  match x with
+  | Epsilon  -> (`Uid (_loc, "Epsilon") : FAst.ep )
+  | Eof  -> (`Uid (_loc, "Eof") : FAst.ep )
+  | Characters a ->
+      (`App (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a)) : 
+      FAst.ep )
+  | Sequence (a0,a1) ->
+      (`App
+         (_loc,
+           (`App
+              (_loc, (`Uid (_loc, "Sequence")),
+                (meta_concrete_regexp _loc a0))),
+           (meta_concrete_regexp _loc a1)) : FAst.ep )
+  | Alternative (a0,a1) ->
+      (`App
+         (_loc,
+           (`App
+              (_loc, (`Uid (_loc, "Alternative")),
+                (meta_concrete_regexp _loc a0))),
+           (meta_concrete_regexp _loc a1)) : FAst.ep )
+  | Repetition a ->
+      (`App
+         (_loc, (`Uid (_loc, "Repetition")), (meta_concrete_regexp _loc a)) : 
+      FAst.ep )
+  | Bind _ -> failwithf "Bind not supported yet"
 let _ = Hashtbl.add named_regexps "eof" Eof
 exception UnboundRegexp
+exception UnboundCase
 let g =
   Gramf.create_lexer ~annot:"Lexer's lexer"
     ~keywords:["as";
@@ -22,7 +147,8 @@ let g =
               "+";
               "(";
               ")";
-              "-"] ()
+              "-";
+              "@"] ()
 let regexp = Gramf.mk_dynamic g "regexp"
 let char_class = Gramf.mk_dynamic g "char_class"
 let char_class1 = Gramf.mk_dynamic g "char_class1"
@@ -170,7 +296,30 @@ let _ =
                        Gramf.parse_string ~loc Syntaxf.exp s in
                      let e = Tokenf.quot_expand expander x in (r, e) : 
                       'case )))
-          }]) : Gramf.olevel ));
+          };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Key; word = (A "@"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+               Tokenf.pattern )];
+           annot =
+             "try Hashtbl.find named_cases x\nwith\n| Not_found  ->\n    (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\" x;\n     raise UnboundCase)\n";
+           fn =
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
+                   (try Hashtbl.find named_cases x
+                    with
+                    | Not_found  ->
+                        (Fan_warnings.emitf xloc.loc_start
+                           "Reference to unbound case name %s" x;
+                         raise UnboundCase) : 'case )))
+         }]) : Gramf.olevel ));
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     (None,
       ((None, None,
@@ -189,7 +338,7 @@ let _ =
                 Tokenf.pattern );
               Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
             annot =
-              "if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
+              "if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_ 
@@ -201,7 +350,7 @@ let _ =
                        (Printf.eprintf
                           "fanlex (warning): multiple definition of named regexp '%s'\n"
                           x;
-                        exit 2)
+                        (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru ))
                      else
                        (Hashtbl.add named_regexps x r;
                         (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )) : 
@@ -398,16 +547,16 @@ let _ =
                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                 Tokenf.pattern )];
            annot =
-             "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n";
+             "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    (Fan_warnings.emitf xloc.loc_start\n       \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let xloc = __fan_0.loc in
                    let x = __fan_0.txt in
                    (try Hashtbl.find named_regexps x
                     with
                     | Not_found  ->
-                        let p = _loc.loc_start in
-                        (Fan_warnings.emitf p
+                        (Fan_warnings.emitf xloc.loc_start
                            "Reference to unbound regexp name `%s'" x;
                          raise UnboundRegexp) : 'regexp )))
          }])] : Gramf.olevel list ));
@@ -490,4 +639,8 @@ let () =
   Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex_fan")
     ~entry:lex_fan ();
   Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")
-    ~entry:declare_regexp ()
+    ~entry:declare_regexp ();
+  Ast_quotation.add_quotation (d, "re") regexp ~mexp:meta_concrete_regexp
+    ~mpat:meta_concrete_regexp
+    ~exp_filter:(fun x  -> (x : FAst.ep  :>FAst.exp))
+    ~pat_filter:(fun x  -> (x : FAst.ep  :>FAst.pat))
