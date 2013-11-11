@@ -15,7 +15,12 @@ let mk (type s) ~eq ~hash =
   let module M =
     struct type t = s let equal = eq let hash = hash end in
   (module Hashtbl.Make (M)  : S with type key = s)
-  
+
+let add_list tbl kvs =
+  List.iter
+    (fun (k,v) ->
+      add tbl k v) kvs
+    
 let memoize f =
   let cache = create 101 in
   fun v ->

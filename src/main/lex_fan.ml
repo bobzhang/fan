@@ -79,25 +79,9 @@ let  rec token   = %lex_fan{
        `Lid {loc= !!lexbuf;txt}}
    | @ocaml_uid
    | @ocaml_int_literal
-   | float_literal as txt %{`Flo {loc = !!lexbuf;txt}}       (** FIXME safety check *)
-   | '"' %{
-       let c = new_cxt () in
-       let old = lexbuf.lex_start_p in
-       begin
-         push_loc_cont c lexbuf lex_string;
-         let loc = old --  lexbuf.lex_curr_p in
-         `Str {loc; txt = buff_contents c}
-       end}
-   | "'" (newline as txt) "'" %{
-       begin
-         update_loc   lexbuf ~retract:1;
-         `Chr {loc =  !!lexbuf;txt}
-       end}
-         
-   | "'" (ocaml_char as txt ) "'" %{ `Chr {loc= !!lexbuf ;txt}}
-         
-   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
-                                                   
+   | @ocaml_float_literal       (** FIXME safety check *)
+   | @ocaml_string
+   | @ocaml_char
    | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{
      `Eident { loc = !! lexbuf ; txt}}
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
@@ -122,7 +106,6 @@ let  rec token   = %lex_fan{
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
-
    |     (* At least a safe_delimchars *)
      ('(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>')
    | (')' | [ '|' ]? ']' | '>' ']')
@@ -140,6 +123,7 @@ let  rec token   = %lex_fan{
    | ocaml_blank +  %{ token lexbuf }
          
          (* comment *)
+   (* | @ocaml_comment  *)
    | "(*" (')' as x) ? %{
        let c = new_cxt () in
        (* let old = lexbuf.lex_start_p in *)

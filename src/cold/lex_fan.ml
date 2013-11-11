@@ -5613,7 +5613,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           and txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc =
+          let (loc :Locf.t)=
             {
               loc_start = (lexbuf.lex_start_p);
               loc_end = (lexbuf.lex_curr_p);
@@ -5628,18 +5628,28 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Flo { loc = (!! lexbuf); txt }
+          `Flo
+            {
+              loc =
+                {
+                  loc_start = (lexbuf.lex_start_p);
+                  loc_end = (lexbuf.lex_curr_p);
+                  loc_ghost = false
+                };
+              txt
+            }
       | 7 ->
-          let c = new_cxt () in
+          let c = Lexing_util.new_cxt () in
           let old = lexbuf.lex_start_p in
-          (push_loc_cont c lexbuf lex_string;
+          (Lexing_util.push_loc_cont c lexbuf lex_string;
            (let loc = old -- lexbuf.lex_curr_p in
             `Str { loc; txt = (buff_contents c) }))
       | 8 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          (update_loc lexbuf ~retract:1; `Chr { loc = (!! lexbuf); txt })
+          (Lexing_util.update_loc lexbuf ~retract:1;
+           `Chr { loc = (!! lexbuf); txt })
       | 9 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -5648,7 +5658,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | 10 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-          (err (Illegal_escape (String.make 1 c))) @@ (!! lexbuf)
+          (Lexing_util.err (Illegal_escape (String.make 1 c))) @@ (!! lexbuf)
       | 11 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)

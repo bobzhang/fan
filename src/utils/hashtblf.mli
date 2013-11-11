@@ -8,6 +8,8 @@ val find_default : default:'a -> ('b, 'a) t -> 'b -> 'a
 
 val find_opt : ('b,'a) t -> 'b -> 'a option
 
+val add_list : ('a, 'b) t -> ('a * 'b) list -> unit
+    
 val mk :
     eq:('a -> 'a -> bool) ->
       hash:('a -> int) -> (module S with type key = 'a)

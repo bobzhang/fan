@@ -10,7 +10,8 @@ let named_regexps =
   (Hashtbl.create 13 : (string, Translate_lex.concrete_regexp) Hashtbl.t)
 
 let named_cases =
-  (Hashtbl.create 13 : (string, (Translate_lex.concrete_regexp * FAst.exp)) Hashtbl.t )
+  (Hashtbl.create 13 :
+     (string, (Translate_lex.concrete_regexp * FAst.exp) list) Hashtbl.t )
 
 let _ =
   let (+>) = Hashtbl.add named_regexps in
@@ -44,18 +45,20 @@ let _ =
 
 
 let _ =
-  let (+>) = Hashtbl.add named_cases in
-  begin
-  "ocaml_uid" +> (%re{ocaml_uid as txt},
-  %exp@here{
-   
+  let _loc = Locf.ghost in
+  Hashtblf.add_list named_cases 
+  [
+  ("ocaml_uid", [(%re{ocaml_uid as txt},
+  %exp{
   `Uid{loc =
   {loc_start = lexbuf.lex_start_p;
    loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false} ; txt }} );
-  "ocaml_int_literal" +> ( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
-  %exp@here{
-  let loc =
+  loc_ghost = false} ; txt }} )]);
+  
+  ("ocaml_int_literal",
+  [( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
+  %exp{
+  let (loc:Locf.t) =
   {loc_start = lexbuf.lex_start_p;
     loc_end = lexbuf.lex_curr_p;
   loc_ghost = false} in
@@ -64,8 +67,92 @@ let _ =
   | Some 'L' -> `Int64 {loc;txt}
   | Some 'n' -> `Nativeint {loc;txt}
   | _ -> `Int {loc;txt}
-  });
-  end
+  })]);
+  
+  ("ocaml_char", [
+  (%re{"'" (newline as txt) "'"}, %exp{
+       begin
+         Lexing_util.update_loc   lexbuf ~retract:1;
+        `Chr {loc =  !!lexbuf;txt}
+       end});
+         
+   (%re{ "'" (ocaml_char as txt ) "'"}, %exp{ `Chr {loc= !!lexbuf ;txt}});
+         
+   (%re{ "'\\" (_ as c)}, %exp{Lexing_util.err (Illegal_escape (String.make 1 c)) @@ !! lexbuf})
+   ]);
+
+  ("ocaml_float_literal",
+  [  (%re{float_literal as txt},
+  %exp{`Flo {loc = {
+  loc_start = lexbuf.lex_start_p;
+  loc_end = lexbuf.lex_curr_p;
+  loc_ghost = false};txt}})]
+  )
+  ;
+  
+  ("ocaml_comment",
+     [(%re{ "(*" (')' as x) ?}, %exp{
+       let c = Lexing_util.new_cxt () in
+       (* let old = lexbuf.lex_start_p in *)
+       begin
+         if x <> None then Lexing_util.warn Comment_start (!!lexbuf);
+         Lexing_util.store c lexbuf;
+         Lexing_util.push_loc_cont c lexbuf lex_comment;
+         ignore (Lexing_util.buff_contents c) ; (* Needed to clean the buffer *)
+         (* let loc = old -- lexbuf.lex_curr_p in *)
+         (* `Comment {loc;txt= buff_contents c} *)
+         token lexbuf (* FIXME may bring it back later *)
+       end})])
+  ;
+  ("ocaml_string",
+  
+   [(%re{'"'}, %exp{
+  let c = Lexing_util.new_cxt () in
+  let old = lexbuf.lex_start_p in
+  begin
+    Lexing_util.push_loc_cont c lexbuf lex_string;
+    let loc = old --  lexbuf.lex_curr_p in
+   `Str {loc; txt = buff_contents c}
+  end}
+  )])
+  ;
+
+  (* ("ocaml_quotation", *)
+  (*    [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift}, %exp{ *)
+  (*      let c = new_cxt () in *)
+  (*      let name = *)
+  (*        match name with *)
+  (*        | Some name -> Tokenf.name_of_string name *)
+  (*        | None -> Tokenf.empty_name  in *)
+  (*      begin *)
+  (*        let old = lexbuf.lex_start_p in *)
+  (*        let txt = *)
+  (*          begin *)
+  (*            store c lexbuf; *)
+  (*            push_loc_cont c lexbuf lex_quotation; *)
+  (*            buff_contents c *)
+  (*          end in *)
+  (*        let loc = old -- lexbuf.lex_curr_p in *)
+  (*        let shift = String.length shift in *)
+  (*        let retract = 1  in *)
+  (*        if x = None then *)
+  (*          `Quot{name;meta;shift;txt;loc;retract} *)
+  (*        else `DirQuotation {name;meta;shift;txt;loc;retract} *)
+  (*      end})]) *)
+
+  (* ; *)
+
+  ("line_directive",
+   [(%re{"#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
+       ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
+       [^'\010' '\013']* newline},   %exp{
+         begin
+           update_loc  lexbuf ?file:name ~line:(int_of_string num) ~absolute:true ;
+           token lexbuf
+         end})])
+  ;
+
+  ]
 
 let meta_cset _loc (x:Fcset.t)=
   Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
@@ -114,35 +201,42 @@ let g =
    since we do unsafe_extend on top of Gramf...
  *)
 
-
+let make_automata shortest l =
+  Compile_lex.output_entry @@
+  Lexgen.make_single_dfa {shortest;clauses=Listf.concat l};;
+  
 %extend{(g:Gramf.t)  (* FIXME location wrong *)
     lex:
     [  "|" ; L0 case SEP "|" as l %{
-      Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}
+        make_automata false l}
     | "<";L0 case SEP "|" as l %{
-        Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
+        make_automata true l }]
     lex_fan:
     [  "|" ; L0 case SEP "|" as l %{
-      let e =
-        Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}
-      in %exp{ ($e : Lexing.lexbuf -> Tokenf.t)}}
-         
+      let e = make_automata false l in
+      %exp{ ($e : Lexing.lexbuf -> Tokenf.t)}}
     | "<";L0 case SEP "|" as l %{
-        let e =
-          Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}
-        in %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
+        let e = make_automata true l in
+        %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
   case@Local:
     [ regexp as r;  Quot x  %{
       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
-      let e = Tokenf.quot_expand expander x in (r,e)}
-    | "@"; Lid@xloc x %{
-        try Hashtbl.find named_cases x
-        with Not_found ->
-          begin
+      [(r,Tokenf.quot_expand expander x)]}
+    | "@"; Lid@xloc x; ?Quot y %{
+        let res =
+          try Hashtbl.find named_cases x
+          with Not_found ->  begin
             Fan_warnings.emitf xloc.loc_start
               "Reference to unbound case name %s" x;
             raise UnboundCase
-          end}]  
+          end in
+        match y with
+        | None -> res
+        | Some y ->
+           let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+           let e = Tokenf.quot_expand expander y in 
+           List.map (fun (x,v) -> (x, %exp{ begin $v; $e ; end})) res 
+  }]  
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 
