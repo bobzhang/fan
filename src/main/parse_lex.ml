@@ -19,7 +19,13 @@ let g =
                "+" ; "(" ; ")" ;
                "-"] ();;
 
-%create{(g:Gramf.t) regexp  char_class  char_class1  lex  declare_regexp};;
+%create{(g:Gramf.t) regexp
+          char_class
+          char_class1
+          lex
+          declare_regexp
+          lex_fan
+      };;
 
 (* open Parse_lex2,
    it will suck eof handling, to be investigated.
@@ -32,6 +38,16 @@ let g =
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}
     | "<";L0 case SEP "|" as l %{
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
+    lex_fan:
+    [  "|" ; L0 case SEP "|" as l %{
+      let e =
+        Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}
+      in %exp{ ($e : Lexing.lexbuf -> Tokenf.t)}}
+         
+    | "<";L0 case SEP "|" as l %{
+        let e =
+          Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}
+        in %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
   case@Local:
     [ regexp as r;  Quot x  %{
       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
@@ -106,6 +122,8 @@ let () =
   begin
     Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
       ~name:(d,"lex") ~entry:lex ();
+    Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
+      ~name:(d,"lex_fan") ~entry:lex_fan ();
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
       ~name:(d,"regex")

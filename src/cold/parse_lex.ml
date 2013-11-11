@@ -28,6 +28,7 @@ let char_class = Gramf.mk_dynamic g "char_class"
 let char_class1 = Gramf.mk_dynamic g "char_class1"
 let lex = Gramf.mk_dynamic g "lex"
 let declare_regexp = Gramf.mk_dynamic g "declare_regexp"
+let lex_fan = Gramf.mk_dynamic g "lex_fan"
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
   let case: 'case Gramf.t = grammar_entry_create "case" in
@@ -77,6 +78,77 @@ let _ =
                    (Compile_lex.output_entry @@
                       (Lexgen.make_single_dfa
                          { shortest = true; clauses = l }) : 'lex )))
+         }]) : Gramf.olevel ));
+  Gramf.extend_single (lex_fan : 'lex_fan Gramf.t )
+    (None,
+      ((None, None,
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              List0sep
+                ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
+                  (Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "|"); tag_name = "Key" }
+                      } : Tokenf.pattern )))];
+            annot =
+              "let e =\n  Compile_lex.output_entry @@\n    (Lexgen.make_single_dfa { shortest = false; clauses = l }) in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
+            fn =
+              (Gramf.mk_action
+                 (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
+                    ->
+                    (let e =
+                       Compile_lex.output_entry @@
+                         (Lexgen.make_single_dfa
+                            { shortest = false; clauses = l }) in
+                     (`Constraint
+                        (_loc, e,
+                          (`Arrow
+                             (_loc,
+                               (`Dot
+                                  (_loc, (`Uid (_loc, "Lexing")),
+                                    (`Lid (_loc, "lexbuf")))),
+                               (`Dot
+                                  (_loc, (`Uid (_loc, "Tokenf")),
+                                    (`Lid (_loc, "t"))))))) : FAst.exp ) : 
+                    'lex_fan )))
+          };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+             List0sep
+               ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
+                 (Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "|"); tag_name = "Key" }
+                     } : Tokenf.pattern )))];
+           annot =
+             "let e =\n  Compile_lex.output_entry @@\n    (Lexgen.make_single_dfa { shortest = true; clauses = l }) in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
+           fn =
+             (Gramf.mk_action
+                (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
+                   ->
+                   (let e =
+                      Compile_lex.output_entry @@
+                        (Lexgen.make_single_dfa
+                           { shortest = true; clauses = l }) in
+                    (`Constraint
+                       (_loc, e,
+                         (`Arrow
+                            (_loc,
+                              (`Dot
+                                 (_loc, (`Uid (_loc, "Lexing")),
+                                   (`Lid (_loc, "lexbuf")))),
+                              (`Dot
+                                 (_loc, (`Uid (_loc, "Tokenf")),
+                                   (`Lid (_loc, "t"))))))) : FAst.exp ) : 
+                   'lex_fan )))
          }]) : Gramf.olevel ));
   Gramf.extend_single (case : 'case Gramf.t )
     (None,
@@ -415,5 +487,7 @@ let () =
   let d = Ns.lang in
   Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex") ~entry:lex
     ();
+  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex_fan")
+    ~entry:lex_fan ();
   Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")
     ~entry:declare_regexp ()

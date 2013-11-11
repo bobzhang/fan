@@ -51,7 +51,7 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
+let  rec token = %lex_fan{
   | newline  %{
     begin
       update_loc  lexbuf;
