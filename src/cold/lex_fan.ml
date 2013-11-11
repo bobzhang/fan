@@ -5596,7 +5596,16 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Uid { loc = (!! lexbuf); txt }
+          `Uid
+            {
+              loc =
+                {
+                  loc_start = (lexbuf.lex_start_p);
+                  loc_end = (lexbuf.lex_curr_p);
+                  loc_ghost = false
+                };
+              txt
+            }
       | 5 ->
           let s =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -5604,7 +5613,12 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           and txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in
+          let loc =
+            {
+              loc_start = (lexbuf.lex_start_p);
+              loc_end = (lexbuf.lex_curr_p);
+              loc_ghost = false
+            } in
           (match s with
            | Some 'l' -> `Int32 { loc; txt }
            | Some 'L' -> `Int64 { loc; txt }

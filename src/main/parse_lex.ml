@@ -46,7 +46,25 @@ let _ =
 let _ =
   let (+>) = Hashtbl.add named_cases in
   begin
-  "ocaml_lid" +> (%re{ocaml_uid as txt}, %exp@here{`Uid{loc = !!lexbuf; txt }} )
+  "ocaml_uid" +> (%re{ocaml_uid as txt},
+  %exp@here{
+   
+  `Uid{loc =
+  {loc_start = lexbuf.lex_start_p;
+   loc_end = lexbuf.lex_curr_p;
+  loc_ghost = false} ; txt }} );
+  "ocaml_int_literal" +> ( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
+  %exp@here{
+  let loc =
+  {loc_start = lexbuf.lex_start_p;
+    loc_end = lexbuf.lex_curr_p;
+  loc_ghost = false} in
+  match s with
+  | Some 'l' -> `Int32 {loc;txt}
+  | Some 'L' -> `Int64 {loc;txt}
+  | Some 'n' -> `Nativeint {loc;txt}
+  | _ -> `Int {loc;txt}
+  });
   end
 
 let meta_cset _loc (x:Fcset.t)=

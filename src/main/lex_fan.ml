@@ -77,17 +77,8 @@ let  rec token   = %lex_fan{
        `Inf{loc= !!lexbuf; txt ; level = 4}
      else 
        `Lid {loc= !!lexbuf;txt}}
-   (* | @ocaml_lid *)
-   | ocaml_uid as txt  %{ `Uid {loc= !!lexbuf;txt}}
-   | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
-       (* FIXME - int_of_string ("-" ^ s) ??
-          safety check *)
-     let loc = !!lexbuf in
-     match s with
-     | Some 'l' -> `Int32 {loc;txt}
-     | Some 'L' -> `Int64 {loc;txt}
-     | Some 'n' -> `Nativeint {loc;txt}
-     | _ -> `Int {loc;txt} }
+   | @ocaml_uid
+   | @ocaml_int_literal
    | float_literal as txt %{`Flo {loc = !!lexbuf;txt}}       (** FIXME safety check *)
    | '"' %{
        let c = new_cxt () in
