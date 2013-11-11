@@ -2,31 +2,15 @@
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
 %regex{
-(* let newline = ('\010' | '\013' | "\013\010") *)
-(* let ocaml_blank = [' ' '\009' '\012'] *)
-(* let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_'] *)
-(* let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222'] *)
-(* let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9'] *)
-let ident = (lowercase|uppercase) identchar*
-    
-let quotation_name = '.' ? (uppercase  identchar* '.') *
-    (lowercase (identchar | '-') * )
+let quotation_name =
+  '.' ? (uppercase  identchar* '.') * (lowercase (identchar | '-') * )
 
 let locname = ident
 let quotation_prefix =
   '%'? '%' quotation_name? ('@' locname )? "{"
-    
 
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
-(* let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f'] *)
-let ocaml_escaped_char =
-  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
-
-let ocaml_char =
-  ( [^'\\' '\010' '\013'] | ocaml_escaped_char)
-let ocaml_lid =  lowercase identchar *
-let ocaml_uid =  uppercase identchar * 
 };;
 
 %import{

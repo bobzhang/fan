@@ -23,9 +23,9 @@ let _ =
     %re{  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
        | ['0'-'9'] ['0'-'9'] ['0'-'9']
        |'x' hexa_char hexa_char)};
-    (* "ocaml_char" +> %re{( [^ '\\' '\010' '\013'] | ocaml_escaped_char)}; *)
-      "ocaml_lid" +> %re{ lowercase identchar *};
-      "ocaml_uid" +> %re{uppercase identchar *};
+   "ocaml_char" +> %re{( [^ '\\' '\010' '\013'] | ocaml_escaped_char)};
+   "ocaml_lid" +> %re{ lowercase identchar *};
+   "ocaml_uid" +> %re{uppercase identchar *};
 
 end
 let named_cases =
@@ -105,9 +105,9 @@ let g =
             raise UnboundCase
           end}]  
   declare_regexp:
-  ["let"; Lid x ; "=";regexp as r %{
+  ["let"; Lid@xloc x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 
-      Printf.eprintf
+      Fan_warnings.emitf  xloc.loc_start
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
        %stru{let _ = ()}
     end

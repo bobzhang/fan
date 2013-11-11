@@ -62,6 +62,32 @@ let _ =
                      ((Characters [(120, 120)]),
                        (Characters [(48, 57); (65, 70); (97, 102)]))),
                    (Characters [(48, 57); (65, 70); (97, 102)])))))));
+  "ocaml_char" +>
+    (Alternative
+       ((Characters [(0, 9); (11, 12); (14, 91); (93, 255)]),
+         (Sequence
+            ((Characters [(92, 92)]),
+              (Alternative
+                 ((Alternative
+                     ((Characters
+                         [(32, 32);
+                         (34, 34);
+                         (39, 39);
+                         (92, 92);
+                         (98, 98);
+                         (110, 110);
+                         (114, 114);
+                         (116, 116)]),
+                       (Sequence
+                          ((Sequence
+                              ((Characters [(48, 57)]),
+                                (Characters [(48, 57)]))),
+                            (Characters [(48, 57)]))))),
+                   (Sequence
+                      ((Sequence
+                          ((Characters [(120, 120)]),
+                            (Characters [(48, 57); (65, 70); (97, 102)]))),
+                        (Characters [(48, 57); (65, 70); (97, 102)])))))))));
   "ocaml_lid" +>
     (Sequence
        ((Characters [(95, 95); (97, 122); (223, 246); (248, 255)]),
@@ -338,16 +364,17 @@ let _ =
                 Tokenf.pattern );
               Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
             annot =
-              "if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
+              "if Hashtbl.mem named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_ 
                     ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
+                    let xloc = __fan_1.loc in
                     let x = __fan_1.txt in
                     (if Hashtbl.mem named_regexps x
                      then
-                       (Printf.eprintf
+                       (Fan_warnings.emitf xloc.loc_start
                           "fanlex (warning): multiple definition of named regexp '%s'\n"
                           x;
                         (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru ))
