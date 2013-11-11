@@ -62,11 +62,7 @@ Location_util:
     add_char -> (+>) ;
    |}  *)
 let  rec token   = %lex_fan{
-   | newline  %{
-     begin
-       update_loc  lexbuf;
-       token lexbuf
-     end }
+   |@whitespace %{ token lexbuf}
    | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
 
    | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
@@ -120,8 +116,6 @@ let  rec token   = %lex_fan{
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
-   | ocaml_blank +  %{ token lexbuf }
-
    | @ocaml_comment %{token lexbuf}
    | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{
        let c = new_cxt () in
