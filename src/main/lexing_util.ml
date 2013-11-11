@@ -2,8 +2,6 @@
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
 %regex{
-let quotation_name =
-  '.' ? (uppercase  identchar* '.') * (lowercase (identchar | '-') * )
 
 let locname = ident
 let quotation_prefix =

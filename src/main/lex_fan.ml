@@ -1,9 +1,6 @@
 
 %regex{ (** FIXME remove duplication later see lexing_util.cmo *)
 
-let quotation_name = '.' ? (uppercase  identchar* '.') *
-    (lowercase (identchar | '-') * )
-
 let locname = ident
 
 let antifollowident =   identchar +   
@@ -117,38 +114,30 @@ let  rec token   = %lex_fan{
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
-
-   | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{
-       let c = new_cxt () in
-       let name =
-         match name with
-         | Some name -> Tokenf.name_of_string name
-         | None -> Tokenf.empty_name  in
-       begin
-         let old = lexbuf.lex_start_p in
-         let txt =
-           begin
-             store c lexbuf;
-             push_loc_cont c lexbuf lex_quotation;
-             buff_contents c
-           end in
-         let loc = old -- lexbuf.lex_curr_p in
-         let shift = String.length shift in
-         let retract = 1  in
-         if x = None then
-           `Quot{name;meta;shift;txt;loc;retract}
-         else `DirQuotation {name;meta;shift;txt;loc;retract}
-       end}
+   | @ocaml_quotation
+   (* | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{ *)
+   (*     let c = new_cxt () in *)
+   (*     let name = *)
+   (*       match name with *)
+   (*       | Some name -> Tokenf.name_of_string name *)
+   (*       | None -> Tokenf.empty_name  in *)
+   (*     begin *)
+   (*       let old = lexbuf.lex_start_p in *)
+   (*       let txt = *)
+   (*         begin *)
+   (*           store c lexbuf; *)
+   (*           push_loc_cont c lexbuf lex_quotation; *)
+   (*           buff_contents c *)
+   (*         end in *)
+   (*       let loc = old -- lexbuf.lex_curr_p in *)
+   (*       let shift = String.length shift in *)
+   (*       let retract = 1  in *)
+   (*       if x = None then *)
+   (*         `Quot{name;meta;shift;txt;loc;retract} *)
+   (*       else `DirQuotation {name;meta;shift;txt;loc;retract} *)
+   (*     end} *)
          
-         
-   | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
-       ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
-       [^'\010' '\013']* newline   %{
-         begin
-           update_loc  lexbuf ?file:name ~line:(int_of_string num) ~absolute:true ;
-           token lexbuf
-         end}
-
+   |@line_directive       
 
        (**************************)
        (* Antiquotation handling *)       

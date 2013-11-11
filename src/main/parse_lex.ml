@@ -28,19 +28,21 @@ let _ =
     %re{  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
        | ['0'-'9'] ['0'-'9'] ['0'-'9']
        |'x' hexa_char hexa_char)};
-   "ocaml_char" +> %re{( [^ '\\' '\010' '\013'] | ocaml_escaped_char)};
-   "ocaml_lid" +> %re{ lowercase identchar *};
-   "ocaml_uid" +> %re{uppercase identchar *};
+    "ocaml_char" +> %re{( [^ '\\' '\010' '\013'] | ocaml_escaped_char)};
+    "ocaml_lid" +> %re{ lowercase identchar *};
+    "ocaml_uid" +> %re{uppercase identchar *};
 
-   "decimal_literal" +> %re{ ['0'-'9'] ['0'-'9' '_']*};
-   "hex_literal" +> %re{  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*};
-   "oct_literal" +> %re{  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*};
-   "bin_literal" +> %re{ '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*};
-   "int_literal" +> %re{decimal_literal | hex_literal | oct_literal | bin_literal};
-   "float_literal" +> %re{
+  "decimal_literal" +> %re{ ['0'-'9'] ['0'-'9' '_']*};
+  "hex_literal" +> %re{  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*};
+  "oct_literal" +> %re{  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*};
+  "bin_literal" +> %re{ '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*};
+  "int_literal" +> %re{decimal_literal | hex_literal | oct_literal | bin_literal};
+  "float_literal" +> %re{
    ['0'-'9'] ['0'-'9' '_']*
    ('.' ['0'-'9' '_']* )?
-   (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?}
+   (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?};
+  "quotation_name" +> %re{'.' ? (uppercase  identchar* '.') *
+    (lowercase (identchar | '-') * )}  
    end
 
 
@@ -125,30 +127,30 @@ let _ =
   )])
   ;
 
-  (* ("ocaml_quotation", *)
-  (*    [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift}, %exp{ *)
-  (*      let c = new_cxt () in *)
-  (*      let name = *)
-  (*        match name with *)
-  (*        | Some name -> Tokenf.name_of_string name *)
-  (*        | None -> Tokenf.empty_name  in *)
-  (*      begin *)
-  (*        let old = lexbuf.lex_start_p in *)
-  (*        let txt = *)
-  (*          begin *)
-  (*            store c lexbuf; *)
-  (*            push_loc_cont c lexbuf lex_quotation; *)
-  (*            buff_contents c *)
-  (*          end in *)
-  (*        let loc = old -- lexbuf.lex_curr_p in *)
-  (*        let shift = String.length shift in *)
-  (*        let retract = 1  in *)
-  (*        if x = None then *)
-  (*          `Quot{name;meta;shift;txt;loc;retract} *)
-  (*        else `DirQuotation {name;meta;shift;txt;loc;retract} *)
-  (*      end})]) *)
+  ("ocaml_quotation",
+     [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (ident as meta))? "{" as shift}, %exp{
+       let c = new_cxt () in
+       let name =
+         match name with
+         | Some name -> Tokenf.name_of_string name
+         | None -> Tokenf.empty_name  in
+       begin
+         let old = lexbuf.lex_start_p in
+         let txt =
+           begin
+             store c lexbuf;
+             push_loc_cont c lexbuf lex_quotation;
+             buff_contents c
+           end in
+         let loc = old -- lexbuf.lex_curr_p in
+         let shift = String.length shift in
+         let retract = 1  in
+         if x = None then
+           `Quot{name;meta;shift;txt;loc;retract}
+         else `DirQuotation {name;meta;shift;txt;loc;retract}
+       end})])
 
-  (* ; *)
+  ;
 
   ("line_directive",
    [(%re{"#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*

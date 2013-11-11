@@ -1,8 +1,6 @@
 (** lexing gram *)  
 %regex{ (** FIXME remove duplication later see lexing_util.cmo *)
-let lident = lowercase identchar *    
-let quotation_name = '.' ? (uppercase  identchar* '.') *
-    (lowercase (identchar | '-') * )
+
 let antifollowident =   identchar +       
 let locname = ident
 };;
