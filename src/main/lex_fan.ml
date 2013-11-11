@@ -121,21 +121,8 @@ let  rec token   = %lex_fan{
          `Sym {loc;txt="*"}
        end}
    | ocaml_blank +  %{ token lexbuf }
-         
-         (* comment *)
-   (* | @ocaml_comment  *)
-   | "(*" (')' as x) ? %{
-       let c = new_cxt () in
-       (* let old = lexbuf.lex_start_p in *)
-       begin
-         if x <> None then warn Comment_start (!!lexbuf);
-         store c lexbuf;
-         push_loc_cont c lexbuf lex_comment;
-         ignore (buff_contents c) ; (* Needed to clean the buffer *)
-         (* let loc = old -- lexbuf.lex_curr_p in *)
-         (* `Comment {loc;txt= buff_contents c} *)
-         token lexbuf (* FIXME may bring it back later *)
-       end}
+
+   | @ocaml_comment %{token lexbuf}
    | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{
        let c = new_cxt () in
        let name =

@@ -101,9 +101,17 @@ let _ =
          ignore (Lexing_util.buff_contents c) ; (* Needed to clean the buffer *)
          (* let loc = old -- lexbuf.lex_curr_p in *)
          (* `Comment {loc;txt= buff_contents c} *)
-         token lexbuf (* FIXME may bring it back later *)
        end})])
   ;
+  ("whitespace",
+  [
+  (%re{ocaml_blank + }, %exp{()});
+  (%re{newline}, %exp{
+  update_loc lexbuf})
+  ]
+  )
+  ;
+  
   ("ocaml_string",
   
    [(%re{'"'}, %exp{

@@ -5723,11 +5723,11 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-          let c = new_cxt () in
-          (if x <> None then warn Comment_start (!! lexbuf);
-           store c lexbuf;
-           push_loc_cont c lexbuf lex_comment;
-           ignore (buff_contents c);
+          ((let c = Lexing_util.new_cxt () in
+            if x <> None then Lexing_util.warn Comment_start (!! lexbuf);
+            Lexing_util.store c lexbuf;
+            Lexing_util.push_loc_cont c lexbuf lex_comment;
+            ignore (Lexing_util.buff_contents c));
            token lexbuf)
       | 25 ->
           let x =
