@@ -1,21 +1,17 @@
 (** lexing gram *)  
 
-(** get the location of current the lexeme *)
-let (!!)  = Location_util.from_lexbuf ;;
-
-
 
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
   | @ocaml_lid
   | @ocaml_uid
   | @ocaml_string
-  | int_literal as txt %{`Int{loc = !!lexbuf; txt}}
+  | @ocaml_int
   | @ocaml_char       
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | ":" | "@" |"{" | "}"
   |";" |"." | "," as txt %{
-    `Sym {loc = !!lexbuf;txt}}
+    `Sym {loc = Lexing_util.from_lexbuf lexbuf;txt}}
   | @ocaml_comment %{token lexbuf}
   | @ocaml_quotation
   | @ocaml_eof

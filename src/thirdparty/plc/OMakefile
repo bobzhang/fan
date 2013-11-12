@@ -9,3 +9,7 @@ FILES=   lex_plc env_plc version ast_plc names compile_plc parse_plc
 lib:$(OCamlLibrary libplc, $(FILES))
 clean:
     rm -rf $(OCAMLBIN_EXT)
+    
+# local variables:
+# compile-command: "pmake lib"
+# end:

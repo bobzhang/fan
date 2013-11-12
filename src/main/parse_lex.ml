@@ -65,8 +65,10 @@ let _ =
   loc_ghost = false} ; txt }} )])
   ;
 
-
-  ("ocaml_int_literal",
+  ("ocaml_int",
+   [(%re{int_literal as txt}, %exp-{`Int {loc = Lexing_util.from_lexbuf lexbuf;txt}})]
+  );
+  ("ocaml_num_literal",
   [( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
   %exp-{
   let (loc:Locf.t) =

@@ -1,11 +1,4 @@
-let (++) = Buffer.add_string
-let (+>) = Buffer.add_char
-let (!!) = Location_util.from_lexbuf
-let lex_string = Lexing_util.lex_string
-let lex_quotation = Lexing_util.lex_quotation
-let warn = Lexing_util.warn
-let move_curr_p = Lexing_util.move_curr_p
-let (--) = Location_util.( -- ) 
+let (!!) = Lexing_util.from_lexbuf
 let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =
@@ -5752,8 +5745,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
               (lexbuf.Lexing.lex_curr_pos + 0) in
           `Sym { loc = (!! lexbuf); txt }
       | 24 ->
-          (warn Comment_not_end (!! lexbuf);
-           move_curr_p (-1) lexbuf;
+          (Lexing_util.warn Comment_not_end (!! lexbuf);
+           Lexing_util.move_curr_p (-1) lexbuf;
            (let loc = !! lexbuf in `Sym { loc; txt = "*" }))
       | 25 ->
           let x =

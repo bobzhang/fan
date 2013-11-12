@@ -36,7 +36,7 @@ let  rec token   = %lex_fan{
      else 
        `Lid {loc= !!lexbuf;txt}}
    | @ocaml_uid
-   | @ocaml_int_literal
+   | @ocaml_num_literal
    | @ocaml_float_literal       (** FIXME safety check *)
    | @ocaml_string
    | @ocaml_char

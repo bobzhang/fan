@@ -1,21 +1,3 @@
-let (++) = Buffer.add_string
-let (+>) = Buffer.add_char
-let (!!) = Location_util.from_lexbuf
-let update_loc = Lexing_util.update_loc
-let new_cxt = Lexing_util.new_cxt
-let push_loc_cont = Lexing_util.push_loc_cont
-let pop_loc = Lexing_util.pop_loc
-let lex_string = Lexing_util.lex_string
-let lex_comment = Lexing_util.lex_comment
-let lex_quotation = Lexing_util.lex_quotation
-let buff_contents = Lexing_util.buff_contents
-let err = Lexing_util.err
-let warn = Lexing_util.warn
-let move_curr_p = Lexing_util.move_curr_p
-let store = Lexing_util.store
-let lexing_store = Lexing_util.lexing_store
-let with_store = Lexing_util.with_store
-let (--) = Location_util.( -- ) 
 let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =
@@ -2217,7 +2199,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Int { loc = (!! lexbuf); txt }
+          `Int { loc = (Lexing_util.from_lexbuf lexbuf); txt }
       | 6 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -2266,7 +2248,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Sym { loc = (!! lexbuf); txt }
+          `Sym { loc = (Lexing_util.from_lexbuf lexbuf); txt }
       | 10 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -2321,7 +2303,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb = Streamf.from (fun _  -> Some (token lb))
 let from_stream (loc : Locf.t) strm =
-  let lb = Lexing.from_function (lexing_store strm) in
+  let lb = Lexing.from_function (Lexing_util.lexing_store strm) in
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;
   lb.lex_curr_p <- loc.loc_start;
   from_lexbuf lb

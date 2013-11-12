@@ -11,9 +11,8 @@ let  rec token = %lex_fan{
   | @ocaml_string
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | "@" as txt %{
-    let loc = !! lexbuf in `Sym {loc;txt}}
-  | @ocaml_comment %{token lexbuf} (* FIXME error message, location *)
-      (* quotation handling *)
+    `Sym {loc  =  !! lexbuf ;txt}}
+  | @ocaml_comment %{token lexbuf}
   | @ocaml_simple_quotation
   | @ocaml_eof
   | @default}
