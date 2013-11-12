@@ -145,7 +145,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       bounds =
       [((xloc,i),Some "loc")]; outer_pattern = None  }}
 
-  | name as n;  ? ["Level"; Str s ] %{
+  | name as n;  ? ["Level"; Int s ] %{
     { text = Nterm (_loc ,n, s);
       styp = %ctyp'{'$lid{n.tvar}};
       bounds = []; outer_pattern = None  }}

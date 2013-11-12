@@ -68,7 +68,7 @@ and osymbol = {
 and text =
   |
    List of (loc * bool * osymbol * osymbol option ) (* should be symbol?*)
- | Nterm of (loc * name  * string option )
+ | Nterm of (loc * name  * int option )
  | Try of (loc * text )
  | Peek of (loc * text)
  | Self of loc

@@ -944,8 +944,8 @@ let apply () = begin
       [ ("fun"|"function"); ipat as p; class_fun_def as ce %{  `CeFun (_loc, p, ce)}
       | "let"; opt_rec as rf; bind as bi; "in"; S as ce %{ `LetIn(_loc,rf,bi,ce)}]
       clexp: 20 NA
-      [ S as ce; exp Level "label" as e %{ `CeApp (_loc, ce, e)}]
-      clexp: 30  "simple"
+      [ S as ce; exp Level 140 as e %{ `CeApp (_loc, ce, e)}]
+      clexp: 30  (* "simple" *)
       [ Ant (""|"cexp" ,s) %{ mk_ant ~c:"clexp"  s}
       | Quot x %{ Ast_quotation.expand  x Dyn_tag.clexp}
       | vid as ci; "["; comma_ctyp as t; "]" %{ `ClApply(_loc,ci,t)}
