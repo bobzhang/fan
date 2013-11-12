@@ -101,7 +101,9 @@ let new_cxt () = {
 let (++) = Buffer.add_string       
 let (+>) = Buffer.add_char
 (** get the location of current the lexeme *)
+let from_lexbuf = Location_util.from_lexbuf    
 let (!!)  = Location_util.from_lexbuf
+    
 let (--) = Location_util.(--)
 
     

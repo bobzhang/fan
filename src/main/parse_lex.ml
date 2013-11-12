@@ -83,21 +83,34 @@ let _ =
   ("ocaml_char", [
   (%re{"'" (newline as txt) "'"}, %exp-{
        begin
-         Lexing_util.update_loc   lexbuf ~retract:1;
-        `Chr {loc =  !!lexbuf;txt}
+            let pos = lexbuf.lex_curr_p in
+            lexbuf.lex_curr_p <-
+              { pos with
+                pos_lnum =  pos.pos_lnum + 1;
+                pos_bol = pos.pos_cnum - 1;};
+            (`Chr {loc =
+             {loc_start = lexbuf.lex_start_p;
+              loc_end = lexbuf.lex_curr_p;
+              loc_ghost = false}; txt } : Tokenf.t)
        end});
          
-   (%re{ "'" (ocaml_char as txt ) "'"}, %exp-{ `Chr {loc= !!lexbuf ;txt}});
+   (%re{ "'" (ocaml_char as txt ) "'"},
+       %exp-{ (`Chr {loc= 
+            {loc_start = lexbuf.lex_start_p;
+              loc_end = lexbuf.lex_curr_p;
+              loc_ghost = false}; txt } : Tokenf.t)});
          
-   (%re{ "'\\" (_ as c)}, %exp-{Lexing_util.err (Illegal_escape (String.make 1 c)) @@ !! lexbuf})
+   (%re{ "'\\" (_ as c)}, %exp-{Lexing_util.err (Illegal_escape (String.make 1 c))
+         ({loc_start = lexbuf.lex_start_p; loc_end = lexbuf.lex_curr_p;
+              loc_ghost = false}:Locf.t)})
    ]);
 
   ("ocaml_float_literal",
   [  (%re{float_literal as txt},
-  %exp-{`Flo {loc = {
+  %exp-{ (`Flo {loc = {
   loc_start = lexbuf.lex_start_p;
   loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false};txt}})]
+  loc_ghost = false};txt} : Tokenf.t)})]
   )
   ;
   
@@ -106,9 +119,9 @@ let _ =
        let c = Lexing_util.new_cxt () in
        (* let old = lexbuf.lex_start_p in *)
        begin
-         if x <> None then Lexing_util.warn Comment_start (!!lexbuf);
+         if x <> None then Lexing_util.warn Comment_start (Lexing_util.from_lexbuf lexbuf);
          Lexing_util.store c lexbuf;
-         Lexing_util.push_loc_cont c lexbuf lex_comment;
+         Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_comment;
          ignore (Lexing_util.buff_contents c) ; (* Needed to clean the buffer *)
          (* let loc = old -- lexbuf.lex_curr_p in *)
          (* `Comment {loc;txt= buff_contents c} *)
@@ -117,7 +130,7 @@ let _ =
   ("whitespace",
   [
   (%re{ocaml_blank + }, %exp-{()});
-  (%re{newline}, %exp-{update_loc lexbuf})
+  (%re{newline}, %exp-{Lexing_util.update_loc lexbuf})
   ]
   )
   ;
@@ -128,15 +141,15 @@ let _ =
   let c = Lexing_util.new_cxt () in
   let old = lexbuf.lex_start_p in
   begin
-    Lexing_util.push_loc_cont c lexbuf lex_string;
-    let loc = old --  lexbuf.lex_curr_p in
-   `Str {loc; txt = buff_contents c}
+    Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_string;
+   `Str {loc = Location_util.(--) old  lexbuf.lex_curr_p;
+         txt = Lexing_util.buff_contents c}
   end}
   )]);
 
  ("default",
  [(%re{_ as c}, %exp-{
- err (Illegal_character c) @@  !!lexbuf
+     Lexing_util.err (Illegal_character c)  @@ Lexing_util.from_lexbuf lexbuf
  })]
  )
  ;
@@ -146,31 +159,30 @@ let _ =
     (lexbuf.lex_curr_p <-
        { pos with pos_bol  = pos.pos_bol  + 1 ;
         pos_cnum = pos.pos_cnum + 1 };
-    let loc = !!lexbuf in
-       `EOI {loc;txt=""}) })])
+    let loc = Lexing_util.from_lexbuf lexbuf in
+     (`EOI {loc;txt=""} : Tokenf.t)) })])
   ;
 
   ("ocaml_simple_quotation",
  [(%re{"%{"}, %exp-{
  let old = lexbuf.lex_start_p in
-    let c = new_cxt () in
+    let c = Lexing_util.new_cxt () in
     begin
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_quotation;
-      let loc = old -- lexbuf.lex_curr_p in
+      Lexing_util.store c lexbuf;
+      Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
       `Quot {name=Tokenf.empty_name;
              meta=None;
-             txt = buff_contents c ;
+             txt = Lexing_util.buff_contents c ;
              shift = 2;
               retract = 1;
-             loc}
+             loc = Location_util.(--) old lexbuf.lex_curr_p}
     end})])
  
  ;
   ("ocaml_quotation",
  [(%re{'%'  (quotation_name as name) ? ('@' (ident as meta))? "{"    as shift},
  %exp-{
- let c = new_cxt () in
+ let c = Lexing_util.new_cxt () in
  let name =
      match name with
      | Some name -> Tokenf.name_of_string name
@@ -179,11 +191,11 @@ let _ =
          let old = lexbuf.lex_start_p in
          let txt =
            begin
-             store c lexbuf;
-             push_loc_cont c lexbuf lex_quotation;
-             buff_contents c
+             Lexing_util.store c lexbuf;
+             Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
+             Lexing_util.buff_contents c
            end in
-         let loc = old -- lexbuf.lex_curr_p in
+         let loc = Location_util.(--) old lexbuf.lex_curr_p in
          let shift = String.length shift in
          let retract =  1  in
          `Quot{Tokenf.name;meta;shift;txt;loc;retract}
@@ -191,7 +203,7 @@ let _ =
    ;
   ("ocaml_double_quotation",
      [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (ident as meta))? "{" as shift}, %exp-{
-       let c = new_cxt () in
+       let c = Lexing_util.new_cxt () in
        let name =
          match name with
          | Some name -> Tokenf.name_of_string name
@@ -200,16 +212,17 @@ let _ =
          let old = lexbuf.lex_start_p in
          let txt =
            begin
-             store c lexbuf;
-             push_loc_cont c lexbuf lex_quotation;
-             buff_contents c
+             Lexing_util.store c lexbuf;
+             Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
+             Lexing_util.buff_contents c
            end in
-         let loc = old -- lexbuf.lex_curr_p in
+         let loc = Location_util.(--) old lexbuf.lex_curr_p in
          let shift = String.length shift in
          let retract = 1  in
          if x = None then
-           `Quot{name;meta;shift;txt;loc;retract}
-         else `DirQuotation {name;meta;shift;txt;loc;retract}
+           (`Quot{name;meta;shift;txt;loc;retract} : Tokenf.t)
+         else
+           (`DirQuotation {name;meta;shift;txt;loc;retract} : Tokenf.t)
        end})])
 
   ;
@@ -219,8 +232,8 @@ let _ =
        ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
        [^'\010' '\013']* newline},   %exp-{
          begin
-           update_loc  lexbuf ?file:name ~line:(int_of_string num) ~absolute:true ;
-           token lexbuf
+           Lexing_util.update_loc
+             lexbuf ?file:name ~line:(int_of_string num) ~absolute:true 
          end})])
   ;
  
@@ -238,29 +251,30 @@ let _ =
        match follow with
        | None -> ("", 1 )
        | Some _ -> (name, String.length name + 2) in 
-     `Ant{loc = !!lexbuf;
+     (`Ant{loc = !!lexbuf;
           kind ;
           txt ;
           shift ;
           retract = 0;
-          cxt = None}}) ;
+           cxt = None} : Tokenf.t)}) ;
      (%re{ "$" ( ocaml_lid as name)? "{"  as txt},  %exp-{
      let old = lexbuf.lex_start_p in
-     let c = new_cxt () in
+     let c = Lexing_util.new_cxt () in
      begin
-       store c lexbuf;
-       push_loc_cont c lexbuf lex_quotation;
+       Lexing_util.store c lexbuf;
+       Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
        `Ant{loc =
             {loc_start = old;
              loc_end = lexbuf.lex_curr_p;
              loc_ghost = false};
             kind = match name with | Some n -> n | None -> "";
-            txt = buff_contents c;
+            txt = Lexing_util.buff_contents c;
             shift =  String.length txt ;
             retract =  1 ;
             cxt = None}
      end});
-   (%re{ '$' (_ as c)}, %exp-{err (Illegal_character c) (!! lexbuf)})])
+   (%re{ '$' (_ as c)},
+    %exp-{Lexing_util.err (Illegal_character c) @@ Lexing_util.from_lexbuf lexbuf})])
     ;
   (* ("ocaml_ant", *)
   (*  [(,)] *)

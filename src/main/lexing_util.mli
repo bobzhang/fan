@@ -30,7 +30,7 @@ type context = {
     buffer     : Buffer.t
   }
 
-    
+val from_lexbuf : Lexing.lexbuf -> Locf.t     
 val new_cxt : unit -> context
     
 val store : context -> Lexing.lexbuf -> unit

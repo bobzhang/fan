@@ -533,20 +533,59 @@ let _ =
                         } : Locf.t ), "txt"))))), (Characters [(39, 39)]))),
          (`Seq
             (`Sem
-               ((`App
-                   ((`App
-                       ((`Dot ((`Uid "Lexing_util"), (`Lid "update_loc"))),
-                         (`Lid "lexbuf"))),
-                     (`Label ((`Lid "retract"), (`Int "1"))))),
-                 (`App
-                    ((`Vrn "Chr"),
-                      (`Record
-                         (`Sem
-                            ((`RecBind
-                                ((`Lid "loc"),
-                                  (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
-                              (`RecBind ((`Lid "txt"), (`Lid "txt")))))))))) : 
-         FAstN.exp ));
+               ((`LetIn
+                   (`Negative,
+                     (`Bind
+                        ((`Lid "pos"),
+                          (`Field ((`Lid "lexbuf"), (`Lid "lex_curr_p"))))),
+                     (`Assign
+                        ((`Field ((`Lid "lexbuf"), (`Lid "lex_curr_p"))),
+                          (`RecordWith
+                             ((`Sem
+                                 ((`RecBind
+                                     ((`Lid "pos_lnum"),
+                                       (`App
+                                          ((`App
+                                              ((`Lid "+"),
+                                                (`Field
+                                                   ((`Lid "pos"),
+                                                     (`Lid "pos_lnum"))))),
+                                            (`Int "1"))))),
+                                   (`RecBind
+                                      ((`Lid "pos_bol"),
+                                        (`App
+                                           ((`App
+                                               ((`Lid "-"),
+                                                 (`Field
+                                                    ((`Lid "pos"),
+                                                      (`Lid "pos_cnum"))))),
+                                             (`Int "1"))))))), (`Lid "pos"))))))),
+                 (`Constraint
+                    ((`App
+                        ((`Vrn "Chr"),
+                          (`Record
+                             (`Sem
+                                ((`RecBind
+                                    ((`Lid "loc"),
+                                      (`Record
+                                         (`Sem
+                                            ((`RecBind
+                                                ((`Lid "loc_start"),
+                                                  (`Field
+                                                     ((`Lid "lexbuf"),
+                                                       (`Lid "lex_start_p"))))),
+                                              (`Sem
+                                                 ((`RecBind
+                                                     ((`Lid "loc_end"),
+                                                       (`Field
+                                                          ((`Lid "lexbuf"),
+                                                            (`Lid
+                                                               "lex_curr_p"))))),
+                                                   (`RecBind
+                                                      ((`Lid "loc_ghost"),
+                                                        (`Lid "false")))))))))),
+                                  (`RecBind ((`Lid "txt"), (`Lid "txt")))))))),
+                      (`Dot ((`Uid "Tokenf"), (`Lid "t"))))))) : FAstN.exp ));
       ((Sequence
           ((Sequence
               ((Characters [(39, 39)]),
@@ -584,26 +623,44 @@ let _ =
                          loc_start =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 90;
-                             pos_bol = 2661;
-                             pos_cnum = 2689
+                             pos_lnum = 97;
+                             pos_bol = 2932;
+                             pos_cnum = 2960
                            };
                          loc_end =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 90;
-                             pos_bol = 2661;
-                             pos_cnum = 2692
+                             pos_lnum = 97;
+                             pos_bol = 2932;
+                             pos_cnum = 2963
                            };
                          loc_ghost = false
                        } : Locf.t ), "txt"))))), (Characters [(39, 39)]))),
-        (`App
-           ((`Vrn "Chr"),
-             (`Record
-                (`Sem
-                   ((`RecBind
-                       ((`Lid "loc"), (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
-                     (`RecBind ((`Lid "txt"), (`Lid "txt"))))))) : FAstN.exp ));
+        (`Constraint
+           ((`App
+               ((`Vrn "Chr"),
+                 (`Record
+                    (`Sem
+                       ((`RecBind
+                           ((`Lid "loc"),
+                             (`Record
+                                (`Sem
+                                   ((`RecBind
+                                       ((`Lid "loc_start"),
+                                         (`Field
+                                            ((`Lid "lexbuf"),
+                                              (`Lid "lex_start_p"))))),
+                                     (`Sem
+                                        ((`RecBind
+                                            ((`Lid "loc_end"),
+                                              (`Field
+                                                 ((`Lid "lexbuf"),
+                                                   (`Lid "lex_curr_p"))))),
+                                          (`RecBind
+                                             ((`Lid "loc_ghost"),
+                                               (`Lid "false")))))))))),
+                         (`RecBind ((`Lid "txt"), (`Lid "txt")))))))),
+             (`Dot ((`Uid "Tokenf"), (`Lid "t")))) : FAstN.exp ));
       ((Sequence
           ((Sequence ((Characters [(39, 39)]), (Characters [(92, 92)]))),
             (Bind
@@ -612,31 +669,41 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 92;
-                         pos_bol = 2747;
-                         pos_cnum = 2768
+                         pos_lnum = 103;
+                         pos_bol = 3152;
+                         pos_cnum = 3173
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 92;
-                         pos_bol = 2747;
-                         pos_cnum = 2769
+                         pos_lnum = 103;
+                         pos_bol = 3152;
+                         pos_cnum = 3174
                        };
                      loc_ghost = false
                    } : Locf.t ), "c"))))),
         (`App
            ((`App
-               ((`Lid "@@"),
+               ((`Dot ((`Uid "Lexing_util"), (`Lid "err"))),
                  (`App
-                    ((`Dot ((`Uid "Lexing_util"), (`Lid "err"))),
+                    ((`Uid "Illegal_escape"),
                       (`App
-                         ((`Uid "Illegal_escape"),
-                           (`App
-                              ((`App
-                                  ((`Dot ((`Uid "String"), (`Lid "make"))),
-                                    (`Int "1"))), (`Lid "c"))))))))),
-             (`App ((`Lid "!!"), (`Lid "lexbuf")))) : FAstN.exp ))]);
+                         ((`App
+                             ((`Dot ((`Uid "String"), (`Lid "make"))),
+                               (`Int "1"))), (`Lid "c"))))))),
+             (`Constraint
+                ((`Record
+                    (`Sem
+                       ((`RecBind
+                           ((`Lid "loc_start"),
+                             (`Field ((`Lid "lexbuf"), (`Lid "lex_start_p"))))),
+                         (`Sem
+                            ((`RecBind
+                                ((`Lid "loc_end"),
+                                  (`Field
+                                     ((`Lid "lexbuf"), (`Lid "lex_curr_p"))))),
+                              (`RecBind ((`Lid "loc_ghost"), (`Lid "false")))))))),
+                  (`Dot ((`Uid "Locf"), (`Lid "t")))))) : FAstN.exp ))]);
     ("ocaml_float_literal",
       [((Bind
            ((Sequence
@@ -664,42 +731,44 @@ let _ =
                  loc_start =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 96;
-                     pos_bol = 2879;
-                     pos_cnum = 2906
+                     pos_lnum = 109;
+                     pos_bol = 3384;
+                     pos_cnum = 3411
                    };
                  loc_end =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 96;
-                     pos_bol = 2879;
-                     pos_cnum = 2909
+                     pos_lnum = 109;
+                     pos_bol = 3384;
+                     pos_cnum = 3414
                    };
                  loc_ghost = false
                } : Locf.t ), "txt"))),
-         (`App
-            ((`Vrn "Flo"),
-              (`Record
-                 (`Sem
-                    ((`RecBind
-                        ((`Lid "loc"),
-                          (`Record
-                             (`Sem
-                                ((`RecBind
-                                    ((`Lid "loc_start"),
-                                      (`Field
-                                         ((`Lid "lexbuf"),
-                                           (`Lid "lex_start_p"))))),
-                                  (`Sem
-                                     ((`RecBind
-                                         ((`Lid "loc_end"),
-                                           (`Field
-                                              ((`Lid "lexbuf"),
-                                                (`Lid "lex_curr_p"))))),
-                                       (`RecBind
-                                          ((`Lid "loc_ghost"),
-                                            (`Lid "false")))))))))),
-                      (`RecBind ((`Lid "txt"), (`Lid "txt"))))))) : FAstN.exp ))]);
+         (`Constraint
+            ((`App
+                ((`Vrn "Flo"),
+                  (`Record
+                     (`Sem
+                        ((`RecBind
+                            ((`Lid "loc"),
+                              (`Record
+                                 (`Sem
+                                    ((`RecBind
+                                        ((`Lid "loc_start"),
+                                          (`Field
+                                             ((`Lid "lexbuf"),
+                                               (`Lid "lex_start_p"))))),
+                                      (`Sem
+                                         ((`RecBind
+                                             ((`Lid "loc_end"),
+                                               (`Field
+                                                  ((`Lid "lexbuf"),
+                                                    (`Lid "lex_curr_p"))))),
+                                           (`RecBind
+                                              ((`Lid "loc_ghost"),
+                                                (`Lid "false")))))))))),
+                          (`RecBind ((`Lid "txt"), (`Lid "txt")))))))),
+              (`Dot ((`Uid "Tokenf"), (`Lid "t")))) : FAstN.exp ))]);
     ("ocaml_comment",
       [((Sequence
            ((Sequence ((Characters [(40, 40)]), (Characters [(42, 42)]))),
@@ -711,16 +780,16 @@ let _ =
                            loc_start =
                              {
                                pos_fname = "parse_lex.ml";
-                               pos_lnum = 105;
-                               pos_bol = 3059;
-                               pos_cnum = 3084
+                               pos_lnum = 118;
+                               pos_bol = 3578;
+                               pos_cnum = 3603
                              };
                            loc_end =
                              {
                                pos_fname = "parse_lex.ml";
-                               pos_lnum = 105;
-                               pos_bol = 3059;
-                               pos_cnum = 3085
+                               pos_lnum = 118;
+                               pos_bol = 3578;
+                               pos_cnum = 3604
                              };
                            loc_ghost = false
                          } : Locf.t ), "x"))))))),
@@ -740,7 +809,11 @@ let _ =
                              ((`App
                                  ((`Dot ((`Uid "Lexing_util"), (`Lid "warn"))),
                                    (`Uid "Comment_start"))),
-                               (`App ((`Lid "!!"), (`Lid "lexbuf"))))))),
+                               (`App
+                                  ((`Dot
+                                      ((`Uid "Lexing_util"),
+                                        (`Lid "from_lexbuf"))),
+                                    (`Lid "lexbuf"))))))),
                       (`Sem
                          ((`App
                              ((`App
@@ -755,7 +828,9 @@ let _ =
                                               ((`Uid "Lexing_util"),
                                                 (`Lid "push_loc_cont"))),
                                             (`Lid "c"))), (`Lid "lexbuf"))),
-                                    (`Lid "lex_comment"))),
+                                    (`Dot
+                                       ((`Uid "Lexing_util"),
+                                         (`Lid "lex_comment"))))),
                                 (`App
                                    ((`Lid "ignore"),
                                      (`App
@@ -771,7 +846,9 @@ let _ =
       ((Alternative
           ((Alternative ((Characters [(10, 10)]), (Characters [(13, 13)]))),
             (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)]))))),
-        (`App ((`Lid "update_loc"), (`Lid "lexbuf")) : FAstN.exp ))]);
+        (`App
+           ((`Dot ((`Uid "Lexing_util"), (`Lid "update_loc"))),
+             (`Lid "lexbuf")) : FAstN.exp ))]);
     ("ocaml_string",
       [((Characters [(34, 34)]),
          (`LetIn
@@ -795,27 +872,30 @@ let _ =
                                          ((`Uid "Lexing_util"),
                                            (`Lid "push_loc_cont"))),
                                        (`Lid "c"))), (`Lid "lexbuf"))),
-                               (`Lid "lex_string"))),
-                           (`LetIn
-                              (`Negative,
-                                (`Bind
-                                   ((`Lid "loc"),
-                                     (`App
-                                        ((`App ((`Lid "--"), (`Lid "old"))),
-                                          (`Field
-                                             ((`Lid "lexbuf"),
-                                               (`Lid "lex_curr_p"))))))),
-                                (`App
-                                   ((`Vrn "Str"),
-                                     (`Record
-                                        (`Sem
-                                           ((`RecBind
-                                               ((`Lid "loc"), (`Lid "loc"))),
-                                             (`RecBind
-                                                ((`Lid "txt"),
-                                                  (`App
-                                                     ((`Lid "buff_contents"),
-                                                       (`Lid "c")))))))))))))))))) : 
+                               (`Dot
+                                  ((`Uid "Lexing_util"), (`Lid "lex_string"))))),
+                           (`App
+                              ((`Vrn "Str"),
+                                (`Record
+                                   (`Sem
+                                      ((`RecBind
+                                          ((`Lid "loc"),
+                                            (`App
+                                               ((`App
+                                                   ((`Dot
+                                                       ((`Uid "Location_util"),
+                                                         (`Lid "--"))),
+                                                     (`Lid "old"))),
+                                                 (`Field
+                                                    ((`Lid "lexbuf"),
+                                                      (`Lid "lex_curr_p"))))))),
+                                        (`RecBind
+                                           ((`Lid "txt"),
+                                             (`App
+                                                ((`Dot
+                                                    ((`Uid "Lexing_util"),
+                                                      (`Lid "buff_contents"))),
+                                                  (`Lid "c")))))))))))))))) : 
          FAstN.exp ))]);
     ("default",
       [((Bind
@@ -824,16 +904,16 @@ let _ =
                  loc_start =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 138;
-                     pos_bol = 3961;
-                     pos_cnum = 3973
+                     pos_lnum = 151;
+                     pos_bol = 4560;
+                     pos_cnum = 4572
                    };
                  loc_end =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 138;
-                     pos_bol = 3961;
-                     pos_cnum = 3974
+                     pos_lnum = 151;
+                     pos_bol = 4560;
+                     pos_cnum = 4573
                    };
                  loc_ghost = false
                } : Locf.t ), "c"))),
@@ -841,9 +921,11 @@ let _ =
             ((`App
                 ((`Lid "@@"),
                   (`App
-                     ((`Lid "err"),
+                     ((`Dot ((`Uid "Lexing_util"), (`Lid "err"))),
                        (`App ((`Uid "Illegal_character"), (`Lid "c"))))))),
-              (`App ((`Lid "!!"), (`Lid "lexbuf")))) : FAstN.exp ))]);
+              (`App
+                 ((`Dot ((`Uid "Lexing_util"), (`Lid "from_lexbuf"))),
+                   (`Lid "lexbuf")))) : FAstN.exp ))]);
     ("ocaml_eof",
       [(Eof,
          (`LetIn
@@ -879,13 +961,21 @@ let _ =
                          (`Negative,
                            (`Bind
                               ((`Lid "loc"),
-                                (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
-                           (`App
-                              ((`Vrn "EOI"),
-                                (`Record
-                                   (`Sem
-                                      ((`RecBind ((`Lid "loc"), (`Lid "loc"))),
-                                        (`RecBind ((`Lid "txt"), (`Str "")))))))))))))) : 
+                                (`App
+                                   ((`Dot
+                                       ((`Uid "Lexing_util"),
+                                         (`Lid "from_lexbuf"))),
+                                     (`Lid "lexbuf"))))),
+                           (`Constraint
+                              ((`App
+                                  ((`Vrn "EOI"),
+                                    (`Record
+                                       (`Sem
+                                          ((`RecBind
+                                              ((`Lid "loc"), (`Lid "loc"))),
+                                            (`RecBind
+                                               ((`Lid "txt"), (`Str "")))))))),
+                                (`Dot ((`Uid "Tokenf"), (`Lid "t"))))))))))) : 
          FAstN.exp ))]);
     ("ocaml_simple_quotation",
       [((Sequence ((Characters [(37, 37)]), (Characters [(123, 123)]))),
@@ -897,64 +987,78 @@ let _ =
               (`LetIn
                  (`Negative,
                    (`Bind
-                      ((`Lid "c"), (`App ((`Lid "new_cxt"), (`Uid "()"))))),
+                      ((`Lid "c"),
+                        (`App
+                           ((`Dot ((`Uid "Lexing_util"), (`Lid "new_cxt"))),
+                             (`Uid "()"))))),
                    (`Seq
                       (`Sem
                          ((`App
-                             ((`App ((`Lid "store"), (`Lid "c"))),
-                               (`Lid "lexbuf"))),
+                             ((`App
+                                 ((`Dot
+                                     ((`Uid "Lexing_util"), (`Lid "store"))),
+                                   (`Lid "c"))), (`Lid "lexbuf"))),
                            (`Sem
                               ((`App
                                   ((`App
                                       ((`App
-                                          ((`Lid "push_loc_cont"),
+                                          ((`Dot
+                                              ((`Uid "Lexing_util"),
+                                                (`Lid "push_loc_cont"))),
                                             (`Lid "c"))), (`Lid "lexbuf"))),
-                                    (`Lid "lex_quotation"))),
-                                (`LetIn
-                                   (`Negative,
-                                     (`Bind
-                                        ((`Lid "loc"),
-                                          (`App
-                                             ((`App
-                                                 ((`Lid "--"), (`Lid "old"))),
-                                               (`Field
-                                                  ((`Lid "lexbuf"),
-                                                    (`Lid "lex_curr_p"))))))),
-                                     (`App
-                                        ((`Vrn "Quot"),
-                                          (`Record
+                                    (`Dot
+                                       ((`Uid "Lexing_util"),
+                                         (`Lid "lex_quotation"))))),
+                                (`App
+                                   ((`Vrn "Quot"),
+                                     (`Record
+                                        (`Sem
+                                           ((`RecBind
+                                               ((`Lid "name"),
+                                                 (`Dot
+                                                    ((`Uid "Tokenf"),
+                                                      (`Lid "empty_name"))))),
                                              (`Sem
                                                 ((`RecBind
-                                                    ((`Lid "name"),
-                                                      (`Dot
-                                                         ((`Uid "Tokenf"),
-                                                           (`Lid "empty_name"))))),
+                                                    ((`Lid "meta"),
+                                                      (`Uid "None"))),
                                                   (`Sem
                                                      ((`RecBind
-                                                         ((`Lid "meta"),
-                                                           (`Uid "None"))),
+                                                         ((`Lid "txt"),
+                                                           (`App
+                                                              ((`Dot
+                                                                  ((`Uid
+                                                                    "Lexing_util"),
+                                                                    (
+                                                                    `Lid
+                                                                    "buff_contents"))),
+                                                                (`Lid "c"))))),
                                                        (`Sem
                                                           ((`RecBind
-                                                              ((`Lid "txt"),
-                                                                (`App
-                                                                   ((`Lid
-                                                                    "buff_contents"),
-                                                                    (`Lid "c"))))),
+                                                              ((`Lid "shift"),
+                                                                (`Int "2"))),
                                                             (`Sem
                                                                ((`RecBind
                                                                    ((`Lid
-                                                                    "shift"),
-                                                                    (`Int "2"))),
-                                                                 (`Sem
-                                                                    ((`RecBind
-                                                                    ((`Lid
                                                                     "retract"),
                                                                     (`Int "1"))),
-                                                                    (`RecBind
+                                                                 (`RecBind
                                                                     ((`Lid
                                                                     "loc"),
+                                                                    (`App
+                                                                    ((`App
+                                                                    ((`Dot
+                                                                    ((`Uid
+                                                                    "Location_util"),
                                                                     (`Lid
-                                                                    "loc")))))))))))))))))))))))))) : 
+                                                                    "--"))),
+                                                                    (`Lid
+                                                                    "old"))),
+                                                                    (`Field
+                                                                    ((`Lid
+                                                                    "lexbuf"),
+                                                                    (`Lid
+                                                                    "lex_curr_p")))))))))))))))))))))))))))) : 
          FAstN.exp ))]);
     ("ocaml_quotation",
       [((Bind
@@ -1010,16 +1114,16 @@ let _ =
                                        loc_start =
                                          {
                                            pos_fname = "parse_lex.ml";
-                                           pos_lnum = 171;
-                                           pos_bol = 4727;
-                                           pos_cnum = 4758
+                                           pos_lnum = 183;
+                                           pos_bol = 5456;
+                                           pos_cnum = 5487
                                          };
                                        loc_end =
                                          {
                                            pos_fname = "parse_lex.ml";
-                                           pos_lnum = 171;
-                                           pos_bol = 4727;
-                                           pos_cnum = 4762
+                                           pos_lnum = 183;
+                                           pos_bol = 5456;
+                                           pos_cnum = 5491
                                          };
                                        loc_ghost = false
                                      } : Locf.t ), "name"))))))),
@@ -1053,16 +1157,16 @@ let _ =
                                         loc_start =
                                           {
                                             pos_fname = "parse_lex.ml";
-                                            pos_lnum = 171;
-                                            pos_bol = 4727;
-                                            pos_cnum = 4781
+                                            pos_lnum = 183;
+                                            pos_bol = 5456;
+                                            pos_cnum = 5510
                                           };
                                         loc_end =
                                           {
                                             pos_fname = "parse_lex.ml";
-                                            pos_lnum = 171;
-                                            pos_bol = 4727;
-                                            pos_cnum = 4785
+                                            pos_lnum = 183;
+                                            pos_bol = 5456;
+                                            pos_cnum = 5514
                                           };
                                         loc_ghost = false
                                       } : Locf.t ), "meta"))))))))),
@@ -1071,22 +1175,26 @@ let _ =
                  loc_start =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 171;
-                     pos_bol = 4727;
-                     pos_cnum = 4799
+                     pos_lnum = 183;
+                     pos_bol = 5456;
+                     pos_cnum = 5528
                    };
                  loc_end =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 171;
-                     pos_bol = 4727;
-                     pos_cnum = 4804
+                     pos_lnum = 183;
+                     pos_bol = 5456;
+                     pos_cnum = 5533
                    };
                  loc_ghost = false
                } : Locf.t ), "shift"))),
          (`LetIn
             (`Negative,
-              (`Bind ((`Lid "c"), (`App ((`Lid "new_cxt"), (`Uid "()"))))),
+              (`Bind
+                 ((`Lid "c"),
+                   (`App
+                      ((`Dot ((`Uid "Lexing_util"), (`Lid "new_cxt"))),
+                        (`Uid "()"))))),
               (`LetIn
                  (`Negative,
                    (`Bind
@@ -1121,20 +1229,31 @@ let _ =
                                         (`Sem
                                            ((`App
                                                ((`App
-                                                   ((`Lid "store"),
+                                                   ((`Dot
+                                                       ((`Uid "Lexing_util"),
+                                                         (`Lid "store"))),
                                                      (`Lid "c"))),
                                                  (`Lid "lexbuf"))),
                                              (`Sem
                                                 ((`App
                                                     ((`App
                                                         ((`App
-                                                            ((`Lid
-                                                                "push_loc_cont"),
+                                                            ((`Dot
+                                                                ((`Uid
+                                                                    "Lexing_util"),
+                                                                  (`Lid
+                                                                    "push_loc_cont"))),
                                                               (`Lid "c"))),
                                                           (`Lid "lexbuf"))),
-                                                      (`Lid "lex_quotation"))),
+                                                      (`Dot
+                                                         ((`Uid "Lexing_util"),
+                                                           (`Lid
+                                                              "lex_quotation"))))),
                                                   (`App
-                                                     ((`Lid "buff_contents"),
+                                                     ((`Dot
+                                                         ((`Uid "Lexing_util"),
+                                                           (`Lid
+                                                              "buff_contents"))),
                                                        (`Lid "c")))))))))),
                                 (`LetIn
                                    (`Negative,
@@ -1142,7 +1261,10 @@ let _ =
                                         ((`Lid "loc"),
                                           (`App
                                              ((`App
-                                                 ((`Lid "--"), (`Lid "old"))),
+                                                 ((`Dot
+                                                     ((`Uid "Location_util"),
+                                                       (`Lid "--"))),
+                                                   (`Lid "old"))),
                                                (`Field
                                                   ((`Lid "lexbuf"),
                                                     (`Lid "lex_curr_p"))))))),
@@ -1216,16 +1338,16 @@ let _ =
                                           loc_start =
                                             {
                                               pos_fname = "parse_lex.ml";
-                                              pos_lnum = 193;
-                                              pos_bol = 5397;
-                                              pos_cnum = 5417
+                                              pos_lnum = 205;
+                                              pos_bol = 6202;
+                                              pos_cnum = 6222
                                             };
                                           loc_end =
                                             {
                                               pos_fname = "parse_lex.ml";
-                                              pos_lnum = 193;
-                                              pos_bol = 5397;
-                                              pos_cnum = 5418
+                                              pos_lnum = 205;
+                                              pos_bol = 6202;
+                                              pos_cnum = 6223
                                             };
                                           loc_ghost = false
                                         } : Locf.t ), "x"))))),
@@ -1278,16 +1400,16 @@ let _ =
                                        loc_start =
                                          {
                                            pos_fname = "parse_lex.ml";
-                                           pos_lnum = 193;
-                                           pos_bol = 5397;
-                                           pos_cnum = 5446
+                                           pos_lnum = 205;
+                                           pos_bol = 6202;
+                                           pos_cnum = 6251
                                          };
                                        loc_end =
                                          {
                                            pos_fname = "parse_lex.ml";
-                                           pos_lnum = 193;
-                                           pos_bol = 5397;
-                                           pos_cnum = 5450
+                                           pos_lnum = 205;
+                                           pos_bol = 6202;
+                                           pos_cnum = 6255
                                          };
                                        loc_ghost = false
                                      } : Locf.t ), "name"))))))),
@@ -1321,16 +1443,16 @@ let _ =
                                         loc_start =
                                           {
                                             pos_fname = "parse_lex.ml";
-                                            pos_lnum = 193;
-                                            pos_bol = 5397;
-                                            pos_cnum = 5469
+                                            pos_lnum = 205;
+                                            pos_bol = 6202;
+                                            pos_cnum = 6274
                                           };
                                         loc_end =
                                           {
                                             pos_fname = "parse_lex.ml";
-                                            pos_lnum = 193;
-                                            pos_bol = 5397;
-                                            pos_cnum = 5473
+                                            pos_lnum = 205;
+                                            pos_bol = 6202;
+                                            pos_cnum = 6278
                                           };
                                         loc_ghost = false
                                       } : Locf.t ), "meta"))))))))),
@@ -1339,22 +1461,26 @@ let _ =
                  loc_start =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 193;
-                     pos_bol = 5397;
-                     pos_cnum = 5484
+                     pos_lnum = 205;
+                     pos_bol = 6202;
+                     pos_cnum = 6289
                    };
                  loc_end =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 193;
-                     pos_bol = 5397;
-                     pos_cnum = 5489
+                     pos_lnum = 205;
+                     pos_bol = 6202;
+                     pos_cnum = 6294
                    };
                  loc_ghost = false
                } : Locf.t ), "shift"))),
          (`LetIn
             (`Negative,
-              (`Bind ((`Lid "c"), (`App ((`Lid "new_cxt"), (`Uid "()"))))),
+              (`Bind
+                 ((`Lid "c"),
+                   (`App
+                      ((`Dot ((`Uid "Lexing_util"), (`Lid "new_cxt"))),
+                        (`Uid "()"))))),
               (`LetIn
                  (`Negative,
                    (`Bind
@@ -1389,20 +1515,31 @@ let _ =
                                         (`Sem
                                            ((`App
                                                ((`App
-                                                   ((`Lid "store"),
+                                                   ((`Dot
+                                                       ((`Uid "Lexing_util"),
+                                                         (`Lid "store"))),
                                                      (`Lid "c"))),
                                                  (`Lid "lexbuf"))),
                                              (`Sem
                                                 ((`App
                                                     ((`App
                                                         ((`App
-                                                            ((`Lid
-                                                                "push_loc_cont"),
+                                                            ((`Dot
+                                                                ((`Uid
+                                                                    "Lexing_util"),
+                                                                  (`Lid
+                                                                    "push_loc_cont"))),
                                                               (`Lid "c"))),
                                                           (`Lid "lexbuf"))),
-                                                      (`Lid "lex_quotation"))),
+                                                      (`Dot
+                                                         ((`Uid "Lexing_util"),
+                                                           (`Lid
+                                                              "lex_quotation"))))),
                                                   (`App
-                                                     ((`Lid "buff_contents"),
+                                                     ((`Dot
+                                                         ((`Uid "Lexing_util"),
+                                                           (`Lid
+                                                              "buff_contents"))),
                                                        (`Lid "c")))))))))),
                                 (`LetIn
                                    (`Negative,
@@ -1410,7 +1547,10 @@ let _ =
                                         ((`Lid "loc"),
                                           (`App
                                              ((`App
-                                                 ((`Lid "--"), (`Lid "old"))),
+                                                 ((`Dot
+                                                     ((`Uid "Location_util"),
+                                                       (`Lid "--"))),
+                                                   (`Lid "old"))),
                                                (`Field
                                                   ((`Lid "lexbuf"),
                                                     (`Lid "lex_curr_p"))))))),
@@ -1434,16 +1574,17 @@ let _ =
                                                           ((`Lid "="),
                                                             (`Lid "x"))),
                                                         (`Uid "None"))),
-                                                    (`App
-                                                       ((`Vrn "Quot"),
-                                                         (`Record
-                                                            (`Sem
-                                                               ((`RecBind
-                                                                   ((`Lid
+                                                    (`Constraint
+                                                       ((`App
+                                                           ((`Vrn "Quot"),
+                                                             (`Record
+                                                                (`Sem
+                                                                   ((`RecBind
+                                                                    ((`Lid
                                                                     "name"),
                                                                     (`Lid
                                                                     "name"))),
-                                                                 (`Sem
+                                                                    (`Sem
                                                                     ((`RecBind
                                                                     ((`Lid
                                                                     "meta"),
@@ -1472,16 +1613,21 @@ let _ =
                                                                     "retract"),
                                                                     (`Lid
                                                                     "retract")))))))))))))))),
-                                                    (`App
-                                                       ((`Vrn "DirQuotation"),
-                                                         (`Record
-                                                            (`Sem
-                                                               ((`RecBind
-                                                                   ((`Lid
+                                                         (`Dot
+                                                            ((`Uid "Tokenf"),
+                                                              (`Lid "t"))))),
+                                                    (`Constraint
+                                                       ((`App
+                                                           ((`Vrn
+                                                               "DirQuotation"),
+                                                             (`Record
+                                                                (`Sem
+                                                                   ((`RecBind
+                                                                    ((`Lid
                                                                     "name"),
                                                                     (`Lid
                                                                     "name"))),
-                                                                 (`Sem
+                                                                    (`Sem
                                                                     ((`RecBind
                                                                     ((`Lid
                                                                     "meta"),
@@ -1509,7 +1655,10 @@ let _ =
                                                                     ((`Lid
                                                                     "retract"),
                                                                     (`Lid
-                                                                    "retract")))))))))))))))))))))))))))))))) : 
+                                                                    "retract")))))))))))))))),
+                                                         (`Dot
+                                                            ((`Uid "Tokenf"),
+                                                              (`Lid "t"))))))))))))))))))))) : 
          FAstN.exp ))]);
     ("line_directive",
       [((Sequence
@@ -1528,16 +1677,16 @@ let _ =
                                       loc_start =
                                         {
                                           pos_fname = "parse_lex.ml";
-                                          pos_lnum = 218;
-                                          pos_bol = 6180;
-                                          pos_cnum = 6220
+                                          pos_lnum = 231;
+                                          pos_bol = 7098;
+                                          pos_cnum = 7138
                                         };
                                       loc_end =
                                         {
                                           pos_fname = "parse_lex.ml";
-                                          pos_lnum = 218;
-                                          pos_bol = 6180;
-                                          pos_cnum = 6223
+                                          pos_lnum = 231;
+                                          pos_bol = 7098;
+                                          pos_cnum = 7141
                                         };
                                       loc_ghost = false
                                     } : Locf.t ), "num"))))),
@@ -1558,16 +1707,16 @@ let _ =
                                             loc_start =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 219;
-                                                pos_bol = 6237;
-                                                pos_cnum = 6279
+                                                pos_lnum = 232;
+                                                pos_bol = 7155;
+                                                pos_cnum = 7197
                                               };
                                             loc_end =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 219;
-                                                pos_bol = 6237;
-                                                pos_cnum = 6283
+                                                pos_lnum = 232;
+                                                pos_bol = 7155;
+                                                pos_cnum = 7201
                                               };
                                             loc_ghost = false
                                           } : Locf.t ), "name"))))),
@@ -1579,17 +1728,17 @@ let _ =
                   (Sequence
                      ((Characters [(13, 13)]), (Characters [(10, 10)]))))))),
          (`Seq
-            (`Sem
+            (`App
                ((`App
                    ((`App
                        ((`App
-                           ((`App ((`Lid "update_loc"), (`Lid "lexbuf"))),
-                             (`OptLabl ((`Lid "file"), (`Lid "name"))))),
-                         (`Label
-                            ((`Lid "line"),
-                              (`App ((`Lid "int_of_string"), (`Lid "num"))))))),
-                     (`Label ((`Lid "absolute"), (`Lid "true"))))),
-                 (`App ((`Lid "token"), (`Lid "lexbuf"))))) : FAstN.exp ))]);
+                           ((`Dot ((`Uid "Lexing_util"), (`Lid "update_loc"))),
+                             (`Lid "lexbuf"))),
+                         (`OptLabl ((`Lid "file"), (`Lid "name"))))),
+                     (`Label
+                        ((`Lid "line"),
+                          (`App ((`Lid "int_of_string"), (`Lid "num"))))))),
+                 (`Label ((`Lid "absolute"), (`Lid "true"))))) : FAstN.exp ))]);
     ("ocaml_ant",
       [((Bind
            ((Sequence
@@ -1613,16 +1762,16 @@ let _ =
                               loc_start =
                                 {
                                   pos_fname = "parse_lex.ml";
-                                  pos_lnum = 236;
-                                  pos_bol = 6765;
-                                  pos_cnum = 6795
+                                  pos_lnum = 249;
+                                  pos_bol = 7682;
+                                  pos_cnum = 7712
                                 };
                               loc_end =
                                 {
                                   pos_fname = "parse_lex.ml";
-                                  pos_lnum = 236;
-                                  pos_bol = 6765;
-                                  pos_cnum = 6799
+                                  pos_lnum = 249;
+                                  pos_bol = 7682;
+                                  pos_cnum = 7716
                                 };
                               loc_ghost = false
                             } : Locf.t ), "name"))))),
@@ -1655,16 +1804,16 @@ let _ =
                                loc_start =
                                  {
                                    pos_fname = "parse_lex.ml";
-                                   pos_lnum = 236;
-                                   pos_bol = 6765;
-                                   pos_cnum = 6821
+                                   pos_lnum = 249;
+                                   pos_bol = 7682;
+                                   pos_cnum = 7738
                                  };
                                loc_end =
                                  {
                                    pos_fname = "parse_lex.ml";
-                                   pos_lnum = 236;
-                                   pos_bol = 6765;
-                                   pos_cnum = 6827
+                                   pos_lnum = 249;
+                                   pos_bol = 7682;
+                                   pos_cnum = 7744
                                  };
                                loc_ghost = false
                              } : Locf.t ), "follow"))))))),
@@ -1672,16 +1821,16 @@ let _ =
                  loc_start =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 236;
-                     pos_bol = 6765;
-                     pos_cnum = 6833
+                     pos_lnum = 249;
+                     pos_bol = 7682;
+                     pos_cnum = 7750
                    };
                  loc_end =
                    {
                      pos_fname = "parse_lex.ml";
-                     pos_lnum = 236;
-                     pos_bol = 6765;
-                     pos_cnum = 6836
+                     pos_lnum = 249;
+                     pos_bol = 7682;
+                     pos_cnum = 7753
                    };
                  loc_ghost = false
                } : Locf.t ), "txt"))),
@@ -1709,28 +1858,31 @@ let _ =
                                                             (`Lid "length"))),
                                                         (`Lid "name"))))),
                                                (`Int "2")))))))))))))),
-              (`App
-                 ((`Vrn "Ant"),
-                   (`Record
-                      (`Sem
-                         ((`RecBind
-                             ((`Lid "loc"),
-                               (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
-                           (`Sem
-                              ((`RecBind ((`Lid "kind"), (`Lid "kind"))),
-                                (`Sem
-                                   ((`RecBind ((`Lid "txt"), (`Lid "txt"))),
-                                     (`Sem
-                                        ((`RecBind
-                                            ((`Lid "shift"), (`Lid "shift"))),
-                                          (`Sem
-                                             ((`RecBind
-                                                 ((`Lid "retract"),
-                                                   (`Int "0"))),
-                                               (`RecBind
-                                                  ((`Lid "cxt"),
-                                                    (`Uid "None"))))))))))))))))) : 
-         FAstN.exp ));
+              (`Constraint
+                 ((`App
+                     ((`Vrn "Ant"),
+                       (`Record
+                          (`Sem
+                             ((`RecBind
+                                 ((`Lid "loc"),
+                                   (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
+                               (`Sem
+                                  ((`RecBind ((`Lid "kind"), (`Lid "kind"))),
+                                    (`Sem
+                                       ((`RecBind
+                                           ((`Lid "txt"), (`Lid "txt"))),
+                                         (`Sem
+                                            ((`RecBind
+                                                ((`Lid "shift"),
+                                                  (`Lid "shift"))),
+                                              (`Sem
+                                                 ((`RecBind
+                                                     ((`Lid "retract"),
+                                                       (`Int "0"))),
+                                                   (`RecBind
+                                                      ((`Lid "cxt"),
+                                                        (`Uid "None")))))))))))))))),
+                   (`Dot ((`Uid "Tokenf"), (`Lid "t")))))) : FAstN.exp ));
       ((Bind
           ((Sequence
               ((Sequence
@@ -1758,16 +1910,16 @@ let _ =
                                   loc_start =
                                     {
                                       pos_fname = "parse_lex.ml";
-                                      pos_lnum = 247;
-                                      pos_bol = 7101;
-                                      pos_cnum = 7131
+                                      pos_lnum = 260;
+                                      pos_bol = 8032;
+                                      pos_cnum = 8062
                                     };
                                   loc_end =
                                     {
                                       pos_fname = "parse_lex.ml";
-                                      pos_lnum = 247;
-                                      pos_bol = 7101;
-                                      pos_cnum = 7135
+                                      pos_lnum = 260;
+                                      pos_bol = 8032;
+                                      pos_cnum = 8066
                                     };
                                   loc_ghost = false
                                 } : Locf.t ), "name"))))))),
@@ -1776,16 +1928,16 @@ let _ =
                 loc_start =
                   {
                     pos_fname = "parse_lex.ml";
-                    pos_lnum = 247;
-                    pos_bol = 7101;
-                    pos_cnum = 7146
+                    pos_lnum = 260;
+                    pos_bol = 8032;
+                    pos_cnum = 8077
                   };
                 loc_end =
                   {
                     pos_fname = "parse_lex.ml";
-                    pos_lnum = 247;
-                    pos_bol = 7101;
-                    pos_cnum = 7149
+                    pos_lnum = 260;
+                    pos_bol = 8032;
+                    pos_cnum = 8080
                   };
                 loc_ghost = false
               } : Locf.t ), "txt"))),
@@ -1796,19 +1948,28 @@ let _ =
                   (`Field ((`Lid "lexbuf"), (`Lid "lex_start_p"))))),
              (`LetIn
                 (`Negative,
-                  (`Bind ((`Lid "c"), (`App ((`Lid "new_cxt"), (`Uid "()"))))),
+                  (`Bind
+                     ((`Lid "c"),
+                       (`App
+                          ((`Dot ((`Uid "Lexing_util"), (`Lid "new_cxt"))),
+                            (`Uid "()"))))),
                   (`Seq
                      (`Sem
                         ((`App
-                            ((`App ((`Lid "store"), (`Lid "c"))),
-                              (`Lid "lexbuf"))),
+                            ((`App
+                                ((`Dot ((`Uid "Lexing_util"), (`Lid "store"))),
+                                  (`Lid "c"))), (`Lid "lexbuf"))),
                           (`Sem
                              ((`App
                                  ((`App
                                      ((`App
-                                         ((`Lid "push_loc_cont"), (`Lid "c"))),
-                                       (`Lid "lexbuf"))),
-                                   (`Lid "lex_quotation"))),
+                                         ((`Dot
+                                             ((`Uid "Lexing_util"),
+                                               (`Lid "push_loc_cont"))),
+                                           (`Lid "c"))), (`Lid "lexbuf"))),
+                                   (`Dot
+                                      ((`Uid "Lexing_util"),
+                                        (`Lid "lex_quotation"))))),
                                (`App
                                   ((`Vrn "Ant"),
                                     (`Record
@@ -1855,8 +2016,11 @@ let _ =
                                                     ((`RecBind
                                                         ((`Lid "txt"),
                                                           (`App
-                                                             ((`Lid
-                                                                 "buff_contents"),
+                                                             ((`Dot
+                                                                 ((`Uid
+                                                                    "Lexing_util"),
+                                                                   (`Lid
+                                                                    "buff_contents"))),
                                                                (`Lid "c"))))),
                                                       (`Sem
                                                          ((`RecBind
@@ -1890,24 +2054,28 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 263;
-                         pos_bol = 7628;
-                         pos_cnum = 7647
+                         pos_lnum = 276;
+                         pos_bol = 8619;
+                         pos_cnum = 8638
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 263;
-                         pos_bol = 7628;
-                         pos_cnum = 7648
+                         pos_lnum = 276;
+                         pos_bol = 8619;
+                         pos_cnum = 8639
                        };
                      loc_ghost = false
                    } : Locf.t ), "c"))))),
         (`App
            ((`App
-               ((`Lid "err"),
-                 (`App ((`Uid "Illegal_character"), (`Lid "c"))))),
-             (`App ((`Lid "!!"), (`Lid "lexbuf")))) : FAstN.exp ))])]
+               ((`Lid "@@"),
+                 (`App
+                    ((`Dot ((`Uid "Lexing_util"), (`Lid "err"))),
+                      (`App ((`Uid "Illegal_character"), (`Lid "c"))))))),
+             (`App
+                ((`Dot ((`Uid "Lexing_util"), (`Lid "from_lexbuf"))),
+                  (`Lid "lexbuf")))) : FAstN.exp ))])]
 let meta_cset _loc (x : Fcset.t) =
   Fan_ops.meta_list
     (fun _loc  (a,b)  ->

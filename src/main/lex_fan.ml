@@ -1,47 +1,14 @@
 
 %regex{ (** FIXME remove duplication later see lexing_util.cmo *)
-
-let locname = ident
 let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
-
 let symbolchar = '*'|not_star_symbolchar
 
-
-  
-
 };;
 
-
-
-(*************************************)
-(*    local operators                *)
-(*************************************)
-let (++) = Buffer.add_string
-let (+>) = Buffer.add_char
 (** get the location of current the lexeme *)
-let (!!)  = Location_util.from_lexbuf ;;
+let (!!)  = Lexing_util.from_lexbuf ;;
 
-
-%import{
-Lexing_util:
-  update_loc
-  new_cxt
-  push_loc_cont
-  pop_loc
-  lex_string
-  lex_comment
-  lex_quotation
-  buff_contents
-  err
-  warn
-  move_curr_p
-  store
-  ;
-Location_util:
-   (--)
-   ;
-};;
 (** It could also import regex in the future
     {:import|
     Lexing_util:
@@ -105,17 +72,16 @@ let  rec token   = %lex_fan{
            
    | "*)" %{
        begin
-         warn Comment_not_end (!! lexbuf) ;
-         move_curr_p (-1) lexbuf;
+         Lexing_util.warn Comment_not_end (!! lexbuf) ;
+         Lexing_util.move_curr_p (-1) lexbuf;
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
    | @ocaml_double_quotation
-   | @line_directive       
+   | @line_directive %{token lexbuf}       
    | @ocaml_ant
    | @ocaml_eof
    | @default}
-    
 
     
 let from_lexbuf lb : Tokenf.stream =

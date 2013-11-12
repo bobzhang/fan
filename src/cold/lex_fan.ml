@@ -1,18 +1,10 @@
 let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
-let update_loc = Lexing_util.update_loc
-let new_cxt = Lexing_util.new_cxt
-let push_loc_cont = Lexing_util.push_loc_cont
-let pop_loc = Lexing_util.pop_loc
 let lex_string = Lexing_util.lex_string
-let lex_comment = Lexing_util.lex_comment
 let lex_quotation = Lexing_util.lex_quotation
-let buff_contents = Lexing_util.buff_contents
-let err = Lexing_util.err
 let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
-let store = Lexing_util.store
 let (--) = Location_util.( -- ) 
 let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
@@ -5571,15 +5563,17 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
        };
      (match __ocaml_lex_result with
       | 0 -> ((); token lexbuf)
-      | 1 -> (update_loc lexbuf; token lexbuf)
+      | 1 -> (Lexing_util.update_loc lexbuf; token lexbuf)
       | 2 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
           ((let c = Lexing_util.new_cxt () in
-            if x <> None then Lexing_util.warn Comment_start (!! lexbuf);
+            if x <> None
+            then
+              Lexing_util.warn Comment_start (Lexing_util.from_lexbuf lexbuf);
             Lexing_util.store c lexbuf;
-            Lexing_util.push_loc_cont c lexbuf lex_comment;
+            Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_comment;
             ignore (Lexing_util.buff_contents c));
            token lexbuf)
       | 3 ->
@@ -5639,37 +5633,69 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Flo
-            {
-              loc =
-                {
-                  loc_start = (lexbuf.lex_start_p);
-                  loc_end = (lexbuf.lex_curr_p);
-                  loc_ghost = false
-                };
-              txt
-            }
+          (`Flo
+             {
+               loc =
+                 {
+                   loc_start = (lexbuf.lex_start_p);
+                   loc_end = (lexbuf.lex_curr_p);
+                   loc_ghost = false
+                 };
+               txt
+             } : Tokenf.t )
       | 9 ->
           let c = Lexing_util.new_cxt () in
           let old = lexbuf.lex_start_p in
-          (Lexing_util.push_loc_cont c lexbuf lex_string;
-           (let loc = old -- lexbuf.lex_curr_p in
-            `Str { loc; txt = (buff_contents c) }))
+          (Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_string;
+           `Str
+             {
+               loc = (Location_util.( -- )  old lexbuf.lex_curr_p);
+               txt = (Lexing_util.buff_contents c)
+             })
       | 10 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          (Lexing_util.update_loc lexbuf ~retract:1;
-           `Chr { loc = (!! lexbuf); txt })
+          ((let pos = lexbuf.lex_curr_p in
+            lexbuf.lex_curr_p <-
+              {
+                pos with
+                pos_lnum = (pos.pos_lnum + 1);
+                pos_bol = (pos.pos_cnum - 1)
+              });
+           (`Chr
+              {
+                loc =
+                  {
+                    loc_start = (lexbuf.lex_start_p);
+                    loc_end = (lexbuf.lex_curr_p);
+                    loc_ghost = false
+                  };
+                txt
+              } : Tokenf.t ))
       | 11 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          `Chr { loc = (!! lexbuf); txt }
+          (`Chr
+             {
+               loc =
+                 {
+                   loc_start = (lexbuf.lex_start_p);
+                   loc_end = (lexbuf.lex_curr_p);
+                   loc_ghost = false
+                 };
+               txt
+             } : Tokenf.t )
       | 12 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-          (Lexing_util.err (Illegal_escape (String.make 1 c))) @@ (!! lexbuf)
+          Lexing_util.err (Illegal_escape (String.make 1 c))
+            ({
+               loc_start = (lexbuf.lex_start_p);
+               loc_end = (lexbuf.lex_curr_p);
+               loc_ghost = false
+             } : Locf.t )
       | 13 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -5742,22 +5768,24 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           and shift =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let c = new_cxt () in
+          let c = Lexing_util.new_cxt () in
           let name =
             match name with
             | Some name -> Tokenf.name_of_string name
             | None  -> Tokenf.empty_name in
           let old = lexbuf.lex_start_p in
           let txt =
-            store c lexbuf;
-            push_loc_cont c lexbuf lex_quotation;
-            buff_contents c in
-          let loc = old -- lexbuf.lex_curr_p in
+            Lexing_util.store c lexbuf;
+            Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
+            Lexing_util.buff_contents c in
+          let loc = Location_util.( -- )  old lexbuf.lex_curr_p in
           let shift = String.length shift in
           let retract = 1 in
           if x = None
-          then `Quot { name; meta; shift; txt; loc; retract }
-          else `DirQuotation { name; meta; shift; txt; loc; retract }
+          then (`Quot { name; meta; shift; txt; loc; retract } : Tokenf.t )
+          else
+            (`DirQuotation { name; meta; shift; txt; loc; retract } : 
+            Tokenf.t )
       | 26 ->
           let num =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -5765,7 +5793,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           and name =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(3)) + 0)
               (((lexbuf.Lexing.lex_mem).(2)) + 0) in
-          (update_loc lexbuf ?file:name ~line:(int_of_string num)
+          (Lexing_util.update_loc lexbuf ?file:name ~line:(int_of_string num)
              ~absolute:true;
            token lexbuf)
       | 27 ->
@@ -5782,8 +5810,9 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             match follow with
             | None  -> ("", 1)
             | Some _ -> (name, ((String.length name) + 2)) in
-          `Ant
-            { loc = (!! lexbuf); kind; txt; shift; retract = 0; cxt = None }
+          (`Ant
+             { loc = (!! lexbuf); kind; txt; shift; retract = 0; cxt = None } : 
+            Tokenf.t )
       | 28 ->
           let name =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(1)) + 0)
@@ -5792,9 +5821,9 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
           let old = lexbuf.lex_start_p in
-          let c = new_cxt () in
-          (store c lexbuf;
-           push_loc_cont c lexbuf lex_quotation;
+          let c = Lexing_util.new_cxt () in
+          (Lexing_util.store c lexbuf;
+           Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
            `Ant
              {
                loc =
@@ -5804,7 +5833,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
                    loc_ghost = false
                  };
                kind = ((match name with | Some n -> n | None  -> ""));
-               txt = (buff_contents c);
+               txt = (Lexing_util.buff_contents c);
                shift = (String.length txt);
                retract = 1;
                cxt = None
@@ -5812,7 +5841,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | 29 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
-          err (Illegal_character c) (!! lexbuf)
+          (Lexing_util.err (Illegal_character c)) @@
+            (Lexing_util.from_lexbuf lexbuf)
       | 30 ->
           let pos = lexbuf.lex_curr_p in
           (lexbuf.lex_curr_p <-
@@ -5821,11 +5851,13 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
                pos_bol = (pos.pos_bol + 1);
                pos_cnum = (pos.pos_cnum + 1)
              };
-           (let loc = !! lexbuf in `EOI { loc; txt = "" }))
+           (let loc = Lexing_util.from_lexbuf lexbuf in
+            (`EOI { loc; txt = "" } : Tokenf.t )))
       | 31 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-          (err (Illegal_character c)) @@ (!! lexbuf)
+          (Lexing_util.err (Illegal_character c)) @@
+            (Lexing_util.from_lexbuf lexbuf)
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb =
   (let next _ = Some (token lb) in Streamf.from next : Tokenf.stream )

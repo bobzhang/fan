@@ -49,6 +49,7 @@ type context =  {
 let new_cxt () = { loc = []; buffer = (Buffer.create 256) }
 let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
+let from_lexbuf = Location_util.from_lexbuf
 let (!!) = Location_util.from_lexbuf
 let (--) = Location_util.( -- ) 
 let store c lexbuf = c.buffer ++ (Lexing.lexeme lexbuf)
