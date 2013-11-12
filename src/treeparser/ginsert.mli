@@ -19,9 +19,9 @@ val empty_lev : label  -> assoc  -> level
 
 
 (* given [entry] [position] and [levs]  return [levs* (label name * assoc ) -> level  *levs]*)  
-val find_level :
-    ?position:position -> entry -> level list
-      -> level list * (level * string) option * level list
+(* val find_level : *)
+(*     ?position:position -> entry -> level list *)
+(*       -> level list * (level * string) option * level list *)
 
 
 (** make sure the [entry] share the same gram with the symbol *)          
@@ -78,18 +78,18 @@ val scan_olevel : entry ->  olevel -> olevel
 
 
 
-val insert_olevels_in_levels : entry -> position option -> olevel list -> level list
+(* val insert_olevels_in_levels : entry -> position option -> olevel list -> level list *)
 
 (**
    it calls [merge_level] or [level_of_olevel]
  *)    
-val insert_olevel : entry -> position option -> olevel -> level list      
+val insert_olevel : entry -> int option -> olevel -> level list      
 
-val extend : entry -> position option * olevel list -> unit
+(* val extend : entry -> position option * olevel list -> unit *)
 
 
 (** see {extend}, it would promote the keywords automatically *)    
-val unsafe_extend : entry -> position option * olevel list -> unit    
+(* val unsafe_extend : entry -> position option * olevel list -> unit     *)
 
 val extend_single : entry ->  position option * olevel -> unit    
 

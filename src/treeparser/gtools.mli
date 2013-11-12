@@ -7,7 +7,7 @@ open Gdefs
 
 val empty_entry: string -> 'a -> 'b
         
-val is_level_labelled:  string -> level -> bool
+(* val is_level_labelled:  string -> level -> bool *)
         
     
 val get_terminals: node ->  (Tokenf.pattern list * Tokenf.pattern * tree) option

@@ -5,12 +5,12 @@ type 'a t = 'a Gentry.t
 
 type assoc = [ `LA | `NA | `RA ]
 
-type position =
-    [ `After of string
-    | `Before of string
-    | `First
-    | `Last
-    | `Level of string ]
+type position = int
+    (* [ `After of string *)
+    (* | `Before of string *)
+    (* | `First *)
+    (* | `Last *)
+    (* | `Level of string ] *)
 
 val filter: stream -> stream      
 
@@ -32,7 +32,7 @@ and symbol =
        compile does not know how to destruct symbol
      *)
   | Nterm of entry
-  | Snterml of (entry * string) (* the second argument is the level name *)
+  | Snterml of (entry * int) (* the second argument is the level name *)
   | List0 of symbol
   | List0sep of (symbol * symbol)
   | List1 of symbol
@@ -58,7 +58,7 @@ type production = {
     fn : action }
 
       
-type label = string option
+type label = int
 
 (* FIXME duplicate with Grammar/Gdefs *)      
 type olevel =label * assoc option * production list
@@ -132,8 +132,8 @@ val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 val delete_rule:  'a t -> symbol list -> unit
 
 
-val extend :  'a t -> extend_statment -> unit
-val unsafe_extend :  'a t -> extend_statment -> unit
+(* val extend :  'a t -> extend_statment -> unit *)
+(* val unsafe_extend :  'a t -> extend_statment -> unit *)
 
 val extend_single : 'a t -> single_extend_statement -> unit
 val unsafe_extend_single : 'a t -> single_extend_statement -> unit    

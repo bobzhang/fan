@@ -56,10 +56,10 @@ val parse : 'a t -> Locf.t -> char Streamf.t -> 'a
 
 (** mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future *)    
-val extend :
-  'a t -> position  option * olevel list -> unit
-val unsafe_extend :
-    'a t -> position  option * olevel list -> unit
+(* val extend : *)
+(*   'a t -> position  option * olevel list -> unit *)
+(* val unsafe_extend : *)
+(*     'a t -> position  option * olevel list -> unit *)
 
 val extend_single :
   'a t -> position  option * olevel  -> unit

@@ -17,12 +17,12 @@ let with_loc (parse_fun: 'b Tokenf.parse ) strm =
   (x, loc)
 
 
-let level_number (entry:Gdefs.entry) lab =
+let level_number (entry:Gdefs.entry) (lab:int) =
   let rec lookup levn = function
-    | [] -> failwithf "unknown level %s"  lab
-    | lev :: levs ->
-        if Gtools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
-  lookup 0 entry.levels 
+    | [] -> failwithf "unknown level %d"  lab
+    | (lev:Gdefs.level) :: levs ->
+        if  lev.lname = lab then levn else lookup (1 + levn) levs  in
+  lookup 0 entry.levels
         
 
 (* in case of syntax error, the system attempts to recover the error by applying

@@ -13,7 +13,7 @@ val with_loc: 'b Tokenf.parse -> ('b*Locf.t) Tokenf.parse
    Gparser.level_number (Obj.magic expr) "simple";
    - : int = 16
    ]} *)  
-val level_number: entry -> string -> int
+val level_number: entry -> int -> int
 
 
 (** It outputs a stateful parser, but its generation process is functional *)    

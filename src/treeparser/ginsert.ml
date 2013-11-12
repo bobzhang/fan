@@ -31,32 +31,28 @@ let empty_lev lname assoc : Gdefs.level =
 
     
 
-let find_level ?position (entry:Gdefs.entry)  levs =
-  let find x n  ls = 
-    let rec get = function
-      | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name
-      | lev::levs ->
-      if Gtools.is_level_labelled n lev then
-        match x with
-        |`Level _ ->
-            ([],  Some(lev,n), levs)
-        |`Before _ ->
-            ([],  None , lev::levs)
-        |`After _ ->
-           ([lev],None , levs)  
-      else
-        let (levs1,rlev,levs2) = get levs in
-        (lev::levs1, rlev, levs2)  in
-    get ls in 
-  match position with
-  | Some `First -> ([], None , levs)
-  | Some `Last -> (levs, None , [])
-  | Some ((`Level n | `Before n | `After n)  as x) ->
-      find x n levs
-  | None ->      (* default behavior*)   
-      match levs with
-      | lev :: levs -> ([], Some (lev, "<top>"), levs)
-      | [] -> ([], None, []) 
+(* let find_level ?position (entry:Gdefs.entry)  levs = *)
+(*   (\* let find (x:int) n  ls =  *\) *)
+(*   (\*   let rec get = function *\) *)
+(*   (\*     | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name *\) *)
+(*   (\*     | (lev:Gdefs.level)::levs -> *\) *)
+(*   (\*     if x = lev.label (\\* Gtools.is_level_labelled n lev *\\) then *\) *)
+(*   (\*       (\\* match x with *\\) *\) *)
+(*   (\*       (\\* |`Level _ -> *\\) *\) *)
+(*   (\*           ([],  Some(lev,n), levs) *\) *)
+(*   (\*       |`Before _ -> *\) *)
+(*   (\*           ([],  None , lev::levs) *\) *)
+(*   (\*       |`After _ -> *\) *)
+(*   (\*          ([lev],None , levs)   *\) *)
+(*   (\*     else *\) *)
+(*   (\*       let (levs1,rlev,levs2) = get levs in *\) *)
+(*   (\*       (lev::levs1, rlev, levs2)  in *\) *)
+(*   (\*   get ls in  *\) *)
+(*   let level = *)
+(*     match position with *)
+(*     | Some i -> i *)
+(*     | None -> 10  in *)
+(*   entry.levels *)
 
 let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
   match x with
@@ -165,18 +161,18 @@ let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) =
     (match lb with
     |(y,Some assoc,x) ->
         (if not(la.lname= y  && la.assoc = assoc) then
-          eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
-            (Formatf.pp_print_option Formatf.pp_print_string) la.lname
-            (Formatf.pp_print_option Formatf.pp_print_string) y
+          eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
+            (* (Formatf.pp_print_option Formatf.pp_print_string)  *)la.lname
+            (* (Formatf.pp_print_option Formatf.pp_print_string) *) y
             Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
          x)
-    |((Some _ as y),_,x)-> 
+    |((* (Some _ as y) *)y ,_,x)-> 
         (if not (la.lname=y) then
-          eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
-            (Formatf.pp_print_option Formatf.pp_print_string) la.lname
-            (Formatf.pp_print_option Formatf.pp_print_string) y;
+          eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d)@."
+            (* (Formatf.pp_print_option Formatf.pp_print_string) *) la.lname
+            (* (Formatf.pp_print_option Formatf.pp_print_string) *) y;
          x)
-    |(None,None,x) -> x) in
+    (* |(None,None,x) -> x  *)) in
   (* added in reverse order *)
   List.fold_right add_production_in_level rules1 la
 
@@ -188,27 +184,56 @@ let level_of_olevel (lb:Gdefs.olevel) =
 
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
-let insert_olevels_in_levels (entry:Gdefs.entry) position olevels =
-  let elev = entry.levels in
-  match olevels with
-  | [] -> elev
-  | _::_ -> 
-      let (levs1, make_lev, levs2) = find_level ?position entry  elev in
-      match make_lev with
-      | Some (_lev,_n) ->
-          failwithf "Insert group levels in to a specific lev:%s" entry.name
-      | None -> levs1 @ List.map level_of_olevel olevels @ levs2 
+
+(*   let elev = entry.levels in *)
+(*   match olevels with *)
+(*   | [] -> elev *)
+(*   | _::_ ->  *)
+(*       (\* let (levs1, make_lev, levs2) = find_level ?position entry  elev in *\) *)
+(*       (\* match make_lev with *\) *)
+(*       (\* | Some (_lev,_n) -> *\) *)
+(*       (\*     failwithf "Insert group levels in to a specific lev:%s" entry.name *\) *)
+(*       (\* | None -> levs1 @  *\)(\* List.map level_of_olevel olevels *\) (\* @ levs2 *\) *)
+(*       let insert xs position (entry:Gdefs.entry)  levs = *)
+(*         let rec aux (ls:Gdefs.level list) = *)
+(*           match ls with *)
+(*           | [] -> xs *)
+(*           | x::xs -> *)
+(*               if x.label > position then *)
+(*                 level_of_olevel *)
+(*               else if x.label = position then *)
+(*               else *)
+(*                 aux xs  *)
+(*           let rec get = function *)
+(*             | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name *)
+(*             | (lev:Gdefs.level)::levs -> *)
+(*                 if x = lev.label (\* Gtools.is_level_labelled n lev *\) then *)
+(*                   ([],  Some(lev,n), levs) *)
+(*                 else *)
+(*                   let (levs1,rlev,levs2) = get levs in *)
+(*                   (lev::levs1, rlev, levs2)  in *)
+(*           get ls in *)
+
+(*         let levs = List.map level_of_olevel olevels in *)
+        
+(*         Mapf.Int.add_list levs entry.elev *)
 
 
 let insert_olevel (entry:Gdefs.entry) position olevel =
   let elev = entry.levels in
-  let (levs1,v,levs2) = find_level ?position entry elev in
-  let l1 =
-    match v with
-    | Some (lev,_n) -> merge_level lev olevel
-    | None -> level_of_olevel olevel in
-  levs1 @ (l1 :: levs2)
-
+  let pos = Option.default 10 position in 
+  let rec aux (ls:Gdefs.level list) =
+      match ls with
+      | [] -> [level_of_olevel olevel]
+      | x::xs ->
+          if x.lname > pos then
+            level_of_olevel olevel :: ls 
+          else if x.lname = pos then
+            merge_level x olevel :: xs 
+          else
+            x:: aux xs  in
+  aux elev 
+(* let insert_olevels_in_levels (entry:Gdefs.entry) position olevels = *)
             
 
 (* This function will be executed in the runtime *)            
@@ -255,12 +280,12 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
        | _ -> symbol) symbols)}
     
 
-let unsafe_extend entry (position,levels) =
-  let levels =  unsafe_scan_olevels entry levels in (* for side effect *)
-  let elev = insert_olevels_in_levels entry position levels in
-  (entry.levels <-  elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
+(* let unsafe_extend entry (position,levels) = *)
+(*   let levels =  unsafe_scan_olevels entry levels in (\* for side effect *\) *)
+(*   let elev = insert_olevels_in_levels entry position levels in *)
+(*   (entry.levels <-  elev; *)
+(*    entry.start <-Gparser.start_parser_of_entry entry; *)
+(*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
 
 let unsafe_extend_single entry (position,olevel) = 
   let olevel = unsafe_scan_olevel entry olevel in
@@ -269,12 +294,12 @@ let unsafe_extend_single entry (position,olevel) =
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
     
-let extend entry (position, levels) =
-  let levels =  scan_olevels entry levels in (* for side effect *)
-  let elev = insert_olevels_in_levels entry position levels in
-  (entry.levels <-  elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
+(* let extend entry (position, levels) = *)
+(*   let levels =  scan_olevels entry levels in (\* for side effect *\) *)
+(*   let elev = insert_olevels_in_levels entry position levels in *)
+(*   (entry.levels <-  elev; *)
+(*    entry.start <-Gparser.start_parser_of_entry entry; *)
+(*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
 
 
     
