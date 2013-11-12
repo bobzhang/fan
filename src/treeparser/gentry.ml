@@ -1,15 +1,3 @@
-
-%import{
-Format:
-  fprintf
-  eprintf
-  ;
- 
-};;
-
-
-
-
 type 'a t  =  Gdefs.entry
 
 let name (e:'a t) = e.name
@@ -22,25 +10,26 @@ let map ~name (f : 'a -> 'b) (e:'a t) : 'b t =
    name ;
  } : 'b t)
     
-let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
+let print ppf e = Format.fprintf ppf "%a@\n" Gprint.text#entry e
 
-let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
+let dump ppf e = Format.fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
+let filter_of_gram (x :'a t) = x.gram.gfilter
 
 let mk_dynamic g n : 'a t ={
   gram = g;
   name = n;
   start = Gtools.empty_entry n;
-  continue _ _ _ = %parser{ | };
+  continue  = (fun _ _ _ _ -> raise Streamf.NotConsumed);
   levels =  [] ;
   freezed = false;     
 }
 
 let clear (e:'a t) = begin 
-  e.start <- fun _ -> fun _ -> raise Streamf.NotConsumed;
-  e.continue <- fun _ _ _ -> fun _-> raise Streamf.NotConsumed;
+  e.start <- (fun _ -> fun _ -> raise Streamf.NotConsumed);
+  e.continue <- (fun _ _ _ -> fun _-> raise Streamf.NotConsumed);
   e.levels <- []
 end
 
@@ -73,48 +62,18 @@ let parse_origin_tokens entry stream =
 
 let filter_and_parse_tokens (entry:'a t) ts =
   parse_origin_tokens entry (Tokenf.filter entry.gram.gfilter  ts)
-    
-
-
-
-let lex_string loc str = Flex_lib.from_stream  loc (Streamf.of_string str)
-
-(* Raw lexing follwed by a
-   filter 
- *)    
-let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a t)  str =
-  str
-   |> Streamf.of_string
-   |> lexer loc
-   |> Tokenf.filter entry.gram.gfilter
-   |> parse_origin_tokens entry
-
        
-let parse (entry:'a t) loc cs =
-  parse_origin_tokens entry
-    (Tokenf.filter entry.gram.gfilter
-       (Flex_lib.from_stream loc cs))
-;;
 
-%import{
-Ginsert:
-  (* extend *)
-  extend_single
-  copy 
-  (* unsafe_extend *)
-  unsafe_extend_single;
-Gtools:
-  entry_first;
-Gdelete:
-  delete_rule;
-Gfailed: 
-  symb_failed
-  symb_failed_txt;
-Gparser:
-   parser_of_symbol;
+let extend_single = Ginsert.extend_single ;;
+let copy = Ginsert.copy;;
+let unsafe_extend_single = Ginsert.unsafe_extend_single;;
+let entry_first = Gtools.entry_first
+let delete_rule = Gdelete.delete_rule
+let symb_failed = Gfailed.symb_failed
+let symb_failed_txt = Gfailed.symb_failed_txt
+let parser_of_symbol = Gparser.parser_of_symbol    
 
-};;
-
+    
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/gentry.cmo" *)
 (* end: *)

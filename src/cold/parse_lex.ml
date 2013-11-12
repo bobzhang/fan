@@ -2332,14 +2332,14 @@ let _ =
                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
                 Tokenf.pattern )];
             annot =
-              "let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\n[(r, (Tokenf.quot_expand expander x))]\n";
+              "let expander loc _ s = Gramlib.parse_string ~loc Syntaxf.exp s in\n[(r, (Tokenf.quot_expand expander x))]\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_1:(__fan_1 : Tokenf.quot) 
                     ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
                     let x = __fan_1 in
                     (let expander loc _ s =
-                       Gramf.parse_string ~loc Syntaxf.exp s in
+                       Gramlib.parse_string ~loc Syntaxf.exp s in
                      [(r, (Tokenf.quot_expand expander x))] : 'case )))
           };
          {
@@ -2351,7 +2351,7 @@ let _ =
                ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                Tokenf.pattern )];
            annot =
-             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\n    let e = Tokenf.quot_expand expander y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
+             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let expander loc _ s = Gramlib.parse_string ~loc Syntaxf.exp s in\n    let e = Tokenf.quot_expand expander y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
@@ -2372,7 +2372,7 @@ let _ =
                           (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res
                     | Some y ->
                         let expander loc _ s =
-                          Gramf.parse_string ~loc Syntaxf.exp s in
+                          Gramlib.parse_string ~loc Syntaxf.exp s in
                         let e = Tokenf.quot_expand expander y in
                         List.map
                           (fun (x,v)  ->
@@ -2394,7 +2394,7 @@ let _ =
                ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
                Tokenf.pattern )];
            annot =
-             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\n    let e = Tokenf.quot_expand expander y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
+             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let expander loc _ s = Gramlib.parse_string ~loc Syntaxf.exp s in\n    let e = Tokenf.quot_expand expander y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.quot) 
@@ -2417,7 +2417,7 @@ let _ =
                           (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res
                     | Some y ->
                         let expander loc _ s =
-                          Gramf.parse_string ~loc Syntaxf.exp s in
+                          Gramlib.parse_string ~loc Syntaxf.exp s in
                         let e = Tokenf.quot_expand expander y in
                         List.map
                           (fun (x,v)  ->

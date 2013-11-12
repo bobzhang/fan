@@ -144,8 +144,8 @@ FAN_FILES = \
     expN fAstN control control_require fMeta \
     gram_def  \
     compile_gram \
-    sigs_util  fanAstN  gramf\
-    filters   gentry gfold gramlib\
+    sigs_util  fanAstN  \
+    filters    gfold gramlib\
     idN  ns \
     fan_args mktop objs objsN \
     parse_fan \

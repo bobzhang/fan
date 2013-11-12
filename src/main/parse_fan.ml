@@ -99,14 +99,12 @@ let make_pat exp =
        |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
        |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
        pat: 10 
-        [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
+       [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
        pat: 20 
-        [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
+       [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
        pat: 30 RA
-        [ S as p1; "::"; S as p2 %{
-          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}
-        ]
-
+       [ S as p1; "::"; S as p2 %{
+          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}]
        pat: 40 
        [ pat_constr as p1; S as p2 %pat{$p1 $p2}
        | pat_constr as p1 %{ p1}

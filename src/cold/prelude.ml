@@ -122,10 +122,10 @@ let () =
       interf = ast_of_interf
     }
 let parse_implem loc cs =
-  let l = (simple_wrap loc cs) @@ (Gramf.parse Syntaxf.implem) in
+  let l = (simple_wrap loc cs) @@ (Gramlib.parse Syntaxf.implem) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_interf loc cs =
-  let l = (simple_wrap loc cs) @@ (Gramf.parse Syntaxf.interf) in
+  let l = (simple_wrap loc cs) @@ (Gramlib.parse Syntaxf.interf) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_file name pa =
   let loc = Locf.mk name in

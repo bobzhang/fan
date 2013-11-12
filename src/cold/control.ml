@@ -145,4 +145,4 @@ let _ =
 let () =
   Fdir.register
     ((Tokenf.name_of_string "control"),
-      (fun loc  _  c  -> Gramf.parse_string ~loc items c))
+      (fun loc  _  c  -> Gramlib.parse_string ~loc items c))

@@ -36,19 +36,19 @@ val filter_and_parse_tokens : 'a t -> Tokenf.stream -> 'a
 
 (** The default lexer, i.e, [Flex_lib.form_stream],
      *)
-val lex_string : Locf.t -> string -> Tokenf.stream
+(* val lex_string : Locf.t -> string -> Tokenf.stream *)
 
 (** It would call the default lexer [gfilter], however, the filter
     is parameterized by the entry *)    
-val parse_string :
-    ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) ->
-      ?loc:Locf.t -> 'a t -> string -> 'b
+(* val parse_string : *)
+(*     ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) -> *)
+(*       ?loc:Locf.t -> 'a t -> string -> 'b *)
 
-
+val filter_of_gram : 'a t -> Tokenf.filter_plugin
 
     
 (** call the [gfilter], and use [glexer] *)
-val parse : 'a t -> Locf.t -> char Streamf.t -> 'a
+(* val parse : 'a t -> Locf.t -> char Streamf.t -> 'a *)
     
 
 

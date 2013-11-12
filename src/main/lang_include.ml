@@ -9,7 +9,7 @@ include_quot:
     let (keep,cf) = State.((keep,current_filters)) in
     %save{ keep cf %{begin
       State.reset ();
-      Gramf.parse_include_file Syntaxf.strus s;
+      Gramlib.parse_include_file Syntaxf.strus s;
     end
   }}}
  ]

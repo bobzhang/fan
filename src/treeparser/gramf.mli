@@ -110,21 +110,22 @@ val mk: string -> 'a t
 
 val get_filter: unit -> Tokenf.filter_plugin
 
+val filter_of_gram : 'a t -> Tokenf.filter_plugin
 
-val lex_string: Locf.t -> string -> Tokenf.stream
+(* val lex_string: Locf.t -> string -> Tokenf.stream *)
 
 
-val parse:  'a t -> Locf.t -> char Streamf.t -> 'a
+(* val parse:  'a t -> Locf.t -> char Streamf.t -> 'a *)
 
-val parse_string:
-    ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) -> 
-    ?loc:Locf.t -> 'a t  -> string -> 'a
+(* val parse_string: *)
+(*     ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) ->  *)
+(*     ?loc:Locf.t -> 'a t  -> string -> 'a *)
       
 val debug_origin_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
 
 val debug_filtered_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
 
-val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a
+(* val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a *)
 
 val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
@@ -144,8 +145,8 @@ val unsafe_extend_single : 'a t -> single_extend_statement -> unit
 
 
     
-val token_stream_of_string : string -> stream
+(* val token_stream_of_string : string -> stream *)
 
 
 
-val parse_include_file : 'a t -> string -> 'a    
+(* val parse_include_file : 'a t -> string -> 'a     *)

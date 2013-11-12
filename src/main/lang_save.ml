@@ -11,7 +11,8 @@ Ast_gen:
   [ L1 Lid as ls ; Quot x  %{
    let b =
      if x.name = Tokenf.empty_name then
-       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+       let expander loc _ s =
+         Gramlib.parse_string ~loc Syntaxf.exp s in
        Tokenf.quot_expand expander x
      else Ast_quotation.expand x Dyn_tag.exp in
     let symbs = List.map (fun (x:Tokenf.txt) -> State.gensym x.txt) ls in

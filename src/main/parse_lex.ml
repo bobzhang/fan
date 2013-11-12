@@ -350,7 +350,8 @@ let make_automata shortest l =
         %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
   case@Local:
     [ regexp as r;  Quot x  %{
-      let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+      let expander loc _ s =
+        Gramlib.parse_string ~loc Syntaxf.exp s in
       [(r,Tokenf.quot_expand expander x)]}
     | "@"; Lid@xloc x; ?Quot y %{
         let res =
@@ -364,7 +365,8 @@ let make_automata shortest l =
         | None ->
             List.map (fun (x,v) -> (x, FanAstN.fill_exp xloc v)) res
         | Some y ->
-           let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+           let expander loc _ s =
+             Gramlib.parse_string ~loc Syntaxf.exp s in
            let e = Tokenf.quot_expand expander y in 
            List.map (fun (x,v) ->
             let  v = FanAstN.fill_exp xloc  v in
