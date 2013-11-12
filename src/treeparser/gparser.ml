@@ -18,10 +18,15 @@ let with_loc (parse_fun: 'b Tokenf.parse ) strm =
 
 
 let level_number (entry:Gdefs.entry) (lab:int) =
-  let rec lookup levn = function
-    | [] -> failwithf "unknown level %d"  lab
+  let rec lookup n = function
+    | [] ->
+        begin
+          Gprint.dump#entry Format.err_formatter entry;
+          failwithf "unknown level %d in entry %s:" lab entry.name
+        end
+           
     | (lev:Gdefs.level) :: levs ->
-        if  lev.lname = lab then levn else lookup (1 + levn) levs  in
+        if  lev.lname = lab then n else lookup (1 + n) levs  in
   lookup 0 entry.levels
         
 

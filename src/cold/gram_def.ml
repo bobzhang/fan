@@ -10,8 +10,7 @@ type entry =  {
   name: name;
   pos: exp option;
   local: bool;
-  levels: levels} 
-and levels = [ `Group of level list | `Single of level] 
+  level: level} 
 and level =  {
   label: string option;
   assoc: exp option;
@@ -41,7 +40,7 @@ and osymbol =
   outer_pattern: locid option} 
 and text =  
   | List of (loc* bool* osymbol* osymbol option)
-  | Nterm of (loc* name* string option)
+  | Nterm of (loc* name* int option)
   | Try of (loc* text)
   | Peek of (loc* text)
   | Self of loc

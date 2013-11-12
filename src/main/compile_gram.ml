@@ -158,7 +158,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
           %exp{ ($id{gm()}.obj
                    (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
-        | Some lab -> %exp{ Snterml ($obj,$str:lab)}
+        | Some lab -> %exp{ Snterml ($obj,$int':lab)}
         | None ->
            if n.tvar = tvar then %exp{Self} else %exp{ Nterm $obj })
     | Try (_loc, t) -> %exp{ Try ${aux "" t} }

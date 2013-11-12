@@ -8,7 +8,6 @@ let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
 let tuple_com = Ast_gen.tuple_com
 open FAst
-open Util
 let mk_name (i : FAst.vid) =
   (let rec aux x =
      match (x : FAst.vid ) with
@@ -93,7 +92,6 @@ let meta_rule = Gramf.mk_dynamic g "meta_rule"
 let rule_list = Gramf.mk_dynamic g "rule_list"
 let psymbol: matrix Gramf.t = Gramf.mk_dynamic g "psymbol"
 let level = Gramf.mk_dynamic g "level"
-let level_list = Gramf.mk_dynamic g "level_list"
 let entry: Gram_def.entry option Gramf.t = Gramf.mk_dynamic g "entry"
 let extend_body = Gramf.mk_dynamic g "extend_body"
 let unsafe_extend_body = Gramf.mk_dynamic g "unsafe_extend_body"
@@ -3096,13 +3094,18 @@ let _ =
          {
            symbols = [Nterm (Gramf.obj (name : 'name Gramf.t ))];
            annot =
-             "{\n  text = (Nterm (_loc, n, s));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = [];\n  outer_pattern = None\n}\n";
+             "{\n  text =\n    (Nterm\n       (_loc, n,\n         (match s with | None  -> None | Some s -> Some (int_of_string s))));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = [];\n  outer_pattern = None\n}\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
                    let s = None in
                    ({
-                      text = (Nterm (_loc, n, s));
+                      text =
+                        (Nterm
+                           (_loc, n,
+                             (match s with
+                              | None  -> None
+                              | Some s -> Some (int_of_string s))));
                       styp =
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -3119,10 +3122,10 @@ let _ =
                     { tag = `Key; word = (A "Level"); tag_name = "Key" }
                 } : Tokenf.pattern );
              Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+               ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
                Tokenf.pattern )];
            annot =
-             "{\n  text = (Nterm (_loc, n, s));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = [];\n  outer_pattern = None\n}\n";
+             "{\n  text =\n    (Nterm\n       (_loc, n,\n         (match s with | None  -> None | Some s -> Some (int_of_string s))));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  bounds = [];\n  outer_pattern = None\n}\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -3130,7 +3133,12 @@ let _ =
                    let s = __fan_2.txt in
                    let s = Some s in
                    ({
-                      text = (Nterm (_loc, n, s));
+                      text =
+                        (Nterm
+                           (_loc, n,
+                             (match s with
+                              | None  -> None
+                              | Some s -> Some (int_of_string s))));
                       styp =
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -6419,7 +6427,7 @@ let _ =
          {
            symbols = [Nterm (Gramf.obj (name : 'name Gramf.t ))];
            annot =
-             "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text = (Nterm (_loc, n, s));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
+             "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text =\n      (Nterm\n         (_loc, n,\n           (match s with | None  -> None | Some s -> Some (int_of_string s))));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
@@ -6429,7 +6437,12 @@ let _ =
                                                              list
                                                              Gram_def.decorate )])
                       {
-                        text = (Nterm (_loc, n, s));
+                        text =
+                          (Nterm
+                             (_loc, n,
+                               (match s with
+                                | None  -> None
+                                | Some s -> Some (int_of_string s))));
                         styp =
                           (`Quote
                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -6446,10 +6459,10 @@ let _ =
                     { tag = `Key; word = (A "Level"); tag_name = "Key" }
                 } : Tokenf.pattern );
              Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+               ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
                Tokenf.pattern )];
            annot =
-             "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text = (Nterm (_loc, n, s));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
+             "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = KNormal; txt = [txt] } : Gram_def.osymbol list\n                                         Gram_def.decorate )])\n  {\n    text =\n      (Nterm\n         (_loc, n,\n           (match s with | None  -> None | Some s -> Some (int_of_string s))));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
            fn =
              (Gramf.mk_action
                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
@@ -6461,7 +6474,12 @@ let _ =
                                                              list
                                                              Gram_def.decorate )])
                       {
-                        text = (Nterm (_loc, n, s));
+                        text =
+                          (Nterm
+                             (_loc, n,
+                               (match s with
+                                | None  -> None
+                                | Some s -> Some (int_of_string s))));
                         styp =
                           (`Quote
                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
@@ -7310,26 +7328,19 @@ let _ =
               Token
                 ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
                 Tokenf.pattern );
-              Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))];
+              Nterm (Gramf.obj (level : 'level Gramf.t ))];
             annot =
-              "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = false; pos; levels })\n";
+              "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\nSome { name = p; local = false; pos; level }\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(levels : 'level_list)  ~__fan_1:_ 
+                 (fun ~__fan_2:(level : 'level)  ~__fan_1:_ 
                     ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)  ->
                     let pos = None in
                     (let (n,p) = rest in
                      (match n with
                       | `name old -> Ast_quotation.default := old
                       | _ -> ());
-                     (match (pos, levels) with
-                      | (Some
-                         (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),
-                         `Group _) ->
-                          failwithf
-                            "For Group levels the position can not be applied to Level"
-                      | _ -> Some { name = p; local = false; pos; levels }) : 
-                      'entry )))
+                     Some { name = p; local = false; pos; level } : 'entry )))
           };
          {
            symbols =
@@ -7338,27 +7349,20 @@ let _ =
                ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
                Tokenf.pattern );
              Nterm (Gramf.obj (position : 'position Gramf.t ));
-             Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))];
+             Nterm (Gramf.obj (level : 'level Gramf.t ))];
            annot =
-             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = false; pos; levels })\n";
+             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\nSome { name = p; local = false; pos; level }\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(levels : 'level_list) 
-                   ~__fan_2:(pos : 'position)  ~__fan_1:_ 
-                   ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)  ->
+                (fun ~__fan_3:(level : 'level)  ~__fan_2:(pos : 'position) 
+                   ~__fan_1:_  ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)
+                    ->
                    let pos = Some pos in
                    (let (n,p) = rest in
                     (match n with
                      | `name old -> Ast_quotation.default := old
                      | _ -> ());
-                    (match (pos, levels) with
-                     | (Some
-                        (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),`Group _)
-                         ->
-                         failwithf
-                           "For Group levels the position can not be applied to Level"
-                     | _ -> Some { name = p; local = false; pos; levels }) : 
-                     'entry )))
+                    Some { name = p; local = false; pos; level } : 'entry )))
          };
          {
            symbols =
@@ -7374,12 +7378,12 @@ let _ =
              Token
                ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
                Tokenf.pattern );
-             Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))];
+             Nterm (Gramf.obj (level : 'level Gramf.t ))];
            annot =
-             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n";
+             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\nSome { name = p; local = true; pos; level }\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:(levels : 'level_list)  ~__fan_3:_  ~__fan_2:_ 
+                (fun ~__fan_4:(level : 'level)  ~__fan_3:_  ~__fan_2:_ 
                    ~__fan_1:_  ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)
                     ->
                    let pos = None in
@@ -7387,14 +7391,7 @@ let _ =
                     (match n with
                      | `name old -> Ast_quotation.default := old
                      | _ -> ());
-                    (match (pos, levels) with
-                     | (Some
-                        (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),`Group _)
-                         ->
-                         failwithf
-                           "For Group levels the position can not be applied to Level"
-                     | _ -> Some { name = p; local = true; pos; levels }) : 
-                     'entry )))
+                    Some { name = p; local = true; pos; level } : 'entry )))
          };
          {
            symbols =
@@ -7411,28 +7408,20 @@ let _ =
                ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
                Tokenf.pattern );
              Nterm (Gramf.obj (position : 'position Gramf.t ));
-             Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))];
+             Nterm (Gramf.obj (level : 'level Gramf.t ))];
            annot =
-             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n";
+             "let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\nSome { name = p; local = true; pos; level }\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:(levels : 'level_list) 
-                   ~__fan_4:(pos : 'position)  ~__fan_3:_  ~__fan_2:_ 
-                   ~__fan_1:_  ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)
-                    ->
+                (fun ~__fan_5:(level : 'level)  ~__fan_4:(pos : 'position) 
+                   ~__fan_3:_  ~__fan_2:_  ~__fan_1:_ 
+                   ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)  ->
                    let pos = Some pos in
                    (let (n,p) = rest in
                     (match n with
                      | `name old -> Ast_quotation.default := old
                      | _ -> ());
-                    (match (pos, levels) with
-                     | (Some
-                        (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),`Group _)
-                         ->
-                         failwithf
-                           "For Group levels the position can not be applied to Level"
-                     | _ -> Some { name = p; local = true; pos; levels }) : 
-                     'entry )))
+                    Some { name = p; local = true; pos; level } : 'entry )))
          };
          {
            symbols =
@@ -7466,99 +7455,15 @@ let _ =
          [{
             symbols =
               [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "First"); tag_name = "Key" }
-                  } : Tokenf.pattern )];
-            annot = "(`Vrn (_loc, x) : FAst.exp )\n";
+                 ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+                 Tokenf.pattern )];
+            annot = "(`Int (_loc, x) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
-          };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "Last"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "Before"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "After"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "Level"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "(`Vrn (_loc, x) : FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in
-                   ((`Vrn (_loc, x) : FAst.exp ) : 'position )))
-         }]) : Gramf.olevel ));
-  Gramf.extend_single (level_list : 'level_list Gramf.t )
-    (None,
-      ((None, None,
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Key; word = (A "{"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              List1 (Nterm (Gramf.obj (level : 'level Gramf.t )));
-              Token
-                ({ descr = { tag = `Key; word = (A "}"); tag_name = "Key" } } : 
-                Tokenf.pattern )];
-            annot = "`Group ll\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(ll : 'level list)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Group ll : 'level_list )))
-          };
-         {
-           symbols = [Nterm (Gramf.obj (level : 'level Gramf.t ))];
-           annot = "`Single l\n";
-           fn =
-             (Gramf.mk_action
-                (fun ~__fan_0:(l : 'level)  (_loc : Locf.t)  ->
-                   (`Single l : 'level_list )))
-         }]) : Gramf.olevel ));
+                    ((`Int (_loc, x) : FAst.exp ) : 'position )))
+          }]) : Gramf.olevel ));
   Gramf.extend_single (level : 'level Gramf.t )
     (None,
       ((None, None,

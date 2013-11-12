@@ -507,7 +507,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in `Sym { loc; txt }
+          `Sym { loc = (!! lexbuf); txt }
       | 8 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf

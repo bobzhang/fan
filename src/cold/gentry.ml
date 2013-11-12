@@ -56,11 +56,8 @@ let parse_string ?(lexer= Flex_lib.from_stream)  ?(loc= Locf.string_loc)
 let parse (entry : 'a t) loc cs =
   parse_origin_tokens entry
     (Tokenf.filter (entry.gram).gfilter (Flex_lib.from_stream loc cs))
-let extend = Ginsert.extend
 let extend_single = Ginsert.extend_single
 let copy = Ginsert.copy
-let extend = Ginsert.extend
-let unsafe_extend = Ginsert.unsafe_extend
 let unsafe_extend_single = Ginsert.unsafe_extend_single
 let entry_first = Gtools.entry_first
 let delete_rule = Gdelete.delete_rule

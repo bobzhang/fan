@@ -102,7 +102,7 @@ let make_pat exp =
         [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
        pat: 20 
         [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
-       pat: 30 
+       pat: 30 RA
         [ S as p1; "::"; S as p2 %{
           `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}
         ]

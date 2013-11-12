@@ -124,8 +124,6 @@ let sfold0 = Gfold.sfold0
 let sfold1 = Gfold.sfold1
 let sfold0sep = Gfold.sfold0sep
 let sfold1sep = Gfold.sfold1sep
-let find_level ?position  (entry : Gdefs.entry) =
-  let (_,f,_) = Ginsert.find_level ?position entry entry.levels in f
 let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
   fun file  ->

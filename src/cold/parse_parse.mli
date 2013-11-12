@@ -121,9 +121,9 @@ val simple :  Gram_def.osymbol  list Gram_def.decorate list Gramf.t
 (* val rule_list : Gram_def.rule list Gramf.t *)
 
 val level :  Gram_def.level Gramf.t
-val level_list :
-    ([ `Group of (Gram_def.level list )
-     | `Single of Gram_def.level ]) Gramf.t
+(* val level_list : *)
+(*     ([ `Group of (Gram_def.level list ) *)
+(*      | `Single of Gram_def.level ]) Gramf.t *)
 
 
 (** the main entrance

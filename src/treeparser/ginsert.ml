@@ -289,7 +289,8 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
 (*    entry.start <-Gparser.start_parser_of_entry entry; *)
 (*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
 
-let unsafe_extend_single entry (position,olevel) = 
+let unsafe_extend_single entry (position,(_,assoc,ps) ) =
+  let olevel = (position, assoc, ps) in 
   let olevel = unsafe_scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
   (entry.levels <- elev;
@@ -305,7 +306,8 @@ let unsafe_extend_single entry (position,olevel) =
 
 
     
-let extend_single entry (position,olevel) = 
+let extend_single entry (position,(_,assoc,ps)) =
+  let olevel = (position, assoc,ps) in 
   let olevel = scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
   (entry.levels <-  elev;

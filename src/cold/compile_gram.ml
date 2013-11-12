@@ -144,7 +144,9 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
          | Some lab ->
              (`App
                 (_loc, (`Uid (_loc, "Snterml")),
-                  (`Par (_loc, (`Com (_loc, obj, (`Str (_loc, lab))))))) : 
+                  (`Par
+                     (_loc,
+                       (`Com (_loc, obj, (`Int (_loc, (string_of_int lab)))))))) : 
              FAst.exp )
          | None  ->
              if n.tvar = tvar
@@ -274,47 +276,25 @@ let make_extend safe (e : Gram_def.entry) =
                (sl, (make_action _loc r (e.name).tvar), (r.action)))) in
      let prod = make_exp_rules rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
-   match e.levels with
-   | `Single l ->
-       let f =
-         if safe
-         then
-           (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single"))) : FAst.exp )
-         else
-           (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
-           FAst.exp ) in
-       (`App
-          (_loc, (`App (_loc, f, ent)),
-            (`Par
-               (_loc,
-                 (`Com
-                    (_loc, pos,
-                      (`Constraint
-                         (_loc, (apply l),
-                           (`Dot
-                              (_loc, (gm () : vid  :>ident),
-                                (`Lid (_loc, "olevel"))))))))))) : FAst.exp )
-   | `Group ls ->
-       let txt = list_of_list (List.map apply ls) in
-       let f =
-         if safe
-         then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend"))) : FAst.exp )
-         else
-           (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend"))) : FAst.exp ) in
-       (`App
-          (_loc, (`App (_loc, f, ent)),
-            (`Par
-               (_loc,
-                 (`Com
-                    (_loc, pos,
-                      (`Constraint
-                         (_loc, txt,
-                           (`App
-                              (_loc, (`Lid (_loc, "list")),
-                                (`Dot
-                                   (_loc, (gm () : vid  :>ident),
-                                     (`Lid (_loc, "olevel"))))))))))))) : 
-         FAst.exp ) : exp )
+   let l = e.level in
+   let f =
+     if safe
+     then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single"))) : FAst.exp )
+     else
+       (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
+       FAst.exp ) in
+   (`App
+      (_loc, (`App (_loc, f, ent)),
+        (`Par
+           (_loc,
+             (`Com
+                (_loc, pos,
+                  (`Constraint
+                     (_loc, (apply l),
+                       (`Dot
+                          (_loc, (gm () : vid  :>ident),
+                            (`Lid (_loc, "olevel"))))))))))) : FAst.exp ) : 
+  exp )
 let capture_antiquot =
   object 
     inherit  Objs.map as super
