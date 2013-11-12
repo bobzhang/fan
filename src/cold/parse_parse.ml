@@ -7811,17 +7811,11 @@ let _ =
               [Token
                  ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
                  Tokenf.pattern )];
-            annot =
-              "if x.name = Tokenf.empty_name\nthen let expander loc _ s = Parsef.exp loc s in Tokenf.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n";
+            annot = "Parsef.expand_exp x\n";
             fn =
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (if x.name = Tokenf.empty_name
-                     then
-                       let expander loc _ s = Parsef.exp loc s in
-                       Tokenf.quot_expand expander x
-                     else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )))
+                    let x = __fan_0 in (Parsef.expand_exp x : 'opt_action )))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (string : 'string Gramf.t )

@@ -11,3 +11,7 @@ let pat_filter (x : ep) = anti_filter#pat (x :>pat)
 let anti_filter_n = AntN.antiquot_expander ~parse_exp:exp ~parse_pat:pat
 let exp_filter_n (x : ep) = anti_filter_n#exp (x :>exp)
 let pat_filter_n (x : ep) = anti_filter_n#pat (x :>pat)
+let expand_exp (x : Tokenf.quot) =
+  if x.name = Tokenf.empty_name
+  then let expander loc _ s = exp loc s in Tokenf.quot_expand expander x
+  else Ast_quotation.expand x Dyn_tag.exp

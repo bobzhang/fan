@@ -434,12 +434,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    |    %{[]}]   
 
    opt_action@Local :
-   [ Quot x %{
-     if x.name = Tokenf.empty_name then 
-       let expander loc _ s = Parsef.exp loc s  in
-       Tokenf.quot_expand expander x
-     else
-       Ast_quotation.expand x Dyn_tag.exp}]
+   [ Quot x %{Parsef.expand_exp x }]
 
   string :
   [ Str  s  %exp{$str:s}
