@@ -21,10 +21,10 @@ type entry   = {
   (*position expession node *)    
   pos : exp option ;
   local : bool ;  (* mark whether the grammar is local or not*)
-  levels : levels;
+  level : level;
 }
-and levels =
- [ `Group of (level list ) | `Single of level]   
+(* and levels = *)
+(*  [ `Group of (level list ) | `Single of level]    *)
 and level  = {
   (* mainly used for indexing *)  
   label : string option ;

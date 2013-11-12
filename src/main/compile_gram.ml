@@ -282,19 +282,12 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
     let prod = make_exp_rules  rl e.name.tvar in
     (* generated code of type [olevel] *)
     %exp{ ($lab, $ass, $prod) } in
-  match e.levels with
-  |`Single l ->
+  let l = e.level in
       let f =
         if safe then
           %exp{$id{gm()}.extend_single}
         else %exp{$id{gm()}.unsafe_extend_single} in
         %exp{$f $ent ($pos, (${apply l} : $id{(gm() : vid :> ident)}.olevel ))}
-  |`Group ls ->
-      let txt = list_of_list (List.map apply ls) in
-      let f =
-        if safe then %exp{$id{gm()}.extend}
-        else %exp{$id{gm()}.unsafe_extend} in
-      %exp{$f $ent ($pos, ($txt : $id{(gm() : vid :>ident)}.olevel list))}
 
 
 
