@@ -383,43 +383,37 @@ let make_automata shortest l =
       %stru{let _ = () }
     end}
   | S; S as x %{x}]
-  regexp:
-  {
-   "as"
-   [S as r1;"as"; (* lid as z *) Lid@xloc y %{ Bind(r1,(xloc,y))} ] 
-   "#"
-   [S as r1; "#" ; S as r2 %{
+  regexp: 10
+  [S as r1;"as"; (* lid as z *) Lid@xloc y %{ Bind(r1,(xloc,y))} ]
+  regexp: 20          
+  [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in
       let s2 = as_cset r2 in
       Characters (Fcset.diff s1 s2)}]
-     
-   "|"
-   [S as r1; "|"; S as r2 %{ Alternative (r1,r2)}
-   ]
-   "app"
-   [ S as r1;S as r2 %{ Sequence(r1,r2)}
-   ]  
-   "basic"  
-   [ "_" %{ Characters Fcset.all_chars}
-   | Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
-   | Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
-   | "["; char_class as cc; "]" %{ Characters cc}
-   | S as r1;"*" %{ Repetition r1}
-   | S as r1;"?" %{ Alternative (Epsilon,r1)}
-   | S as r1;"+" %{ Sequence (Repetition (remove_as r1), r1)}
-
-   | "("; S as r1; ")" %{ r1}
-   | "eof" %{ Eof}
-   | Lid@xloc x %{
-       try Hashtbl.find named_regexps x
-       with Not_found ->
+  regexp: 30  
+  [S as r1; "|"; S as r2 %{ Alternative (r1,r2)}]
+  regexp: 40
+  [ S as r1;S as r2 %{ Sequence(r1,r2)}]  
+  regexp: 50  
+  [ "_" %{ Characters Fcset.all_chars}
+  | Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
+  | Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
+  | "["; char_class as cc; "]" %{ Characters cc}
+  | S as r1;"*" %{ Repetition r1}
+  | S as r1;"?" %{ Alternative (Epsilon,r1)}
+  | S as r1;"+" %{ Sequence (Repetition (remove_as r1), r1)}
+  | "("; S as r1; ")" %{ r1}
+  | "eof" %{ Eof}
+  | Lid@xloc x %{
+         try Hashtbl.find named_regexps x
+         with Not_found ->
          begin 
            Fan_warnings.emitf xloc.loc_start
              "Reference to unbound regexp name `%s'" x ;
            raise UnboundRegexp
         end
     }
-  ] (* FIXME rule mask more friendly error message *) }
+  ] (* FIXME rule mask more friendly error message *) 
   
   char_class:
   [ "^"; char_class1 as r %{ Fcset.complement r}
