@@ -350,9 +350,14 @@ let make_automata shortest l =
         %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
   case@Local:
     [ regexp as r;  Quot x  %{
-      let expander loc _ s =
-        Gramlib.parse_string ~loc Syntaxf.exp s in
-      [(r,Tokenf.quot_expand expander x)]}
+      let e =
+        if x.name = Tokenf.empty_name then
+          let expander loc _ s =
+            Parsef.exp  loc s in
+          Tokenf.quot_expand expander x
+        else
+          Ast_quotation.expand x Dyn_tag.exp in
+      [(r,e)]}
     | "@"; Lid@xloc x; ?Quot y %{
         let res =
           try Hashtbl.find named_cases x
@@ -364,10 +369,14 @@ let make_automata shortest l =
         match y with
         | None ->
             List.map (fun (x,v) -> (x, FanAstN.fill_exp xloc v)) res
-        | Some y ->
-           let expander loc _ s =
-             Gramlib.parse_string ~loc Syntaxf.exp s in
-           let e = Tokenf.quot_expand expander y in 
+        | Some (y:Tokenf.quot) -> (* FIXME -- should not need type annot*)
+           let e =
+             if y.name = Tokenf.empty_name then
+               let expander loc _ s =
+                 Parsef.exp  loc s in
+               Tokenf.quot_expand expander y
+             else
+               Ast_quotation.expand y Dyn_tag.exp in
            List.map (fun (x,v) ->
             let  v = FanAstN.fill_exp xloc  v in
             let _loc = Ast_gen.loc_of e in  

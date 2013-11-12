@@ -13,7 +13,7 @@ let  rec token = %lex_fan{
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | "@" as txt %{
     `Sym {loc  =  !! lexbuf ;txt}}
   | @ocaml_comment %{token lexbuf}
-  | @ocaml_simple_quotation
+  | @ocaml_quotation
   | @ocaml_eof
   | @default}
     
