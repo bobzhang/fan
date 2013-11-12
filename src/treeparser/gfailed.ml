@@ -12,7 +12,7 @@ let pp = fprintf
 let  name_of_symbol (entry:Gdefs.entry) (x: Gdefs.symbol)   =
   match x with 
   | Nterm e -> "[" ^ e.name ^ "]"
-  | Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
+  | Snterml (e, l) -> "[" ^ e.name ^ " level " ^ string_of_int l ^ "]"
   | Self  -> "[" ^ entry.name ^ "]"
   | Token p  -> Tokenf.string_of_pattern p
   (* | `Keyword kwd -> "\"" ^ kwd ^ "\"" *)

@@ -7,10 +7,10 @@ let empty_entry ename _ =
 
 
 
-let is_level_labelled n l =
-  match (l:Gdefs.level) with 
-  | {lname=Some n1 ; _  } -> n = n1
-  | _ -> false 
+(* let is_level_labelled n l = *)
+(*   match (l:Gdefs.level) with  *)
+(*   | {lname=Some n1 ; _  } -> n = n1 *)
+(*   | _ -> false  *)
 
 (*
   try to decouple the node [x] into

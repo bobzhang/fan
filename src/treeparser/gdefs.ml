@@ -1,8 +1,9 @@
 
 type assoc =
     [ `NA|`RA|`LA]
-type position =
-    [ `First | `Last | `Before of string | `After of string | `Level of string]
+      
+type position = int 
+
 
 
 
@@ -14,7 +15,7 @@ type gram = {
     gfilter         : Tokenf.filter_plugin;
   }
 
-type label =  string option
+type label =  int (* string option *)
 
     
 type entry = {
@@ -22,7 +23,7 @@ type entry = {
     name     : string;
     mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;
-    mutable levels     :  level list;
+    mutable levels     :  level list  ; (* sorted list *)
     mutable freezed :  bool;}
 
 and level = {
@@ -33,7 +34,7 @@ and level = {
     lprefix : tree}
 and asymbol =
   | Nterm of entry
-  | Snterml of (entry * string) (* the second argument is the level name *)
+  | Snterml of (entry * int (* string *)) (* the second argument is the level name *)
   | List0 of symbol
   | List1 of symbol
   | Try of symbol
@@ -44,7 +45,7 @@ and asymbol =
   | Token of Tokenf.pattern 
 and symbol =
   | Nterm of entry
-  | Snterml of (entry * string) (* the second argument is the level name *)
+  | Snterml of (entry * int(* string *)) (* the second argument is the level name *)
   | List0 of symbol
   | List0sep of (symbol * symbol)
   | List1 of symbol

@@ -98,10 +98,10 @@ let parse (entry:'a t) loc cs =
 
 %import{
 Ginsert:
-  extend
+  (* extend *)
   extend_single
-  copy extend
-  unsafe_extend
+  copy 
+  (* unsafe_extend *)
   unsafe_extend_single;
 Gtools:
   entry_first;
