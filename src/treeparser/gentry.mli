@@ -62,10 +62,10 @@ val filter_of_gram : 'a t -> Tokenf.filter_plugin
 (*     'a t -> position  option * olevel list -> unit *)
 
 val extend_single :
-  'a t -> position  option * olevel  -> unit
+  'a t -> Gdefs.single_extend_statement  -> unit
 
 val unsafe_extend_single :
-  'a t -> position  option * olevel  -> unit
+  'a t -> Gdefs.single_extend_statement  -> unit
       
 val delete_rule : 'a t -> symbol list -> unit
 

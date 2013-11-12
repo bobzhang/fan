@@ -93,11 +93,26 @@ and anno_action =
    processed output into the runtime
    BOOTSTRAPING
  *)
-type label = int option      
-type olevel = (label * assoc option  * production list )
+type label = int option
+type olevel  = {
+    label : label ;
+    assoc : assoc option;
+    productions : production list
+  }      
+
+(* type olevel = (label * assoc option  * production list ) *)
+
+type extend_statment = {
+    pos : position option ;
+    olevels : olevel list
+  }
+type single_extend_statement =  olevel (* { *)
+  (*   pos : position option ; *)
+  (*   olevel : olevel *)
+  (* } *)
       
-type extend_statment = (position option  * olevel list )
-type single_extend_statement =  (position option  * olevel)
+(* type extend_statment = (position option  * olevel list ) *)
+(* type single_extend_statement =  (position option  * olevel) *)
 type delete_statment = symbol list 
 
 

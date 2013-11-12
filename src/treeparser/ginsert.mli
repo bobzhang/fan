@@ -78,23 +78,23 @@ val scan_olevel : entry ->  olevel -> olevel
 
 
 
-(* val insert_olevels_in_levels : entry -> position option -> olevel list -> level list *)
+
 
 (**
    it calls [merge_level] or [level_of_olevel]
  *)    
 val insert_olevel : entry -> int option -> olevel -> level list      
 
-(* val extend : entry -> position option * olevel list -> unit *)
+
 
 
 (** see {extend}, it would promote the keywords automatically *)    
 (* val unsafe_extend : entry -> position option * olevel list -> unit     *)
 
-val extend_single : entry ->  position option * olevel -> unit    
+val extend_single : entry ->  Gdefs.single_extend_statement -> unit    
 
 (** see {extend_single} and {unsafe_extend} *)    
-val unsafe_extend_single : entry ->  position option * olevel -> unit    
+val unsafe_extend_single : entry ->  Gdefs.single_extend_statement -> unit    
 
 
 

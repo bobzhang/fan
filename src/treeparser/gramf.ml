@@ -187,19 +187,6 @@ let debug_filtered_token_stream entry tokens =
 (*   end  *)
 (* ;; *)
     
-
-
-
-(* let find_level ?position (entry:Gdefs.entry) = *)
-(*   let (_,f,_) = Ginsert.find_level ?position entry entry.levels  in f *)
-
-
-
-(*************************************************************************)
-
-    
-
-
 let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
   try p ~loc s
   with Locf.Exc_located(loc,e) -> begin

@@ -335,7 +335,7 @@ let make_automata shortest l =
   Compile_lex.output_entry @@
   Lexgen.make_single_dfa {shortest;clauses=Listf.concat l};;
   
-%extend{(g:Gramf.t)  (* FIXME location wrong *)
+%extend{(g:Gramf.t) 
     lex:
     [  "|" ; L0 case SEP "|" as l %{
         make_automata false l}

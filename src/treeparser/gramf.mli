@@ -61,9 +61,22 @@ type production = {
 type label = int option
 
 (* FIXME duplicate with Grammar/Gdefs *)      
-type olevel =label * assoc option * production list
-type extend_statment = position option * olevel list
-type single_extend_statement = position option * olevel      
+type olevel  = {
+    label : label ;
+    assoc : assoc option;
+    productions : production list
+  }
+      
+type extend_statment = {
+    pos : position option ;
+    olevels : olevel list
+  }
+type single_extend_statement = olevel
+  (*   { *)
+  (*   pos : position option ; *)
+  (*   olevel : olevel *)
+  (* } *)
+      
 type delete_statment = symbol list
 
       
@@ -112,41 +125,19 @@ val get_filter: unit -> Tokenf.filter_plugin
 
 val filter_of_gram : 'a t -> Tokenf.filter_plugin
 
-(* val lex_string: Locf.t -> string -> Tokenf.stream *)
-
-
-(* val parse:  'a t -> Locf.t -> char Streamf.t -> 'a *)
-
-(* val parse_string: *)
-(*     ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) ->  *)
-(*     ?loc:Locf.t -> 'a t  -> string -> 'a *)
       
-val debug_origin_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
+val debug_origin_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
 
-val debug_filtered_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
-
-(* val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a *)
-
-val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
+val debug_filtered_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
 
 
-val delete_rule:  'a t -> symbol list -> unit
+
+val wrap_stream_parser : ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
 
-(* val extend :  'a t -> extend_statment -> unit *)
-(* val unsafe_extend :  'a t -> extend_statment -> unit *)
-
+val delete_rule :  'a t -> symbol list -> unit
 val extend_single : 'a t -> single_extend_statement -> unit
 val unsafe_extend_single : 'a t -> single_extend_statement -> unit    
 
 
 
-    
-
-
-    
-(* val token_stream_of_string : string -> stream *)
-
-
-
-(* val parse_include_file : 'a t -> string -> 'a     *)
