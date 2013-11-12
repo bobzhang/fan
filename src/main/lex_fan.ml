@@ -2,9 +2,6 @@
 %regex{ (** FIXME remove duplication later see lexing_util.cmo *)
 
 let locname = ident
-
-let antifollowident =   identchar +   
-
 let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 
@@ -104,8 +101,7 @@ let  rec token   = %lex_fan{
      ('(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>')
    | (')' | [ '|' ]? ']' | '>' ']')
 
-   | ['!' '~' '?']    )
-       as txt  %{ `Sym {loc = !! lexbuf ;txt}}
+   | ['!' '~' '?']    ) as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{
        begin
@@ -114,74 +110,11 @@ let  rec token   = %lex_fan{
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
-   | @ocaml_quotation
-   (* | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{ *)
-   (*     let c = new_cxt () in *)
-   (*     let name = *)
-   (*       match name with *)
-   (*       | Some name -> Tokenf.name_of_string name *)
-   (*       | None -> Tokenf.empty_name  in *)
-   (*     begin *)
-   (*       let old = lexbuf.lex_start_p in *)
-   (*       let txt = *)
-   (*         begin *)
-   (*           store c lexbuf; *)
-   (*           push_loc_cont c lexbuf lex_quotation; *)
-   (*           buff_contents c *)
-   (*         end in *)
-   (*       let loc = old -- lexbuf.lex_curr_p in *)
-   (*       let shift = String.length shift in *)
-   (*       let retract = 1  in *)
-   (*       if x = None then *)
-   (*         `Quot{name;meta;shift;txt;loc;retract} *)
-   (*       else `DirQuotation {name;meta;shift;txt;loc;retract} *)
-   (*     end} *)
-         
-   |@line_directive       
-
-       (**************************)
-       (* Antiquotation handling *)       
-       (* $x                     *)
-       (* $x{}                   *)
-       (* $x:id                  *)
-       (* ${}                    *)
-       (**************************)
-   | '$' ( ocaml_lid as name) (':'  antifollowident as follow)? as txt %{
-     let (kind,shift) =
-       match follow with
-       | None -> ("", 1 )
-       | Some _ -> (name, String.length name + 2) in 
-     `Ant{loc = !!lexbuf;
-          kind ;
-          txt ;
-          shift ;
-          retract = 0;
-          cxt = None}}
-   | "$" ( ocaml_lid as name)? "{"  as txt  %{
-     let old = lexbuf.lex_start_p in
-     let c = new_cxt () in
-     begin
-       store c lexbuf;
-       push_loc_cont c lexbuf lex_quotation;
-       `Ant{loc =
-            {loc_start = old;
-             loc_end = lexbuf.lex_curr_p;
-             loc_ghost = false};
-            kind = match name with | Some n -> n | None -> "";
-            txt = buff_contents c;
-            shift =  String.length txt ;
-            retract =  1 ;
-            cxt = None}
-     end}
-   | '$' (_ as c) %{err (Illegal_character c) (!! lexbuf)        }
-   | eof %{
-       let pos = lexbuf.lex_curr_p in (* FIXME *)
-       (lexbuf.lex_curr_p <-
-         { pos with pos_bol  = pos.pos_bol  + 1 ;
-           pos_cnum = pos.pos_cnum + 1 };
-        let loc = !!lexbuf in
-        `EOI {loc;txt=""})}
-   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
+   | @ocaml_double_quotation
+   | @line_directive       
+   | @ocaml_ant
+   | @ocaml_eof
+   | @default}
     
 
     

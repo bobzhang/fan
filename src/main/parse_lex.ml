@@ -5,7 +5,7 @@ Translate_lex:
   remove_as
   ;
 };;
-(* open Util *)
+
 let named_regexps =
   (Hashtbl.create 13 : (string, Translate_lex.concrete_regexp) Hashtbl.t)
 
@@ -42,7 +42,8 @@ let _ =
    ('.' ['0'-'9' '_']* )?
    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?};
   "quotation_name" +> %re{'.' ? (uppercase  identchar* '.') *
-    (lowercase (identchar | '-') * )}  
+    (lowercase (identchar | '-') * )};
+  "identchars" +> %re{identchar+}
    end
 
 
@@ -56,7 +57,16 @@ let _ =
   {loc_start = lexbuf.lex_start_p;
    loc_end = lexbuf.lex_curr_p;
   loc_ghost = false} ; txt }} )]);
-  
+
+  ("ocaml_lid", [(%re{ocaml_lid as txt},
+  %exp{
+  `Lid{loc =
+  {loc_start = lexbuf.lex_start_p;
+   loc_end = lexbuf.lex_curr_p;
+  loc_ghost = false} ; txt }} )])
+  ;
+
+
   ("ocaml_int_literal",
   [( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
   %exp{
@@ -124,10 +134,64 @@ let _ =
     let loc = old --  lexbuf.lex_curr_p in
    `Str {loc; txt = buff_contents c}
   end}
-  )])
+  )]);
+
+ ("default",
+ [(%re{_ as c}, %exp{
+ err (Illegal_character c) @@  !!lexbuf
+ })]
+ )
+ ;
+  ("ocaml_eof",
+ [(%re{eof},%exp{
+    let pos = lexbuf.lex_curr_p in (* FIXME *)
+    (lexbuf.lex_curr_p <-
+       { pos with pos_bol  = pos.pos_bol  + 1 ;
+        pos_cnum = pos.pos_cnum + 1 };
+    let loc = !!lexbuf in
+       `EOI {loc;txt=""}) })])
   ;
 
+  ("ocaml_simple_quotation",
+ [(%re{"%{"}, %exp{
+ let old = lexbuf.lex_start_p in
+    let c = new_cxt () in
+    begin
+      store c lexbuf;
+      push_loc_cont c lexbuf lex_quotation;
+      let loc = old -- lexbuf.lex_curr_p in
+      `Quot {name=Tokenf.empty_name;
+             meta=None;
+             txt = buff_contents c ;
+             shift = 2;
+              retract = 1;
+             loc}
+    end})])
+ 
+ ;
   ("ocaml_quotation",
+ [(%re{'%'  (quotation_name as name) ? ('@' (ident as meta))? "{"    as shift},
+ %exp{
+ let c = new_cxt () in
+ let name =
+     match name with
+     | Some name -> Tokenf.name_of_string name
+     | None -> Tokenf.empty_name  in
+       begin
+         let old = lexbuf.lex_start_p in
+         let txt =
+           begin
+             store c lexbuf;
+             push_loc_cont c lexbuf lex_quotation;
+             buff_contents c
+           end in
+         let loc = old -- lexbuf.lex_curr_p in
+         let shift = String.length shift in
+         let retract =  1  in
+         `Quot{Tokenf.name;meta;shift;txt;loc;retract}
+       end})])
+   ;
+  ("ocaml_double_quotation",
      [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (ident as meta))? "{" as shift}, %exp{
        let c = new_cxt () in
        let name =
@@ -161,6 +225,48 @@ let _ =
            token lexbuf
          end})])
   ;
+ 
+       (**************************)
+       (* Antiquotation handling *)       
+       (* $x                     *)
+       (* $x{}                   *)
+       (* $x:id                  *)
+       (* ${}                    *)
+       (**************************)
+    ("ocaml_ant",
+    [
+     (%re{ '$' ( ocaml_lid as name) (':'  identchars as follow)? as txt}, %exp{
+     let (kind,shift) =
+       match follow with
+       | None -> ("", 1 )
+       | Some _ -> (name, String.length name + 2) in 
+     `Ant{loc = !!lexbuf;
+          kind ;
+          txt ;
+          shift ;
+          retract = 0;
+          cxt = None}}) ;
+     (%re{ "$" ( ocaml_lid as name)? "{"  as txt},  %exp{
+     let old = lexbuf.lex_start_p in
+     let c = new_cxt () in
+     begin
+       store c lexbuf;
+       push_loc_cont c lexbuf lex_quotation;
+       `Ant{loc =
+            {loc_start = old;
+             loc_end = lexbuf.lex_curr_p;
+             loc_ghost = false};
+            kind = match name with | Some n -> n | None -> "";
+            txt = buff_contents c;
+            shift =  String.length txt ;
+            retract =  1 ;
+            cxt = None}
+     end});
+   (%re{ '$' (_ as c)}, %exp{err (Illegal_character c) (!! lexbuf)})])
+    ;
+  (* ("ocaml_ant", *)
+  (*  [(,)] *)
+
 
   ]
 

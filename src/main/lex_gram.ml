@@ -39,74 +39,20 @@ Location_util:
 
 
 let  rec token = %lex_fan{
-  | newline  %{
-    begin
-      update_loc  lexbuf;
-      token lexbuf 
-    end}
-  | ocaml_lid as txt %{ `Lid {loc =  !! lexbuf ; txt}}
-  | ocaml_uid as txt  %{ `Uid {loc = !! lexbuf ; txt}}      
-  | '"' %{
-    let c = new_cxt ()  in
-    let old = lexbuf.lex_start_p in
-    begin
-      push_loc_cont c lexbuf lex_string;
-      let loc = old --  lexbuf.lex_curr_p in
-      `Str {loc;txt=buff_contents c}
-    end}
+  | @whitespace %{token lexbuf}
+  | @ocaml_lid
+  | @ocaml_uid
+  | @ocaml_string
   | int_literal as txt %{`Int{loc = !!lexbuf; txt}}
-  | "'" (newline as txt) "'" %{
-    begin
-      update_loc   lexbuf ~retract:1;
-      let loc = !! lexbuf in
-      `Chr {loc;txt}
-    end}
-  | "'" (ocaml_char as txt ) "'"
-      %{ let loc =  !! lexbuf in `Chr {loc;txt}}
-  | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
-
+  | @ocaml_char       
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | ":" | "@" |"{" | "}"
   |";" |"." | "," as txt %{
-    let loc = !!lexbuf in `Sym {loc;txt}}
-  | ocaml_blank + %{ token lexbuf }
-
-  | "(*"(')' as x) ? %{
-    let c = new_cxt () in
-    begin
-      if x <> None then warn Comment_start (!! lexbuf);
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_comment;
-      token lexbuf 
-    end}
-  | '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift %{
-       let c = new_cxt () in
-       let name =
-         match name with
-         | Some name -> Tokenf.name_of_string name
-         | None -> Tokenf.empty_name  in
-       begin
-         let old = lexbuf.lex_start_p in
-         let txt =
-           begin
-             store c lexbuf;
-             push_loc_cont c lexbuf lex_quotation;
-             buff_contents c
-           end in
-         let loc = old -- lexbuf.lex_curr_p in
-         let shift = String.length shift in
-         let retract =  1  in
-         `Quot{Tokenf.name;meta;shift;txt;loc;retract}
-       end}
-  | eof %{
-      let pos = lexbuf.lex_curr_p in (* FIXME *)
-      (lexbuf.lex_curr_p <-
-      { pos with pos_bol  = pos.pos_bol  + 1 ;
-        pos_cnum = pos.pos_cnum + 1 };
-       let loc = !!lexbuf in
-       `EOI {loc;txt=""})}
-    
-  | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
+    `Sym {loc = !!lexbuf;txt}}
+  | @ocaml_comment %{token lexbuf}
+  | @ocaml_quotation
+  | @ocaml_eof
+  | @default}
     
 
 let from_lexbuf lb = Streamf.from (fun _ -> Some (token lb))
