@@ -12,7 +12,6 @@ type entry =  {
   local: bool;
   level: level} 
 and level =  {
-  label: string option;
   assoc: exp option;
   rules: rule list} 
 and rule =  {

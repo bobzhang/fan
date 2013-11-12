@@ -260,10 +260,6 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
     | Some pos -> %exp{Some $pos} 
     | None -> %exp{None}   in
   let apply (level:Gram_def.level)  =
-    let lab =
-      match level.label with 
-      | Some lab ->   %exp{Some $str:lab}
-      | None ->   %exp{None}   in
     let ass =
       match level.assoc with (* has type Gramf.assoc option *)
       | Some ass ->   %exp{Some $ass}
@@ -281,13 +277,15 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
            r.action)) in
     let prod = make_exp_rules  rl e.name.tvar in
     (* generated code of type [olevel] *)
-    %exp{ ($lab, $ass, $prod) } in
+    %exp{
+    ({label = $pos; assoc = $ass; productions = $prod } :
+       $id{(gm() : vid :> ident)}.olevel)} in
   let l = e.level in
       let f =
         if safe then
           %exp{$id{gm()}.extend_single}
         else %exp{$id{gm()}.unsafe_extend_single} in
-        %exp{$f $ent ($pos, (${apply l} : $id{(gm() : vid :> ident)}.olevel ))}
+        %exp{$f $ent ${apply l}}
 
 
 

@@ -257,12 +257,6 @@ let make_extend safe (e : Gram_def.entry) =
      | Some pos -> (`App (_loc, (`Uid (_loc, "Some")), pos) : FAst.exp )
      | None  -> (`Uid (_loc, "None") : FAst.exp ) in
    let apply (level : Gram_def.level) =
-     let lab =
-       match level.label with
-       | Some lab ->
-           (`App (_loc, (`Uid (_loc, "Some")), (`Str (_loc, lab))) : 
-           FAst.exp )
-       | None  -> (`Uid (_loc, "None") : FAst.exp ) in
      let ass =
        match level.assoc with
        | Some ass -> (`App (_loc, (`Uid (_loc, "Some")), ass) : FAst.exp )
@@ -275,7 +269,17 @@ let make_extend safe (e : Gram_def.entry) =
                  r.prod |> (List.map (fun (s : Gram_def.osymbol)  -> s.text)) in
                (sl, (make_action _loc r (e.name).tvar), (r.action)))) in
      let prod = make_exp_rules rl (e.name).tvar in
-     (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
+     (`Constraint
+        (_loc,
+          (`Record
+             (_loc,
+               (`Sem
+                  (_loc, (`RecBind (_loc, (`Lid (_loc, "label")), pos)),
+                    (`Sem
+                       (_loc, (`RecBind (_loc, (`Lid (_loc, "assoc")), ass)),
+                         (`RecBind (_loc, (`Lid (_loc, "productions")), prod)))))))),
+          (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "olevel"))))) : 
+       FAst.exp ) in
    let l = e.level in
    let f =
      if safe
@@ -283,18 +287,7 @@ let make_extend safe (e : Gram_def.entry) =
      else
        (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
        FAst.exp ) in
-   (`App
-      (_loc, (`App (_loc, f, ent)),
-        (`Par
-           (_loc,
-             (`Com
-                (_loc, pos,
-                  (`Constraint
-                     (_loc, (apply l),
-                       (`Dot
-                          (_loc, (gm () : vid  :>ident),
-                            (`Lid (_loc, "olevel"))))))))))) : FAst.exp ) : 
-  exp )
+   (`App (_loc, (`App (_loc, f, ent)), (apply l)) : FAst.exp ) : exp )
 let capture_antiquot =
   object 
     inherit  Objs.map as super

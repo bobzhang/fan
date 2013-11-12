@@ -7,8 +7,10 @@ let add name =
 let () =
   let open Control in
     Gramf.unsafe_extend_single (item : 'item Gramf.t )
-      (None,
-        ((None, None,
+      ({
+         label = None;
+         assoc = None;
+         productions =
            [{
               symbols =
                 [Token
@@ -26,4 +28,5 @@ let () =
                    (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
                       (_loc : Locf.t)  ->
                       let s = __fan_1.txt in (add s : 'item )))
-            }]) : Gramf.olevel ))
+            }]
+       } : Gramf.olevel )

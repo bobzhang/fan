@@ -353,8 +353,10 @@ let _ =
 let p = Gramf.mk "p"
 let _ =
   Gramf.extend_single (p : 'p Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (pat : 'pat Gramf.t ));
@@ -393,7 +395,8 @@ let _ =
                              (`Case
                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                    'p )))
-         }]) : Gramf.olevel ))
+         }]
+     } : Gramf.olevel )
 let () = of_exp ~name:(d, "p") ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
@@ -401,8 +404,10 @@ let _ =
   let a: 'a Gramf.t = grammar_entry_create "a"
   and n: 'n Gramf.t = grammar_entry_create "n" in
   Gramf.extend_single (a : 'a Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -438,10 +443,13 @@ let _ =
                                      (_loc, pl,
                                        (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
                                FAst.stru )) ns) : 'a )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (n : 'n Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -470,10 +478,13 @@ let _ =
                 (fun ~__fan_2:(y : Tokenf.txt)  ~__fan_1:_ 
                    ~__fan_0:(x : Tokenf.txt)  (_loc : Locf.t)  ->
                    ((x, (Some y)) : 'n )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (import : 'import Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols = [List1 (Nterm (Gramf.obj (a : 'a Gramf.t )))];
             annot = "Ast_gen.sem_of_list xs\n";
@@ -481,7 +492,8 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_0:(xs : 'a list)  (_loc : Locf.t)  ->
                     (Ast_gen.sem_of_list xs : 'import )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

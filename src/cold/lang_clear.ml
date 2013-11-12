@@ -6,8 +6,10 @@ let nonterminalsclear: exp Gramf.t = Gramf.mk "nonterminalsclear"
 let qualuid = Gramf.mk "qualuid"
 let _ =
   Gramf.extend_single (a_lident : 'a_lident Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -46,10 +48,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
@@ -70,10 +75,13 @@ let _ =
                                    (`Dot (_loc, t, (`Lid (_loc, "clear")))),
                                    x) : FAst.exp ))))
                        |> seq_sem : 'nonterminalsclear )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -101,7 +109,8 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid )))
-         }]) : Gramf.olevel ))
+         }]
+     } : Gramf.olevel )
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()

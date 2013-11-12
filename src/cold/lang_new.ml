@@ -10,8 +10,10 @@ let _ =
   let type_entry: 'type_entry Gramf.t = grammar_entry_create "type_entry"
   and ty: 'ty Gramf.t = grammar_entry_create "ty" in
   Gramf.extend_single (type_entry : 'type_entry Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -133,10 +135,13 @@ let _ =
                    ((_loc, x,
                       (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
                       (Some t)) : 'type_entry )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (ty : 'ty Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -172,10 +177,13 @@ let _ =
              (Gramf.mk_action
                 (fun (_loc : Locf.t)  ->
                    (`Static (`Uid (_loc, "Gramf")) : 'ty )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -203,10 +211,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (qualid : 'qualid Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -234,10 +245,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in (`Lid (_loc, i) : 'qualid )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -272,10 +286,13 @@ let _ =
                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
                    (_loc : Locf.t)  ->
                    let x = __fan_0.txt in (`Uid (_loc, x) : 't_qualid )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (ty : 'ty Gramf.t ));
@@ -336,10 +353,13 @@ let _ =
                                                    (_loc, mk,
                                                      (`Str (_loc, x)))), typ))))) : 
                                  FAst.stru )) ls) : 'nonterminals )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (newterminals : 'newterminals Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -431,7 +451,8 @@ let _ =
                                                    (_loc, mk,
                                                      (`Str (_loc, x)))), typ))))) : 
                                  FAst.stru )) ls)) : 'newterminals )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals ();

@@ -386,8 +386,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   (* (\* | *\) level as l  %{ `Single l}] (\* FIXME L1 does not work here *\) *)
 
   level :
-  [  ? Str label ;  ?assoc as assoc; rule_list as rules
-       %{{label ;assoc;rules}} ]
+  [ ?assoc as assoc; rule_list as rules
+       %{{assoc;rules}} ]
 
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]

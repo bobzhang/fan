@@ -2219,8 +2219,10 @@ let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
   let case: 'case Gramf.t = grammar_entry_create "case" in
   Gramf.extend_single (lex : 'lex Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2256,10 +2258,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
                    -> (make_automata true l : 'lex )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (lex_fan : 'lex_fan Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2321,10 +2326,13 @@ let _ =
                                  (_loc, (`Uid (_loc, "Tokenf")),
                                    (`Lid (_loc, "t"))))))) : FAst.exp ) : 
                    'lex_fan )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (case : 'case Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (regexp : 'regexp Gramf.t ));
@@ -2426,10 +2434,13 @@ let _ =
                              (x,
                                (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp )))
                           res : 'case )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2471,10 +2482,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(x : 'declare_regexp)  ~__fan_0:_ 
                    (_loc : Locf.t)  -> (x : 'declare_regexp )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
-    ((Some 10),
-      ((None, None,
+    ({
+       label = (Some 10);
+       assoc = None;
+       productions =
          [{
             symbols =
               [Self;
@@ -2491,10 +2505,13 @@ let _ =
                     ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
                     let xloc = __fan_2.loc in
                     let y = __fan_2.txt in (Bind (r1, (xloc, y)) : 'regexp )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
-    ((Some 20),
-      ((None, None,
+    ({
+       label = (Some 20);
+       assoc = None;
+       productions =
          [{
             symbols =
               [Self;
@@ -2511,10 +2528,13 @@ let _ =
                     (let s1 = as_cset r1 in
                      let s2 = as_cset r2 in Characters (Fcset.diff s1 s2) : 
                     'regexp )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
-    ((Some 30),
-      ((None, None,
+    ({
+       label = (Some 30);
+       assoc = None;
+       productions =
          [{
             symbols =
               [Self;
@@ -2528,10 +2548,13 @@ let _ =
                  (fun ~__fan_2:(r2 : 'regexp)  ~__fan_1:_ 
                     ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
                     (Alternative (r1, r2) : 'regexp )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
-    ((Some 40),
-      ((None, None,
+    ({
+       label = (Some 40);
+       assoc = None;
+       productions =
          [{
             symbols = [Self; Self];
             annot = "Sequence (r1, r2)\n";
@@ -2539,10 +2562,13 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1:(r2 : 'regexp)  ~__fan_0:(r1 : 'regexp) 
                     (_loc : Locf.t)  -> (Sequence (r1, r2) : 'regexp )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
-    ((Some 50),
-      ((None, None,
+    ({
+       label = (Some 50);
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2675,10 +2701,13 @@ let _ =
                         (Fan_warnings.emitf xloc.loc_start
                            "Reference to unbound regexp name `%s'" x;
                          raise UnboundRegexp) : 'regexp )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (char_class : 'char_class Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2699,10 +2728,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(r : 'char_class1)  (_loc : Locf.t)  ->
                    (r : 'char_class )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (char_class1 : 'char_class1 Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -2747,7 +2779,8 @@ let _ =
                 (fun ~__fan_1:(cc2 : 'char_class1) 
                    ~__fan_0:(cc1 : 'char_class1)  (_loc : Locf.t)  ->
                    (Fcset.union cc1 cc2 : 'char_class1 )))
-         }]) : Gramf.olevel ))
+         }]
+     } : Gramf.olevel )
 let () =
   let d = Ns.lang in
   Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex") ~entry:lex

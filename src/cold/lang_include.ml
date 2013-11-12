@@ -2,8 +2,10 @@ let g = Gramf.create_lexer ~annot:"" ~keywords:[] ()
 let include_quot = Gramf.mk_dynamic g "include_quot"
 let _ =
   Gramf.unsafe_extend_single (include_quot : 'include_quot Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -28,6 +30,7 @@ let _ =
                      | fan_e__3 ->
                          ((keep := fan_keep__0; cf := fan_cf__1);
                           raise fan_e__3) : 'include_quot )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let _ =
   Ast_quotation.of_stru ~name:(Ns.lang, "include") ~entry:include_quot ()

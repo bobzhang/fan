@@ -4,8 +4,10 @@ let dot_namespace = Gramf.mk_dynamic g "dot_namespace"
 let items = Gramf.mk_dynamic g "items"
 let _ =
   Gramf.unsafe_extend_single (item : 'item Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -78,10 +80,13 @@ let _ =
                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
                    (Ast_quotation.clear_map ();
                     Ast_quotation.clear_default () : 'item )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.unsafe_extend_single (dot_namespace : 'dot_namespace Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -108,10 +113,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in ([i] : 'dot_namespace )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (item : 'item Gramf.t ));
@@ -141,7 +149,8 @@ let _ =
            symbols = [];
            annot = "()\n";
            fn = (Gramf.mk_action (fun (_loc : Locf.t)  -> (() : 'items )))
-         }]) : Gramf.olevel ))
+         }]
+     } : Gramf.olevel )
 let () =
   Fdir.register
     ((Tokenf.name_of_string "control"),

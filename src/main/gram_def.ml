@@ -27,7 +27,7 @@ type entry   = {
 (*  [ `Group of (level list ) | `Single of level]    *)
 and level  = {
   (* mainly used for indexing *)  
-  label : string option ;
+  (* label : string option ; *)
   assoc : exp option ;
   rules : rule list
 }

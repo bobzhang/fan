@@ -5,8 +5,10 @@ let stream_exp_comp = Gramf.mk "stream_exp_comp"
 let stream_exp_comp_list = Gramf.mk "stream_exp_comp_list"
 let _ =
   Gramf.extend_single (stream_exp : 'stream_exp Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -65,10 +67,13 @@ let _ =
              (Gramf.mk_action
                 (fun (_loc : Locf.t)  ->
                    (Compile_stream.empty _loc : 'stream_exp )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (stream_exp_comp : 'stream_exp_comp Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
             annot = "(Trm (_loc, e) : Compile_stream.sexp_comp )\n";
@@ -88,10 +93,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
                    (Ntr (_loc, e) : 'stream_exp_comp )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm
@@ -127,5 +135,6 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  ->
                    ([se] : 'stream_exp_comp_list )))
-         }]) : Gramf.olevel ))
+         }]
+     } : Gramf.olevel )
 let _ = Ast_quotation.of_exp ~name:(Ns.lang, "stream") ~entry:stream_exp ()

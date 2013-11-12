@@ -12,8 +12,10 @@ let inject_stru = Gramf.mk "inject_stru"
 let inject_clfield = Gramf.mk "inject_clfield"
 let _ =
   Gramf.extend_single (inject_exp : 'inject_exp Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -29,10 +31,13 @@ let _ =
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
                       'inject_exp )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -48,10 +53,13 @@ let _ =
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
                       'inject_stru )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -67,7 +75,8 @@ let _ =
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
                       'inject_clfield )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let _ =
   let open Ast_quotation in
     let d = Ns.inject in

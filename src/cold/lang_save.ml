@@ -3,8 +3,10 @@ let seq_sem = Ast_gen.seq_sem
 let save_quot = Gramf.mk "save_quot"
 let _ =
   Gramf.extend_single (save_quot : 'save_quot Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [List1
@@ -78,5 +80,6 @@ let _ =
                                                    (`Lid (_loc, "raise")),
                                                    (`Lid (_loc, exc))))))))))))) : 
                        FAst.exp ) : 'save_quot )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let _ = Ast_quotation.of_exp ~name:(Ns.lang, "save") ~entry:save_quot ()

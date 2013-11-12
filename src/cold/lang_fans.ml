@@ -7,8 +7,10 @@ let _ =
   and fan_quot_semi: 'fan_quot_semi Gramf.t =
     grammar_entry_create "fan_quot_semi" in
   Gramf.unsafe_extend_single (fan_quot : 'fan_quot Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -127,10 +129,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (Typehook.show_code := false : 'fan_quot )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.unsafe_extend_single (id : 'id Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Token
@@ -152,10 +157,13 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let x = __fan_0.txt in (x : 'id )))
-         }]) : Gramf.olevel ));
+         }]
+     } : Gramf.olevel );
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t ));
@@ -167,10 +175,13 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                     (() : 'fan_quot_semi )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [List1
@@ -180,7 +191,8 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))
-          }]) : Gramf.olevel ))
+          }]
+     } : Gramf.olevel )
 let _ =
   Foptions.add
     ("-keep", (Arg.Set State.keep), "Keep the included type definitions");

@@ -27,8 +27,10 @@ let eoi_entry entry =
   let g = Gramf.gram_of_entry entry in
   let entry_eoi = Gramf.mk_dynamic g ((Gramf.name entry) ^ "_eoi") in
   Gramf.extend_single (entry_eoi : 'entry_eoi Gramf.t )
-    (None,
-      ((None, None,
+    ({
+       label = None;
+       assoc = None;
+       productions =
          [{
             symbols =
               [Nterm (Gramf.obj (entry : 'entry Gramf.t ));
@@ -40,5 +42,6 @@ let eoi_entry entry =
               (Gramf.mk_action
                  (fun ~__fan_1:_  ~__fan_0:(x : 'entry)  (_loc : Locf.t)  ->
                     (x : 'entry_eoi )))
-          }]) : Gramf.olevel ));
+          }]
+     } : Gramf.olevel );
   entry_eoi
