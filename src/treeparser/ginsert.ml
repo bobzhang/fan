@@ -26,7 +26,7 @@ let rec derive_eps (s:Gdefs.symbol)  =
 
 
 let empty_lev lname assoc : Gdefs.level =
-  {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
+  {assoc ; lname  = Option.default 10 lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
 
     
@@ -158,21 +158,23 @@ let add_production_in_level (x :  Gdefs.production) (slev : Gdefs.level) =
 
 let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
   let rules1 =
-    (match lb with
-    |(y,Some assoc,x) ->
+    let (a,b,c) = lb in 
+    let y = Option.default 10  a in
+    match (b,c) with
+    |(Some assoc,x) ->
         (if not(la.lname= y  && la.assoc = assoc) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
             (* (Formatf.pp_print_option Formatf.pp_print_string)  *)la.lname
             (* (Formatf.pp_print_option Formatf.pp_print_string) *) y
             Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
          x)
-    |((* (Some _ as y) *)y ,_,x)-> 
+    |(_,x)-> 
         (if not (la.lname=y) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d)@."
             (* (Formatf.pp_print_option Formatf.pp_print_string) *) la.lname
             (* (Formatf.pp_print_option Formatf.pp_print_string) *) y;
          x)
-    (* |(None,None,x) -> x  *)) in
+     in
   (* added in reverse order *)
   List.fold_right add_production_in_level rules1 la
 
@@ -320,7 +322,7 @@ let copy (e:Gdefs.entry) : Gdefs.entry =
    result)
 
 let refresh_level ~f (x:Gdefs.level)  =
-  level_of_olevel (x.lname,Some x.assoc,f x.productions)
+  level_of_olevel (Some (x.lname) ,Some x.assoc,f x.productions)
 
 
 (* buggy, it's very hard to inline recursive parsers, take care

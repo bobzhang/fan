@@ -15,7 +15,7 @@ type gram = {
     gfilter         : Tokenf.filter_plugin;
   }
 
-type label =  int (* string option *)
+
 
     
 type entry = {
@@ -27,7 +27,7 @@ type entry = {
     mutable freezed :  bool;}
 
 and level = {
-    lname   : label;
+    lname   : int;
     assoc   : assoc ;
     productions : production list ; (* the raw productions stored in the level*)
     lsuffix : tree ;
@@ -92,7 +92,8 @@ and anno_action =
    is [level], there is a function [Ginsert.level_of_olevel] which converts the
    processed output into the runtime
    BOOTSTRAPING
- *)      
+ *)
+type label = int option      
 type olevel = (label * assoc option  * production list )
       
 type extend_statment = (position option  * olevel list )
