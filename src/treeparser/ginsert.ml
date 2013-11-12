@@ -25,34 +25,13 @@ let rec derive_eps (s:Gdefs.symbol)  =
       false  (* could be fixed *)
 
 
-let empty_lev lname assoc : Gdefs.level =
-  {assoc ; lname  = Option.default 10 lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
+let empty_lev l assoc : Gdefs.level =
+  {assoc ;
+   level  = Option.default 10 l ;
+   lsuffix = DeadEnd;
+   lprefix = DeadEnd;productions=[]}
 
 
-    
-
-(* let find_level ?position (entry:Gdefs.entry)  levs = *)
-(*   (\* let find (x:int) n  ls =  *\) *)
-(*   (\*   let rec get = function *\) *)
-(*   (\*     | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name *\) *)
-(*   (\*     | (lev:Gdefs.level)::levs -> *\) *)
-(*   (\*     if x = lev.label (\\* Gtools.is_level_labelled n lev *\\) then *\) *)
-(*   (\*       (\\* match x with *\\) *\) *)
-(*   (\*       (\\* |`Level _ -> *\\) *\) *)
-(*   (\*           ([],  Some(lev,n), levs) *\) *)
-(*   (\*       |`Before _ -> *\) *)
-(*   (\*           ([],  None , lev::levs) *\) *)
-(*   (\*       |`After _ -> *\) *)
-(*   (\*          ([lev],None , levs)   *\) *)
-(*   (\*     else *\) *)
-(*   (\*       let (levs1,rlev,levs2) = get levs in *\) *)
-(*   (\*       (lev::levs1, rlev, levs2)  in *\) *)
-(*   (\*   get ls in  *\) *)
-(*   let level = *)
-(*     match position with *)
-(*     | Some i -> i *)
-(*     | None -> 10  in *)
-(*   entry.levels *)
 
 let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
   match x with
@@ -161,17 +140,15 @@ let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) =
     let y = Option.default 10  lb.label in
     match (lb.assoc,lb.productions) with
     |(Some assoc,x) ->
-        (if not(la.lname= y  && la.assoc = assoc) then
+        (if not ( la.level = y  && la.assoc = assoc) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
-            (* (Formatf.pp_print_option Formatf.pp_print_string)  *)la.lname
-            (* (Formatf.pp_print_option Formatf.pp_print_string) *) y
+            la.level y
             Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
          x)
     |(_,x)-> 
-        (if not (la.lname=y) then
+        (if not (la.level = y) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d)@."
-            (* (Formatf.pp_print_option Formatf.pp_print_string) *) la.lname
-            (* (Formatf.pp_print_option Formatf.pp_print_string) *) y;
+            la.level y;
          x)
      in
   (* added in reverse order *)
@@ -189,9 +166,9 @@ let insert_olevel (entry:Gdefs.entry) position olevel =
       match ls with
       | [] -> [level_of_olevel olevel]
       | x::xs ->
-          if x.lname > pos then
+          if x.level > pos then
             level_of_olevel olevel :: ls 
-          else if x.lname = pos then
+          else if x.level = pos then
             merge_level x olevel :: xs 
           else
             x:: aux xs  in
@@ -292,11 +269,11 @@ let copy (e:Gdefs.entry) : Gdefs.entry =
 
 let refresh_level ~f (x:Gdefs.level)  =
   level_of_olevel
-    {label = Some x.lname;
+    {label = Some x.level;
      assoc = Some x.assoc;
      productions = f x.productions 
    }
-    (* (Some (x.lname) ,Some x.assoc,f x.productions) *)
+
 
 
 (* buggy, it's very hard to inline recursive parsers, take care

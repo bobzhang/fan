@@ -98,8 +98,7 @@ class text_grammar : grammar_print = object(self:'self)
     pp f "@[<hv0>[ %a]@]" (Formatf.pp_list self#rule ~sep:("@;| ")) rules
       
   method level f (x:Gdefs.level) =
-    pp f "%d %a@;%a"
-      (* (Formatf.pp_option (fun f s -> pp f "%S" s)) *) x.lname
+    pp f "%d %a@;%a" x.level
       pp_assoc x.assoc (self#productions ) x.productions
  
           
@@ -133,7 +132,7 @@ class dump_grammar : grammar_print  = object(self:'self)
       @@ Gtools.get_brothers tree
   method! level f (x:Gdefs.level)  =
     pp f "%d %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
-      (* (Formatf.pp_option (fun f s -> pp f "%S" s)) *) x.lname
+      x.level
       pp_assoc x.assoc
       self#tree x.lsuffix
       self#tree x.lprefix 

@@ -26,7 +26,7 @@ let level_number (entry:Gdefs.entry) (lab:int) =
         end
            
     | (lev:Gdefs.level) :: levs ->
-        if  lev.lname = lab then n else lookup (1 + n) levs  in
+        if  lev.level = lab then n else lookup (1 + n) levs  in
   lookup 0 entry.levels
         
 

@@ -26,8 +26,9 @@ type entry = {
     mutable levels     :  level list  ; (* sorted list *)
     mutable freezed :  bool;}
 
+(* level is the runtime which is not used by the compiler *)      
 and level = {
-    lname   : int;
+    level   : int;
     assoc   : assoc ;
     productions : production list ; (* the raw productions stored in the level*)
     lsuffix : tree ;
@@ -71,15 +72,13 @@ and production= {
     fn : Gaction.t
    }
 
-
-(* number * symbols * action_as_tring * action *)
 and anno_action =
     {arity : int ;
      symbols : symbol list;
      annot : string;
      fn : Gaction.t
    }
-    (* (int  * symbol list  * string  * Gaction.t)  *)
+
 
 
 
@@ -94,25 +93,19 @@ and anno_action =
    BOOTSTRAPING
  *)
 type label = int option
+      
 type olevel  = {
     label : label ;
     assoc : assoc option;
     productions : production list
   }      
 
-(* type olevel = (label * assoc option  * production list ) *)
-
 type extend_statment = {
     pos : position option ;
     olevels : olevel list
   }
-type single_extend_statement =  olevel (* { *)
-  (*   pos : position option ; *)
-  (*   olevel : olevel *)
-  (* } *)
+type single_extend_statement =  olevel
       
-(* type extend_statment = (position option  * olevel list ) *)
-(* type single_extend_statement =  (position option  * olevel) *)
 type delete_statment = symbol list 
 
 
