@@ -10,6 +10,63 @@ let appl_of_list = Ast_gen.appl_of_list
 open FAst
 open! Syntaxf
 let pos_exps = Gramf.mk "pos_exps"
+let make_infix ?(left= true)  exp f i =
+  Gramf.extend_single (exp : 'exp Gramf.t )
+    ({
+       label = (Some (f i));
+       lassoc = left;
+       productions =
+         [{
+            symbols =
+              [Self;
+              Token
+                ({ descr = { tag = `Inf; word = (Level i); tag_name = "Inf" }
+                 } : Tokenf.pattern );
+              Self];
+            annot =
+              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
+            fn =
+              (Gramf.mk_action
+                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
+                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                    let xloc = __fan_1.loc in
+                    let op = __fan_1.txt in
+                    (let op: FAst.exp = `Lid (xloc, op) in
+                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                      'exp )))
+          }]
+     } : Gramf.olevel )
+let make_key ?(left= true)  exp i op =
+  Gramf.extend_single (exp : 'exp Gramf.t )
+    ({
+       label = (Some i);
+       lassoc = left;
+       productions =
+         [{
+            symbols =
+              [Self;
+              Token
+                ({ descr = { tag = `Key; word = (A op); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              Self];
+            annot =
+              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
+            fn =
+              (Gramf.mk_action
+                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
+                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                    let xloc = __fan_1.loc in
+                    (let op: FAst.exp = `Lid (xloc, op) in
+                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
+                      'exp )))
+          }]
+     } : Gramf.olevel )
+let _ =
+  List.iter (make_key exp 20 ~left:true) [":="];
+  List.iter (make_key exp 30 ~left:false) ["or"; "||"];
+  List.iter (make_key exp 40 ~left:false) ["&"; "&&"];
+  List.iter (make_key exp 50 ~left:true) ["=="; "="; "<"; ">"];
+  List.iter (make_key exp 80 ~left:true) ["+"; "-"; "-."]
 let make_case exp pat =
   let grammar_entry_create x = Gramf.mk x in
   let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t =
@@ -4682,126 +4739,19 @@ let apply () =
              symbols =
                [Self;
                Token
-                 ({ descr = { tag = `Key; word = (A ":="); tag_name = "Key" }
+                 ({ descr = { tag = `Key; word = (A "<-"); tag_name = "Key" }
                   } : Tokenf.pattern );
                Self];
              annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
+               "match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "<-"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot =
-              "match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:_  ~__fan_0:(e1 : 'exp) 
-                    (_loc : Locf.t)  ->
-                    (match Fan_ops.bigarray_set _loc e1 e2 with
-                     | Some e -> e
-                     | None  -> `Assign (_loc, e1, e2) : 'exp )))
-          }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 30);
-        lassoc = false;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({ descr = { tag = `Key; word = (A "or"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "||"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let op = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, op) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 40);
-        lassoc = false;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({ descr = { tag = `Key; word = (A "&"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "&&"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let op = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, op) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          }]
+                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:_  ~__fan_0:(e1 : 'exp)
+                      (_loc : Locf.t)  ->
+                     (match Fan_ops.bigarray_set _loc e1 e2 with
+                      | Some e -> e
+                      | None  -> `Assign (_loc, e1, e2) : 'exp )))
+           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
      ({
@@ -4828,83 +4778,7 @@ let apply () =
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
-           };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "=="); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let x = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, x) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "="); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let x = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, x) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let x = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, x) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A ">"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, x) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let x = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, x) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          }]
+           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
      ({
@@ -4983,64 +4857,7 @@ let apply () =
                      (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
-           };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "+"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let op = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, op) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "-"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let op = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, op) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          };
-          {
-            symbols =
-              [Self;
-              Token
-                ({ descr = { tag = `Key; word = (A "-."); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot =
-              "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let op = __fan_1.txt in
-                    (let op: FAst.exp = `Lid (xloc, op) in
-                     (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
-          }]
+           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
      ({

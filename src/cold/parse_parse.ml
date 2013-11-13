@@ -7922,7 +7922,21 @@ let _ =
               (Gramf.mk_action
                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Lid (_loc, "false") : FAst.exp ) : 'assoc )))
-          }]
+          };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Ant; word = (Kind "bool"); tag_name = "Ant" }
+                 } : Tokenf.pattern )];
+           annot = "Tokenf.ant_expand Parsef.exp x\n";
+           fn =
+             (Gramf.mk_action
+                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let x = __fan_0 in
+                   (Tokenf.ant_expand Parsef.exp x : 'assoc )))
+         }]
      } : Gramf.olevel );
   Gramf.extend_single (rule_list : 'rule_list Gramf.t )
     ({

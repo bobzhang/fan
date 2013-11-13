@@ -396,7 +396,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
        %{{assoc;rules}} ]
 
   assoc :
-  [ "RA"  %exp{false} ]
+  [ "RA"  %exp{false}
+  | Ant("bool",x) %{Tokenf.ant_expand Parsef.exp x}]
 
       
   rule_list :

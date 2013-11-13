@@ -1,14 +1,14 @@
 
 
-let make_op_l exp f i =
+let make_infix ?(left=true) exp f i =
   %extend{
-  exp: ${f i}
+  exp: ${f i} $bool:left
   [ S  as e1 ; Inf@xloc ($i,op); S as e2 %{
     let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]}
 
-let make_key exp i op =
+let make_key ?(left=true) exp i op =
   %extend{
-  exp: $i
+  exp: $i $bool:left
   [ S as e1 ; $key:op @xloc; S as e2 %{
     let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]  
 }
