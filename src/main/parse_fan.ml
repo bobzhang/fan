@@ -451,7 +451,7 @@ let apply () = begin
               `For (_loc, i, e1, e2, df, seq)}
         | "while"; S as e; "do"; sequence as seq; "done" %{
             `While (_loc, e, seq)}]  
-       exp :  20 NA
+       exp :  20 
         [ S as e1; (":="@xloc as op); S as e2 %{
           let op = %exp@xloc{$lid:op} in %exp{ $op $e1 $e2 }}
         | S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
@@ -466,7 +466,7 @@ let apply () = begin
         [ S as e1; ("&"|"&&" @xloc as op) ; S as e2  %{
           let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
         ]
-       exp : 50  LA
+       exp : 50  
         (* idea merge actions ... when bounds are the same ?? *)  
         [ S as e1; Inf@xloc (0,op); S as e2 %{
           let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
@@ -483,14 +483,14 @@ let apply () = begin
           let op = %exp@xloc{$uid:op} in %exp{$op $e1 $e2}
         }
         ]  
-       exp : 80  LA
+       exp : 80  
         [ S as e1; Inf@xloc (2,op); S as e2 %{
           let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
         | S as e1; ( "+" |"-"|"-." @xloc as op); S as e2 %{
           (* FIXME better error message %exp@{xx}*)
           let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
         ]
-       exp : 90 LA
+       exp : 90 
         [ S as e1; Inf@xloc (3,op); S as e2 %{
           let op = %exp@xloc{$lid:op} in
           %exp{$op $e1 $e2}}
@@ -516,15 +516,15 @@ let apply () = begin
            | Some cst -> `Obj(_loc,cst)
            | None -> `ObjEnd _loc}
         ]
-       exp : 120  NA
+       exp : 120  
         [ ("-"|"-." as x); S as e %{ Fan_ops.mkumin _loc x e} (* Delayed into Dump *)
         ]
-       exp : 130  LA
+       exp : 130  
         [ S as e1; S as e2 %{ `App(_loc,e1,e2)}
         | "assert"; S as e %{ `Assert(_loc,e)}
         | "new"; class_longident as i %{ `New (_loc,i)} 
         | "lazy"; S as e %{ `Lazy(_loc,e)} ]
-       exp : 140  NA
+       exp : 140  
         [ "~"; a_lident as i; ":"; S as e %{ `Label (_loc, i, e)}
         | "~"; a_lident as i %{ `LabelS(_loc,i)}
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
@@ -533,16 +533,16 @@ let apply () = begin
         | Optlabel i; S as e %{  `OptLabl(_loc,`Lid(_loc,i),e)}
         | "?"; a_lident as i; ":"; S as e %{ `OptLabl(_loc,i,e)}
         | "?"; a_lident as i %{ `OptLablS(_loc,i)} ] 
-       exp : 150  LA
+       exp : 150  
         [ S as e1; "."; "("; S as e2; ")" %{ `ArrayDot (_loc, e1, e2)}
         | S as e1; "."; "["; S as e2; "]" %{ `StringDot (_loc, e1, e2)}
         | S as e1; "."; "{"; comma_exp as e2; "}" %{ Fan_ops.bigarray_get _loc e1 e2}
         | S as e1; "."; label_longident as e2 %{ `Field(_loc,e1,e2)}
         | S as e; "#"; a_lident as lab %{ `Send (_loc, e, lab)} ]
-       exp : 160  NA
+       exp : 160  
         [ ("!"@xloc as x); S as e %{`App(_loc,`Lid(xloc,x),e )}
         | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}]
-       exp : 170 NA
+       exp : 170 
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}
         | Ant ("exp" |"" |"par" |"seq" |"chr"
                 |"int" |"int32" |"str" |"int64"
@@ -941,7 +941,7 @@ let apply () = begin
       clexp: 10
       [ ("fun"|"function"); ipat as p; class_fun_def as ce %{  `CeFun (_loc, p, ce)}
       | "let"; opt_rec as rf; bind as bi; "in"; S as ce %{ `LetIn(_loc,rf,bi,ce)}]
-      clexp: 20 NA
+      clexp: 20 
       [ S as ce; exp Level 140 as e %{ `CeApp (_loc, ce, e)}]
       clexp: 30  (* "simple" *)
       [ Ant (""|"cexp" ,s) %{ mk_ant ~c:"clexp"  s}
@@ -1097,18 +1097,18 @@ let apply_ctyp () = begin
       | Ant (""|"typ" ,s) %{  mk_ant  ~c:"ctyp"  s}
       (* | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp} *)
       | "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
-      ctyp: 10 LA
+      ctyp: 10 
       [ S as t1; "as"; "'"; a_lident as i %{`Alias(_loc,t1,i)}]
-      ctyp: 20  LA
+      ctyp: 20  
       [ "!"; typevars as t1; "."; ctyp as t2 %{ `TyPol (_loc, t1, t2)} ]
       ctyp: 30 RA
       [ S as t1; "->"; S as t2 %{  `Arrow(_loc,t1,t2)} ]
-      ctyp: 40  NA
+      ctyp: 40  
       [ "~"; a_lident as i; ":"; S as t %{ `Label (_loc, i, t)}
       | Label s ; ":"; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
       | Optlabel s ; S as t %{ `OptLabl(_loc,`Lid(_loc,s),t)}
       | "?"; a_lident as i; ":"; S as t %{ `OptLabl(_loc,i,t)}]
-      ctyp: 50  LA
+      ctyp: 50  
       [ S as t1; S as t2 %{`App (_loc,t2,t1)} ]
 
        (* [mod_ext_longident] and [type_longident]

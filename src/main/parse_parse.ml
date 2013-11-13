@@ -386,8 +386,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     begin
       Hashtbl.add inline_rules x rules;
       None
-    end
-  }]
+    end}]
   position :
   [ Int x %exp{$int:x}
   | Ant("",x) %{Tokenf.ant_expand Parsef.exp x}]
@@ -397,7 +396,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
        %{{assoc;rules}} ]
 
   assoc :
-  [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
+  [ "RA"  %exp{false} ]
 
       
   rule_list :

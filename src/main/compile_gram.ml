@@ -262,8 +262,8 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
   let apply (level:Gram_def.level)  =
     let ass =
       match level.assoc with (* has type Gramf.assoc option *)
-      | Some ass ->   %exp{Some $ass}
-      | None ->    %exp{None}   in
+      | Some ass ->   ass 
+      | None ->    %exp{true}   in
     (* the [rhs] was already computed, the [lhs] was left *)
     let rl =
       level.rules 
