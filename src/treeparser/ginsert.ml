@@ -25,8 +25,8 @@ let rec derive_eps (s:Gdefs.symbol)  =
       false  (* could be fixed *)
 
 
-let empty_lev l assoc : Gdefs.level =
-  {assoc ;
+let empty_lev l lassoc : Gdefs.level =
+  {lassoc ;
    level  = Option.default 10 l ;
    lsuffix = DeadEnd;
    lprefix = DeadEnd;productions=[]}
@@ -138,10 +138,10 @@ let add_production_in_level (x :  Gdefs.production) (slev : Gdefs.level) =
 let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
   let rules1 =
     let y = Option.default 10  lb.label in
-    (if not ( la.level = y  && la.assoc = lb.lassoc) then
+    (if not ( la.level = y  && la.lassoc = lb.lassoc) then
       eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
         la.level y
-        Gprint.pp_assoc la.assoc Gprint.pp_assoc lb.lassoc;
+        Gprint.pp_assoc la.lassoc Gprint.pp_assoc lb.lassoc;
      lb.productions) in
   (* added in reverse order *)
   List.fold_right add_production_in_level rules1 la
@@ -244,7 +244,7 @@ let copy (e:Gdefs.entry) : Gdefs.entry =
 let refresh_level ~f (x:Gdefs.level)  =
   level_of_olevel
     {label = Some x.level;
-     lassoc =  x.assoc;
+     lassoc =  x.lassoc;
      productions = f x.productions 
    }
 

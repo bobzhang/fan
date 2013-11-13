@@ -29,7 +29,7 @@ type entry = {
 (* level is the runtime which is not used by the compiler *)      
 and level = {
     level   : int;
-    assoc   : bool ;
+    lassoc   : bool ;
     productions : production list ; (* the raw productions stored in the level*)
     lsuffix : tree ;
     lprefix : tree}

@@ -99,7 +99,7 @@ class text_grammar : grammar_print = object(self:'self)
       
   method level f (x:Gdefs.level) =
     pp f "%d %a@;%a" x.level
-      pp_assoc x.assoc (self#productions ) x.productions
+      pp_assoc x.lassoc self#productions  x.productions
  
           
   method levels f elev:unit =
@@ -133,7 +133,7 @@ class dump_grammar : grammar_print  = object(self:'self)
   method! level f (x:Gdefs.level)  =
     pp f "%d %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
       x.level
-      pp_assoc x.assoc
+      pp_assoc x.lassoc
       self#tree x.lsuffix
       self#tree x.lprefix 
 end

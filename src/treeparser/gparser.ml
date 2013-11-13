@@ -38,7 +38,7 @@ let level_number (entry:Gdefs.entry) (lab:int) =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gdefs.entry)
-    (lev,assoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
+    (lev,lassoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
@@ -55,7 +55,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                  (see [start_parser_of_levels]) *)      
     | Node {node = Self; son = LocAct act; brother = bro} ->  fun strm ->
         begin 
-          let alevn = if assoc then lev + 1 else lev in
+          let alevn = if lassoc then lev + 1 else lev in
           try
             let a = with_loc (entry.start alevn) strm in
             ArgContainer.push (fst a) q;
@@ -190,7 +190,7 @@ let start_parser_of_levels entry =
         | DeadEnd -> hstart (* try the upper levels *)
         | tree ->
             let cstart = 
-              parser_of_tree entry (clevn, lev.assoc) (ArgContainer.create ())tree  in
+              parser_of_tree entry (clevn, lev.lassoc) (ArgContainer.create ())tree  in
             (* the [start] function tires its associated tree. If it works
                it calls the [continue] function of the same level, giving the
                result of [start] as parameter.
@@ -230,7 +230,8 @@ let rec continue_parser_of_levels entry clevn (xs:Gdefs.level list) =
              fails, it returns its extra parameter
            *)
       | tree ->
-        let ccontinue = parser_of_tree entry (clevn, lev.assoc) (ArgContainer.create ()) tree in
+        let ccontinue = parser_of_tree entry
+            (clevn, lev.lassoc) (ArgContainer.create ()) tree in
         fun levn bp a strm ->
           if levn > clevn then
             hcontinue levn bp a strm
