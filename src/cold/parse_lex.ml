@@ -1924,7 +1924,11 @@ let _ =
                           (`Sem
                              ((`RecBind
                                  ((`Lid "loc"),
-                                   (`App ((`Lid "!!"), (`Lid "lexbuf"))))),
+                                   (`App
+                                      ((`Dot
+                                          ((`Uid "Lexing_util"),
+                                            (`Lid "from_lexbuf"))),
+                                        (`Lid "lexbuf"))))),
                                (`Sem
                                   ((`RecBind ((`Lid "kind"), (`Lid "kind"))),
                                     (`Sem
@@ -1970,15 +1974,15 @@ let _ =
                                     {
                                       pos_fname = "parse_lex.ml";
                                       pos_lnum = 262;
-                                      pos_bol = 8139;
-                                      pos_cnum = 8169
+                                      pos_bol = 8161;
+                                      pos_cnum = 8191
                                     };
                                   loc_end =
                                     {
                                       pos_fname = "parse_lex.ml";
                                       pos_lnum = 262;
-                                      pos_bol = 8139;
-                                      pos_cnum = 8173
+                                      pos_bol = 8161;
+                                      pos_cnum = 8195
                                     };
                                   loc_ghost = false
                                 } : Locf.t ), "name"))))))),
@@ -1988,15 +1992,15 @@ let _ =
                   {
                     pos_fname = "parse_lex.ml";
                     pos_lnum = 262;
-                    pos_bol = 8139;
-                    pos_cnum = 8184
+                    pos_bol = 8161;
+                    pos_cnum = 8206
                   };
                 loc_end =
                   {
                     pos_fname = "parse_lex.ml";
                     pos_lnum = 262;
-                    pos_bol = 8139;
-                    pos_cnum = 8187
+                    pos_bol = 8161;
+                    pos_cnum = 8209
                   };
                 loc_ghost = false
               } : Locf.t ), "txt"))),
@@ -2114,15 +2118,15 @@ let _ =
                        {
                          pos_fname = "parse_lex.ml";
                          pos_lnum = 278;
-                         pos_bol = 8726;
-                         pos_cnum = 8745
+                         pos_bol = 8748;
+                         pos_cnum = 8767
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
                          pos_lnum = 278;
-                         pos_bol = 8726;
-                         pos_cnum = 8746
+                         pos_bol = 8748;
+                         pos_cnum = 8768
                        };
                      loc_ghost = false
                    } : Locf.t ), "c"))))),

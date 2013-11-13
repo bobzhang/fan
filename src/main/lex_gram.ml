@@ -7,7 +7,8 @@ let  rec token = %lex_fan{
   | @ocaml_uid
   | @ocaml_string
   | @ocaml_int
-  | @ocaml_char       
+  | @ocaml_char
+  | @ocaml_ant
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | ":" | "@" |"{" | "}"
   |";" |"." | "," as txt %{

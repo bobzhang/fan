@@ -25,9 +25,6 @@ let (!!)  = Lexing_util.from_lexbuf ;;
 let  rec token   = %lex_fan{
    | @whitespace %{ token lexbuf}
    | @ocaml_comment %{token lexbuf}
-   | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
-
-   | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
    | ocaml_lid as txt  %{
      if  %p{"mod"|"land"|"lor"|"lxor"} txt  then
        `Inf{loc= !!lexbuf; txt ; level = 3}
@@ -40,6 +37,8 @@ let  rec token   = %lex_fan{
    | @ocaml_float_literal       (** FIXME safety check *)
    | @ocaml_string
    | @ocaml_char
+   | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
+   | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
    | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{
      `Eident { loc = !! lexbuf ; txt}}
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{

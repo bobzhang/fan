@@ -253,7 +253,7 @@ let _ =
        match follow with
        | None -> ("", 1 )
        | Some _ -> (name, String.length name + 2) in 
-     (`Ant{loc = !!lexbuf;
+     (`Ant{loc = Lexing_util.from_lexbuf lexbuf;
           kind ;
           txt ;
           shift ;
