@@ -147,4 +147,4 @@ val gen_lid : unit -> string
 val make : loc -> entries -> exp 
 
 
-val filter_pat_with_captured_variables : pat -> pat * (exp * exp) list
+

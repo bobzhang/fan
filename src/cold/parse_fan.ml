@@ -27,13 +27,13 @@ let make_infix ?(left= true)  exp f i =
               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.op)  (e1 : 'exp) 
+                    (_loc : Locf.t)  ->
                     let xloc = __fan_1.loc in
                     let op = __fan_1.txt in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
+                      'exp ) : 'exp -> Tokenf.op -> 'exp -> Locf.t -> 'exp ))
           }]
      } : Gramf.olevel )
 let make_key ?(left= true)  exp i op =
@@ -53,12 +53,12 @@ let make_key ?(left= true)  exp i op =
               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.txt)  (e1 : 'exp) 
+                    (_loc : Locf.t)  ->
                     let xloc = __fan_1.loc in
                     (let op: FAst.exp = `Lid (xloc, op) in
                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                      'exp )))
+                      'exp ) : 'exp -> Tokenf.txt -> 'exp -> Locf.t -> 'exp ))
           }]
      } : Gramf.olevel )
 let _ =
@@ -93,17 +93,21 @@ let make_case exp pat =
             annot = "`Alias (_loc, p1, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(s : 'a_lident)  ~__fan_1:_ 
-                    ~__fan_0:(p1 : 'pat)  (_loc : Locf.t)  ->
-                    (`Alias (_loc, p1, s) : 'pat_as_pat_opt )))
+                 (fun (s : 'a_lident)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
+                    (`Alias (_loc, p1, s) : 'pat_as_pat_opt ) : 'a_lident ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'pat ->
+                                                                    Locf.t ->
+                                                                    'pat_as_pat_opt ))
           };
          {
            symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
            annot = "p\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                   (p : 'pat_as_pat_opt )))
+                (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'pat_as_pat_opt ) : 
+                'pat -> Locf.t -> 'pat_as_pat_opt ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (case : 'case Gramf.t )
@@ -126,8 +130,10 @@ let make_case exp pat =
             annot = "bar_of_list l\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(l : 'case0 list)  ~__fan_0:_  (_loc : Locf.t)
-                     -> (bar_of_list l : 'case )))
+                 (fun (l : 'case0 list)  _  (_loc : Locf.t)  ->
+                    (bar_of_list l : 'case ) : 'case0 list ->
+                                                 Tokenf.txt ->
+                                                   Locf.t -> 'case ))
           };
          {
            symbols =
@@ -139,8 +145,11 @@ let make_case exp pat =
            annot = "`Case (_loc, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                   (_loc : Locf.t)  -> (`Case (_loc, p, e) : 'case )))
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                   (`Case (_loc, p, e) : 'case ) : 'exp ->
+                                                     Tokenf.txt ->
+                                                       'pat ->
+                                                         Locf.t -> 'case ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (case0 : 'case0 Gramf.t )
@@ -158,8 +167,10 @@ let make_case exp pat =
             annot = "mk_ant s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant s : 'case0 )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant s : 'case0 ) : Tokenf.ant ->
+                                                                Locf.t ->
+                                                                  'case0 ))
           };
          {
            symbols =
@@ -169,8 +180,10 @@ let make_case exp pat =
            annot = "mk_ant s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant s : 'case0 )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant s : 'case0 ) : Tokenf.ant ->
+                                                               Locf.t ->
+                                                                 'case0 ))
          };
          {
            symbols =
@@ -188,11 +201,19 @@ let make_case exp pat =
            annot = "`CaseWhen (_loc, (mk_ant s), w, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
-                   ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
+                (fun (e : 'exp)  _  (w : 'exp)  _  (__fan_0 : Tokenf.ant) 
                    (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (`CaseWhen (_loc, (mk_ant s), w, e) : 'case0 )))
+                   (`CaseWhen (_loc, (mk_ant s), w, e) : 'case0 ) : 'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'case0 ))
          };
          {
            symbols =
@@ -206,9 +227,10 @@ let make_case exp pat =
            annot = "`Case (_loc, (mk_ant s), e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (`Case (_loc, (mk_ant s), e) : 'case0 )))
+                (fun (e : 'exp)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                   ->
+                   let s = __fan_0 in (`Case (_loc, (mk_ant s), e) : 'case0 ) : 
+                'exp -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'case0 ))
          };
          {
            symbols =
@@ -224,9 +246,11 @@ let make_case exp pat =
            annot = "`CaseWhen (_loc, p, w, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:(e : 'exp)  ~__fan_3:_  ~__fan_2:(w : 'exp) 
-                   ~__fan_1:_  ~__fan_0:(p : 'pat_as_pat_opt) 
-                   (_loc : Locf.t)  -> (`CaseWhen (_loc, p, w, e) : 'case0 )))
+                (fun (e : 'exp)  _  (w : 'exp)  _  (p : 'pat_as_pat_opt) 
+                   (_loc : Locf.t)  -> (`CaseWhen (_loc, p, w, e) : 'case0 ) : 
+                'exp ->
+                  Tokenf.txt ->
+                    'exp -> Tokenf.txt -> 'pat_as_pat_opt -> Locf.t -> 'case0 ))
          };
          {
            symbols =
@@ -238,9 +262,11 @@ let make_case exp pat =
            annot = "`Case (_loc, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                   ~__fan_0:(p : 'pat_as_pat_opt)  (_loc : Locf.t)  ->
-                   (`Case (_loc, p, e) : 'case0 )))
+                (fun (e : 'exp)  _  (p : 'pat_as_pat_opt)  (_loc : Locf.t) 
+                   -> (`Case (_loc, p, e) : 'case0 ) : 'exp ->
+                                                         Tokenf.txt ->
+                                                           'pat_as_pat_opt ->
+                                                             Locf.t -> 'case0 ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (case_quot : 'case_quot Gramf.t )
@@ -260,8 +286,9 @@ let make_case exp pat =
             annot = "bar_of_list x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'case0 list)  (_loc : Locf.t)  ->
-                    (bar_of_list x : 'case_quot )))
+                 (fun (x : 'case0 list)  (_loc : Locf.t)  ->
+                    (bar_of_list x : 'case_quot ) : 'case0 list ->
+                                                      Locf.t -> 'case_quot ))
           }]
      } : Gramf.olevel )
 let make_semi atom nt =
@@ -280,15 +307,18 @@ let make_semi atom nt =
             annot = "`Sem (_loc, b1, b2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(b2 : 'nt)  ~__fan_1:_  ~__fan_0:(b1 : 'atom) 
-                    (_loc : Locf.t)  -> (`Sem (_loc, b1, b2) : 'nt )))
+                 (fun (b2 : 'nt)  _  (b1 : 'atom)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, b1, b2) : 'nt ) : 'nt ->
+                                                     Tokenf.txt ->
+                                                       'atom -> Locf.t -> 'nt ))
           };
          {
            symbols = [Nterm (Gramf.obj (atom : 'atom Gramf.t ))];
            annot = "b1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(b1 : 'atom)  (_loc : Locf.t)  -> (b1 : 'nt )))
+                (fun (b1 : 'atom)  (_loc : Locf.t)  -> (b1 : 'nt ) : 
+                'atom -> Locf.t -> 'nt ))
          };
          {
            symbols =
@@ -299,8 +329,8 @@ let make_semi atom nt =
            annot = "b1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(b1 : 'atom)  (_loc : Locf.t)  ->
-                   (b1 : 'nt )))
+                (fun _  (b1 : 'atom)  (_loc : Locf.t)  -> (b1 : 'nt ) : 
+                Tokenf.txt -> 'atom -> Locf.t -> 'nt ))
          }]
      } : Gramf.olevel )
 let make_comma atom nt =
@@ -319,15 +349,19 @@ let make_comma atom nt =
             annot = "`Com (_loc, p1, p2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(p2 : 'nt)  ~__fan_1:_  ~__fan_0:(p1 : 'nt) 
-                    (_loc : Locf.t)  -> (`Com (_loc, p1, p2) : 'nt )))
+                 (fun (p2 : 'nt)  _  (p1 : 'nt)  (_loc : Locf.t)  ->
+                    (`Com (_loc, p1, p2) : 'nt ) : 'nt ->
+                                                     Tokenf.txt ->
+                                                       'nt -> Locf.t -> 'nt ))
           };
          {
            symbols = [Nterm (Gramf.obj (atom : 'atom Gramf.t ))];
            annot = "p\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p : 'atom)  (_loc : Locf.t)  -> (p : 'nt )))
+                (fun (p : 'atom)  (_loc : Locf.t)  -> (p : 'nt ) : 'atom ->
+                                                                    Locf.t ->
+                                                                    'nt ))
          }]
      } : Gramf.olevel )
 let make_pat exp =
@@ -348,9 +382,12 @@ let make_pat exp =
             annot = "`Com (_loc, x, y)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(y : 'comma_pat)  ~__fan_1:_ 
-                    ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                    (`Com (_loc, x, y) : 'pat_quot )))
+                 (fun (y : 'comma_pat)  _  (x : 'pat)  (_loc : Locf.t)  ->
+                    (`Com (_loc, x, y) : 'pat_quot ) : 'comma_pat ->
+                                                         Tokenf.txt ->
+                                                           'pat ->
+                                                             Locf.t ->
+                                                               'pat_quot ))
           };
          {
            symbols =
@@ -362,16 +399,20 @@ let make_pat exp =
            annot = "`Sem (_loc, x, y)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(y : 'sem_pat)  ~__fan_1:_  ~__fan_0:(x : 'pat)
-                    (_loc : Locf.t)  -> (`Sem (_loc, x, y) : 'pat_quot )))
+                (fun (y : 'sem_pat)  _  (x : 'pat)  (_loc : Locf.t)  ->
+                   (`Sem (_loc, x, y) : 'pat_quot ) : 'sem_pat ->
+                                                        Tokenf.txt ->
+                                                          'pat ->
+                                                            Locf.t ->
+                                                              'pat_quot ))
          };
          {
            symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
            annot = "x\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                   (x : 'pat_quot )))
+                (fun (x : 'pat)  (_loc : Locf.t)  -> (x : 'pat_quot ) : 
+                'pat -> Locf.t -> 'pat_quot ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (pat_constr : 'pat_constr Gramf.t )
@@ -386,8 +427,10 @@ let make_pat exp =
             annot = "(i : vid  :>pat)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'module_longident)  (_loc : Locf.t)  ->
-                    ((i : vid  :>pat) : 'pat_constr )))
+                 (fun (i : 'module_longident)  (_loc : Locf.t)  ->
+                    ((i : vid  :>pat) : 'pat_constr ) : 'module_longident ->
+                                                          Locf.t ->
+                                                            'pat_constr ))
           };
          {
            symbols =
@@ -398,8 +441,11 @@ let make_pat exp =
            annot = "(`Vrn (_loc, s) : pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Vrn (_loc, s) : pat ) : 'pat_constr )))
+                (fun (s : 'luident)  _  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : pat ) : 'pat_constr ) : 'luident ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'pat_constr ))
          };
          {
            symbols =
@@ -409,8 +455,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr ) : 
+                Tokenf.ant -> Locf.t -> 'pat_constr ))
          };
          {
            symbols =
@@ -422,8 +469,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr ) : 
+                Tokenf.ant -> Locf.t -> 'pat_constr ))
          };
          {
            symbols =
@@ -435,8 +483,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr ) : 
+                Tokenf.ant -> Locf.t -> 'pat_constr ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (pat : 'pat Gramf.t )
@@ -454,8 +503,11 @@ let make_pat exp =
             annot = "`Bar (_loc, p1, p2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
-                    (_loc : Locf.t)  -> (`Bar (_loc, p1, p2) : 'pat )))
+                 (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
+                    (`Bar (_loc, p1, p2) : 'pat ) : 'pat ->
+                                                      Tokenf.txt ->
+                                                        'pat ->
+                                                          Locf.t -> 'pat ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (pat : 'pat Gramf.t )
@@ -473,8 +525,11 @@ let make_pat exp =
             annot = "`PaRng (_loc, p1, p2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
-                    (_loc : Locf.t)  -> (`PaRng (_loc, p1, p2) : 'pat )))
+                 (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
+                    (`PaRng (_loc, p1, p2) : 'pat ) : 'pat ->
+                                                        Tokenf.txt ->
+                                                          'pat ->
+                                                            Locf.t -> 'pat ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (pat : 'pat Gramf.t )
@@ -493,11 +548,11 @@ let make_pat exp =
               "`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p1, p2)))))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(p2 : 'pat)  ~__fan_1:_  ~__fan_0:(p1 : 'pat) 
-                    (_loc : Locf.t)  ->
+                 (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                     (`App
                        (_loc, (`Uid (_loc, "::")),
-                         (`Par (_loc, (`Com (_loc, p1, p2))))) : 'pat )))
+                         (`Par (_loc, (`Com (_loc, p1, p2))))) : 'pat ) : 
+                 'pat -> Tokenf.txt -> 'pat -> Locf.t -> 'pat ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (pat : 'pat Gramf.t )
@@ -511,17 +566,20 @@ let make_pat exp =
             annot = "(`App (_loc, p1, p2) : FAst.pat )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(p2 : 'pat)  ~__fan_0:(p1 : 'pat_constr) 
-                    (_loc : Locf.t)  ->
-                    ((`App (_loc, p1, p2) : FAst.pat ) : 'pat )))
+                 (fun (p2 : 'pat)  (p1 : 'pat_constr)  (_loc : Locf.t)  ->
+                    ((`App (_loc, p1, p2) : FAst.pat ) : 'pat ) : 'pat ->
+                                                                    'pat_constr
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
           };
          {
            symbols = [Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))];
            annot = "p1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p1 : 'pat_constr)  (_loc : Locf.t)  ->
-                   (p1 : 'pat )))
+                (fun (p1 : 'pat_constr)  (_loc : Locf.t)  -> (p1 : 'pat ) : 
+                'pat_constr -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -534,8 +592,9 @@ let make_pat exp =
            annot = "`Lazy (_loc, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Lazy (_loc, p) : 'pat )))
+                (fun (p : 'pat)  _  (_loc : Locf.t)  ->
+                   (`Lazy (_loc, p) : 'pat ) : 'pat ->
+                                                 Tokenf.txt -> Locf.t -> 'pat ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (pat : 'pat Gramf.t )
@@ -553,8 +612,9 @@ let make_pat exp =
             annot = "mk_ant ~c:\"pat\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : 
+                 Tokenf.ant -> Locf.t -> 'pat ))
           };
          {
            symbols =
@@ -566,8 +626,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -579,8 +642,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -592,8 +658,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -605,8 +674,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -618,8 +690,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -631,8 +706,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -644,8 +722,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -657,8 +738,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -674,8 +758,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -687,8 +774,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -700,8 +790,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -713,8 +806,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -726,8 +822,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -743,8 +842,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -756,8 +858,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -769,8 +874,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -782,8 +890,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -795,8 +906,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -808,8 +922,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -821,8 +938,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -838,8 +958,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -851,8 +974,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -864,8 +990,11 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -877,16 +1006,19 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
            annot = "(i : vid  :>pat)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
-                   ((i : vid  :>pat) : 'pat )))
+                (fun (i : 'vid)  (_loc : Locf.t)  ->
+                   ((i : vid  :>pat) : 'pat ) : 'vid -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -896,8 +1028,9 @@ let make_pat exp =
            annot = "`Int (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Int (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Int (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -907,8 +1040,9 @@ let make_pat exp =
            annot = "`Int32 (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Int32 (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Int32 (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -918,8 +1052,9 @@ let make_pat exp =
            annot = "`Int64 (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Int64 (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Int64 (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -931,8 +1066,9 @@ let make_pat exp =
            annot = "`Nativeint (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Nativeint (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Nativeint (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -942,8 +1078,9 @@ let make_pat exp =
            annot = "`Flo (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Flo (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Flo (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -953,8 +1090,9 @@ let make_pat exp =
            annot = "`Chr (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Chr (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Chr (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -964,8 +1102,9 @@ let make_pat exp =
            annot = "`Str (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Str (_loc, s) : 'pat )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Str (_loc, s) : 'pat ) : 
+                Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -978,10 +1117,12 @@ let make_pat exp =
            annot = "`Int (_loc, (Stringf.neg s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (`Int (_loc, (Stringf.neg s)) : 'pat )))
+                   (`Int (_loc, (Stringf.neg s)) : 'pat ) : Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'pat ))
          };
          {
            symbols =
@@ -994,10 +1135,12 @@ let make_pat exp =
            annot = "`Int32 (_loc, (Stringf.neg s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (`Int32 (_loc, (Stringf.neg s)) : 'pat )))
+                   (`Int32 (_loc, (Stringf.neg s)) : 'pat ) : Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1010,10 +1153,12 @@ let make_pat exp =
            annot = "`Int64 (_loc, (Stringf.neg s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (`Int64 (_loc, (Stringf.neg s)) : 'pat )))
+                   (`Int64 (_loc, (Stringf.neg s)) : 'pat ) : Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1028,10 +1173,14 @@ let make_pat exp =
            annot = "`Nativeint (_loc, (Stringf.neg s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (`Nativeint (_loc, (Stringf.neg s)) : 'pat )))
+                   (`Nativeint (_loc, (Stringf.neg s)) : 'pat ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1044,10 +1193,12 @@ let make_pat exp =
            annot = "`Flo (_loc, (Stringf.neg s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (`Flo (_loc, (Stringf.neg s)) : 'pat )))
+                   (`Flo (_loc, (Stringf.neg s)) : 'pat ) : Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'pat ))
          };
          {
            symbols =
@@ -1060,8 +1211,8 @@ let make_pat exp =
            annot = "`Uid (_loc, \"[]\")\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Uid (_loc, "[]") : 'pat )))
+                (fun _  _  (_loc : Locf.t)  -> (`Uid (_loc, "[]") : 'pat ) : 
+                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1076,8 +1227,10 @@ let make_pat exp =
            annot = "s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(s : 'sem_pat_for_list)  ~__fan_0:_
-                    (_loc : Locf.t)  -> (s : 'pat )))
+                (fun _  (s : 'sem_pat_for_list)  _  (_loc : Locf.t)  ->
+                   (s : 'pat ) : Tokenf.txt ->
+                                   'sem_pat_for_list ->
+                                     Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1090,8 +1243,8 @@ let make_pat exp =
            annot = "`ArrayEmpty _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`ArrayEmpty _loc : 'pat )))
+                (fun _  _  (_loc : Locf.t)  -> (`ArrayEmpty _loc : 'pat ) : 
+                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1105,8 +1258,11 @@ let make_pat exp =
            annot = "`Array (_loc, pl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(pl : 'sem_pat)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`Array (_loc, pl) : 'pat )))
+                (fun _  (pl : 'sem_pat)  _  (_loc : Locf.t)  ->
+                   (`Array (_loc, pl) : 'pat ) : Tokenf.txt ->
+                                                   'sem_pat ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1120,8 +1276,11 @@ let make_pat exp =
            annot = "`Record (_loc, pl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`Record (_loc, pl) : 'pat )))
+                (fun _  (pl : 'label_pat_list)  _  (_loc : Locf.t)  ->
+                   (`Record (_loc, pl) : 'pat ) : Tokenf.txt ->
+                                                    'label_pat_list ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1134,8 +1293,8 @@ let make_pat exp =
            annot = "`Uid (_loc, \"()\")\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Uid (_loc, "()") : 'pat )))
+                (fun _  _  (_loc : Locf.t)  -> (`Uid (_loc, "()") : 'pat ) : 
+                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1154,9 +1313,12 @@ let make_pat exp =
            annot = "`ModuleUnpack (_loc, m)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`ModuleUnpack (_loc, m) : 'pat )))
+                (fun _  (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
+                   (`ModuleUnpack (_loc, m) : 'pat ) : Tokenf.txt ->
+                                                         'a_uident ->
+                                                           Tokenf.txt ->
+                                                             Tokenf.txt ->
+                                                               Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1179,11 +1341,15 @@ let make_pat exp =
            annot = "`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
-                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (pt : 'mtyp)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
-                   'pat )))
+                   'pat ) : Tokenf.txt ->
+                              'mtyp ->
+                                Tokenf.txt ->
+                                  'a_uident ->
+                                    Tokenf.txt ->
+                                      Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1210,11 +1376,14 @@ let make_pat exp =
            annot = "`ModuleConstraint (_loc, m, (mk_ant s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_ 
-                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (__fan_4 : Tokenf.ant)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    let s = __fan_4 in
-                   (`ModuleConstraint (_loc, m, (mk_ant s)) : 'pat )))
+                   (`ModuleConstraint (_loc, m, (mk_ant s)) : 'pat ) : 
+                Tokenf.txt ->
+                  Tokenf.ant ->
+                    Tokenf.txt ->
+                      'a_uident -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1228,8 +1397,8 @@ let make_pat exp =
            annot = "p\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (p : 'pat )))
+                (fun _  (p : 'pat)  _  (_loc : Locf.t)  -> (p : 'pat ) : 
+                Tokenf.txt -> 'pat -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1247,9 +1416,14 @@ let make_pat exp =
            annot = "`Constraint (_loc, p, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Constraint (_loc, p, t) : 'pat )))
+                (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : Locf.t)  ->
+                   (`Constraint (_loc, p, t) : 'pat ) : Tokenf.txt ->
+                                                          'ctyp ->
+                                                            Tokenf.txt ->
+                                                              'pat ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1267,9 +1441,14 @@ let make_pat exp =
            annot = "`Alias (_loc, p, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Alias (_loc, p, s) : 'pat )))
+                (fun _  (s : 'a_lident)  _  (p : 'pat)  _  (_loc : Locf.t) 
+                   -> (`Alias (_loc, p, s) : 'pat ) : Tokenf.txt ->
+                                                        'a_lident ->
+                                                          Tokenf.txt ->
+                                                            'pat ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'pat ))
          };
          {
            symbols =
@@ -1287,9 +1466,18 @@ let make_pat exp =
            annot = "`Par (_loc, (`Com (_loc, p, pl)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_pat)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Par (_loc, (`Com (_loc, p, pl))) : 'pat )))
+                (fun _  (pl : 'comma_pat)  _  (p : 'pat)  _  (_loc : Locf.t) 
+                   -> (`Par (_loc, (`Com (_loc, p, pl))) : 'pat ) : Tokenf.txt
+                                                                    ->
+                                                                    'comma_pat
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'pat ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1300,8 +1488,10 @@ let make_pat exp =
            annot = "`ClassPath (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`ClassPath (_loc, i) : 'pat )))
+                (fun (i : 'type_longident)  _  (_loc : Locf.t)  ->
+                   (`ClassPath (_loc, i) : 'pat ) : 'type_longident ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1316,9 +1506,12 @@ let make_pat exp =
            annot = "`Label (_loc, i, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(p : 'pat)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Label (_loc, i, p) : 'pat )))
+                (fun (p : 'pat)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`Label (_loc, i, p) : 'pat ) : 'pat ->
+                                                     Tokenf.txt ->
+                                                       'a_lident ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1329,10 +1522,13 @@ let make_pat exp =
            annot = "`Label (_loc, (`Lid (_loc, i)), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(p : 'pat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
+                (fun (p : 'pat)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
-                   (`Label (_loc, (`Lid (_loc, i)), p) : 'pat )))
+                   (`Label (_loc, (`Lid (_loc, i)), p) : 'pat ) : 'pat ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1342,9 +1538,12 @@ let make_pat exp =
            annot = "Ast_quotation.expand x Dyn_tag.pat\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                    let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.pat : 'pat )))
+                   (Ast_quotation.expand x Dyn_tag.pat : 'pat ) : Tokenf.quot
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1355,8 +1554,11 @@ let make_pat exp =
            annot = "(`Vrn (_loc, s) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))
+                (fun (s : 'luident)  _  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : FAst.pat ) : 'pat ) : 'luident ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'pat ))
          };
          {
            symbols =
@@ -1366,7 +1568,10 @@ let make_pat exp =
            annot = "`Any _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  -> (`Any _loc : 'pat )))
+                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'pat ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'pat ))
          };
          {
            symbols =
@@ -1377,8 +1582,10 @@ let make_pat exp =
            annot = "`LabelS (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`LabelS (_loc, i) : 'pat )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`LabelS (_loc, i) : 'pat ) : 'a_lident ->
+                                                   Tokenf.txt ->
+                                                     Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1398,14 +1605,16 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, i)), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun _  (p : 'pat_tcon)  _  (__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
                    let e = None in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, i)), p) : 
-                     'pat )))
+                     'pat ) : Tokenf.txt ->
+                                'pat_tcon ->
+                                  Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1429,15 +1638,19 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, i)), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                   ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
+                   (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
                    let e = Some e in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, i)), p) : 
-                     'pat )))
+                     'pat ) : Tokenf.txt ->
+                                'exp ->
+                                  Tokenf.txt ->
+                                    'pat_tcon ->
+                                      Tokenf.txt ->
+                                        Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1459,13 +1672,16 @@ let make_pat exp =
              "match e with\n| None  -> `OptLabl (_loc, i, p)\n| Some e -> `OptLablExpr (_loc, i, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
-                   ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
+                (fun _  (p : 'pat_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : Locf.t)  ->
                    let e = None in
                    (match e with
                     | None  -> `OptLabl (_loc, i, p)
-                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'pat )))
+                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'pat ) : 
+                Tokenf.txt ->
+                  'pat_tcon ->
+                    Tokenf.txt ->
+                      Tokenf.txt -> 'a_lident -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1491,13 +1707,19 @@ let make_pat exp =
              "match e with\n| None  -> `OptLabl (_loc, i, p)\n| Some e -> `OptLablExpr (_loc, i, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
-                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _  _  (i : 'a_lident)
+                    _  (_loc : Locf.t)  ->
                    let e = Some e in
                    (match e with
                     | None  -> `OptLabl (_loc, i, p)
-                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'pat )))
+                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'pat ) : 
+                Tokenf.txt ->
+                  'exp ->
+                    Tokenf.txt ->
+                      'pat_tcon ->
+                        Tokenf.txt ->
+                          Tokenf.txt ->
+                            'a_lident -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1526,11 +1748,17 @@ let make_pat exp =
            annot = "`OptLablExpr (_loc, i, p, (mk_ant s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_ 
-                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (__fan_6 : Tokenf.ant)  _  (p : 'pat_tcon)  _  _ 
+                   (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    let s = __fan_6 in
-                   (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'pat )))
+                   (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'pat ) : 
+                Tokenf.txt ->
+                  Tokenf.ant ->
+                    Tokenf.txt ->
+                      'pat_tcon ->
+                        Tokenf.txt ->
+                          Tokenf.txt ->
+                            'a_lident -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1541,8 +1769,10 @@ let make_pat exp =
            annot = "`OptLablS (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`OptLablS (_loc, i) : 'pat )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`OptLablS (_loc, i) : 'pat ) : 'a_lident ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1560,13 +1790,14 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, \"\")), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (p : 'ipat_tcon)  _  _  (_loc : Locf.t)  ->
                    let e = None in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, "")), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, "")), p) : 
-                     'pat )))
+                     'pat ) : Tokenf.txt ->
+                                'ipat_tcon ->
+                                  Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
          };
          {
            symbols =
@@ -1588,14 +1819,18 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, \"\")), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                   ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (e : 'exp)  _  (p : 'ipat_tcon)  _  _ 
                    (_loc : Locf.t)  ->
                    let e = Some e in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, "")), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, "")), p) : 
-                     'pat )))
+                     'pat ) : Tokenf.txt ->
+                                'exp ->
+                                  Tokenf.txt ->
+                                    'ipat_tcon ->
+                                      Tokenf.txt ->
+                                        Tokenf.txt -> Locf.t -> 'pat ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (ipat : 'ipat Gramf.t )
@@ -1615,9 +1850,15 @@ let make_pat exp =
             annot = "(`Record (_loc, pl) : FAst.pat )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(pl : 'label_pat_list)  ~__fan_0:_
-                     (_loc : Locf.t)  ->
-                    ((`Record (_loc, pl) : FAst.pat ) : 'ipat )))
+                 (fun _  (pl : 'label_pat_list)  _  (_loc : Locf.t)  ->
+                    ((`Record (_loc, pl) : FAst.pat ) : 'ipat ) : Tokenf.txt
+                                                                    ->
+                                                                    'label_pat_list
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ipat ))
           };
          {
            symbols =
@@ -1627,8 +1868,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat ) : 
+                Tokenf.ant -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1640,8 +1882,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat ) : 
+                Tokenf.ant -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1653,8 +1896,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat ) : 
+                Tokenf.ant -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1667,8 +1911,8 @@ let make_pat exp =
            annot = "`Uid (_loc, \"()\")\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Uid (_loc, "()") : 'ipat )))
+                (fun _  _  (_loc : Locf.t)  -> (`Uid (_loc, "()") : 'ipat ) : 
+                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1688,14 +1932,16 @@ let make_pat exp =
              "match pt with\n| None  -> `ModuleUnpack (_loc, m)\n| Some pt -> `ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(m : 'a_uident)  ~__fan_1:_ 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
                    let pt = None in
                    (match pt with
                     | None  -> `ModuleUnpack (_loc, m)
                     | Some pt ->
                         `ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'a_uident ->
+                                   Tokenf.txt ->
+                                     Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1719,15 +1965,19 @@ let make_pat exp =
              "match pt with\n| None  -> `ModuleUnpack (_loc, m)\n| Some pt -> `ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
-                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (pt : 'mtyp)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    let pt = Some pt in
                    (match pt with
                     | None  -> `ModuleUnpack (_loc, m)
                     | Some pt ->
                         `ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'mtyp ->
+                                   Tokenf.txt ->
+                                     'a_uident ->
+                                       Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1754,11 +2004,15 @@ let make_pat exp =
            annot = "`ModuleConstraint (_loc, m, (mk_ant s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(__fan_4 : Tokenf.ant)  ~__fan_3:_ 
-                   ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (__fan_4 : Tokenf.ant)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    let s = __fan_4 in
-                   (`ModuleConstraint (_loc, m, (mk_ant s)) : 'ipat )))
+                   (`ModuleConstraint (_loc, m, (mk_ant s)) : 'ipat ) : 
+                Tokenf.txt ->
+                  Tokenf.ant ->
+                    Tokenf.txt ->
+                      'a_uident ->
+                        Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1772,8 +2026,8 @@ let make_pat exp =
            annot = "p\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(p : 'pat)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (p : 'ipat )))
+                (fun _  (p : 'pat)  _  (_loc : Locf.t)  -> (p : 'ipat ) : 
+                Tokenf.txt -> 'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1791,9 +2045,11 @@ let make_pat exp =
            annot = "(`Constraint (_loc, p, t) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat )))
+                (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : Locf.t)  ->
+                   ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat ) : 
+                Tokenf.txt ->
+                  'ctyp ->
+                    Tokenf.txt -> 'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1811,9 +2067,11 @@ let make_pat exp =
            annot = "(`Alias (_loc, p, s) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(s : 'a_lident)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat )))
+                (fun _  (s : 'a_lident)  _  (p : 'pat)  _  (_loc : Locf.t) 
+                   -> ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat ) : 
+                Tokenf.txt ->
+                  'a_lident ->
+                    Tokenf.txt -> 'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1831,18 +2089,22 @@ let make_pat exp =
            annot = "(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(pl : 'comma_ipat)  ~__fan_2:_ 
-                   ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (pl : 'comma_ipat)  _  (p : 'pat)  _  (_loc : Locf.t)
+                    ->
                    ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
-                   'ipat )))
+                   'ipat ) : Tokenf.txt ->
+                               'comma_ipat ->
+                                 Tokenf.txt ->
+                                   'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
            annot = "(s : alident  :>pat)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
-                   ((s : alident  :>pat) : 'ipat )))
+                (fun (s : 'a_lident)  (_loc : Locf.t)  ->
+                   ((s : alident  :>pat) : 'ipat ) : 'a_lident ->
+                                                       Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1853,11 +2115,10 @@ let make_pat exp =
            annot = "(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(p : 'ipat)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
+                (fun (p : 'ipat)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
                    ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
-                     'ipat )))
+                     'ipat ) : 'ipat -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1872,9 +2133,16 @@ let make_pat exp =
            annot = "(`Label (_loc, i, p) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(p : 'ipat)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))
+                (fun (p : 'ipat)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   ((`Label (_loc, i, p) : FAst.pat ) : 'ipat ) : 'ipat ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ipat ))
          };
          {
            symbols =
@@ -1884,9 +2152,12 @@ let make_pat exp =
            annot = "Ast_quotation.expand x Dyn_tag.pat\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                    let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.pat : 'ipat )))
+                   (Ast_quotation.expand x Dyn_tag.pat : 'ipat ) : Tokenf.quot
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ipat ))
          };
          {
            symbols =
@@ -1897,8 +2168,11 @@ let make_pat exp =
            annot = "(`Vrn (_loc, s) : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))
+                (fun (s : 'luident)  _  (_loc : Locf.t)  ->
+                   ((`Vrn (_loc, s) : FAst.pat ) : 'ipat ) : 'luident ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'ipat ))
          };
          {
            symbols =
@@ -1908,7 +2182,10 @@ let make_pat exp =
            annot = "`Any _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  -> (`Any _loc : 'ipat )))
+                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'ipat ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ipat ))
          };
          {
            symbols =
@@ -1919,8 +2196,10 @@ let make_pat exp =
            annot = "`LabelS (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`LabelS (_loc, i) : 'ipat )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`LabelS (_loc, i) : 'ipat ) : 'a_lident ->
+                                                    Tokenf.txt ->
+                                                      Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1940,14 +2219,17 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, i)), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun _  (p : 'pat_tcon)  _  (__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
                    let e = None in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, i)), p) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'pat_tcon ->
+                                   Tokenf.txt ->
+                                     Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -1971,15 +2253,19 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, i)), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                   ~__fan_2:(p : 'pat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
+                   (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let i = __fan_0.txt in
                    let e = Some e in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, i)), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, i)), p) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'exp ->
+                                   Tokenf.txt ->
+                                     'pat_tcon ->
+                                       Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2001,13 +2287,17 @@ let make_pat exp =
              "match e with\n| None  -> `OptLabl (_loc, i, p)\n| Some e -> `OptLablExpr (_loc, i, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_ 
-                   ~__fan_2:_  ~__fan_1:(i : 'a_lident)  ~__fan_0:_ 
+                (fun _  (p : 'pat_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : Locf.t)  ->
                    let e = None in
                    (match e with
                     | None  -> `OptLabl (_loc, i, p)
-                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'ipat )))
+                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'ipat ) : 
+                Tokenf.txt ->
+                  'pat_tcon ->
+                    Tokenf.txt ->
+                      Tokenf.txt ->
+                        'a_lident -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2033,13 +2323,19 @@ let make_pat exp =
              "match e with\n| None  -> `OptLabl (_loc, i, p)\n| Some e -> `OptLablExpr (_loc, i, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_7:_  ~__fan_6:(e : 'exp)  ~__fan_5:_ 
-                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _  _  (i : 'a_lident)
+                    _  (_loc : Locf.t)  ->
                    let e = Some e in
                    (match e with
                     | None  -> `OptLabl (_loc, i, p)
-                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'ipat )))
+                    | Some e -> `OptLablExpr (_loc, i, p, e) : 'ipat ) : 
+                Tokenf.txt ->
+                  'exp ->
+                    Tokenf.txt ->
+                      'pat_tcon ->
+                        Tokenf.txt ->
+                          Tokenf.txt ->
+                            'a_lident -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2068,11 +2364,17 @@ let make_pat exp =
            annot = "`OptLablExpr (_loc, i, p, (mk_ant s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_7:_  ~__fan_6:(__fan_6 : Tokenf.ant)  ~__fan_5:_ 
-                   ~__fan_4:(p : 'pat_tcon)  ~__fan_3:_  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (__fan_6 : Tokenf.ant)  _  (p : 'pat_tcon)  _  _ 
+                   (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    let s = __fan_6 in
-                   (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'ipat )))
+                   (`OptLablExpr (_loc, i, p, (mk_ant s)) : 'ipat ) : 
+                Tokenf.txt ->
+                  Tokenf.ant ->
+                    Tokenf.txt ->
+                      'pat_tcon ->
+                        Tokenf.txt ->
+                          Tokenf.txt ->
+                            'a_lident -> Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2083,8 +2385,10 @@ let make_pat exp =
            annot = "`OptLablS (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`OptLablS (_loc, i) : 'ipat )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`OptLablS (_loc, i) : 'ipat ) : 'a_lident ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2102,13 +2406,15 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, \"\")), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_ 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (p : 'ipat_tcon)  _  _  (_loc : Locf.t)  ->
                    let e = None in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, "")), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, "")), p) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'ipat_tcon ->
+                                   Tokenf.txt ->
+                                     Tokenf.txt -> Locf.t -> 'ipat ))
          };
          {
            symbols =
@@ -2130,14 +2436,18 @@ let make_pat exp =
              "match e with\n| Some e -> `OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n| None  -> `OptLabl (_loc, (`Lid (_loc, \"\")), p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                   ~__fan_2:(p : 'ipat_tcon)  ~__fan_1:_  ~__fan_0:_ 
+                (fun _  (e : 'exp)  _  (p : 'ipat_tcon)  _  _ 
                    (_loc : Locf.t)  ->
                    let e = Some e in
                    (match e with
                     | Some e -> `OptLablExpr (_loc, (`Lid (_loc, "")), p, e)
                     | None  -> `OptLabl (_loc, (`Lid (_loc, "")), p) : 
-                     'ipat )))
+                     'ipat ) : Tokenf.txt ->
+                                 'exp ->
+                                   Tokenf.txt ->
+                                     'ipat_tcon ->
+                                       Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'ipat ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
@@ -2156,11 +2466,13 @@ let make_pat exp =
               "`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p, pl)))))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(pl : 'sem_pat_for_list)  ~__fan_1:_ 
-                    ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                 (fun (pl : 'sem_pat_for_list)  _  (p : 'pat) 
+                    (_loc : Locf.t)  ->
                     (`App
                        (_loc, (`Uid (_loc, "::")),
-                         (`Par (_loc, (`Com (_loc, p, pl))))) : 'sem_pat_for_list )))
+                         (`Par (_loc, (`Com (_loc, p, pl))))) : 'sem_pat_for_list ) : 
+                 'sem_pat_for_list ->
+                   Tokenf.txt -> 'pat -> Locf.t -> 'sem_pat_for_list ))
           };
          {
            symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
@@ -2168,11 +2480,11 @@ let make_pat exp =
              "`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                (fun (p : 'pat)  (_loc : Locf.t)  ->
                    (`App
                       (_loc, (`Uid (_loc, "::")),
                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
-                   'sem_pat_for_list )))
+                   'sem_pat_for_list ) : 'pat -> Locf.t -> 'sem_pat_for_list ))
          };
          {
            symbols =
@@ -2184,11 +2496,13 @@ let make_pat exp =
              "`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
+                (fun _  (p : 'pat)  (_loc : Locf.t)  ->
                    (`App
                       (_loc, (`Uid (_loc, "::")),
                         (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
-                   'sem_pat_for_list )))
+                   'sem_pat_for_list ) : Tokenf.txt ->
+                                           'pat ->
+                                             Locf.t -> 'sem_pat_for_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
@@ -2206,17 +2520,20 @@ let make_pat exp =
             annot = "`Constraint (_loc, p, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                    (_loc : Locf.t)  ->
-                    (`Constraint (_loc, p, t) : 'pat_tcon )))
+                 (fun (t : 'ctyp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                    (`Constraint (_loc, p, t) : 'pat_tcon ) : 'ctyp ->
+                                                                Tokenf.txt ->
+                                                                  'pat ->
+                                                                    Locf.t ->
+                                                                    'pat_tcon ))
           };
          {
            symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
            annot = "p\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                   (p : 'pat_tcon )))
+                (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'pat_tcon ) : 
+                'pat -> Locf.t -> 'pat_tcon ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (ipat_tcon : 'ipat_tcon Gramf.t )
@@ -2234,16 +2551,19 @@ let make_pat exp =
             annot = "mk_ant ~c:\"pat\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat_tcon )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'ipat_tcon ) : 
+                 Tokenf.ant -> Locf.t -> 'ipat_tcon ))
           };
          {
            symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
            annot = "(i : alident  :>pat)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                   ((i : alident  :>pat) : 'ipat_tcon )))
+                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((i : alident  :>pat) : 'ipat_tcon ) : 'a_lident ->
+                                                            Locf.t ->
+                                                              'ipat_tcon ))
          };
          {
            symbols =
@@ -2255,10 +2575,11 @@ let make_pat exp =
            annot = "(`Constraint (_loc, (i : alident  :>pat), t) : pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  _  (i : 'a_lident)  (_loc : Locf.t)  ->
                    ((`Constraint (_loc, (i : alident  :>pat), t) : pat ) : 
-                   'ipat_tcon )))
+                   'ipat_tcon ) : 'ctyp ->
+                                    Tokenf.txt ->
+                                      'a_lident -> Locf.t -> 'ipat_tcon ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (label_pat_list : 'label_pat_list Gramf.t )
@@ -2276,9 +2597,16 @@ let make_pat exp =
             annot = "`Sem (_loc, p1, p2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(p2 : 'label_pat_list)  ~__fan_1:_ 
-                    ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, p1, p2) : 'label_pat_list )))
+                 (fun (p2 : 'label_pat_list)  _  (p1 : 'label_pat) 
+                    (_loc : Locf.t)  ->
+                    (`Sem (_loc, p1, p2) : 'label_pat_list ) : 'label_pat_list
+                                                                 ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'label_pat
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'label_pat_list ))
           };
          {
            symbols =
@@ -2292,9 +2620,10 @@ let make_pat exp =
            annot = "`Sem (_loc, p1, (`Any _loc))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(p1 : 'label_pat) 
-                   (_loc : Locf.t)  ->
-                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))
+                (fun _  _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list ) : 
+                Tokenf.txt ->
+                  Tokenf.txt -> 'label_pat -> Locf.t -> 'label_pat_list ))
          };
          {
            symbols =
@@ -2311,17 +2640,20 @@ let make_pat exp =
            annot = "`Sem (_loc, p1, (`Any _loc))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:_ 
-                   ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))
+                (fun _  _  _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list ) : 
+                Tokenf.txt ->
+                  Tokenf.txt ->
+                    Tokenf.txt -> 'label_pat -> Locf.t -> 'label_pat_list ))
          };
          {
            symbols = [Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))];
            annot = "p1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t)  ->
-                   (p1 : 'label_pat_list )))
+                (fun (p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (p1 : 'label_pat_list ) : 'label_pat ->
+                                               Locf.t -> 'label_pat_list ))
          };
          {
            symbols =
@@ -2332,8 +2664,10 @@ let make_pat exp =
            annot = "p1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(p1 : 'label_pat)  (_loc : Locf.t) 
-                   -> (p1 : 'label_pat_list )))
+                (fun _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
+                   (p1 : 'label_pat_list ) : Tokenf.txt ->
+                                               'label_pat ->
+                                                 Locf.t -> 'label_pat_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (label_pat : 'label_pat Gramf.t )
@@ -2351,8 +2685,9 @@ let make_pat exp =
             annot = "mk_ant ~c:\"pat\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat ) : 
+                 Tokenf.ant -> Locf.t -> 'label_pat ))
           };
          {
            symbols =
@@ -2364,8 +2699,9 @@ let make_pat exp =
            annot = "mk_ant ~c:\"pat\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat ) : 
+                Tokenf.ant -> Locf.t -> 'label_pat ))
          };
          {
            symbols =
@@ -2374,13 +2710,16 @@ let make_pat exp =
              "let p = match p with | None  -> `Lid (_loc, (Fan_ops.to_lid i)) | Some p -> p in\n`RecBind (_loc, i, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
+                (fun (i : 'label_longident)  (_loc : Locf.t)  ->
                    let p = None in
                    (let p =
                       match p with
                       | None  -> `Lid (_loc, (Fan_ops.to_lid i))
                       | Some p -> p in
-                    `RecBind (_loc, i, p) : 'label_pat )))
+                    `RecBind (_loc, i, p) : 'label_pat ) : 'label_longident
+                                                             ->
+                                                             Locf.t ->
+                                                               'label_pat ))
          };
          {
            symbols =
@@ -2393,14 +2732,19 @@ let make_pat exp =
              "let p = match p with | None  -> `Lid (_loc, (Fan_ops.to_lid i)) | Some p -> p in\n`RecBind (_loc, i, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(p : 'pat)  ~__fan_1:_ 
-                   ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
+                (fun (p : 'pat)  _  (i : 'label_longident)  (_loc : Locf.t) 
+                   ->
                    let p = Some p in
                    (let p =
                       match p with
                       | None  -> `Lid (_loc, (Fan_ops.to_lid i))
                       | Some p -> p in
-                    `RecBind (_loc, i, p) : 'label_pat )))
+                    `RecBind (_loc, i, p) : 'label_pat ) : 'pat ->
+                                                             Tokenf.txt ->
+                                                               'label_longident
+                                                                 ->
+                                                                 Locf.t ->
+                                                                   'label_pat ))
          }]
      } : Gramf.olevel )
 let () =
@@ -2426,8 +2770,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'mexp)  (_loc : Locf.t)  ->
-                     (x : 'mexp_quot )))
+                  (fun (x : 'mexp)  (_loc : Locf.t)  -> (x : 'mexp_quot ) : 
+                  'mexp -> Locf.t -> 'mexp_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mbind0 : 'mbind0 Gramf.t )
@@ -2452,10 +2796,20 @@ let apply () =
              annot = "`Functor (_loc, m, mt, mb)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_5:(mb : 'mbind0)  ~__fan_4:_ 
-                     ~__fan_3:(mt : 'mtyp)  ~__fan_2:_ 
-                     ~__fan_1:(m : 'a_uident)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (`Functor (_loc, m, mt, mb) : 'mbind0 )))
+                  (fun (mb : 'mbind0)  _  (mt : 'mtyp)  _  (m : 'a_uident)  _
+                      (_loc : Locf.t)  ->
+                     (`Functor (_loc, m, mt, mb) : 'mbind0 ) : 'mbind0 ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'mtyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mbind0 ))
            };
           {
             symbols =
@@ -2470,9 +2824,14 @@ let apply () =
             annot = "`Constraint (_loc, me, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(me : 'mexp)  ~__fan_2:_ 
-                    ~__fan_1:(mt : 'mtyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, me, mt) : 'mbind0 )))
+                 (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (_loc : Locf.t)  ->
+                    (`Constraint (_loc, me, mt) : 'mbind0 ) : 'mexp ->
+                                                                Tokenf.txt ->
+                                                                  'mtyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mbind0 ))
           };
           {
             symbols =
@@ -2483,8 +2842,8 @@ let apply () =
             annot = "me\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(me : 'mexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (me : 'mbind0 )))
+                 (fun (me : 'mexp)  _  (_loc : Locf.t)  -> (me : 'mbind0 ) : 
+                 'mexp -> Tokenf.txt -> Locf.t -> 'mbind0 ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mexp : 'mexp Gramf.t )
@@ -2517,11 +2876,22 @@ let apply () =
              annot = "`Functor (_loc, i, t, me)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_7:(me : 'mexp)  ~__fan_6:_  ~__fan_5:_ 
-                     ~__fan_4:(t : 'mtyp)  ~__fan_3:_ 
-                     ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`Functor (_loc, i, t, me) : 
-                     'mexp )))
+                  (fun (me : 'mexp)  _  _  (t : 'mtyp)  _  (i : 'a_uident)  _
+                      _  (_loc : Locf.t)  ->
+                     (`Functor (_loc, i, t, me) : 'mexp ) : 'mexp ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  'mtyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mexp ))
            };
           {
             symbols =
@@ -2537,11 +2907,14 @@ let apply () =
               "match st with | Some st -> `Struct (_loc, st) | None  -> `StructEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun _  _  (_loc : Locf.t)  ->
                     let st = None in
                     (match st with
                      | Some st -> `Struct (_loc, st)
-                     | None  -> `StructEnd _loc : 'mexp )))
+                     | None  -> `StructEnd _loc : 'mexp ) : Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'mexp ))
           };
           {
             symbols =
@@ -2558,12 +2931,15 @@ let apply () =
               "match st with | Some st -> `Struct (_loc, st) | None  -> `StructEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(st : 'strus)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (st : 'strus)  _  (_loc : Locf.t)  ->
                     let st = Some st in
                     (match st with
                      | Some st -> `Struct (_loc, st)
-                     | None  -> `StructEnd _loc : 'mexp )))
+                     | None  -> `StructEnd _loc : 'mexp ) : Tokenf.txt ->
+                                                              'strus ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'mexp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mexp : 'mexp Gramf.t )
@@ -2576,8 +2952,10 @@ let apply () =
              annot = "`App (_loc, me1, me2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(me2 : 'mexp)  ~__fan_0:(me1 : 'mexp) 
-                     (_loc : Locf.t)  -> (`App (_loc, me1, me2) : 'mexp )))
+                  (fun (me2 : 'mexp)  (me1 : 'mexp)  (_loc : Locf.t)  ->
+                     (`App (_loc, me1, me2) : 'mexp ) : 'mexp ->
+                                                          'mexp ->
+                                                            Locf.t -> 'mexp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mexp : 'mexp Gramf.t )
@@ -2595,8 +2973,9 @@ let apply () =
              annot = "mk_ant ~c:\"mexp\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"mexp" s : 'mexp )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"mexp" s : 'mexp ) : 
+                  Tokenf.ant -> Locf.t -> 'mexp ))
            };
           {
             symbols =
@@ -2608,8 +2987,9 @@ let apply () =
             annot = "mk_ant ~c:\"mexp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mexp" s : 'mexp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mexp" s : 'mexp ) : 
+                 Tokenf.ant -> Locf.t -> 'mexp ))
           };
           {
             symbols =
@@ -2619,9 +2999,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.mexp\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.mexp : 'mexp )))
+                    (Ast_quotation.expand x Dyn_tag.mexp : 'mexp ) : 
+                 Tokenf.quot -> Locf.t -> 'mexp ))
           };
           {
             symbols =
@@ -2630,8 +3011,9 @@ let apply () =
             annot = "(i :>mexp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'module_longident)  (_loc : Locf.t)  ->
-                    ((i :>mexp) : 'mexp )))
+                 (fun (i : 'module_longident)  (_loc : Locf.t)  ->
+                    ((i :>mexp) : 'mexp ) : 'module_longident ->
+                                              Locf.t -> 'mexp ))
           };
           {
             symbols =
@@ -2649,9 +3031,16 @@ let apply () =
             annot = "`Constraint (_loc, me, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(mt : 'mtyp)  ~__fan_2:_ 
-                    ~__fan_1:(me : 'mexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, me, mt) : 'mexp )))
+                 (fun _  (mt : 'mtyp)  _  (me : 'mexp)  _  (_loc : Locf.t) 
+                    -> (`Constraint (_loc, me, mt) : 'mexp ) : Tokenf.txt ->
+                                                                 'mtyp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'mexp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mexp ))
           };
           {
             symbols =
@@ -2665,8 +3054,8 @@ let apply () =
             annot = "me\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(me : 'mexp)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (me : 'mexp )))
+                 (fun _  (me : 'mexp)  _  (_loc : Locf.t)  -> (me : 'mexp ) : 
+                 Tokenf.txt -> 'mexp -> Tokenf.txt -> Locf.t -> 'mexp ))
           };
           {
             symbols =
@@ -2683,9 +3072,13 @@ let apply () =
             annot = "`PackageModule (_loc, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:_
-                     (_loc : Locf.t)  -> (`PackageModule (_loc, e) : 
-                    'mexp )))
+                 (fun _  (e : 'exp)  _  _  (_loc : Locf.t)  ->
+                    (`PackageModule (_loc, e) : 'mexp ) : Tokenf.txt ->
+                                                            'exp ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'mexp ))
           };
           {
             symbols =
@@ -2707,12 +3100,16 @@ let apply () =
               "`PackageModule (_loc, (`Constraint (_loc, e, (`Package (_loc, p)))))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(p : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (p : 'mtyp)  _  (e : 'exp)  _  _  (_loc : Locf.t) 
+                    ->
                     (`PackageModule
                        (_loc, (`Constraint (_loc, e, (`Package (_loc, p))))) : 
-                    'mexp )))
+                    'mexp ) : Tokenf.txt ->
+                                'mtyp ->
+                                  Tokenf.txt ->
+                                    'exp ->
+                                      Tokenf.txt ->
+                                        Tokenf.txt -> Locf.t -> 'mexp ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (mbind_quot : 'mbind_quot Gramf.t )
@@ -2732,9 +3129,10 @@ let apply () =
              annot = "`And (_loc, b1, b2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(b2 : 'mbind_quot)  ~__fan_1:_ 
-                     ~__fan_0:(b1 : 'mbind_quot)  (_loc : Locf.t)  ->
-                     (`And (_loc, b1, b2) : 'mbind_quot )))
+                  (fun (b2 : 'mbind_quot)  _  (b1 : 'mbind_quot) 
+                     (_loc : Locf.t)  -> (`And (_loc, b1, b2) : 'mbind_quot ) : 
+                  'mbind_quot ->
+                    Tokenf.txt -> 'mbind_quot -> Locf.t -> 'mbind_quot ))
            };
           {
             symbols =
@@ -2746,8 +3144,9 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind_quot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind_quot ) : 
+                 Tokenf.ant -> Locf.t -> 'mbind_quot ))
           };
           {
             symbols =
@@ -2759,8 +3158,9 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind_quot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind_quot ) : 
+                 Tokenf.ant -> Locf.t -> 'mbind_quot ))
           };
           {
             symbols =
@@ -2772,9 +3172,14 @@ let apply () =
             annot = "`Constraint (_loc, m, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mt : 'mtyp)  ~__fan_1:_ 
-                    ~__fan_0:(m : 'a_uident)  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, m, mt) : 'mbind_quot )))
+                 (fun (mt : 'mtyp)  _  (m : 'a_uident)  (_loc : Locf.t)  ->
+                    (`Constraint (_loc, m, mt) : 'mbind_quot ) : 'mtyp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mbind_quot ))
           };
           {
             symbols =
@@ -2790,10 +3195,13 @@ let apply () =
             annot = "`ModuleBind (_loc, m, mt, me)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(me : 'mexp)  ~__fan_3:_ 
-                    ~__fan_2:(mt : 'mtyp)  ~__fan_1:_ 
-                    ~__fan_0:(m : 'a_uident)  (_loc : Locf.t)  ->
-                    (`ModuleBind (_loc, m, mt, me) : 'mbind_quot )))
+                 (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (m : 'a_uident) 
+                    (_loc : Locf.t)  ->
+                    (`ModuleBind (_loc, m, mt, me) : 'mbind_quot ) : 
+                 'mexp ->
+                   Tokenf.txt ->
+                     'mtyp ->
+                       Tokenf.txt -> 'a_uident -> Locf.t -> 'mbind_quot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mbind : 'mbind Gramf.t )
@@ -2813,9 +3221,11 @@ let apply () =
              annot = "`And (_loc, b1, b2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(b2 : 'mbind)  ~__fan_1:_ 
-                     ~__fan_0:(b1 : 'mbind)  (_loc : Locf.t)  ->
-                     (`And (_loc, b1, b2) : 'mbind )))
+                  (fun (b2 : 'mbind)  _  (b1 : 'mbind)  (_loc : Locf.t)  ->
+                     (`And (_loc, b1, b2) : 'mbind ) : 'mbind ->
+                                                         Tokenf.txt ->
+                                                           'mbind ->
+                                                             Locf.t -> 'mbind ))
            };
           {
             symbols =
@@ -2827,8 +3237,9 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind ) : 
+                 Tokenf.ant -> Locf.t -> 'mbind ))
           };
           {
             symbols =
@@ -2840,8 +3251,9 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mbind" s : 'mbind ) : 
+                 Tokenf.ant -> Locf.t -> 'mbind ))
           };
           {
             symbols =
@@ -2851,9 +3263,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.mbind\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.mbind : 'mbind )))
+                    (Ast_quotation.expand x Dyn_tag.mbind : 'mbind ) : 
+                 Tokenf.quot -> Locf.t -> 'mbind ))
           };
           {
             symbols =
@@ -2869,10 +3282,18 @@ let apply () =
             annot = "`ModuleBind (_loc, m, mt, me)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(me : 'mexp)  ~__fan_3:_ 
-                    ~__fan_2:(mt : 'mtyp)  ~__fan_1:_ 
-                    ~__fan_0:(m : 'a_uident)  (_loc : Locf.t)  ->
-                    (`ModuleBind (_loc, m, mt, me) : 'mbind )))
+                 (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (m : 'a_uident) 
+                    (_loc : Locf.t)  ->
+                    (`ModuleBind (_loc, m, mt, me) : 'mbind ) : 'mexp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'mtyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mbind ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -2893,9 +3314,13 @@ let apply () =
              annot = "`And (_loc, m1, m2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(m2 : 'module_rec_declaration)  ~__fan_1:_ 
-                     ~__fan_0:(m1 : 'module_rec_declaration)  (_loc : Locf.t)
-                      -> (`And (_loc, m1, m2) : 'module_rec_declaration )))
+                  (fun (m2 : 'module_rec_declaration)  _ 
+                     (m1 : 'module_rec_declaration)  (_loc : Locf.t)  ->
+                     (`And (_loc, m1, m2) : 'module_rec_declaration ) : 
+                  'module_rec_declaration ->
+                    Tokenf.txt ->
+                      'module_rec_declaration ->
+                        Locf.t -> 'module_rec_declaration ))
            };
           {
             symbols =
@@ -2907,9 +3332,10 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"mbind" s : 'module_rec_declaration )))
+                    (mk_ant ~c:"mbind" s : 'module_rec_declaration ) : 
+                 Tokenf.ant -> Locf.t -> 'module_rec_declaration ))
           };
           {
             symbols =
@@ -2921,9 +3347,10 @@ let apply () =
             annot = "mk_ant ~c:\"mbind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"mbind" s : 'module_rec_declaration )))
+                    (mk_ant ~c:"mbind" s : 'module_rec_declaration ) : 
+                 Tokenf.ant -> Locf.t -> 'module_rec_declaration ))
           };
           {
             symbols =
@@ -2933,9 +3360,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.mbind\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.mbind : 'module_rec_declaration )))
+                    (Ast_quotation.expand x Dyn_tag.mbind : 'module_rec_declaration ) : 
+                 Tokenf.quot -> Locf.t -> 'module_rec_declaration ))
           };
           {
             symbols =
@@ -2947,9 +3375,11 @@ let apply () =
             annot = "`Constraint (_loc, m, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mt : 'mtyp)  ~__fan_1:_ 
-                    ~__fan_0:(m : 'a_uident)  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, m, mt) : 'module_rec_declaration )))
+                 (fun (mt : 'mtyp)  _  (m : 'a_uident)  (_loc : Locf.t)  ->
+                    (`Constraint (_loc, m, mt) : 'module_rec_declaration ) : 
+                 'mtyp ->
+                   Tokenf.txt ->
+                     'a_uident -> Locf.t -> 'module_rec_declaration ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (constr_quot : 'constr_quot Gramf.t )
@@ -2962,8 +3392,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'constr)  (_loc : Locf.t)  ->
-                     (x : 'constr_quot )))
+                  (fun (x : 'constr)  (_loc : Locf.t)  -> (x : 'constr_quot ) : 
+                  'constr -> Locf.t -> 'constr_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (constr : 'constr Gramf.t )
@@ -2983,9 +3413,12 @@ let apply () =
              annot = "`And (_loc, wc1, wc2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(wc2 : 'constr)  ~__fan_1:_ 
-                     ~__fan_0:(wc1 : 'constr)  (_loc : Locf.t)  ->
-                     (`And (_loc, wc1, wc2) : 'constr )))
+                  (fun (wc2 : 'constr)  _  (wc1 : 'constr)  (_loc : Locf.t) 
+                     -> (`And (_loc, wc1, wc2) : 'constr ) : 'constr ->
+                                                               Tokenf.txt ->
+                                                                 'constr ->
+                                                                   Locf.t ->
+                                                                    'constr ))
            };
           {
             symbols =
@@ -2997,8 +3430,9 @@ let apply () =
             annot = "mk_ant ~c:\"constr\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr ) : 
+                 Tokenf.ant -> Locf.t -> 'constr ))
           };
           {
             symbols =
@@ -3011,8 +3445,9 @@ let apply () =
             annot = "mk_ant ~c:\"constr\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr ) : 
+                 Tokenf.ant -> Locf.t -> 'constr ))
           };
           {
             symbols =
@@ -3022,9 +3457,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.constr\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.constr : 'constr )))
+                    (Ast_quotation.expand x Dyn_tag.constr : 'constr ) : 
+                 Tokenf.quot -> Locf.t -> 'constr ))
           };
           {
             symbols =
@@ -3045,13 +3481,16 @@ let apply () =
               "match p with\n| Some _ -> `TypeEqPriv (_loc, t1, t2)\n| None  -> `TypeEq (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'type_longident_and_parameters) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
+                    _  (_loc : Locf.t)  ->
                     let p = None in
                     (match p with
                      | Some _ -> `TypeEqPriv (_loc, t1, t2)
-                     | None  -> `TypeEq (_loc, t1, t2) : 'constr )))
+                     | None  -> `TypeEq (_loc, t1, t2) : 'constr ) : 
+                 'ctyp ->
+                   Tokenf.txt ->
+                     'type_longident_and_parameters ->
+                       Tokenf.txt -> Locf.t -> 'constr ))
           };
           {
             symbols =
@@ -3077,14 +3516,18 @@ let apply () =
               "match p with\n| Some _ -> `TypeEqPriv (_loc, t1, t2)\n| None  -> `TypeEq (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(t2 : 'ctyp)  ~__fan_3:(p : Tokenf.txt) 
-                    ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'type_longident_and_parameters) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (t2 : 'ctyp)  (p : Tokenf.txt)  _ 
+                    (t1 : 'type_longident_and_parameters)  _  (_loc : Locf.t)
+                     ->
                     let p = Some p in
                     (match p with
                      | Some _ -> `TypeEqPriv (_loc, t1, t2)
-                     | None  -> `TypeEq (_loc, t1, t2) : 'constr )))
+                     | None  -> `TypeEq (_loc, t1, t2) : 'constr ) : 
+                 'ctyp ->
+                   Tokenf.txt ->
+                     Tokenf.txt ->
+                       'type_longident_and_parameters ->
+                         Tokenf.txt -> Locf.t -> 'constr ))
           };
           {
             symbols =
@@ -3104,10 +3547,16 @@ let apply () =
             annot = "`TypeSubst (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'type_longident_and_parameters) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`TypeSubst (_loc, t1, t2) : 'constr )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
+                    _  (_loc : Locf.t)  ->
+                    (`TypeSubst (_loc, t1, t2) : 'constr ) : 'ctyp ->
+                                                               Tokenf.txt ->
+                                                                 'type_longident_and_parameters
+                                                                   ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'constr ))
           };
           {
             symbols =
@@ -3129,15 +3578,23 @@ let apply () =
               "let i = (i1 : vid  :>ident) in\nif v = \"=\" then `ModuleEq (_loc, i, i2) else `ModuleSubst (_loc, i, i2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(i2 : 'module_longident_with_app) 
-                    ~__fan_2:(__fan_2 : Tokenf.txt) 
-                    ~__fan_1:(i1 : 'module_longident)  ~__fan_0:_ 
+                 (fun (i2 : 'module_longident_with_app) 
+                    (__fan_2 : Tokenf.txt)  (i1 : 'module_longident)  _ 
                     (_loc : Locf.t)  ->
                     let v = __fan_2.txt in
                     (let i = (i1 : vid  :>ident) in
                      if v = "="
                      then `ModuleEq (_loc, i, i2)
-                     else `ModuleSubst (_loc, i, i2) : 'constr )))
+                     else `ModuleSubst (_loc, i, i2) : 'constr ) : 'module_longident_with_app
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'module_longident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'constr ))
           };
           {
             symbols =
@@ -3159,15 +3616,23 @@ let apply () =
               "let i = (i1 : vid  :>ident) in\nif v = \"=\" then `ModuleEq (_loc, i, i2) else `ModuleSubst (_loc, i, i2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(i2 : 'module_longident_with_app) 
-                    ~__fan_2:(__fan_2 : Tokenf.txt) 
-                    ~__fan_1:(i1 : 'module_longident)  ~__fan_0:_ 
+                 (fun (i2 : 'module_longident_with_app) 
+                    (__fan_2 : Tokenf.txt)  (i1 : 'module_longident)  _ 
                     (_loc : Locf.t)  ->
                     let v = __fan_2.txt in
                     (let i = (i1 : vid  :>ident) in
                      if v = "="
                      then `ModuleEq (_loc, i, i2)
-                     else `ModuleSubst (_loc, i, i2) : 'constr )))
+                     else `ModuleSubst (_loc, i, i2) : 'constr ) : 'module_longident_with_app
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'module_longident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'constr ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (sigis : 'sigis Gramf.t )
@@ -3185,8 +3650,9 @@ let apply () =
              annot = "mk_ant ~c:\"sigi\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigis )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigis ) : 
+                  Tokenf.ant -> Locf.t -> 'sigis ))
            };
           {
             symbols =
@@ -3198,8 +3664,9 @@ let apply () =
             annot = "mk_ant ~c:\"sigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigis )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigis ) : 
+                 Tokenf.ant -> Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3212,10 +3679,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun (sg : 'sigis)  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )))
+                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis ) : 
+                 'sigis -> Tokenf.ant -> Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3228,10 +3696,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(sg : 'sigis)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun (sg : 'sigis)  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )))
+                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis ) : 
+                 'sigis -> Tokenf.ant -> Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3247,10 +3716,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (sg : 'sigis)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )))
+                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis ) : 
+                 'sigis -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3266,18 +3736,21 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(sg : 'sigis)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (sg : 'sigis)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis )))
+                    (`Sem (_loc, (mk_ant ~c:"sigi" s), sg) : 'sigis ) : 
+                 'sigis -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'sigis ))
           };
           {
             symbols = [Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); Self];
             annot = "`Sem (_loc, sg, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'sigis)  ~__fan_0:(sg : 'sigi) 
-                    (_loc : Locf.t)  -> (`Sem (_loc, sg, s) : 'sigis )))
+                 (fun (s : 'sigis)  (sg : 'sigi)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, sg, s) : 'sigis ) : 'sigis ->
+                                                       'sigi ->
+                                                         Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3289,17 +3762,19 @@ let apply () =
             annot = "`Sem (_loc, sg, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(s : 'sigis)  ~__fan_1:_ 
-                    ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, sg, s) : 'sigis )))
+                 (fun (s : 'sigis)  _  (sg : 'sigi)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, sg, s) : 'sigis ) : 'sigis ->
+                                                       Tokenf.txt ->
+                                                         'sigi ->
+                                                           Locf.t -> 'sigis ))
           };
           {
             symbols = [Nterm (Gramf.obj (sigi : 'sigi Gramf.t ))];
             annot = "sg\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
-                    (sg : 'sigis )))
+                 (fun (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigis ) : 
+                 'sigi -> Locf.t -> 'sigis ))
           };
           {
             symbols =
@@ -3310,8 +3785,8 @@ let apply () =
             annot = "sg\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
-                    (sg : 'sigis )))
+                 (fun _  (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigis ) : 
+                 Tokenf.txt -> 'sigi -> Locf.t -> 'sigis ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3344,11 +3819,22 @@ let apply () =
              annot = "`Functor (_loc, i, t, mt)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_7:(mt : 'mtyp)  ~__fan_6:_  ~__fan_5:_ 
-                     ~__fan_4:(t : 'mtyp)  ~__fan_3:_ 
-                     ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                     (_loc : Locf.t)  -> (`Functor (_loc, i, t, mt) : 
-                     'mtyp )))
+                  (fun (mt : 'mtyp)  _  _  (t : 'mtyp)  _  (i : 'a_uident)  _
+                      _  (_loc : Locf.t)  ->
+                     (`Functor (_loc, i, t, mt) : 'mtyp ) : 'mtyp ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  'mtyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'mtyp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3368,9 +3854,11 @@ let apply () =
              annot = "`With (_loc, mt, wc)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(wc : 'constr)  ~__fan_1:_ 
-                     ~__fan_0:(mt : 'mtyp)  (_loc : Locf.t)  ->
-                     (`With (_loc, mt, wc) : 'mtyp )))
+                  (fun (wc : 'constr)  _  (mt : 'mtyp)  (_loc : Locf.t)  ->
+                     (`With (_loc, mt, wc) : 'mtyp ) : 'constr ->
+                                                         Tokenf.txt ->
+                                                           'mtyp ->
+                                                             Locf.t -> 'mtyp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3384,11 +3872,13 @@ let apply () =
                "match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise Streamf.NotConsumed\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(mt2 : 'mtyp)  ~__fan_0:(mt1 : 'mtyp) 
-                     (_loc : Locf.t)  ->
+                  (fun (mt2 : 'mtyp)  (mt1 : 'mtyp)  (_loc : Locf.t)  ->
                      (match (mt1, mt2) with
                       | ((#ident as i1),(#ident as i2)) -> apply i1 i2
-                      | _ -> raise Streamf.NotConsumed : 'mtyp )))
+                      | _ -> raise Streamf.NotConsumed : 'mtyp ) : 'mtyp ->
+                                                                    'mtyp ->
+                                                                    Locf.t ->
+                                                                    'mtyp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3407,13 +3897,14 @@ let apply () =
                "let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise Streamf.NotConsumed in\nacc0 mt1 mt2\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(mt2 : 'mtyp)  ~__fan_1:_ 
-                     ~__fan_0:(mt1 : 'mtyp)  (_loc : Locf.t)  ->
+                  (fun (mt2 : 'mtyp)  _  (mt1 : 'mtyp)  (_loc : Locf.t)  ->
                      (let acc0 mt1 mt2 =
                         match (mt1, mt2) with
                         | ((#ident as i1),(#ident as i2)) -> dot i1 i2
                         | _ -> raise Streamf.NotConsumed in
-                      acc0 mt1 mt2 : 'mtyp )))
+                      acc0 mt1 mt2 : 'mtyp ) : 'mtyp ->
+                                                 Tokenf.txt ->
+                                                   'mtyp -> Locf.t -> 'mtyp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3437,11 +3928,13 @@ let apply () =
                "match sg with | Some sg -> `Sig (_loc, sg) | None  -> `SigEnd _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                  (fun _  _  (_loc : Locf.t)  ->
                      let sg = None in
                      (match sg with
                       | Some sg -> `Sig (_loc, sg)
-                      | None  -> `SigEnd _loc : 'mtyp )))
+                      | None  -> `SigEnd _loc : 'mtyp ) : Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'mtyp ))
            };
           {
             symbols =
@@ -3458,12 +3951,15 @@ let apply () =
               "match sg with | Some sg -> `Sig (_loc, sg) | None  -> `SigEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(sg : 'sigis)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (sg : 'sigis)  _  (_loc : Locf.t)  ->
                     let sg = Some sg in
                     (match sg with
                      | Some sg -> `Sig (_loc, sg)
-                     | None  -> `SigEnd _loc : 'mtyp )))
+                     | None  -> `SigEnd _loc : 'mtyp ) : Tokenf.txt ->
+                                                           'sigis ->
+                                                             Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'mtyp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp : 'mtyp Gramf.t )
@@ -3481,8 +3977,9 @@ let apply () =
              annot = "mk_ant ~c:\"mtyp\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp ) : 
+                  Tokenf.ant -> Locf.t -> 'mtyp ))
            };
           {
             symbols =
@@ -3494,8 +3991,9 @@ let apply () =
             annot = "mk_ant ~c:\"mtyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp ) : 
+                 Tokenf.ant -> Locf.t -> 'mtyp ))
           };
           {
             symbols =
@@ -3505,9 +4003,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.mtyp\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.mtyp : 'mtyp )))
+                    (Ast_quotation.expand x Dyn_tag.mtyp : 'mtyp ) : 
+                 Tokenf.quot -> Locf.t -> 'mtyp ))
           };
           {
             symbols =
@@ -3518,8 +4017,9 @@ let apply () =
             annot = "(i : ident  :>mtyp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'module_longident_with_app) 
-                    (_loc : Locf.t)  -> ((i : ident  :>mtyp) : 'mtyp )))
+                 (fun (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
+                    ((i : ident  :>mtyp) : 'mtyp ) : 'module_longident_with_app
+                                                       -> Locf.t -> 'mtyp ))
           };
           {
             symbols =
@@ -3533,8 +4033,8 @@ let apply () =
             annot = "mt\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(mt : 'mtyp)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (mt : 'mtyp )))
+                 (fun _  (mt : 'mtyp)  _  (_loc : Locf.t)  -> (mt : 'mtyp ) : 
+                 Tokenf.txt -> 'mtyp -> Tokenf.txt -> Locf.t -> 'mtyp ))
           };
           {
             symbols =
@@ -3555,9 +4055,13 @@ let apply () =
             annot = "`ModuleTypeOf (_loc, me)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(me : 'mexp)  ~__fan_2:_  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ModuleTypeOf (_loc, me) : 'mtyp )))
+                 (fun (me : 'mexp)  _  _  _  (_loc : Locf.t)  ->
+                    (`ModuleTypeOf (_loc, me) : 'mtyp ) : 'mexp ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'mtyp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (module_declaration : 'module_declaration Gramf.t )
@@ -3574,8 +4078,11 @@ let apply () =
              annot = "mt\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(mt : 'mtyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (mt : 'module_declaration )))
+                  (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
+                     (mt : 'module_declaration ) : 'mtyp ->
+                                                     Tokenf.txt ->
+                                                       Locf.t ->
+                                                         'module_declaration ))
            };
           {
             symbols =
@@ -3594,10 +4101,15 @@ let apply () =
             annot = "`Functor (_loc, i, t, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(mt : 'module_declaration)  ~__fan_4:_ 
-                    ~__fan_3:(t : 'mtyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_uident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Functor (_loc, i, t, mt) : 'module_declaration )))
+                 (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _ 
+                    (i : 'a_uident)  _  (_loc : Locf.t)  ->
+                    (`Functor (_loc, i, t, mt) : 'module_declaration ) : 
+                 'module_declaration ->
+                   Tokenf.txt ->
+                     'mtyp ->
+                       Tokenf.txt ->
+                         'a_uident ->
+                           Tokenf.txt -> Locf.t -> 'module_declaration ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (mtyp_quot : 'mtyp_quot Gramf.t )
@@ -3610,8 +4122,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'mtyp)  (_loc : Locf.t)  ->
-                     (x : 'mtyp_quot )))
+                  (fun (x : 'mtyp)  (_loc : Locf.t)  -> (x : 'mtyp_quot ) : 
+                  'mtyp -> Locf.t -> 'mtyp_quot ))
            }]
       } : Gramf.olevel ));
   ();
@@ -3629,8 +4141,13 @@ let apply () =
              annot = "`DirectiveSimple (_loc, s)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(s : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (`DirectiveSimple (_loc, s) : 'sigi_quot )))
+                  (fun (s : 'a_lident)  _  (_loc : Locf.t)  ->
+                     (`DirectiveSimple (_loc, s) : 'sigi_quot ) : 'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sigi_quot ))
            };
           {
             symbols =
@@ -3642,9 +4159,13 @@ let apply () =
             annot = "`Directive (_loc, s, dp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(dp : 'exp)  ~__fan_1:(s : 'a_lident) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Directive (_loc, s, dp) : 'sigi_quot )))
+                 (fun (dp : 'exp)  (s : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`Directive (_loc, s, dp) : 'sigi_quot ) : 'exp ->
+                                                                 'a_lident ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sigi_quot ))
           };
           {
             symbols =
@@ -3656,17 +4177,21 @@ let apply () =
             annot = "`Sem (_loc, sg1, sg2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(sg2 : 'sigi_quot)  ~__fan_1:_ 
-                    ~__fan_0:(sg1 : 'sigi)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, sg1, sg2) : 'sigi_quot )))
+                 (fun (sg2 : 'sigi_quot)  _  (sg1 : 'sigi)  (_loc : Locf.t) 
+                    -> (`Sem (_loc, sg1, sg2) : 'sigi_quot ) : 'sigi_quot ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'sigi ->
+                                                                    Locf.t ->
+                                                                    'sigi_quot ))
           };
           {
             symbols = [Nterm (Gramf.obj (sigi : 'sigi Gramf.t ))];
             annot = "sg\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(sg : 'sigi)  (_loc : Locf.t)  ->
-                    (sg : 'sigi_quot )))
+                 (fun (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigi_quot ) : 
+                 'sigi -> Locf.t -> 'sigi_quot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (sigi : 'sigi Gramf.t )
@@ -3684,8 +4209,9 @@ let apply () =
              annot = "mk_ant ~c:\"sigi\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi ) : 
+                  Tokenf.ant -> Locf.t -> 'sigi ))
            };
           {
             symbols =
@@ -3697,8 +4223,9 @@ let apply () =
             annot = "mk_ant ~c:\"sigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi ) : 
+                 Tokenf.ant -> Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3708,9 +4235,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.sigi\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.sigi : 'sigi )))
+                    (Ast_quotation.expand x Dyn_tag.sigi : 'sigi ) : 
+                 Tokenf.quot -> Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3723,8 +4251,10 @@ let apply () =
             annot = "`Include (_loc, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(mt : 'mtyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Include (_loc, mt) : 'sigi )))
+                 (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
+                    (`Include (_loc, mt) : 'sigi ) : 'mtyp ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3740,9 +4270,10 @@ let apply () =
             annot = "`Module (_loc, i, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mt : 'module_declaration) 
-                    ~__fan_1:(i : 'a_uident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Module (_loc, i, mt) : 'sigi )))
+                 (fun (mt : 'module_declaration)  (i : 'a_uident)  _ 
+                    (_loc : Locf.t)  -> (`Module (_loc, i, mt) : 'sigi ) : 
+                 'module_declaration ->
+                   'a_uident -> Tokenf.txt -> Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3760,9 +4291,13 @@ let apply () =
             annot = "`RecModule (_loc, mb)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mb : 'module_rec_declaration)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`RecModule (_loc, mb) : 'sigi )))
+                 (fun (mb : 'module_rec_declaration)  _  _  (_loc : Locf.t) 
+                    -> (`RecModule (_loc, mb) : 'sigi ) : 'module_rec_declaration
+                                                            ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'sigi ))
           };
           {
             symbols =
@@ -3780,8 +4315,12 @@ let apply () =
             annot = "`ModuleTypeEnd (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ModuleTypeEnd (_loc, i) : 'sigi )))
+                 (fun (i : 'a_uident)  _  _  (_loc : Locf.t)  ->
+                    (`ModuleTypeEnd (_loc, i) : 'sigi ) : 'a_uident ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'sigi ))
           };
           {
             symbols =
@@ -3796,15 +4335,15 @@ let apply () =
               "`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'module_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (i : 'module_longident)  _  (_loc : Locf.t)  ->
                     let bang = None in
                     (`Open
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
-                      'sigi )))
+                      'sigi ) : 'module_longident ->
+                                  Tokenf.txt -> Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3822,16 +4361,16 @@ let apply () =
               "`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'module_longident) 
-                    ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_  (_loc : Locf.t)
-                     ->
+                 (fun (i : 'module_longident)  (bang : Tokenf.txt)  _ 
+                    (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (`Open
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
-                      'sigi )))
+                      'sigi ) : 'module_longident ->
+                                  Tokenf.txt -> Tokenf.txt -> Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3845,8 +4384,10 @@ let apply () =
             annot = "`Type (_loc, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'type_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Type (_loc, t) : 'sigi )))
+                 (fun (t : 'type_declaration)  _  (_loc : Locf.t)  ->
+                    (`Type (_loc, t) : 'sigi ) : 'type_declaration ->
+                                                   Tokenf.txt ->
+                                                     Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3868,10 +4409,18 @@ let apply () =
             annot = "`ModuleType (_loc, i, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
-                    'sigi )))
+                 (fun (mt : 'mtyp)  _  (i : 'a_uident)  _  _  (_loc : Locf.t)
+                     -> (`ModuleType (_loc, i, mt) : 'sigi ) : 'mtyp ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sigi ))
           };
           {
             symbols =
@@ -3890,9 +4439,11 @@ let apply () =
             annot = "`ClassType (_loc, ctd)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ClassType (_loc, ctd) : 'sigi )))
+                 (fun (ctd : 'cltyp_declaration)  _  _  (_loc : Locf.t)  ->
+                    (`ClassType (_loc, ctd) : 'sigi ) : 'cltyp_declaration ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3909,8 +4460,11 @@ let apply () =
             annot = "`Exception (_loc, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Exception (_loc, t) : 'sigi )))
+                 (fun (t : 'constructor_declaration)  _  (_loc : Locf.t)  ->
+                    (`Exception (_loc, t) : 'sigi ) : 'constructor_declaration
+                                                        ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3931,10 +4485,19 @@ let apply () =
             annot = "`External (_loc, i, t, sl)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
-                    ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`External (_loc, i, t, sl) : 'sigi )))
+                 (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident)
+                     _  (_loc : Locf.t)  ->
+                    (`External (_loc, i, t, sl) : 'sigi ) : 'string_list ->
+                                                              Tokenf.txt ->
+                                                                'ctyp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sigi ))
           };
           {
             symbols =
@@ -3951,9 +4514,12 @@ let apply () =
             annot = "`Val (_loc, i, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Val (_loc, i, t) : 'sigi )))
+                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`Val (_loc, i, t) : 'sigi ) : 'ctyp ->
+                                                     Tokenf.txt ->
+                                                       'a_lident ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'sigi ))
           };
           {
             symbols =
@@ -3967,8 +4533,10 @@ let apply () =
             annot = "`Class (_loc, cd)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(cd : 'class_description)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Class (_loc, cd) : 'sigi )))
+                 (fun (cd : 'class_description)  _  (_loc : Locf.t)  ->
+                    (`Class (_loc, cd) : 'sigi ) : 'class_description ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'sigi ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (interf : 'interf Gramf.t )
@@ -3981,10 +4549,9 @@ let apply () =
              annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(rest : 'interf)  ~__fan_0:(si : 'sigi) 
-                     (_loc : Locf.t)  ->
+                  (fun (rest : 'interf)  (si : 'sigi)  (_loc : Locf.t)  ->
                      (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                     'interf )))
+                     'interf ) : 'interf -> 'sigi -> Locf.t -> 'interf ))
            };
           {
             symbols =
@@ -3996,10 +4563,10 @@ let apply () =
             annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(rest : 'interf)  ~__fan_1:_ 
-                    ~__fan_0:(si : 'sigi)  (_loc : Locf.t)  ->
+                 (fun (rest : 'interf)  _  (si : 'sigi)  (_loc : Locf.t)  ->
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                    'interf )))
+                    'interf ) : 'interf ->
+                                  Tokenf.txt -> 'sigi -> Locf.t -> 'interf ))
           };
           {
             symbols =
@@ -4009,7 +4576,8 @@ let apply () =
             annot = "([], None)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  -> (([], None) : 'interf )))
+                 (fun _  (_loc : Locf.t)  -> (([], None) : 'interf ) : 
+                 Tokenf.txt -> Locf.t -> 'interf ))
           }]
       } : Gramf.olevel ));
   (let grammar_entry_create x = Gramf.mk x in
@@ -4030,9 +4598,12 @@ let apply () =
              annot = "`Com (_loc, e1, e2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'comma_exp)  ~__fan_1:_ 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     (`Com (_loc, e1, e2) : 'exp_quot )))
+                  (fun (e2 : 'comma_exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
+                     (`Com (_loc, e1, e2) : 'exp_quot ) : 'comma_exp ->
+                                                            Tokenf.txt ->
+                                                              'exp ->
+                                                                Locf.t ->
+                                                                  'exp_quot ))
            };
           {
             symbols =
@@ -4044,17 +4615,20 @@ let apply () =
             annot = "`Sem (_loc, e1, e2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'sem_exp)  ~__fan_1:_ 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, e1, e2) : 'exp_quot )))
+                 (fun (e2 : 'sem_exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, e1, e2) : 'exp_quot ) : 'sem_exp ->
+                                                           Tokenf.txt ->
+                                                             'exp ->
+                                                               Locf.t ->
+                                                                 'exp_quot ))
           };
           {
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
             annot = "e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (e : 'exp_quot )))
+                 (fun (e : 'exp)  (_loc : Locf.t)  -> (e : 'exp_quot ) : 
+                 'exp -> Locf.t -> 'exp_quot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (cvalue_bind : 'cvalue_bind Gramf.t )
@@ -4071,8 +4645,8 @@ let apply () =
              annot = "e\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (e : 'cvalue_bind )))
+                  (fun (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'cvalue_bind ) : 
+                  'exp -> Tokenf.txt -> Locf.t -> 'cvalue_bind ))
            };
           {
             symbols =
@@ -4098,11 +4672,16 @@ let apply () =
               "let u: FAst.ctyp = `TyPol (_loc, t1, t2) in\n(`Constraint (_loc, e, u) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:(e : 'exp)  ~__fan_5:_  ~__fan_4:(t2 : 'ctyp) 
-                    ~__fan_3:_  ~__fan_2:(t1 : 'unquoted_typevars) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  _  (t2 : 'ctyp)  _ 
+                    (t1 : 'unquoted_typevars)  _  _  (_loc : Locf.t)  ->
                     (let u: FAst.ctyp = `TyPol (_loc, t1, t2) in
-                     (`Constraint (_loc, e, u) : FAst.exp ) : 'cvalue_bind )))
+                     (`Constraint (_loc, e, u) : FAst.exp ) : 'cvalue_bind ) : 
+                 'exp ->
+                   Tokenf.txt ->
+                     'ctyp ->
+                       Tokenf.txt ->
+                         'unquoted_typevars ->
+                           Tokenf.txt -> Tokenf.txt -> Locf.t -> 'cvalue_bind ))
           };
           {
             symbols =
@@ -4117,9 +4696,11 @@ let apply () =
             annot = "(`Constraint (_loc, e, t) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e : 'exp)  ~__fan_2:_  ~__fan_1:(t : 'ctyp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Constraint (_loc, e, t) : FAst.exp ) : 'cvalue_bind )))
+                 (fun (e : 'exp)  _  (t : 'ctyp)  _  (_loc : Locf.t)  ->
+                    ((`Constraint (_loc, e, t) : FAst.exp ) : 'cvalue_bind ) : 
+                 'exp ->
+                   Tokenf.txt ->
+                     'ctyp -> Tokenf.txt -> Locf.t -> 'cvalue_bind ))
           };
           {
             symbols =
@@ -4139,14 +4720,19 @@ let apply () =
               "match t with\n| (`TyPol (_loc,_,_) : FAst.ctyp) ->\n    raise (Streamf.Error \"unexpected polytype here\")\n| _ -> (`Coercion (_loc, e, t, t2) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'exp)  ~__fan_4:_  ~__fan_3:(t2 : 'ctyp) 
-                    ~__fan_2:_  ~__fan_1:(t : 'ctyp)  ~__fan_0:_ 
+                 (fun (e : 'exp)  _  (t2 : 'ctyp)  _  (t : 'ctyp)  _ 
                     (_loc : Locf.t)  ->
                     (match t with
                      | (`TyPol (_loc,_,_) : FAst.ctyp) ->
                          raise (Streamf.Error "unexpected polytype here")
                      | _ -> (`Coercion (_loc, e, t, t2) : FAst.exp ) : 
-                    'cvalue_bind )))
+                    'cvalue_bind ) : 'exp ->
+                                       Tokenf.txt ->
+                                         'ctyp ->
+                                           Tokenf.txt ->
+                                             'ctyp ->
+                                               Tokenf.txt ->
+                                                 Locf.t -> 'cvalue_bind ))
           };
           {
             symbols =
@@ -4161,9 +4747,14 @@ let apply () =
             annot = "`Subtype (_loc, e, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e : 'exp)  ~__fan_2:_  ~__fan_1:(t : 'ctyp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Subtype (_loc, e, t) : 'cvalue_bind )))
+                 (fun (e : 'exp)  _  (t : 'ctyp)  _  (_loc : Locf.t)  ->
+                    (`Subtype (_loc, e, t) : 'cvalue_bind ) : 'exp ->
+                                                                Tokenf.txt ->
+                                                                  'ctyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'cvalue_bind ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (fun_bind : 'fun_bind Gramf.t )
@@ -4189,19 +4780,28 @@ let apply () =
              annot = "`LocalTypeFun (_loc, i, e)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_4:(e : 'fun_bind)  ~__fan_3:_ 
-                     ~__fan_2:(i : 'a_lident)  ~__fan_1:_  ~__fan_0:_ 
+                  (fun (e : 'fun_bind)  _  (i : 'a_lident)  _  _ 
                      (_loc : Locf.t)  ->
-                     (`LocalTypeFun (_loc, i, e) : 'fun_bind )))
+                     (`LocalTypeFun (_loc, i, e) : 'fun_bind ) : 'fun_bind ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'fun_bind ))
            };
           {
             symbols = [Nterm (Gramf.obj (ipat : 'ipat Gramf.t )); Self];
             annot = "`Fun (_loc, (`Case (_loc, p, e)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_bind)  ~__fan_0:(p : 'ipat) 
-                    (_loc : Locf.t)  ->
-                    (`Fun (_loc, (`Case (_loc, p, e))) : 'fun_bind )))
+                 (fun (e : 'fun_bind)  (p : 'ipat)  (_loc : Locf.t)  ->
+                    (`Fun (_loc, (`Case (_loc, p, e))) : 'fun_bind ) : 
+                 'fun_bind -> 'ipat -> Locf.t -> 'fun_bind ))
           };
           {
             symbols =
@@ -4209,8 +4809,8 @@ let apply () =
             annot = "bi\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(bi : 'cvalue_bind)  (_loc : Locf.t)  ->
-                    (bi : 'fun_bind )))
+                 (fun (bi : 'cvalue_bind)  (_loc : Locf.t)  ->
+                    (bi : 'fun_bind ) : 'cvalue_bind -> Locf.t -> 'fun_bind ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (lang : 'lang Gramf.t )
@@ -4225,13 +4825,16 @@ let apply () =
                "let old = !Ast_quotation.default in\nmatch Ast_quotation.resolve_name ls with\n| Some x -> (Ast_quotation.default := (Some x); old)\n| None  ->\n    Locf.failf _loc \"DDSL `%s' can not be resolved\"\n      (Tokenf.string_of_name ls)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(ls : 'dot_lstrings)  (_loc : Locf.t)  ->
+                  (fun (ls : 'dot_lstrings)  (_loc : Locf.t)  ->
                      (let old = !Ast_quotation.default in
                       match Ast_quotation.resolve_name ls with
                       | Some x -> (Ast_quotation.default := (Some x); old)
                       | None  ->
                           Locf.failf _loc "DDSL `%s' can not be resolved"
-                            (Tokenf.string_of_name ls) : 'lang )))
+                            (Tokenf.string_of_name ls) : 'lang ) : 'dot_lstrings
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'lang ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (pos_exps : 'pos_exps Gramf.t )
@@ -4252,10 +4855,11 @@ let apply () =
                "let old = !Ast_quotation.map in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(xys : 'name_space list)  (_loc : Locf.t)  ->
+                  (fun (xys : 'name_space list)  (_loc : Locf.t)  ->
                      (let old = !Ast_quotation.map in
                       Ast_quotation.map := (Mapf.String.add_list xys old);
-                      old : 'pos_exps )))
+                      old : 'pos_exps ) : 'name_space list ->
+                                            Locf.t -> 'pos_exps ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (name_space : 'name_space Gramf.t )
@@ -4276,15 +4880,19 @@ let apply () =
                "(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Tokenf.string_of_name y)\n   | Some x -> x))\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(y : 'dot_lstrings)  ~__fan_1:_ 
-                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                  (fun (y : 'dot_lstrings)  _  (__fan_0 : Tokenf.txt) 
+                     (_loc : Locf.t)  ->
                      let x = __fan_0.txt in
                      ((x,
                         (match Ast_quotation.resolve_name y with
                          | None  ->
                              Locf.failf _loc "DDSL `%s' can not be resolved"
                                (Tokenf.string_of_name y)
-                         | Some x -> x)) : 'name_space )))
+                         | Some x -> x)) : 'name_space ) : 'dot_lstrings ->
+                                                             Tokenf.txt ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'name_space ))
            };
           {
             symbols =
@@ -4295,13 +4903,15 @@ let apply () =
               "(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     ((x,
                        (match Ast_quotation.resolve_name ((`Sub []), x) with
                         | None  ->
                             Locf.failf _loc "DDSL `%s' can not be resolved" x
-                        | Some x -> x)) : 'name_space )))
+                        | Some x -> x)) : 'name_space ) : Tokenf.txt ->
+                                                            Locf.t ->
+                                                              'name_space ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (fun_def_pat : 'fun_def_pat Gramf.t )
@@ -4326,17 +4936,20 @@ let apply () =
              annot = "fun e  -> `LocalTypeFun (_loc, i, e)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_3:_  ~__fan_2:(i : 'a_lident)  ~__fan_1:_ 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     (fun e  -> `LocalTypeFun (_loc, i, e) : 'fun_def_pat )))
+                  (fun _  (i : 'a_lident)  _  _  (_loc : Locf.t)  ->
+                     (fun e  -> `LocalTypeFun (_loc, i, e) : 'fun_def_pat ) : 
+                  Tokenf.txt ->
+                    'a_lident ->
+                      Tokenf.txt -> Tokenf.txt -> Locf.t -> 'fun_def_pat ))
            };
           {
             symbols = [Nterm (Gramf.obj (ipat : 'ipat Gramf.t ))];
             annot = "fun e  -> `Fun (_loc, (`Case (_loc, p, e)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(p : 'ipat)  (_loc : Locf.t)  ->
-                    (fun e  -> `Fun (_loc, (`Case (_loc, p, e))) : 'fun_def_pat )))
+                 (fun (p : 'ipat)  (_loc : Locf.t)  ->
+                    (fun e  -> `Fun (_loc, (`Case (_loc, p, e))) : 'fun_def_pat ) : 
+                 'ipat -> Locf.t -> 'fun_def_pat ))
           };
           {
             symbols =
@@ -4350,10 +4963,11 @@ let apply () =
             annot = "fun e  -> `Fun (_loc, (`CaseWhen (_loc, p, w, e)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(w : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'ipat) 
-                    (_loc : Locf.t)  ->
+                 (fun (w : 'exp)  _  (p : 'ipat)  (_loc : Locf.t)  ->
                     (fun e  -> `Fun (_loc, (`CaseWhen (_loc, p, w, e))) : 
-                    'fun_def_pat )))
+                    'fun_def_pat ) : 'exp ->
+                                       Tokenf.txt ->
+                                         'ipat -> Locf.t -> 'fun_def_pat ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (fun_def : 'fun_def Gramf.t )
@@ -4371,9 +4985,11 @@ let apply () =
              annot = "f e\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                     ~__fan_0:(f : 'fun_def_pat)  (_loc : Locf.t)  ->
-                     (f e : 'fun_def )))
+                  (fun (e : 'exp)  _  (f : 'fun_def_pat)  (_loc : Locf.t)  ->
+                     (f e : 'fun_def ) : 'exp ->
+                                           Tokenf.txt ->
+                                             'fun_def_pat ->
+                                               Locf.t -> 'fun_def ))
            };
           {
             symbols =
@@ -4381,8 +4997,9 @@ let apply () =
             annot = "f e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_def)  ~__fan_0:(f : 'fun_def_pat) 
-                    (_loc : Locf.t)  -> (f e : 'fun_def )))
+                 (fun (e : 'fun_def)  (f : 'fun_def_pat)  (_loc : Locf.t)  ->
+                    (f e : 'fun_def ) : 'fun_def ->
+                                          'fun_def_pat -> Locf.t -> 'fun_def ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -4406,9 +5023,11 @@ let apply () =
              annot = "`LetIn (_loc, r, bi, x)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_4:(x : 'exp)  ~__fan_3:_  ~__fan_2:(bi : 'bind)
-                      ~__fan_1:(r : 'opt_rec)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (`LetIn (_loc, r, bi, x) : 'exp )))
+                  (fun (x : 'exp)  _  (bi : 'bind)  (r : 'opt_rec)  _ 
+                     (_loc : Locf.t)  -> (`LetIn (_loc, r, bi, x) : 'exp ) : 
+                  'exp ->
+                    Tokenf.txt ->
+                      'bind -> 'opt_rec -> Tokenf.txt -> Locf.t -> 'exp ))
            };
           {
             symbols =
@@ -4431,10 +5050,14 @@ let apply () =
             annot = "`LetModule (_loc, m, mb, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                    ~__fan_3:(mb : 'mbind0)  ~__fan_2:(m : 'a_uident) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`LetModule (_loc, m, mb, e) : 'exp )))
+                 (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
+                    (_loc : Locf.t)  -> (`LetModule (_loc, m, mb, e) : 
+                    'exp ) : 'exp ->
+                               Tokenf.txt ->
+                                 'mbind0 ->
+                                   'a_uident ->
+                                     Tokenf.txt ->
+                                       Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4458,8 +5081,7 @@ let apply () =
               "`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_ 
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
                     (_loc : Locf.t)  ->
                     let bang = None in
                     (`LetOpen
@@ -4467,7 +5089,11 @@ let apply () =
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
-                      'exp )))
+                      'exp ) : 'exp ->
+                                 Tokenf.txt ->
+                                   'module_longident ->
+                                     Tokenf.txt ->
+                                       Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4494,17 +5120,20 @@ let apply () =
               "`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                    ~__fan_3:(i : 'module_longident) 
-                    ~__fan_2:(bang : Tokenf.txt)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  _  (i : 'module_longident) 
+                    (bang : Tokenf.txt)  _  _  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (`LetOpen
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
-                      'exp )))
+                      'exp ) : 'exp ->
+                                 Tokenf.txt ->
+                                   'module_longident ->
+                                     Tokenf.txt ->
+                                       Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4531,11 +5160,23 @@ let apply () =
             annot = "`LetTryInWith (_loc, r, bi, x, a)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_7:(a : 'case)  ~__fan_6:_  ~__fan_5:(x : 'exp) 
-                    ~__fan_4:_  ~__fan_3:(bi : 'bind) 
-                    ~__fan_2:(r : 'opt_rec)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (`LetTryInWith (_loc, r, bi, x, a) : 'exp )))
+                 (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
+                    (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
+                    (`LetTryInWith (_loc, r, bi, x, a) : 'exp ) : 'case ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'bind ->
+                                                                    'opt_rec
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4554,9 +5195,12 @@ let apply () =
             annot = "`Match (_loc, e, a)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(a : 'case)  ~__fan_2:_  ~__fan_1:(e : 'exp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Match (_loc, e, a) : 'exp )))
+                 (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Match (_loc, e, a) : 'exp ) : 'case ->
+                                                      Tokenf.txt ->
+                                                        'exp ->
+                                                          Tokenf.txt ->
+                                                            Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4575,9 +5219,12 @@ let apply () =
             annot = "`Try (_loc, e, a)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(a : 'case)  ~__fan_2:_  ~__fan_1:(e : 'exp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Try (_loc, e, a) : 'exp )))
+                 (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Try (_loc, e, a) : 'exp ) : 'case ->
+                                                    Tokenf.txt ->
+                                                      'exp ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4600,10 +5247,19 @@ let apply () =
             annot = "`IfThenElse (_loc, e1, e2, e3)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e3 : 'exp)  ~__fan_4:_  ~__fan_3:(e2 : 'exp) 
-                    ~__fan_2:_  ~__fan_1:(e1 : 'exp)  ~__fan_0:_ 
+                 (fun (e3 : 'exp)  _  (e2 : 'exp)  _  (e1 : 'exp)  _ 
                     (_loc : Locf.t)  ->
-                    (`IfThenElse (_loc, e1, e2, e3) : 'exp )))
+                    (`IfThenElse (_loc, e1, e2, e3) : 'exp ) : 'exp ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4620,9 +5276,12 @@ let apply () =
             annot = "`IfThen (_loc, e1, e2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e2 : 'exp)  ~__fan_2:_  ~__fan_1:(e1 : 'exp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`IfThen (_loc, e1, e2) : 'exp )))
+                 (fun (e2 : 'exp)  _  (e1 : 'exp)  _  (_loc : Locf.t)  ->
+                    (`IfThen (_loc, e1, e2) : 'exp ) : 'exp ->
+                                                         Tokenf.txt ->
+                                                           'exp ->
+                                                             Tokenf.txt ->
+                                                               Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4638,8 +5297,11 @@ let apply () =
             annot = "`Seq (_loc, seq)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(seq : 'sequence)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Seq (_loc, seq) : 'exp )))
+                 (fun _  (seq : 'sequence)  _  (_loc : Locf.t)  ->
+                    (`Seq (_loc, seq) : 'exp ) : Tokenf.txt ->
+                                                   'sequence ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4653,9 +5315,13 @@ let apply () =
             annot = "Ast_quotation.default := old; x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(x : 'exp)  ~__fan_1:(old : 'lang)  ~__fan_0:_
-                     (_loc : Locf.t)  ->
-                    (Ast_quotation.default := old; x : 'exp )))
+                 (fun (x : 'exp)  (old : 'lang)  _  (_loc : Locf.t)  ->
+                    (Ast_quotation.default := old; x : 'exp ) : 'exp ->
+                                                                  'lang ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4675,10 +5341,18 @@ let apply () =
             annot = "Ast_quotation.map := old; x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(x : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(old : 'pos_exps)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (Ast_quotation.map := old; x : 
-                    'exp )))
+                 (fun (x : 'exp)  _  (old : 'pos_exps)  _  _  (_loc : Locf.t)
+                     -> (Ast_quotation.map := old; x : 'exp ) : 'exp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'pos_exps
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4706,11 +5380,24 @@ let apply () =
             annot = "`For (_loc, i, e1, e2, df, seq)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_8:_  ~__fan_7:(seq : 'sequence)  ~__fan_6:_ 
-                    ~__fan_5:(e2 : 'exp)  ~__fan_4:(df : 'flag) 
-                    ~__fan_3:(e1 : 'exp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`For (_loc, i, e1, e2, df, seq) : 'exp )))
+                 (fun _  (seq : 'sequence)  _  (e2 : 'exp)  (df : 'flag) 
+                    (e1 : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`For (_loc, i, e1, e2, df, seq) : 'exp ) : Tokenf.txt ->
+                                                                  'sequence
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    'flag ->
+                                                                    'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4732,9 +5419,15 @@ let apply () =
             annot = "`While (_loc, e, seq)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(seq : 'sequence)  ~__fan_2:_ 
-                    ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`While (_loc, e, seq) : 'exp )))
+                 (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : Locf.t)
+                     -> (`While (_loc, e, seq) : 'exp ) : Tokenf.txt ->
+                                                            'sequence ->
+                                                              Tokenf.txt ->
+                                                                'exp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -4753,11 +5446,15 @@ let apply () =
                "match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:_  ~__fan_0:(e1 : 'exp)
-                      (_loc : Locf.t)  ->
+                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                      (match Fan_ops.bigarray_set _loc e1 e2 with
                       | Some e -> e
-                      | None  -> `Assign (_loc, e1, e2) : 'exp )))
+                      | None  -> `Assign (_loc, e1, e2) : 'exp ) : 'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    Locf.t ->
+                                                                    'exp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -4776,13 +5473,13 @@ let apply () =
                "let op: FAst.exp = `Uid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.txt) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
+                  (fun (e2 : 'exp)  (__fan_1 : Tokenf.txt)  (e1 : 'exp) 
+                     (_loc : Locf.t)  ->
                      let xloc = __fan_1.loc in
                      let op = __fan_1.txt in
                      (let op: FAst.exp = `Uid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
+                       'exp ) : 'exp -> Tokenf.txt -> 'exp -> Locf.t -> 'exp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -4810,10 +5507,10 @@ let apply () =
              annot = "let cases = bar_of_list a in `Fun (_loc, cases)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(a : 'case0 list)  ~__fan_1:_  ~__fan_0:_ 
-                     (_loc : Locf.t)  ->
+                  (fun (a : 'case0 list)  _  _  (_loc : Locf.t)  ->
                      (let cases = bar_of_list a in `Fun (_loc, cases) : 
-                     'exp )))
+                     'exp ) : 'case0 list ->
+                                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
            };
           {
             symbols =
@@ -4835,10 +5532,10 @@ let apply () =
             annot = "let cases = bar_of_list a in `Fun (_loc, cases)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(a : 'case0 list)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (a : 'case0 list)  _  _  (_loc : Locf.t)  ->
                     (let cases = bar_of_list a in `Fun (_loc, cases) : 
-                    'exp )))
+                    'exp ) : 'case0 list ->
+                               Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4851,8 +5548,8 @@ let apply () =
             annot = "e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_def)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (e : 'exp )))
+                 (fun (e : 'fun_def)  _  (_loc : Locf.t)  -> (e : 'exp ) : 
+                 'fun_def -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4865,8 +5562,8 @@ let apply () =
             annot = "e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_def)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (e : 'exp )))
+                 (fun (e : 'fun_def)  _  (_loc : Locf.t)  -> (e : 'exp ) : 
+                 'fun_def -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4889,12 +5586,20 @@ let apply () =
               "match cst with\n| Some cst -> `ObjPat (_loc, p, cst)\n| None  -> `ObjPatEnd (_loc, p)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_
-                     ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun _  _  (p : 'pat)  _  _  (_loc : Locf.t)  ->
                     let cst = None in
                     (match cst with
                      | Some cst -> `ObjPat (_loc, p, cst)
-                     | None  -> `ObjPatEnd (_loc, p) : 'exp )))
+                     | None  -> `ObjPatEnd (_loc, p) : 'exp ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'pat ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4918,13 +5623,23 @@ let apply () =
               "match cst with\n| Some cst -> `ObjPat (_loc, p, cst)\n| None  -> `ObjPatEnd (_loc, p)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(cst : 'class_structure) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
+                 (fun _  (cst : 'class_structure)  _  (p : 'pat)  _  _ 
                     (_loc : Locf.t)  ->
                     let cst = Some cst in
                     (match cst with
                      | Some cst -> `ObjPat (_loc, p, cst)
-                     | None  -> `ObjPatEnd (_loc, p) : 'exp )))
+                     | None  -> `ObjPatEnd (_loc, p) : 'exp ) : Tokenf.txt ->
+                                                                  'class_structure
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'pat ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -4951,15 +5666,20 @@ let apply () =
               "match cst with\n| Some cst -> `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n| None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:_  ~__fan_5:_  ~__fan_4:(t : 'ctyp) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  _  (t : 'ctyp)  _  (p : 'pat)  _  _  (_loc : Locf.t)
+                     ->
                     let cst = None in
                     (match cst with
                      | Some cst ->
                          `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)
                      | None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
-                      'exp )))
+                      'exp ) : Tokenf.txt ->
+                                 Tokenf.txt ->
+                                   'ctyp ->
+                                     Tokenf.txt ->
+                                       'pat ->
+                                         Tokenf.txt ->
+                                           Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -4987,16 +5707,21 @@ let apply () =
               "match cst with\n| Some cst -> `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n| None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(cst : 'class_structure) 
-                    ~__fan_5:_  ~__fan_4:(t : 'ctyp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (cst : 'class_structure)  _  (t : 'ctyp)  _ 
+                    (p : 'pat)  _  _  (_loc : Locf.t)  ->
                     let cst = Some cst in
                     (match cst with
                      | Some cst ->
                          `ObjPat (_loc, (`Constraint (_loc, p, t)), cst)
                      | None  -> `ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
-                      'exp )))
+                      'exp ) : Tokenf.txt ->
+                                 'class_structure ->
+                                   Tokenf.txt ->
+                                     'ctyp ->
+                                       Tokenf.txt ->
+                                         'pat ->
+                                           Tokenf.txt ->
+                                             Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5012,11 +5737,13 @@ let apply () =
               "match cst with | Some cst -> `Obj (_loc, cst) | None  -> `ObjEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun _  _  (_loc : Locf.t)  ->
                     let cst = None in
                     (match cst with
                      | Some cst -> `Obj (_loc, cst)
-                     | None  -> `ObjEnd _loc : 'exp )))
+                     | None  -> `ObjEnd _loc : 'exp ) : Tokenf.txt ->
+                                                          Tokenf.txt ->
+                                                            Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5033,12 +5760,14 @@ let apply () =
               "match cst with | Some cst -> `Obj (_loc, cst) | None  -> `ObjEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(cst : 'class_structure) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun _  (cst : 'class_structure)  _  (_loc : Locf.t)  ->
                     let cst = Some cst in
                     (match cst with
                      | Some cst -> `Obj (_loc, cst)
-                     | None  -> `ObjEnd _loc : 'exp )))
+                     | None  -> `ObjEnd _loc : 'exp ) : Tokenf.txt ->
+                                                          'class_structure ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5055,9 +5784,10 @@ let apply () =
              annot = "Fan_ops.mkumin _loc x e\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                     (_loc : Locf.t)  ->
-                     let x = __fan_0.txt in (Fan_ops.mkumin _loc x e : 'exp )))
+                  (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t) 
+                     ->
+                     let x = __fan_0.txt in (Fan_ops.mkumin _loc x e : 'exp ) : 
+                  'exp -> Tokenf.txt -> Locf.t -> 'exp ))
            };
           {
             symbols =
@@ -5068,9 +5798,9 @@ let apply () =
             annot = "Fan_ops.mkumin _loc x e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in (Fan_ops.mkumin _loc x e : 'exp )))
+                 (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let x = __fan_0.txt in (Fan_ops.mkumin _loc x e : 'exp ) : 
+                 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5083,8 +5813,9 @@ let apply () =
              annot = "`App (_loc, e1, e2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(e2 : 'exp)  ~__fan_0:(e1 : 'exp) 
-                     (_loc : Locf.t)  -> (`App (_loc, e1, e2) : 'exp )))
+                  (fun (e2 : 'exp)  (e1 : 'exp)  (_loc : Locf.t)  ->
+                     (`App (_loc, e1, e2) : 'exp ) : 'exp ->
+                                                       'exp -> Locf.t -> 'exp ))
            };
           {
             symbols =
@@ -5097,8 +5828,10 @@ let apply () =
             annot = "`Assert (_loc, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Assert (_loc, e) : 'exp )))
+                 (fun (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Assert (_loc, e) : 'exp ) : 'exp ->
+                                                    Tokenf.txt ->
+                                                      Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5111,8 +5844,9 @@ let apply () =
             annot = "`New (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'class_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`New (_loc, i) : 'exp )))
+                 (fun (i : 'class_longident)  _  (_loc : Locf.t)  ->
+                    (`New (_loc, i) : 'exp ) : 'class_longident ->
+                                                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5125,8 +5859,10 @@ let apply () =
             annot = "`Lazy (_loc, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Lazy (_loc, e) : 'exp )))
+                 (fun (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Lazy (_loc, e) : 'exp ) : 'exp ->
+                                                  Tokenf.txt ->
+                                                    Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5147,9 +5883,12 @@ let apply () =
              annot = "`Label (_loc, i, e)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_3:(e : 'exp)  ~__fan_2:_ 
-                     ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (`Label (_loc, i, e) : 'exp )))
+                  (fun (e : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                     (`Label (_loc, i, e) : 'exp ) : 'exp ->
+                                                       Tokenf.txt ->
+                                                         'a_lident ->
+                                                           Tokenf.txt ->
+                                                             Locf.t -> 'exp ))
            };
           {
             symbols =
@@ -5160,8 +5899,10 @@ let apply () =
             annot = "`LabelS (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`LabelS (_loc, i) : 'exp )))
+                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`LabelS (_loc, i) : 'exp ) : 'a_lident ->
+                                                    Tokenf.txt ->
+                                                      Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5172,11 +5913,10 @@ let apply () =
             annot = "(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
                     ((`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp ) : 
-                      'exp )))
+                      'exp ) : 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5189,10 +5929,10 @@ let apply () =
             annot = "`OptLabl (_loc, (`Lid (_loc, i)), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (`OptLabl (_loc, (`Lid (_loc, i)), e) : 'exp )))
+                    (`OptLabl (_loc, (`Lid (_loc, i)), e) : 'exp ) : 
+                 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5207,9 +5947,12 @@ let apply () =
             annot = "`OptLabl (_loc, i, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e : 'exp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OptLabl (_loc, i, e) : 'exp )))
+                 (fun (e : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`OptLabl (_loc, i, e) : 'exp ) : 'exp ->
+                                                        Tokenf.txt ->
+                                                          'a_lident ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5220,8 +5963,10 @@ let apply () =
             annot = "`OptLablS (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`OptLablS (_loc, i) : 'exp )))
+                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`OptLablS (_loc, i) : 'exp ) : 'a_lident ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5245,9 +5990,14 @@ let apply () =
              annot = "`ArrayDot (_loc, e1, e2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_4:_  ~__fan_3:(e2 : 'exp)  ~__fan_2:_ 
-                     ~__fan_1:_  ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     (`ArrayDot (_loc, e1, e2) : 'exp )))
+                  (fun _  (e2 : 'exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)  ->
+                     (`ArrayDot (_loc, e1, e2) : 'exp ) : Tokenf.txt ->
+                                                            'exp ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  'exp ->
+                                                                    Locf.t ->
+                                                                    'exp ))
            };
           {
             symbols =
@@ -5265,9 +6015,14 @@ let apply () =
             annot = "`StringDot (_loc, e1, e2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(e2 : 'exp)  ~__fan_2:_ 
-                    ~__fan_1:_  ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (`StringDot (_loc, e1, e2) : 'exp )))
+                 (fun _  (e2 : 'exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)  ->
+                    (`StringDot (_loc, e1, e2) : 'exp ) : Tokenf.txt ->
+                                                            'exp ->
+                                                              Tokenf.txt ->
+                                                                Tokenf.txt ->
+                                                                  'exp ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -5285,9 +6040,18 @@ let apply () =
             annot = "Fan_ops.bigarray_get _loc e1 e2\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(e2 : 'comma_exp)  ~__fan_2:_ 
-                    ~__fan_1:_  ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (Fan_ops.bigarray_get _loc e1 e2 : 'exp )))
+                 (fun _  (e2 : 'comma_exp)  _  _  (e1 : 'exp) 
+                    (_loc : Locf.t)  ->
+                    (Fan_ops.bigarray_get _loc e1 e2 : 'exp ) : Tokenf.txt ->
+                                                                  'comma_exp
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -5299,9 +6063,9 @@ let apply () =
             annot = "`Field (_loc, e1, e2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e2 : 'label_longident)  ~__fan_1:_ 
-                    ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                    (`Field (_loc, e1, e2) : 'exp )))
+                 (fun (e2 : 'label_longident)  _  (e1 : 'exp) 
+                    (_loc : Locf.t)  -> (`Field (_loc, e1, e2) : 'exp ) : 
+                 'label_longident -> Tokenf.txt -> 'exp -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5313,9 +6077,11 @@ let apply () =
             annot = "`Send (_loc, e, lab)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(lab : 'a_lident)  ~__fan_1:_ 
-                    ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (`Send (_loc, e, lab) : 'exp )))
+                 (fun (lab : 'a_lident)  _  (e : 'exp)  (_loc : Locf.t)  ->
+                    (`Send (_loc, e, lab) : 'exp ) : 'a_lident ->
+                                                       Tokenf.txt ->
+                                                         'exp ->
+                                                           Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5332,11 +6098,15 @@ let apply () =
              annot = "`App (_loc, (`Lid (xloc, x)), e)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                     (_loc : Locf.t)  ->
+                  (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t) 
+                     ->
                      let xloc = __fan_0.loc in
                      let x = __fan_0.txt in
-                     (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))
+                     (`App (_loc, (`Lid (xloc, x)), e) : 'exp ) : 'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
            };
           {
             symbols =
@@ -5347,11 +6117,14 @@ let apply () =
             annot = "`App (_loc, (`Lid (xloc, x)), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'exp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let xloc = __fan_0.loc in
                     let x = __fan_0.txt in
-                    (`App (_loc, (`Lid (xloc, x)), e) : 'exp )))
+                    (`App (_loc, (`Lid (xloc, x)), e) : 'exp ) : 'exp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
@@ -5367,9 +6140,12 @@ let apply () =
              annot = "Ast_quotation.expand x Dyn_tag.exp\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                      let x = __fan_0 in
-                     (Ast_quotation.expand x Dyn_tag.exp : 'exp )))
+                     (Ast_quotation.expand x Dyn_tag.exp : 'exp ) : Tokenf.quot
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
            };
           {
             symbols =
@@ -5381,8 +6157,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5394,8 +6171,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5407,8 +6185,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5420,8 +6199,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5433,8 +6213,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5446,8 +6227,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5459,8 +6241,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5472,8 +6255,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5485,8 +6269,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5498,8 +6283,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5515,8 +6301,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5528,8 +6315,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5541,8 +6329,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5555,8 +6344,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5572,8 +6362,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5585,8 +6376,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5598,8 +6390,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5612,8 +6405,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5625,8 +6419,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5638,8 +6433,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5651,8 +6447,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5665,8 +6462,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5682,8 +6480,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5695,8 +6494,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5708,8 +6508,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5722,8 +6523,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5735,8 +6537,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5748,8 +6551,9 @@ let apply () =
             annot = "mk_ant ~c:\"exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"exp" s : 'exp ) : 
+                 Tokenf.ant -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5759,8 +6563,9 @@ let apply () =
             annot = "`Int (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Int (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Int (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5770,8 +6575,9 @@ let apply () =
             annot = "`Int32 (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Int32 (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Int32 (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5781,8 +6587,9 @@ let apply () =
             annot = "`Int64 (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Int64 (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Int64 (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5795,8 +6602,9 @@ let apply () =
             annot = "`Nativeint (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Nativeint (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Nativeint (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5806,8 +6614,9 @@ let apply () =
             annot = "`Flo (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Flo (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Flo (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5817,8 +6626,9 @@ let apply () =
             annot = "`Chr (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Chr (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Chr (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5828,8 +6638,9 @@ let apply () =
             annot = "`Str (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Str (_loc, s) : 'exp )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Str (_loc, s) : 'exp ) : 
+                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5845,18 +6656,19 @@ let apply () =
             annot = "`LetOpen (_loc, (`Negative _loc), i, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(e : 'exp) 
-                    ~__fan_0:(i : 'module_longident_dot_lparen) 
+                 (fun _  (e : 'exp)  (i : 'module_longident_dot_lparen) 
                     (_loc : Locf.t)  ->
-                    (`LetOpen (_loc, (`Negative _loc), i, e) : 'exp )))
+                    (`LetOpen (_loc, (`Negative _loc), i, e) : 'exp ) : 
+                 Tokenf.txt ->
+                   'exp -> 'module_longident_dot_lparen -> Locf.t -> 'exp ))
           };
           {
             symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
             annot = "(i : vid  :>exp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
-                    ((i : vid  :>exp) : 'exp )))
+                 (fun (i : 'vid)  (_loc : Locf.t)  ->
+                    ((i : vid  :>exp) : 'exp ) : 'vid -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5867,8 +6679,9 @@ let apply () =
             annot = "`Vrn (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(s : 'luident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`Vrn (_loc, s) : 'exp )))
+                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
+                    (`Vrn (_loc, s) : 'exp ) : 'luident ->
+                                                 Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5881,8 +6694,12 @@ let apply () =
             annot = "(`Uid (_loc, \"[]\") : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "[]") : FAst.exp ) : 'exp )))
+                 (fun _  _  (_loc : Locf.t)  ->
+                    ((`Uid (_loc, "[]") : FAst.exp ) : 'exp ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -5897,8 +6714,10 @@ let apply () =
             annot = "s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(s : 'sem_exp_for_list) 
-                    ~__fan_0:_  (_loc : Locf.t)  -> (s : 'exp )))
+                 (fun _  (s : 'sem_exp_for_list)  _  (_loc : Locf.t)  ->
+                    (s : 'exp ) : Tokenf.txt ->
+                                    'sem_exp_for_list ->
+                                      Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5911,8 +6730,8 @@ let apply () =
             annot = "`ArrayEmpty _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ArrayEmpty _loc : 'exp )))
+                 (fun _  _  (_loc : Locf.t)  -> (`ArrayEmpty _loc : 'exp ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5926,8 +6745,11 @@ let apply () =
             annot = "`Array (_loc, el)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(el : 'sem_exp)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Array (_loc, el) : 'exp )))
+                 (fun _  (el : 'sem_exp)  _  (_loc : Locf.t)  ->
+                    (`Array (_loc, el) : 'exp ) : Tokenf.txt ->
+                                                    'sem_exp ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5949,12 +6771,14 @@ let apply () =
             annot = "`RecordWith (_loc, el, (`Lid (xloc, x)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(el : 'label_exp_list)  ~__fan_2:_
-                     ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (el : 'label_exp_list)  _  (__fan_1 : Tokenf.txt)  _
+                     (_loc : Locf.t)  ->
                     let xloc = __fan_1.loc in
                     let x = __fan_1.txt in
-                    (`RecordWith (_loc, el, (`Lid (xloc, x))) : 'exp )))
+                    (`RecordWith (_loc, el, (`Lid (xloc, x))) : 'exp ) : 
+                 Tokenf.txt ->
+                   'label_exp_list ->
+                     Tokenf.txt -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5968,8 +6792,11 @@ let apply () =
             annot = "`Record (_loc, el)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(el : 'label_exp_list)  ~__fan_0:_
-                     (_loc : Locf.t)  -> (`Record (_loc, el) : 'exp )))
+                 (fun _  (el : 'label_exp_list)  _  (_loc : Locf.t)  ->
+                    (`Record (_loc, el) : 'exp ) : Tokenf.txt ->
+                                                     'label_exp_list ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -5995,10 +6822,15 @@ let apply () =
             annot = "`RecordWith (_loc, el, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:_  ~__fan_5:(el : 'label_exp_list)  ~__fan_4:_
-                     ~__fan_3:_  ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:_ 
+                 (fun _  (el : 'label_exp_list)  _  _  (e : 'exp)  _  _ 
                     (_loc : Locf.t)  -> (`RecordWith (_loc, el, e) : 
-                    'exp )))
+                    'exp ) : Tokenf.txt ->
+                               'label_exp_list ->
+                                 Tokenf.txt ->
+                                   Tokenf.txt ->
+                                     'exp ->
+                                       Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6011,8 +6843,8 @@ let apply () =
             annot = "`OvrInstEmpty _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OvrInstEmpty _loc : 'exp )))
+                 (fun _  _  (_loc : Locf.t)  -> (`OvrInstEmpty _loc : 'exp ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6026,9 +6858,11 @@ let apply () =
             annot = "`OvrInst (_loc, fel)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(fel : 'field_exp_list) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`OvrInst (_loc, fel) : 'exp )))
+                 (fun _  (fel : 'field_exp_list)  _  (_loc : Locf.t)  ->
+                    (`OvrInst (_loc, fel) : 'exp ) : Tokenf.txt ->
+                                                       'field_exp_list ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6041,8 +6875,12 @@ let apply () =
             annot = "(`Uid (_loc, \"()\") : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.exp ) : 'exp )))
+                 (fun _  _  (_loc : Locf.t)  ->
+                    ((`Uid (_loc, "()") : FAst.exp ) : 'exp ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -6060,9 +6898,15 @@ let apply () =
             annot = "`Constraint (_loc, e, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, e, t) : 'exp )))
+                 (fun _  (t : 'ctyp)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Constraint (_loc, e, t) : 'exp ) : Tokenf.txt ->
+                                                           'ctyp ->
+                                                             Tokenf.txt ->
+                                                               'exp ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'exp ))
           };
           {
             symbols =
@@ -6080,9 +6924,11 @@ let apply () =
             annot = "`Par (_loc, (`Com (_loc, e, el)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(el : 'comma_exp)  ~__fan_2:_ 
-                    ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Par (_loc, (`Com (_loc, e, el))) : 'exp )))
+                 (fun _  (el : 'comma_exp)  _  (e : 'exp)  _  (_loc : Locf.t)
+                     -> (`Par (_loc, (`Com (_loc, e, el))) : 'exp ) : 
+                 Tokenf.txt ->
+                   'comma_exp ->
+                     Tokenf.txt -> 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6100,9 +6946,11 @@ let apply () =
             annot = "`Seq (_loc, (`Sem (_loc, e, seq)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(seq : 'sequence)  ~__fan_2:_ 
-                    ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Seq (_loc, (`Sem (_loc, e, seq))) : 'exp )))
+                 (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : Locf.t)
+                     -> (`Seq (_loc, (`Sem (_loc, e, seq))) : 'exp ) : 
+                 Tokenf.txt ->
+                   'sequence ->
+                     Tokenf.txt -> 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6119,8 +6967,12 @@ let apply () =
             annot = "`Seq (_loc, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:_  ~__fan_1:(e : 'exp)  ~__fan_0:_
-                     (_loc : Locf.t)  -> (`Seq (_loc, e) : 'exp )))
+                 (fun _  _  (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Seq (_loc, e) : 'exp ) : Tokenf.txt ->
+                                                 Tokenf.txt ->
+                                                   'exp ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6142,10 +6994,14 @@ let apply () =
             annot = "`Coercion (_loc, e, t, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:_  ~__fan_5:(t2 : 'ctyp)  ~__fan_4:_ 
-                    ~__fan_3:(t : 'ctyp)  ~__fan_2:_  ~__fan_1:(e : 'exp) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Coercion (_loc, e, t, t2) : 'exp )))
+                 (fun _  (t2 : 'ctyp)  _  (t : 'ctyp)  _  (e : 'exp)  _ 
+                    (_loc : Locf.t)  -> (`Coercion (_loc, e, t, t2) : 
+                    'exp ) : Tokenf.txt ->
+                               'ctyp ->
+                                 Tokenf.txt ->
+                                   'ctyp ->
+                                     Tokenf.txt ->
+                                       'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6163,9 +7019,14 @@ let apply () =
             annot = "`Subtype (_loc, e, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Subtype (_loc, e, t) : 'exp )))
+                 (fun _  (t : 'ctyp)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Subtype (_loc, e, t) : 'exp ) : Tokenf.txt ->
+                                                        'ctyp ->
+                                                          Tokenf.txt ->
+                                                            'exp ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'exp ))
           };
           {
             symbols =
@@ -6179,8 +7040,8 @@ let apply () =
             annot = "e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(e : 'exp)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (e : 'exp )))
+                 (fun _  (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'exp ) : 
+                 Tokenf.txt -> 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6196,11 +7057,12 @@ let apply () =
               "match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun _  _  (_loc : Locf.t)  ->
                     let seq = None in
                     (match seq with
                      | Some seq -> `Seq (_loc, seq)
-                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp )))
+                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6217,12 +7079,12 @@ let apply () =
               "match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(seq : 'sequence)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (seq : 'sequence)  _  (_loc : Locf.t)  ->
                     let seq = Some seq in
                     (match seq with
                      | Some seq -> `Seq (_loc, seq)
-                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp )))
+                     | None  -> (`Uid (_loc, "()") : FAst.exp ) : 'exp ) : 
+                 Tokenf.txt -> 'sequence -> Tokenf.txt -> Locf.t -> 'exp ))
           };
           {
             symbols =
@@ -6241,9 +7103,13 @@ let apply () =
             annot = "`Package_exp (_loc, me)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(me : 'mexp)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Package_exp (_loc, me) : 'exp )))
+                 (fun _  (me : 'mexp)  _  _  (_loc : Locf.t)  ->
+                    (`Package_exp (_loc, me) : 'exp ) : Tokenf.txt ->
+                                                          'mexp ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'exp ))
           };
           {
             symbols =
@@ -6266,11 +7132,15 @@ let apply () =
             annot = "`Package_exp (_loc, (`Constraint (_loc, me, pt)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(pt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(me : 'mexp)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (pt : 'mtyp)  _  (me : 'mexp)  _  _  (_loc : Locf.t)
+                     ->
                     (`Package_exp (_loc, (`Constraint (_loc, me, pt))) : 
-                    'exp )))
+                    'exp ) : Tokenf.txt ->
+                               'mtyp ->
+                                 Tokenf.txt ->
+                                   'mexp ->
+                                     Tokenf.txt ->
+                                       Tokenf.txt -> Locf.t -> 'exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (sem_exp_for_list : 'sem_exp_for_list Gramf.t )
@@ -6289,10 +7159,14 @@ let apply () =
                "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), el) : FAst.exp )\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(el : 'sem_exp_for_list)  ~__fan_1:_ 
-                     ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
+                  (fun (el : 'sem_exp_for_list)  _  (e : 'exp) 
+                     (_loc : Locf.t)  ->
                      ((`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), el) : 
-                     FAst.exp ) : 'sem_exp_for_list )))
+                     FAst.exp ) : 'sem_exp_for_list ) : 'sem_exp_for_list ->
+                                                          Tokenf.txt ->
+                                                            'exp ->
+                                                              Locf.t ->
+                                                                'sem_exp_for_list ))
            };
           {
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
@@ -6300,10 +7174,11 @@ let apply () =
               "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nFAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  (_loc : Locf.t)  ->
                     ((`App
                         (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
-                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list )))
+                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list ) : 
+                 'exp -> Locf.t -> 'sem_exp_for_list ))
           };
           {
             symbols =
@@ -6315,10 +7190,11 @@ let apply () =
               "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nFAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
+                 (fun _  (e : 'exp)  (_loc : Locf.t)  ->
                     ((`App
                         (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
-                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list )))
+                          (`Uid (_loc, "[]"))) : FAst.exp ) : 'sem_exp_for_list ) : 
+                 Tokenf.txt -> 'exp -> Locf.t -> 'sem_exp_for_list ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (sequence : 'sequence Gramf.t )
@@ -6343,10 +7219,20 @@ let apply () =
              annot = "k (`LetIn (_loc, rf, bi, e))\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_5:(k : 'sequence')  ~__fan_4:(e : 'exp) 
-                     ~__fan_3:_  ~__fan_2:(bi : 'bind) 
-                     ~__fan_1:(rf : 'opt_rec)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (k (`LetIn (_loc, rf, bi, e)) : 'sequence )))
+                  (fun (k : 'sequence')  (e : 'exp)  _  (bi : 'bind) 
+                     (rf : 'opt_rec)  _  (_loc : Locf.t)  ->
+                     (k (`LetIn (_loc, rf, bi, e)) : 'sequence ) : 'sequence'
+                                                                    ->
+                                                                    'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'bind ->
+                                                                    'opt_rec
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sequence ))
            };
           {
             symbols =
@@ -6374,11 +7260,18 @@ let apply () =
             annot = "k (`LetTryInWith (_loc, r, bi, x, a))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_8:(k : 'sequence')  ~__fan_7:(a : 'case) 
-                    ~__fan_6:_  ~__fan_5:(x : 'sequence)  ~__fan_4:_ 
-                    ~__fan_3:(bi : 'bind)  ~__fan_2:(r : 'opt_rec) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (k (`LetTryInWith (_loc, r, bi, x, a)) : 'sequence )))
+                 (fun (k : 'sequence')  (a : 'case)  _  (x : 'sequence)  _ 
+                    (bi : 'bind)  (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
+                    (k (`LetTryInWith (_loc, r, bi, x, a)) : 'sequence ) : 
+                 'sequence' ->
+                   'case ->
+                     Tokenf.txt ->
+                       'sequence ->
+                         Tokenf.txt ->
+                           'bind ->
+                             'opt_rec ->
+                               Tokenf.txt ->
+                                 Tokenf.txt -> Locf.t -> 'sequence ))
           };
           {
             symbols =
@@ -6402,11 +7295,15 @@ let apply () =
             annot = "k (`LetModule (_loc, m, mb, e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:(k : 'sequence')  ~__fan_5:(e : 'exp) 
-                    ~__fan_4:_  ~__fan_3:(mb : 'mbind0) 
-                    ~__fan_2:(m : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (k (`LetModule (_loc, m, mb, e)) : 'sequence )))
+                 (fun (k : 'sequence')  (e : 'exp)  _  (mb : 'mbind0) 
+                    (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
+                    (k (`LetModule (_loc, m, mb, e)) : 'sequence ) : 
+                 'sequence' ->
+                   'exp ->
+                     Tokenf.txt ->
+                       'mbind0 ->
+                         'a_uident ->
+                           Tokenf.txt -> Tokenf.txt -> Locf.t -> 'sequence ))
           };
           {
             symbols =
@@ -6430,8 +7327,7 @@ let apply () =
               "`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(e : 'sequence)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_ 
+                 (fun (e : 'sequence)  _  (i : 'module_longident)  _  _ 
                     (_loc : Locf.t)  ->
                     let bang = None in
                     (`LetOpen
@@ -6439,7 +7335,11 @@ let apply () =
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
-                      'sequence )))
+                      'sequence ) : 'sequence ->
+                                      Tokenf.txt ->
+                                        'module_longident ->
+                                          Tokenf.txt ->
+                                            Tokenf.txt -> Locf.t -> 'sequence ))
           };
           {
             symbols =
@@ -6466,17 +7366,21 @@ let apply () =
               "`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'sequence)  ~__fan_4:_ 
-                    ~__fan_3:(i : 'module_longident) 
-                    ~__fan_2:(bang : Tokenf.txt)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'sequence)  _  (i : 'module_longident) 
+                    (bang : Tokenf.txt)  _  _  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (`LetOpen
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
-                      'sequence )))
+                      'sequence ) : 'sequence ->
+                                      Tokenf.txt ->
+                                        'module_longident ->
+                                          Tokenf.txt ->
+                                            Tokenf.txt ->
+                                              Tokenf.txt ->
+                                                Locf.t -> 'sequence ))
           };
           {
             symbols =
@@ -6485,8 +7389,9 @@ let apply () =
             annot = "k e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(k : 'sequence')  ~__fan_0:(e : 'exp) 
-                    (_loc : Locf.t)  -> (k e : 'sequence )))
+                 (fun (k : 'sequence')  (e : 'exp)  (_loc : Locf.t)  ->
+                    (k e : 'sequence ) : 'sequence' ->
+                                           'exp -> Locf.t -> 'sequence ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (sequence' : 'sequence' Gramf.t )
@@ -6499,7 +7404,8 @@ let apply () =
              annot = "fun e  -> e\n";
              fn =
                (Gramf.mk_action
-                  (fun (_loc : Locf.t)  -> (fun e  -> e : 'sequence' )))
+                  (fun (_loc : Locf.t)  -> (fun e  -> e : 'sequence' ) : 
+                  Locf.t -> 'sequence' ))
            };
           {
             symbols =
@@ -6509,8 +7415,8 @@ let apply () =
             annot = "fun e  -> e\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    (fun e  -> e : 'sequence' )))
+                 (fun _  (_loc : Locf.t)  -> (fun e  -> e : 'sequence' ) : 
+                 Tokenf.txt -> Locf.t -> 'sequence' ))
           };
           {
             symbols =
@@ -6521,8 +7427,13 @@ let apply () =
             annot = "fun e  -> `Sem (_loc, e, el)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(el : 'sequence)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (fun e  -> `Sem (_loc, e, el) : 'sequence' )))
+                 (fun (el : 'sequence)  _  (_loc : Locf.t)  ->
+                    (fun e  -> `Sem (_loc, e, el) : 'sequence' ) : 'sequence
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'sequence' ))
           }]
       } : Gramf.olevel ));
   Gramf.extend_single (with_exp_lang : 'with_exp_lang Gramf.t )
@@ -6540,9 +7451,9 @@ let apply () =
             annot = "Ast_quotation.default := old; x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(x : 'exp)  ~__fan_1:_  ~__fan_0:(old : 'lang)
-                     (_loc : Locf.t)  ->
-                    (Ast_quotation.default := old; x : 'with_exp_lang )))
+                 (fun (x : 'exp)  _  (old : 'lang)  (_loc : Locf.t)  ->
+                    (Ast_quotation.default := old; x : 'with_exp_lang ) : 
+                 'exp -> Tokenf.txt -> 'lang -> Locf.t -> 'with_exp_lang ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (with_stru_lang : 'with_stru_lang Gramf.t )
@@ -6560,9 +7471,9 @@ let apply () =
             annot = "Ast_quotation.default := old; x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(x : 'stru)  ~__fan_1:_ 
-                    ~__fan_0:(old : 'lang)  (_loc : Locf.t)  ->
-                    (Ast_quotation.default := old; x : 'with_stru_lang )))
+                 (fun (x : 'stru)  _  (old : 'lang)  (_loc : Locf.t)  ->
+                    (Ast_quotation.default := old; x : 'with_stru_lang ) : 
+                 'stru -> Tokenf.txt -> 'lang -> Locf.t -> 'with_stru_lang ))
           }]
      } : Gramf.olevel );
   (Gramf.extend_single (bind_quot : 'bind_quot Gramf.t )
@@ -6575,8 +7486,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'bind)  (_loc : Locf.t)  ->
-                     (x : 'bind_quot )))
+                  (fun (x : 'bind)  (_loc : Locf.t)  -> (x : 'bind_quot ) : 
+                  'bind -> Locf.t -> 'bind_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (bind : 'bind Gramf.t )
@@ -6594,8 +7505,9 @@ let apply () =
              annot = "mk_ant ~c:\"bind\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"bind" s : 'bind )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"bind" s : 'bind ) : 
+                  Tokenf.ant -> Locf.t -> 'bind ))
            };
           {
             symbols =
@@ -6607,8 +7519,9 @@ let apply () =
             annot = "mk_ant ~c:\"bind\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"bind" s : 'bind )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"bind" s : 'bind ) : 
+                 Tokenf.ant -> Locf.t -> 'bind ))
           };
           {
             symbols =
@@ -6624,11 +7537,12 @@ let apply () =
             annot = "(`Bind (_loc, (mk_ant ~c:\"pat\" s), e) : FAst.bind )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
                     ((`Bind (_loc, (mk_ant ~c:"pat" s), e) : FAst.bind ) : 
-                      'bind )))
+                      'bind ) : 'exp ->
+                                  Tokenf.txt -> Tokenf.ant -> Locf.t -> 'bind ))
           };
           {
             symbols =
@@ -6640,9 +7554,11 @@ let apply () =
             annot = "`And (_loc, b1, b2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(b2 : 'bind)  ~__fan_1:_ 
-                    ~__fan_0:(b1 : 'bind)  (_loc : Locf.t)  ->
-                    (`And (_loc, b1, b2) : 'bind )))
+                 (fun (b2 : 'bind)  _  (b1 : 'bind)  (_loc : Locf.t)  ->
+                    (`And (_loc, b1, b2) : 'bind ) : 'bind ->
+                                                       Tokenf.txt ->
+                                                         'bind ->
+                                                           Locf.t -> 'bind ))
           };
           {
             symbols =
@@ -6651,8 +7567,9 @@ let apply () =
             annot = "`Bind (_loc, p, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_bind)  ~__fan_0:(p : 'pat) 
-                    (_loc : Locf.t)  -> (`Bind (_loc, p, e) : 'bind )))
+                 (fun (e : 'fun_bind)  (p : 'pat)  (_loc : Locf.t)  ->
+                    (`Bind (_loc, p, e) : 'bind ) : 'fun_bind ->
+                                                      'pat -> Locf.t -> 'bind ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (rec_exp_quot : 'rec_exp_quot Gramf.t )
@@ -6666,8 +7583,9 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'label_exp_list)  (_loc : Locf.t)  ->
-                     (x : 'rec_exp_quot )))
+                  (fun (x : 'label_exp_list)  (_loc : Locf.t)  ->
+                     (x : 'rec_exp_quot ) : 'label_exp_list ->
+                                              Locf.t -> 'rec_exp_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (label_exp : 'label_exp Gramf.t )
@@ -6689,8 +7607,9 @@ let apply () =
              annot = "mk_ant ~c:\"rec_exp\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'label_exp )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'label_exp ) : 
+                  Tokenf.ant -> Locf.t -> 'label_exp ))
            };
           {
             symbols =
@@ -6702,8 +7621,9 @@ let apply () =
             annot = "mk_ant ~c:\"rec_exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'label_exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'label_exp ) : 
+                 Tokenf.ant -> Locf.t -> 'label_exp ))
           };
           {
             symbols =
@@ -6713,9 +7633,10 @@ let apply () =
             annot = "(`RecBind (_loc, i, e) : FAst.rec_exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(e : 'fun_bind) 
-                    ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
-                    ((`RecBind (_loc, i, e) : FAst.rec_exp ) : 'label_exp )))
+                 (fun (e : 'fun_bind)  (i : 'label_longident) 
+                    (_loc : Locf.t)  ->
+                    ((`RecBind (_loc, i, e) : FAst.rec_exp ) : 'label_exp ) : 
+                 'fun_bind -> 'label_longident -> Locf.t -> 'label_exp ))
           };
           {
             symbols =
@@ -6724,9 +7645,9 @@ let apply () =
             annot = "`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'label_longident)  (_loc : Locf.t)  ->
+                 (fun (i : 'label_longident)  (_loc : Locf.t)  ->
                     (`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i)))) : 
-                    'label_exp )))
+                    'label_exp ) : 'label_longident -> Locf.t -> 'label_exp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (field_exp : 'field_exp Gramf.t )
@@ -6744,8 +7665,9 @@ let apply () =
              annot = "mk_ant ~c:\"rec_exp\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'field_exp )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'field_exp ) : 
+                  Tokenf.ant -> Locf.t -> 'field_exp ))
            };
           {
             symbols =
@@ -6757,8 +7679,9 @@ let apply () =
             annot = "mk_ant ~c:\"rec_exp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'field_exp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"rec_exp" s : 'field_exp ) : 
+                 Tokenf.ant -> Locf.t -> 'field_exp ))
           };
           {
             symbols =
@@ -6770,9 +7693,14 @@ let apply () =
             annot = "`RecBind (_loc, (l :>vid), e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(l : 'a_lident)  (_loc : Locf.t)  ->
-                    (`RecBind (_loc, (l :>vid), e) : 'field_exp )))
+                 (fun (e : 'exp)  _  (l : 'a_lident)  (_loc : Locf.t)  ->
+                    (`RecBind (_loc, (l :>vid), e) : 'field_exp ) : 'exp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'field_exp ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (luident : 'luident Gramf.t )
@@ -6788,8 +7716,10 @@ let apply () =
              annot = "i\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                     let i = __fan_0.txt in (i : 'luident )))
+                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                     let i = __fan_0.txt in (i : 'luident ) : Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'luident ))
            };
           {
             symbols =
@@ -6799,8 +7729,10 @@ let apply () =
             annot = "i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (i : 'luident )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (i : 'luident ) : Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'luident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (aident : 'aident Gramf.t )
@@ -6813,16 +7745,17 @@ let apply () =
              annot = "(i :>ident)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                     ((i :>ident) : 'aident )))
+                  (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                     ((i :>ident) : 'aident ) : 'a_lident ->
+                                                  Locf.t -> 'aident ))
            };
           {
             symbols = [Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))];
             annot = "(i :>ident)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'a_uident)  (_loc : Locf.t)  ->
-                    ((i :>ident) : 'aident )))
+                 (fun (i : 'a_uident)  (_loc : Locf.t)  ->
+                    ((i :>ident) : 'aident ) : 'a_uident -> Locf.t -> 'aident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (astr : 'astr Gramf.t )
@@ -6838,8 +7771,9 @@ let apply () =
              annot = "`C (_loc, i)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                     let i = __fan_0.txt in (`C (_loc, i) : 'astr )))
+                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                     let i = __fan_0.txt in (`C (_loc, i) : 'astr ) : 
+                  Tokenf.txt -> Locf.t -> 'astr ))
            };
           {
             symbols =
@@ -6849,8 +7783,9 @@ let apply () =
             annot = "`C (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (`C (_loc, i) : 'astr )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (`C (_loc, i) : 'astr ) : 
+                 Tokenf.txt -> Locf.t -> 'astr ))
           };
           {
             symbols =
@@ -6862,8 +7797,10 @@ let apply () =
             annot = "mk_ant s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant s : 'astr )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant s : 'astr ) : Tokenf.ant ->
+                                                               Locf.t ->
+                                                                 'astr ))
           };
           {
             symbols =
@@ -6875,8 +7812,10 @@ let apply () =
             annot = "mk_ant s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant s : 'astr )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant s : 'astr ) : Tokenf.ant ->
+                                                               Locf.t ->
+                                                                 'astr ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (ident_quot : 'ident_quot Gramf.t )
@@ -6894,9 +7833,11 @@ let apply () =
              annot = "(`Dot (_loc, i, j) : FAst.ident )\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(j : 'ident_quot)  ~__fan_1:_ 
-                     ~__fan_0:(i : 'ident_quot)  (_loc : Locf.t)  ->
-                     ((`Dot (_loc, i, j) : FAst.ident ) : 'ident_quot )))
+                  (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
+                     (_loc : Locf.t)  ->
+                     ((`Dot (_loc, i, j) : FAst.ident ) : 'ident_quot ) : 
+                  'ident_quot ->
+                    Tokenf.txt -> 'ident_quot -> Locf.t -> 'ident_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (ident_quot : 'ident_quot Gramf.t )
@@ -6914,8 +7855,9 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot ) : 
+                  Tokenf.ant -> Locf.t -> 'ident_quot ))
            };
           {
             symbols =
@@ -6927,8 +7869,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot ) : 
+                 Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -6940,8 +7883,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot ) : 
+                 Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -6953,8 +7897,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident_quot ) : 
+                 Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -6970,10 +7915,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident_quot)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot ) : 
+                 'ident_quot ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -6989,10 +7936,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident_quot)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot ) : 
+                 'ident_quot ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -7008,10 +7957,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident_quot)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident_quot ) : 
+                 'ident_quot ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -7021,9 +7972,10 @@ let apply () =
             annot = "(`Lid (_loc, i) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    ((`Lid (_loc, i) : FAst.ident ) : 'ident_quot )))
+                    ((`Lid (_loc, i) : FAst.ident ) : 'ident_quot ) : 
+                 Tokenf.txt -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -7033,9 +7985,10 @@ let apply () =
             annot = "(`Uid (_loc, i) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot )))
+                    ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot ) : 
+                 Tokenf.txt -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -7049,11 +8002,13 @@ let apply () =
             annot = "(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(j : 'ident_quot)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (j : 'ident_quot)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0.txt in
                     ((`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident ) : 
-                      'ident_quot )))
+                      'ident_quot ) : 'ident_quot ->
+                                        Tokenf.txt ->
+                                          Tokenf.txt -> Locf.t -> 'ident_quot ))
           };
           {
             symbols =
@@ -7068,9 +8023,11 @@ let apply () =
             annot = "`Apply (_loc, i, j)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(j : 'ident_quot) 
-                    ~__fan_1:(i : 'ident_quot)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`Apply (_loc, i, j) : 'ident_quot )))
+                 (fun _  (j : 'ident_quot)  (i : 'ident_quot)  _ 
+                    (_loc : Locf.t)  -> (`Apply (_loc, i, j) : 'ident_quot ) : 
+                 Tokenf.txt ->
+                   'ident_quot ->
+                     'ident_quot -> Tokenf.txt -> Locf.t -> 'ident_quot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (ident : 'ident Gramf.t )
@@ -7088,8 +8045,9 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident ) : 
+                  Tokenf.ant -> Locf.t -> 'ident ))
            };
           {
             symbols =
@@ -7101,8 +8059,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident ) : 
+                 Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7114,8 +8073,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident ) : 
+                 Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7127,8 +8087,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'ident ) : 
+                 Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7144,10 +8105,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident ) : 
+                 'ident -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7163,10 +8125,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident ) : 
+                 'ident -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7182,10 +8145,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'ident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'ident ) : 
+                 'ident -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7195,8 +8159,9 @@ let apply () =
             annot = "`Lid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (`Lid (_loc, i) : 'ident )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (`Lid (_loc, i) : 'ident ) : 
+                 Tokenf.txt -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7206,8 +8171,9 @@ let apply () =
             annot = "`Uid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (`Uid (_loc, i) : 'ident )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (`Uid (_loc, i) : 'ident ) : 
+                 Tokenf.txt -> Locf.t -> 'ident ))
           };
           {
             symbols =
@@ -7221,10 +8187,16 @@ let apply () =
             annot = "`Dot (_loc, (`Uid (_loc, s)), j)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(j : 'ident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (j : 'ident)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )))
+                    (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident ) : 'ident ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (vid : 'vid Gramf.t )
@@ -7242,8 +8214,9 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
+                  Tokenf.ant -> Locf.t -> 'vid ))
            };
           {
             symbols =
@@ -7255,8 +8228,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
+                 Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7268,8 +8242,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
+                 Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7281,8 +8256,9 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
+                 Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7298,10 +8274,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'vid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid ) : 
+                 'vid -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7317,10 +8294,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'vid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid ) : 
+                 'vid -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7336,10 +8314,11 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'vid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), i) : 'vid ) : 
+                 'vid -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7349,8 +8328,9 @@ let apply () =
             annot = "`Lid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (`Lid (_loc, i) : 'vid )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (`Lid (_loc, i) : 'vid ) : 
+                 Tokenf.txt -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7360,8 +8340,9 @@ let apply () =
             annot = "`Uid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (`Uid (_loc, i) : 'vid )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (`Uid (_loc, i) : 'vid ) : 
+                 Tokenf.txt -> Locf.t -> 'vid ))
           };
           {
             symbols =
@@ -7375,10 +8356,16 @@ let apply () =
             annot = "`Dot (_loc, (`Uid (_loc, s)), j)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(j : 'vid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (j : 'vid)  _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, s)), j) : 'vid )))
+                    (`Dot (_loc, (`Uid (_loc, s)), j) : 'vid ) : 'vid ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'vid ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (uident : 'uident Gramf.t )
@@ -7394,8 +8381,9 @@ let apply () =
              annot = "`Uid (_loc, s)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                     let s = __fan_0.txt in (`Uid (_loc, s) : 'uident )))
+                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                     let s = __fan_0.txt in (`Uid (_loc, s) : 'uident ) : 
+                  Tokenf.txt -> Locf.t -> 'uident ))
            };
           {
             symbols =
@@ -7407,8 +8395,9 @@ let apply () =
             annot = "mk_ant ~c:\"uident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident ) : 
+                 Tokenf.ant -> Locf.t -> 'uident ))
           };
           {
             symbols =
@@ -7420,8 +8409,9 @@ let apply () =
             annot = "mk_ant ~c:\"uident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident ) : 
+                 Tokenf.ant -> Locf.t -> 'uident ))
           };
           {
             symbols =
@@ -7433,8 +8423,9 @@ let apply () =
             annot = "mk_ant ~c:\"uident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"uident" s : 'uident ) : 
+                 Tokenf.ant -> Locf.t -> 'uident ))
           };
           {
             symbols =
@@ -7448,10 +8439,14 @@ let apply () =
             annot = "dot (`Uid (_loc, s)) l\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'uident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (l : 'uident)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0.txt in
-                    (dot (`Uid (_loc, s)) l : 'uident )))
+                    (dot (`Uid (_loc, s)) l : 'uident ) : 'uident ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'uident ))
           };
           {
             symbols =
@@ -7467,10 +8462,16 @@ let apply () =
             annot = "dot (mk_ant ~c:\"uident\" s) i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'uident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (dot (mk_ant ~c:"uident" s) i : 'uident )))
+                    (dot (mk_ant ~c:"uident" s) i : 'uident ) : 'uident ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'uident ))
           };
           {
             symbols =
@@ -7486,10 +8487,16 @@ let apply () =
             annot = "dot (mk_ant ~c:\"uident\" s) i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'uident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (dot (mk_ant ~c:"uident" s) i : 'uident )))
+                    (dot (mk_ant ~c:"uident" s) i : 'uident ) : 'uident ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'uident ))
           };
           {
             symbols =
@@ -7505,10 +8512,16 @@ let apply () =
             annot = "dot (mk_ant ~c:\"uident\" s) i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'uident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (dot (mk_ant ~c:"uident" s) i : 'uident )))
+                    (dot (mk_ant ~c:"uident" s) i : 'uident ) : 'uident ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'uident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (dot_lstrings : 'dot_lstrings Gramf.t )
@@ -7524,8 +8537,9 @@ let apply () =
              annot = "((`Sub []), i)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                     let i = __fan_0.txt in (((`Sub []), i) : 'dot_lstrings )))
+                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                     let i = __fan_0.txt in (((`Sub []), i) : 'dot_lstrings ) : 
+                  Tokenf.txt -> Locf.t -> 'dot_lstrings ))
            };
           {
             symbols =
@@ -7540,13 +8554,16 @@ let apply () =
               "match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'dot_lstrings)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 'dot_lstrings)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
                     (match xs with
                      | (`Sub xs,v) -> ((`Sub (i :: xs)), v)
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
-                      'dot_lstrings )))
+                      'dot_lstrings ) : 'dot_lstrings ->
+                                          Tokenf.txt ->
+                                            Tokenf.txt ->
+                                              Locf.t -> 'dot_lstrings ))
           };
           {
             symbols =
@@ -7564,14 +8581,17 @@ let apply () =
               "match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(xs : 'dot_lstrings)  ~__fan_2:_ 
-                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                 (fun (xs : 'dot_lstrings)  _  (__fan_1 : Tokenf.txt)  _ 
                     (_loc : Locf.t)  ->
                     let i = __fan_1.txt in
                     (match xs with
                      | (`Sub xs,v) -> ((`Absolute (i :: xs)), v)
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
-                      'dot_lstrings )))
+                      'dot_lstrings ) : 'dot_lstrings ->
+                                          Tokenf.txt ->
+                                            Tokenf.txt ->
+                                              Tokenf.txt ->
+                                                Locf.t -> 'dot_lstrings ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -7596,10 +8616,12 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:_  ~__fan_1:_ 
-                     ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun _  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"ident" s : 'module_longident_dot_lparen )))
+                     (mk_ant ~c:"ident" s : 'module_longident_dot_lparen ) : 
+                  Tokenf.txt ->
+                    Tokenf.txt ->
+                      Tokenf.ant -> Locf.t -> 'module_longident_dot_lparen ))
            };
           {
             symbols =
@@ -7617,10 +8639,12 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun _  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident_dot_lparen )))
+                    (mk_ant ~c:"ident" s : 'module_longident_dot_lparen ) : 
+                 Tokenf.txt ->
+                   Tokenf.txt ->
+                     Tokenf.ant -> Locf.t -> 'module_longident_dot_lparen ))
           };
           {
             symbols =
@@ -7638,10 +8662,12 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun _  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident_dot_lparen )))
+                    (mk_ant ~c:"ident" s : 'module_longident_dot_lparen ) : 
+                 Tokenf.txt ->
+                   Tokenf.txt ->
+                     Tokenf.ant -> Locf.t -> 'module_longident_dot_lparen ))
           };
           {
             symbols =
@@ -7655,11 +8681,16 @@ let apply () =
             annot = "(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident_dot_lparen)  ~__fan_1:_
-                     ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident_dot_lparen)  _ 
+                    (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
                     ((`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident ) : 
-                      'module_longident_dot_lparen )))
+                      'module_longident_dot_lparen ) : 'module_longident_dot_lparen
+                                                         ->
+                                                         Tokenf.txt ->
+                                                           Tokenf.txt ->
+                                                             Locf.t ->
+                                                               'module_longident_dot_lparen ))
           };
           {
             symbols =
@@ -7675,10 +8706,12 @@ let apply () =
             annot = "(`Uid (_loc, i) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt)
-                     (_loc : Locf.t)  ->
+                 (fun _  _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    ((`Uid (_loc, i) : FAst.ident ) : 'module_longident_dot_lparen )))
+                    ((`Uid (_loc, i) : FAst.ident ) : 'module_longident_dot_lparen ) : 
+                 Tokenf.txt ->
+                   Tokenf.txt ->
+                     Tokenf.txt -> Locf.t -> 'module_longident_dot_lparen ))
           };
           {
             symbols =
@@ -7695,11 +8728,16 @@ let apply () =
               "(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident_dot_lparen)  ~__fan_1:_
-                     ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident_dot_lparen)  _ 
+                    (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : FAst.ident ) : 
-                      'module_longident_dot_lparen )))
+                      'module_longident_dot_lparen ) : 'module_longident_dot_lparen
+                                                         ->
+                                                         Tokenf.txt ->
+                                                           Tokenf.ant ->
+                                                             Locf.t ->
+                                                               'module_longident_dot_lparen ))
           };
           {
             symbols =
@@ -7716,11 +8754,16 @@ let apply () =
               "(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident_dot_lparen)  ~__fan_1:_
-                     ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident_dot_lparen)  _ 
+                    (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : FAst.ident ) : 
-                      'module_longident_dot_lparen )))
+                      'module_longident_dot_lparen ) : 'module_longident_dot_lparen
+                                                         ->
+                                                         Tokenf.txt ->
+                                                           Tokenf.ant ->
+                                                             Locf.t ->
+                                                               'module_longident_dot_lparen ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (module_longident : 'module_longident Gramf.t )
@@ -7738,9 +8781,12 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"ident" s : 'module_longident )))
+                     (mk_ant ~c:"ident" s : 'module_longident ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'module_longident ))
            };
           {
             symbols =
@@ -7752,9 +8798,12 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident )))
+                    (mk_ant ~c:"ident" s : 'module_longident ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'module_longident ))
           };
           {
             symbols =
@@ -7766,9 +8815,12 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident )))
+                    (mk_ant ~c:"ident" s : 'module_longident ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'module_longident ))
           };
           {
             symbols =
@@ -7782,10 +8834,12 @@ let apply () =
             annot = "`Dot (_loc, (`Uid (_loc, i)), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )))
+                    (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident ) : 
+                 'module_longident ->
+                   Tokenf.txt -> Tokenf.txt -> Locf.t -> 'module_longident ))
           };
           {
             symbols =
@@ -7795,9 +8849,11 @@ let apply () =
             annot = "`Uid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (`Uid (_loc, i) : 'module_longident )))
+                    (`Uid (_loc, i) : 'module_longident ) : Tokenf.txt ->
+                                                              Locf.t ->
+                                                                'module_longident ))
           };
           {
             symbols =
@@ -7813,10 +8869,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'module_longident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'module_longident ) : 
+                 'module_longident ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'module_longident ))
           };
           {
             symbols =
@@ -7832,10 +8890,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'module_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'module_longident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'module_longident ) : 
+                 'module_longident ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'module_longident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -7849,10 +8909,12 @@ let apply () =
              annot = "`Apply (_loc, i, j)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(j : 'module_longident_with_app) 
-                     ~__fan_0:(i : 'module_longident_with_app) 
-                     (_loc : Locf.t)  ->
-                     (`Apply (_loc, i, j) : 'module_longident_with_app )))
+                  (fun (j : 'module_longident_with_app) 
+                     (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
+                     (`Apply (_loc, i, j) : 'module_longident_with_app ) : 
+                  'module_longident_with_app ->
+                    'module_longident_with_app ->
+                      Locf.t -> 'module_longident_with_app ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -7871,10 +8933,13 @@ let apply () =
              annot = "(`Dot (_loc, i, j) : FAst.ident )\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(j : 'module_longident_with_app)  ~__fan_1:_ 
-                     ~__fan_0:(i : 'module_longident_with_app) 
-                     (_loc : Locf.t)  ->
-                     ((`Dot (_loc, i, j) : FAst.ident ) : 'module_longident_with_app )))
+                  (fun (j : 'module_longident_with_app)  _ 
+                     (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
+                     ((`Dot (_loc, i, j) : FAst.ident ) : 'module_longident_with_app ) : 
+                  'module_longident_with_app ->
+                    Tokenf.txt ->
+                      'module_longident_with_app ->
+                        Locf.t -> 'module_longident_with_app ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -7893,9 +8958,10 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"ident" s : 'module_longident_with_app )))
+                     (mk_ant ~c:"ident" s : 'module_longident_with_app ) : 
+                  Tokenf.ant -> Locf.t -> 'module_longident_with_app ))
            };
           {
             symbols =
@@ -7907,9 +8973,10 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident_with_app )))
+                    (mk_ant ~c:"ident" s : 'module_longident_with_app ) : 
+                 Tokenf.ant -> Locf.t -> 'module_longident_with_app ))
           };
           {
             symbols =
@@ -7921,9 +8988,10 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'module_longident_with_app )))
+                    (mk_ant ~c:"ident" s : 'module_longident_with_app ) : 
+                 Tokenf.ant -> Locf.t -> 'module_longident_with_app ))
           };
           {
             symbols =
@@ -7933,9 +9001,10 @@ let apply () =
             annot = "`Uid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (`Uid (_loc, i) : 'module_longident_with_app )))
+                    (`Uid (_loc, i) : 'module_longident_with_app ) : 
+                 Tokenf.txt -> Locf.t -> 'module_longident_with_app ))
           };
           {
             symbols =
@@ -7949,9 +9018,13 @@ let apply () =
             annot = "i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(i : 'module_longident_with_app) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (i : 'module_longident_with_app )))
+                 (fun _  (i : 'module_longident_with_app)  _  (_loc : Locf.t)
+                     -> (i : 'module_longident_with_app ) : Tokenf.txt ->
+                                                              'module_longident_with_app
+                                                                ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'module_longident_with_app ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (type_longident : 'type_longident Gramf.t )
@@ -7964,9 +9037,14 @@ let apply () =
              annot = "`Apply (_loc, i, j)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(j : 'type_longident) 
-                     ~__fan_0:(i : 'type_longident)  (_loc : Locf.t)  ->
-                     (`Apply (_loc, i, j) : 'type_longident )))
+                  (fun (j : 'type_longident)  (i : 'type_longident) 
+                     (_loc : Locf.t)  ->
+                     (`Apply (_loc, i, j) : 'type_longident ) : 'type_longident
+                                                                  ->
+                                                                  'type_longident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'type_longident ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (type_longident : 'type_longident Gramf.t )
@@ -7984,9 +9062,12 @@ let apply () =
              annot = "(`Dot (_loc, i, j) : FAst.ident )\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(j : 'type_longident)  ~__fan_1:_ 
-                     ~__fan_0:(i : 'type_longident)  (_loc : Locf.t)  ->
-                     ((`Dot (_loc, i, j) : FAst.ident ) : 'type_longident )))
+                  (fun (j : 'type_longident)  _  (i : 'type_longident) 
+                     (_loc : Locf.t)  ->
+                     ((`Dot (_loc, i, j) : FAst.ident ) : 'type_longident ) : 
+                  'type_longident ->
+                    Tokenf.txt ->
+                      'type_longident -> Locf.t -> 'type_longident ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (type_longident : 'type_longident Gramf.t )
@@ -8004,9 +9085,11 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"ident" s : 'type_longident )))
+                     (mk_ant ~c:"ident" s : 'type_longident ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'type_longident ))
            };
           {
             symbols =
@@ -8018,9 +9101,11 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'type_longident )))
+                    (mk_ant ~c:"ident" s : 'type_longident ) : Tokenf.ant ->
+                                                                 Locf.t ->
+                                                                   'type_longident ))
           };
           {
             symbols =
@@ -8032,9 +9117,11 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'type_longident )))
+                    (mk_ant ~c:"ident" s : 'type_longident ) : Tokenf.ant ->
+                                                                 Locf.t ->
+                                                                   'type_longident ))
           };
           {
             symbols =
@@ -8046,9 +9133,11 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'type_longident )))
+                    (mk_ant ~c:"ident" s : 'type_longident ) : Tokenf.ant ->
+                                                                 Locf.t ->
+                                                                   'type_longident ))
           };
           {
             symbols =
@@ -8058,9 +9147,10 @@ let apply () =
             annot = "(`Lid (_loc, i) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    ((`Lid (_loc, i) : FAst.ident ) : 'type_longident )))
+                    ((`Lid (_loc, i) : FAst.ident ) : 'type_longident ) : 
+                 Tokenf.txt -> Locf.t -> 'type_longident ))
           };
           {
             symbols =
@@ -8070,9 +9160,10 @@ let apply () =
             annot = "(`Uid (_loc, i) : FAst.ident )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    ((`Uid (_loc, i) : FAst.ident ) : 'type_longident )))
+                    ((`Uid (_loc, i) : FAst.ident ) : 'type_longident ) : 
+                 Tokenf.txt -> Locf.t -> 'type_longident ))
           };
           {
             symbols =
@@ -8086,8 +9177,11 @@ let apply () =
             annot = "i\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(i : 'type_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (i : 'type_longident )))
+                 (fun _  (i : 'type_longident)  _  (_loc : Locf.t)  ->
+                    (i : 'type_longident ) : Tokenf.txt ->
+                                               'type_longident ->
+                                                 Tokenf.txt ->
+                                                   Locf.t -> 'type_longident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (label_longident : 'label_longident Gramf.t )
@@ -8105,9 +9199,12 @@ let apply () =
              annot = "mk_ant ~c:\"ident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"ident" s : 'label_longident )))
+                     (mk_ant ~c:"ident" s : 'label_longident ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'label_longident ))
            };
           {
             symbols =
@@ -8119,9 +9216,11 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'label_longident )))
+                    (mk_ant ~c:"ident" s : 'label_longident ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'label_longident ))
           };
           {
             symbols =
@@ -8133,9 +9232,11 @@ let apply () =
             annot = "mk_ant ~c:\"ident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ident" s : 'label_longident )))
+                    (mk_ant ~c:"ident" s : 'label_longident ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'label_longident ))
           };
           {
             symbols =
@@ -8145,9 +9246,11 @@ let apply () =
             annot = "`Lid (_loc, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (`Lid (_loc, i) : 'label_longident )))
+                    (`Lid (_loc, i) : 'label_longident ) : Tokenf.txt ->
+                                                             Locf.t ->
+                                                               'label_longident ))
           };
           {
             symbols =
@@ -8161,11 +9264,13 @@ let apply () =
             annot = "`Dot (_loc, (`Uid (iloc, i)), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'label_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let iloc = __fan_0.loc in
                     let i = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (iloc, i)), l) : 'label_longident )))
+                    (`Dot (_loc, (`Uid (iloc, i)), l) : 'label_longident ) : 
+                 'label_longident ->
+                   Tokenf.txt -> Tokenf.txt -> Locf.t -> 'label_longident ))
           };
           {
             symbols =
@@ -8181,10 +9286,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'label_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident ) : 
+                 'label_longident ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'label_longident ))
           };
           {
             symbols =
@@ -8200,10 +9307,12 @@ let apply () =
             annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(l : 'label_longident)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident )))
+                    (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident ) : 
+                 'label_longident ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'label_longident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (cltyp_longident : 'cltyp_longident Gramf.t )
@@ -8217,8 +9326,9 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'type_longident)  (_loc : Locf.t)  ->
-                     (x : 'cltyp_longident )))
+                  (fun (x : 'type_longident)  (_loc : Locf.t)  ->
+                     (x : 'cltyp_longident ) : 'type_longident ->
+                                                 Locf.t -> 'cltyp_longident ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (val_longident : 'val_longident Gramf.t )
@@ -8231,8 +9341,9 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'ident)  (_loc : Locf.t)  ->
-                     (x : 'val_longident )))
+                  (fun (x : 'ident)  (_loc : Locf.t)  ->
+                     (x : 'val_longident ) : 'ident ->
+                                               Locf.t -> 'val_longident ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (class_longident : 'class_longident Gramf.t )
@@ -8247,8 +9358,11 @@ let apply () =
              annot = "(x : vid  :>ident)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'label_longident)  (_loc : Locf.t)  ->
-                     ((x : vid  :>ident) : 'class_longident )))
+                  (fun (x : 'label_longident)  (_loc : Locf.t)  ->
+                     ((x : vid  :>ident) : 'class_longident ) : 'label_longident
+                                                                  ->
+                                                                  Locf.t ->
+                                                                    'class_longident ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_override : 'opt_override Gramf.t )
@@ -8266,7 +9380,8 @@ let apply () =
                      let bang = None in
                      (match bang with
                       | Some _ -> `Positive _loc
-                      | None  -> `Negative _loc : 'opt_override )))
+                      | None  -> `Negative _loc : 'opt_override ) : Locf.t ->
+                                                                    'opt_override ))
            };
           {
             symbols =
@@ -8277,11 +9392,14 @@ let apply () =
               "match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(bang : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (bang : Tokenf.txt)  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (match bang with
                      | Some _ -> `Positive _loc
-                     | None  -> `Negative _loc : 'opt_override )))
+                     | None  -> `Negative _loc : 'opt_override ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'opt_override ))
           };
           {
             symbols =
@@ -8293,8 +9411,9 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_override )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_override ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_override ))
           };
           {
             symbols =
@@ -8310,8 +9429,9 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_override )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_override ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_override ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (flag : 'flag Gramf.t )
@@ -8329,8 +9449,8 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'flag )))
+                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'flag ) : 
+                  Tokenf.txt -> Locf.t -> 'flag ))
            };
           {
             symbols =
@@ -8342,8 +9462,8 @@ let apply () =
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Negative _loc : 'flag )))
+                 (fun _  (_loc : Locf.t)  -> (`Negative _loc : 'flag ) : 
+                 Tokenf.txt -> Locf.t -> 'flag ))
           };
           {
             symbols =
@@ -8355,8 +9475,9 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'flag )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'flag ) : 
+                 Tokenf.ant -> Locf.t -> 'flag ))
           };
           {
             symbols =
@@ -8368,8 +9489,9 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'flag )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'flag ) : 
+                 Tokenf.ant -> Locf.t -> 'flag ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_private : 'opt_private Gramf.t )
@@ -8387,8 +9509,10 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_private )))
+                  (fun _  (_loc : Locf.t)  ->
+                     (`Positive _loc : 'opt_private ) : Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'opt_private ))
            };
           {
             symbols =
@@ -8401,15 +9525,17 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_private )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_private ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_private ))
           };
           {
             symbols = [];
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_private )))
+                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_private ) : 
+                 Locf.t -> 'opt_private ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_mutable : 'opt_mutable Gramf.t )
@@ -8427,8 +9553,10 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_mutable )))
+                  (fun _  (_loc : Locf.t)  ->
+                     (`Positive _loc : 'opt_mutable ) : Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'opt_mutable ))
            };
           {
             symbols =
@@ -8441,15 +9569,17 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_mutable )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_mutable ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_mutable ))
           };
           {
             symbols = [];
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_mutable )))
+                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_mutable ) : 
+                 Locf.t -> 'opt_mutable ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_virtual : 'opt_virtual Gramf.t )
@@ -8467,8 +9597,10 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_virtual )))
+                  (fun _  (_loc : Locf.t)  ->
+                     (`Positive _loc : 'opt_virtual ) : Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'opt_virtual ))
            };
           {
             symbols =
@@ -8481,15 +9613,17 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_virtual )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_virtual ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_virtual ))
           };
           {
             symbols = [];
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_virtual )))
+                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_virtual ) : 
+                 Locf.t -> 'opt_virtual ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_dot_dot : 'opt_dot_dot Gramf.t )
@@ -8507,8 +9641,10 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_dot_dot )))
+                  (fun _  (_loc : Locf.t)  ->
+                     (`Positive _loc : 'opt_dot_dot ) : Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'opt_dot_dot ))
            };
           {
             symbols =
@@ -8520,15 +9656,17 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_dot_dot )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_dot_dot ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_dot_dot ))
           };
           {
             symbols = [];
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_dot_dot )))
+                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_dot_dot ) : 
+                 Locf.t -> 'opt_dot_dot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (opt_rec : 'opt_rec Gramf.t )
@@ -8546,8 +9684,8 @@ let apply () =
              annot = "`Positive _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_rec )))
+                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_rec ) : 
+                  Tokenf.txt -> Locf.t -> 'opt_rec ))
            };
           {
             symbols =
@@ -8559,15 +9697,17 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_rec )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"flag" s : 'opt_rec ) : 
+                 Tokenf.ant -> Locf.t -> 'opt_rec ))
           };
           {
             symbols = [];
             annot = "`Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_rec )))
+                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_rec ) : 
+                 Locf.t -> 'opt_rec ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (a_lident : 'a_lident Gramf.t )
@@ -8585,8 +9725,9 @@ let apply () =
              annot = "mk_ant ~c:\"a_lident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"a_lident" s : 'a_lident )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"a_lident" s : 'a_lident ) : 
+                  Tokenf.ant -> Locf.t -> 'a_lident ))
            };
           {
             symbols =
@@ -8598,8 +9739,9 @@ let apply () =
             annot = "mk_ant ~c:\"a_lident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"a_lident" s : 'a_lident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"a_lident" s : 'a_lident ) : 
+                 Tokenf.ant -> Locf.t -> 'a_lident ))
           };
           {
             symbols =
@@ -8609,8 +9751,9 @@ let apply () =
             annot = "`Lid (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident ) : 
+                 Tokenf.txt -> Locf.t -> 'a_lident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (a_uident : 'a_uident Gramf.t )
@@ -8628,8 +9771,9 @@ let apply () =
              annot = "mk_ant ~c:\"a_uident\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"a_uident" s : 'a_uident )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"a_uident" s : 'a_uident ) : 
+                  Tokenf.ant -> Locf.t -> 'a_uident ))
            };
           {
             symbols =
@@ -8641,8 +9785,9 @@ let apply () =
             annot = "mk_ant ~c:\"a_uident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"a_uident" s : 'a_uident )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"a_uident" s : 'a_uident ) : 
+                 Tokenf.ant -> Locf.t -> 'a_uident ))
           };
           {
             symbols =
@@ -8652,8 +9797,9 @@ let apply () =
             annot = "`Uid (_loc, s)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Uid (_loc, s) : 'a_uident )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let s = __fan_0.txt in (`Uid (_loc, s) : 'a_uident ) : 
+                 Tokenf.txt -> Locf.t -> 'a_uident ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (string_list : 'string_list Gramf.t )
@@ -8671,9 +9817,11 @@ let apply () =
              annot = "mk_ant ~c:\"str_list\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"str_list" s : 'string_list )))
+                     (mk_ant ~c:"str_list" s : 'string_list ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'string_list ))
            };
           {
             symbols =
@@ -8686,10 +9834,11 @@ let apply () =
             annot = "`App (_loc, (mk_ant ~c:\"\" s), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'string_list) 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (xs : 'string_list)  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`App (_loc, (mk_ant ~c:"" s), xs) : 'string_list )))
+                    (`App (_loc, (mk_ant ~c:"" s), xs) : 'string_list ) : 
+                 'string_list -> Tokenf.ant -> Locf.t -> 'string_list ))
           };
           {
             symbols =
@@ -8699,8 +9848,9 @@ let apply () =
             annot = "`Str (_loc, x)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in (`Str (_loc, x) : 'string_list )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let x = __fan_0.txt in (`Str (_loc, x) : 'string_list ) : 
+                 Tokenf.txt -> Locf.t -> 'string_list ))
           };
           {
             symbols =
@@ -8711,10 +9861,11 @@ let apply () =
             annot = "`App (_loc, (`Str (_loc, x)), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'string_list) 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 'string_list)  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    (`App (_loc, (`Str (_loc, x)), xs) : 'string_list )))
+                    (`App (_loc, (`Str (_loc, x)), xs) : 'string_list ) : 
+                 'string_list -> Tokenf.txt -> Locf.t -> 'string_list ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (rec_flag_quot : 'rec_flag_quot Gramf.t )
@@ -8727,8 +9878,9 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_rec)  (_loc : Locf.t)  ->
-                     (x : 'rec_flag_quot )))
+                  (fun (x : 'opt_rec)  (_loc : Locf.t)  ->
+                     (x : 'rec_flag_quot ) : 'opt_rec ->
+                                               Locf.t -> 'rec_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (direction_flag_quot : 'direction_flag_quot Gramf.t )
@@ -8741,8 +9893,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'flag)  (_loc : Locf.t)  ->
-                     (x : 'direction_flag_quot )))
+                  (fun (x : 'flag)  (_loc : Locf.t)  ->
+                     (x : 'direction_flag_quot ) : 'flag ->
+                                                     Locf.t ->
+                                                       'direction_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (mutable_flag_quot : 'mutable_flag_quot Gramf.t )
@@ -8756,8 +9910,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_mutable)  (_loc : Locf.t)  ->
-                     (x : 'mutable_flag_quot )))
+                  (fun (x : 'opt_mutable)  (_loc : Locf.t)  ->
+                     (x : 'mutable_flag_quot ) : 'opt_mutable ->
+                                                   Locf.t ->
+                                                     'mutable_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (private_flag_quot : 'private_flag_quot Gramf.t )
@@ -8771,8 +9927,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_private)  (_loc : Locf.t)  ->
-                     (x : 'private_flag_quot )))
+                  (fun (x : 'opt_private)  (_loc : Locf.t)  ->
+                     (x : 'private_flag_quot ) : 'opt_private ->
+                                                   Locf.t ->
+                                                     'private_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (virtual_flag_quot : 'virtual_flag_quot Gramf.t )
@@ -8786,8 +9944,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_virtual)  (_loc : Locf.t)  ->
-                     (x : 'virtual_flag_quot )))
+                  (fun (x : 'opt_virtual)  (_loc : Locf.t)  ->
+                     (x : 'virtual_flag_quot ) : 'opt_virtual ->
+                                                   Locf.t ->
+                                                     'virtual_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (row_var_flag_quot : 'row_var_flag_quot Gramf.t )
@@ -8801,8 +9961,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_dot_dot)  (_loc : Locf.t)  ->
-                     (x : 'row_var_flag_quot )))
+                  (fun (x : 'opt_dot_dot)  (_loc : Locf.t)  ->
+                     (x : 'row_var_flag_quot ) : 'opt_dot_dot ->
+                                                   Locf.t ->
+                                                     'row_var_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (override_flag_quot : 'override_flag_quot Gramf.t )
@@ -8816,8 +9978,10 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'opt_override)  (_loc : Locf.t)  ->
-                     (x : 'override_flag_quot )))
+                  (fun (x : 'opt_override)  (_loc : Locf.t)  ->
+                     (x : 'override_flag_quot ) : 'opt_override ->
+                                                    Locf.t ->
+                                                      'override_flag_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (pat_eoi : 'pat_eoi Gramf.t )
@@ -8834,8 +9998,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:(x : 'pat)  (_loc : Locf.t)  ->
-                     (x : 'pat_eoi )))
+                  (fun _  (x : 'pat)  (_loc : Locf.t)  -> (x : 'pat_eoi ) : 
+                  Tokenf.txt -> 'pat -> Locf.t -> 'pat_eoi ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (exp_eoi : 'exp_eoi Gramf.t )
@@ -8852,8 +10016,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:(x : 'exp)  (_loc : Locf.t)  ->
-                     (x : 'exp_eoi )))
+                  (fun _  (x : 'exp)  (_loc : Locf.t)  -> (x : 'exp_eoi ) : 
+                  Tokenf.txt -> 'exp -> Locf.t -> 'exp_eoi ))
            }]
       } : Gramf.olevel ));
   (Gramf.extend_single (implem : 'implem Gramf.t )
@@ -8875,9 +10039,10 @@ let apply () =
              annot = "Fdir.handle_quot x; ([], (Some _loc))\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                      let x = __fan_0 in
-                     (Fdir.handle_quot x; ([], (Some _loc)) : 'implem )))
+                     (Fdir.handle_quot x; ([], (Some _loc)) : 'implem ) : 
+                  Tokenf.quot -> Locf.t -> 'implem ))
            };
           {
             symbols =
@@ -8889,20 +10054,19 @@ let apply () =
             annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(rest : 'implem)  ~__fan_1:_ 
-                    ~__fan_0:(si : 'stru)  (_loc : Locf.t)  ->
+                 (fun (rest : 'implem)  _  (si : 'stru)  (_loc : Locf.t)  ->
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                    'implem )))
+                    'implem ) : 'implem ->
+                                  Tokenf.txt -> 'stru -> Locf.t -> 'implem ))
           };
           {
             symbols = [Nterm (Gramf.obj (stru : 'stru Gramf.t )); Self];
             annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(rest : 'implem)  ~__fan_0:(si : 'stru) 
-                    (_loc : Locf.t)  ->
+                 (fun (rest : 'implem)  (si : 'stru)  (_loc : Locf.t)  ->
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                    'implem )))
+                    'implem ) : 'implem -> 'stru -> Locf.t -> 'implem ))
           };
           {
             symbols =
@@ -8912,7 +10076,8 @@ let apply () =
             annot = "([], None)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  -> (([], None) : 'implem )))
+                 (fun _  (_loc : Locf.t)  -> (([], None) : 'implem ) : 
+                 Tokenf.txt -> Locf.t -> 'implem ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (top_phrase : 'top_phrase Gramf.t )
@@ -8933,9 +10098,10 @@ let apply () =
              annot = "Some (`Directive (_loc, n, dp))\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_3:_  ~__fan_2:(dp : 'exp) 
-                     ~__fan_1:(n : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (Some (`Directive (_loc, n, dp)) : 'top_phrase )))
+                  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : Locf.t) 
+                     -> (Some (`Directive (_loc, n, dp)) : 'top_phrase ) : 
+                  Tokenf.txt ->
+                    'exp -> 'a_lident -> Tokenf.txt -> Locf.t -> 'top_phrase ))
            };
           {
             symbols =
@@ -8949,9 +10115,10 @@ let apply () =
             annot = "Some (`DirectiveSimple (_loc, n))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(n : 'a_lident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    (Some (`DirectiveSimple (_loc, n)) : 'top_phrase )))
+                 (fun _  (n : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (Some (`DirectiveSimple (_loc, n)) : 'top_phrase ) : 
+                 Tokenf.txt ->
+                   'a_lident -> Tokenf.txt -> Locf.t -> 'top_phrase ))
           };
           {
             symbols =
@@ -8962,8 +10129,10 @@ let apply () =
             annot = "Some st\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
-                    (Some st : 'top_phrase )))
+                 (fun _  (st : 'stru)  (_loc : Locf.t)  ->
+                    (Some st : 'top_phrase ) : Tokenf.txt ->
+                                                 'stru ->
+                                                   Locf.t -> 'top_phrase ))
           };
           {
             symbols =
@@ -8973,7 +10142,8 @@ let apply () =
             annot = "None\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  -> (None : 'top_phrase )))
+                 (fun _  (_loc : Locf.t)  -> (None : 'top_phrase ) : 
+                 Tokenf.txt -> Locf.t -> 'top_phrase ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (strus : 'strus Gramf.t )
@@ -8991,8 +10161,9 @@ let apply () =
              annot = "mk_ant ~c:\"stru\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus ) : 
+                  Tokenf.ant -> Locf.t -> 'strus ))
            };
           {
             symbols =
@@ -9004,8 +10175,9 @@ let apply () =
             annot = "mk_ant ~c:\"stru\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus ) : 
+                 Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9020,9 +10192,9 @@ let apply () =
             annot = "mk_ant ~c:\"stru\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus )))
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus ) : 
+                 Tokenf.txt -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9037,9 +10209,9 @@ let apply () =
             annot = "mk_ant ~c:\"stru\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus )))
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'strus ) : 
+                 Tokenf.txt -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9052,10 +10224,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(st : 'strus)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun (st : 'strus)  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus )))
+                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus ) : 
+                 'strus -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9068,10 +10241,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(st : 'strus)  ~__fan_0:(__fan_0 : Tokenf.ant)
-                     (_loc : Locf.t)  ->
+                 (fun (st : 'strus)  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                    ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus )))
+                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus ) : 
+                 'strus -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9087,10 +10261,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(st : 'strus)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'strus)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus )))
+                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus ) : 
+                 'strus -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9106,18 +10281,19 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(st : 'strus)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'strus)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus )))
+                    (`Sem (_loc, (mk_ant ~c:"stru" s), st) : 'strus ) : 
+                 'strus -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'strus ))
           };
           {
             symbols = [Nterm (Gramf.obj (stru : 'stru Gramf.t ))];
             annot = "st\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
-                    (st : 'strus )))
+                 (fun (st : 'stru)  (_loc : Locf.t)  -> (st : 'strus ) : 
+                 'stru -> Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9128,16 +10304,18 @@ let apply () =
             annot = "st\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
-                    (st : 'strus )))
+                 (fun _  (st : 'stru)  (_loc : Locf.t)  -> (st : 'strus ) : 
+                 Tokenf.txt -> 'stru -> Locf.t -> 'strus ))
           };
           {
             symbols = [Nterm (Gramf.obj (stru : 'stru Gramf.t )); Self];
             annot = "`Sem (_loc, st, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'strus)  ~__fan_0:(st : 'stru) 
-                    (_loc : Locf.t)  -> (`Sem (_loc, st, xs) : 'strus )))
+                 (fun (xs : 'strus)  (st : 'stru)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, st, xs) : 'strus ) : 'strus ->
+                                                        'stru ->
+                                                          Locf.t -> 'strus ))
           };
           {
             symbols =
@@ -9149,9 +10327,11 @@ let apply () =
             annot = "`Sem (_loc, st, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'strus)  ~__fan_1:_ 
-                    ~__fan_0:(st : 'stru)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, st, xs) : 'strus )))
+                 (fun (xs : 'strus)  _  (st : 'stru)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, st, xs) : 'strus ) : 'strus ->
+                                                        Tokenf.txt ->
+                                                          'stru ->
+                                                            Locf.t -> 'strus ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (stru_quot : 'stru_quot Gramf.t )
@@ -9169,9 +10349,14 @@ let apply () =
              annot = "`Directive (_loc, n, dp)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(dp : 'exp)  ~__fan_1:(n : 'a_lident) 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Directive (_loc, n, dp) : 'stru_quot )))
+                  (fun (dp : 'exp)  (n : 'a_lident)  _  (_loc : Locf.t)  ->
+                     (`Directive (_loc, n, dp) : 'stru_quot ) : 'exp ->
+                                                                  'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru_quot ))
            };
           {
             symbols =
@@ -9182,16 +10367,20 @@ let apply () =
             annot = "`DirectiveSimple (_loc, n)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(n : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`DirectiveSimple (_loc, n) : 'stru_quot )))
+                 (fun (n : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`DirectiveSimple (_loc, n) : 'stru_quot ) : 'a_lident ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru_quot ))
           };
           {
             symbols = [Nterm (Gramf.obj (strus : 'strus Gramf.t ))];
             annot = "x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'strus)  (_loc : Locf.t)  ->
-                    (x : 'stru_quot )))
+                 (fun (x : 'strus)  (_loc : Locf.t)  -> (x : 'stru_quot ) : 
+                 'strus -> Locf.t -> 'stru_quot ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (stru : 'stru Gramf.t )
@@ -9210,8 +10399,10 @@ let apply () =
              annot = "`Include (_loc, me)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(me : 'mexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Include (_loc, me) : 'stru )))
+                  (fun (me : 'mexp)  _  (_loc : Locf.t)  ->
+                     (`Include (_loc, me) : 'stru ) : 'mexp ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'stru ))
            };
           {
             symbols =
@@ -9225,9 +10416,11 @@ let apply () =
             annot = "`Module (_loc, i, mb)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mb : 'mbind0)  ~__fan_1:(i : 'a_uident) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Module (_loc, i, mb) : 'stru )))
+                 (fun (mb : 'mbind0)  (i : 'a_uident)  _  (_loc : Locf.t)  ->
+                    (`Module (_loc, i, mb) : 'stru ) : 'mbind0 ->
+                                                         'a_uident ->
+                                                           Tokenf.txt ->
+                                                             Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9243,8 +10436,11 @@ let apply () =
             annot = "`RecModule (_loc, mb)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(mb : 'mbind)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`RecModule (_loc, mb) : 'stru )))
+                 (fun (mb : 'mbind)  _  _  (_loc : Locf.t)  ->
+                    (`RecModule (_loc, mb) : 'stru ) : 'mbind ->
+                                                         Tokenf.txt ->
+                                                           Tokenf.txt ->
+                                                             Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9259,15 +10455,15 @@ let apply () =
               "`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'module_longident)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (i : 'module_longident)  _  (_loc : Locf.t)  ->
                     let bang = None in
                     (`Open
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
-                      'stru )))
+                      'stru ) : 'module_longident ->
+                                  Tokenf.txt -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9285,16 +10481,16 @@ let apply () =
               "`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'module_longident) 
-                    ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_  (_loc : Locf.t)
-                     ->
+                 (fun (i : 'module_longident)  (bang : Tokenf.txt)  _ 
+                    (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (`Open
                        (_loc,
                          (match bang with
                           | Some _ -> `Positive _loc
                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
-                      'stru )))
+                      'stru ) : 'module_longident ->
+                                  Tokenf.txt -> Tokenf.txt -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9308,8 +10504,10 @@ let apply () =
             annot = "`Type (_loc, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'type_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Type (_loc, t) : 'stru )))
+                 (fun (t : 'type_declaration)  _  (_loc : Locf.t)  ->
+                    (`Type (_loc, t) : 'stru ) : 'type_declaration ->
+                                                   Tokenf.txt ->
+                                                     Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9331,10 +10529,18 @@ let apply () =
             annot = "`ModuleType (_loc, i, mt)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(mt : 'mtyp)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'a_uident)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ModuleType (_loc, i, mt) : 
-                    'stru )))
+                 (fun (mt : 'mtyp)  _  (i : 'a_uident)  _  _  (_loc : Locf.t)
+                     -> (`ModuleType (_loc, i, mt) : 'stru ) : 'mtyp ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru ))
           };
           {
             symbols =
@@ -9353,9 +10559,11 @@ let apply () =
             annot = "`ClassType (_loc, ctd)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(ctd : 'cltyp_declaration)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ClassType (_loc, ctd) : 'stru )))
+                 (fun (ctd : 'cltyp_declaration)  _  _  (_loc : Locf.t)  ->
+                    (`ClassType (_loc, ctd) : 'stru ) : 'cltyp_declaration ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9372,8 +10580,11 @@ let apply () =
             annot = "`Exception (_loc, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'constructor_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Exception (_loc, t) : 'stru )))
+                 (fun (t : 'constructor_declaration)  _  (_loc : Locf.t)  ->
+                    (`Exception (_loc, t) : 'stru ) : 'constructor_declaration
+                                                        ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9394,10 +10605,19 @@ let apply () =
             annot = "`External (_loc, i, t, sl)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(sl : 'string_list)  ~__fan_4:_ 
-                    ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`External (_loc, i, t, sl) : 'stru )))
+                 (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident)
+                     _  (_loc : Locf.t)  ->
+                    (`External (_loc, i, t, sl) : 'stru ) : 'string_list ->
+                                                              Tokenf.txt ->
+                                                                'ctyp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru ))
           };
           {
             symbols =
@@ -9423,9 +10643,14 @@ let apply () =
             annot = "`TypeWith (_loc, t, ns)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(ns : 'string_list)  ~__fan_3:_ 
-                    ~__fan_2:_  ~__fan_1:(t : 'type_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`TypeWith (_loc, t, ns) : 'stru )))
+                 (fun _  (ns : 'string_list)  _  _  (t : 'type_declaration) 
+                    _  (_loc : Locf.t)  -> (`TypeWith (_loc, t, ns) : 
+                    'stru ) : Tokenf.txt ->
+                                'string_list ->
+                                  Tokenf.txt ->
+                                    Tokenf.txt ->
+                                      'type_declaration ->
+                                        Tokenf.txt -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9444,10 +10669,18 @@ let apply () =
               "(fun x  -> (`StExp (_loc, x) : FAst.stru )) (`LetIn (_loc, r, bi, x))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(x : 'exp)  ~__fan_3:_  ~__fan_2:(bi : 'bind) 
-                    ~__fan_1:(r : 'opt_rec)  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (x : 'exp)  _  (bi : 'bind)  (r : 'opt_rec)  _ 
+                    (_loc : Locf.t)  ->
                     ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
-                       (`LetIn (_loc, r, bi, x)) : 'stru )))
+                       (`LetIn (_loc, r, bi, x)) : 'stru ) : 'exp ->
+                                                               Tokenf.txt ->
+                                                                 'bind ->
+                                                                   'opt_rec
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru ))
           };
           {
             symbols =
@@ -9471,11 +10704,22 @@ let apply () =
               "(fun x  -> (`StExp (_loc, x) : FAst.stru )) (`LetModule (_loc, m, mb, e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                    ~__fan_3:(mb : 'mbind0)  ~__fan_2:(m : 'a_uident) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
+                    (_loc : Locf.t)  ->
                     ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
-                       (`LetModule (_loc, m, mb, e)) : 'stru )))
+                       (`LetModule (_loc, m, mb, e)) : 'stru ) : 'exp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'mbind0
+                                                                    ->
+                                                                    'a_uident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stru ))
           };
           {
             symbols =
@@ -9499,8 +10743,7 @@ let apply () =
               "(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen\n     (_loc,\n       (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n       (i : vid  :>ident), e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(e : 'exp)  ~__fan_3:_ 
-                    ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_ 
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
                     (_loc : Locf.t)  ->
                     let bang = None in
                     ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
@@ -9509,7 +10752,12 @@ let apply () =
                             (match bang with
                              | Some _ -> `Positive _loc
                              | None  -> `Negative _loc), (i : vid  :>
-                            ident), e)) : 'stru )))
+                            ident), e)) : 'stru ) : 'exp ->
+                                                      Tokenf.txt ->
+                                                        'module_longident ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9536,10 +10784,8 @@ let apply () =
               "(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen\n     (_loc,\n       (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n       (i : vid  :>ident), e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                    ~__fan_3:(i : 'module_longident) 
-                    ~__fan_2:(bang : Tokenf.txt)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  _  (i : 'module_longident) 
+                    (bang : Tokenf.txt)  _  _  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
                        (`LetOpen
@@ -9547,7 +10793,14 @@ let apply () =
                             (match bang with
                              | Some _ -> `Positive _loc
                              | None  -> `Negative _loc), (i : vid  :>
-                            ident), e)) : 'stru )))
+                            ident), e)) : 'stru ) : 'exp ->
+                                                      Tokenf.txt ->
+                                                        'module_longident ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'stru ))
           };
           {
             symbols =
@@ -9575,12 +10828,17 @@ let apply () =
               "(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetTryInWith (_loc, r, bi, x, a))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_7:(a : 'case)  ~__fan_6:_  ~__fan_5:(x : 'exp) 
-                    ~__fan_4:_  ~__fan_3:(bi : 'bind) 
-                    ~__fan_2:(r : 'opt_rec)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
+                    (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
                     ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
-                       (`LetTryInWith (_loc, r, bi, x, a)) : 'stru )))
+                       (`LetTryInWith (_loc, r, bi, x, a)) : 'stru ) : 
+                 'case ->
+                   Tokenf.txt ->
+                     'exp ->
+                       Tokenf.txt ->
+                         'bind ->
+                           'opt_rec ->
+                             Tokenf.txt -> Tokenf.txt -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9595,11 +10853,15 @@ let apply () =
               "match bi with\n| `Bind (_loc,`Any _,e) -> `StExp (_loc, e)\n| _ -> `Value (_loc, r, bi)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(bi : 'bind)  ~__fan_1:(r : 'opt_rec) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (bi : 'bind)  (r : 'opt_rec)  _  (_loc : Locf.t)  ->
                     (match bi with
                      | `Bind (_loc,`Any _,e) -> `StExp (_loc, e)
-                     | _ -> `Value (_loc, r, bi) : 'stru )))
+                     | _ -> `Value (_loc, r, bi) : 'stru ) : 'bind ->
+                                                               'opt_rec ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'stru ))
           };
           {
             symbols =
@@ -9613,8 +10875,10 @@ let apply () =
             annot = "`Class (_loc, cd)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(cd : 'class_declaration)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Class (_loc, cd) : 'stru )))
+                 (fun (cd : 'class_declaration)  _  (_loc : Locf.t)  ->
+                    (`Class (_loc, cd) : 'stru ) : 'class_declaration ->
+                                                     Tokenf.txt ->
+                                                       Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9626,8 +10890,9 @@ let apply () =
             annot = "mk_ant ~c:\"stru\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru ) : 
+                 Tokenf.ant -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9639,8 +10904,9 @@ let apply () =
             annot = "mk_ant ~c:\"stru\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru ) : 
+                 Tokenf.ant -> Locf.t -> 'stru ))
           };
           {
             symbols =
@@ -9650,17 +10916,18 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.stru\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.stru : 'stru )))
+                    (Ast_quotation.expand x Dyn_tag.stru : 'stru ) : 
+                 Tokenf.quot -> Locf.t -> 'stru ))
           };
           {
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
             annot = "`StExp (_loc, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    (`StExp (_loc, e) : 'stru )))
+                 (fun (e : 'exp)  (_loc : Locf.t)  ->
+                    (`StExp (_loc, e) : 'stru ) : 'exp -> Locf.t -> 'stru ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (class_signature : 'class_signature Gramf.t )
@@ -9678,9 +10945,12 @@ let apply () =
              annot = "mk_ant ~c:\"clsigi\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"clsigi" s : 'class_signature )))
+                     (mk_ant ~c:"clsigi" s : 'class_signature ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_signature ))
            };
           {
             symbols =
@@ -9692,9 +10962,12 @@ let apply () =
             annot = "mk_ant ~c:\"clsigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clsigi" s : 'class_signature )))
+                    (mk_ant ~c:"clsigi" s : 'class_signature ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'class_signature ))
           };
           {
             symbols =
@@ -9709,10 +10982,14 @@ let apply () =
             annot = "mk_ant ~c:\"clsigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clsigi" s : 'class_signature )))
+                    (mk_ant ~c:"clsigi" s : 'class_signature ) : Tokenf.txt
+                                                                   ->
+                                                                   Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_signature ))
           };
           {
             symbols =
@@ -9727,10 +11004,14 @@ let apply () =
             annot = "mk_ant ~c:\"clsigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clsigi" s : 'class_signature )))
+                    (mk_ant ~c:"clsigi" s : 'class_signature ) : Tokenf.txt
+                                                                   ->
+                                                                   Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_signature ))
           };
           {
             symbols =
@@ -9744,11 +11025,13 @@ let apply () =
               "(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(csg : 'class_signature) 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (csg : 'class_signature)  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Sem (_loc, (mk_ant ~c:"clsigi" s), csg) : FAst.clsigi ) : 
-                      'class_signature )))
+                      'class_signature ) : 'class_signature ->
+                                             Tokenf.ant ->
+                                               Locf.t -> 'class_signature ))
           };
           {
             symbols =
@@ -9762,11 +11045,13 @@ let apply () =
               "(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(csg : 'class_signature) 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (csg : 'class_signature)  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Sem (_loc, (mk_ant ~c:"clsigi" s), csg) : FAst.clsigi ) : 
-                      'class_signature )))
+                      'class_signature ) : 'class_signature ->
+                                             Tokenf.ant ->
+                                               Locf.t -> 'class_signature ))
           };
           {
             symbols =
@@ -9783,11 +11068,14 @@ let apply () =
               "(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(csg : 'class_signature)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (csg : 'class_signature)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Sem (_loc, (mk_ant ~c:"clsigi" s), csg) : FAst.clsigi ) : 
-                      'class_signature )))
+                      'class_signature ) : 'class_signature ->
+                                             Tokenf.txt ->
+                                               Tokenf.ant ->
+                                                 Locf.t -> 'class_signature ))
           };
           {
             symbols =
@@ -9804,19 +11092,23 @@ let apply () =
               "(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(csg : 'class_signature)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (csg : 'class_signature)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
                     ((`Sem (_loc, (mk_ant ~c:"clsigi" s), csg) : FAst.clsigi ) : 
-                      'class_signature )))
+                      'class_signature ) : 'class_signature ->
+                                             Tokenf.txt ->
+                                               Tokenf.ant ->
+                                                 Locf.t -> 'class_signature ))
           };
           {
             symbols = [Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))];
             annot = "csg\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
-                    (csg : 'class_signature )))
+                 (fun (csg : 'clsigi)  (_loc : Locf.t)  ->
+                    (csg : 'class_signature ) : 'clsigi ->
+                                                  Locf.t -> 'class_signature ))
           };
           {
             symbols =
@@ -9827,17 +11119,24 @@ let apply () =
             annot = "csg\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t) 
-                    -> (csg : 'class_signature )))
+                 (fun _  (csg : 'clsigi)  (_loc : Locf.t)  ->
+                    (csg : 'class_signature ) : Tokenf.txt ->
+                                                  'clsigi ->
+                                                    Locf.t ->
+                                                      'class_signature ))
           };
           {
             symbols = [Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); Self];
             annot = "`Sem (_loc, csg, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'class_signature) 
-                    ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, csg, xs) : 'class_signature )))
+                 (fun (xs : 'class_signature)  (csg : 'clsigi) 
+                    (_loc : Locf.t)  ->
+                    (`Sem (_loc, csg, xs) : 'class_signature ) : 'class_signature
+                                                                   ->
+                                                                   'clsigi ->
+                                                                    Locf.t ->
+                                                                    'class_signature ))
           };
           {
             symbols =
@@ -9849,9 +11148,16 @@ let apply () =
             annot = "`Sem (_loc, csg, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'class_signature)  ~__fan_1:_ 
-                    ~__fan_0:(csg : 'clsigi)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, csg, xs) : 'class_signature )))
+                 (fun (xs : 'class_signature)  _  (csg : 'clsigi) 
+                    (_loc : Locf.t)  ->
+                    (`Sem (_loc, csg, xs) : 'class_signature ) : 'class_signature
+                                                                   ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'clsigi
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_signature ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (clsigi : 'clsigi Gramf.t )
@@ -9869,8 +11175,9 @@ let apply () =
              annot = "mk_ant ~c:\"clsigi\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi ) : 
+                  Tokenf.ant -> Locf.t -> 'clsigi ))
            };
           {
             symbols =
@@ -9882,8 +11189,9 @@ let apply () =
             annot = "mk_ant ~c:\"clsigi\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi ) : 
+                 Tokenf.ant -> Locf.t -> 'clsigi ))
           };
           {
             symbols =
@@ -9893,9 +11201,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.clsigi\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clsigi : 'clsigi )))
+                    (Ast_quotation.expand x Dyn_tag.clsigi : 'clsigi ) : 
+                 Tokenf.quot -> Locf.t -> 'clsigi ))
           };
           {
             symbols =
@@ -9908,8 +11217,11 @@ let apply () =
             annot = "`SigInherit (_loc, cs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(cs : 'cltyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`SigInherit (_loc, cs) : 'clsigi )))
+                 (fun (cs : 'cltyp)  _  (_loc : Locf.t)  ->
+                    (`SigInherit (_loc, cs) : 'clsigi ) : 'cltyp ->
+                                                            Tokenf.txt ->
+                                                              Locf.t ->
+                                                                'clsigi ))
           };
           {
             symbols =
@@ -9928,11 +11240,14 @@ let apply () =
             annot = "(`CgVal (_loc, l, mf, mv, t) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
-                    ~__fan_3:(l : 'a_lident)  ~__fan_2:(mv : 'opt_virtual) 
-                    ~__fan_1:(mf : 'opt_mutable)  ~__fan_0:_  (_loc : Locf.t)
-                     ->
-                    ((`CgVal (_loc, l, mf, mv, t) : FAst.clsigi ) : 'clsigi )))
+                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mv : 'opt_virtual) 
+                    (mf : 'opt_mutable)  _  (_loc : Locf.t)  ->
+                    ((`CgVal (_loc, l, mf, mv, t) : FAst.clsigi ) : 'clsigi ) : 
+                 'ctyp ->
+                   Tokenf.txt ->
+                     'a_lident ->
+                       'opt_virtual ->
+                         'opt_mutable -> Tokenf.txt -> Locf.t -> 'clsigi ))
           };
           {
             symbols =
@@ -9955,10 +11270,14 @@ let apply () =
             annot = "(`VirMeth (_loc, l, pf, t) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
-                    ~__fan_3:(l : 'a_lident)  ~__fan_2:(pf : 'opt_private) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`VirMeth (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi )))
+                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _
+                     _  (_loc : Locf.t)  ->
+                    ((`VirMeth (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi ) : 
+                 'ctyp ->
+                   Tokenf.txt ->
+                     'a_lident ->
+                       'opt_private ->
+                         Tokenf.txt -> Tokenf.txt -> Locf.t -> 'clsigi ))
           };
           {
             symbols =
@@ -9976,10 +11295,13 @@ let apply () =
             annot = "(`Method (_loc, l, pf, t) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(t : 'ctyp)  ~__fan_3:_ 
-                    ~__fan_2:(l : 'a_lident)  ~__fan_1:(pf : 'opt_private) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Method (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi )))
+                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _
+                     (_loc : Locf.t)  ->
+                    ((`Method (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi ) : 
+                 'ctyp ->
+                   Tokenf.txt ->
+                     'a_lident ->
+                       'opt_private -> Tokenf.txt -> Locf.t -> 'clsigi ))
           };
           {
             symbols =
@@ -9997,9 +11319,10 @@ let apply () =
             annot = "(`Eq (_loc, t1, t2) : FAst.clsigi )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Eq (_loc, t1, t2) : FAst.clsigi ) : 'clsigi )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
+                    ((`Eq (_loc, t1, t2) : FAst.clsigi ) : 'clsigi ) : 
+                 'ctyp ->
+                   Tokenf.txt -> 'ctyp -> Tokenf.txt -> Locf.t -> 'clsigi ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (class_structure : 'class_structure Gramf.t )
@@ -10017,9 +11340,12 @@ let apply () =
              annot = "mk_ant ~c:\"clfield\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                      let s = __fan_0 in
-                     (mk_ant ~c:"clfield" s : 'class_structure )))
+                     (mk_ant ~c:"clfield" s : 'class_structure ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
            };
           {
             symbols =
@@ -10031,9 +11357,12 @@ let apply () =
             annot = "mk_ant ~c:\"clfield\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clfield" s : 'class_structure )))
+                    (mk_ant ~c:"clfield" s : 'class_structure ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
           };
           {
             symbols =
@@ -10048,10 +11377,14 @@ let apply () =
             annot = "mk_ant ~c:\"clfield\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clfield" s : 'class_structure )))
+                    (mk_ant ~c:"clfield" s : 'class_structure ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
           };
           {
             symbols =
@@ -10066,10 +11399,14 @@ let apply () =
             annot = "mk_ant ~c:\"clfield\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.ant) 
-                    (_loc : Locf.t)  ->
+                 (fun _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clfield" s : 'class_structure )))
+                    (mk_ant ~c:"clfield" s : 'class_structure ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
           };
           {
             symbols =
@@ -10082,10 +11419,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(st : 'class_structure) 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'class_structure)  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )))
+                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure ) : 
+                 'class_structure -> Tokenf.ant -> Locf.t -> 'class_structure ))
           };
           {
             symbols =
@@ -10098,10 +11436,11 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(st : 'class_structure) 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'class_structure)  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )))
+                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure ) : 
+                 'class_structure -> Tokenf.ant -> Locf.t -> 'class_structure ))
           };
           {
             symbols =
@@ -10117,10 +11456,12 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(st : 'class_structure)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'class_structure)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )))
+                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure ) : 
+                 'class_structure ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'class_structure ))
           };
           {
             symbols =
@@ -10136,18 +11477,21 @@ let apply () =
             annot = "`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(st : 'class_structure)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (st : 'class_structure)  _  (__fan_0 : Tokenf.ant) 
+                    (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure )))
+                    (`Sem (_loc, (mk_ant ~c:"clfield" s), st) : 'class_structure ) : 
+                 'class_structure ->
+                   Tokenf.txt -> Tokenf.ant -> Locf.t -> 'class_structure ))
           };
           {
             symbols = [Nterm (Gramf.obj (clfield : 'clfield Gramf.t ))];
             annot = "st\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
-                    (st : 'class_structure )))
+                 (fun (st : 'clfield)  (_loc : Locf.t)  ->
+                    (st : 'class_structure ) : 'clfield ->
+                                                 Locf.t -> 'class_structure ))
           };
           {
             symbols =
@@ -10158,17 +11502,23 @@ let apply () =
             annot = "st\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(st : 'clfield)  (_loc : Locf.t) 
-                    -> (st : 'class_structure )))
+                 (fun _  (st : 'clfield)  (_loc : Locf.t)  ->
+                    (st : 'class_structure ) : Tokenf.txt ->
+                                                 'clfield ->
+                                                   Locf.t -> 'class_structure ))
           };
           {
             symbols = [Nterm (Gramf.obj (clfield : 'clfield Gramf.t )); Self];
             annot = "`Sem (_loc, st, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(xs : 'class_structure) 
-                    ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, st, xs) : 'class_structure )))
+                 (fun (xs : 'class_structure)  (st : 'clfield) 
+                    (_loc : Locf.t)  ->
+                    (`Sem (_loc, st, xs) : 'class_structure ) : 'class_structure
+                                                                  ->
+                                                                  'clfield ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
           };
           {
             symbols =
@@ -10180,9 +11530,16 @@ let apply () =
             annot = "`Sem (_loc, st, xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'class_structure)  ~__fan_1:_ 
-                    ~__fan_0:(st : 'clfield)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, st, xs) : 'class_structure )))
+                 (fun (xs : 'class_structure)  _  (st : 'clfield) 
+                    (_loc : Locf.t)  ->
+                    (`Sem (_loc, st, xs) : 'class_structure ) : 'class_structure
+                                                                  ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'clfield
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_structure ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single
@@ -10202,11 +11559,12 @@ let apply () =
                "match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                  (fun _  (_loc : Locf.t)  ->
                      let bang = None in
                      (match bang with
                       | Some _ -> `Positive _loc
-                      | None  -> `Negative _loc : 'value_val_opt_override )))
+                      | None  -> `Negative _loc : 'value_val_opt_override ) : 
+                  Tokenf.txt -> Locf.t -> 'value_val_opt_override ))
            };
           {
             symbols =
@@ -10222,12 +11580,13 @@ let apply () =
               "match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (bang : Tokenf.txt)  _  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (match bang with
                      | Some _ -> `Positive _loc
-                     | None  -> `Negative _loc : 'value_val_opt_override )))
+                     | None  -> `Negative _loc : 'value_val_opt_override ) : 
+                 Tokenf.txt ->
+                   Tokenf.txt -> Locf.t -> 'value_val_opt_override ))
           };
           {
             symbols =
@@ -10242,10 +11601,11 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.ant)  _  (_loc : Locf.t)  ->
                     let s = __fan_1 in
-                    (mk_ant ~c:"flag" s : 'value_val_opt_override )))
+                    (mk_ant ~c:"flag" s : 'value_val_opt_override ) : 
+                 Tokenf.ant ->
+                   Tokenf.txt -> Locf.t -> 'value_val_opt_override ))
           };
           {
             symbols =
@@ -10263,10 +11623,11 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.ant)  _  (_loc : Locf.t)  ->
                     let s = __fan_1 in
-                    (mk_ant ~c:"flag" s : 'value_val_opt_override )))
+                    (mk_ant ~c:"flag" s : 'value_val_opt_override ) : 
+                 Tokenf.ant ->
+                   Tokenf.txt -> Locf.t -> 'value_val_opt_override ))
           };
           {
             symbols =
@@ -10283,10 +11644,11 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.ant)  _  (_loc : Locf.t)  ->
                     let s = __fan_1 in
-                    (mk_ant ~c:"flag" s : 'value_val_opt_override )))
+                    (mk_ant ~c:"flag" s : 'value_val_opt_override ) : 
+                 Tokenf.ant ->
+                   Tokenf.txt -> Locf.t -> 'value_val_opt_override ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
@@ -10305,11 +11667,12 @@ let apply () =
                "match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                  (fun _  (_loc : Locf.t)  ->
                      let bang = None in
                      (match bang with
                       | Some _ -> `Positive _loc
-                      | None  -> `Negative _loc : 'method_opt_override )))
+                      | None  -> `Negative _loc : 'method_opt_override ) : 
+                  Tokenf.txt -> Locf.t -> 'method_opt_override ))
            };
           {
             symbols =
@@ -10325,12 +11688,12 @@ let apply () =
               "match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(bang : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (bang : Tokenf.txt)  _  (_loc : Locf.t)  ->
                     let bang = Some bang in
                     (match bang with
                      | Some _ -> `Positive _loc
-                     | None  -> `Negative _loc : 'method_opt_override )))
+                     | None  -> `Negative _loc : 'method_opt_override ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'method_opt_override ))
           };
           {
             symbols =
@@ -10345,10 +11708,14 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.ant)  _  (_loc : Locf.t)  ->
                     let s = __fan_1 in
-                    (mk_ant ~c:"flag" s : 'method_opt_override )))
+                    (mk_ant ~c:"flag" s : 'method_opt_override ) : Tokenf.ant
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'method_opt_override ))
           };
           {
             symbols =
@@ -10366,10 +11733,14 @@ let apply () =
             annot = "mk_ant ~c:\"flag\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.ant)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.ant)  _  (_loc : Locf.t)  ->
                     let s = __fan_1 in
-                    (mk_ant ~c:"flag" s : 'method_opt_override )))
+                    (mk_ant ~c:"flag" s : 'method_opt_override ) : Tokenf.ant
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'method_opt_override ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (clfield : 'clfield Gramf.t )
@@ -10387,8 +11758,9 @@ let apply () =
              annot = "mk_ant ~c:\"clfield\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield ) : 
+                  Tokenf.ant -> Locf.t -> 'clfield ))
            };
           {
             symbols =
@@ -10400,8 +11772,9 @@ let apply () =
             annot = "mk_ant ~c:\"clfield\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield ) : 
+                 Tokenf.ant -> Locf.t -> 'clfield ))
           };
           {
             symbols =
@@ -10411,9 +11784,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.clfield\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clfield : 'clfield )))
+                    (Ast_quotation.expand x Dyn_tag.clfield : 'clfield ) : 
+                 Tokenf.quot -> Locf.t -> 'clfield ))
           };
           {
             symbols =
@@ -10427,9 +11801,14 @@ let apply () =
             annot = "`Inherit (_loc, o, ce)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(ce : 'clexp)  ~__fan_1:(o : 'opt_override) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Inherit (_loc, o, ce) : 'clfield )))
+                 (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : Locf.t) 
+                    -> (`Inherit (_loc, o, ce) : 'clfield ) : 'clexp ->
+                                                                'opt_override
+                                                                  ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10447,10 +11826,18 @@ let apply () =
             annot = "`InheritAs (_loc, o, ce, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(i : 'a_lident)  ~__fan_3:_ 
-                    ~__fan_2:(ce : 'clexp)  ~__fan_1:(o : 'opt_override) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`InheritAs (_loc, o, ce, i) : 'clfield )))
+                 (fun (i : 'a_lident)  _  (ce : 'clexp)  (o : 'opt_override) 
+                    _  (_loc : Locf.t)  ->
+                    (`InheritAs (_loc, o, ce, i) : 'clfield ) : 'a_lident ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'clexp ->
+                                                                    'opt_override
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10463,12 +11850,15 @@ let apply () =
             annot = "(`CrVal (_loc, lab, o, mf, e) : FAst.clfield )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e : 'cvalue_bind)  ~__fan_2:(lab : 'a_lident)
-                     ~__fan_1:(mf : 'opt_mutable) 
-                    ~__fan_0:(o : 'value_val_opt_override)  (_loc : Locf.t) 
-                    ->
+                 (fun (e : 'cvalue_bind)  (lab : 'a_lident) 
+                    (mf : 'opt_mutable)  (o : 'value_val_opt_override) 
+                    (_loc : Locf.t)  ->
                     ((`CrVal (_loc, lab, o, mf, e) : FAst.clfield ) : 
-                    'clfield )))
+                    'clfield ) : 'cvalue_bind ->
+                                   'a_lident ->
+                                     'opt_mutable ->
+                                       'value_val_opt_override ->
+                                         Locf.t -> 'clfield ))
           };
           {
             symbols =
@@ -10491,10 +11881,19 @@ let apply () =
             annot = "`VirVal (_loc, l, mf, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
-                    ~__fan_3:(l : 'a_lident)  ~__fan_2:(mf : 'opt_mutable) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`VirVal (_loc, l, mf, t) : 'clfield )))
+                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _
+                     _  (_loc : Locf.t)  ->
+                    (`VirVal (_loc, l, mf, t) : 'clfield ) : 'ctyp ->
+                                                               Tokenf.txt ->
+                                                                 'a_lident ->
+                                                                   'opt_mutable
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10517,10 +11916,20 @@ let apply () =
             annot = "`VirMeth (_loc, l, pf, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(t : 'ctyp)  ~__fan_4:_ 
-                    ~__fan_3:(l : 'a_lident)  ~__fan_2:(pf : 'opt_private) 
-                    ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`VirMeth (_loc, l, pf, t) : 'clfield )))
+                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _
+                     _  (_loc : Locf.t)  ->
+                    (`VirMeth (_loc, l, pf, t) : 'clfield ) : 'ctyp ->
+                                                                Tokenf.txt ->
+                                                                  'a_lident
+                                                                    ->
+                                                                    'opt_private
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10537,11 +11946,22 @@ let apply () =
             annot = "`CrMth (_loc, l, o, pf, e, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(e : 'fun_bind)  ~__fan_4:(t : 'ctyp) 
-                    ~__fan_3:_  ~__fan_2:(l : 'a_lident) 
-                    ~__fan_1:(pf : 'opt_private) 
-                    ~__fan_0:(o : 'method_opt_override)  (_loc : Locf.t)  ->
-                    (`CrMth (_loc, l, o, pf, e, t) : 'clfield )))
+                 (fun (e : 'fun_bind)  (t : 'ctyp)  _  (l : 'a_lident) 
+                    (pf : 'opt_private)  (o : 'method_opt_override) 
+                    (_loc : Locf.t)  ->
+                    (`CrMth (_loc, l, o, pf, e, t) : 'clfield ) : 'fun_bind
+                                                                    ->
+                                                                    'ctyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    'opt_private
+                                                                    ->
+                                                                    'method_opt_override
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10554,10 +11974,17 @@ let apply () =
             annot = "`CrMthS (_loc, l, o, pf, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(e : 'fun_bind)  ~__fan_2:(l : 'a_lident) 
-                    ~__fan_1:(pf : 'opt_private) 
-                    ~__fan_0:(o : 'method_opt_override)  (_loc : Locf.t)  ->
-                    (`CrMthS (_loc, l, o, pf, e) : 'clfield )))
+                 (fun (e : 'fun_bind)  (l : 'a_lident)  (pf : 'opt_private) 
+                    (o : 'method_opt_override)  (_loc : Locf.t)  ->
+                    (`CrMthS (_loc, l, o, pf, e) : 'clfield ) : 'fun_bind ->
+                                                                  'a_lident
+                                                                    ->
+                                                                    'opt_private
+                                                                    ->
+                                                                    'method_opt_override
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clfield ))
           };
           {
             symbols =
@@ -10575,9 +12002,13 @@ let apply () =
             annot = "`Eq (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Eq (_loc, t1, t2) : 'clfield )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
+                    (`Eq (_loc, t1, t2) : 'clfield ) : 'ctyp ->
+                                                         Tokenf.txt ->
+                                                           'ctyp ->
+                                                             Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'clfield ))
           };
           {
             symbols =
@@ -10594,8 +12025,11 @@ let apply () =
             annot = "`Initializer (_loc, se)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(se : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Initializer (_loc, se) : 'clfield )))
+                 (fun (se : 'exp)  _  (_loc : Locf.t)  ->
+                    (`Initializer (_loc, se) : 'clfield ) : 'exp ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'clfield ))
           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (clexp_quot : 'clexp_quot Gramf.t )
@@ -10608,8 +12042,8 @@ let apply () =
              annot = "x\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(x : 'clexp)  (_loc : Locf.t)  ->
-                     (x : 'clexp_quot )))
+                  (fun (x : 'clexp)  (_loc : Locf.t)  -> (x : 'clexp_quot ) : 
+                  'clexp -> Locf.t -> 'clexp_quot ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (class_declaration : 'class_declaration Gramf.t )
@@ -10629,9 +12063,16 @@ let apply () =
              annot = "`And (_loc, c1, c2)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(c2 : 'class_declaration)  ~__fan_1:_ 
-                     ~__fan_0:(c1 : 'class_declaration)  (_loc : Locf.t)  ->
-                     (`And (_loc, c1, c2) : 'class_declaration )))
+                  (fun (c2 : 'class_declaration)  _ 
+                     (c1 : 'class_declaration)  (_loc : Locf.t)  ->
+                     (`And (_loc, c1, c2) : 'class_declaration ) : 'class_declaration
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'class_declaration
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_declaration ))
            };
           {
             symbols =
@@ -10643,9 +12084,12 @@ let apply () =
             annot = "mk_ant ~c:\"clexp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clexp" s : 'class_declaration )))
+                    (mk_ant ~c:"clexp" s : 'class_declaration ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_declaration ))
           };
           {
             symbols =
@@ -10657,9 +12101,12 @@ let apply () =
             annot = "mk_ant ~c:\"clexp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"clexp" s : 'class_declaration )))
+                    (mk_ant ~c:"clexp" s : 'class_declaration ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_declaration ))
           };
           {
             symbols =
@@ -10678,11 +12125,16 @@ let apply () =
             annot = "`ClDecl (_loc, mv, (i :>ident), x, ce)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(ce : 'class_fun_bind)  ~__fan_4:_ 
-                    ~__fan_3:(x : 'comma_type_parameter)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
-                    (_loc : Locf.t)  ->
-                    (`ClDecl (_loc, mv, (i :>ident), x, ce) : 'class_declaration )))
+                 (fun (ce : 'class_fun_bind)  _  (x : 'comma_type_parameter) 
+                    _  (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t) 
+                    ->
+                    (`ClDecl (_loc, mv, (i :>ident), x, ce) : 'class_declaration ) : 
+                 'class_fun_bind ->
+                   Tokenf.txt ->
+                     'comma_type_parameter ->
+                       Tokenf.txt ->
+                         'a_lident ->
+                           'opt_virtual -> Locf.t -> 'class_declaration ))
           };
           {
             symbols =
@@ -10692,10 +12144,11 @@ let apply () =
             annot = "`ClDeclS (_loc, mv, (i :>ident), ce)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(ce : 'class_fun_bind) 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
-                    (_loc : Locf.t)  ->
-                    (`ClDeclS (_loc, mv, (i :>ident), ce) : 'class_declaration )))
+                 (fun (ce : 'class_fun_bind)  (i : 'a_lident) 
+                    (mv : 'opt_virtual)  (_loc : Locf.t)  ->
+                    (`ClDeclS (_loc, mv, (i :>ident), ce) : 'class_declaration ) : 
+                 'class_fun_bind ->
+                   'a_lident -> 'opt_virtual -> Locf.t -> 'class_declaration ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (class_fun_bind : 'class_fun_bind Gramf.t )
@@ -10712,8 +12165,10 @@ let apply () =
              annot = "ce\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(ce : 'clexp)  ~__fan_0:_  (_loc : Locf.t) 
-                     -> (ce : 'class_fun_bind )))
+                  (fun (ce : 'clexp)  _  (_loc : Locf.t)  ->
+                     (ce : 'class_fun_bind ) : 'clexp ->
+                                                 Tokenf.txt ->
+                                                   Locf.t -> 'class_fun_bind ))
            };
           {
             symbols =
@@ -10728,18 +12183,24 @@ let apply () =
             annot = "`Constraint (_loc, ce, ct)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(ce : 'clexp)  ~__fan_2:_ 
-                    ~__fan_1:(ct : 'cltyp_plus)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`Constraint (_loc, ce, ct) : 'class_fun_bind )))
+                 (fun (ce : 'clexp)  _  (ct : 'cltyp_plus)  _ 
+                    (_loc : Locf.t)  ->
+                    (`Constraint (_loc, ce, ct) : 'class_fun_bind ) : 
+                 'clexp ->
+                   Tokenf.txt ->
+                     'cltyp_plus -> Tokenf.txt -> Locf.t -> 'class_fun_bind ))
           };
           {
             symbols = [Nterm (Gramf.obj (ipat : 'ipat Gramf.t )); Self];
             annot = "`CeFun (_loc, p, cfb)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(cfb : 'class_fun_bind)  ~__fan_0:(p : 'ipat) 
-                    (_loc : Locf.t)  ->
-                    (`CeFun (_loc, p, cfb) : 'class_fun_bind )))
+                 (fun (cfb : 'class_fun_bind)  (p : 'ipat)  (_loc : Locf.t) 
+                    -> (`CeFun (_loc, p, cfb) : 'class_fun_bind ) : 'class_fun_bind
+                                                                    ->
+                                                                    'ipat ->
+                                                                    Locf.t ->
+                                                                    'class_fun_bind ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (class_fun_def : 'class_fun_def Gramf.t )
@@ -10752,9 +12213,12 @@ let apply () =
              annot = "`CeFun (_loc, p, ce)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(ce : 'class_fun_def)  ~__fan_0:(p : 'ipat) 
-                     (_loc : Locf.t)  ->
-                     (`CeFun (_loc, p, ce) : 'class_fun_def )))
+                  (fun (ce : 'class_fun_def)  (p : 'ipat)  (_loc : Locf.t) 
+                     -> (`CeFun (_loc, p, ce) : 'class_fun_def ) : 'class_fun_def
+                                                                    ->
+                                                                    'ipat ->
+                                                                    Locf.t ->
+                                                                    'class_fun_def ))
            };
           {
             symbols =
@@ -10765,8 +12229,10 @@ let apply () =
             annot = "ce\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(ce : 'clexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (ce : 'class_fun_def )))
+                 (fun (ce : 'clexp)  _  (_loc : Locf.t)  ->
+                    (ce : 'class_fun_def ) : 'clexp ->
+                                               Tokenf.txt ->
+                                                 Locf.t -> 'class_fun_def ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (clexp : 'clexp Gramf.t )
@@ -10786,9 +12252,12 @@ let apply () =
              annot = "`CeFun (_loc, p, ce)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_2:(ce : 'class_fun_def)  ~__fan_1:(p : 'ipat) 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`CeFun (_loc, p, ce) : 'clexp )))
+                  (fun (ce : 'class_fun_def)  (p : 'ipat)  _  (_loc : Locf.t)
+                      -> (`CeFun (_loc, p, ce) : 'clexp ) : 'class_fun_def ->
+                                                              'ipat ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'clexp ))
            };
           {
             symbols =
@@ -10802,9 +12271,12 @@ let apply () =
             annot = "`CeFun (_loc, p, ce)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(ce : 'class_fun_def)  ~__fan_1:(p : 'ipat) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`CeFun (_loc, p, ce) : 'clexp )))
+                 (fun (ce : 'class_fun_def)  (p : 'ipat)  _  (_loc : Locf.t) 
+                    -> (`CeFun (_loc, p, ce) : 'clexp ) : 'class_fun_def ->
+                                                            'ipat ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'clexp ))
           };
           {
             symbols =
@@ -10822,10 +12294,13 @@ let apply () =
             annot = "`LetIn (_loc, rf, bi, ce)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(ce : 'clexp)  ~__fan_3:_ 
-                    ~__fan_2:(bi : 'bind)  ~__fan_1:(rf : 'opt_rec) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`LetIn (_loc, rf, bi, ce) : 'clexp )))
+                 (fun (ce : 'clexp)  _  (bi : 'bind)  (rf : 'opt_rec)  _ 
+                    (_loc : Locf.t)  -> (`LetIn (_loc, rf, bi, ce) : 
+                    'clexp ) : 'clexp ->
+                                 Tokenf.txt ->
+                                   'bind ->
+                                     'opt_rec ->
+                                       Tokenf.txt -> Locf.t -> 'clexp ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (clexp : 'clexp Gramf.t )
@@ -10839,8 +12314,10 @@ let apply () =
              annot = "`CeApp (_loc, ce, e)\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_1:(e : 'exp)  ~__fan_0:(ce : 'clexp) 
-                     (_loc : Locf.t)  -> (`CeApp (_loc, ce, e) : 'clexp )))
+                  (fun (e : 'exp)  (ce : 'clexp)  (_loc : Locf.t)  ->
+                     (`CeApp (_loc, ce, e) : 'clexp ) : 'exp ->
+                                                          'clexp ->
+                                                            Locf.t -> 'clexp ))
            }]
       } : Gramf.olevel );
    Gramf.extend_single (clexp : 'clexp Gramf.t )
@@ -10858,8 +12335,9 @@ let apply () =
              annot = "mk_ant ~c:\"clexp\" s\n";
              fn =
                (Gramf.mk_action
-                  (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp )))
+                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                     let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp ) : 
+                  Tokenf.ant -> Locf.t -> 'clexp ))
            };
           {
             symbols =
@@ -10871,8 +12349,9 @@ let apply () =
             annot = "mk_ant ~c:\"clexp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp ) : 
+                 Tokenf.ant -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -10882,9 +12361,10 @@ let apply () =
             annot = "Ast_quotation.expand x Dyn_tag.clexp\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clexp : 'clexp )))
+                    (Ast_quotation.expand x Dyn_tag.clexp : 'clexp ) : 
+                 Tokenf.quot -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -10899,17 +12379,21 @@ let apply () =
             annot = "`ClApply (_loc, ci, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(t : 'comma_ctyp)  ~__fan_1:_ 
-                    ~__fan_0:(ci : 'vid)  (_loc : Locf.t)  ->
-                    (`ClApply (_loc, ci, t) : 'clexp )))
+                 (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : Locf.t) 
+                    -> (`ClApply (_loc, ci, t) : 'clexp ) : Tokenf.txt ->
+                                                              'comma_ctyp ->
+                                                                Tokenf.txt ->
+                                                                  'vid ->
+                                                                    Locf.t ->
+                                                                    'clexp ))
           };
           {
             symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
             annot = "(ci :>clexp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(ci : 'vid)  (_loc : Locf.t)  ->
-                    ((ci :>clexp) : 'clexp )))
+                 (fun (ci : 'vid)  (_loc : Locf.t)  ->
+                    ((ci :>clexp) : 'clexp ) : 'vid -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -10932,9 +12416,12 @@ let apply () =
             annot = "`ObjPat (_loc, p, cst)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:_  ~__fan_4:(cst : 'class_structure) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`ObjPat (_loc, p, cst) : 'clexp )))
+                 (fun _  (cst : 'class_structure)  _  (p : 'pat)  _  _ 
+                    (_loc : Locf.t)  -> (`ObjPat (_loc, p, cst) : 'clexp ) : 
+                 Tokenf.txt ->
+                   'class_structure ->
+                     Tokenf.txt ->
+                       'pat -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -10956,9 +12443,14 @@ let apply () =
             annot = "`ObjPatEnd (_loc, p)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ObjPatEnd (_loc, p) : 'clexp )))
+                 (fun _  _  (p : 'pat)  _  _  (_loc : Locf.t)  ->
+                    (`ObjPatEnd (_loc, p) : 'clexp ) : Tokenf.txt ->
+                                                         Tokenf.txt ->
+                                                           'pat ->
+                                                             Tokenf.txt ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'clexp ))
           };
           {
             symbols =
@@ -10985,12 +12477,17 @@ let apply () =
             annot = "`ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_7:_  ~__fan_6:(cst : 'class_structure) 
-                    ~__fan_5:_  ~__fan_4:(t : 'ctyp)  ~__fan_3:_ 
-                    ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  (cst : 'class_structure)  _  (t : 'ctyp)  _ 
+                    (p : 'pat)  _  _  (_loc : Locf.t)  ->
                     (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
-                    'clexp )))
+                    'clexp ) : Tokenf.txt ->
+                                 'class_structure ->
+                                   Tokenf.txt ->
+                                     'ctyp ->
+                                       Tokenf.txt ->
+                                         'pat ->
+                                           Tokenf.txt ->
+                                             Tokenf.txt -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -11016,11 +12513,16 @@ let apply () =
             annot = "`ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_6:_  ~__fan_5:_  ~__fan_4:(t : 'ctyp) 
-                    ~__fan_3:_  ~__fan_2:(p : 'pat)  ~__fan_1:_  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun _  _  (t : 'ctyp)  _  (p : 'pat)  _  _  (_loc : Locf.t)
+                     ->
                     (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
-                    'clexp )))
+                    'clexp ) : Tokenf.txt ->
+                                 Tokenf.txt ->
+                                   'ctyp ->
+                                     Tokenf.txt ->
+                                       'pat ->
+                                         Tokenf.txt ->
+                                           Tokenf.txt -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -11036,9 +12538,11 @@ let apply () =
             annot = "`Obj (_loc, cst)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(cst : 'class_structure) 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Obj (_loc, cst) : 'clexp )))
+                 (fun _  (cst : 'class_structure)  _  (_loc : Locf.t)  ->
+                    (`Obj (_loc, cst) : 'clexp ) : Tokenf.txt ->
+                                                     'class_structure ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -11053,8 +12557,8 @@ let apply () =
             annot = "`ObjEnd _loc\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`ObjEnd _loc : 'clexp )))
+                 (fun _  _  (_loc : Locf.t)  -> (`ObjEnd _loc : 'clexp ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'clexp ))
           };
           {
             symbols =
@@ -11072,9 +12576,16 @@ let apply () =
             annot = "`Constraint (_loc, ce, ct)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(ct : 'cltyp)  ~__fan_2:_ 
-                    ~__fan_1:(ce : 'clexp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Constraint (_loc, ce, ct) : 'clexp )))
+                 (fun _  (ct : 'cltyp)  _  (ce : 'clexp)  _  (_loc : Locf.t) 
+                    -> (`Constraint (_loc, ce, ct) : 'clexp ) : Tokenf.txt ->
+                                                                  'cltyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'clexp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'clexp ))
           };
           {
             symbols =
@@ -11088,8 +12599,8 @@ let apply () =
             annot = "ce\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(ce : 'clexp)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (ce : 'clexp )))
+                 (fun _  (ce : 'clexp)  _  (_loc : Locf.t)  -> (ce : 'clexp ) : 
+                 Tokenf.txt -> 'clexp -> Tokenf.txt -> Locf.t -> 'clexp ))
           }]
       } : Gramf.olevel ));
   Gramf.extend_single (class_description : 'class_description Gramf.t )
@@ -11107,9 +12618,16 @@ let apply () =
             annot = "`And (_loc, cd1, cd2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(cd2 : 'class_description)  ~__fan_1:_ 
-                    ~__fan_0:(cd1 : 'class_description)  (_loc : Locf.t)  ->
-                    (`And (_loc, cd1, cd2) : 'class_description )))
+                 (fun (cd2 : 'class_description)  _ 
+                    (cd1 : 'class_description)  (_loc : Locf.t)  ->
+                    (`And (_loc, cd1, cd2) : 'class_description ) : 'class_description
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'class_description
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'class_description ))
           };
          {
            symbols =
@@ -11119,9 +12637,12 @@ let apply () =
            annot = "mk_ant ~c:\"cltyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"cltyp" s : 'class_description )))
+                   (mk_ant ~c:"cltyp" s : 'class_description ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'class_description ))
          };
          {
            symbols =
@@ -11133,9 +12654,12 @@ let apply () =
            annot = "mk_ant ~c:\"cltyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"cltyp" s : 'class_description )))
+                   (mk_ant ~c:"cltyp" s : 'class_description ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'class_description ))
          };
          {
            symbols =
@@ -11157,11 +12681,16 @@ let apply () =
            annot = "`CtDecl (_loc, mv, (i :>ident), x, ct)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_6:(ct : 'cltyp_plus)  ~__fan_5:_  ~__fan_4:_ 
-                   ~__fan_3:(x : 'comma_type_parameter)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
-                   (_loc : Locf.t)  ->
-                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'class_description )))
+                (fun (ct : 'cltyp_plus)  _  _  (x : 'comma_type_parameter)  _
+                    (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t)  ->
+                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'class_description ) : 
+                'cltyp_plus ->
+                  Tokenf.txt ->
+                    Tokenf.txt ->
+                      'comma_type_parameter ->
+                        Tokenf.txt ->
+                          'a_lident ->
+                            'opt_virtual -> Locf.t -> 'class_description ))
          };
          {
            symbols =
@@ -11174,10 +12703,12 @@ let apply () =
            annot = "`CtDeclS (_loc, mv, (i :>ident), ct)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(ct : 'cltyp_plus)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
-                   (_loc : Locf.t)  ->
-                   (`CtDeclS (_loc, mv, (i :>ident), ct) : 'class_description )))
+                (fun (ct : 'cltyp_plus)  _  (i : 'a_lident) 
+                   (mv : 'opt_virtual)  (_loc : Locf.t)  ->
+                   (`CtDeclS (_loc, mv, (i :>ident), ct) : 'class_description ) : 
+                'cltyp_plus ->
+                  Tokenf.txt ->
+                    'a_lident -> 'opt_virtual -> Locf.t -> 'class_description ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (cltyp_declaration : 'cltyp_declaration Gramf.t )
@@ -11195,9 +12726,16 @@ let apply () =
             annot = "`And (_loc, cd1, cd2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(cd2 : 'cltyp_declaration)  ~__fan_1:_ 
-                    ~__fan_0:(cd1 : 'cltyp_declaration)  (_loc : Locf.t)  ->
-                    (`And (_loc, cd1, cd2) : 'cltyp_declaration )))
+                 (fun (cd2 : 'cltyp_declaration)  _ 
+                    (cd1 : 'cltyp_declaration)  (_loc : Locf.t)  ->
+                    (`And (_loc, cd1, cd2) : 'cltyp_declaration ) : 'cltyp_declaration
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'cltyp_declaration
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'cltyp_declaration ))
           };
          {
            symbols =
@@ -11207,9 +12745,12 @@ let apply () =
            annot = "mk_ant ~c:\"cltyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"cltyp" s : 'cltyp_declaration )))
+                   (mk_ant ~c:"cltyp" s : 'cltyp_declaration ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'cltyp_declaration ))
          };
          {
            symbols =
@@ -11221,9 +12762,12 @@ let apply () =
            annot = "mk_ant ~c:\"cltyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"cltyp" s : 'cltyp_declaration )))
+                   (mk_ant ~c:"cltyp" s : 'cltyp_declaration ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'cltyp_declaration ))
          };
          {
            symbols =
@@ -11245,11 +12789,16 @@ let apply () =
            annot = "`CtDecl (_loc, mv, (i :>ident), x, ct)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_6:(ct : 'cltyp)  ~__fan_5:_  ~__fan_4:_ 
-                   ~__fan_3:(x : 'comma_type_parameter)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
-                   (_loc : Locf.t)  ->
-                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'cltyp_declaration )))
+                (fun (ct : 'cltyp)  _  _  (x : 'comma_type_parameter)  _ 
+                   (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t)  ->
+                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'cltyp_declaration ) : 
+                'cltyp ->
+                  Tokenf.txt ->
+                    Tokenf.txt ->
+                      'comma_type_parameter ->
+                        Tokenf.txt ->
+                          'a_lident ->
+                            'opt_virtual -> Locf.t -> 'cltyp_declaration ))
          };
          {
            symbols =
@@ -11262,10 +12811,12 @@ let apply () =
            annot = "`CtDeclS (_loc, mv, (i :>ident), ct)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(ct : 'cltyp)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:(mv : 'opt_virtual) 
+                (fun (ct : 'cltyp)  _  (i : 'a_lident)  (mv : 'opt_virtual) 
                    (_loc : Locf.t)  ->
-                   (`CtDeclS (_loc, mv, (i :>ident), ct) : 'cltyp_declaration )))
+                   (`CtDeclS (_loc, mv, (i :>ident), ct) : 'cltyp_declaration ) : 
+                'cltyp ->
+                  Tokenf.txt ->
+                    'a_lident -> 'opt_virtual -> Locf.t -> 'cltyp_declaration ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (cltyp_quot : 'cltyp_quot Gramf.t )
@@ -11278,8 +12829,8 @@ let apply () =
             annot = "x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(x : 'cltyp)  (_loc : Locf.t)  ->
-                    (x : 'cltyp_quot )))
+                 (fun (x : 'cltyp)  (_loc : Locf.t)  -> (x : 'cltyp_quot ) : 
+                 'cltyp -> Locf.t -> 'cltyp_quot ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (cltyp_plus : 'cltyp_plus Gramf.t )
@@ -11303,17 +12854,20 @@ let apply () =
             annot = "`CtFun (_loc, t, ct)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:(ct : 'cltyp_plus)  ~__fan_3:_  ~__fan_2:_ 
-                    ~__fan_1:(t : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`CtFun (_loc, t, ct) : 'cltyp_plus )))
+                 (fun (ct : 'cltyp_plus)  _  _  (t : 'ctyp)  _ 
+                    (_loc : Locf.t)  -> (`CtFun (_loc, t, ct) : 'cltyp_plus ) : 
+                 'cltyp_plus ->
+                   Tokenf.txt ->
+                     Tokenf.txt ->
+                       'ctyp -> Tokenf.txt -> Locf.t -> 'cltyp_plus ))
           };
          {
            symbols = [Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))];
            annot = "ct\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(ct : 'cltyp)  (_loc : Locf.t)  ->
-                   (ct : 'cltyp_plus )))
+                (fun (ct : 'cltyp)  (_loc : Locf.t)  -> (ct : 'cltyp_plus ) : 
+                'cltyp -> Locf.t -> 'cltyp_plus ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (cltyp : 'cltyp Gramf.t )
@@ -11331,8 +12885,9 @@ let apply () =
             annot = "mk_ant ~c:\"cltyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp ) : 
+                 Tokenf.ant -> Locf.t -> 'cltyp ))
           };
          {
            symbols =
@@ -11344,8 +12899,9 @@ let apply () =
            annot = "mk_ant ~c:\"cltyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp ) : 
+                Tokenf.ant -> Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11355,9 +12911,10 @@ let apply () =
            annot = "Ast_quotation.expand x Dyn_tag.cltyp\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                    let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.cltyp : 'cltyp )))
+                   (Ast_quotation.expand x Dyn_tag.cltyp : 'cltyp ) : 
+                Tokenf.quot -> Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11372,17 +12929,21 @@ let apply () =
            annot = "`ClApply (_loc, i, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(t : 'comma_ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
-                   (`ClApply (_loc, i, t) : 'cltyp )))
+                (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : Locf.t)  ->
+                   (`ClApply (_loc, i, t) : 'cltyp ) : Tokenf.txt ->
+                                                         'comma_ctyp ->
+                                                           Tokenf.txt ->
+                                                             'vid ->
+                                                               Locf.t ->
+                                                                 'cltyp ))
          };
          {
            symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
            annot = "(i :>cltyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'vid)  (_loc : Locf.t)  ->
-                   ((i :>cltyp) : 'cltyp )))
+                (fun (i : 'vid)  (_loc : Locf.t)  -> ((i :>cltyp) : 'cltyp ) : 
+                'vid -> Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11405,9 +12966,12 @@ let apply () =
            annot = "`ObjTy (_loc, t, csg)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(csg : 'class_signature) 
-                   ~__fan_3:_  ~__fan_2:(t : 'ctyp)  ~__fan_1:_  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`ObjTy (_loc, t, csg) : 'cltyp )))
+                (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _ 
+                   (_loc : Locf.t)  -> (`ObjTy (_loc, t, csg) : 'cltyp ) : 
+                Tokenf.txt ->
+                  'class_signature ->
+                    Tokenf.txt ->
+                      'ctyp -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11423,9 +12987,11 @@ let apply () =
            annot = "`Obj (_loc, csg)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(csg : 'class_signature) 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Obj (_loc, csg) : 'cltyp )))
+                (fun _  (csg : 'class_signature)  _  (_loc : Locf.t)  ->
+                   (`Obj (_loc, csg) : 'cltyp ) : Tokenf.txt ->
+                                                    'class_signature ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11444,8 +13010,12 @@ let apply () =
            annot = "`ObjTyEnd (_loc, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(t : 'ctyp)  ~__fan_1:_  ~__fan_0:_
-                    (_loc : Locf.t)  -> (`ObjTyEnd (_loc, t) : 'cltyp )))
+                (fun _  (t : 'ctyp)  _  _  (_loc : Locf.t)  ->
+                   (`ObjTyEnd (_loc, t) : 'cltyp ) : Tokenf.txt ->
+                                                       'ctyp ->
+                                                         Tokenf.txt ->
+                                                           Tokenf.txt ->
+                                                             Locf.t -> 'cltyp ))
          };
          {
            symbols =
@@ -11460,8 +13030,8 @@ let apply () =
            annot = "`ObjEnd _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`ObjEnd _loc : 'cltyp )))
+                (fun _  _  (_loc : Locf.t)  -> (`ObjEnd _loc : 'cltyp ) : 
+                Tokenf.txt -> Tokenf.txt -> Locf.t -> 'cltyp ))
          }]
      } : Gramf.olevel )
 let apply_ctyp () =
@@ -11480,17 +13050,20 @@ let apply_ctyp () =
             annot = "`Sta (_loc, x, y)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(y : 'star_ctyp)  ~__fan_1:_ 
-                    ~__fan_0:(x : 'ctyp)  (_loc : Locf.t)  ->
-                    (`Sta (_loc, x, y) : 'ctyp_quot )))
+                 (fun (y : 'star_ctyp)  _  (x : 'ctyp)  (_loc : Locf.t)  ->
+                    (`Sta (_loc, x, y) : 'ctyp_quot ) : 'star_ctyp ->
+                                                          Tokenf.txt ->
+                                                            'ctyp ->
+                                                              Locf.t ->
+                                                                'ctyp_quot ))
           };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "x\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(x : 'ctyp)  (_loc : Locf.t)  ->
-                   (x : 'ctyp_quot )))
+                (fun (x : 'ctyp)  (_loc : Locf.t)  -> (x : 'ctyp_quot ) : 
+                'ctyp -> Locf.t -> 'ctyp_quot ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (unquoted_typevars : 'unquoted_typevars Gramf.t )
@@ -11503,9 +13076,14 @@ let apply_ctyp () =
             annot = "`App (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t2 : 'unquoted_typevars) 
-                    ~__fan_0:(t1 : 'unquoted_typevars)  (_loc : Locf.t)  ->
-                    (`App (_loc, t1, t2) : 'unquoted_typevars )))
+                 (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
+                    (_loc : Locf.t)  ->
+                    (`App (_loc, t1, t2) : 'unquoted_typevars ) : 'unquoted_typevars
+                                                                    ->
+                                                                    'unquoted_typevars
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'unquoted_typevars ))
           };
          {
            symbols =
@@ -11515,9 +13093,11 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'unquoted_typevars )))
+                   (mk_ant ~c:"ctyp" s : 'unquoted_typevars ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'unquoted_typevars ))
          };
          {
            symbols =
@@ -11529,17 +13109,21 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'unquoted_typevars )))
+                   (mk_ant ~c:"ctyp" s : 'unquoted_typevars ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'unquoted_typevars ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
            annot = "(i :>ctyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                   ((i :>ctyp) : 'unquoted_typevars )))
+                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((i :>ctyp) : 'unquoted_typevars ) : 'a_lident ->
+                                                          Locf.t ->
+                                                            'unquoted_typevars ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (type_parameter : 'type_parameter Gramf.t )
@@ -11557,8 +13141,9 @@ let apply_ctyp () =
             annot = "mk_ant s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant s : 'type_parameter )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant s : 'type_parameter ) : 
+                 Tokenf.ant -> Locf.t -> 'type_parameter ))
           };
          {
            symbols =
@@ -11570,8 +13155,9 @@ let apply_ctyp () =
            annot = "mk_ant s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant s : 'type_parameter )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant s : 'type_parameter ) : 
+                Tokenf.ant -> Locf.t -> 'type_parameter ))
          };
          {
            symbols =
@@ -11582,8 +13168,9 @@ let apply_ctyp () =
            annot = "`Quote (_loc, (`Normal _loc), i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`Quote (_loc, (`Normal _loc), i) : 'type_parameter )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`Quote (_loc, (`Normal _loc), i) : 'type_parameter ) : 
+                'a_lident -> Tokenf.txt -> Locf.t -> 'type_parameter ))
          };
          {
            symbols =
@@ -11598,13 +13185,17 @@ let apply_ctyp () =
              "`Quote (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc), i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (i : 'a_lident)  _  (__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
                    let p = __fan_0.txt in
                    (`Quote
                       (_loc,
                         (if p = "+" then `Positive _loc else `Negative _loc),
-                        i) : 'type_parameter )))
+                        i) : 'type_parameter ) : 'a_lident ->
+                                                   Tokenf.txt ->
+                                                     Tokenf.txt ->
+                                                       Locf.t ->
+                                                         'type_parameter ))
          };
          {
            symbols =
@@ -11619,13 +13210,17 @@ let apply_ctyp () =
              "`Quote (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc), i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(i : 'a_lident)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (i : 'a_lident)  _  (__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
                    let p = __fan_0.txt in
                    (`Quote
                       (_loc,
                         (if p = "+" then `Positive _loc else `Negative _loc),
-                        i) : 'type_parameter )))
+                        i) : 'type_parameter ) : 'a_lident ->
+                                                   Tokenf.txt ->
+                                                     Tokenf.txt ->
+                                                       Locf.t ->
+                                                         'type_parameter ))
          };
          {
            symbols =
@@ -11639,13 +13234,14 @@ let apply_ctyp () =
              "`QuoteAny (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
+                (fun _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let p = __fan_0.txt in
                    (`QuoteAny
                       (_loc,
                         (if p = "+" then `Positive _loc else `Negative _loc)) : 
-                     'type_parameter )))
+                     'type_parameter ) : Tokenf.txt ->
+                                           Tokenf.txt ->
+                                             Locf.t -> 'type_parameter ))
          };
          {
            symbols =
@@ -11659,13 +13255,14 @@ let apply_ctyp () =
              "`QuoteAny (_loc, (if p = \"+\" then `Positive _loc else `Negative _loc))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
+                (fun _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let p = __fan_0.txt in
                    (`QuoteAny
                       (_loc,
                         (if p = "+" then `Positive _loc else `Negative _loc)) : 
-                     'type_parameter )))
+                     'type_parameter ) : Tokenf.txt ->
+                                           Tokenf.txt ->
+                                             Locf.t -> 'type_parameter ))
          };
          {
            symbols =
@@ -11675,8 +13272,8 @@ let apply_ctyp () =
            annot = "`Any _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Any _loc : 'type_parameter )))
+                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'type_parameter ) : 
+                Tokenf.txt -> Locf.t -> 'type_parameter ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -11698,10 +13295,13 @@ let apply_ctyp () =
             annot = "tpl (i :>ctyp)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(i : 'type_longident)  ~__fan_2:_ 
-                    ~__fan_1:(tpl : 'type_parameters)  ~__fan_0:_ 
+                 (fun (i : 'type_longident)  _  (tpl : 'type_parameters)  _ 
                     (_loc : Locf.t)  ->
-                    (tpl (i :>ctyp) : 'type_longident_and_parameters )))
+                    (tpl (i :>ctyp) : 'type_longident_and_parameters ) : 
+                 'type_longident ->
+                   Tokenf.txt ->
+                     'type_parameters ->
+                       Tokenf.txt -> Locf.t -> 'type_longident_and_parameters ))
           };
          {
            symbols =
@@ -11710,9 +13310,11 @@ let apply_ctyp () =
            annot = "`App (_loc, (i :>ctyp), (tpl :>ctyp))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'type_longident) 
-                   ~__fan_0:(tpl : 'type_parameter)  (_loc : Locf.t)  ->
-                   (`App (_loc, (i :>ctyp), (tpl :>ctyp)) : 'type_longident_and_parameters )))
+                (fun (i : 'type_longident)  (tpl : 'type_parameter) 
+                   (_loc : Locf.t)  ->
+                   (`App (_loc, (i :>ctyp), (tpl :>ctyp)) : 'type_longident_and_parameters ) : 
+                'type_longident ->
+                  'type_parameter -> Locf.t -> 'type_longident_and_parameters ))
          };
          {
            symbols =
@@ -11720,8 +13322,11 @@ let apply_ctyp () =
            annot = "(i :>ctyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'type_longident)  (_loc : Locf.t)  ->
-                   ((i :>ctyp) : 'type_longident_and_parameters )))
+                (fun (i : 'type_longident)  (_loc : Locf.t)  ->
+                   ((i :>ctyp) : 'type_longident_and_parameters ) : 'type_longident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'type_longident_and_parameters ))
          };
          {
            symbols =
@@ -11731,9 +13336,10 @@ let apply_ctyp () =
            annot = "mk_ant s ~c:\"ctyp\"\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant s ~c:"ctyp" : 'type_longident_and_parameters )))
+                   (mk_ant s ~c:"ctyp" : 'type_longident_and_parameters ) : 
+                Tokenf.ant -> Locf.t -> 'type_longident_and_parameters ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (type_parameters : 'type_parameters Gramf.t )
@@ -11748,10 +13354,12 @@ let apply_ctyp () =
             annot = "fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp)))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t2 : 'type_parameters) 
-                    ~__fan_0:(t1 : 'type_parameter)  (_loc : Locf.t)  ->
+                 (fun (t2 : 'type_parameters)  (t1 : 'type_parameter) 
+                    (_loc : Locf.t)  ->
                     (fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp))) : 
-                    'type_parameters )))
+                    'type_parameters ) : 'type_parameters ->
+                                           'type_parameter ->
+                                             Locf.t -> 'type_parameters ))
           };
          {
            symbols =
@@ -11759,15 +13367,17 @@ let apply_ctyp () =
            annot = "fun acc  -> `App (_loc, acc, (t :>ctyp))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'type_parameter)  (_loc : Locf.t)  ->
-                   (fun acc  -> `App (_loc, acc, (t :>ctyp)) : 'type_parameters )))
+                (fun (t : 'type_parameter)  (_loc : Locf.t)  ->
+                   (fun acc  -> `App (_loc, acc, (t :>ctyp)) : 'type_parameters ) : 
+                'type_parameter -> Locf.t -> 'type_parameters ))
          };
          {
            symbols = [];
            annot = "fun t  -> t\n";
            fn =
              (Gramf.mk_action
-                (fun (_loc : Locf.t)  -> (fun t  -> t : 'type_parameters )))
+                (fun (_loc : Locf.t)  -> (fun t  -> t : 'type_parameters ) : 
+                Locf.t -> 'type_parameters ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (meth_list : 'meth_list Gramf.t )
@@ -11785,10 +13395,12 @@ let apply_ctyp () =
             annot = "let (ml,v) = rest in ((`Sem (_loc, m, ml)), v)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(rest : 'meth_list)  ~__fan_1:_ 
-                    ~__fan_0:(m : 'meth_decl)  (_loc : Locf.t)  ->
+                 (fun (rest : 'meth_list)  _  (m : 'meth_decl) 
+                    (_loc : Locf.t)  ->
                     (let (ml,v) = rest in ((`Sem (_loc, m, ml)), v) : 
-                    'meth_list )))
+                    'meth_list ) : 'meth_list ->
+                                     Tokenf.txt ->
+                                       'meth_decl -> Locf.t -> 'meth_list ))
           };
          {
            symbols =
@@ -11797,8 +13409,10 @@ let apply_ctyp () =
            annot = "(m, v)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(v : 'opt_dot_dot)  ~__fan_0:(m : 'meth_decl) 
-                   (_loc : Locf.t)  -> ((m, v) : 'meth_list )))
+                (fun (v : 'opt_dot_dot)  (m : 'meth_decl)  (_loc : Locf.t) 
+                   -> ((m, v) : 'meth_list ) : 'opt_dot_dot ->
+                                                 'meth_decl ->
+                                                   Locf.t -> 'meth_list ))
          };
          {
            symbols =
@@ -11810,9 +13424,11 @@ let apply_ctyp () =
            annot = "(m, v)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(v : 'opt_dot_dot)  ~__fan_1:_ 
-                   ~__fan_0:(m : 'meth_decl)  (_loc : Locf.t)  ->
-                   ((m, v) : 'meth_list )))
+                (fun (v : 'opt_dot_dot)  _  (m : 'meth_decl)  (_loc : Locf.t)
+                    -> ((m, v) : 'meth_list ) : 'opt_dot_dot ->
+                                                  Tokenf.txt ->
+                                                    'meth_decl ->
+                                                      Locf.t -> 'meth_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (meth_decl : 'meth_decl Gramf.t )
@@ -11830,8 +13446,9 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl ) : 
+                 Tokenf.ant -> Locf.t -> 'meth_decl ))
           };
          {
            symbols =
@@ -11843,8 +13460,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl ) : 
+                Tokenf.ant -> Locf.t -> 'meth_decl ))
          };
          {
            symbols =
@@ -11856,9 +13474,12 @@ let apply_ctyp () =
            annot = "`TyCol (_loc, lab, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(lab : 'a_lident)  (_loc : Locf.t)  ->
-                   (`TyCol (_loc, lab, t) : 'meth_decl )))
+                (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : Locf.t)  ->
+                   (`TyCol (_loc, lab, t) : 'meth_decl ) : 'ctyp ->
+                                                             Tokenf.txt ->
+                                                               'a_lident ->
+                                                                 Locf.t ->
+                                                                   'meth_decl ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (opt_meth_list : 'opt_meth_list Gramf.t )
@@ -11871,8 +13492,9 @@ let apply_ctyp () =
             annot = "let (ml,v) = rest in `TyObj (_loc, ml, v)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(rest : 'meth_list)  (_loc : Locf.t)  ->
-                    (let (ml,v) = rest in `TyObj (_loc, ml, v) : 'opt_meth_list )))
+                 (fun (rest : 'meth_list)  (_loc : Locf.t)  ->
+                    (let (ml,v) = rest in `TyObj (_loc, ml, v) : 'opt_meth_list ) : 
+                 'meth_list -> Locf.t -> 'opt_meth_list ))
           };
          {
            symbols =
@@ -11880,8 +13502,10 @@ let apply_ctyp () =
            annot = "`TyObjEnd (_loc, v)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(v : 'opt_dot_dot)  (_loc : Locf.t)  ->
-                   (`TyObjEnd (_loc, v) : 'opt_meth_list )))
+                (fun (v : 'opt_dot_dot)  (_loc : Locf.t)  ->
+                   (`TyObjEnd (_loc, v) : 'opt_meth_list ) : 'opt_dot_dot ->
+                                                               Locf.t ->
+                                                                 'opt_meth_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (row_field : 'row_field Gramf.t )
@@ -11899,8 +13523,9 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'row_field )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'row_field ) : 
+                 Tokenf.ant -> Locf.t -> 'row_field ))
           };
          {
            symbols =
@@ -11912,8 +13537,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'row_field )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'row_field ) : 
+                Tokenf.ant -> Locf.t -> 'row_field ))
          };
          {
            symbols =
@@ -11925,9 +13551,10 @@ let apply_ctyp () =
            annot = "`TyVrn (_loc, (mk_ant ~c:\"ctyp\" s))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (`TyVrn (_loc, (mk_ant ~c:"ctyp" s)) : 'row_field )))
+                   (`TyVrn (_loc, (mk_ant ~c:"ctyp" s)) : 'row_field ) : 
+                Tokenf.ant -> Locf.t -> 'row_field ))
          };
          {
            symbols =
@@ -11943,10 +13570,11 @@ let apply_ctyp () =
            annot = "`TyVrnOf (_loc, (mk_ant ~c:\"ctyp\" s), t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                   ->
                    let s = __fan_0 in
-                   (`TyVrnOf (_loc, (mk_ant ~c:"ctyp" s), t) : 'row_field )))
+                   (`TyVrnOf (_loc, (mk_ant ~c:"ctyp" s), t) : 'row_field ) : 
+                'ctyp -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'row_field ))
          };
          {
            symbols =
@@ -11958,9 +13586,13 @@ let apply_ctyp () =
            annot = "`Bar (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'row_field)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'row_field)  (_loc : Locf.t)  ->
-                   (`Bar (_loc, t1, t2) : 'row_field )))
+                (fun (t2 : 'row_field)  _  (t1 : 'row_field)  (_loc : Locf.t)
+                    -> (`Bar (_loc, t1, t2) : 'row_field ) : 'row_field ->
+                                                               Tokenf.txt ->
+                                                                 'row_field
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'row_field ))
          };
          {
            symbols =
@@ -11971,8 +13603,11 @@ let apply_ctyp () =
            annot = "`TyVrn (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'astr)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`TyVrn (_loc, i) : 'row_field )))
+                (fun (i : 'astr)  _  (_loc : Locf.t)  ->
+                   (`TyVrn (_loc, i) : 'row_field ) : 'astr ->
+                                                        Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'row_field ))
          };
          {
            symbols =
@@ -11987,17 +13622,23 @@ let apply_ctyp () =
            annot = "`TyVrnOf (_loc, i, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(t : 'ctyp)  ~__fan_2:_  ~__fan_1:(i : 'astr) 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`TyVrnOf (_loc, i, t) : 'row_field )))
+                (fun (t : 'ctyp)  _  (i : 'astr)  _  (_loc : Locf.t)  ->
+                   (`TyVrnOf (_loc, i, t) : 'row_field ) : 'ctyp ->
+                                                             Tokenf.txt ->
+                                                               'astr ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'row_field ))
          };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "`Ctyp (_loc, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'ctyp)  (_loc : Locf.t)  ->
-                   (`Ctyp (_loc, t) : 'row_field )))
+                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
+                   (`Ctyp (_loc, t) : 'row_field ) : 'ctyp ->
+                                                       Locf.t -> 'row_field ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (name_tags : 'name_tags Gramf.t )
@@ -12015,8 +13656,9 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'name_tags )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'name_tags ) : 
+                 Tokenf.ant -> Locf.t -> 'name_tags ))
           };
          {
            symbols =
@@ -12028,16 +13670,20 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'name_tags )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'name_tags ) : 
+                Tokenf.ant -> Locf.t -> 'name_tags ))
          };
          {
            symbols = [Self; Self];
            annot = "`App (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(t2 : 'name_tags)  ~__fan_0:(t1 : 'name_tags) 
-                   (_loc : Locf.t)  -> (`App (_loc, t1, t2) : 'name_tags )))
+                (fun (t2 : 'name_tags)  (t1 : 'name_tags)  (_loc : Locf.t) 
+                   -> (`App (_loc, t1, t2) : 'name_tags ) : 'name_tags ->
+                                                              'name_tags ->
+                                                                Locf.t ->
+                                                                  'name_tags ))
          };
          {
            symbols =
@@ -12048,8 +13694,11 @@ let apply_ctyp () =
            annot = "`TyVrn (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'astr)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`TyVrn (_loc, i) : 'name_tags )))
+                (fun (i : 'astr)  _  (_loc : Locf.t)  ->
+                   (`TyVrn (_loc, i) : 'name_tags ) : 'astr ->
+                                                        Tokenf.txt ->
+                                                          Locf.t ->
+                                                            'name_tags ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (type_declaration : 'type_declaration Gramf.t )
@@ -12067,9 +13716,11 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ctyp" s : 'type_declaration )))
+                    (mk_ant ~c:"ctyp" s : 'type_declaration ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'type_declaration ))
           };
          {
            symbols =
@@ -12081,9 +13732,11 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'type_declaration )))
+                   (mk_ant ~c:"ctyp" s : 'type_declaration ) : Tokenf.ant ->
+                                                                 Locf.t ->
+                                                                   'type_declaration ))
          };
          {
            symbols =
@@ -12095,9 +13748,16 @@ let apply_ctyp () =
            annot = "`And (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'type_declaration)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'type_declaration)  (_loc : Locf.t)  ->
-                   (`And (_loc, t1, t2) : 'type_declaration )))
+                (fun (t2 : 'type_declaration)  _  (t1 : 'type_declaration) 
+                   (_loc : Locf.t)  ->
+                   (`And (_loc, t1, t2) : 'type_declaration ) : 'type_declaration
+                                                                  ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'type_declaration
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'type_declaration ))
          };
          {
            symbols =
@@ -12114,16 +13774,19 @@ let apply_ctyp () =
              "let (n,tpl) = rest in\n`TyDcl\n  (_loc, n, tpl, tk,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(cl : 'constrain list) 
-                   ~__fan_2:(tk : 'type_info)  ~__fan_1:_ 
-                   ~__fan_0:(rest : 'type_ident_and_parameters) 
-                   (_loc : Locf.t)  ->
+                (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
+                   (rest : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
                    (let (n,tpl) = rest in
                     `TyDcl
                       (_loc, n, tpl, tk,
                         (match cl with
                          | [] -> `None _loc
-                         | _ -> `Some (_loc, (and_of_list cl)))) : 'type_declaration )))
+                         | _ -> `Some (_loc, (and_of_list cl)))) : 'type_declaration ) : 
+                'constrain list ->
+                  'type_info ->
+                    Tokenf.txt ->
+                      'type_ident_and_parameters ->
+                        Locf.t -> 'type_declaration ))
          };
          {
            symbols =
@@ -12136,15 +13799,16 @@ let apply_ctyp () =
              "let (n,tpl) = rest in\n`TyAbstr\n  (_loc, n, tpl,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(cl : 'constrain list) 
-                   ~__fan_0:(rest : 'type_ident_and_parameters) 
-                   (_loc : Locf.t)  ->
+                (fun (cl : 'constrain list) 
+                   (rest : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
                    (let (n,tpl) = rest in
                     `TyAbstr
                       (_loc, n, tpl,
                         (match cl with
                          | [] -> `None _loc
-                         | _ -> `Some (_loc, (and_of_list cl)))) : 'type_declaration )))
+                         | _ -> `Some (_loc, (and_of_list cl)))) : 'type_declaration ) : 
+                'constrain list ->
+                  'type_ident_and_parameters -> Locf.t -> 'type_declaration ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (type_info : 'type_info Gramf.t )
@@ -12157,8 +13821,9 @@ let apply_ctyp () =
             annot = "`TyRepr (_loc, (`Negative _loc), t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(t2 : 'type_repr)  (_loc : Locf.t)  ->
-                    (`TyRepr (_loc, (`Negative _loc), t2) : 'type_info )))
+                 (fun (t2 : 'type_repr)  (_loc : Locf.t)  ->
+                    (`TyRepr (_loc, (`Negative _loc), t2) : 'type_info ) : 
+                 'type_repr -> Locf.t -> 'type_info ))
           };
          {
            symbols =
@@ -12170,17 +13835,18 @@ let apply_ctyp () =
            annot = "`TyMan (_loc, t1, (`Negative _loc), t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'type_repr)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
-                   (`TyMan (_loc, t1, (`Negative _loc), t2) : 'type_info )))
+                (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : Locf.t)  ->
+                   (`TyMan (_loc, t1, (`Negative _loc), t2) : 'type_info ) : 
+                'type_repr -> Tokenf.txt -> 'ctyp -> Locf.t -> 'type_info ))
          };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "`TyEq (_loc, (`Negative _loc), t1)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
-                   (`TyEq (_loc, (`Negative _loc), t1) : 'type_info )))
+                (fun (t1 : 'ctyp)  (_loc : Locf.t)  ->
+                   (`TyEq (_loc, (`Negative _loc), t1) : 'type_info ) : 
+                'ctyp -> Locf.t -> 'type_info ))
          };
          {
            symbols =
@@ -12193,8 +13859,9 @@ let apply_ctyp () =
            annot = "`TyEq (_loc, (`Positive _loc), t1)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(t1 : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`TyEq (_loc, (`Positive _loc), t1) : 'type_info )))
+                (fun (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
+                   (`TyEq (_loc, (`Positive _loc), t1) : 'type_info ) : 
+                'ctyp -> Tokenf.txt -> Locf.t -> 'type_info ))
          };
          {
            symbols =
@@ -12211,9 +13878,10 @@ let apply_ctyp () =
            annot = "`TyMan (_loc, t1, (`Positive _loc), t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(t2 : 'type_repr)  ~__fan_2:_  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
-                   (`TyMan (_loc, t1, (`Positive _loc), t2) : 'type_info )))
+                (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : Locf.t) 
+                   -> (`TyMan (_loc, t1, (`Positive _loc), t2) : 'type_info ) : 
+                'type_repr ->
+                  Tokenf.txt -> Tokenf.txt -> 'ctyp -> Locf.t -> 'type_info ))
          };
          {
            symbols =
@@ -12226,8 +13894,9 @@ let apply_ctyp () =
            annot = "`TyRepr (_loc, (`Positive _loc), t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(t2 : 'type_repr)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`TyRepr (_loc, (`Positive _loc), t2) : 'type_info )))
+                (fun (t2 : 'type_repr)  _  (_loc : Locf.t)  ->
+                   (`TyRepr (_loc, (`Positive _loc), t2) : 'type_info ) : 
+                'type_repr -> Tokenf.txt -> Locf.t -> 'type_info ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (type_repr : 'type_repr Gramf.t )
@@ -12247,8 +13916,11 @@ let apply_ctyp () =
             annot = "`Sum (_loc, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t : 'constructor_declarations)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (`Sum (_loc, t) : 'type_repr )))
+                 (fun (t : 'constructor_declarations)  _  (_loc : Locf.t)  ->
+                    (`Sum (_loc, t) : 'type_repr ) : 'constructor_declarations
+                                                       ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'type_repr ))
           };
          {
            symbols =
@@ -12264,9 +13936,13 @@ let apply_ctyp () =
            annot = "`Record (_loc, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(t : 'label_declaration_list) 
-                   ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Record (_loc, t) : 'type_repr )))
+                (fun _  (t : 'label_declaration_list)  _  (_loc : Locf.t)  ->
+                   (`Record (_loc, t) : 'type_repr ) : Tokenf.txt ->
+                                                         'label_declaration_list
+                                                           ->
+                                                           Tokenf.txt ->
+                                                             Locf.t ->
+                                                               'type_repr ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -12296,12 +13972,17 @@ let apply_ctyp () =
               "(i, (`Some (_loc, (com_of_list (tpl :>decl_params list)))))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(i : 'a_lident)  ~__fan_2:_ 
-                    ~__fan_1:(tpl : 'type_parameter list)  ~__fan_0:_ 
+                 (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _ 
                     (_loc : Locf.t)  ->
                     ((i,
                        (`Some (_loc, (com_of_list (tpl :>decl_params list))))) : 
-                    'type_ident_and_parameters )))
+                    'type_ident_and_parameters ) : 'a_lident ->
+                                                     Tokenf.txt ->
+                                                       'type_parameter list
+                                                         ->
+                                                         Tokenf.txt ->
+                                                           Locf.t ->
+                                                             'type_ident_and_parameters ))
           };
          {
            symbols =
@@ -12310,17 +13991,20 @@ let apply_ctyp () =
            annot = "(i, (`Some (_loc, (t :>decl_params))))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:(t : 'type_parameter)
-                    (_loc : Locf.t)  ->
-                   ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters )))
+                (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : Locf.t) 
+                   ->
+                   ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters ) : 
+                'a_lident ->
+                  'type_parameter -> Locf.t -> 'type_ident_and_parameters ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
            annot = "(i, (`None _loc))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                   ((i, (`None _loc)) : 'type_ident_and_parameters )))
+                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((i, (`None _loc)) : 'type_ident_and_parameters ) : 
+                'a_lident -> Locf.t -> 'type_ident_and_parameters ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (constrain : 'constrain Gramf.t )
@@ -12344,9 +14028,13 @@ let apply_ctyp () =
             annot = "`Eq (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Eq (_loc, t1, t2) : 'constrain )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
+                    (`Eq (_loc, t1, t2) : 'constrain ) : 'ctyp ->
+                                                           Tokenf.txt ->
+                                                             'ctyp ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'constrain ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (typevars : 'typevars Gramf.t )
@@ -12359,8 +14047,11 @@ let apply_ctyp () =
             annot = "`App (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t2 : 'typevars)  ~__fan_0:(t1 : 'typevars) 
-                    (_loc : Locf.t)  -> (`App (_loc, t1, t2) : 'typevars )))
+                 (fun (t2 : 'typevars)  (t1 : 'typevars)  (_loc : Locf.t)  ->
+                    (`App (_loc, t1, t2) : 'typevars ) : 'typevars ->
+                                                           'typevars ->
+                                                             Locf.t ->
+                                                               'typevars ))
           };
          {
            symbols =
@@ -12370,8 +14061,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'typevars )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'typevars ) : 
+                Tokenf.ant -> Locf.t -> 'typevars ))
          };
          {
            symbols =
@@ -12383,8 +14075,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'typevars )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'typevars ) : 
+                Tokenf.ant -> Locf.t -> 'typevars ))
          };
          {
            symbols =
@@ -12395,8 +14088,9 @@ let apply_ctyp () =
            annot = "`Quote (_loc, (`Normal _loc), i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (`Quote (_loc, (`Normal _loc), i) : 'typevars )))
+                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`Quote (_loc, (`Normal _loc), i) : 'typevars ) : 
+                'a_lident -> Tokenf.txt -> Locf.t -> 'typevars ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12417,9 +14111,13 @@ let apply_ctyp () =
             annot = "`Alias (_loc, t1, i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(i : 'a_lident)  ~__fan_2:_  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
-                    (`Alias (_loc, t1, i) : 'ctyp )))
+                 (fun (i : 'a_lident)  _  _  (t1 : 'ctyp)  (_loc : Locf.t) 
+                    -> (`Alias (_loc, t1, i) : 'ctyp ) : 'a_lident ->
+                                                           Tokenf.txt ->
+                                                             Tokenf.txt ->
+                                                               'ctyp ->
+                                                                 Locf.t ->
+                                                                   'ctyp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12440,9 +14138,13 @@ let apply_ctyp () =
             annot = "`TyPol (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t2 : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(t1 : 'typevars)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`TyPol (_loc, t1, t2) : 'ctyp )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'typevars)  _  (_loc : Locf.t) 
+                    -> (`TyPol (_loc, t1, t2) : 'ctyp ) : 'ctyp ->
+                                                            Tokenf.txt ->
+                                                              'typevars ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'ctyp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12460,9 +14162,11 @@ let apply_ctyp () =
             annot = "`Arrow (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t2 : 'ctyp)  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'ctyp)  (_loc : Locf.t)  ->
-                    (`Arrow (_loc, t1, t2) : 'ctyp )))
+                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : Locf.t)  ->
+                    (`Arrow (_loc, t1, t2) : 'ctyp ) : 'ctyp ->
+                                                         Tokenf.txt ->
+                                                           'ctyp ->
+                                                             Locf.t -> 'ctyp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12483,9 +14187,12 @@ let apply_ctyp () =
             annot = "`Label (_loc, i, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                    ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Label (_loc, i, t) : 'ctyp )))
+                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`Label (_loc, i, t) : 'ctyp ) : 'ctyp ->
+                                                       Tokenf.txt ->
+                                                         'a_lident ->
+                                                           Tokenf.txt ->
+                                                             Locf.t -> 'ctyp ))
           };
          {
            symbols =
@@ -12499,10 +14206,16 @@ let apply_ctyp () =
            annot = "`Label (_loc, (`Lid (_loc, s)), t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t) 
+                   ->
                    let s = __fan_0.txt in
-                   (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )))
+                   (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp ) : 'ctyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ctyp ))
          };
          {
            symbols =
@@ -12515,10 +14228,10 @@ let apply_ctyp () =
            annot = "`OptLabl (_loc, (`Lid (_loc, s)), t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(t : 'ctyp)  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let s = __fan_0.txt in
-                   (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp )))
+                   (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp ) : 
+                'ctyp -> Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12533,9 +14246,12 @@ let apply_ctyp () =
            annot = "`OptLabl (_loc, i, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`OptLabl (_loc, i, t) : 'ctyp )))
+                (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`OptLabl (_loc, i, t) : 'ctyp ) : 'ctyp ->
+                                                        Tokenf.txt ->
+                                                          'a_lident ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'ctyp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12548,8 +14264,10 @@ let apply_ctyp () =
             annot = "`App (_loc, t2, t1)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(t2 : 'ctyp)  ~__fan_0:(t1 : 'ctyp) 
-                    (_loc : Locf.t)  -> (`App (_loc, t2, t1) : 'ctyp )))
+                 (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : Locf.t)  ->
+                    (`App (_loc, t2, t1) : 'ctyp ) : 'ctyp ->
+                                                       'ctyp ->
+                                                         Locf.t -> 'ctyp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (ctyp : 'ctyp Gramf.t )
@@ -12566,8 +14284,13 @@ let apply_ctyp () =
             annot = "`Quote (_loc, (`Normal _loc), i)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(i : 'a_lident)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (`Quote (_loc, (`Normal _loc), i) : 'ctyp )))
+                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
+                    (`Quote (_loc, (`Normal _loc), i) : 'ctyp ) : 'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ctyp ))
           };
          {
            symbols =
@@ -12577,7 +14300,10 @@ let apply_ctyp () =
            annot = "`Any _loc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  -> (`Any _loc : 'ctyp )))
+                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'ctyp ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ctyp ))
          };
          {
            symbols =
@@ -12587,8 +14313,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12600,8 +14327,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12613,8 +14341,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12626,8 +14355,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12644,8 +14374,8 @@ let apply_ctyp () =
              "(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_ant ~c:\"ident\" s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.ant)  (_loc : Locf.t) 
+                   ->
                    let s = __fan_0 in
                    ((try
                        let id = ident_of_ctyp t in
@@ -12653,7 +14383,8 @@ let apply_ctyp () =
                          (`Dot (_loc, (mk_ant ~c:"ident" s), id) : ctyp )
                      with
                      | Invalid_argument s ->
-                         (fun ()  -> raise (Streamf.Error s))) () : 'ctyp )))
+                         (fun ()  -> raise (Streamf.Error s))) () : 'ctyp ) : 
+                'ctyp -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12666,22 +14397,22 @@ let apply_ctyp () =
              "(try let id = ident_of_ctyp t in fun ()  -> `Dot (_loc, (i :>ident), id)\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(i : 'a_uident)  (_loc : Locf.t)  ->
+                (fun (t : 'ctyp)  _  (i : 'a_uident)  (_loc : Locf.t)  ->
                    ((try
                        let id = ident_of_ctyp t in
                        fun ()  -> `Dot (_loc, (i :>ident), id)
                      with
                      | Invalid_argument s ->
-                         (fun ()  -> raise (Streamf.Error s))) () : 'ctyp )))
+                         (fun ()  -> raise (Streamf.Error s))) () : 'ctyp ) : 
+                'ctyp -> Tokenf.txt -> 'a_uident -> Locf.t -> 'ctyp ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
            annot = "(i :>ctyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                   ((i :>ctyp) : 'ctyp )))
+                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                   ((i :>ctyp) : 'ctyp ) : 'a_lident -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12699,9 +14430,11 @@ let apply_ctyp () =
            annot = "`Par (_loc, (`Sta (_loc, t, tl)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(tl : 'star_ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(t : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`Par (_loc, (`Sta (_loc, t, tl))) : 'ctyp )))
+                (fun _  (tl : 'star_ctyp)  _  (t : 'ctyp)  _  (_loc : Locf.t)
+                    -> (`Par (_loc, (`Sta (_loc, t, tl))) : 'ctyp ) : 
+                Tokenf.txt ->
+                  'star_ctyp ->
+                    Tokenf.txt -> 'ctyp -> Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12715,8 +14448,8 @@ let apply_ctyp () =
            annot = "t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(t : 'ctyp)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (t : 'ctyp )))
+                (fun _  (t : 'ctyp)  _  (_loc : Locf.t)  -> (t : 'ctyp ) : 
+                Tokenf.txt -> 'ctyp -> Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12736,11 +14469,22 @@ let apply_ctyp () =
              "appl_of_list ((j :>ctyp) :: t :: (Ast_basic.list_of_com tl []))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:(j : 'type_longident)  ~__fan_4:_ 
-                   ~__fan_3:(tl : 'com_ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(t : 'ctyp)  ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun (j : 'type_longident)  _  (tl : 'com_ctyp)  _ 
+                   (t : 'ctyp)  _  (_loc : Locf.t)  ->
                    (appl_of_list ((j :>ctyp) :: t ::
-                      (Ast_basic.list_of_com tl [])) : 'ctyp )))
+                      (Ast_basic.list_of_com tl [])) : 'ctyp ) : 'type_longident
+                                                                   ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'com_ctyp
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'ctyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ctyp ))
          };
          {
            symbols =
@@ -12754,8 +14498,11 @@ let apply_ctyp () =
            annot = "`PolyEq (_loc, rfl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(rfl : 'row_field)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`PolyEq (_loc, rfl) : 'ctyp )))
+                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
+                   (`PolyEq (_loc, rfl) : 'ctyp ) : Tokenf.txt ->
+                                                      'row_field ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12769,8 +14516,11 @@ let apply_ctyp () =
            annot = "`PolySup (_loc, rfl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(rfl : 'row_field)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`PolySup (_loc, rfl) : 'ctyp )))
+                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
+                   (`PolySup (_loc, rfl) : 'ctyp ) : Tokenf.txt ->
+                                                       'row_field ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12785,12 +14535,12 @@ let apply_ctyp () =
              "match ntl with\n| None  -> `PolyInf (_loc, rfl)\n| Some ntl -> `PolyInfSup (_loc, rfl, ntl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(rfl : 'row_field)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
                    let ntl = None in
                    (match ntl with
                     | None  -> `PolyInf (_loc, rfl)
-                    | Some ntl -> `PolyInfSup (_loc, rfl, ntl) : 'ctyp )))
+                    | Some ntl -> `PolyInfSup (_loc, rfl, ntl) : 'ctyp ) : 
+                Tokenf.txt -> 'row_field -> Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12809,13 +14559,15 @@ let apply_ctyp () =
              "match ntl with\n| None  -> `PolyInf (_loc, rfl)\n| Some ntl -> `PolyInfSup (_loc, rfl, ntl)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(ntl : 'name_tags)  ~__fan_2:_ 
-                   ~__fan_1:(rfl : 'row_field)  ~__fan_0:_  (_loc : Locf.t) 
-                   ->
+                (fun _  (ntl : 'name_tags)  _  (rfl : 'row_field)  _ 
+                   (_loc : Locf.t)  ->
                    let ntl = Some ntl in
                    (match ntl with
                     | None  -> `PolyInf (_loc, rfl)
-                    | Some ntl -> `PolyInfSup (_loc, rfl, ntl) : 'ctyp )))
+                    | Some ntl -> `PolyInfSup (_loc, rfl, ntl) : 'ctyp ) : 
+                Tokenf.txt ->
+                  'name_tags ->
+                    Tokenf.txt -> 'row_field -> Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12826,8 +14578,10 @@ let apply_ctyp () =
            annot = "`ClassPath (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(i : 'class_longident)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (`ClassPath (_loc, i) : 'ctyp )))
+                (fun (i : 'class_longident)  _  (_loc : Locf.t)  ->
+                   (`ClassPath (_loc, i) : 'ctyp ) : 'class_longident ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12841,8 +14595,10 @@ let apply_ctyp () =
            annot = "t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(t : 'opt_meth_list)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (t : 'ctyp )))
+                (fun _  (t : 'opt_meth_list)  _  (_loc : Locf.t)  ->
+                   (t : 'ctyp ) : Tokenf.txt ->
+                                    'opt_meth_list ->
+                                      Tokenf.txt -> Locf.t -> 'ctyp ))
          };
          {
            symbols =
@@ -12861,8 +14617,12 @@ let apply_ctyp () =
            annot = "`Package (_loc, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(p : 'mtyp)  ~__fan_1:_  ~__fan_0:_
-                    (_loc : Locf.t)  -> (`Package (_loc, p) : 'ctyp )))
+                (fun _  (p : 'mtyp)  _  _  (_loc : Locf.t)  ->
+                   (`Package (_loc, p) : 'ctyp ) : Tokenf.txt ->
+                                                     'mtyp ->
+                                                       Tokenf.txt ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'ctyp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (comma_ctyp : 'comma_ctyp Gramf.t )
@@ -12880,9 +14640,10 @@ let apply_ctyp () =
             annot = "`Com (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t2 : 'comma_ctyp)  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'comma_ctyp)  (_loc : Locf.t)  ->
-                    (`Com (_loc, t1, t2) : 'comma_ctyp )))
+                 (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp) 
+                    (_loc : Locf.t)  -> (`Com (_loc, t1, t2) : 'comma_ctyp ) : 
+                 'comma_ctyp ->
+                   Tokenf.txt -> 'comma_ctyp -> Locf.t -> 'comma_ctyp ))
           };
          {
            symbols =
@@ -12892,16 +14653,18 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp,\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp," s : 'comma_ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp," s : 'comma_ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'comma_ctyp ))
          };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "`Ctyp (_loc, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'ctyp)  (_loc : Locf.t)  ->
-                   (`Ctyp (_loc, t) : 'comma_ctyp )))
+                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
+                   (`Ctyp (_loc, t) : 'comma_ctyp ) : 'ctyp ->
+                                                        Locf.t -> 'comma_ctyp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (com_ctyp : 'com_ctyp Gramf.t )
@@ -12919,8 +14682,9 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'com_ctyp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'com_ctyp ) : 
+                 Tokenf.ant -> Locf.t -> 'com_ctyp ))
           };
          {
            symbols =
@@ -12932,8 +14696,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'com_ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'com_ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'com_ctyp ))
          };
          {
            symbols =
@@ -12945,17 +14710,20 @@ let apply_ctyp () =
            annot = "`Com (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'com_ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'com_ctyp)  (_loc : Locf.t)  ->
-                   (`Com (_loc, t1, t2) : 'com_ctyp )))
+                (fun (t2 : 'com_ctyp)  _  (t1 : 'com_ctyp)  (_loc : Locf.t) 
+                   -> (`Com (_loc, t1, t2) : 'com_ctyp ) : 'com_ctyp ->
+                                                             Tokenf.txt ->
+                                                               'com_ctyp ->
+                                                                 Locf.t ->
+                                                                   'com_ctyp ))
          };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'ctyp)  (_loc : Locf.t)  ->
-                   (t : 'com_ctyp )))
+                (fun (t : 'ctyp)  (_loc : Locf.t)  -> (t : 'com_ctyp ) : 
+                'ctyp -> Locf.t -> 'com_ctyp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (star_ctyp : 'star_ctyp Gramf.t )
@@ -12973,8 +14741,9 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'star_ctyp )))
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'star_ctyp ) : 
+                 Tokenf.ant -> Locf.t -> 'star_ctyp ))
           };
          {
            symbols =
@@ -12986,8 +14755,9 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'star_ctyp )))
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'star_ctyp ) : 
+                Tokenf.ant -> Locf.t -> 'star_ctyp ))
          };
          {
            symbols =
@@ -12999,17 +14769,21 @@ let apply_ctyp () =
            annot = "`Sta (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'star_ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'star_ctyp)  (_loc : Locf.t)  ->
-                   (`Sta (_loc, t1, t2) : 'star_ctyp )))
+                (fun (t2 : 'star_ctyp)  _  (t1 : 'star_ctyp)  (_loc : Locf.t)
+                    -> (`Sta (_loc, t1, t2) : 'star_ctyp ) : 'star_ctyp ->
+                                                               Tokenf.txt ->
+                                                                 'star_ctyp
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'star_ctyp ))
          };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'ctyp)  (_loc : Locf.t)  ->
-                   (t : 'star_ctyp )))
+                (fun (t : 'ctyp)  (_loc : Locf.t)  -> (t : 'star_ctyp ) : 
+                'ctyp -> Locf.t -> 'star_ctyp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -13028,9 +14802,10 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ctyp" s : 'constructor_declarations )))
+                    (mk_ant ~c:"ctyp" s : 'constructor_declarations ) : 
+                 Tokenf.ant -> Locf.t -> 'constructor_declarations ))
           };
          {
            symbols =
@@ -13042,9 +14817,10 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'constructor_declarations )))
+                   (mk_ant ~c:"ctyp" s : 'constructor_declarations ) : 
+                Tokenf.ant -> Locf.t -> 'constructor_declarations ))
          };
          {
            symbols =
@@ -13056,9 +14832,13 @@ let apply_ctyp () =
            annot = "`Bar (_loc, t1, t2)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t2 : 'constructor_declarations)  ~__fan_1:_ 
-                   ~__fan_0:(t1 : 'constructor_declarations)  (_loc : Locf.t)
-                    -> (`Bar (_loc, t1, t2) : 'constructor_declarations )))
+                (fun (t2 : 'constructor_declarations)  _ 
+                   (t1 : 'constructor_declarations)  (_loc : Locf.t)  ->
+                   (`Bar (_loc, t1, t2) : 'constructor_declarations ) : 
+                'constructor_declarations ->
+                  Tokenf.txt ->
+                    'constructor_declarations ->
+                      Locf.t -> 'constructor_declarations ))
          };
          {
            symbols =
@@ -13072,9 +14852,12 @@ let apply_ctyp () =
            annot = "`Of (_loc, s, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'constructor_arg_list)  ~__fan_1:_ 
-                   ~__fan_0:(s : 'a_uident)  (_loc : Locf.t)  ->
-                   (`Of (_loc, s, t) : 'constructor_declarations )))
+                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
+                   (_loc : Locf.t)  ->
+                   (`Of (_loc, s, t) : 'constructor_declarations ) : 
+                'constructor_arg_list ->
+                  Tokenf.txt ->
+                    'a_uident -> Locf.t -> 'constructor_declarations ))
          };
          {
            symbols =
@@ -13086,17 +14869,22 @@ let apply_ctyp () =
            annot = "`TyCol (_loc, s, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(s : 'a_uident)  (_loc : Locf.t)  ->
-                   (`TyCol (_loc, s, t) : 'constructor_declarations )))
+                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : Locf.t)  ->
+                   (`TyCol (_loc, s, t) : 'constructor_declarations ) : 
+                'ctyp ->
+                  Tokenf.txt ->
+                    'a_uident -> Locf.t -> 'constructor_declarations ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))];
            annot = "(s :>or_ctyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(s : 'a_uident)  (_loc : Locf.t)  ->
-                   ((s :>or_ctyp) : 'constructor_declarations )))
+                (fun (s : 'a_uident)  (_loc : Locf.t)  ->
+                   ((s :>or_ctyp) : 'constructor_declarations ) : 'a_uident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'constructor_declarations ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -13115,9 +14903,10 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ctyp" s : 'constructor_declaration )))
+                    (mk_ant ~c:"ctyp" s : 'constructor_declaration ) : 
+                 Tokenf.ant -> Locf.t -> 'constructor_declaration ))
           };
          {
            symbols =
@@ -13129,9 +14918,10 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'constructor_declaration )))
+                   (mk_ant ~c:"ctyp" s : 'constructor_declaration ) : 
+                Tokenf.ant -> Locf.t -> 'constructor_declaration ))
          };
          {
            symbols =
@@ -13145,17 +14935,22 @@ let apply_ctyp () =
            annot = "`Of (_loc, (s :>vid), t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'constructor_arg_list)  ~__fan_1:_ 
-                   ~__fan_0:(s : 'a_uident)  (_loc : Locf.t)  ->
-                   (`Of (_loc, (s :>vid), t) : 'constructor_declaration )))
+                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
+                   (_loc : Locf.t)  ->
+                   (`Of (_loc, (s :>vid), t) : 'constructor_declaration ) : 
+                'constructor_arg_list ->
+                  Tokenf.txt ->
+                    'a_uident -> Locf.t -> 'constructor_declaration ))
          };
          {
            symbols = [Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))];
            annot = "(s :>of_ctyp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(s : 'a_uident)  (_loc : Locf.t)  ->
-                   ((s :>of_ctyp) : 'constructor_declaration )))
+                (fun (s : 'a_uident)  (_loc : Locf.t)  ->
+                   ((s :>of_ctyp) : 'constructor_declaration ) : 'a_uident ->
+                                                                   Locf.t ->
+                                                                    'constructor_declaration ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (constructor_arg_list : 'constructor_arg_list Gramf.t )
@@ -13173,17 +14968,22 @@ let apply_ctyp () =
             annot = "`Sta (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t2 : 'constructor_arg_list)  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'constructor_arg_list)  (_loc : Locf.t) 
-                    -> (`Sta (_loc, t1, t2) : 'constructor_arg_list )))
+                 (fun (t2 : 'constructor_arg_list)  _ 
+                    (t1 : 'constructor_arg_list)  (_loc : Locf.t)  ->
+                    (`Sta (_loc, t1, t2) : 'constructor_arg_list ) : 
+                 'constructor_arg_list ->
+                   Tokenf.txt ->
+                     'constructor_arg_list -> Locf.t -> 'constructor_arg_list ))
           };
          {
            symbols = [Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
            annot = "t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'ctyp)  (_loc : Locf.t)  ->
-                   (t : 'constructor_arg_list )))
+                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
+                   (t : 'constructor_arg_list ) : 'ctyp ->
+                                                    Locf.t ->
+                                                      'constructor_arg_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -13203,9 +15003,12 @@ let apply_ctyp () =
             annot = "`Sem (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t2 : 'label_declaration_list)  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'label_declaration)  (_loc : Locf.t)  ->
-                    (`Sem (_loc, t1, t2) : 'label_declaration_list )))
+                 (fun (t2 : 'label_declaration_list)  _ 
+                    (t1 : 'label_declaration)  (_loc : Locf.t)  ->
+                    (`Sem (_loc, t1, t2) : 'label_declaration_list ) : 
+                 'label_declaration_list ->
+                   Tokenf.txt ->
+                     'label_declaration -> Locf.t -> 'label_declaration_list ))
           };
          {
            symbols =
@@ -13214,8 +15017,10 @@ let apply_ctyp () =
            annot = "t1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t1 : 'label_declaration)  (_loc : Locf.t)  ->
-                   (t1 : 'label_declaration_list )))
+                (fun (t1 : 'label_declaration)  (_loc : Locf.t)  ->
+                   (t1 : 'label_declaration_list ) : 'label_declaration ->
+                                                       Locf.t ->
+                                                         'label_declaration_list ))
          };
          {
            symbols =
@@ -13227,8 +15032,11 @@ let apply_ctyp () =
            annot = "t1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(t1 : 'label_declaration) 
-                   (_loc : Locf.t)  -> (t1 : 'label_declaration_list )))
+                (fun _  (t1 : 'label_declaration)  (_loc : Locf.t)  ->
+                   (t1 : 'label_declaration_list ) : Tokenf.txt ->
+                                                       'label_declaration ->
+                                                         Locf.t ->
+                                                           'label_declaration_list ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (label_declaration : 'label_declaration Gramf.t )
@@ -13246,9 +15054,12 @@ let apply_ctyp () =
             annot = "mk_ant ~c:\"ctyp\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (mk_ant ~c:"ctyp" s : 'label_declaration )))
+                    (mk_ant ~c:"ctyp" s : 'label_declaration ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'label_declaration ))
           };
          {
            symbols =
@@ -13260,9 +15071,11 @@ let apply_ctyp () =
            annot = "mk_ant ~c:\"ctyp\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (mk_ant ~c:"ctyp" s : 'label_declaration )))
+                   (mk_ant ~c:"ctyp" s : 'label_declaration ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'label_declaration ))
          };
          {
            symbols =
@@ -13274,9 +15087,14 @@ let apply_ctyp () =
            annot = "`TyCol (_loc, s, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(t : 'ctyp)  ~__fan_1:_ 
-                   ~__fan_0:(s : 'a_lident)  (_loc : Locf.t)  ->
-                   (`TyCol (_loc, s, t) : 'label_declaration )))
+                (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : Locf.t)  ->
+                   (`TyCol (_loc, s, t) : 'label_declaration ) : 'ctyp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'label_declaration ))
          };
          {
            symbols =
@@ -13293,9 +15111,16 @@ let apply_ctyp () =
            annot = "`TyColMut (_loc, s, t)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:(t : 'ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(s : 'a_lident)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (`TyColMut (_loc, s, t) : 'label_declaration )))
+                (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : Locf.t)  ->
+                   (`TyColMut (_loc, s, t) : 'label_declaration ) : 'ctyp ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'label_declaration ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (comma_type_parameter : 'comma_type_parameter Gramf.t )
@@ -13313,9 +15138,12 @@ let apply_ctyp () =
             annot = "`Com (_loc, t1, t2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(t2 : 'comma_type_parameter)  ~__fan_1:_ 
-                    ~__fan_0:(t1 : 'comma_type_parameter)  (_loc : Locf.t) 
-                    -> (`Com (_loc, t1, t2) : 'comma_type_parameter )))
+                 (fun (t2 : 'comma_type_parameter)  _ 
+                    (t1 : 'comma_type_parameter)  (_loc : Locf.t)  ->
+                    (`Com (_loc, t1, t2) : 'comma_type_parameter ) : 
+                 'comma_type_parameter ->
+                   Tokenf.txt ->
+                     'comma_type_parameter -> Locf.t -> 'comma_type_parameter ))
           };
          {
            symbols =
@@ -13323,8 +15151,9 @@ let apply_ctyp () =
            annot = "`Ctyp (_loc, (t :>ctyp))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'type_parameter)  (_loc : Locf.t)  ->
-                   (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter )))
+                (fun (t : 'type_parameter)  (_loc : Locf.t)  ->
+                   (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter ) : 
+                'type_parameter -> Locf.t -> 'comma_type_parameter ))
          }]
      } : Gramf.olevel )
 let fill_parsers =

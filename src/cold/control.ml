@@ -22,13 +22,13 @@ let _ =
               "match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                     let s = __fan_1.txt in
                     (match Ast_quotation.resolve_name ((`Sub []), s) with
                      | None  ->
                          Locf.failf _loc "DDSL `%s' can not be resolved" s
-                     | Some x -> Ast_quotation.set_default x : 'item )))
+                     | Some x -> Ast_quotation.set_default x : 'item ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'item ))
           };
          {
            symbols =
@@ -42,10 +42,11 @@ let _ =
              "Ast_quotation.paths := ((`Absolute xs) :: (!Ast_quotation.paths))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(xs : 'dot_namespace)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (xs : 'dot_namespace)  _  (_loc : Locf.t)  ->
                    (Ast_quotation.paths := ((`Absolute xs) ::
-                      (!Ast_quotation.paths)) : 'item )))
+                      (!Ast_quotation.paths)) : 'item ) : 'dot_namespace ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'item ))
          };
          {
            symbols =
@@ -60,10 +61,13 @@ let _ =
            annot = "Ast_filters.use_implem_filter s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let s = __fan_1.txt in
-                   (Ast_filters.use_implem_filter s : 'item )))
+                   (Ast_filters.use_implem_filter s : 'item ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'item ))
          };
          {
            symbols =
@@ -77,9 +81,11 @@ let _ =
              "Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                (fun _  (_loc : Locf.t)  ->
                    (Ast_quotation.clear_map ();
-                    Ast_quotation.clear_default () : 'item )))
+                    Ast_quotation.clear_default () : 'item ) : Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'item ))
          }]
      } : Gramf.olevel );
   Gramf.unsafe_extend_single (dot_namespace : 'dot_namespace Gramf.t )
@@ -99,9 +105,11 @@ let _ =
             annot = "i :: xs\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'dot_namespace)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (i :: xs : 'dot_namespace )))
+                 (fun (xs : 'dot_namespace)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
+                    let i = __fan_0.txt in (i :: xs : 'dot_namespace ) : 
+                 'dot_namespace ->
+                   Tokenf.txt -> Tokenf.txt -> Locf.t -> 'dot_namespace ))
           };
          {
            symbols =
@@ -111,8 +119,11 @@ let _ =
            annot = "[i]\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_0.txt in ([i] : 'dot_namespace )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let i = __fan_0.txt in ([i] : 'dot_namespace ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'dot_namespace ))
          }]
      } : Gramf.olevel );
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
@@ -129,8 +140,11 @@ let _ =
             annot = "()\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (() : 'items )))
+                 (fun _  _  (_loc : Locf.t)  -> (() : 'items ) : Tokenf.txt
+                                                                   ->
+                                                                   'item ->
+                                                                    Locf.t ->
+                                                                    'items ))
           };
          {
            symbols =
@@ -142,13 +156,19 @@ let _ =
            annot = "()\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (() : 'items )))
+                (fun _  _  _  (_loc : Locf.t)  -> (() : 'items ) : 'items ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    'item ->
+                                                                    Locf.t ->
+                                                                    'items ))
          };
          {
            symbols = [];
            annot = "()\n";
-           fn = (Gramf.mk_action (fun (_loc : Locf.t)  -> (() : 'items )))
+           fn =
+             (Gramf.mk_action
+                (fun (_loc : Locf.t)  -> (() : 'items ) : Locf.t -> 'items ))
          }]
      } : Gramf.olevel )
 let () =

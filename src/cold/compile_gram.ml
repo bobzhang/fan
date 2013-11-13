@@ -218,31 +218,35 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
         | `Type t -> t in
       aux styp : ctyp ) in
    let (+:) = typing in
-   let txt =
+   let (ty,txt) =
      snd @@
        (Listf.fold_lefti
-          (fun i  txt  (s : Gram_def.osymbol)  ->
-             let mk_arg p =
-               (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
-               FAst.pat ) in
+          (fun i  (ty,txt)  (s : Gram_def.osymbol)  ->
              match ((s.outer_pattern), (s.bounds)) with
              | (Some (xloc,id),_) ->
-                 let p =
-                   (`Lid (xloc, id) : FAst.pat ) +: (make_ctyp s.styp rtvar) in
-                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
+                 let t = make_ctyp s.styp rtvar in
+                 let p = (`Lid (xloc, id) : FAst.pat ) +: t in
+                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                   (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp ))
              | (None ,[]) ->
-                 (`Fun
-                    (_loc,
-                      (`Case (_loc, (mk_arg (`Any _loc : FAst.pat )), txt))) : 
-                 FAst.exp )
+                 let t = make_ctyp s.styp rtvar in
+                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                   (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp ))
              | (None ,_) ->
+                 let t = make_ctyp s.styp rtvar in
                  let p =
                    (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat ) +:
-                     (make_ctyp s.styp rtvar) in
-                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp ))
-          e x.prod) in
-   (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
-     FAst.exp ) : exp )
+                     t in
+                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                   (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )))
+          ((`Arrow
+              (_loc,
+                (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))),
+                (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) : 
+            FAst.ctyp ), e) x.prod) in
+   (`App
+      (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
+        (`Constraint (_loc, txt, ty))) : FAst.exp ) : exp )
 let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let gmid = (gm () : vid  :>ident) in
@@ -289,28 +293,6 @@ let make_extend safe (e : Gram_def.entry) =
        (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
        FAst.exp ) in
    (`App (_loc, (`App (_loc, f, ent)), (apply l)) : FAst.exp ) : exp )
-let capture_antiquot =
-  object 
-    inherit  Objs.map as super
-    val mutable constraints = ([] : (exp* exp) list )
-    method! pat =
-      function
-      | `Ant (_loc,s) ->
-          let code = s.txt in
-          let cons: FAst.exp = `Lid (_loc, code) in
-          let code' = "__fan__" ^ code in
-          let cons': FAst.exp = `Lid (_loc, code') in
-          let () = constraints <- (cons, cons') :: constraints in
-          (`Lid (_loc, code') : FAst.pat )
-      | p -> super#pat p
-    method get_captured_variables = constraints
-    method clear_captured_variables = constraints <- []
-  end
-let filter_pat_with_captured_variables pat =
-  capture_antiquot#clear_captured_variables;
-  (let pat = capture_antiquot#pat pat in
-   let constraints = capture_antiquot#get_captured_variables in
-   (pat, constraints))
 let combine _loc (gram : vid option) locals extends =
   let entry_mk =
     match gram with

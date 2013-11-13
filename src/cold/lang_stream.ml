@@ -21,11 +21,11 @@ let _ =
               "Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                     let n = __fan_1.txt in
                     (Ref.protect Compile_stream.grammar_module_name n
-                       (fun _  -> Compile_stream.empty _loc) : 'stream_exp )))
+                       (fun _  -> Compile_stream.empty _loc) : 'stream_exp ) : 
+                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'stream_exp ))
           };
          {
            symbols =
@@ -42,12 +42,13 @@ let _ =
              "Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(sel : 'stream_exp_comp_list) 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Tokenf.txt)  _
+                    (_loc : Locf.t)  ->
                    let n = __fan_1.txt in
                    (Ref.protect Compile_stream.grammar_module_name n
-                      (fun _  -> cstream _loc sel) : 'stream_exp )))
+                      (fun _  -> cstream _loc sel) : 'stream_exp ) : 
+                'stream_exp_comp_list ->
+                  Tokenf.txt -> Tokenf.txt -> Locf.t -> 'stream_exp ))
          };
          {
            symbols =
@@ -57,8 +58,11 @@ let _ =
            annot = "cstream _loc sel\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(sel : 'stream_exp_comp_list)  (_loc : Locf.t) 
-                   -> (cstream _loc sel : 'stream_exp )))
+                (fun (sel : 'stream_exp_comp_list)  (_loc : Locf.t)  ->
+                   (cstream _loc sel : 'stream_exp ) : 'stream_exp_comp_list
+                                                         ->
+                                                         Locf.t ->
+                                                           'stream_exp ))
          };
          {
            symbols = [];
@@ -66,7 +70,8 @@ let _ =
            fn =
              (Gramf.mk_action
                 (fun (_loc : Locf.t)  ->
-                   (Compile_stream.empty _loc : 'stream_exp )))
+                   (Compile_stream.empty _loc : 'stream_exp ) : Locf.t ->
+                                                                  'stream_exp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (stream_exp_comp : 'stream_exp_comp Gramf.t )
@@ -79,8 +84,9 @@ let _ =
             annot = "(Trm (_loc, e) : Compile_stream.sexp_comp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(e : 'exp)  (_loc : Locf.t)  ->
-                    ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp )))
+                 (fun (e : 'exp)  (_loc : Locf.t)  ->
+                    ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp ) : 
+                 'exp -> Locf.t -> 'stream_exp_comp ))
           };
          {
            symbols =
@@ -91,8 +97,11 @@ let _ =
            annot = "Ntr (_loc, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(e : 'exp)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Ntr (_loc, e) : 'stream_exp_comp )))
+                (fun (e : 'exp)  _  (_loc : Locf.t)  ->
+                   (Ntr (_loc, e) : 'stream_exp_comp ) : 'exp ->
+                                                           Tokenf.txt ->
+                                                             Locf.t ->
+                                                               'stream_exp_comp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
@@ -111,9 +120,13 @@ let _ =
             annot = "se :: sel\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(sel : 'stream_exp_comp_list)  ~__fan_1:_ 
-                    ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se
-                    :: sel : 'stream_exp_comp_list )))
+                 (fun (sel : 'stream_exp_comp_list)  _ 
+                    (se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se ::
+                    sel : 'stream_exp_comp_list ) : 'stream_exp_comp_list ->
+                                                      Tokenf.txt ->
+                                                        'stream_exp_comp ->
+                                                          Locf.t ->
+                                                            'stream_exp_comp_list ))
           };
          {
            symbols =
@@ -124,8 +137,11 @@ let _ =
            annot = "[se]\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(se : 'stream_exp_comp) 
-                   (_loc : Locf.t)  -> ([se] : 'stream_exp_comp_list )))
+                (fun _  (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
+                   ([se] : 'stream_exp_comp_list ) : Tokenf.txt ->
+                                                       'stream_exp_comp ->
+                                                         Locf.t ->
+                                                           'stream_exp_comp_list ))
          };
          {
            symbols =
@@ -133,8 +149,10 @@ let _ =
            annot = "[se]\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(se : 'stream_exp_comp)  (_loc : Locf.t)  ->
-                   ([se] : 'stream_exp_comp_list )))
+                (fun (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
+                   ([se] : 'stream_exp_comp_list ) : 'stream_exp_comp ->
+                                                       Locf.t ->
+                                                         'stream_exp_comp_list ))
          }]
      } : Gramf.olevel )
 let _ = Ast_quotation.of_exp ~name:(Ns.lang, "stream") ~entry:stream_exp ()

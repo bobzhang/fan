@@ -22,9 +22,11 @@ let _ =
             annot = "(_loc, x, None, None)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    ((_loc, x, None, None) : 'type_entry )))
+                    ((_loc, x, None, None) : 'type_entry ) : Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'type_entry ))
           };
          {
            symbols =
@@ -43,12 +45,19 @@ let _ =
            annot = "(_loc, x, (Some y), None)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.txt) 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                (fun _  (__fan_2 : Tokenf.txt)  (__fan_1 : Tokenf.txt)  _ 
                    (_loc : Locf.t)  ->
                    let x = __fan_1.txt in
                    let y = __fan_2.txt in
-                   ((_loc, x, (Some y), None) : 'type_entry )))
+                   ((_loc, x, (Some y), None) : 'type_entry ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'type_entry ))
          };
          {
            symbols =
@@ -68,13 +77,22 @@ let _ =
            annot = "(_loc, x, (Some y), (Some t))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp) 
-                   ~__fan_2:(__fan_2 : Tokenf.txt) 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun _  (t : 'Syntaxf__ctyp)  (__fan_2 : Tokenf.txt) 
+                   (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let x = __fan_1.txt in
                    let y = __fan_2.txt in
-                   ((_loc, x, (Some y), (Some t)) : 'type_entry )))
+                   ((_loc, x, (Some y), (Some t)) : 'type_entry ) : Tokenf.txt
+                                                                    ->
+                                                                    'Syntaxf__ctyp
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'type_entry ))
          };
          {
            symbols =
@@ -95,14 +113,19 @@ let _ =
              "(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                (fun _  (t : 'Syntaxf__ctyp)  _  (__fan_1 : Tokenf.txt)  _ 
                    (_loc : Locf.t)  ->
                    let x = __fan_1.txt in
                    let y = None in
                    ((_loc, x,
                       (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
-                      (Some t)) : 'type_entry )))
+                      (Some t)) : 'type_entry ) : Tokenf.txt ->
+                                                    'Syntaxf__ctyp ->
+                                                      Tokenf.txt ->
+                                                        Tokenf.txt ->
+                                                          Tokenf.txt ->
+                                                            Locf.t ->
+                                                              'type_entry ))
          };
          {
            symbols =
@@ -126,15 +149,20 @@ let _ =
              "(_loc, x, (Option.map (fun (x : Tokenf.txt)  -> x.txt) y), (Some t))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(y : Tokenf.txt) 
-                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun _  (y : Tokenf.txt)  (t : 'Syntaxf__ctyp)  _ 
+                   (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let x = __fan_1.txt in
                    let y = Some y in
                    ((_loc, x,
                       (Option.map (fun (x : Tokenf.txt)  -> x.txt) y),
-                      (Some t)) : 'type_entry )))
+                      (Some t)) : 'type_entry ) : Tokenf.txt ->
+                                                    Tokenf.txt ->
+                                                      'Syntaxf__ctyp ->
+                                                        Tokenf.txt ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t ->
+                                                                'type_entry ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (ty : 'ty Gramf.t )
@@ -158,17 +186,25 @@ let _ =
             annot = "`Dyn (x, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_4:_  ~__fan_3:(t : 't_qualid)  ~__fan_2:_ 
-                    ~__fan_1:(x : 'qualid)  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Dyn (x, t) : 'ty )))
+                 (fun _  (t : 't_qualid)  _  (x : 'qualid)  _ 
+                    (_loc : Locf.t)  -> (`Dyn (x, t) : 'ty ) : Tokenf.txt ->
+                                                                 't_qualid ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'qualid
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ty ))
           };
          {
            symbols = [Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ))];
            annot = "`Static t\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(t : 'qualuid)  (_loc : Locf.t)  ->
-                   (`Static t : 'ty )))
+                (fun (t : 'qualuid)  (_loc : Locf.t)  -> (`Static t : 'ty ) : 
+                'qualuid -> Locf.t -> 'ty ))
          };
          {
            symbols = [];
@@ -176,7 +212,7 @@ let _ =
            fn =
              (Gramf.mk_action
                 (fun (_loc : Locf.t)  ->
-                   (`Static (`Uid (_loc, "Gramf")) : 'ty )))
+                   (`Static (`Uid (_loc, "Gramf")) : 'ty ) : Locf.t -> 'ty ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
@@ -196,10 +232,11 @@ let _ =
             annot = "`Dot (_loc, (`Uid (_loc, x)), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))
+                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid ) : 
+                 'qualuid -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'qualuid ))
           };
          {
            symbols =
@@ -209,8 +246,9 @@ let _ =
            annot = "`Uid (_loc, x)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid ) : 
+                Tokenf.txt -> Locf.t -> 'qualuid ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (qualid : 'qualid Gramf.t )
@@ -230,10 +268,11 @@ let _ =
             annot = "`Dot (_loc, (`Uid (_loc, x)), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 'qualid)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )))
+                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid ) : 
+                 'qualid -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'qualid ))
           };
          {
            symbols =
@@ -243,8 +282,9 @@ let _ =
            annot = "`Lid (_loc, i)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_0.txt in (`Lid (_loc, i) : 'qualid )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let i = __fan_0.txt in (`Lid (_loc, i) : 'qualid ) : 
+                Tokenf.txt -> Locf.t -> 'qualid ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
@@ -264,10 +304,11 @@ let _ =
             annot = "`Dot (_loc, (`Uid (_loc, x)), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 't_qualid)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )))
+                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid ) : 
+                 't_qualid -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 't_qualid ))
           };
          {
            symbols =
@@ -283,9 +324,9 @@ let _ =
            annot = "`Uid (_loc, x)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:(__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (`Uid (_loc, x) : 't_qualid )))
+                (fun _  _  (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let x = __fan_0.txt in (`Uid (_loc, x) : 't_qualid ) : 
+                Tokenf.txt -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 't_qualid ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
@@ -301,8 +342,7 @@ let _ =
               "let mk =\n  match t with\n  | `Static t -> (`Dot (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(ls : 'type_entry list)  ~__fan_0:(t : 'ty) 
-                    (_loc : Locf.t)  ->
+                 (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : Locf.t)  ->
                     (let mk =
                        match t with
                        | `Static t ->
@@ -352,7 +392,8 @@ let _ =
                                                 (`App
                                                    (_loc, mk,
                                                      (`Str (_loc, x)))), typ))))) : 
-                                 FAst.stru )) ls) : 'nonterminals )))
+                                 FAst.stru )) ls) : 'nonterminals ) : 
+                 'type_entry list -> 'ty -> Locf.t -> 'nonterminals ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (newterminals : 'newterminals Gramf.t )
@@ -378,9 +419,8 @@ let _ =
               "let mk: FAst.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_5:(ls : 'type_entry list)  ~__fan_4:_ 
-                    ~__fan_3:(t : 't_qualid)  ~__fan_2:_ 
-                    ~__fan_1:(x : 'qualid)  ~__fan_0:_  (_loc : Locf.t)  ->
+                 (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
+                    (x : 'qualid)  _  (_loc : Locf.t)  ->
                     (let mk: FAst.exp =
                        `App
                          (_loc,
@@ -450,7 +490,12 @@ let _ =
                                                 (`App
                                                    (_loc, mk,
                                                      (`Str (_loc, x)))), typ))))) : 
-                                 FAst.stru )) ls)) : 'newterminals )))
+                                 FAst.stru )) ls)) : 'newterminals ) : 
+                 'type_entry list ->
+                   Tokenf.txt ->
+                     't_qualid ->
+                       Tokenf.txt ->
+                         'qualid -> Tokenf.txt -> Locf.t -> 'newterminals ))
           }]
      } : Gramf.olevel )
 let _ =

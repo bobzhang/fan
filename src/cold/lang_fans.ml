@@ -28,9 +28,11 @@ let _ =
             annot = "List.iter Typehook.plugin_add plugins\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:_  ~__fan_2:(plugins : 'id list)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (List.iter Typehook.plugin_add plugins : 'fan_quot )))
+                 (fun _  (plugins : 'id list)  _  _  (_loc : Locf.t)  ->
+                    (List.iter Typehook.plugin_add plugins : 'fan_quot ) : 
+                 Tokenf.txt ->
+                   'id list ->
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'fan_quot ))
           };
          {
            symbols =
@@ -49,9 +51,9 @@ let _ =
            annot = "List.iter Typehook.plugin_remove plugins\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(plugins : 'id list)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
-                   (List.iter Typehook.plugin_remove plugins : 'fan_quot )))
+                (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
+                   (List.iter Typehook.plugin_remove plugins : 'fan_quot ) : 
+                'id list -> Tokenf.txt -> Locf.t -> 'fan_quot ))
          };
          {
            symbols =
@@ -63,8 +65,11 @@ let _ =
            annot = "State.reset_current_filters ()\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.reset_current_filters () : 'fan_quot )))
+                (fun _  (_loc : Locf.t)  ->
+                   (State.reset_current_filters () : 'fan_quot ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'fan_quot ))
          };
          {
            symbols =
@@ -79,8 +84,11 @@ let _ =
            annot = "State.keep := true\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.keep := true : 'fan_quot )))
+                (fun _  _  (_loc : Locf.t)  ->
+                   (State.keep := true : 'fan_quot ) : Tokenf.txt ->
+                                                         Tokenf.txt ->
+                                                           Locf.t ->
+                                                             'fan_quot ))
          };
          {
            symbols =
@@ -95,8 +103,11 @@ let _ =
            annot = "State.keep := false\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (State.keep := false : 'fan_quot )))
+                (fun _  _  (_loc : Locf.t)  ->
+                   (State.keep := false : 'fan_quot ) : Tokenf.txt ->
+                                                          Tokenf.txt ->
+                                                            Locf.t ->
+                                                              'fan_quot ))
          };
          {
            symbols =
@@ -111,8 +122,12 @@ let _ =
            annot = "Typehook.show_code := true\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Typehook.show_code := true : 'fan_quot )))
+                (fun _  _  (_loc : Locf.t)  ->
+                   (Typehook.show_code := true : 'fan_quot ) : Tokenf.txt ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'fan_quot ))
          };
          {
            symbols =
@@ -127,8 +142,12 @@ let _ =
            annot = "Typehook.show_code := false\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Typehook.show_code := false : 'fan_quot )))
+                (fun _  _  (_loc : Locf.t)  ->
+                   (Typehook.show_code := false : 'fan_quot ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'fan_quot ))
          }]
      } : Gramf.olevel );
   Gramf.unsafe_extend_single (id : 'id Gramf.t )
@@ -144,8 +163,9 @@ let _ =
             annot = "x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in (x : 'id )))
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                    let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
+                                                          Locf.t -> 'id ))
           };
          {
            symbols =
@@ -155,8 +175,9 @@ let _ =
            annot = "x\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (x : 'id )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
+                                                         Locf.t -> 'id ))
          }]
      } : Gramf.olevel );
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
@@ -173,8 +194,8 @@ let _ =
             annot = "";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                    (() : 'fan_quot_semi )))
+                 (fun _  _  (_loc : Locf.t)  -> (() : 'fan_quot_semi ) : 
+                 Tokenf.txt -> 'fan_quot -> Locf.t -> 'fan_quot_semi ))
           }]
      } : Gramf.olevel );
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
@@ -189,8 +210,9 @@ let _ =
             annot = "(`Uid (_loc, \"()\") : FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))
+                 (fun _  (_loc : Locf.t)  ->
+                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots ) : 
+                 'fan_quot_semi list -> Locf.t -> 'fan_quots ))
           }]
      } : Gramf.olevel )
 let _ =

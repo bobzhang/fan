@@ -20,9 +20,12 @@ let _ =
             annot = "Tokenf.mk_ant ~c:\"a_lident\" s\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                     let s = __fan_0 in
-                    (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))
+                    (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'a_lident ))
           };
          {
            symbols =
@@ -34,9 +37,12 @@ let _ =
            annot = "Tokenf.mk_ant ~c:\"a_lident\" s\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                    let s = __fan_0 in
-                   (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident )))
+                   (Tokenf.mk_ant ~c:"a_lident" s : 'a_lident ) : Tokenf.ant
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'a_lident ))
          };
          {
            symbols =
@@ -46,8 +52,9 @@ let _ =
            annot = "`Lid (_loc, s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let s = __fan_0.txt in (`Lid (_loc, s) : 'a_lident ) : 
+                Tokenf.txt -> Locf.t -> 'a_lident ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
@@ -63,8 +70,8 @@ let _ =
               "(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           FAst.exp ))))\n  |> seq_sem\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(ls : 'a_lident list)  ~__fan_0:(t : 'qualuid)
-                     (_loc : Locf.t)  ->
+                 (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 
+                    ->
                     ((ls |>
                         (List.map
                            (fun (x : alident)  ->
@@ -74,7 +81,10 @@ let _ =
                                  (_loc,
                                    (`Dot (_loc, t, (`Lid (_loc, "clear")))),
                                    x) : FAst.exp ))))
-                       |> seq_sem : 'nonterminalsclear )))
+                       |> seq_sem : 'nonterminalsclear ) : 'a_lident list ->
+                                                             'qualuid ->
+                                                               Locf.t ->
+                                                                 'nonterminalsclear ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
@@ -94,10 +104,11 @@ let _ =
             annot = "`Dot (_loc, (`Uid (_loc, x)), xs)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )))
+                    (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid ) : 
+                 'qualuid -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'qualuid ))
           };
          {
            symbols =
@@ -107,8 +118,9 @@ let _ =
            annot = "`Uid (_loc, x)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid )))
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let x = __fan_0.txt in (`Uid (_loc, x) : 'qualuid ) : 
+                Tokenf.txt -> Locf.t -> 'qualuid ))
          }]
      } : Gramf.olevel )
 let _ =

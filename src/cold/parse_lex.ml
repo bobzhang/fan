@@ -2242,8 +2242,10 @@ let _ =
             annot = "make_automata false l\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
-                    -> (make_automata false l : 'lex )))
+                 (fun (l : 'case list)  _  (_loc : Locf.t)  ->
+                    (make_automata false l : 'lex ) : 'case list ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'lex ))
           };
          {
            symbols =
@@ -2260,8 +2262,10 @@ let _ =
            annot = "make_automata true l\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
-                   -> (make_automata true l : 'lex )))
+                (fun (l : 'case list)  _  (_loc : Locf.t)  ->
+                   (make_automata true l : 'lex ) : 'case list ->
+                                                      Tokenf.txt ->
+                                                        Locf.t -> 'lex ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (lex_fan : 'lex_fan Gramf.t )
@@ -2285,8 +2289,7 @@ let _ =
               "let e = make_automata false l in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
-                    ->
+                 (fun (l : 'case list)  _  (_loc : Locf.t)  ->
                     (let e = make_automata false l in
                      (`Constraint
                         (_loc, e,
@@ -2298,7 +2301,8 @@ let _ =
                                (`Dot
                                   (_loc, (`Uid (_loc, "Tokenf")),
                                     (`Lid (_loc, "t"))))))) : FAst.exp ) : 
-                    'lex_fan )))
+                    'lex_fan ) : 'case list ->
+                                   Tokenf.txt -> Locf.t -> 'lex_fan ))
           };
          {
            symbols =
@@ -2316,8 +2320,7 @@ let _ =
              "let e = make_automata true l in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(l : 'case list)  ~__fan_0:_  (_loc : Locf.t) 
-                   ->
+                (fun (l : 'case list)  _  (_loc : Locf.t)  ->
                    (let e = make_automata true l in
                     (`Constraint
                        (_loc, e,
@@ -2329,7 +2332,8 @@ let _ =
                               (`Dot
                                  (_loc, (`Uid (_loc, "Tokenf")),
                                    (`Lid (_loc, "t"))))))) : FAst.exp ) : 
-                   'lex_fan )))
+                   'lex_fan ) : 'case list ->
+                                  Tokenf.txt -> Locf.t -> 'lex_fan ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (case : 'case Gramf.t )
@@ -2346,10 +2350,13 @@ let _ =
             annot = "[(r, (Parsef.expand_exp x))]\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(__fan_1 : Tokenf.quot) 
-                    ~__fan_0:(r : 'regexp)  (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.quot)  (r : 'regexp)  (_loc : Locf.t)
+                     ->
                     let x = __fan_1 in
-                    ([(r, (Parsef.expand_exp x))] : 'case )))
+                    ([(r, (Parsef.expand_exp x))] : 'case ) : Tokenf.quot ->
+                                                                'regexp ->
+                                                                  Locf.t ->
+                                                                    'case ))
           };
          {
            symbols =
@@ -2363,8 +2370,7 @@ let _ =
              "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let e = Parsef.expand_exp y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                    let xloc = __fan_1.loc in
                    let x = __fan_1.txt in
                    let y = None in
@@ -2387,7 +2393,8 @@ let _ =
                              let _loc = Ast_gen.loc_of e in
                              (x,
                                (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp )))
-                          res : 'case )))
+                          res : 'case ) : Tokenf.txt ->
+                                            Tokenf.txt -> Locf.t -> 'case ))
          };
          {
            symbols =
@@ -2404,8 +2411,7 @@ let _ =
              "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nmatch y with\n| None  -> List.map (fun (x,v)  -> (x, (FanAstN.fill_exp xloc v))) res\n| Some y ->\n    let e = Parsef.expand_exp y in\n    List.map\n      (fun (x,v)  ->\n         let v = FanAstN.fill_exp xloc v in\n         let _loc = Ast_gen.loc_of e in\n         (x, (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp ))) res\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(__fan_2 : Tokenf.quot) 
-                   ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                (fun (__fan_2 : Tokenf.quot)  (__fan_1 : Tokenf.txt)  _ 
                    (_loc : Locf.t)  ->
                    let xloc = __fan_1.loc in
                    let x = __fan_1.txt in
@@ -2430,7 +2436,9 @@ let _ =
                              let _loc = Ast_gen.loc_of e in
                              (x,
                                (`Seq (_loc, (`Sem (_loc, v, e))) : FAst.exp )))
-                          res : 'case )))
+                          res : 'case ) : Tokenf.quot ->
+                                            Tokenf.txt ->
+                                              Tokenf.txt -> Locf.t -> 'case ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
@@ -2456,8 +2464,7 @@ let _ =
               "if Hashtbl.mem named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_3:(r : 'regexp)  ~__fan_2:_ 
-                    ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
+                 (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
                     (_loc : Locf.t)  ->
                     let xloc = __fan_1.loc in
                     let x = __fan_1.txt in
@@ -2470,15 +2477,21 @@ let _ =
                      else
                        (Hashtbl.add named_regexps x r;
                         (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )) : 
-                      'declare_regexp )))
+                      'declare_regexp ) : 'regexp ->
+                                            Tokenf.txt ->
+                                              Tokenf.txt ->
+                                                Tokenf.txt ->
+                                                  Locf.t -> 'declare_regexp ))
           };
          {
            symbols = [Self; Self];
            annot = "x\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(x : 'declare_regexp)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (x : 'declare_regexp )))
+                (fun (x : 'declare_regexp)  _  (_loc : Locf.t)  ->
+                   (x : 'declare_regexp ) : 'declare_regexp ->
+                                              'declare_regexp ->
+                                                Locf.t -> 'declare_regexp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
@@ -2498,10 +2511,11 @@ let _ =
             annot = "Bind (r1, (xloc, y))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
-                    ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
+                 (fun (__fan_2 : Tokenf.txt)  _  (r1 : 'regexp) 
+                    (_loc : Locf.t)  ->
                     let xloc = __fan_2.loc in
-                    let y = __fan_2.txt in (Bind (r1, (xloc, y)) : 'regexp )))
+                    let y = __fan_2.txt in (Bind (r1, (xloc, y)) : 'regexp ) : 
+                 Tokenf.txt -> Tokenf.txt -> 'regexp -> Locf.t -> 'regexp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
@@ -2520,11 +2534,11 @@ let _ =
               "let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(r2 : 'regexp)  ~__fan_1:_ 
-                    ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
+                 (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                     (let s1 = as_cset r1 in
                      let s2 = as_cset r2 in Characters (Fcset.diff s1 s2) : 
-                    'regexp )))
+                    'regexp ) : 'regexp ->
+                                  Tokenf.txt -> 'regexp -> Locf.t -> 'regexp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
@@ -2542,9 +2556,12 @@ let _ =
             annot = "Alternative (r1, r2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(r2 : 'regexp)  ~__fan_1:_ 
-                    ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                    (Alternative (r1, r2) : 'regexp )))
+                 (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : Locf.t)  ->
+                    (Alternative (r1, r2) : 'regexp ) : 'regexp ->
+                                                          Tokenf.txt ->
+                                                            'regexp ->
+                                                              Locf.t ->
+                                                                'regexp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
@@ -2557,8 +2574,10 @@ let _ =
             annot = "Sequence (r1, r2)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(r2 : 'regexp)  ~__fan_0:(r1 : 'regexp) 
-                    (_loc : Locf.t)  -> (Sequence (r1, r2) : 'regexp )))
+                 (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : Locf.t)  ->
+                    (Sequence (r1, r2) : 'regexp ) : 'regexp ->
+                                                       'regexp ->
+                                                         Locf.t -> 'regexp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
@@ -2574,8 +2593,10 @@ let _ =
             annot = "Characters Fcset.all_chars\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    (Characters Fcset.all_chars : 'regexp )))
+                 (fun _  (_loc : Locf.t)  ->
+                    (Characters Fcset.all_chars : 'regexp ) : Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'regexp ))
           };
          {
            symbols =
@@ -2586,11 +2607,11 @@ let _ =
              "Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let c = __fan_0.txt in
                    (Characters
                       (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
-                     'regexp )))
+                     'regexp ) : Tokenf.txt -> Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2600,9 +2621,10 @@ let _ =
            annot = "regexp_for_string @@ (TokenEval.string s)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let s = __fan_0.txt in
-                   (regexp_for_string @@ (TokenEval.string s) : 'regexp )))
+                   (regexp_for_string @@ (TokenEval.string s) : 'regexp ) : 
+                Tokenf.txt -> Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2616,8 +2638,11 @@ let _ =
            annot = "Characters cc\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(cc : 'char_class)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (Characters cc : 'regexp )))
+                (fun _  (cc : 'char_class)  _  (_loc : Locf.t)  ->
+                   (Characters cc : 'regexp ) : Tokenf.txt ->
+                                                  'char_class ->
+                                                    Tokenf.txt ->
+                                                      Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2628,8 +2653,10 @@ let _ =
            annot = "Repetition r1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                   (Repetition r1 : 'regexp )))
+                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
+                   (Repetition r1 : 'regexp ) : Tokenf.txt ->
+                                                  'regexp ->
+                                                    Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2640,8 +2667,11 @@ let _ =
            annot = "Alternative (Epsilon, r1)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                   (Alternative (Epsilon, r1) : 'regexp )))
+                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
+                   (Alternative (Epsilon, r1) : 'regexp ) : Tokenf.txt ->
+                                                              'regexp ->
+                                                                Locf.t ->
+                                                                  'regexp ))
          };
          {
            symbols =
@@ -2652,8 +2682,9 @@ let _ =
            annot = "Sequence ((Repetition (remove_as r1)), r1)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(r1 : 'regexp)  (_loc : Locf.t)  ->
-                   (Sequence ((Repetition (remove_as r1)), r1) : 'regexp )))
+                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
+                   (Sequence ((Repetition (remove_as r1)), r1) : 'regexp ) : 
+                Tokenf.txt -> 'regexp -> Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2667,8 +2698,10 @@ let _ =
            annot = "r1\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:_  ~__fan_1:(r1 : 'regexp)  ~__fan_0:_ 
-                   (_loc : Locf.t)  -> (r1 : 'regexp )))
+                (fun _  (r1 : 'regexp)  _  (_loc : Locf.t)  ->
+                   (r1 : 'regexp ) : Tokenf.txt ->
+                                       'regexp ->
+                                         Tokenf.txt -> Locf.t -> 'regexp ))
          };
          {
            symbols =
@@ -2678,7 +2711,9 @@ let _ =
            annot = "Eof\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  -> (Eof : 'regexp )))
+                (fun _  (_loc : Locf.t)  -> (Eof : 'regexp ) : Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'regexp ))
          };
          {
            symbols =
@@ -2689,7 +2724,7 @@ let _ =
              "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    (Fan_warnings.emitf xloc.loc_start\n       \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let xloc = __fan_0.loc in
                    let x = __fan_0.txt in
                    (try Hashtbl.find named_regexps x
@@ -2697,7 +2732,9 @@ let _ =
                     | Not_found  ->
                         (Fan_warnings.emitf xloc.loc_start
                            "Reference to unbound regexp name `%s'" x;
-                         raise UnboundRegexp) : 'regexp )))
+                         raise UnboundRegexp) : 'regexp ) : Tokenf.txt ->
+                                                              Locf.t ->
+                                                                'regexp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (char_class : 'char_class Gramf.t )
@@ -2714,8 +2751,11 @@ let _ =
             annot = "Fcset.complement r\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(r : 'char_class1)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (Fcset.complement r : 'char_class )))
+                 (fun (r : 'char_class1)  _  (_loc : Locf.t)  ->
+                    (Fcset.complement r : 'char_class ) : 'char_class1 ->
+                                                            Tokenf.txt ->
+                                                              Locf.t ->
+                                                                'char_class ))
           };
          {
            symbols =
@@ -2723,8 +2763,8 @@ let _ =
            annot = "r\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(r : 'char_class1)  (_loc : Locf.t)  ->
-                   (r : 'char_class )))
+                (fun (r : 'char_class1)  (_loc : Locf.t)  ->
+                   (r : 'char_class ) : 'char_class1 -> Locf.t -> 'char_class ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (char_class1 : 'char_class1 Gramf.t )
@@ -2747,13 +2787,18 @@ let _ =
               "let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(__fan_2 : Tokenf.txt)  ~__fan_1:_ 
-                    ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_2 : Tokenf.txt)  _  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let c1 = __fan_0.txt in
                     let c2 = __fan_2.txt in
                     (let c1 = Char.code @@ (TokenEval.char c1) in
                      let c2 = Char.code @@ (TokenEval.char c2) in
-                     Fcset.interval c1 c2 : 'char_class1 )))
+                     Fcset.interval c1 c2 : 'char_class1 ) : Tokenf.txt ->
+                                                               Tokenf.txt ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'char_class1 ))
           };
          {
            symbols =
@@ -2763,19 +2808,19 @@ let _ =
            annot = "Fcset.singleton (Char.code @@ (TokenEval.char c1))\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                    let c1 = __fan_0.txt in
                    (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
-                     'char_class1 )))
+                     'char_class1 ) : Tokenf.txt -> Locf.t -> 'char_class1 ))
          };
          {
            symbols = [Self; Self];
            annot = "Fcset.union cc1 cc2\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(cc2 : 'char_class1) 
-                   ~__fan_0:(cc1 : 'char_class1)  (_loc : Locf.t)  ->
-                   (Fcset.union cc1 cc2 : 'char_class1 )))
+                (fun (cc2 : 'char_class1)  (cc1 : 'char_class1) 
+                   (_loc : Locf.t)  -> (Fcset.union cc1 cc2 : 'char_class1 ) : 
+                'char_class1 -> 'char_class1 -> Locf.t -> 'char_class1 ))
          }]
      } : Gramf.olevel )
 let () =

@@ -25,8 +25,11 @@ let () =
               annot = "add s\n";
               fn =
                 (Gramf.mk_action
-                   (fun ~__fan_1:(__fan_1 : Tokenf.txt)  ~__fan_0:_ 
-                      (_loc : Locf.t)  ->
-                      let s = __fan_1.txt in (add s : 'item )))
+                   (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                      let s = __fan_1.txt in (add s : 'item ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'item ))
             }]
        } : Gramf.olevel )

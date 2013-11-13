@@ -40,8 +40,8 @@ let eoi_entry entry =
             annot = "x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:_  ~__fan_0:(x : 'entry)  (_loc : Locf.t)  ->
-                    (x : 'entry_eoi )))
+                 (fun _  (x : 'entry)  (_loc : Locf.t)  -> (x : 'entry_eoi ) : 
+                 Tokenf.txt -> 'entry -> Locf.t -> 'entry_eoi ))
           }]
      } : Gramf.olevel );
   entry_eoi

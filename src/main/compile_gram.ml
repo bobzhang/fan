@@ -194,12 +194,6 @@ let make_action (_loc:loc)
     (rtvar:string)  : exp = 
   let locid = %pat{ $lid{!Locf.name} } in 
   let act = Option.default %exp{()} x.action in
-
-  (* collect the patterns
-     it is used for further destruction *)
-  (* let tok_match_pl = *)
-    (* snd @@ *)
-  
   let e =
     let make_env env =
       env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
@@ -220,22 +214,25 @@ let make_action (_loc:loc)
       | `Type t -> t  in
     aux styp in
   let (+:) = typing in
-  let txt =
+  let (ty,txt) =
     snd @@
     Listf.fold_lefti
-      (fun i txt (s:Gram_def.osymbol) ->
-        let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
+      (fun i (ty,txt) (s:Gram_def.osymbol) ->
         match (s.outer_pattern, s.bounds) with
         | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
-            let p =  %pat@xloc{$lid:id} +: make_ctyp s.styp rtvar in
-            %exp{ fun ${mk_arg p} -> $txt }
+            let t  = make_ctyp s.styp rtvar in
+            let p =  %pat@xloc{$lid:id} +:  t in
+            (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt })
         | (None, [] ) ->
-            %exp{ fun ${mk_arg %pat{_}} -> $txt }
-        | (None, _ ) -> (* __fan_i, since we have inner binding*)            
+            let t = make_ctyp s.styp rtvar in
+            (%ctyp{$t -> $ty}, %exp{ fun _ -> $txt })
+        | (None, _ ) -> (* __fan_i, since we have inner binding*)
+            let t = make_ctyp s.styp rtvar in
             let p =
-              %pat{ $lid{prefix^string_of_int i} } +: make_ctyp s.styp rtvar  in
-            %exp{ fun ${mk_arg p} -> $txt })  e x.prod in
-  %exp{ $id{(gm())}.mk_action $txt }
+              %pat{ $lid{prefix^string_of_int i} } +: t  in
+            (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt }))
+      (%ctyp{Locf.t -> '$lid:rtvar},e) x.prod in
+  %exp{ $id{(gm())}.mk_action ( $txt : $ty) }
 
 
   
@@ -287,46 +284,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
         else %exp{$id{gm()}.unsafe_extend_single} in
         %exp{$f $ent ${apply l}}
 
-
-
       
-(* We don't do any parsing for antiquots here, so it's parser-independent *)  
-let capture_antiquot  = object
-  inherit Objs.map as super
-  val mutable constraints : (exp * exp) list  =[]
-  method! pat = function
-    | `Ant(_loc,s) -> 
-        begin
-          let code = s.txt in
-          let cons = %exp{ $lid:code } in
-          let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
-          let cons' = %exp{ $lid:code' } in 
-          let () = constraints <- (cons,cons')::constraints in 
-          %pat{ $lid:code' } (* only allows lidentifiers here *)
-        end
-    | p -> super#pat p 
-  method get_captured_variables =
-    constraints
-  method clear_captured_variables =
-    constraints <- []
-end
-
-let filter_pat_with_captured_variables pat= begin 
-  capture_antiquot#clear_captured_variables;
-  let pat=capture_antiquot#pat pat in
-  let constraints = capture_antiquot#get_captured_variables in
-  (pat,constraints)
-end
-
-(* let free_vars  = object *)
-(*   inherit Objs.map as super *)
-(*   method! exp (x:exp) = *)
-(*     match x with *)
-(*     | `Ant(_, (s:Tokenf.ant)) -> *)
-        
-(*     | p  -> super#exp p  *)
-(* end *)
-(* %exp{A.B.C.d.$x}     *)
 (** [gl] is the name  list option
 
    {[

@@ -25,12 +25,12 @@ let _ =
               "try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     (try Hashtbl.find inject_exp_tbl x
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_exp )))
+                      'inject_exp ) : Tokenf.txt -> Locf.t -> 'inject_exp ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
@@ -47,12 +47,12 @@ let _ =
               "try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     (try Hashtbl.find inject_stru_tbl x
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_stru )))
+                      'inject_stru ) : Tokenf.txt -> Locf.t -> 'inject_stru ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
@@ -69,12 +69,13 @@ let _ =
               "try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     (try Hashtbl.find inject_clfield_tbl x
                      with
                      | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_clfield )))
+                      'inject_clfield ) : Tokenf.txt ->
+                                            Locf.t -> 'inject_clfield ))
           }]
      } : Gramf.olevel )
 let _ =

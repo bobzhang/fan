@@ -26,13 +26,16 @@ let _ =
               "match n with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(pcl : 'parser_case_list)  (_loc : Locf.t)  ->
+                 (fun (pcl : 'parser_case_list)  (_loc : Locf.t)  ->
                     let n = None in
                     (match n with
                      | Some o ->
                          Ref.protect Compile_stream.grammar_module_name o
                            (fun _  -> cparser _loc pcl)
-                     | None  -> cparser _loc pcl : 'parser_exp )))
+                     | None  -> cparser _loc pcl : 'parser_exp ) : 'parser_case_list
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'parser_exp ))
           };
          {
            symbols =
@@ -45,15 +48,20 @@ let _ =
              "match n with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(pcl : 'parser_case_list) 
-                   ~__fan_0:(__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                (fun (pcl : 'parser_case_list)  (__fan_0 : Tokenf.txt) 
+                   (_loc : Locf.t)  ->
                    let n = __fan_0.txt in
                    let n = Some n in
                    (match n with
                     | Some o ->
                         Ref.protect Compile_stream.grammar_module_name o
                           (fun _  -> cparser _loc pcl)
-                    | None  -> cparser _loc pcl : 'parser_exp )))
+                    | None  -> cparser _loc pcl : 'parser_exp ) : 'parser_case_list
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'parser_exp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (parser_ipat : 'parser_ipat Gramf.t )
@@ -66,8 +74,10 @@ let _ =
             annot = "(i : alident  :>pat)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(i : 'a_lident)  (_loc : Locf.t)  ->
-                    ((i : alident  :>pat) : 'parser_ipat )))
+                 (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                    ((i : alident  :>pat) : 'parser_ipat ) : 'a_lident ->
+                                                               Locf.t ->
+                                                                 'parser_ipat ))
           };
          {
            symbols =
@@ -77,8 +87,10 @@ let _ =
            annot = "(`Any _loc : FAst.pat )\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                   ((`Any _loc : FAst.pat ) : 'parser_ipat )))
+                (fun _  (_loc : Locf.t)  ->
+                   ((`Any _loc : FAst.pat ) : 'parser_ipat ) : Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'parser_ipat ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (parser_case_list : 'parser_case_list Gramf.t )
@@ -101,8 +113,11 @@ let _ =
             annot = "pcl\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_1:(pcl : 'parser_case list)  ~__fan_0:_ 
-                    (_loc : Locf.t)  -> (pcl : 'parser_case_list )))
+                 (fun (pcl : 'parser_case list)  _  (_loc : Locf.t)  ->
+                    (pcl : 'parser_case_list ) : 'parser_case list ->
+                                                   Tokenf.txt ->
+                                                     Locf.t ->
+                                                       'parser_case_list ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (parser_case : 'parser_case Gramf.t )
@@ -120,9 +135,12 @@ let _ =
             annot = "(sp, None, e)\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(sp : 'stream_pat)  (_loc : Locf.t)  ->
-                    ((sp, None, e) : 'parser_case )))
+                 (fun (e : 'exp)  _  (sp : 'stream_pat)  (_loc : Locf.t)  ->
+                    ((sp, None, e) : 'parser_case ) : 'exp ->
+                                                        Tokenf.txt ->
+                                                          'stream_pat ->
+                                                            Locf.t ->
+                                                              'parser_case ))
           }]
      } : Gramf.olevel );
   Gramf.extend_single (stream_pat : 'stream_pat Gramf.t )
@@ -137,8 +155,9 @@ let _ =
             annot = "[(spc, None)]\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
-                    ([(spc, None)] : 'stream_pat )))
+                 (fun (spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
+                    ([(spc, None)] : 'stream_pat ) : 'stream_pat_comp ->
+                                                       Locf.t -> 'stream_pat ))
           };
          {
            symbols =
@@ -153,15 +172,20 @@ let _ =
            annot = "(spc, None) :: sp\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(sp : 'stream_pat_comp_err_list)  ~__fan_1:_ 
-                   ~__fan_0:(spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
-                   ((spc, None) :: sp : 'stream_pat )))
+                (fun (sp : 'stream_pat_comp_err_list)  _ 
+                   (spc : 'stream_pat_comp)  (_loc : Locf.t)  -> ((spc, None)
+                   :: sp : 'stream_pat ) : 'stream_pat_comp_err_list ->
+                                             Tokenf.txt ->
+                                               'stream_pat_comp ->
+                                                 Locf.t -> 'stream_pat ))
          };
          {
            symbols = [];
            annot = "[]\n";
            fn =
-             (Gramf.mk_action (fun (_loc : Locf.t)  -> ([] : 'stream_pat )))
+             (Gramf.mk_action
+                (fun (_loc : Locf.t)  -> ([] : 'stream_pat ) : Locf.t ->
+                                                                 'stream_pat ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (stream_pat_comp : 'stream_pat_comp Gramf.t )
@@ -181,17 +205,19 @@ let _ =
             annot = "When (_loc, p, (Some e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                    (_loc : Locf.t)  ->
-                    (When (_loc, p, (Some e)) : 'stream_pat_comp )))
+                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                    (When (_loc, p, (Some e)) : 'stream_pat_comp ) : 
+                 'exp -> Tokenf.txt -> 'pat -> Locf.t -> 'stream_pat_comp ))
           };
          {
            symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
            annot = "When (_loc, p, None)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
-                   (When (_loc, p, None) : 'stream_pat_comp )))
+                (fun (p : 'pat)  (_loc : Locf.t)  ->
+                   (When (_loc, p, None) : 'stream_pat_comp ) : 'pat ->
+                                                                  Locf.t ->
+                                                                    'stream_pat_comp ))
          };
          {
            symbols =
@@ -203,9 +229,12 @@ let _ =
            annot = "Match (_loc, p, e)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
-                   (_loc : Locf.t)  ->
-                   (Match (_loc, p, e) : 'stream_pat_comp )))
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                   (Match (_loc, p, e) : 'stream_pat_comp ) : 'exp ->
+                                                                Tokenf.txt ->
+                                                                  'pat ->
+                                                                    Locf.t ->
+                                                                    'stream_pat_comp ))
          };
          {
            symbols =
@@ -216,8 +245,11 @@ let _ =
            annot = "Str (_loc, p)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:(p : 'pat)  ~__fan_0:_  (_loc : Locf.t)  ->
-                   (Str (_loc, p) : 'stream_pat_comp )))
+                (fun (p : 'pat)  _  (_loc : Locf.t)  ->
+                   (Str (_loc, p) : 'stream_pat_comp ) : 'pat ->
+                                                           Tokenf.txt ->
+                                                             Locf.t ->
+                                                               'stream_pat_comp ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t )
@@ -236,9 +268,15 @@ let _ =
             annot = "(spc, (Some e))\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_ 
-                    ~__fan_0:(spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
-                    ((spc, (Some e)) : 'stream_pat_comp_err )))
+                 (fun (e : 'exp)  _  (spc : 'stream_pat_comp) 
+                    (_loc : Locf.t)  ->
+                    ((spc, (Some e)) : 'stream_pat_comp_err ) : 'exp ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    'stream_pat_comp
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'stream_pat_comp_err ))
           };
          {
            symbols =
@@ -246,8 +284,11 @@ let _ =
            annot = "(spc, None)\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_0:(spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
-                   ((spc, None) : 'stream_pat_comp_err )))
+                (fun (spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
+                   ((spc, None) : 'stream_pat_comp_err ) : 'stream_pat_comp
+                                                             ->
+                                                             Locf.t ->
+                                                               'stream_pat_comp_err ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single
@@ -264,8 +305,11 @@ let _ =
             annot = "[spc]\n";
             fn =
               (Gramf.mk_action
-                 (fun ~__fan_0:(spc : 'stream_pat_comp_err)  (_loc : Locf.t) 
-                    -> ([spc] : 'stream_pat_comp_err_list )))
+                 (fun (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  ->
+                    ([spc] : 'stream_pat_comp_err_list ) : 'stream_pat_comp_err
+                                                             ->
+                                                             Locf.t ->
+                                                               'stream_pat_comp_err_list ))
           };
          {
            symbols =
@@ -278,8 +322,12 @@ let _ =
            annot = "[spc]\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_1:_  ~__fan_0:(spc : 'stream_pat_comp_err) 
-                   (_loc : Locf.t)  -> ([spc] : 'stream_pat_comp_err_list )))
+                (fun _  (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  ->
+                   ([spc] : 'stream_pat_comp_err_list ) : Tokenf.txt ->
+                                                            'stream_pat_comp_err
+                                                              ->
+                                                              Locf.t ->
+                                                                'stream_pat_comp_err_list ))
          };
          {
            symbols =
@@ -293,9 +341,15 @@ let _ =
            annot = "spc :: sp\n";
            fn =
              (Gramf.mk_action
-                (fun ~__fan_2:(sp : 'stream_pat_comp_err_list)  ~__fan_1:_ 
-                   ~__fan_0:(spc : 'stream_pat_comp_err)  (_loc : Locf.t)  ->
-                   (spc :: sp : 'stream_pat_comp_err_list )))
+                (fun (sp : 'stream_pat_comp_err_list)  _ 
+                   (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  -> (spc ::
+                   sp : 'stream_pat_comp_err_list ) : 'stream_pat_comp_err_list
+                                                        ->
+                                                        Tokenf.txt ->
+                                                          'stream_pat_comp_err
+                                                            ->
+                                                            Locf.t ->
+                                                              'stream_pat_comp_err_list ))
          }]
      } : Gramf.olevel )
 let () = Ast_quotation.of_exp ~name:(Ns.lang, "parser") ~entry:parser_exp ()
