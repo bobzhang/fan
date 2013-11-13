@@ -205,5 +205,5 @@ let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/gramf.cmo" *)
+(* compile-command: "cd .. && pmake treeparser/gramf.cmo" *)
 (* end: *)

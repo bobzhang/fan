@@ -138,25 +138,17 @@ let add_production_in_level (x :  Gdefs.production) (slev : Gdefs.level) =
 let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
   let rules1 =
     let y = Option.default 10  lb.label in
-    match (lb.assoc,lb.productions) with
-    |(Some assoc,x) ->
-        (if not ( la.level = y  && la.assoc = assoc) then
-          eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
-            la.level y
-            Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
-         x)
-    |(_,x)-> 
-        (if not (la.level = y) then
-          eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d)@."
-            la.level y;
-         x)
-     in
+    (if not ( la.level = y  && la.assoc = lb.assoc) then
+      eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
+        la.level y
+        Gprint.pp_assoc la.assoc Gprint.pp_assoc lb.assoc;
+     lb.productions) in
   (* added in reverse order *)
   List.fold_right add_production_in_level rules1 la
 
     
 let level_of_olevel (lb:Gdefs.olevel) = 
-  let la = empty_lev lb.label (Option.default `LA lb.assoc )in
+  let la = empty_lev lb.label lb.assoc in
   merge_level la lb  
 
 let insert_olevel (entry:Gdefs.entry) position olevel =
@@ -270,7 +262,7 @@ let copy (e:Gdefs.entry) : Gdefs.entry =
 let refresh_level ~f (x:Gdefs.level)  =
   level_of_olevel
     {label = Some x.level;
-     assoc = Some x.assoc;
+     assoc =  x.assoc;
      productions = f x.productions 
    }
 

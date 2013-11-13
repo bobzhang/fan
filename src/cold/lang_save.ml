@@ -5,7 +5,7 @@ let _ =
   Gramf.extend_single (save_quot : 'save_quot Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =

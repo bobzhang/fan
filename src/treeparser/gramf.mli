@@ -3,7 +3,7 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-type assoc = [ `LA | `NA | `RA ]
+
 
 type position = int
     (* [ `After of string *)
@@ -63,7 +63,7 @@ type label = int option
 (* FIXME duplicate with Grammar/Gdefs *)      
 type olevel  = {
     label : label ;
-    assoc : assoc option;
+    assoc : bool ;
     productions : production list
   }
       
@@ -72,10 +72,6 @@ type extend_statment = {
     olevels : olevel list
   }
 type single_extend_statement = olevel
-  (*   { *)
-  (*   pos : position option ; *)
-  (*   olevel : olevel *)
-  (* } *)
       
 type delete_statment = symbol list
 

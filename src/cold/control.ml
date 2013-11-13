@@ -6,7 +6,7 @@ let _ =
   Gramf.unsafe_extend_single (item : 'item Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -85,7 +85,7 @@ let _ =
   Gramf.unsafe_extend_single (dot_namespace : 'dot_namespace Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -118,7 +118,7 @@ let _ =
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =

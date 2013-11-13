@@ -4,7 +4,7 @@ let _ =
   Gramf.unsafe_extend_single (include_quot : 'include_quot Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =

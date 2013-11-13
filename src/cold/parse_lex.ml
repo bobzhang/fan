@@ -2225,7 +2225,7 @@ let _ =
   Gramf.extend_single (lex : 'lex Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2267,7 +2267,7 @@ let _ =
   Gramf.extend_single (lex_fan : 'lex_fan Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2335,7 +2335,7 @@ let _ =
   Gramf.extend_single (case : 'case Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2436,7 +2436,7 @@ let _ =
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2484,7 +2484,7 @@ let _ =
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 10);
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2507,7 +2507,7 @@ let _ =
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 20);
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2530,7 +2530,7 @@ let _ =
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 30);
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2550,7 +2550,7 @@ let _ =
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 40);
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols = [Self; Self];
@@ -2564,7 +2564,7 @@ let _ =
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 50);
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2703,7 +2703,7 @@ let _ =
   Gramf.extend_single (char_class : 'char_class Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -2730,7 +2730,7 @@ let _ =
   Gramf.extend_single (char_class1 : 'char_class1 Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =

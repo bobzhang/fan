@@ -24,7 +24,7 @@ class type grammar_print  = object
 end
       
       
-val pp_assoc : Format.formatter -> assoc -> unit
+val pp_assoc : Format.formatter -> bool -> unit
       
 class text_grammar : grammar_print
 

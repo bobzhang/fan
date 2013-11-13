@@ -259,8 +259,8 @@ let make_extend safe (e : Gram_def.entry) =
    let apply (level : Gram_def.level) =
      let ass =
        match level.assoc with
-       | Some ass -> (`App (_loc, (`Uid (_loc, "Some")), ass) : FAst.exp )
-       | None  -> (`Uid (_loc, "None") : FAst.exp ) in
+       | Some ass -> ass
+       | None  -> (`Lid (_loc, "true") : FAst.exp ) in
      let rl =
        level.rules |>
          (List.map

@@ -55,9 +55,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                  (see [start_parser_of_levels]) *)      
     | Node {node = Self; son = LocAct act; brother = bro} ->  fun strm ->
         begin 
-          let alevn =
-            match assoc with
-            | `LA|`NA -> lev + 1 | `RA -> lev  in
+          let alevn = if assoc then lev + 1 else lev in
           try
             let a = with_loc (entry.start alevn) strm in
             ArgContainer.push (fst a) q;

@@ -14,7 +14,7 @@ let _ =
   Gramf.extend_single (inject_exp : 'inject_exp Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -36,7 +36,7 @@ let _ =
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -58,7 +58,7 @@ let _ =
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =

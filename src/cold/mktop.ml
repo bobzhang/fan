@@ -355,7 +355,7 @@ let _ =
   Gramf.extend_single (p : 'p Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -406,7 +406,7 @@ let _ =
   Gramf.extend_single (a : 'a Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -448,7 +448,7 @@ let _ =
   Gramf.extend_single (n : 'n Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols =
@@ -483,7 +483,7 @@ let _ =
   Gramf.extend_single (import : 'import Gramf.t )
     ({
        label = None;
-       assoc = None;
+       assoc = true;
        productions =
          [{
             symbols = [List1 (Nterm (Gramf.obj (a : 'a Gramf.t )))];

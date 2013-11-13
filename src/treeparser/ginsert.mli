@@ -12,7 +12,7 @@ val derive_eps : symbol -> bool
 
 
 (** create an empty level *)
-val empty_lev : label  -> assoc  -> level
+val empty_lev : label  -> bool  -> level
 
 
 

@@ -1,6 +1,6 @@
 
-type assoc =
-    [ `NA|`RA|`LA]
+
+    (* [ `NA|`RA|`LA] *)
       
 type position = int 
 
@@ -29,7 +29,7 @@ type entry = {
 (* level is the runtime which is not used by the compiler *)      
 and level = {
     level   : int;
-    assoc   : assoc ;
+    assoc   : bool ;
     productions : production list ; (* the raw productions stored in the level*)
     lsuffix : tree ;
     lprefix : tree}
@@ -96,7 +96,7 @@ type label = int option
       
 type olevel  = {
     label : label ;
-    assoc : assoc option;
+    assoc : bool;
     productions : production list
   }      
 
