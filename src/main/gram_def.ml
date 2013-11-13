@@ -27,11 +27,14 @@ and level  = {
   assoc : exp option ;
   rules : rule list
 }
-
+and action =
+  | E of exp option
+  | Ant of Tokenf.ant
+        
 and rule = {
     env : (locid * exp ) list;
     prod : osymbol list ;
-    action : exp option
+    action : action (* exp option *)
   }
 and label = string option
 

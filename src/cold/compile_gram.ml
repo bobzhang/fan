@@ -159,13 +159,16 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
     | Token (_loc,meta) ->
         (`App (_loc, (`Uid (_loc, "Token")), meta) : FAst.exp ) in
   aux tvar x
-and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)
+and make_exp_rules (rl : (Gram_def.text list* exp* Gram_def.action) list)
   (tvar : string) =
   (rl |>
      (List.map
-        (fun (sl,action,raw)  ->
+        (fun (sl,action,(raw : Gram_def.action))  ->
            let action_string =
-             match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
+             match raw with
+             | E (None ) -> ""
+             | E (Some e) -> Ast2pt.to_string_exp e
+             | Ant _ -> "" in
            let sl = (sl |> (List.map (make_exp tvar))) |> list_of_list in
            let _loc = Ast_loc.loc_of sl in
            (`Record
@@ -182,26 +185,6 @@ and make_exp_rules (rl : (Gram_def.text list* exp* exp option) list)
     |> list_of_list
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (!Locf.name)) in
-   let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
-   let e =
-     let make_env env =
-       env |>
-         (List.map
-            (fun ((loc,id),e)  ->
-               (`Bind (_loc, (`Lid (loc, id) : FAst.pat ), e) : FAst.bind ))) in
-     let binds = make_env x.env in
-     let e1: FAst.exp =
-       `Constraint
-         (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
-     let e1 = Ast_gen.seq_binds binds e1 in
-     (`Fun
-        (_loc,
-          (`Case
-             (_loc,
-               (`Constraint
-                  (_loc, locid,
-                    (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
-               e1))) : FAst.exp ) in
    let make_ctyp (styp : Gram_def.styp) tvar =
      (let rec aux v =
         match (v : Gram_def.styp ) with
@@ -218,35 +201,75 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
         | `Type t -> t in
       aux styp : ctyp ) in
    let (+:) = typing in
-   let (ty,txt) =
-     snd @@
-       (Listf.fold_lefti
-          (fun i  (ty,txt)  (s : Gram_def.osymbol)  ->
-             match ((s.outer_pattern), (s.bounds)) with
-             | (Some (xloc,id),_) ->
-                 let t = make_ctyp s.styp rtvar in
-                 let p = (`Lid (xloc, id) : FAst.pat ) +: t in
-                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
-                   (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp ))
-             | (None ,[]) ->
-                 let t = make_ctyp s.styp rtvar in
-                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
-                   (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp ))
-             | (None ,_) ->
-                 let t = make_ctyp s.styp rtvar in
-                 let p =
-                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat ) +:
-                     t in
-                 ((`Arrow (_loc, t, ty) : FAst.ctyp ),
-                   (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )))
-          ((`Arrow
+   match x.action with
+   | Ant v ->
+       let e = Tokenf.ant_expand Parsef.exp v in
+       let ty =
+         List.fold_left
+           (fun ty  (s : Gram_def.osymbol)  ->
+              let t = make_ctyp s.styp rtvar in
+              (`Arrow (_loc, t, ty) : FAst.ctyp ))
+           (`Arrow
               (_loc,
                 (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))),
                 (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) : 
-            FAst.ctyp ), e) x.prod) in
-   (`App
-      (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
-        (`Constraint (_loc, txt, ty))) : FAst.exp ) : exp )
+           FAst.ctyp ) x.prod in
+       (`App
+          (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
+            (`Constraint (_loc, e, ty))) : FAst.exp )
+   | E v ->
+       let e =
+         let act = Option.default (`Uid (_loc, "()") : FAst.exp ) v in
+         let make_env env =
+           env |>
+             (List.map
+                (fun ((loc,id),e)  ->
+                   (`Bind (_loc, (`Lid (loc, id) : FAst.pat ), e) : FAst.bind ))) in
+         let binds = make_env x.env in
+         let e1: FAst.exp =
+           `Constraint
+             (_loc, act,
+               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
+         let e1 = Ast_gen.seq_binds binds e1 in
+         (`Fun
+            (_loc,
+              (`Case
+                 (_loc,
+                   (`Constraint
+                      (_loc, locid,
+                        (`Dot
+                           (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
+                   e1))) : FAst.exp ) in
+       let (ty,txt) =
+         snd @@
+           (Listf.fold_lefti
+              (fun i  (ty,txt)  (s : Gram_def.osymbol)  ->
+                 match ((s.outer_pattern), (s.bounds)) with
+                 | (Some (xloc,id),_) ->
+                     let t = make_ctyp s.styp rtvar in
+                     let p = (`Lid (xloc, id) : FAst.pat ) +: t in
+                     ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                       (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp ))
+                 | (None ,[]) ->
+                     let t = make_ctyp s.styp rtvar in
+                     ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                       (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : 
+                       FAst.exp ))
+                 | (None ,_) ->
+                     let t = make_ctyp s.styp rtvar in
+                     let p =
+                       (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
+                         +: t in
+                     ((`Arrow (_loc, t, ty) : FAst.ctyp ),
+                       (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )))
+              ((`Arrow
+                  (_loc,
+                    (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))),
+                    (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) : 
+                FAst.ctyp ), e) x.prod) in
+       (`App
+          (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
+            (`Constraint (_loc, txt, ty))) : FAst.exp ) : exp )
 let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let gmid = (gm () : vid  :>ident) in

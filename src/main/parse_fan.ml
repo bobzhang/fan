@@ -29,38 +29,43 @@ open! Syntaxf
        | Chr s %{ `Chr (_loc, s)}
        | Str s %{ `Str (_loc, s)}]};;
 
-let make_infix ?(left=true) exp f i =
+let make_infix ?(left=true)  exp f i =
   %extend{
   exp: ${f i} $bool:left
-  [ S  as e1 ; Inf@xloc ($i,op); S as e2 %{
-    let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]}
+    [ S  as e1 ; Inf@xloc ($i,op); S as e2 %{
+      let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]}
 
-let make_key ?(left=true) exp i op =
-  %extend{
-  exp: $i $bool:left
-  [ S as e1 ; $key:op @xloc; S as e2 %{
-    let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]  
-}
-
-
-    
+let make_key ?(left=true) ?action exp i op =
+  match action with
+  | None -> 
+      %extend{
+      exp: $i $bool:left
+        [ S as e1 ; $key:op @xloc; S as e2 %{
+          let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]}
+  | Some action ->
+      %extend{exp: $i $bool:left
+      [S ; $key:op ; S  $fn:action ]}
+        
 let _ =
   let transform i =
     List.assoc i [(0,50);(1,60);(2,80);(3,90);(4,100)] in
   begin
+    make_key exp 20 ~left:true
+      ~action:(fun e2 _ e1 _loc -> (* reverse order *)
+        match Fan_ops.bigarray_set _loc e1 e2 with
+        | Some e -> e
+        | None -> %exp{$e1 <- $e2 }) "<-";
     List.iter (make_key exp 20 ~left:true) [":="];
     List.iter (make_key exp 30 ~left:false) ["or"; "||"];
     List.iter (make_key exp 40 ~left:false) ["&";"&&"];
     List.iter (make_key exp 50 ~left:true) ["==";"=";"<";">"];
-    (* List.iter (make_key exp 70 ~left:false) ["::"] ; *)
     List.iter (make_key exp 80 ~left:true) ["+";"-";"-."];
-  
     make_infix exp transform 0;
     make_infix ~left:false exp transform 1;
     make_infix  exp transform 2;
     make_infix  exp transform 3;
     make_infix  exp transform 4;
-end
+  end
     
 let make_case exp pat =
   %extend{
@@ -483,15 +488,9 @@ let apply () = begin
               `For (_loc, i, e1, e2, df, seq)}
         | "while"; S as e; "do"; sequence as seq; "done" %{
             `While (_loc, e, seq)}]  
-       exp :  20 
-        [ S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
-            match Fan_ops.bigarray_set _loc e1 e2 with
-            | Some e -> e
-            | None -> `Assign(_loc,e1,e2)}  ]
        exp : 70 RA
         [ S as e1; ("::"@xloc as op); S as e2  %{
-          let op = %exp@xloc{$uid:op} in %exp{$op $e1 $e2}
-        }
+          let op = %exp@xloc{$uid:op} in %exp{$op $e1 $e2}}
         ]  
        exp : 110  RA
         [("fun"|"function"); "|";  L1 case0 SEP "|" as a  %{

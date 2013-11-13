@@ -169,13 +169,14 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
 
 
 and make_exp_rules 
-    (rl : (Gram_def.text list  * exp * exp option) list) (tvar:string) =
+    (rl : (Gram_def.text list  * exp * Gram_def.action ) list) (tvar:string) =
   rl
-  |> List.map (fun (sl,action,raw) ->
+  |> List.map (fun (sl,action, (raw:Gram_def.action)) ->
       let action_string =
         match raw with
-        | None -> ""
-        | Some e -> Ast2pt.to_string_exp e in
+        | E None -> ""
+        | E (Some e) ->  Ast2pt.to_string_exp e
+        | Ant _ -> "" (* FIXME antiquot *) in
       let sl =
         sl
         |> List.map (make_exp tvar)
@@ -192,15 +193,7 @@ and make_exp_rules
 let make_action (_loc:loc)
     (x:Gram_def.rule)
     (rtvar:string)  : exp = 
-  let locid = %pat{ $lid{!Locf.name} } in 
-  let act = Option.default %exp{()} x.action in
-  let e =
-    let make_env env =
-      env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
-    let binds = make_env x.env in
-    let e1 = %exp{ ($act : '$lid:rtvar ) } in
-    let e1 = Ast_gen.seq_binds binds e1 in
-    %exp{fun ($locid : Locf.t) -> $e1 } in
+  let locid = %pat{ $lid{!Locf.name} } in
   let make_ctyp (styp:Gram_def.styp) tvar : ctyp  =
     let rec aux  v = 
       match (v:Gram_def.styp) with
@@ -214,25 +207,44 @@ let make_action (_loc:loc)
       | `Type t -> t  in
     aux styp in
   let (+:) = typing in
-  let (ty,txt) =
-    snd @@
-    Listf.fold_lefti
-      (fun i (ty,txt) (s:Gram_def.osymbol) ->
-        match (s.outer_pattern, s.bounds) with
-        | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
-            let t  = make_ctyp s.styp rtvar in
-            let p =  %pat@xloc{$lid:id} +:  t in
-            (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt })
-        | (None, [] ) ->
-            let t = make_ctyp s.styp rtvar in
-            (%ctyp{$t -> $ty}, %exp{ fun _ -> $txt })
-        | (None, _ ) -> (* __fan_i, since we have inner binding*)
-            let t = make_ctyp s.styp rtvar in
-            let p =
-              %pat{ $lid{prefix^string_of_int i} } +: t  in
-            (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt }))
-      (%ctyp{Locf.t -> '$lid:rtvar},e) x.prod in
-  %exp{ $id{(gm())}.mk_action ( $txt : $ty) }
+  match x.action with
+  | Ant v ->
+      let e =  Tokenf.ant_expand Parsef.exp v in
+      let ty =
+         List.fold_left
+        (fun  ty (s:Gram_def.osymbol) ->
+          let t = make_ctyp s.styp rtvar in
+          %ctyp{$t -> $ty})
+          (%ctyp{Locf.t -> '$lid:rtvar}) x.prod in
+      %exp{ $id{gm()}.mk_action ($e : $ty)}
+  | E v  -> 
+      let e =
+        let act = Option.default %exp{()} v (* x.action *) in
+        let make_env env =
+          env |> List.map (fun ((loc,id),e) -> %bind{${%pat@loc{$lid:id}} = $e}) in
+        let binds = make_env x.env in
+        let e1 = %exp{ ($act : '$lid:rtvar ) } in
+        let e1 = Ast_gen.seq_binds binds e1 in
+        %exp{fun ($locid : Locf.t) -> $e1 } in
+      let (ty,txt) =
+        snd @@
+        Listf.fold_lefti
+          (fun i (ty,txt) (s:Gram_def.osymbol) ->
+            match (s.outer_pattern, s.bounds) with
+            | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
+                let t  = make_ctyp s.styp rtvar in
+                let p =  %pat@xloc{$lid:id} +:  t in
+                (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt })
+            | (None, [] ) ->
+                let t = make_ctyp s.styp rtvar in
+                (%ctyp{$t -> $ty}, %exp{ fun _ -> $txt })
+            | (None, _ ) -> (* __fan_i, since we have inner binding*)
+                let t = make_ctyp s.styp rtvar in
+                let p =
+                  %pat{ $lid{prefix^string_of_int i} } +: t  in
+                (%ctyp{$t -> $ty}, %exp{ fun $p -> $txt }))
+          (%ctyp{Locf.t -> '$lid:rtvar},e) x.prod in
+      %exp{ $id{gm()}.mk_action ( $txt : $ty) }
 
 
   

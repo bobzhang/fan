@@ -14,10 +14,13 @@ type entry =  {
 and level =  {
   assoc: exp option;
   rules: rule list} 
+and action =  
+  | E of exp option
+  | Ant of Tokenf.ant 
 and rule =  {
   env: (locid* exp) list;
   prod: osymbol list;
-  action: exp option} 
+  action: action} 
 and label = string option 
 and kind =  
   | KNone

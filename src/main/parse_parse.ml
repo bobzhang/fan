@@ -39,8 +39,7 @@ let g =
                "TRY"; "PEEK";
                "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level";
-               "LA"; "RA"; "NA"; "+";"*";"?"; "=";
-               "@";
+                "RA";"+";"*";"?"; "="; "_"; "@";
                "Inline";
                "Local"] ();;
 
@@ -116,18 +115,30 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
                    %exp{({descr = {tag = $vrn:v; word = Any; tag_name = $str:v}}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.quot};
      bounds = [((loc,x),None)] ; outer_pattern = None}}
-  | ("Inf" as v); "("; Int level; ","; Lid@xloc x ; ")" %{
+                          
+  | ("Inf" as v); ? ["@"; Lid@lloc l] ;"("; a_int as z;","; Lid@xloc x ; ")" %{
      { text =
        Token(_loc,
-              %exp{({descr = {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}} :Tokenf.pattern)});
+             %exp{({descr =  {tag = $vrn:v; word = Level $z ; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
-       bounds = [((xloc,x),Some "txt")]; outer_pattern = None}}
-                          
-  | ("Inf" as v); "@"; Lid@lloc l; "("; a_int as z (* Int level *);","; Lid@xloc x ; ")" %{
-     { text = Token(_loc,
-                     %exp{({descr =  {tag = $vrn:v; word = Level $z (* int:level *); tag_name = $str:v}}:Tokenf.pattern)});
+       bounds =
+
+       (match (lloc,l) with
+       | (Some lloc, Some l) ->
+           [((lloc,l),Some "loc")]
+       | _ -> []) @
+        [((xloc,x),Some "txt")]; outer_pattern = None  }}
+  | ("Inf" as v); ? ["@"; Lid@lloc l] ;"("; a_int as z;","; "_"; ")" %{
+     { text =
+       Token(_loc,
+             %exp{({descr =  {tag = $vrn:v; word = Level $z ; tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
-       bounds = [((lloc,l),Some "loc"); ((xloc,x),Some "txt")]; outer_pattern = None  }}
+       bounds =
+       (match (lloc,l) with
+       | (Some lloc, Some l) ->
+           [((lloc,l),Some "loc")]
+       | _ -> []) ; outer_pattern = None  }}
+                                           
   ]
   a_int@Local:
   [Int level ;%exp{$int:level}
@@ -419,6 +430,10 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
               List.map
                 (fun (zs: Gram_def.osymbol list Gram_def.decorate) ->
                   zs  :: acc))  in
+    let (action:Gram_def.action) =
+      match action with
+      | None -> E None
+      | Some v -> v  in
     List.map (fun prod -> mk_prule ~prod ~action) @@  cross prod}
 
   | "@"; Lid@xloc x ; ? opt_action as action %{
@@ -433,20 +448,25 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
         List.map
           (fun (x:Gram_def.rule) ->
             match x.action with
-            | None -> {x with action = Some a}
-            | Some b -> {x with action = Some %exp{ $a $b}}) rules}]
+            | E None -> {x with action = a (* E (Some a) *)}
+            | E (Some b) -> {x with action =
+                             (match (a:Gram_def.action) with
+                             | E  None ->
+                                 E (Some b)
+                             | E (Some a) ->
+                                 E (Some %exp{$a $b})
+                             | Ant _  -> assert false)
+                             (* E (Some %exp{ $a $b}) *)}
+            |  _ -> assert false (* inline not supported yet *)) rules}]
    left_rule:
    [ psymbol as x %{[x]}
    | psymbol as x;";" ;S as xs %{ x::xs }
    |    %{[]}]   
 
    opt_action@Local :
-   [ Quot x %{Parsef.expand_exp x }]
+   [ Quot x %{E (Some (Parsef.expand_exp x)) }
+   | Ant("fn",x) %{Ant x }]
 
-  (* string : *)
-  (* [ Str  s  %exp{$str:s} *)
-  (* | Ant ("", s) %{Tokenf.ant_expand Parsef.exp s} ]*)
-   (*suport antiquot for string*)
   };;
 
 
