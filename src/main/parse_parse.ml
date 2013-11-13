@@ -58,7 +58,9 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    (qualid:vid Gramf.t)
    (t_qualid:vid Gramf.t )
    (entry_name : ([`name of Tokenf.name option | `non] * Gram_def.name) Gramf.t )
-    position assoc name string rules
+    position assoc name
+    (* string *)
+    rules
     (symbol: matrix Gramf.t)
     rule meta_rule rule_list
    (psymbol: matrix  Gramf.t)
@@ -122,22 +124,26 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
        styp = %ctyp'{Tokenf.op};
        bounds = [((xloc,x),Some "txt")]; outer_pattern = None}}
                           
-  | ("Inf" as v); "@"; Lid@lloc l; "("; Int level;","; Lid@xloc x ; ")" %{
+  | ("Inf" as v); "@"; Lid@lloc l; "("; a_int as z (* Int level *);","; Lid@xloc x ; ")" %{
      { text = Token(_loc,
-                     %exp{({descr =  {tag = $vrn:v; word = Level $int:level; tag_name = $str:v}}:Tokenf.pattern)});
+                     %exp{({descr =  {tag = $vrn:v; word = Level $z (* int:level *); tag_name = $str:v}}:Tokenf.pattern)});
        styp = %ctyp'{Tokenf.op};
        bounds = [((lloc,l),Some "loc"); ((xloc,x),Some "txt")]; outer_pattern = None  }}
   ]
+  a_int@Local:
+  [Int level ;%exp{$int:level}
+  |Ant("",x) %{ Tokenf.ant_expand Parsef.exp x  }]
+           
   simple_symbol@Inline:
   [  Str s %{
-     {text = (* Keyword (_loc,s) *)
+     {text = 
       Token(_loc,
            %exp{({descr = {tag = `Key ; word = A $str:s ; tag_name = "Key"}}
                    : Tokenf.pattern)}) ;
       styp= %ctyp'{Tokenf.txt};
       bounds= []; outer_pattern = None  }}
   | Str s ; "@"; Lid@xloc i %{
-     {text = (* Keyword (_loc,s) *)
+     {text =
       Token(_loc,
            %exp{({descr = {tag = `Key; word = A $str:s; tag_name = "Key"}}
                    : Tokenf.pattern)}) ;
@@ -243,7 +249,11 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
 
   single_symbol_as@Local :
    [ single_symbol as t %{t}
-   | single_symbol as t ; "as"; Lid@xloc s %{ {t with outer_pattern = Some (xloc,s) }}]             
+   | single_symbol as t ; "as"; Lid@xloc s
+       %{ {t with
+           outer_pattern = Some (xloc,s);
+           (* bounds = ((xloc,s),None) ::  t.bounds FIXME *)
+         }}]             
   symbol :
   (* be more precise, no recursive grammar? *)
   [("L0"|"L1" as l) ; single_symbol as s; ? ["SEP"; single_symbol as sep]  %{
@@ -279,8 +289,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     List.map (fun (x:Gram_def.osymbol list Gram_def.decorate) ->
       match x.txt with
       | [v]  -> {x with txt = [ {v with outer_pattern = Some(xloc,i)}]}
-      | _ -> Locf.failf xloc "as can not be applied here"
-             ) ss }]}                         
+      | _ -> Locf.failf xloc "as can not be applied here") ss }]}                         
                   
 
 
@@ -436,10 +445,10 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    opt_action@Local :
    [ Quot x %{Parsef.expand_exp x }]
 
-  string :
-  [ Str  s  %exp{$str:s}
-  | Ant ("", s) %{Tokenf.ant_expand Parsef.exp s}
-  ] (*suport antiquot for string*)
+  (* string : *)
+  (* [ Str  s  %exp{$str:s} *)
+  (* | Ant ("", s) %{Tokenf.ant_expand Parsef.exp s} ]*)
+   (*suport antiquot for string*)
   };;
 
 

@@ -23,11 +23,7 @@ type entry   = {
   local : bool ;  (* mark whether the grammar is local or not*)
   level : level;
 }
-(* and levels = *)
-(*  [ `Group of (level list ) | `Single of level]    *)
 and level  = {
-  (* mainly used for indexing *)  
-  (* label : string option ; *)
   assoc : exp option ;
   rules : rule list
 }

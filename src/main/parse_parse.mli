@@ -71,7 +71,7 @@ val position : exp Gramf.t
 (** parse association, and translate into [exp] node. FIXME  *)    
 val assoc : exp Gramf.t
 val name : Gram_def.name Gramf.t
-val string : exp Gramf.t
+(* val string : exp Gramf.t *)
 
 
 
