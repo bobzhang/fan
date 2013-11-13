@@ -59,7 +59,6 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    (t_qualid:vid Gramf.t )
    (entry_name : ([`name of Tokenf.name option | `non] * Gram_def.name) Gramf.t )
     position assoc name
-    (* string *)
     rules
     (symbol: matrix Gramf.t)
     rule meta_rule rule_list
@@ -135,22 +134,30 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   |Ant("",x) %{ Tokenf.ant_expand Parsef.exp x  }]
            
   simple_symbol@Inline:
-  [  Str s %{
-     {text = 
-      Token(_loc,
-           %exp{({descr = {tag = `Key ; word = A $str:s ; tag_name = "Key"}}
-                   : Tokenf.pattern)}) ;
-      styp= %ctyp'{Tokenf.txt};
-      bounds= []; outer_pattern = None  }}
-  | Str s ; "@"; Lid@xloc i %{
+  [ Str s ; ? ["@"; Lid@xloc i] %{
      {text =
       Token(_loc,
            %exp{({descr = {tag = `Key; word = A $str:s; tag_name = "Key"}}
                    : Tokenf.pattern)}) ;
       styp = %ctyp'{Tokenf.txt};
       bounds =
-      [((xloc,i),Some "loc")]; outer_pattern = None  }}
-
+      (match (i,xloc) with
+      | (Some i,Some xloc) ->
+          [((xloc,i),Some "loc")]
+      | _ -> []); outer_pattern = None  }}
+  | Ant("key",x); ?["@"; Lid@xloc i] %{
+    let e = Tokenf.ant_expand Parsef.exp x in
+    {text =
+      Token(_loc,
+           %exp{({descr = {tag = `Key; word = A $e; tag_name = "Key"}}
+                   : Tokenf.pattern)}) ;
+      styp = %ctyp'{Tokenf.txt};
+      bounds =
+      (match (i,xloc) with
+      | (Some i,Some xloc) ->
+          [((xloc,i),Some "loc")]
+      | _ -> []); outer_pattern = None  }
+    }
   | name as n;  ? ["Level"; Int s ] %{
     { text = Nterm (_loc ,n, 
                     match s with
@@ -363,10 +370,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
         (match n with
         |`name old -> Ast_quotation.default := old
         | _ -> ());
-        (* match (pos,level) with *)
-        (* |(Some %exp{ `Level $_ },`Group _) -> *)
-        (*     failwithf "For Group levels the position can not be applied to Level" *)
-        (* | _ ->  *)Some {name=p; local=false;pos;level}
+        Some {name=p; local=false;pos;level}
       end}
       
   |  entry_name as rest; "@"; "Local"; ":";  ? position as pos; level as level %{
@@ -375,10 +379,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
         (match n with
         |`name old -> Ast_quotation.default := old
         | _ -> ());
-        (* match (pos,levels) with *)
-        (* |(Some %exp{ `Level $_ },`Group _) -> *)
-        (*     failwithf "For Group levels the position can not be applied to Level" *)
-        (* | _ -> *) Some {name=p;local=true;pos;level}
+        Some {name=p;local=true;pos;level}
       end
   }
   | Lid x ; "@"; "Inline"; ":"; rule_list as rules %{
@@ -388,11 +389,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     end
   }]
   position :
-  [ Int x %exp{$int:x}]
-
-  (* level_list : *)
-  (* [ (\* "{"; L1 level  as ll; "}" %{ `Group ll} *\) *)
-  (* (\* | *\) level as l  %{ `Single l}] (\* FIXME L1 does not work here *\) *)
+  [ Int x %exp{$int:x}
+  | Ant("",x) %{Tokenf.ant_expand Parsef.exp x}]
 
   level :
   [ ?assoc as assoc; rule_list as rules
