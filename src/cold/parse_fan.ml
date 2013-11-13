@@ -62,11 +62,18 @@ let make_key ?(left= true)  exp i op =
           }]
      } : Gramf.olevel )
 let _ =
+  let transform i =
+    List.assoc i [(0, 50); (1, 60); (2, 80); (3, 90); (4, 100)] in
   List.iter (make_key exp 20 ~left:true) [":="];
   List.iter (make_key exp 30 ~left:false) ["or"; "||"];
   List.iter (make_key exp 40 ~left:false) ["&"; "&&"];
   List.iter (make_key exp 50 ~left:true) ["=="; "="; "<"; ">"];
-  List.iter (make_key exp 80 ~left:true) ["+"; "-"; "-."]
+  List.iter (make_key exp 80 ~left:true) ["+"; "-"; "-."];
+  make_infix exp transform 0;
+  make_infix ~left:false exp transform 1;
+  make_infix exp transform 2;
+  make_infix exp transform 3;
+  make_infix exp transform 4
 let make_case exp pat =
   let grammar_entry_create x = Gramf.mk x in
   let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t =
@@ -4755,60 +4762,6 @@ let apply () =
       } : Gramf.olevel );
    Gramf.extend_single (exp : 'exp Gramf.t )
      ({
-        label = (Some 50);
-        lassoc = true;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({
-                    descr =
-                      { tag = `Inf; word = (Level 0); tag_name = "Inf" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 60);
-        lassoc = false;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({
-                    descr =
-                      { tag = `Inf; word = (Level 1); tag_name = "Inf" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
         label = (Some 70);
         lassoc = false;
         productions =
@@ -4828,87 +4781,6 @@ let apply () =
                      let xloc = __fan_1.loc in
                      let op = __fan_1.txt in
                      (let op: FAst.exp = `Uid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 80);
-        lassoc = true;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({
-                    descr =
-                      { tag = `Inf; word = (Level 2); tag_name = "Inf" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 90);
-        lassoc = true;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({
-                    descr =
-                      { tag = `Inf; word = (Level 3); tag_name = "Inf" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
-                      (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                       'exp )))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp : 'exp Gramf.t )
-     ({
-        label = (Some 100);
-        lassoc = false;
-        productions =
-          [{
-             symbols =
-               [Self;
-               Token
-                 ({
-                    descr =
-                      { tag = `Inf; word = (Level 4); tag_name = "Inf" }
-                  } : Tokenf.pattern );
-               Self];
-             annot =
-               "let op: FAst.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n";
-             fn =
-               (Gramf.mk_action
-                  (fun ~__fan_2:(e2 : 'exp)  ~__fan_1:(__fan_1 : Tokenf.op) 
-                     ~__fan_0:(e1 : 'exp)  (_loc : Locf.t)  ->
-                     let xloc = __fan_1.loc in
-                     let op = __fan_1.txt in
-                     (let op: FAst.exp = `Lid (xloc, op) in
                       (`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                        'exp )))
            }]

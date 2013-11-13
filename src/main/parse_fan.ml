@@ -44,14 +44,22 @@ let make_key ?(left=true) exp i op =
 
 
     
-let _ = begin
-  List.iter (make_key exp 20 ~left:true) [":="];
-  List.iter (make_key exp 30 ~left:false) ["or"; "||"];
-  List.iter (make_key exp 40 ~left:false) ["&";"&&"];
-  List.iter (make_key exp 50 ~left:true) ["==";"=";"<";">"];
-  (* List.iter (make_key exp 70 ~left:false) ["::"] ; *)
-  List.iter (make_key exp 80 ~left:true) ["+";"-";"-."];
+let _ =
+  let transform i =
+    List.assoc i [(0,50);(1,60);(2,80);(3,90);(4,100)] in
+  begin
+    List.iter (make_key exp 20 ~left:true) [":="];
+    List.iter (make_key exp 30 ~left:false) ["or"; "||"];
+    List.iter (make_key exp 40 ~left:false) ["&";"&&"];
+    List.iter (make_key exp 50 ~left:true) ["==";"=";"<";">"];
+    (* List.iter (make_key exp 70 ~left:false) ["::"] ; *)
+    List.iter (make_key exp 80 ~left:true) ["+";"-";"-."];
   
+    make_infix exp transform 0;
+    make_infix ~left:false exp transform 1;
+    make_infix  exp transform 2;
+    make_infix  exp transform 3;
+    make_infix  exp transform 4;
 end
     
 let make_case exp pat =
@@ -476,54 +484,15 @@ let apply () = begin
         | "while"; S as e; "do"; sequence as seq; "done" %{
             `While (_loc, e, seq)}]  
        exp :  20 
-        [ (* S as e1; (":="@xloc as op); S as e2 %{ *)
-        (*   let op = %exp@xloc{$lid:op} in %exp{ $op $e1 $e2 }} *)
-        (* |  *) S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
+        [ S as e1; "<-"; S as e2 %{ (* FIXME should be deleted in original syntax later? *)
             match Fan_ops.bigarray_set _loc e1 e2 with
             | Some e -> e
             | None -> `Assign(_loc,e1,e2)}  ]
-       (* exp : 30 RA *)
-       (*  [ S as e1; ("or"|"||"@xloc as op); S as e2  %{ *)
-       (*    let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}} *)
-       (*  ] *)
-       (* exp : 40  RA *)
-       (*  [ S as e1; ("&"|"&&" @xloc as op) ; S as e2  %{ *)
-       (*    let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}} *)
-       (*  ] *)
-       exp : 50  
-        (* idea merge actions ... when bounds are the same ?? *)  
-        [ S as e1; Inf@xloc (0,op); S as e2 %{
-          let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
-        (* | S as e1; ("==" | "=" | "<"|">"@xloc as x); S as e2 %{ *)
-        (*  let op = %exp@xloc{$lid:x} in %exp{$op $e1 $e2 }} *)
-        ]
-          (* FIXME better error message [ | ... ]*)
-       exp : 60  RA
-        [S as e1; Inf@xloc (1,op); S as e2 %{
-         let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
-        ]
        exp : 70 RA
         [ S as e1; ("::"@xloc as op); S as e2  %{
           let op = %exp@xloc{$uid:op} in %exp{$op $e1 $e2}
         }
         ]  
-       exp : 80  
-        [ S as e1; Inf@xloc (2,op); S as e2 %{
-          let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
-        (* | S as e1; ( "+" |"-"|"-." @xloc as op); S as e2 %{ *)
-        (*   (\* FIXME better error message %exp@{xx}*\) *)
-        (*   let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}} *)
-        ]
-       exp : 90 
-        [ S as e1; Inf@xloc (3,op); S as e2 %{
-          let op = %exp@xloc{$lid:op} in
-          %exp{$op $e1 $e2}}
-        ]
-       exp : 100 RA
-        [ S as e1; Inf@xloc (4,op); S as e2 %{
-          let op = %exp@xloc{$lid:op} in
-          %exp{$op $e1 $e2}}
-        ]
        exp : 110  RA
         [("fun"|"function"); "|";  L1 case0 SEP "|" as a  %{
            let cases = bar_of_list a in `Fun (_loc,cases)}
