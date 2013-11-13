@@ -906,13 +906,9 @@ let apply () = begin
           `CrMth(_loc,l,o,pf,e,t)}
         | method_opt_override as o; opt_private as pf;a_lident as l; fun_bind as e %{
           `CrMthS(_loc,l,o,pf,e)}
-             
         | "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1,t2)}
-        | "initializer"; exp as se %{ `Initializer(_loc,se)} ]
-      
-    };
+        | "initializer"; exp as se %{ `Initializer(_loc,se)} ]};
     
-  with clexp
     %extend{
       clexp_quot:
       [ clexp as x %{ x}]
@@ -1052,7 +1048,6 @@ let apply_ctyp () = begin
       | "`"; astr as i %{ `TyVrn (_loc, i)}  ]
       type_declaration:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
-      (* | `Quot x -> AstQuotation.expand _loc x Dyn_tag.ctyp *)
       | S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}
       |  type_ident_and_parameters as rest; "="; type_info as tk; L0 constrain as cl
         %{ let (n, tpl) = rest in
@@ -1103,7 +1098,6 @@ let apply_ctyp () = begin
       | "?"; a_lident as i; ":"; S as t %{ `OptLabl(_loc,i,t)}]
       ctyp: 50  
       [ S as t1; S as t2 %{`App (_loc,t2,t1)} ]
-
        (* [mod_ext_longident] and [type_longident]
           | type_longident
           | simple_core_type2 type_longident
