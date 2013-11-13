@@ -28,9 +28,9 @@ and print_sons (start:string) (decomp:'a -> (string * 'a list))
             start (print_node decomp (pref ^ "| ")) s
             pref  (print_sons "|-"  decomp  pref ) sons 
 let pp_assoc f  = function
-    | `LA -> pp f "LA"
-    | `RA -> pp f "RA"
-    | `NA -> pp f "NA"           
+    | true -> ()
+    | false -> pp f "R"
+
 
 class type grammar_print  = object
   method set_action : bool -> unit

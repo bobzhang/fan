@@ -3,7 +3,7 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-type assoc = [ `LA | `NA | `RA ]
+type assoc =  bool (* [ `LA | `NA | `RA ] *)
 
 type position = int
     (* [ `After of string *)

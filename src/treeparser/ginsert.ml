@@ -156,7 +156,7 @@ let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) =
 
     
 let level_of_olevel (lb:Gdefs.olevel) = 
-  let la = empty_lev lb.label (Option.default `LA lb.assoc )in
+  let la = empty_lev lb.label (Option.default true lb.assoc )in
   merge_level la lb  
 
 let insert_olevel (entry:Gdefs.entry) position olevel =

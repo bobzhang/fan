@@ -1,6 +1,6 @@
 
-type assoc =
-    [ `NA|`RA|`LA]
+type assoc = bool 
+    (* [ `NA|`RA|`LA] *)
       
 type position = int 
 
