@@ -9,7 +9,7 @@ let () =
     Gramf.unsafe_extend_single (item : 'item Gramf.t )
       ({
          label = None;
-         assoc = true;
+         lassoc = true;
          productions =
            [{
               symbols =

@@ -16,7 +16,7 @@ let _ =
   Gramf.extend_single (parser_exp : 'parser_exp Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -59,7 +59,7 @@ let _ =
   Gramf.extend_single (parser_ipat : 'parser_ipat Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
@@ -84,7 +84,7 @@ let _ =
   Gramf.extend_single (parser_case_list : 'parser_case_list Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -108,7 +108,7 @@ let _ =
   Gramf.extend_single (parser_case : 'parser_case Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -128,7 +128,7 @@ let _ =
   Gramf.extend_single (stream_pat : 'stream_pat Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -167,7 +167,7 @@ let _ =
   Gramf.extend_single (stream_pat_comp : 'stream_pat_comp Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -223,7 +223,7 @@ let _ =
   Gramf.extend_single (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -254,7 +254,7 @@ let _ =
     (stream_pat_comp_err_list : 'stream_pat_comp_err_list Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

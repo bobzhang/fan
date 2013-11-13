@@ -7,7 +7,7 @@ let _ =
   Gramf.extend_single (stream_exp : 'stream_exp Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -72,7 +72,7 @@ let _ =
   Gramf.extend_single (stream_exp_comp : 'stream_exp_comp Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
@@ -98,7 +98,7 @@ let _ =
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

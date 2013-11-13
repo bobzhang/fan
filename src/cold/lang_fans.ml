@@ -9,7 +9,7 @@ let _ =
   Gramf.unsafe_extend_single (fan_quot : 'fan_quot Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -134,7 +134,7 @@ let _ =
   Gramf.unsafe_extend_single (id : 'id Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -162,7 +162,7 @@ let _ =
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -180,7 +180,7 @@ let _ =
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

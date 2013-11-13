@@ -106,7 +106,7 @@ let _ =
   Gramf.extend_single (a_int : 'a_int Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -136,7 +136,7 @@ let _ =
   Gramf.extend_single (single_symbol : 'single_symbol Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -3355,7 +3355,7 @@ let _ =
   Gramf.extend_single (or_strs : 'or_strs Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -3439,7 +3439,7 @@ let _ =
   Gramf.extend_single (simple : 'simple Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7157,7 +7157,7 @@ let _ =
   Gramf.extend_single (single_symbol_as : 'single_symbol_as Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7190,7 +7190,7 @@ let _ =
   Gramf.extend_single (symbol : 'symbol Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7405,7 +7405,7 @@ let _ =
   Gramf.extend_single (psymbol : 'psymbol Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (symbol : 'symbol Gramf.t ))];
@@ -7451,7 +7451,7 @@ let _ =
   Gramf.extend_single (extend_header : 'extend_header Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7496,7 +7496,7 @@ let _ =
   Gramf.extend_single (extend_body : 'extend_body Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7519,7 +7519,7 @@ let _ =
   Gramf.extend_single (unsafe_extend_body : 'unsafe_extend_body Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7542,7 +7542,7 @@ let _ =
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7576,7 +7576,7 @@ let _ =
   Gramf.extend_single (qualid : 'qualid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7610,7 +7610,7 @@ let _ =
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7651,7 +7651,7 @@ let _ =
   Gramf.extend_single (name : 'name Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))];
@@ -7665,7 +7665,7 @@ let _ =
   Gramf.extend_single (entry_name : 'entry_name Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))];
@@ -7722,7 +7722,7 @@ let _ =
   Gramf.extend_single (entry : 'entry Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7855,7 +7855,7 @@ let _ =
   Gramf.extend_single (position : 'position Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7885,7 +7885,7 @@ let _ =
   Gramf.extend_single (level : 'level Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))];
@@ -7910,7 +7910,7 @@ let _ =
   Gramf.extend_single (assoc : 'assoc Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7927,7 +7927,7 @@ let _ =
   Gramf.extend_single (rule_list : 'rule_list Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -7968,7 +7968,7 @@ let _ =
   Gramf.extend_single (rule : 'rule Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ))];
@@ -8115,7 +8115,7 @@ let _ =
   Gramf.extend_single (left_rule : 'left_rule Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols = [Nterm (Gramf.obj (psymbol : 'psymbol Gramf.t ))];
@@ -8149,7 +8149,7 @@ let _ =
   Gramf.extend_single (opt_action : 'opt_action Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

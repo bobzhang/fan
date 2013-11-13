@@ -6,11 +6,6 @@ type 'a t = 'a Gentry.t
 
 
 type position = int
-    (* [ `After of string *)
-    (* | `Before of string *)
-    (* | `First *)
-    (* | `Last *)
-    (* | `Level of string ] *)
 
 val filter: stream -> stream      
 
@@ -63,7 +58,7 @@ type label = int option
 (* FIXME duplicate with Grammar/Gdefs *)      
 type olevel  = {
     label : label ;
-    assoc : bool ;
+    lassoc : bool ;
     productions : production list
   }
       

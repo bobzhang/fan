@@ -8,7 +8,7 @@ let _ =
   Gramf.extend_single (a_lident : 'a_lident Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -53,7 +53,7 @@ let _ =
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -80,7 +80,7 @@ let _ =
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

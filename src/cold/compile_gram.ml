@@ -276,7 +276,8 @@ let make_extend safe (e : Gram_def.entry) =
                (`Sem
                   (_loc, (`RecBind (_loc, (`Lid (_loc, "label")), pos)),
                     (`Sem
-                       (_loc, (`RecBind (_loc, (`Lid (_loc, "assoc")), ass)),
+                       (_loc,
+                         (`RecBind (_loc, (`Lid (_loc, "lassoc")), ass)),
                          (`RecBind (_loc, (`Lid (_loc, "productions")), prod)))))))),
           (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "olevel"))))) : 
        FAst.exp ) in

@@ -138,17 +138,17 @@ let add_production_in_level (x :  Gdefs.production) (slev : Gdefs.level) =
 let merge_level (la:Gdefs.level) (lb: Gdefs.olevel) = 
   let rules1 =
     let y = Option.default 10  lb.label in
-    (if not ( la.level = y  && la.assoc = lb.assoc) then
+    (if not ( la.level = y  && la.assoc = lb.lassoc) then
       eprintf "<W> Grammar level merging: merge_level does not agree (%d:%d) (%a:%a)@."
         la.level y
-        Gprint.pp_assoc la.assoc Gprint.pp_assoc lb.assoc;
+        Gprint.pp_assoc la.assoc Gprint.pp_assoc lb.lassoc;
      lb.productions) in
   (* added in reverse order *)
   List.fold_right add_production_in_level rules1 la
 
     
 let level_of_olevel (lb:Gdefs.olevel) = 
-  let la = empty_lev lb.label lb.assoc in
+  let la = empty_lev lb.label lb.lassoc in
   merge_level la lb  
 
 let insert_olevel (entry:Gdefs.entry) position olevel =
@@ -213,38 +213,20 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol) symbols)}
     
-
-(* let unsafe_extend entry (position,levels) = *)
-(*   let levels =  unsafe_scan_olevels entry levels in (\* for side effect *\) *)
-(*   let elev = insert_olevels_in_levels entry position levels in *)
-(*   (entry.levels <-  elev; *)
-(*    entry.start <-Gparser.start_parser_of_entry entry; *)
-(*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
-
 let unsafe_extend_single entry
-    ((* {pos = position; *) lb : Gdefs.single_extend_statement)
+    (lb : Gdefs.single_extend_statement)
     =
-     
-  (* let olevel = (position, assoc, ps) in  *)
-  let olevel = unsafe_scan_olevel entry lb (* {lb with label = position} *) (* olevel *) in
-  let elev = insert_olevel entry lb.label(* position *) olevel in
+  let olevel = unsafe_scan_olevel entry lb in
+  let elev = insert_olevel entry lb.label olevel in
   (entry.levels <- elev;
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
-    
-(* let extend entry (position, levels) = *)
-(*   let levels =  scan_olevels entry levels in (\* for side effect *\) *)
-(*   let elev = insert_olevels_in_levels entry position levels in *)
-(*   (entry.levels <-  elev; *)
-(*    entry.start <-Gparser.start_parser_of_entry entry; *)
-(*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
 
 
     
 let extend_single entry
     (lb  : Gdefs.single_extend_statement) =
-  (* let olevel = (position, assoc,ps) in  *)
-  let olevel = scan_olevel entry lb (* {lb with label = position} *)(* olevel *) in
+  let olevel = scan_olevel entry lb in
   let elev = insert_olevel entry lb.label olevel in
   (entry.levels <-  elev;
    entry.start <-Gparser.start_parser_of_entry entry;
@@ -262,7 +244,7 @@ let copy (e:Gdefs.entry) : Gdefs.entry =
 let refresh_level ~f (x:Gdefs.level)  =
   level_of_olevel
     {label = Some x.level;
-     assoc =  x.assoc;
+     lassoc =  x.assoc;
      productions = f x.productions 
    }
 

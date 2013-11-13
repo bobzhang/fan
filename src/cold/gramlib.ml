@@ -29,7 +29,7 @@ let eoi_entry entry =
   Gramf.extend_single (entry_eoi : 'entry_eoi Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

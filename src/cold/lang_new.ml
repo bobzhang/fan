@@ -12,7 +12,7 @@ let _ =
   Gramf.extend_single (type_entry : 'type_entry Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -140,7 +140,7 @@ let _ =
   Gramf.extend_single (ty : 'ty Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -182,7 +182,7 @@ let _ =
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -216,7 +216,7 @@ let _ =
   Gramf.extend_single (qualid : 'qualid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -250,7 +250,7 @@ let _ =
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -291,7 +291,7 @@ let _ =
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =
@@ -358,7 +358,7 @@ let _ =
   Gramf.extend_single (newterminals : 'newterminals Gramf.t )
     ({
        label = None;
-       assoc = true;
+       lassoc = true;
        productions =
          [{
             symbols =

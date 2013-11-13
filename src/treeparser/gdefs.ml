@@ -96,7 +96,7 @@ type label = int option
       
 type olevel  = {
     label : label ;
-    assoc : bool;
+    lassoc : bool;
     productions : production list
   }      
 

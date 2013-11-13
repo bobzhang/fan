@@ -278,7 +278,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
     let prod = make_exp_rules  rl e.name.tvar in
     (* generated code of type [olevel] *)
     %exp{
-    ({label = $pos; assoc = $ass; productions = $prod } :
+    ({label = $pos; lassoc = $ass; productions = $prod } :
        $id{(gm() : vid :> ident)}.olevel)} in
   let l = e.level in
       let f =
