@@ -1,14 +1,28 @@
 
 
 
+let rec token = %lex_fan{
+ | @whitespace %{token lexbuf}
+ | @ocaml_comment %{token lexbuf}
+ | @ocaml_lid("derive"|"unload"|"clear"|"keep"|"on"|"off"|"show_code")
+ (* | @ocaml_string *)
+ | @ocaml_uid
+ | @kwd_symbol("("|")"|","|";")
+ | @ocaml_eof
+ | @default
+}
+let g =
+  Gramf.create_lexer ~annot:"fans"
+    ~keywords:["derive";"unload";"clear";"keep";"on";"off";"show_code"
+                 ;"(";")";",";";"] ();;
 
-%new{ (g:Gramf.t) fan_quot fan_quots};;
+%create{ (g:Gramf.t) fan_quot fan_quots};;
 
 
 (* when have local grammars created, g should be specified otherwise, the default
    lexer will mismatch *)
 with exp
-%unsafe_extend{ (g:Gramf.t)
+%extend{ (g:Gramf.t)
   fan_quot:
   ["derive";"("; L1 id as plugins; ")" %{List.iter Typehook.plugin_add plugins}
   | "unload"; L1 id  SEP "," as plugins %{List.iter Typehook.plugin_remove plugins }
@@ -28,7 +42,7 @@ with exp
  
 };;  
 
-
+let lexer = Lexing_util.adapt_to_stream token ;;
 begin 
   Foptions.add
     ("-keep",
@@ -38,9 +52,10 @@ begin
      (Arg.Unit Typehook.show_modules), "Show plugins");
   Ast_quotation.of_exp
     ~name:(Ns.lang, "fans")
+    ~lexer
     ~entry:fan_quots ();
 end;;
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake lang_fans.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lang_fans.cmo" *)
 (* end: *)
