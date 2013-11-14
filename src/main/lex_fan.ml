@@ -45,7 +45,7 @@ let  rec token   = %lex_fan{
             | "mutable"| "lazy"| "with"
             | "if" | "while" | "rec"
             | "object" | "or"
-            | "match" | "open"| "module"|"let"} txt v then
+            | "match" | "open"| "module"|"let"|"_"} txt v then
        `Key {loc= !!lexbuf;txt}
      else
         `Lid {loc= !!lexbuf;txt}}
@@ -65,20 +65,44 @@ let  rec token   = %lex_fan{
        | "mod"|"land"|"lor" |"lxor"
        |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Eident {loc = !! lexbuf;txt}}
-   | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
-   | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
-   | "**" symbolchar* as txt %{ `Inf{loc = !!lexbuf; txt ; level = 4}}
-   | ['*' '/' '%'] symbolchar* as txt  %{`Inf{loc = !!lexbuf; txt ; level = 3}}
-   | ['+' '-'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt ; level = 2}}
-   | ['@' '^'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt; level = 1}  }
-   | ['=' '<' '>' '|' '&'] symbolchar *  as txt %{`Inf{loc = !!lexbuf; txt ; level = 0}}
-   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
-   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
+       (* && - Inf 0
+          -. - Inf 2
+
+          -  - Inf 2
+          +  - Inf 2
+
+          ?? - Pre
+          || - 0
+          <    0
+          ->   2
+          =    0
+          |    0
+          ==   0 
+          *    3
+          <-   0
+          &    0
+          ^    1
+          >    0 
+        *)
+       
+   | ( "&&" | "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"|"+"|"-"
+   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}" |"-."
    | "{<" |">}"
    |     (* At least a safe_delimchars *)
      ('(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>')
    | (')' | [ '|' ]? ']' | '>' ']')
-   | ['!' '~' '?']    ) as txt  %{ `Sym {loc = !! lexbuf ;txt}}
+   | "??" (* FIXME *)
+   | "||" | "<" | "->" |  "=" | "|" | "==" | "*" | "<-"
+   | "&"  | ">" 
+   | ['!' '~' '?']    ) as txt  %{ `Key {loc = !! lexbuf ;txt}}
+       
+   | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
+   | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
+   | "**" symbolchar* as txt %{ `Inf{loc = !!lexbuf; txt ; level = 4}}
+   | ['*' '/' '%'] symbolchar* as txt  %{`Inf{loc = !!lexbuf; txt ; level = 3}}
+   | ['+' '-'] symbolchar + as txt %{`Inf{loc = !!lexbuf; txt ; level = 2}}
+   | ['@' '^'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt; level = 1}  }
+   | ['=' '<' '>' '|' '&'] symbolchar *  as txt %{`Inf{loc = !!lexbuf; txt ; level = 0}}
            
    | "*)" %{
        begin
