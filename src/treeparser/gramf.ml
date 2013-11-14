@@ -121,6 +121,7 @@ let default_keywords =
    "?";
    ">";
    "[";
+   
    "functor";   "private";   "sig";
    "include";   "exception";   "inherit";
    "and";    "when";   "then";

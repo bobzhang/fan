@@ -26,12 +26,29 @@ let  rec token   = %lex_fan{
    | @whitespace %{ token lexbuf}
    | @ocaml_comment %{token lexbuf}
    | ocaml_lid as txt  %{
-     if  %p{"mod"|"land"|"lor"|"lxor"} txt  then
+     let v = Hashtbl.hash txt in
+     if  %hash_cmp{"mod"|"land"|"lor"|"lxor"} txt v  then
        `Inf{loc= !!lexbuf; txt ; level = 3}
-     else if %p{"lsl"|"lsr" | "asr"} txt then
+     else if %hash_cmp{"lsl"|"lsr" | "asr"} txt v then
        `Inf{loc= !!lexbuf; txt ; level = 4}
      else 
-       `Lid {loc= !!lexbuf;txt}}
+       if %hash_cmp{"functor"|"private"|"sig"
+            | "include"| "exception"| "inherit"
+            | "and"| "when"| "then"| "initializer"
+            | "in" | "downto"| "as"| "function"
+            | "begin"| "class"| "do"|   "end"
+            | "assert"| "external"| "virtual"| "to"
+            | "try" | "struct"| "else"
+            | "val" | "constraint"| "type"
+            | "new" | "of"| "done"
+            | "for" | "fun"| "method"
+            | "mutable"| "lazy"| "with"
+            | "if" | "while" | "rec"
+            | "object" | "or"
+            | "match" | "open"| "module"|"let"} txt v then
+       `Key {loc= !!lexbuf;txt}
+     else
+        `Lid {loc= !!lexbuf;txt}}
    | @ocaml_uid
    | @ocaml_num_literal
    | @ocaml_float_literal       (** FIXME safety check *)
@@ -48,25 +65,19 @@ let  rec token   = %lex_fan{
        | "mod"|"land"|"lor" |"lxor"
        |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Eident {loc = !! lexbuf;txt}}
-
    | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
    | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
-
    | "**" symbolchar* as txt %{ `Inf{loc = !!lexbuf; txt ; level = 4}}
    | ['*' '/' '%'] symbolchar* as txt  %{`Inf{loc = !!lexbuf; txt ; level = 3}}
    | ['+' '-'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt ; level = 2}}
-
    | ['@' '^'] symbolchar * as txt %{`Inf{loc = !!lexbuf; txt; level = 1}  }
-
    | ['=' '<' '>' '|' '&'] symbolchar *  as txt %{`Inf{loc = !!lexbuf; txt ; level = 0}}
-       
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    |     (* At least a safe_delimchars *)
      ('(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>')
    | (')' | [ '|' ]? ']' | '>' ']')
-
    | ['!' '~' '?']    ) as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{

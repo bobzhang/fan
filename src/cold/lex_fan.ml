@@ -5573,13 +5573,78 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
+          let v = Hashtbl.hash txt in
           if
-            ((function | "mod"|"land"|"lor"|"lxor" -> true | _ -> false)) txt
+            ((fun (s : string)  ->
+                function
+                | 433205828 -> s = "mod"
+                | 931159239 -> s = "land"
+                | 510083582 -> s = "lor"
+                | 226648780 -> s = "lxor"
+                | _ -> false)) txt v
           then `Inf { loc = (!! lexbuf); txt; level = 3 }
           else
-            if ((function | "lsl"|"lsr"|"asr" -> true | _ -> false)) txt
+            if
+              ((fun (s : string)  ->
+                  function
+                  | 696252651 -> s = "lsl"
+                  | 912883832 -> s = "lsr"
+                  | 634041206 -> s = "asr"
+                  | _ -> false)) txt v
             then `Inf { loc = (!! lexbuf); txt; level = 4 }
-            else `Lid { loc = (!! lexbuf); txt }
+            else
+              if
+                ((fun (s : string)  ->
+                    function
+                    | 550543360 -> s = "functor"
+                    | 803846675 -> s = "private"
+                    | 483739668 -> s = "sig"
+                    | 131103253 -> s = "include"
+                    | 939042348 -> s = "exception"
+                    | 190501942 -> s = "inherit"
+                    | 318291514 -> s = "and"
+                    | 1000574016 -> s = "when"
+                    | 600187987 -> s = "then"
+                    | 1035971165 -> s = "initializer"
+                    | 258923636 -> s = "in"
+                    | 231714422 -> s = "downto"
+                    | 916095096 -> s = "as"
+                    | 1031134330 -> s = "function"
+                    | 166283392 -> s = "begin"
+                    | 303530675 -> s = "class"
+                    | 63952589 -> s = "do"
+                    | 606848730 -> s = "end"
+                    | 347290843 -> s = "assert"
+                    | 92423390 -> s = "external"
+                    | 72534754 -> s = "virtual"
+                    | 504783075 -> s = "to"
+                    | 632292067 -> s = "try"
+                    | 299205366 -> s = "struct"
+                    | 804297977 -> s = "else"
+                    | 624008963 -> s = "val"
+                    | 175869201 -> s = "constraint"
+                    | 972174611 -> s = "type"
+                    | 99260692 -> s = "new"
+                    | 415265556 -> s = "of"
+                    | 43519261 -> s = "done"
+                    | 569308970 -> s = "for"
+                    | 197088567 -> s = "fun"
+                    | 146147642 -> s = "method"
+                    | 424948034 -> s = "mutable"
+                    | 201771337 -> s = "lazy"
+                    | 494069608 -> s = "with"
+                    | 1035704714 -> s = "if"
+                    | 889500043 -> s = "while"
+                    | 144676753 -> s = "rec"
+                    | 343776663 -> s = "object"
+                    | 1048928162 -> s = "or"
+                    | 149418948 -> s = "match"
+                    | 55606727 -> s = "open"
+                    | 294194640 -> s = "module"
+                    | 1050473980 -> s = "let"
+                    | _ -> false)) txt v
+              then `Key { loc = (!! lexbuf); txt }
+              else `Lid { loc = (!! lexbuf); txt }
       | 4 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

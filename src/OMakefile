@@ -163,6 +163,7 @@ FAN_FILES = \
     lang_new \
     lang_clear\
     free_vars \
+    lang_hash_cmp
     # lang_pos \
     # loc_meta
     # parse_grammar2
