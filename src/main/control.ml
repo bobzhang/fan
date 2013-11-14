@@ -1,8 +1,22 @@
 
+let rec token = %lex_fan{
+ | @whitespace %{token lexbuf}
+ | @ocaml_comment %{token lexbuf}
+ | @ocaml_lid("default"|"import"|"filter"|"lang_clear"|"require")
+ | @ocaml_string
+ | @ocaml_uid
+ | @kwd_symbol("."|";")
+ | @ocaml_eof
+ | @default
+}
+let g =
+  Gramf.create_lexer ~annot:"control"
+    ~keywords:["default";"import";"filter";"lang_clear";"require";".";";"]
+    ();;
 
-%new{(g:Gramf.t) item dot_namespace items };;
+%create{(g:Gramf.t) item dot_namespace items };;
 
-%unsafe_extend{ (* (g:Gramf.t) *)
+%extend{ (* (g:Gramf.t) *)
   item:
   ["default"; Str s %{ (* FIXME*)
     begin 
@@ -28,11 +42,13 @@
   ]
 };;
 
+let lexer = Lexing_util.adapt_to_stream token 
 let () =
   Fdir.register
     (Tokenf.name_of_string "control",
-     (fun loc _ c -> Gramlib.parse_string ~loc  items c ));;
+     (fun loc _ c ->
+       Gramlib.parse_string ~loc  items ~lexer c ));;
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake control.cmo " *)
+(* compile-command: "cd .. && pmake main_annot/control.cmo " *)
 (* end: *)

@@ -12,7 +12,7 @@ let named_regexps =
 let named_cases =
   (Hashtbl.create 13 :
      (string,
-      (string list option -> Tokenf.quot option
+      (Tokenf.txt list option -> Tokenf.quot option
         -> Locf.t
           -> (Translate_lex.concrete_regexp *
                 FAst.exp) list)) Hashtbl.t )
@@ -70,15 +70,58 @@ let _ =
               loc_ghost = false} ; txt }} )]);
 
   ("ocaml_lid",
-   fun _ _ _loc  ->
+   fun ls _ _loc  ->
      [(%re{ocaml_lid as txt},
-       %exp{
-       `Lid{loc =
-            {loc_start = lexbuf.lex_start_p;
-             loc_end = lexbuf.lex_curr_p;
-             loc_ghost = false} ; txt }} )])
+       let default =
+         %exp{
+         `Lid{loc =
+              {loc_start = lexbuf.lex_start_p;
+               loc_end = lexbuf.lex_curr_p;
+               loc_ghost = false} ; txt }} in
+       match ls with
+       | None -> 
+          default 
+       | Some x ->
+           let cases  =
+             Ast_gen.bar_of_list @@ 
+             List.map (*FIXME check the txt is needed ... *)
+               ( fun (x:Tokenf.txt) ->
+                 let v = x.txt in
+                 let i = Hashtbl.hash v in
+                 %case{$int':i -> txt = $str:v}) x in
+           %exp{
+           let v = Hashtbl.hash txt in 
+           if (function | $cases | _ -> false) v then
+             `Key {loc =
+                   {loc_start = lexbuf.lex_start_p;
+                    loc_end = lexbuf.lex_curr_p;
+                    loc_ghost = false} ; txt }
+           else $default}
+             (* check following actions -- warning?*)
+      )])
   ;
 
+   ("kwd_symbol",
+   fun ls _ _loc ->
+     match ls with
+     | Some ls  -> 
+         let regexp =
+           Listf.reduce_left_with ~compose:(fun r1 r2 ->
+             ((Alternative (r1,r2)):Translate_lex.concrete_regexp))
+             ~project:(fun (x:Tokenf.txt) ->
+               regexp_for_string @@ TokenEval.string x.txt)
+             ls in
+         [(regexp,
+           %exp{
+           let txt = Lexing.sub_lexeme lexbuf
+               lexbuf.lex_start_pos lexbuf.lex_curr_pos in
+           (`Key {loc =
+                 {loc_start = lexbuf.lex_start_p;
+                  loc_end = lexbuf.lex_curr_p;
+                  loc_ghost = false}; txt}:Tokenf.t)})]
+     | None -> Locf.failf _loc "no following strings after kwd_symbol")
+  
+  ;
   ("ocaml_int",
    fun _ _ _loc ->
      [(%re{int_literal as txt}, 
@@ -395,18 +438,17 @@ end;;
               "Reference to unbound case name %s" x;
             raise UnboundCase
           end in
-        res None y xloc
-        (* match y with *)
-        (* | None -> *)
-        (*     List.map (fun (x,v) -> (x, FanAstN.fill_exp xloc v)) res *)
-        (* | Some y -> (\* FIXME -- should not need type annot*\) *)
-        (*    let e = Parsef.expand_exp y in *)
-        (*    List.map (fun (x,v) -> *)
-        (*     let  v = FanAstN.fill_exp xloc  v in *)
-        (*     let _loc = Ast_gen.loc_of e in   *)
-        (*     (x, %exp{ begin $v; $e ; end})) res *)}
-    | "@"; Lid@xloc x ; "("; L1 Str SEP "|"; ")" %{
-      assert false}]  
+        res None y xloc}
+    | "@"; Lid@xloc x ; "("; L1 Str SEP "|" as l; ")"; ? Quot y %{
+       (* FIXME ? Quote -- better error message do you mean Quot -- possible ? *)
+      let res =
+          try Hashtbl.find named_cases x
+          with Not_found ->  begin
+            Fan_warnings.emitf xloc.loc_start
+              "Reference to unbound case name %s" x;
+            raise UnboundCase
+          end in
+        res (Some l) y xloc}]  
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 

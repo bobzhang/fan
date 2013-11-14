@@ -17,7 +17,7 @@ val from_string :  Locf.t -> string -> Tokenf.stream
 val from_stream :  Locf.t ->  char Streamf.t -> Tokenf.stream 
 
       
-val clean : Tokenf.stream -> Tokenf.stream
+
 
 val strict_clean :  Tokenf.stream -> Tokenf.stream 
     

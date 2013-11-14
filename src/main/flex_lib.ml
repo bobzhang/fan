@@ -77,5 +77,5 @@ let debug_from_file  file =
 
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake flex_lib.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/flex_lib.cmo" *)
 (* end: *)

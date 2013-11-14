@@ -19,7 +19,7 @@ let add name =
   
 let () =
   let open Control in
-  %unsafe_extend{
+  %extend{
   (* (g:Gramf.t) *)
     item:
     [ "require"; Str s %{ add s} ]}

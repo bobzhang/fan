@@ -107,6 +107,8 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
 
 
 val adapt_to_stream : (Lexing.lexbuf -> 'a) -> Locf.t -> char Streamf.t -> 'a Streamf.t
+
+val clean : Tokenf.stream -> Tokenf.stream    
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake lexing_util.cmo" *)
 (* end: *)

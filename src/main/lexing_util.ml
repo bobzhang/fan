@@ -292,6 +292,11 @@ let adapt_to_stream token =
     Streamf.from (fun _ -> Some (token  lb))
   end
 
+(* remove trailing `EOI*)  
+let rec clean : Tokenf.stream -> Tokenf.stream =  %parser{
+  | (`EOI _ as x)  -> %stream{ x}
+  |  x; 'xs  -> %stream{ x; 'clean xs}
+  |  -> %stream{} }
 
 
 let _ =

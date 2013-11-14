@@ -1537,6 +1537,15 @@ let adapt_to_stream token (loc : Locf.t) strm =
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;
   lb.lex_curr_p <- loc.loc_start;
   Streamf.from (fun _  -> Some (token lb))
+let rec clean: Tokenf.stream -> Tokenf.stream =
+  fun (__strm : _ Streamf.t)  ->
+    match Streamf.peek __strm with
+    | Some (`EOI _ as x) -> (Streamf.junk __strm; Streamf.ising x)
+    | Some x ->
+        (Streamf.junk __strm;
+         (let xs = __strm in
+          Streamf.icons x (Streamf.slazy (fun _  -> clean xs))))
+    | _ -> Streamf.sempty
 let _ =
   Printexc.register_printer @@
     (function | Lexing_error e -> Some (lex_error_to_string e) | _ -> None)

@@ -4,7 +4,7 @@ let remove_as = Translate_lex.remove_as
 let named_regexps: (string,Translate_lex.concrete_regexp) Hashtbl.t =
   Hashtbl.create 13
 let named_cases:
-  (string,string list option ->
+  (string,Tokenf.txt list option ->
             Tokenf.quot option ->
               Locf.t -> (Translate_lex.concrete_regexp* FAst.exp) list)
     Hashtbl.t
@@ -275,15 +275,15 @@ let _ =
                         {
                           pos_fname = "parse_lex.ml";
                           pos_lnum = 65;
-                          pos_bol = 2149;
-                          pos_cnum = 2174
+                          pos_bol = 2153;
+                          pos_cnum = 2178
                         };
                       loc_end =
                         {
                           pos_fname = "parse_lex.ml";
                           pos_lnum = 65;
-                          pos_bol = 2149;
-                          pos_cnum = 2177
+                          pos_bol = 2153;
+                          pos_cnum = 2181
                         };
                       loc_ghost = false
                     } : Locf.t ), "txt"))),
@@ -330,7 +330,7 @@ let _ =
                                 (_loc, (`Lid (_loc, "txt")),
                                   (`Lid (_loc, "txt"))))))))) : FAst.exp ))])));
     ("ocaml_lid",
-      ((fun _  _  _loc  ->
+      ((fun ls  _  _loc  ->
           [((Bind
                ((Sequence
                    ((Characters [(95, 95); (97, 122); (223, 246); (248, 255)]),
@@ -349,58 +349,244 @@ let _ =
                        {
                          pos_fname = "parse_lex.ml";
                          pos_lnum = 74;
-                         pos_bol = 2386;
-                         pos_cnum = 2410
+                         pos_bol = 2391;
+                         pos_cnum = 2415
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
                          pos_lnum = 74;
-                         pos_bol = 2386;
-                         pos_cnum = 2413
+                         pos_bol = 2391;
+                         pos_cnum = 2418
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
-             (`App
-                (_loc, (`Vrn (_loc, "Lid")),
-                  (`Record
-                     (_loc,
-                       (`Sem
-                          (_loc,
-                            (`RecBind
-                               (_loc, (`Lid (_loc, "loc")),
-                                 (`Record
-                                    (_loc,
-                                      (`Sem
-                                         (_loc,
-                                           (`RecBind
-                                              (_loc,
-                                                (`Lid (_loc, "loc_start")),
-                                                (`Field
-                                                   (_loc,
-                                                     (`Lid (_loc, "lexbuf")),
-                                                     (`Lid
-                                                        (_loc, "lex_start_p")))))),
-                                           (`Sem
-                                              (_loc,
-                                                (`RecBind
-                                                   (_loc,
-                                                     (`Lid (_loc, "loc_end")),
-                                                     (`Field
-                                                        (_loc,
-                                                          (`Lid
-                                                             (_loc, "lexbuf")),
-                                                          (`Lid
-                                                             (_loc,
-                                                               "lex_curr_p")))))),
-                                                (`RecBind
-                                                   (_loc,
-                                                     (`Lid
-                                                        (_loc, "loc_ghost")),
-                                                     (`Lid (_loc, "false")))))))))))),
-                            (`RecBind
-                               (_loc, (`Lid (_loc, "txt")),
-                                 (`Lid (_loc, "txt"))))))))) : FAst.exp ))])));
+             ((let default: FAst.exp =
+                 `App
+                   (_loc, (`Vrn (_loc, "Lid")),
+                     (`Record
+                        (_loc,
+                          (`Sem
+                             (_loc,
+                               (`RecBind
+                                  (_loc, (`Lid (_loc, "loc")),
+                                    (`Record
+                                       (_loc,
+                                         (`Sem
+                                            (_loc,
+                                              (`RecBind
+                                                 (_loc,
+                                                   (`Lid (_loc, "loc_start")),
+                                                   (`Field
+                                                      (_loc,
+                                                        (`Lid
+                                                           (_loc, "lexbuf")),
+                                                        (`Lid
+                                                           (_loc,
+                                                             "lex_start_p")))))),
+                                              (`Sem
+                                                 (_loc,
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid
+                                                           (_loc, "loc_end")),
+                                                        (`Field
+                                                           (_loc,
+                                                             (`Lid
+                                                                (_loc,
+                                                                  "lexbuf")),
+                                                             (`Lid
+                                                                (_loc,
+                                                                  "lex_curr_p")))))),
+                                                   (`RecBind
+                                                      (_loc,
+                                                        (`Lid
+                                                           (_loc,
+                                                             "loc_ghost")),
+                                                        (`Lid (_loc, "false")))))))))))),
+                               (`RecBind
+                                  (_loc, (`Lid (_loc, "txt")),
+                                    (`Lid (_loc, "txt"))))))))) in
+               match ls with
+               | None  -> default
+               | Some x ->
+                   let cases =
+                     Ast_gen.bar_of_list @@
+                       (List.map
+                          (fun (x : Tokenf.txt)  ->
+                             let v = x.txt in
+                             let i = Hashtbl.hash v in
+                             (`Case
+                                (_loc, (`Int (_loc, (string_of_int i))),
+                                  (`App
+                                     (_loc,
+                                       (`App
+                                          (_loc, (`Lid (_loc, "=")),
+                                            (`Lid (_loc, "txt")))),
+                                       (`Str (_loc, v))))) : FAst.case )) x) in
+                   (`LetIn
+                      (_loc, (`Negative _loc),
+                        (`Bind
+                           (_loc, (`Lid (_loc, "v")),
+                             (`App
+                                (_loc,
+                                  (`Dot
+                                     (_loc, (`Uid (_loc, "Hashtbl")),
+                                       (`Lid (_loc, "hash")))),
+                                  (`Lid (_loc, "txt")))))),
+                        (`IfThenElse
+                           (_loc,
+                             (`App
+                                (_loc,
+                                  (`Fun
+                                     (_loc,
+                                       (`Bar
+                                          (_loc, cases,
+                                            (`Case
+                                               (_loc, (`Any _loc),
+                                                 (`Lid (_loc, "false")))))))),
+                                  (`Lid (_loc, "v")))),
+                             (`App
+                                (_loc, (`Vrn (_loc, "Key")),
+                                  (`Record
+                                     (_loc,
+                                       (`Sem
+                                          (_loc,
+                                            (`RecBind
+                                               (_loc, (`Lid (_loc, "loc")),
+                                                 (`Record
+                                                    (_loc,
+                                                      (`Sem
+                                                         (_loc,
+                                                           (`RecBind
+                                                              (_loc,
+                                                                (`Lid
+                                                                   (_loc,
+                                                                    "loc_start")),
+                                                                (`Field
+                                                                   (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lexbuf")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lex_start_p")))))),
+                                                           (`Sem
+                                                              (_loc,
+                                                                (`RecBind
+                                                                   (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "loc_end")),
+                                                                    (`Field
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lexbuf")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lex_curr_p")))))),
+                                                                (`RecBind
+                                                                   (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "loc_ghost")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "false")))))))))))),
+                                            (`RecBind
+                                               (_loc, (`Lid (_loc, "txt")),
+                                                 (`Lid (_loc, "txt")))))))))),
+                             default))) : FAst.exp ))))])));
+    ("kwd_symbol",
+      ((fun ls  _  _loc  ->
+          match ls with
+          | Some ls ->
+              let regexp =
+                Listf.reduce_left_with
+                  ~compose:(fun r1  r2  ->
+                              (Alternative (r1, r2) : Translate_lex.concrete_regexp ))
+                  ~project:(fun (x : Tokenf.txt)  ->
+                              regexp_for_string @@ (TokenEval.string x.txt))
+                  ls in
+              [(regexp,
+                 (`LetIn
+                    (_loc, (`Negative _loc),
+                      (`Bind
+                         (_loc, (`Lid (_loc, "txt")),
+                           (`App
+                              (_loc,
+                                (`App
+                                   (_loc,
+                                     (`App
+                                        (_loc,
+                                          (`Dot
+                                             (_loc, (`Uid (_loc, "Lexing")),
+                                               (`Lid (_loc, "sub_lexeme")))),
+                                          (`Lid (_loc, "lexbuf")))),
+                                     (`Field
+                                        (_loc, (`Lid (_loc, "lexbuf")),
+                                          (`Lid (_loc, "lex_start_pos")))))),
+                                (`Field
+                                   (_loc, (`Lid (_loc, "lexbuf")),
+                                     (`Lid (_loc, "lex_curr_pos")))))))),
+                      (`Constraint
+                         (_loc,
+                           (`App
+                              (_loc, (`Vrn (_loc, "Key")),
+                                (`Record
+                                   (_loc,
+                                     (`Sem
+                                        (_loc,
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "loc")),
+                                               (`Record
+                                                  (_loc,
+                                                    (`Sem
+                                                       (_loc,
+                                                         (`RecBind
+                                                            (_loc,
+                                                              (`Lid
+                                                                 (_loc,
+                                                                   "loc_start")),
+                                                              (`Field
+                                                                 (_loc,
+                                                                   (`Lid
+                                                                    (_loc,
+                                                                    "lexbuf")),
+                                                                   (`Lid
+                                                                    (_loc,
+                                                                    "lex_start_p")))))),
+                                                         (`Sem
+                                                            (_loc,
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
+                                                                    (_loc,
+                                                                    "loc_end")),
+                                                                   (`Field
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lexbuf")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "lex_curr_p")))))),
+                                                              (`RecBind
+                                                                 (_loc,
+                                                                   (`Lid
+                                                                    (_loc,
+                                                                    "loc_ghost")),
+                                                                   (`Lid
+                                                                    (_loc,
+                                                                    "false")))))))))))),
+                                          (`RecBind
+                                             (_loc, (`Lid (_loc, "txt")),
+                                               (`Lid (_loc, "txt")))))))))),
+                           (`Dot
+                              (_loc, (`Uid (_loc, "Tokenf")),
+                                (`Lid (_loc, "t"))))))) : FAst.exp ))]
+          | None  -> Locf.failf _loc "no following strings after kwd_symbol")));
     ("ocaml_int",
       ((fun _  _  _loc  ->
           [((Bind
@@ -442,16 +628,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 84;
-                         pos_bol = 2619;
-                         pos_cnum = 2645
+                         pos_lnum = 127;
+                         pos_bol = 4142;
+                         pos_cnum = 4168
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 84;
-                         pos_bol = 2619;
-                         pos_cnum = 2648
+                         pos_lnum = 127;
+                         pos_bol = 4142;
+                         pos_cnum = 4171
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
@@ -524,16 +710,16 @@ let _ =
                                    loc_start =
                                      {
                                        pos_fname = "parse_lex.ml";
-                                       pos_lnum = 89;
-                                       pos_bol = 2763;
-                                       pos_cnum = 2805
+                                       pos_lnum = 132;
+                                       pos_bol = 4286;
+                                       pos_cnum = 4328
                                      };
                                    loc_end =
                                      {
                                        pos_fname = "parse_lex.ml";
-                                       pos_lnum = 89;
-                                       pos_bol = 2763;
-                                       pos_cnum = 2806
+                                       pos_lnum = 132;
+                                       pos_bol = 4286;
+                                       pos_cnum = 4329
                                      };
                                    loc_ghost = false
                                  } : Locf.t ), "s"))))))),
@@ -541,16 +727,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 89;
-                         pos_bol = 2763;
-                         pos_cnum = 2815
+                         pos_lnum = 132;
+                         pos_bol = 4286;
+                         pos_cnum = 4338
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 89;
-                         pos_bol = 2763;
-                         pos_cnum = 2818
+                         pos_lnum = 132;
+                         pos_bol = 4286;
+                         pos_cnum = 4341
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
@@ -698,16 +884,16 @@ let _ =
                               loc_start =
                                 {
                                   pos_fname = "parse_lex.ml";
-                                  pos_lnum = 104;
-                                  pos_bol = 3202;
-                                  pos_cnum = 3229
+                                  pos_lnum = 147;
+                                  pos_bol = 4725;
+                                  pos_cnum = 4752
                                 };
                               loc_end =
                                 {
                                   pos_fname = "parse_lex.ml";
-                                  pos_lnum = 104;
-                                  pos_bol = 3202;
-                                  pos_cnum = 3232
+                                  pos_lnum = 147;
+                                  pos_bol = 4725;
+                                  pos_cnum = 4755
                                 };
                               loc_ghost = false
                             } : Locf.t ), "txt"))))),
@@ -869,16 +1055,16 @@ let _ =
                              loc_start =
                                {
                                  pos_fname = "parse_lex.ml";
-                                 pos_lnum = 117;
-                                 pos_bol = 3634;
-                                 pos_cnum = 3665
+                                 pos_lnum = 160;
+                                 pos_bol = 5157;
+                                 pos_cnum = 5188
                                };
                              loc_end =
                                {
                                  pos_fname = "parse_lex.ml";
-                                 pos_lnum = 117;
-                                 pos_bol = 3634;
-                                 pos_cnum = 3668
+                                 pos_lnum = 160;
+                                 pos_bol = 5157;
+                                 pos_cnum = 5191
                                };
                              loc_ghost = false
                            } : Locf.t ), "txt"))))), (Characters [(39, 39)]))),
@@ -940,16 +1126,16 @@ let _ =
                          loc_start =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 123;
-                             pos_bol = 3857;
-                             pos_cnum = 3878
+                             pos_lnum = 166;
+                             pos_bol = 5380;
+                             pos_cnum = 5401
                            };
                          loc_end =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 123;
-                             pos_bol = 3857;
-                             pos_cnum = 3879
+                             pos_lnum = 166;
+                             pos_bol = 5380;
+                             pos_cnum = 5402
                            };
                          loc_ghost = false
                        } : Locf.t ), "c"))))),
@@ -1023,16 +1209,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 130;
-                         pos_bol = 4131;
-                         pos_cnum = 4160
+                         pos_lnum = 173;
+                         pos_bol = 5654;
+                         pos_cnum = 5683
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 130;
-                         pos_bol = 4131;
-                         pos_cnum = 4163
+                         pos_lnum = 173;
+                         pos_bol = 5654;
+                         pos_cnum = 5686
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
@@ -1100,16 +1286,16 @@ let _ =
                                loc_start =
                                  {
                                    pos_fname = "parse_lex.ml";
-                                   pos_lnum = 139;
-                                   pos_bol = 4405;
-                                   pos_cnum = 4430
+                                   pos_lnum = 182;
+                                   pos_bol = 5928;
+                                   pos_cnum = 5953
                                  };
                                loc_end =
                                  {
                                    pos_fname = "parse_lex.ml";
-                                   pos_lnum = 139;
-                                   pos_bol = 4405;
-                                   pos_cnum = 4431
+                                   pos_lnum = 182;
+                                   pos_bol = 5928;
+                                   pos_cnum = 5954
                                  };
                                loc_ghost = false
                              } : Locf.t ), "x"))))))),
@@ -1322,16 +1508,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 174;
-                         pos_bol = 5528;
-                         pos_cnum = 5543
+                         pos_lnum = 217;
+                         pos_bol = 7051;
+                         pos_cnum = 7066
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 174;
-                         pos_bol = 5528;
-                         pos_cnum = 5544
+                         pos_lnum = 217;
+                         pos_bol = 7051;
+                         pos_cnum = 7067
                        };
                      loc_ghost = false
                    } : Locf.t ), "c"))),
@@ -1655,16 +1841,16 @@ let _ =
                                            loc_start =
                                              {
                                                pos_fname = "parse_lex.ml";
-                                               pos_lnum = 208;
-                                               pos_bol = 6533;
-                                               pos_cnum = 6568
+                                               pos_lnum = 251;
+                                               pos_bol = 8056;
+                                               pos_cnum = 8091
                                              };
                                            loc_end =
                                              {
                                                pos_fname = "parse_lex.ml";
-                                               pos_lnum = 208;
-                                               pos_bol = 6533;
-                                               pos_cnum = 6572
+                                               pos_lnum = 251;
+                                               pos_bol = 8056;
+                                               pos_cnum = 8095
                                              };
                                            loc_ghost = false
                                          } : Locf.t ), "name"))))))),
@@ -1698,16 +1884,16 @@ let _ =
                                             loc_start =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 208;
-                                                pos_bol = 6533;
-                                                pos_cnum = 6591
+                                                pos_lnum = 251;
+                                                pos_bol = 8056;
+                                                pos_cnum = 8114
                                               };
                                             loc_end =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 208;
-                                                pos_bol = 6533;
-                                                pos_cnum = 6595
+                                                pos_lnum = 251;
+                                                pos_bol = 8056;
+                                                pos_cnum = 8118
                                               };
                                             loc_ghost = false
                                           } : Locf.t ), "meta"))))))))),
@@ -1716,16 +1902,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 208;
-                         pos_bol = 6533;
-                         pos_cnum = 6609
+                         pos_lnum = 251;
+                         pos_bol = 8056;
+                         pos_cnum = 8132
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 208;
-                         pos_bol = 6533;
-                         pos_cnum = 6614
+                         pos_lnum = 251;
+                         pos_bol = 8056;
+                         pos_cnum = 8137
                        };
                      loc_ghost = false
                    } : Locf.t ), "shift"))),
@@ -1985,16 +2171,16 @@ let _ =
                                               loc_start =
                                                 {
                                                   pos_fname = "parse_lex.ml";
-                                                  pos_lnum = 231;
-                                                  pos_bol = 7331;
-                                                  pos_cnum = 7351
+                                                  pos_lnum = 274;
+                                                  pos_bol = 8854;
+                                                  pos_cnum = 8874
                                                 };
                                               loc_end =
                                                 {
                                                   pos_fname = "parse_lex.ml";
-                                                  pos_lnum = 231;
-                                                  pos_bol = 7331;
-                                                  pos_cnum = 7352
+                                                  pos_lnum = 274;
+                                                  pos_bol = 8854;
+                                                  pos_cnum = 8875
                                                 };
                                               loc_ghost = false
                                             } : Locf.t ), "x"))))),
@@ -2048,16 +2234,16 @@ let _ =
                                            loc_start =
                                              {
                                                pos_fname = "parse_lex.ml";
-                                               pos_lnum = 231;
-                                               pos_bol = 7331;
-                                               pos_cnum = 7380
+                                               pos_lnum = 274;
+                                               pos_bol = 8854;
+                                               pos_cnum = 8903
                                              };
                                            loc_end =
                                              {
                                                pos_fname = "parse_lex.ml";
-                                               pos_lnum = 231;
-                                               pos_bol = 7331;
-                                               pos_cnum = 7384
+                                               pos_lnum = 274;
+                                               pos_bol = 8854;
+                                               pos_cnum = 8907
                                              };
                                            loc_ghost = false
                                          } : Locf.t ), "name"))))))),
@@ -2091,16 +2277,16 @@ let _ =
                                             loc_start =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 231;
-                                                pos_bol = 7331;
-                                                pos_cnum = 7403
+                                                pos_lnum = 274;
+                                                pos_bol = 8854;
+                                                pos_cnum = 8926
                                               };
                                             loc_end =
                                               {
                                                 pos_fname = "parse_lex.ml";
-                                                pos_lnum = 231;
-                                                pos_bol = 7331;
-                                                pos_cnum = 7407
+                                                pos_lnum = 274;
+                                                pos_bol = 8854;
+                                                pos_cnum = 8930
                                               };
                                             loc_ghost = false
                                           } : Locf.t ), "meta"))))))))),
@@ -2109,16 +2295,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 231;
-                         pos_bol = 7331;
-                         pos_cnum = 7418
+                         pos_lnum = 274;
+                         pos_bol = 8854;
+                         pos_cnum = 8941
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 231;
-                         pos_bol = 7331;
-                         pos_cnum = 7423
+                         pos_lnum = 274;
+                         pos_bol = 8854;
+                         pos_cnum = 8946
                        };
                      loc_ghost = false
                    } : Locf.t ), "shift"))),
@@ -2486,16 +2672,16 @@ let _ =
                                           loc_start =
                                             {
                                               pos_fname = "parse_lex.ml";
-                                              pos_lnum = 259;
-                                              pos_bol = 8255;
-                                              pos_cnum = 8295
+                                              pos_lnum = 302;
+                                              pos_bol = 9778;
+                                              pos_cnum = 9818
                                             };
                                           loc_end =
                                             {
                                               pos_fname = "parse_lex.ml";
-                                              pos_lnum = 259;
-                                              pos_bol = 8255;
-                                              pos_cnum = 8298
+                                              pos_lnum = 302;
+                                              pos_bol = 9778;
+                                              pos_cnum = 9821
                                             };
                                           loc_ghost = false
                                         } : Locf.t ), "num"))))),
@@ -2517,17 +2703,17 @@ let _ =
                                                   {
                                                     pos_fname =
                                                       "parse_lex.ml";
-                                                    pos_lnum = 260;
-                                                    pos_bol = 8312;
-                                                    pos_cnum = 8354
+                                                    pos_lnum = 303;
+                                                    pos_bol = 9835;
+                                                    pos_cnum = 9877
                                                   };
                                                 loc_end =
                                                   {
                                                     pos_fname =
                                                       "parse_lex.ml";
-                                                    pos_lnum = 260;
-                                                    pos_bol = 8312;
-                                                    pos_cnum = 8358
+                                                    pos_lnum = 303;
+                                                    pos_bol = 9835;
+                                                    pos_cnum = 9881
                                                   };
                                                 loc_ghost = false
                                               } : Locf.t ), "name"))))),
@@ -2592,16 +2778,16 @@ let _ =
                                   loc_start =
                                     {
                                       pos_fname = "parse_lex.ml";
-                                      pos_lnum = 280;
-                                      pos_bol = 8883;
-                                      pos_cnum = 8913
+                                      pos_lnum = 323;
+                                      pos_bol = 10406;
+                                      pos_cnum = 10436
                                     };
                                   loc_end =
                                     {
                                       pos_fname = "parse_lex.ml";
-                                      pos_lnum = 280;
-                                      pos_bol = 8883;
-                                      pos_cnum = 8917
+                                      pos_lnum = 323;
+                                      pos_bol = 10406;
+                                      pos_cnum = 10440
                                     };
                                   loc_ghost = false
                                 } : Locf.t ), "name"))))),
@@ -2634,16 +2820,16 @@ let _ =
                                    loc_start =
                                      {
                                        pos_fname = "parse_lex.ml";
-                                       pos_lnum = 280;
-                                       pos_bol = 8883;
-                                       pos_cnum = 8939
+                                       pos_lnum = 323;
+                                       pos_bol = 10406;
+                                       pos_cnum = 10462
                                      };
                                    loc_end =
                                      {
                                        pos_fname = "parse_lex.ml";
-                                       pos_lnum = 280;
-                                       pos_bol = 8883;
-                                       pos_cnum = 8945
+                                       pos_lnum = 323;
+                                       pos_bol = 10406;
+                                       pos_cnum = 10468
                                      };
                                    loc_ghost = false
                                  } : Locf.t ), "follow"))))))),
@@ -2651,16 +2837,16 @@ let _ =
                      loc_start =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 280;
-                         pos_bol = 8883;
-                         pos_cnum = 8951
+                         pos_lnum = 323;
+                         pos_bol = 10406;
+                         pos_cnum = 10474
                        };
                      loc_end =
                        {
                          pos_fname = "parse_lex.ml";
-                         pos_lnum = 280;
-                         pos_bol = 8883;
-                         pos_cnum = 8954
+                         pos_lnum = 323;
+                         pos_bol = 10406;
+                         pos_cnum = 10477
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
@@ -2799,16 +2985,16 @@ let _ =
                                       loc_start =
                                         {
                                           pos_fname = "parse_lex.ml";
-                                          pos_lnum = 291;
-                                          pos_bol = 9254;
-                                          pos_cnum = 9284
+                                          pos_lnum = 334;
+                                          pos_bol = 10777;
+                                          pos_cnum = 10807
                                         };
                                       loc_end =
                                         {
                                           pos_fname = "parse_lex.ml";
-                                          pos_lnum = 291;
-                                          pos_bol = 9254;
-                                          pos_cnum = 9288
+                                          pos_lnum = 334;
+                                          pos_bol = 10777;
+                                          pos_cnum = 10811
                                         };
                                       loc_ghost = false
                                     } : Locf.t ), "name"))))))),
@@ -2817,16 +3003,16 @@ let _ =
                     loc_start =
                       {
                         pos_fname = "parse_lex.ml";
-                        pos_lnum = 291;
-                        pos_bol = 9254;
-                        pos_cnum = 9299
+                        pos_lnum = 334;
+                        pos_bol = 10777;
+                        pos_cnum = 10822
                       };
                     loc_end =
                       {
                         pos_fname = "parse_lex.ml";
-                        pos_lnum = 291;
-                        pos_bol = 9254;
-                        pos_cnum = 9302
+                        pos_lnum = 334;
+                        pos_bol = 10777;
+                        pos_cnum = 10825
                       };
                     loc_ghost = false
                   } : Locf.t ), "txt"))),
@@ -3029,16 +3215,16 @@ let _ =
                          loc_start =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 307;
-                             pos_bol = 9840;
-                             pos_cnum = 9859
+                             pos_lnum = 350;
+                             pos_bol = 11363;
+                             pos_cnum = 11382
                            };
                          loc_end =
                            {
                              pos_fname = "parse_lex.ml";
-                             pos_lnum = 307;
-                             pos_bol = 9840;
-                             pos_cnum = 9860
+                             pos_lnum = 350;
+                             pos_bol = 11363;
+                             pos_cnum = 11383
                            };
                          loc_ghost = false
                        } : Locf.t ), "c"))))),
@@ -3312,23 +3498,80 @@ let _ =
              Token
                ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
                Tokenf.pattern )];
-           annot = "assert false\n";
+           annot =
+             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres (Some l) y xloc\n";
            fn =
              (Gramf.mk_action
-                (fun _  _  _  (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                (fun _  (l : Tokenf.txt list)  _  (__fan_1 : Tokenf.txt)  _ 
+                   (_loc : Locf.t)  ->
                    let xloc = __fan_1.loc in
-                   let x = __fan_1.txt in (assert false : 'case ) : Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.txt
-                                                                    list ->
-                                                                    Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.txt
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'case ))
+                   let x = __fan_1.txt in
+                   let y = None in
+                   (let res =
+                      try Hashtbl.find named_cases x
+                      with
+                      | Not_found  ->
+                          (Fan_warnings.emitf xloc.loc_start
+                             "Reference to unbound case name %s" x;
+                           raise UnboundCase) in
+                    res (Some l) y xloc : 'case ) : Tokenf.txt ->
+                                                      Tokenf.txt list ->
+                                                        Tokenf.txt ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Locf.t -> 'case ))
+         };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Key; word = (A "@"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+               Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+               Tokenf.pattern );
+             List1sep
+               ((Token
+                   ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                   Tokenf.pattern )),
+                 (Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "|"); tag_name = "Key" }
+                     } : Tokenf.pattern )));
+             Token
+               ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+               Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
+               Tokenf.pattern )];
+           annot =
+             "let res =\n  try Hashtbl.find named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres (Some l) y xloc\n";
+           fn =
+             (Gramf.mk_action
+                (fun (__fan_5 : Tokenf.quot)  _  (l : Tokenf.txt list)  _ 
+                   (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                   let xloc = __fan_1.loc in
+                   let x = __fan_1.txt in
+                   let y = __fan_5 in
+                   let y = Some y in
+                   (let res =
+                      try Hashtbl.find named_cases x
+                      with
+                      | Not_found  ->
+                          (Fan_warnings.emitf xloc.loc_start
+                             "Reference to unbound case name %s" x;
+                           raise UnboundCase) in
+                    res (Some l) y xloc : 'case ) : Tokenf.quot ->
+                                                      Tokenf.txt ->
+                                                        Tokenf.txt list ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'case ))
          }]
      } : Gramf.olevel );
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )

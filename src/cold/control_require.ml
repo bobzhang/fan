@@ -6,7 +6,7 @@ let add name =
   then (add_to_loaded_modules name; Dyn_load.load (name ^ Dyn_load.libext))
 let () =
   let open Control in
-    Gramf.unsafe_extend_single (item : 'item Gramf.t )
+    Gramf.extend_single (item : 'item Gramf.t )
       ({
          label = None;
          lassoc = true;
