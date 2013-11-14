@@ -11,7 +11,11 @@ let named_regexps =
 
 let named_cases =
   (Hashtbl.create 13 :
-     (string, (Translate_lex.concrete_regexp * FAstN.exp) list) Hashtbl.t )
+     (string,
+      (string list option -> Tokenf.quot option
+        -> Locf.t
+          -> (Translate_lex.concrete_regexp *
+                FAst.exp) list)) Hashtbl.t )
 
 let _ =
   let (+>) = Hashtbl.add named_regexps in
@@ -46,78 +50,95 @@ let _ =
   "identchars" +> %re{identchar+}
    end
 
-
+let append_quot (y:Tokenf.quot option) (e:FAst.exp)  =
+  match y with
+  | None -> e
+  | Some y -> (* FIXME -- should not need type annot*)
+      let a = Parsef.expand_exp y in
+      let _loc = y.loc in
+       %exp{ begin $e ; $a end}
 let _ =
   Hashtblf.add_list named_cases 
   [
-  ("ocaml_uid", [(%re{ocaml_uid as txt},
-  %exp-{
-  `Uid{loc =
-  {loc_start = lexbuf.lex_start_p;
-   loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false} ; txt }} )]);
+  ("ocaml_uid",
+    fun _ _ _loc ->
+      [(%re{ocaml_uid as txt},
+        %exp{
+        `Uid{loc =
+             {loc_start = lexbuf.lex_start_p;
+              loc_end = lexbuf.lex_curr_p;
+              loc_ghost = false} ; txt }} )]);
 
-  ("ocaml_lid", [(%re{ocaml_lid as txt},
-  %exp-{
-  `Lid{loc =
-  {loc_start = lexbuf.lex_start_p;
-   loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false} ; txt }} )])
+  ("ocaml_lid",
+   fun _ _ _loc  ->
+     [(%re{ocaml_lid as txt},
+       %exp{
+       `Lid{loc =
+            {loc_start = lexbuf.lex_start_p;
+             loc_end = lexbuf.lex_curr_p;
+             loc_ghost = false} ; txt }} )])
   ;
 
   ("ocaml_int",
-   [(%re{int_literal as txt}, %exp-{`Int {loc = Lexing_util.from_lexbuf lexbuf;txt}})]
+   fun _ _ _loc ->
+     [(%re{int_literal as txt}, 
+       %exp{`Int {loc = Lexing_util.from_lexbuf lexbuf;txt}})]
   );
   ("ocaml_num_literal",
-  [( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
-  %exp-{
-  let (loc:Locf.t) =
-  {loc_start = lexbuf.lex_start_p;
-    loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false} in
-  match s with
-  | Some 'l' -> `Int32 {loc;txt}
-  | Some 'L' -> `Int64 {loc;txt}
-  | Some 'n' -> `Nativeint {loc;txt}
-  | _ -> `Int {loc;txt}
-  })]);
+   fun _ _ _loc ->
+     [( %re{int_literal  (('l'|'L'|'n' as s ) ?) as txt },
+        %exp{
+        let (loc:Locf.t) =
+          {loc_start = lexbuf.lex_start_p;
+           loc_end = lexbuf.lex_curr_p;
+           loc_ghost = false} in
+        match s with
+        | Some 'l' -> `Int32 {loc;txt}
+        | Some 'L' -> `Int64 {loc;txt}
+        | Some 'n' -> `Nativeint {loc;txt}
+        | _ -> `Int {loc;txt}})]);
   
-  ("ocaml_char", [
-  (%re{"'" (newline as txt) "'"}, %exp-{
+  ("ocaml_char",
+   fun _ _ _loc ->
+     [
+      (%re{"'" (newline as txt) "'"},  %exp{
        begin
-            let pos = lexbuf.lex_curr_p in
-            lexbuf.lex_curr_p <-
-              { pos with
-                pos_lnum =  pos.pos_lnum + 1;
-                pos_bol = pos.pos_cnum - 1;};
-            (`Chr {loc =
-             {loc_start = lexbuf.lex_start_p;
-              loc_end = lexbuf.lex_curr_p;
-              loc_ghost = false}; txt } : Tokenf.t)
+         let pos = lexbuf.lex_curr_p in
+         lexbuf.lex_curr_p <-
+           { pos with
+             pos_lnum =  pos.pos_lnum + 1;
+             pos_bol = pos.pos_cnum - 1;};
+         (`Chr {loc =
+                {loc_start = lexbuf.lex_start_p;
+                 loc_end = lexbuf.lex_curr_p;
+                 loc_ghost = false}; txt } : Tokenf.t)
        end});
          
-   (%re{ "'" (ocaml_char as txt ) "'"},
-       %exp-{ (`Chr {loc= 
+      (%re{ "'" (ocaml_char as txt ) "'"}, 
+       %exp{ (`Chr {loc= 
             {loc_start = lexbuf.lex_start_p;
               loc_end = lexbuf.lex_curr_p;
               loc_ghost = false}; txt } : Tokenf.t)});
          
-   (%re{ "'\\" (_ as c)}, %exp-{Lexing_util.err (Illegal_escape (String.make 1 c))
-         ({loc_start = lexbuf.lex_start_p; loc_end = lexbuf.lex_curr_p;
-              loc_ghost = false}:Locf.t)})
-   ]);
+   (%re{ "'\\" (_ as c)}, 
+           %exp{Lexing_util.err (Illegal_escape (String.make 1 c))
+                  ({loc_start = lexbuf.lex_start_p; loc_end = lexbuf.lex_curr_p;
+                    loc_ghost = false}:Locf.t)})]);
 
   ("ocaml_float_literal",
-  [  (%re{float_literal as txt},
-  %exp-{ (`Flo {loc = {
-  loc_start = lexbuf.lex_start_p;
-  loc_end = lexbuf.lex_curr_p;
-  loc_ghost = false};txt} : Tokenf.t)})]
-  )
+   fun _ _ _loc -> 
+     [ (%re{float_literal as txt},
+        %exp{ (`Flo {loc = {
+                     loc_start = lexbuf.lex_start_p;
+                     loc_end = lexbuf.lex_curr_p;
+                     loc_ghost = false};txt} : Tokenf.t)})])
   ;
   
   ("ocaml_comment",
-     [(%re{ "(*" (')' as x) ?}, %exp-{
+   fun _ q _loc ->
+     [(%re{ "(*" (')' as x) ?},
+       append_quot q 
+       %exp{
        let c = Lexing_util.new_cxt () in
        (* let old = lexbuf.lex_start_p in *)
        begin
@@ -129,66 +150,68 @@ let _ =
          (* `Comment {loc;txt= buff_contents c} *)
        end})])
   ;
-  ("whitespace",
-  [
-  (%re{ocaml_blank + }, %exp-{()});
-  (%re{newline}, %exp-{Lexing_util.update_loc lexbuf})
-  ]
+  ("whitespace", fun _ q _loc -> 
+    [
+     (%re{ocaml_blank + }, append_quot q %exp{()});
+     (%re{newline}, append_quot q %exp{Lexing_util.update_loc lexbuf})
+   ]
   )
   ;
   
-  ("ocaml_string",
-  
-   [(%re{'"'}, %exp-{
-  let c = Lexing_util.new_cxt () in
-  let old = lexbuf.lex_start_p in
-  begin
-    Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_string;
-   `Str {loc = Location_util.(--) old  lexbuf.lex_curr_p;
-         txt = Lexing_util.buff_contents c}
-  end}
-  )]);
+  ("ocaml_string", 
+  fun _ _ _loc ->
+    [(%re{'"'}, %exp{
+      let c = Lexing_util.new_cxt () in
+      let old = lexbuf.lex_start_p in
+      begin
+        Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_string;
+        `Str {loc = Location_util.(--) old  lexbuf.lex_curr_p;
+              txt = Lexing_util.buff_contents c}
+      end})]);
 
  ("default",
- [(%re{_ as c}, %exp-{
-     Lexing_util.err (Illegal_character c)  @@ Lexing_util.from_lexbuf lexbuf
- })]
+  fun _ _ _loc ->
+    [(%re{_ as c}, %exp{
+      Lexing_util.err (Illegal_character c)  @@ Lexing_util.from_lexbuf lexbuf})]
  )
  ;
   ("ocaml_eof",
- [(%re{eof},%exp-{
-    let pos = lexbuf.lex_curr_p in (* FIXME *)
-    (lexbuf.lex_curr_p <-
-       { pos with pos_bol  = pos.pos_bol  + 1 ;
-        pos_cnum = pos.pos_cnum + 1 };
-    let loc = Lexing_util.from_lexbuf lexbuf in
-     (`EOI {loc;txt=""} : Tokenf.t)) })])
+   fun _ _ _loc ->
+     [(%re{eof},%exp{
+       let pos = lexbuf.lex_curr_p in (* FIXME *)
+       (lexbuf.lex_curr_p <-
+         { pos with pos_bol  = pos.pos_bol  + 1 ;
+           pos_cnum = pos.pos_cnum + 1 };
+        let loc = Lexing_util.from_lexbuf lexbuf in
+        (`EOI {loc;txt=""} : Tokenf.t)) })])
   ;
 
   ("ocaml_simple_quotation",
- [(%re{"%{"}, %exp-{
- let old = lexbuf.lex_start_p in
-    let c = Lexing_util.new_cxt () in
-    begin
-      Lexing_util.store c lexbuf;
-      Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
-      `Quot {name=Tokenf.empty_name;
-             meta=None;
-             txt = Lexing_util.buff_contents c ;
-             shift = 2;
-              retract = 1;
-             loc = Location_util.(--) old lexbuf.lex_curr_p}
-    end})])
+  fun _ _ _loc ->   
+    [(%re{"%{"}, %exp{
+      let old = lexbuf.lex_start_p in
+      let c = Lexing_util.new_cxt () in
+      begin
+        Lexing_util.store c lexbuf;
+        Lexing_util.push_loc_cont c lexbuf Lexing_util.lex_quotation;
+        `Quot {name=Tokenf.empty_name;
+               meta=None;
+               txt = Lexing_util.buff_contents c ;
+               shift = 2;
+               retract = 1;
+               loc = Location_util.(--) old lexbuf.lex_curr_p}
+      end})])
  
  ;
   ("ocaml_quotation",
- [(%re{'%'  (quotation_name as name) ? ('@' (ident as meta))? "{"    as shift},
- %exp-{
- let c = Lexing_util.new_cxt () in
- let name =
-     match name with
-     | Some name -> Tokenf.name_of_string name
-     | None -> Tokenf.empty_name  in
+   fun _ _ _loc ->
+     [(%re{'%'  (quotation_name as name) ? ('@' (ident as meta))? "{"    as shift},
+       %exp{
+       let c = Lexing_util.new_cxt () in
+       let name =
+         match name with
+         | Some name -> Tokenf.name_of_string name
+         | None -> Tokenf.empty_name  in
        begin
          let old = lexbuf.lex_start_p in
          let txt =
@@ -204,7 +227,9 @@ let _ =
        end})])
    ;
   ("ocaml_double_quotation",
-     [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (ident as meta))? "{" as shift}, %exp-{
+   fun _ _ _loc ->
+     [(%re{ ("%" as x) ? '%'  (quotation_name as name) ? ('@' (ident as meta))? "{" as shift},
+       %exp{
        let c = Lexing_util.new_cxt () in
        let name =
          match name with
@@ -230,9 +255,12 @@ let _ =
   ;
 
   ("line_directive",
+   fun _ q _loc ->   
    [(%re{"#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
        ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
-       [^'\010' '\013']* newline},   %exp-{
+       [^'\010' '\013']* newline},
+     append_quot q
+       %exp{
          begin
            Lexing_util.update_loc
              lexbuf ?file:name ~line:(int_of_string num) ~absolute:true 
@@ -247,8 +275,9 @@ let _ =
        (* ${}                    *)
        (**************************)
     ("ocaml_ant",
+     fun _ _ _loc ->
     [
-     (%re{ '$' ( ocaml_lid as name) (':'  identchars as follow)? as txt}, %exp-{
+     (%re{ '$' ( ocaml_lid as name) (':'  identchars as follow)? as txt}, %exp{
      let (kind,shift) =
        match follow with
        | None -> ("", 1 )
@@ -259,7 +288,7 @@ let _ =
           shift ;
           retract = 0;
            cxt = None} : Tokenf.t)}) ;
-     (%re{ "$" ( ocaml_lid as name)? "{"  as txt},  %exp-{
+     (%re{ "$" ( ocaml_lid as name)? "{"  as txt},  %exp{
      let old = lexbuf.lex_start_p in
      let c = Lexing_util.new_cxt () in
      begin
@@ -276,7 +305,7 @@ let _ =
             cxt = None}
      end});
    (%re{ '$' (_ as c)},
-    %exp-{Lexing_util.err (Illegal_character c) @@ Lexing_util.from_lexbuf lexbuf})])
+    %exp{Lexing_util.err (Illegal_character c) @@ Lexing_util.from_lexbuf lexbuf})])
     ;
   (* ("ocaml_ant", *)
   (*  [(,)] *)
@@ -366,16 +395,18 @@ end;;
               "Reference to unbound case name %s" x;
             raise UnboundCase
           end in
-        match y with
-        | None ->
-            List.map (fun (x,v) -> (x, FanAstN.fill_exp xloc v)) res
-        | Some y -> (* FIXME -- should not need type annot*)
-           let e = Parsef.expand_exp y in
-           List.map (fun (x,v) ->
-            let  v = FanAstN.fill_exp xloc  v in
-            let _loc = Ast_gen.loc_of e in  
-            (x, %exp{ begin $v; $e ; end})) res 
-  }]  
+        res None y xloc
+        (* match y with *)
+        (* | None -> *)
+        (*     List.map (fun (x,v) -> (x, FanAstN.fill_exp xloc v)) res *)
+        (* | Some y -> (\* FIXME -- should not need type annot*\) *)
+        (*    let e = Parsef.expand_exp y in *)
+        (*    List.map (fun (x,v) -> *)
+        (*     let  v = FanAstN.fill_exp xloc  v in *)
+        (*     let _loc = Ast_gen.loc_of e in   *)
+        (*     (x, %exp{ begin $v; $e ; end})) res *)}
+    | "@"; Lid@xloc x ; "("; L1 Str SEP "|"; ")" %{
+      assert false}]  
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 
