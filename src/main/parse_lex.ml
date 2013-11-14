@@ -325,6 +325,8 @@ let g =
           lex
           declare_regexp
           lex_fan
+          (* lex_stream *)
+          case 
       };;
 
 (*
@@ -334,21 +336,26 @@ let g =
 let make_automata shortest l =
   Compile_lex.output_entry @@
   Lexgen.make_single_dfa {shortest;clauses=Listf.concat l};;
-  
+
+let make_lex nt a b = %extend{
+  nt:
+  [  "|" ; L0 case SEP "|"  ${a}
+  | "<";L0 case SEP "|"  ${b}]};;
+
+
+let _ = begin
+  make_lex lex
+    (fun l _ _ -> make_automata false l)
+    (fun l _ _ -> make_automata true l);
+  make_lex lex_fan
+    (fun l _ _loc -> let e = make_automata false l in
+    %exp{ ($e : Lexing.lexbuf -> Tokenf.t)})
+    (fun l _ _loc -> let e = make_automata true l in
+    %exp{ ($e : Lexing.lexbuf -> Tokenf.t)});
+end;;
+    
 %extend{(g:Gramf.t) 
-    lex:
-    [  "|" ; L0 case SEP "|" as l %{
-        make_automata false l}
-    | "<";L0 case SEP "|" as l %{
-        make_automata true l }]
-    lex_fan:
-    [  "|" ; L0 case SEP "|" as l %{
-      let e = make_automata false l in
-      %exp{ ($e : Lexing.lexbuf -> Tokenf.t)}}
-    | "<";L0 case SEP "|" as l %{
-        let e = make_automata true l in
-        %exp{($e: Lexing.lexbuf -> Tokenf.t)}}]          
-  case@Local:
+  case:
     [ regexp as r;  Quot x  %{
       [(r,Parsef.expand_exp x  )]}
     | "@"; Lid@xloc x; ?Quot y %{
@@ -436,6 +443,8 @@ let () =
       ~name:(d,"lex") ~entry:lex ();
     Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
       ~name:(d,"lex_fan") ~entry:lex_fan ();
+    (* Ast_quotation.of_exp ~lexer:Lex_lex.from_stream *)
+    (*   ~name:(d,"lex_stream") ~entry:lex_stream (); *)
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
       ~name:(d,"regex")

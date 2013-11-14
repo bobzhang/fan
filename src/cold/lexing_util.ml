@@ -1532,6 +1532,11 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | 7 -> with_store c lexbuf lex_quotation
     | 8 -> with_store c lexbuf lex_quotation
     | _ -> failwith "lexing: empty token"))
+let adapt_to_stream token (loc : Locf.t) strm =
+  let lb = Lexing.from_function (lexing_store strm) in
+  lb.lex_abs_pos <- (loc.loc_start).pos_cnum;
+  lb.lex_curr_p <- loc.loc_start;
+  Streamf.from (fun _  -> Some (token lb))
 let _ =
   Printexc.register_printer @@
     (function | Lexing_error e -> Some (lex_error_to_string e) | _ -> None)

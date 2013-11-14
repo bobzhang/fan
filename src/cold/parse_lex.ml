@@ -2216,126 +2216,76 @@ let char_class1 = Gramf.mk_dynamic g "char_class1"
 let lex = Gramf.mk_dynamic g "lex"
 let declare_regexp = Gramf.mk_dynamic g "declare_regexp"
 let lex_fan = Gramf.mk_dynamic g "lex_fan"
+let case = Gramf.mk_dynamic g "case"
 let make_automata shortest l =
   Compile_lex.output_entry @@
     (Lexgen.make_single_dfa { shortest; clauses = (Listf.concat l) })
+let make_lex nt a b =
+  Gramf.extend_single (nt : 'nt Gramf.t )
+    ({
+       label = None;
+       lassoc = true;
+       productions =
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              List0sep
+                ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
+                  (Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "|"); tag_name = "Key" }
+                      } : Tokenf.pattern )))];
+            annot = "";
+            fn =
+              (Gramf.mk_action
+                 (a : 'case list -> Tokenf.txt -> Locf.t -> 'nt ))
+          };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+             List0sep
+               ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
+                 (Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "|"); tag_name = "Key" }
+                     } : Tokenf.pattern )))];
+           annot = "";
+           fn =
+             (Gramf.mk_action
+                (b : 'case list -> Tokenf.txt -> Locf.t -> 'nt ))
+         }]
+     } : Gramf.olevel )
 let _ =
-  let grammar_entry_create x = Gramf.mk_dynamic g x in
-  let case: 'case Gramf.t = grammar_entry_create "case" in
-  Gramf.extend_single (lex : 'lex Gramf.t )
-    ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              List0sep
-                ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
-                  (Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A "|"); tag_name = "Key" }
-                      } : Tokenf.pattern )))];
-            annot = "make_automata false l\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (l : 'case list)  _  (_loc : Locf.t)  ->
-                    (make_automata false l : 'lex ) : 'case list ->
-                                                        Tokenf.txt ->
-                                                          Locf.t -> 'lex ))
-          };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-             List0sep
-               ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
-                 (Token
-                    ({
-                       descr =
-                         { tag = `Key; word = (A "|"); tag_name = "Key" }
-                     } : Tokenf.pattern )))];
-           annot = "make_automata true l\n";
-           fn =
-             (Gramf.mk_action
-                (fun (l : 'case list)  _  (_loc : Locf.t)  ->
-                   (make_automata true l : 'lex ) : 'case list ->
-                                                      Tokenf.txt ->
-                                                        Locf.t -> 'lex ))
-         }]
-     } : Gramf.olevel );
-  Gramf.extend_single (lex_fan : 'lex_fan Gramf.t )
-    ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Key; word = (A "|"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              List0sep
-                ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
-                  (Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A "|"); tag_name = "Key" }
-                      } : Tokenf.pattern )))];
-            annot =
-              "let e = make_automata false l in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (l : 'case list)  _  (_loc : Locf.t)  ->
-                    (let e = make_automata false l in
-                     (`Constraint
-                        (_loc, e,
-                          (`Arrow
-                             (_loc,
-                               (`Dot
-                                  (_loc, (`Uid (_loc, "Lexing")),
-                                    (`Lid (_loc, "lexbuf")))),
-                               (`Dot
-                                  (_loc, (`Uid (_loc, "Tokenf")),
-                                    (`Lid (_loc, "t"))))))) : FAst.exp ) : 
-                    'lex_fan ) : 'case list ->
-                                   Tokenf.txt -> Locf.t -> 'lex_fan ))
-          };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Key; word = (A "<"); tag_name = "Key" } } : 
-                Tokenf.pattern );
-             List0sep
-               ((Nterm (Gramf.obj (case : 'case Gramf.t ))),
-                 (Token
-                    ({
-                       descr =
-                         { tag = `Key; word = (A "|"); tag_name = "Key" }
-                     } : Tokenf.pattern )))];
-           annot =
-             "let e = make_automata true l in\n(`Constraint\n   (_loc, e,\n     (`Arrow\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Lexing\")), (`Lid (_loc, \"lexbuf\")))),\n          (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"t\"))))))) : \n  FAst.exp )\n";
-           fn =
-             (Gramf.mk_action
-                (fun (l : 'case list)  _  (_loc : Locf.t)  ->
-                   (let e = make_automata true l in
-                    (`Constraint
-                       (_loc, e,
-                         (`Arrow
-                            (_loc,
-                              (`Dot
-                                 (_loc, (`Uid (_loc, "Lexing")),
-                                   (`Lid (_loc, "lexbuf")))),
-                              (`Dot
-                                 (_loc, (`Uid (_loc, "Tokenf")),
-                                   (`Lid (_loc, "t"))))))) : FAst.exp ) : 
-                   'lex_fan ) : 'case list ->
-                                  Tokenf.txt -> Locf.t -> 'lex_fan ))
-         }]
-     } : Gramf.olevel );
+  make_lex lex (fun l  _  _  -> make_automata false l)
+    (fun l  _  _  -> make_automata true l);
+  make_lex lex_fan
+    (fun l  _  _loc  ->
+       let e = make_automata false l in
+       (`Constraint
+          (_loc, e,
+            (`Arrow
+               (_loc,
+                 (`Dot
+                    (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))),
+                 (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
+         FAst.exp ))
+    (fun l  _  _loc  ->
+       let e = make_automata true l in
+       (`Constraint
+          (_loc, e,
+            (`Arrow
+               (_loc,
+                 (`Dot
+                    (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))),
+                 (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
+         FAst.exp ))
+let _ =
   Gramf.extend_single (case : 'case Gramf.t )
     ({
        label = None;

@@ -284,7 +284,14 @@ let rec lex_quotation c = %lex{
   | _ %{ with_store c lexbuf  lex_quotation }}
 
 
-    
+let adapt_to_stream token =
+  fun (loc:Locf.t) strm ->
+    let lb = Lexing.from_function (lexing_store strm) in begin
+    lb.lex_abs_pos <- loc.loc_start.pos_cnum;
+    lb.lex_curr_p <- loc.loc_start;
+    Streamf.from (fun _ -> Some (token  lb))
+  end
+
 
 
 let _ =
