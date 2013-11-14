@@ -8,13 +8,13 @@ let rec token = %lex_fan{
  | @kwd_symbol("."|";")
  | @ocaml_eof
  | @default
-}
-let g =
-  Gramf.create_lexer ~annot:"control"
-    ~keywords:["default";"import";"filter";"lang_clear";"require";".";";"]
-    ();;
+};;
+(* let g = *)
+(*   Gramf.create_lexer ~annot:"control" *)
+(*     ~keywords:["default";"import";"filter";"lang_clear";"require";".";";"] *)
+(*     ();; *)
 
-%create{(g:Gramf.t) item dot_namespace items };;
+%create{(* (g:Gramf.t) *) item dot_namespace items };;
 
 %extend{ (* (g:Gramf.t) *)
   item:

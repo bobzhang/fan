@@ -686,18 +686,9 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ -> failwith "lexing: empty token"))
-let g =
-  Gramf.create_lexer ~annot:"control"
-    ~keywords:["default";
-              "import";
-              "filter";
-              "lang_clear";
-              "require";
-              ".";
-              ";"] ()
-let item = Gramf.mk_dynamic g "item"
-let dot_namespace = Gramf.mk_dynamic g "dot_namespace"
-let items = Gramf.mk_dynamic g "items"
+let item = Gramf.mk "item"
+let dot_namespace = Gramf.mk "dot_namespace"
+let items = Gramf.mk "items"
 let _ =
   Gramf.extend_single (item : 'item Gramf.t )
     ({

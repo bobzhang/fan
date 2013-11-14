@@ -178,16 +178,16 @@ and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gd
   {x with symbols =
    (List.map
      (fun symbol -> 
-       let keywords = using_symbol  symbol [] in
-       let diff =
-         Setf.String.elements @@
-         Setf.String.diff (Setf.String.of_list keywords) entry.gram.gfilter.kwds
-       in
-       let () =
-         if diff <> [] then 
-           failwithf
-             "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot
-           @@ Listf.reduce_left (^) diff in
+       (* let keywords = using_symbol  symbol [] in *)
+       (* let diff = *)
+       (*   Setf.String.elements @@ *)
+       (*   Setf.String.diff (Setf.String.of_list keywords) entry.gram.gfilter.kwds *)
+       (* in *)
+       (* let () = *)
+       (*   if diff <> [] then  *)
+       (*     failwithf *)
+       (*       "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot *)
+       (*     @@ Listf.reduce_left (^) diff in *)
        let () = check_gram entry symbol in
        match symbol with
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
