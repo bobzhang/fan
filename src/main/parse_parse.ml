@@ -465,7 +465,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
 
    opt_action@Local :
    [ Quot x %{E (Some (Parsef.expand_exp x)) }
-   | Ant("fn",x) %{Ant x }]
+   | Ant("fn"|"",x) %{Ant x }]
 
   };;
 

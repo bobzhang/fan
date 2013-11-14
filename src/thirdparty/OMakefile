@@ -7,7 +7,7 @@ NATIVE_ENABLED=true
 NATIVEPLUGIN_ENABLED = true 
 
 section:
-    .SUBDIRS: plc ounit
+    .SUBDIRS: plc ounit arith
     
 # local variables:
 # compile-command: "cd .. && pmake test_hot"

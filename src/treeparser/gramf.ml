@@ -176,16 +176,6 @@ let debug_origin_token_stream (entry:'a t ) tokens : 'a =
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry tokens 
 
-(* (\* with a special exception handler *\)   *)
-(* let parse_string_safe ?(loc=Locf.string_loc) entry  s = *)
-(*   try *)
-(*     parse_string entry ~loc s *)
-(*   with Locf.Exc_located(loc, e) -> begin *)
-(*       eprintf "%s" (Printexc.to_string e); *)
-(*       Locf.error_report (loc,s); *)
-(*       Locf.raise loc e ; *)
-(*   end  *)
-(* ;; *)
     
 let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
   try p ~loc s

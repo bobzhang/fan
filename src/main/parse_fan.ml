@@ -41,10 +41,13 @@ let make_key ?(left=true) ?action exp i op =
       %extend{
       exp: $i $bool:left
         [ S as e1 ; $key:op @xloc; S as e2 %{
-          let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}]}
+          let op = %exp@xloc{$lid:op} in %exp{$op $e1 $e2}}
+        ]
+    }
   | Some action ->
       %extend{exp: $i $bool:left
-      [S ; $key:op ; S  $fn:action ]}
+      [S ; $key:op ; S  ${action}
+      ]}
         
 let _ =
   let transform i =

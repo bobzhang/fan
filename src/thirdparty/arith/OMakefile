@@ -1,0 +1,4 @@
+
+FILES= test
+
+OCamlProgram(arith,$(FILES))

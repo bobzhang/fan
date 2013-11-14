@@ -49,7 +49,7 @@ open Gdefs;;
 (* let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();; *)
 
 open Syntaxf;;
-let t e s = Gramf.parse_string e  s;;
+let t e s = Gramlib.parse_string e  s;;
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 end;;
@@ -62,7 +62,7 @@ module O = Obj;;
 open FAst;;
 (* test dump *)
 let t_dump s =  t stru s |> Ast2pt.stru;;
-let t_meta  = Gramf.parse_string Parse_parse.simple;;
+let t_meta  = Gramlib.parse_string Parse_parse.simple;;
 open Parse_fan;;
 
 (* #require "inspect";; *)

@@ -164,15 +164,12 @@ type pattern = {
   }
 
       
-let rec  string_of_descr (x:descr)=
-  Printf.sprintf "%s %s"
-    x.tag_name (string_of_word x.word)
-and string_of_word  (x:word) =
-  match x with
-  | Any -> "_"
-  | Kind s         
+let string_of_descr (x:descr)=
+  match x.word with
+  | Any -> x.tag_name 
+  | Kind s -> x.tag_name ^ " " ^ s
   | A  s -> Printf.sprintf "%S" s
-  | Level d -> Printf.sprintf "Level %d" d
+  | Level d -> x.tag_name ^ Printf.sprintf "Level %d" d
         
 
 let string_of_pattern (x:pattern) = string_of_descr x.descr
@@ -180,13 +177,6 @@ let string_of_pattern (x:pattern) = string_of_descr x.descr
 let eq_pattern  (x :pattern)  (y : pattern) : bool =
   x.descr = y.descr
       
-(** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
-    a generalized token *)      
-(* type terminal = *)
-(*     [(\*  `Keyword of string *\) *)
-(*     (\* | *\) `Token of pattern ] *)
-
-  
 let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc =
     Location_util.join

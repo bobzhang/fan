@@ -301,7 +301,7 @@ let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp )  =
   | Bind (a,(loc,s)) ->
   %ep{Bind (${meta_concrete_regexp _loc  a},
   (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))}
-  (* failwithf "Bind not supported yet" *)
+
         
 let _ = begin
   Hashtbl.add named_regexps "eof" Eof ;
@@ -382,7 +382,7 @@ let make_automata shortest l =
     end}
   | S; S as x %{x}]
   regexp: 10
-  [S as r1;"as"; (* lid as z *) Lid@xloc y %{ Bind(r1,(xloc,y))} ]
+  [S as r1;"as"; Lid@xloc y %{ Bind(r1,(xloc,y))} ]
   regexp: 20          
   [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in

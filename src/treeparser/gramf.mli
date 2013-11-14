@@ -86,7 +86,7 @@ val clear: 'a t -> unit
 
 val entry_first : 'a t -> string list
     
-val mk_action: 'a -> (* Action.t *) action
+val mk_action: 'a -> action
 
 val obj: 'a t -> entry         
 

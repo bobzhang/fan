@@ -8846,6 +8846,19 @@ let _ =
                    let x = __fan_0 in (Ant x : 'opt_action ) : Tokenf.ant ->
                                                                  Locf.t ->
                                                                    'opt_action ))
+         };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                 } : Tokenf.pattern )];
+           annot = "Ant x\n";
+           fn =
+             (Gramf.mk_action
+                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                   let x = __fan_0 in (Ant x : 'opt_action ) : Tokenf.ant ->
+                                                                 Locf.t ->
+                                                                   'opt_action ))
          }]
      } : Gramf.olevel )
 let _ =
