@@ -9,7 +9,7 @@ Objs:
 Format:
   fprintf
   ;
-}
+};;
 open FAst
 let pp_print_loc _f _loc  = ()
 class mapbase = object

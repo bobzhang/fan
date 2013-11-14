@@ -27,7 +27,7 @@ class primitive =  object
     | false -> %ep{ false } 
 end;;
 
-%ocaml{ %include{ "fAstN.ml" } };;
+%ocaml{ %include{ "fAstN.ml" };; };;
 
 let m = new meta
 

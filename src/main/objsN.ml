@@ -4,7 +4,7 @@ open FAstN
 %fans{keep off;
       derive (Print OPrint Map Fold MapWrapper PrintWrapper);};;
 
-%ocaml{ %include{ "fAstN.ml" } };;
+%ocaml{ %include{ "fAstN.ml" };; };;
 
 
 let wildcarder = object (self)

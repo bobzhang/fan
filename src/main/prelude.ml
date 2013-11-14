@@ -8,7 +8,7 @@ Format:
   pp_print_flush
   eprintf
   ;
-}
+};;
 
 open Util
 

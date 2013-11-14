@@ -5,7 +5,7 @@ Derive:
   gen_stru
   gen_object
   ;
-}
+};;
 open FAstN
 open Astn_util
 open Util

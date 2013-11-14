@@ -2,12 +2,12 @@
 Ast_gen:
   sem_of_list
   ;
-}
+};;
 
 
 open FAst
 
-%create{qualid nonterminals newterminals t_qualid qualuid}
+%create{qualid nonterminals newterminals t_qualid qualuid};;
 
   
 %extend{

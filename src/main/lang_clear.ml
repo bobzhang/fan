@@ -5,14 +5,14 @@ Ast_gen:
   seq_sem
   ;
 
-}
+};;
 open FAst
   
 %create{
 a_lident
 (nonterminalsclear : exp Gramf.t)
 qualuid  
-}
+};;
   
 %extend{
 a_lident :

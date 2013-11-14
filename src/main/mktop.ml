@@ -28,7 +28,7 @@ Parsef:
   exp_filter_n
   pat_filter_n
   ;
-}
+};;
 
 open! Syntaxf
 include Prelude

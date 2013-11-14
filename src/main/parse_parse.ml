@@ -14,11 +14,11 @@ Ast_gen:
   seq_sem
   tuple_com
   ;
-}
+};;
 
   
 open FAst
-(* open Util *)
+
 
 let mk_name (i:FAst.vid) : Gram_def.name =
   let rec aux  x =
@@ -69,7 +69,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    unsafe_extend_body
   (simple : matrix Gramf.t)
   (single_symbol : Gram_def.osymbol Gramf.t)        
-}
+};;
 
 
 %extend{(g:Gramf.t)
@@ -307,11 +307,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     List.map (fun (x:Gram_def.osymbol list Gram_def.decorate) ->
       match x.txt with
       | [v]  -> {x with txt = [ {v with outer_pattern = Some(xloc,i)}]}
-      | _ -> Locf.failf xloc "as can not be applied here") ss }]}                         
-                  
-
-
-
+      | _ -> Locf.failf xloc "as can not be applied here") ss }]};;                         
 
 %extend{(g:Gramf.t)
 

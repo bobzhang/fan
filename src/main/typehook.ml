@@ -6,7 +6,7 @@ Sigs_util:
 Format:
   eprintf
   ;
-}
+};;
 open Util
 open Ast_basic
 

@@ -3,7 +3,7 @@ Ast_gen:
   and_of_list
   seq_sem
   ;
-}
+};;
 
 
 %create{save_quot};;

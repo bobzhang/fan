@@ -10916,14 +10916,17 @@ let apply () =
             symbols =
               [Token
                  ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
+                 Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
+                 } : Tokenf.pattern )];
             annot = "Ast_quotation.expand x Dyn_tag.stru\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                 (fun _  (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                     let x = __fan_0 in
                     (Ast_quotation.expand x Dyn_tag.stru : 'stru ) : 
-                 Tokenf.quot -> Locf.t -> 'stru ))
+                 Tokenf.txt -> Tokenf.quot -> Locf.t -> 'stru ))
           };
           {
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];

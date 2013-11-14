@@ -13,7 +13,7 @@ Ast_gen:
   com_of_list
   appl_of_list
   ;
-}
+};;
 open FAst
 open! Syntaxf
 
@@ -844,7 +844,7 @@ let apply () = begin
           | _ -> `Value(_loc,r,bi)}
       | "class"; class_declaration as cd %{  `Class(_loc,cd)}
       | Ant (""|"stri" ,s) %{mk_ant ~c:"stru" s}
-      | Quot x %{ Ast_quotation.expand  x Dyn_tag.stru}
+      | Quot x; ";;" %{ Ast_quotation.expand  x Dyn_tag.stru}
       | exp as e %{ `StExp(_loc,e)}
           (* this entry makes %{ let $rec:r $bi in $x } parsable *)
      ]   };

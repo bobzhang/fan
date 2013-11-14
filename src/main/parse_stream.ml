@@ -8,7 +8,7 @@ Syntaxf:
   a_lident
   pat
   ;
-}
+};;
 
 open FAst
 
