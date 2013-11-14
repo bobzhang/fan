@@ -6,17 +6,19 @@ let rec token = %lex_fan{
  | @whitespace %{token lexbuf}
  | @ocaml_num_literal
  | @ocaml_float_literal
- | @ocaml_lid
+ | @ocaml_lid("let"|"be"|"in")
+ | @ocaml_ant
  | @kwd_symbol("+"|"-"|"*"|"/"|"**"|"("|")")
  | @ocaml_eof
  | @default};;
 let lexer = Lexing_util.adapt_to_stream token 
 type arith =
-   [`Add of (arith * arith)
-   |`Minus of (arith * arith)
-   |`Times of (arith * arith)
-   |`Divide of (arith * arith)
-   |`Power of (arith * arith)
+   [ `Add of (arith * arith)
+   | `Minus of (arith * arith)
+   | `Times of (arith * arith)
+   | `Divide of (arith * arith)
+   | `Power of (arith * arith)
+   | `Bind of (string * arith * arith)
    | `Flo of float
    | `Int of int
    | `Var of string]
@@ -29,26 +31,35 @@ let tbl = [("+",("Add",10,true));
 
 %create{arith };; 
     
-let add_prod ?(left=true)  nt action i op =
+let add_prod left  nt action i op =
   %extend{
   nt: $i $bool:left
-    [ nt ; $key:op; nt ${action}]} in
+    [ nt ; $key:op; nt ${action}]}
+    
+let mk_ant nt i =
+  %extend{
+  nt: $i
+    [Ant("",x) %{Tokenf.ant_expand Parsef.ep x}]}
 
-let mk_action tag e2 (op:Tokenf.txt) e1 _loc =
-  %exp{($vrn:tag ($e1,$e2) : arith)} in
+let mk_action tag e2 _ e1 _loc =
+  %ep{($vrn:tag ($e1,$e2) : arith)} in
 begin
   List.iter
     (fun (op,(tag,i,left))
-      -> add_prod ~left arith (mk_action tag) i op) tbl;
+      -> add_prod left arith (mk_action tag) i op) tbl;
 
   %extend{
     arith:40
     ["("; arith as e ;")" %{e}
-    |Flo f %exp{`Flo $flo:f}
-    |Lid i %exp{`Var $lid:i}
-    |Int i %exp{`Int $int:i} ]};
-  
-  Ast_quotation.of_exp ~lexer
+    |Flo f %ep{`Flo $flo:f}
+    |Lid i %ep{`Var $str:i}
+    |Int i %ep{`Int $int:i} ]};
+  mk_ant arith 40;
+  %extend{
+    arith: 0 RA
+    ["let"; Lid x ; "be"; arith as e1; "in"; arith as e2 %ep{`Bind($str:x,$e1,$e2)}]
+  };
+  Ast_quotation.of_ep ~lexer
     ~name:(Ns.lang,"arith") ~entry:arith ()
 end
     

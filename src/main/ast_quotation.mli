@@ -67,51 +67,55 @@ val add_quotation:
 (*************************************************************)    
 val of_stru :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:FAst.stru Gentry.t ->
+  name:Tokenf.domains * string -> entry:FAst.stru Gramf.t ->
     unit -> unit
 val of_pat :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:FAst.pat Gentry.t
+  name:Tokenf.domains * string -> entry:FAst.pat Gramf.t
     -> unit -> unit
 val of_clfield :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:FAst.clfield Gentry.t
+  name:Tokenf.domains * string -> entry:FAst.clfield Gramf.t
     -> unit -> unit
 val of_case :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:FAst.case Gentry.t
+  name:Tokenf.domains * string -> entry:FAst.case Gramf.t
     -> unit -> unit 
 val of_exp :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:FAst.exp Gentry.t
-    -> unit -> unit 
-
+  name:Tokenf.domains * string -> entry:FAst.exp Gramf.t
+    -> unit -> unit
+        
+val of_ep :
+  ?lexer:(Location.t -> char Streamf.t -> Tokenf.stream) ->
+  name:Tokenf.domains * string -> entry:FAst.ep Gramf.t ->
+    unit -> unit
 
 (*************************************************************)
 (* the same as above, allows a filter plugin though          *)    
 (*************************************************************)        
 val of_pat_with_filter :
     ?lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
-      name:Tokenf.domains * string -> entry:'a Gentry.t -> filter:('a -> pat)
+      name:Tokenf.domains * string -> entry:'a Gramf.t -> filter:('a -> pat)
         -> unit -> unit 
 val of_stru_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.domains * string ->
-  entry:'a Gentry.t -> filter:('a -> FAst.stru)
+  entry:'a Gramf.t -> filter:('a -> FAst.stru)
     -> unit -> unit
 val of_clfield_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.domains * string ->
-  entry:'a Gentry.t -> filter:('a -> FAst.clfield)
+  entry:'a Gramf.t -> filter:('a -> FAst.clfield)
     -> unit -> unit 
 val of_case_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.domains * string ->
-  entry:'a Gentry.t -> filter:('a -> FAst.case)
+  entry:'a Gramf.t -> filter:('a -> FAst.case)
     -> unit -> unit
 val of_exp_with_filter :
   ?lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:'a Gentry.t -> filter:('a -> exp)
+  name:Tokenf.domains * string -> entry:'a Gramf.t -> filter:('a -> exp)
     -> unit -> unit
               
 

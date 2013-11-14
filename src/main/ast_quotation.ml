@@ -229,6 +229,25 @@ let of_stru_with_filter ?lexer ~name  ~entry  ~filter ()  =
 let of_pat ?lexer ~name  ~entry  () =
   add name Dyn_tag.pat (make_parser ?lexer  entry)
 
+let of_exp ?lexer ~name  ~entry () =
+  let expand_fun = make_parser ?lexer entry in
+  let mk_fun loc loc_name_opt s =
+    (`StExp (loc, expand_fun loc loc_name_opt s) : FAst.stru ) in
+  begin
+    add name Dyn_tag.exp expand_fun;
+    add name Dyn_tag.stru mk_fun
+  end
+let of_ep ?lexer ~name ~entry () =
+  let (expand_fun : FAst.ep Tokenf.expand_fun)  = make_parser ?lexer entry in
+  let mk_fun loc loc_name_opt s =
+    (`StExp (loc, (expand_fun loc loc_name_opt s :> FAst.exp)) : FAst.stru ) in
+  begin
+    add name Dyn_tag.pat
+      (make_parser ?lexer  entry : FAst.ep Tokenf.expand_fun :> FAst.pat Tokenf.expand_fun);
+    add name Dyn_tag.exp
+      (expand_fun :FAst.ep Tokenf.expand_fun :> FAst.exp Tokenf.expand_fun);
+    add name Dyn_tag.stru mk_fun
+  end
 let of_pat_with_filter ?lexer ~name  ~entry  ~filter ()  =
   add name Dyn_tag.pat
     (fun loc  loc_name_opt  s  ->
@@ -250,14 +269,7 @@ let of_case_with_filter ?lexer ~name  ~entry  ~filter ()=
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 
-let of_exp ?lexer ~name  ~entry () =
-  let expand_fun = make_parser ?lexer entry in
-  let mk_fun loc loc_name_opt s =
-    (`StExp (loc, expand_fun loc loc_name_opt s) : FAst.stru ) in
-  begin
-    add name Dyn_tag.exp expand_fun;
-    add name Dyn_tag.stru mk_fun
-  end
+
 
 let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
   let expand_fun loc loc_name_opt s =

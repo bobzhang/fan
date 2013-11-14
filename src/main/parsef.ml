@@ -3,12 +3,22 @@ open FAst
 
 let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp 
 let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat
+;;
+%create{ep};;
+%extend{
+ep: [Lid x %ep{$lid:x}]
+};;    
 let antiquot_ident = Gramlib.eoi_entry Syntaxf.ident
 
+
+let antiquot_ep = Gramlib.eoi_entry ep
 let exp loc str = Gramlib.parse_string antiquot_exp ~loc str
 
 let pat loc str = Gramlib.parse_string antiquot_pat ~loc str
 
+(* FIXME -- to be improved *)
+let ep loc str : ep = (Gramlib.parse_string antiquot_ep ~loc str ) 
+    
 let ident loc str = Gramlib.parse_string antiquot_ident ~loc str
 
 let anti_filter = Ant.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat
