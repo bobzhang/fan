@@ -9987,42 +9987,6 @@ let apply () =
                                                     Locf.t ->
                                                       'override_flag_quot ))
            }]
-      } : Gramf.olevel );
-   Gramf.extend_single (pat_eoi : 'pat_eoi Gramf.t )
-     ({
-        label = None;
-        lassoc = true;
-        productions =
-          [{
-             symbols =
-               [Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-               Token
-                 ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                 Tokenf.pattern )];
-             annot = "x\n";
-             fn =
-               (Gramf.mk_action
-                  (fun _  (x : 'pat)  (_loc : Locf.t)  -> (x : 'pat_eoi ) : 
-                  Tokenf.txt -> 'pat -> Locf.t -> 'pat_eoi ))
-           }]
-      } : Gramf.olevel );
-   Gramf.extend_single (exp_eoi : 'exp_eoi Gramf.t )
-     ({
-        label = None;
-        lassoc = true;
-        productions =
-          [{
-             symbols =
-               [Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-               Token
-                 ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                 Tokenf.pattern )];
-             annot = "x\n";
-             fn =
-               (Gramf.mk_action
-                  (fun _  (x : 'exp)  (_loc : Locf.t)  -> (x : 'exp_eoi ) : 
-                  Tokenf.txt -> 'exp -> Locf.t -> 'exp_eoi ))
-           }]
       } : Gramf.olevel ));
   (Gramf.extend_single (implem : 'implem Gramf.t )
      ({
@@ -10099,13 +10063,19 @@ let apply () =
                Token
                  ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
                   } : Tokenf.pattern )];
-             annot = "Some (`Directive (_loc, n, dp))\n";
+             annot = "`Directive (_loc, n, dp)\n";
              fn =
                (Gramf.mk_action
                   (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : Locf.t) 
-                     -> (Some (`Directive (_loc, n, dp)) : 'top_phrase ) : 
-                  Tokenf.txt ->
-                    'exp -> 'a_lident -> Tokenf.txt -> Locf.t -> 'top_phrase ))
+                     -> (`Directive (_loc, n, dp) : 'top_phrase ) : Tokenf.txt
+                                                                    ->
+                                                                    'exp ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'top_phrase ))
            };
           {
             symbols =
@@ -10116,13 +10086,18 @@ let apply () =
               Token
                 ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-            annot = "Some (`DirectiveSimple (_loc, n))\n";
+            annot = "`DirectiveSimple (_loc, n)\n";
             fn =
               (Gramf.mk_action
                  (fun _  (n : 'a_lident)  _  (_loc : Locf.t)  ->
-                    (Some (`DirectiveSimple (_loc, n)) : 'top_phrase ) : 
-                 Tokenf.txt ->
-                   'a_lident -> Tokenf.txt -> Locf.t -> 'top_phrase ))
+                    (`DirectiveSimple (_loc, n) : 'top_phrase ) : Tokenf.txt
+                                                                    ->
+                                                                    'a_lident
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'top_phrase ))
           };
           {
             symbols =
@@ -10130,24 +10105,12 @@ let apply () =
               Token
                 ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
                  } : Tokenf.pattern )];
-            annot = "Some st\n";
+            annot = "st\n";
             fn =
               (Gramf.mk_action
                  (fun _  (st : 'stru)  (_loc : Locf.t)  ->
-                    (Some st : 'top_phrase ) : Tokenf.txt ->
-                                                 'stru ->
-                                                   Locf.t -> 'top_phrase ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                 Tokenf.pattern )];
-            annot = "None\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  (_loc : Locf.t)  -> (None : 'top_phrase ) : 
-                 Tokenf.txt -> Locf.t -> 'top_phrase ))
+                    (st : 'top_phrase ) : Tokenf.txt ->
+                                            'stru -> Locf.t -> 'top_phrase ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (strus : 'strus Gramf.t )

@@ -229,13 +229,12 @@ let wrap parse_fun ~print_location lb =
 
 
 let toplevel_phrase token_stream =
-  match Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream with
-  | Some stru ->
-        let stru =
-          (* Syntaxf.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
-          Ast_filters.apply_implem_filters stru in
-        Ast2pt.phrase stru
-  | None -> raise End_of_file          
+  let stru = Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream in 
+  let stru =
+    (* Syntaxf.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
+    Ast_filters.apply_implem_filters stru in
+  Ast2pt.phrase stru
+  
 
 
 

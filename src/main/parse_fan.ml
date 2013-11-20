@@ -809,10 +809,9 @@ let apply () = begin
       | EOI %{ ([], None)} ]
       (** entrance for toplevel *)
       top_phrase:
-      [ "#"; a_lident as n; exp as dp; ";;" %{ Some (`Directive(_loc,n,dp))}
-      | "#"; a_lident as n; ";;" %{ Some (`DirectiveSimple(_loc,n))}
-      | stru as st; ";;" %{ Some st}
-      | EOI %{ None} ]
+      [ "#"; a_lident as n; exp as dp; ";;" %{ `Directive(_loc,n,dp)}
+      | "#"; a_lident as n; ";;" %{ (* Some *) `DirectiveSimple(_loc,n)}
+      | stru as st; ";;" %{ st} ]
       (* used by [struct .... end]
          constains at least one element *)
       strus: (* FIXME dump seems to be incorrect *)
