@@ -15,91 +15,34 @@ let mk_name (i : FAst.vid) =
      | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
      | _ -> failwith "internal error in the Grammar extension" in
    { id = i; tvar = (aux i); loc = (loc_of i) } : Gram_def.name )
-let g =
-  Gramf.create_lexer ~annot:"Grammar's lexer"
-    ~keywords:["(";
-              ")";
-              ",";
-              "as";
-              "|";
-              "_";
-              ":";
-              ".";
-              ";";
-              "{";
-              "}";
-              "[";
-              "]";
-              "SEP";
-              "LEVEL";
-              "S";
-              "EOI";
-              "Lid";
-              "Uid";
-              "Ant";
-              "Quot";
-              "DirQuotation";
-              "Str";
-              "Label";
-              "Optlabel";
-              "Chr";
-              "Int";
-              "Int32";
-              "Int64";
-              "Int64";
-              "Nativeint";
-              "Flo";
-              "Pre";
-              "Inf";
-              "TRY";
-              "PEEK";
-              "L0";
-              "L1";
-              "First";
-              "Last";
-              "Before";
-              "After";
-              "Level";
-              "RA";
-              "+";
-              "*";
-              "?";
-              "=";
-              "_";
-              "@";
-              "Inline";
-              "true";
-              "false";
-              "Local"] ()
 let inline_rules: (string,Gram_def.rule list) Hashtbl.t = Hashtbl.create 50
 let query_inline (x : string) = Hashtblf.find_opt inline_rules x
 type matrix = Gram_def.osymbol list Gram_def.decorate list 
-let extend_header = Gramf.mk_dynamic g "extend_header"
-let left_rule: matrix list Gramf.t = Gramf.mk_dynamic g "left_rule"
-let qualuid: vid Gramf.t = Gramf.mk_dynamic g "qualuid"
-let qualid: vid Gramf.t = Gramf.mk_dynamic g "qualid"
-let t_qualid: vid Gramf.t = Gramf.mk_dynamic g "t_qualid"
+let extend_header = Gramf.mk "extend_header"
+let left_rule: matrix list Gramf.t = Gramf.mk "left_rule"
+let qualuid: vid Gramf.t = Gramf.mk "qualuid"
+let qualid: vid Gramf.t = Gramf.mk "qualid"
+let t_qualid: vid Gramf.t = Gramf.mk "t_qualid"
 let entry_name:
   ([ `name of Tokenf.name option | `non]* Gram_def.name) Gramf.t =
-  Gramf.mk_dynamic g "entry_name"
-let position = Gramf.mk_dynamic g "position"
-let assoc = Gramf.mk_dynamic g "assoc"
-let name = Gramf.mk_dynamic g "name"
-let rules = Gramf.mk_dynamic g "rules"
-let symbol: matrix Gramf.t = Gramf.mk_dynamic g "symbol"
-let rule = Gramf.mk_dynamic g "rule"
-let meta_rule = Gramf.mk_dynamic g "meta_rule"
-let rule_list = Gramf.mk_dynamic g "rule_list"
-let psymbol: matrix Gramf.t = Gramf.mk_dynamic g "psymbol"
-let level = Gramf.mk_dynamic g "level"
-let entry: Gram_def.entry option Gramf.t = Gramf.mk_dynamic g "entry"
-let extend_body = Gramf.mk_dynamic g "extend_body"
-let unsafe_extend_body = Gramf.mk_dynamic g "unsafe_extend_body"
-let simple: matrix Gramf.t = Gramf.mk_dynamic g "simple"
-let single_symbol: Gram_def.osymbol Gramf.t =
-  Gramf.mk_dynamic g "single_symbol"
+  Gramf.mk "entry_name"
+let position = Gramf.mk "position"
+let assoc = Gramf.mk "assoc"
+let name = Gramf.mk "name"
+let rules = Gramf.mk "rules"
+let symbol: matrix Gramf.t = Gramf.mk "symbol"
+let rule = Gramf.mk "rule"
+let meta_rule = Gramf.mk "meta_rule"
+let rule_list = Gramf.mk "rule_list"
+let psymbol: matrix Gramf.t = Gramf.mk "psymbol"
+let level = Gramf.mk "level"
+let entry: Gram_def.entry option Gramf.t = Gramf.mk "entry"
+let extend_body = Gramf.mk "extend_body"
+let unsafe_extend_body = Gramf.mk "unsafe_extend_body"
+let simple: matrix Gramf.t = Gramf.mk "simple"
+let single_symbol: Gram_def.osymbol Gramf.t = Gramf.mk "single_symbol"
 let _ =
-  let grammar_entry_create x = Gramf.mk_dynamic g x in
+  let grammar_entry_create x = Gramf.mk x in
   let a_int: 'a_int Gramf.t = grammar_entry_create "a_int"
   and or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
   and single_symbol_as: 'single_symbol_as Gramf.t =
@@ -8022,7 +7965,7 @@ let _ =
          }]
      } : Gramf.olevel )
 let _ =
-  let grammar_entry_create x = Gramf.mk_dynamic g x in
+  let grammar_entry_create x = Gramf.mk x in
   let opt_action: 'opt_action Gramf.t = grammar_entry_create "opt_action" in
   Gramf.extend_single (extend_header : 'extend_header Gramf.t )
     ({

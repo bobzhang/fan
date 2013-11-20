@@ -2854,6 +2854,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             ((function
               | 888000370 -> txt = "true"
               | 677673548 -> txt = "false"
+              | 916095096 -> txt = "as"
+              | 479219308 -> txt = "_"
               | _ -> false)) v
           then
             `Key
@@ -2881,16 +2883,64 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Uid
-            {
-              loc =
-                {
-                  loc_start = (lexbuf.lex_start_p);
-                  loc_end = (lexbuf.lex_curr_p);
-                  loc_ghost = false
-                };
-              txt
-            }
+          let v = Hashtbl.hash txt in
+          if
+            ((function
+              | 349676278 -> txt = "SEP"
+              | 95082182 -> txt = "LEVEL"
+              | 536346917 -> txt = "S"
+              | 366801699 -> txt = "EOI"
+              | 409300411 -> txt = "Lid"
+              | 989568174 -> txt = "Uid"
+              | 676354871 -> txt = "Ant"
+              | 961072975 -> txt = "Quot"
+              | 203213615 -> txt = "DirQuotation"
+              | 768447600 -> txt = "Str"
+              | 572318773 -> txt = "Label"
+              | 786753605 -> txt = "Optlabel"
+              | 577869539 -> txt = "Chr"
+              | 486432153 -> txt = "Int"
+              | 848726687 -> txt = "Int32"
+              | 568910272 -> txt = "Int64"
+              | 75913172 -> txt = "Nativeint"
+              | 529459121 -> txt = "Flo"
+              | 250075149 -> txt = "Pre"
+              | 507098033 -> txt = "Inf"
+              | 923010078 -> txt = "TRY"
+              | 731387332 -> txt = "PEEK"
+              | 314441017 -> txt = "L0"
+              | 308945647 -> txt = "L1"
+              | 265114720 -> txt = "First"
+              | 765123559 -> txt = "Last"
+              | 290885330 -> txt = "Before"
+              | 138761684 -> txt = "After"
+              | 806054151 -> txt = "Level"
+              | 100070179 -> txt = "RA"
+              | 830446310 -> txt = "Inline"
+              | 669476035 -> txt = "Local"
+              | _ -> false)) v
+          then
+            `Key
+              {
+                loc =
+                  {
+                    loc_start = (lexbuf.lex_start_p);
+                    loc_end = (lexbuf.lex_curr_p);
+                    loc_ghost = false
+                  };
+                txt
+              }
+          else
+            `Uid
+              {
+                loc =
+                  {
+                    loc_start = (lexbuf.lex_start_p);
+                    loc_end = (lexbuf.lex_curr_p);
+                    loc_ghost = false
+                  };
+                txt
+              }
       | 4 ->
           let c = Lexing_util.new_cxt () in
           let old = lexbuf.lex_start_p in

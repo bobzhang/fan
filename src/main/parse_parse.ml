@@ -28,20 +28,12 @@ let mk_name (i:FAst.vid) : Gram_def.name =
     | _ -> failwith "internal error in the Grammar extension" in
   {id = i ; tvar = aux i; loc = loc_of i}
 
-let g =
-  Gramf.create_lexer ~annot:"Grammar's lexer"
-    ~keywords:["("; ")" ; ","; "as"; "|"; "_"; ":";
-               "."; ";"; "{"; "}"; "[";"]";
-               "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
-               "Ant";"Quot"; "DirQuotation"; "Str";
-               "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint";
-               "Flo"; "Pre"; "Inf";
-               "TRY"; "PEEK";
-               "L0"; "L1"; "First"; "Last";
-               "Before"; "After"; "Level";
-                "RA";"+";"*";"?"; "="; "_"; "@";
-               "Inline"; "true"; "false";
-               "Local"] ();;
+(* let g = *)
+(*   Gramf.create_lexer ~annot:"Grammar's lexer" *)
+(*     ~keywords:[(\* "("; ")" ; ",";  "|";  ":"; *\) *)
+(*                (\* "."; ";"; "{"; "}"; "[";"]"; *\) *)
+(*                (\* "+";"*";"?"; "="; "_"; "@"; *\) *)
+(*                ] ();; *)
 
 
 let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
@@ -50,7 +42,7 @@ let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
 let query_inline (x:string) =
    Hashtblf.find_opt inline_rules x ;;
 type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
-%create{(g:Gramf.t)
+%create{
    extend_header
    (left_rule : matrix list  Gramf.t)
    (qualuid : vid Gramf.t)
@@ -72,7 +64,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
 };;
 
 
-%extend{(g:Gramf.t)
+%extend{
   (****************************************)        
   (* FIXME bring antiquotation back later*)
   (****************************************)                  
@@ -309,7 +301,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       | [v]  -> {x with txt = [ {v with outer_pattern = Some(xloc,i)}]}
       | _ -> Locf.failf xloc "as can not be applied here") ss }]};;                         
 
-%extend{(g:Gramf.t)
+%extend{
 
   (*****************************)
   (* extend language           *)

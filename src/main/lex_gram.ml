@@ -3,8 +3,16 @@
 
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
-  | @ocaml_lid("true"|"false")
-  | @ocaml_uid
+  | @ocaml_lid("true"|"false"|"as"|"_")
+  | @ocaml_uid(
+      "SEP"|"LEVEL"| "S"| "EOI"| "Lid"|"Uid"
+  | "Ant"|"Quot"| "DirQuotation"| "Str"
+  | "Label"| "Optlabel"| "Chr"| "Int"| "Int32"| "Int64"| "Nativeint" (* duplication check*)
+  | "Flo"| "Pre"| "Inf"
+  | "TRY"| "PEEK"
+  | "L0"| "L1"| "First"| "Last"
+  | "Before"| "After"| "Level"
+  | "RA"|"Inline"|"Local")
   | @ocaml_string
   | @ocaml_int
   | @ocaml_char

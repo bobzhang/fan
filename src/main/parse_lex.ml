@@ -61,13 +61,34 @@ let _ =
   Hashtblf.add_list named_cases 
   [
   ("ocaml_uid",
-    fun _ _ _loc ->
+    fun ls _ _loc ->
       [(%re{ocaml_uid as txt},
-        %exp{
-        `Uid{loc =
+        let default = 
+          %exp{
+          `Uid{loc =
              {loc_start = lexbuf.lex_start_p;
               loc_end = lexbuf.lex_curr_p;
-              loc_ghost = false} ; txt }} )]);
+              loc_ghost = false} ; txt }} in
+        match ls with
+        | None -> 
+            default 
+        | Some x ->
+            let cases  =
+             Ast_gen.bar_of_list @@ 
+             List.map (*FIXME check the txt is needed ... *)
+               ( fun (x:Tokenf.txt) ->
+                 let v = x.txt in
+                 let i = Hashtbl.hash v in
+                 %case{$int':i -> txt = $str:v}) x in
+           %exp{
+           let v = Hashtbl.hash txt in 
+           if (function | $cases | _ -> false) v then
+             `Key {loc =
+                   {loc_start = lexbuf.lex_start_p;
+                    loc_end = lexbuf.lex_curr_p;
+                    loc_ghost = false} ; txt }
+           else $default}        
+       )]);
 
   ("ocaml_lid",
    fun ls _ _loc  ->
@@ -381,12 +402,8 @@ end
 
 exception UnboundRegexp;;
 exception UnboundCase;;
-(* let g = *)
-(*   Gramf.create_lexer ~annot:"Lexer's lexer" *)
-(*     ~keywords: *)
-(*     [(\* "^" *\)] ();; *)
 
-%create{(* (g:Gramf.t) *) regexp
+%create{ regexp
           char_class
           char_class1
           lex
