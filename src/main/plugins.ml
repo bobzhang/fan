@@ -6,7 +6,7 @@ Derive:
   gen_object
   ;
 };;
-open FAstN
+open Astfn
 open Astn_util
 open Util
 open Sigs_util
@@ -162,8 +162,8 @@ let gen_strip =
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun  x ->
-      (* BOOTSTRAPING, associated with module [FAst], [FAstN] *)
-      (%ctyp-{ FAst.$lid:x -> FAstN.$lid:x }, %ctyp-{FAstN.$lid:x}))
+      (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
+      (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}))
     
     ();;
 
@@ -206,8 +206,8 @@ let gen_fill =
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
-      (%ctyp-{ Locf.t -> FAstN.$lid:x -> FAst.$lid:x },
-       %ctyp-{FAst.$lid:x} ))
+      (%ctyp-{ Locf.t -> Astfn.$lid:x -> Astf.$lid:x },
+       %ctyp-{Astf.$lid:x} ))
     ();;
 
 Typehook.register
@@ -259,7 +259,7 @@ let gen_meta_exp =
    | Meta Object Generator                                           |
    +-----------------------------------------------------------------+ *)
 let gen_meta =
-  gen_object ~kind:(Concrete %ctyp-{FAst.ep})
+  gen_object ~kind:(Concrete %ctyp-{Astf.ep})
     ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant

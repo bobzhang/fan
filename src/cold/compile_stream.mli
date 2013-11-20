@@ -1,6 +1,6 @@
 
 (** [stream] DDSL compiler, original Camlp4's stream extension *)
-open FAst
+open Astf
 
 type spat_comp =
   | When of Locf.t * pat * exp option

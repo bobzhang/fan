@@ -17,24 +17,24 @@ let efilter str e =
   let e = Parsef.exp_filter e in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
-    FAst.exp )
+     (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
+    Astf.exp )
 let pfilter str e =
   let p = Parsef.pat_filter e in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
-    FAst.pat )
+     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
+    Astf.pat )
 let d = Ns.lang
 let _ =
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
     ~filter:(fun s  ->
                let _loc = loc_of s in
-               let v: FAst.mexp = `Struct (_loc, s) in
+               let v: Astf.mexp = `Struct (_loc, s) in
                let mexp = (Typehook.traversal ())#mexp v in
                let code =
                  match mexp with
-                 | (`Struct (_loc,s) : FAst.mexp) -> s
+                 | (`Struct (_loc,s) : Astf.mexp) -> s
                  | _ -> failwith "can not find items back " in
                if !Typehook.show_code
                then
@@ -178,14 +178,14 @@ let efilter str e =
   let e = exp_filter_n e in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "FAstN")), (`Lid (_loc, str))))) : 
-    FAst.exp )
+     (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : 
+    Astf.exp )
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAstN")), (`Lid (_loc, str))))) : 
-    FAst.pat )
+     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : 
+    Astf.pat )
 let _ =
   add_quotation (d, "sigi-") sigi_quot
     ~mexp:(fun loc  p  -> m#sigi loc (Objs.strip_sigi p))
@@ -367,7 +367,7 @@ let _ =
                  } : Tokenf.pattern );
               Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
             annot =
-              "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n";
+              "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : Astf.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
@@ -378,7 +378,7 @@ let _ =
                                (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
                                (`Case
                                   (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                    FAst.exp ) : 'p ) : 'exp ->
+                    Astf.exp ) : 'p ) : 'exp ->
                                           Tokenf.txt -> 'pat -> Locf.t -> 'p ))
           };
          {
@@ -421,7 +421,7 @@ let _ =
                 ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
                 Tokenf.pattern )];
             annot =
-              "Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          FAst.stru )) ns)\n";
+              "Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          Astf.stru )) ns)\n";
             fn =
               (Gramf.mk_action
                  (fun _  (ns : 'n list)  _  (__fan_0 : Tokenf.txt) 
@@ -442,7 +442,7 @@ let _ =
                                   (`Bind
                                      (_loc, pl,
                                        (`Dot (_loc, (`Uid (_loc, m)), pr))))) : 
-                               FAst.stru )) ns) : 'a ) : Tokenf.txt ->
+                               Astf.stru )) ns) : 'a ) : Tokenf.txt ->
                                                            'n list ->
                                                              Tokenf.txt ->
                                                                Tokenf.txt ->
@@ -503,10 +503,10 @@ let _ =
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =
-    let s = Locf.to_string loc in (`Str (loc, s) : FAst.exp ) in
+    let s = Locf.to_string loc in (`Str (loc, s) : Astf.exp ) in
   let f2 (loc : Locf.t) _meta _content =
     let s = Locf.to_string loc in
-    (`StExp (loc, (`Str (loc, s))) : FAst.stru ) in
+    (`StExp (loc, (`Str (loc, s))) : Astf.stru ) in
   Ast_quotation.add (d, "here") Dyn_tag.exp f;
   Ast_quotation.add (d, "here") Dyn_tag.stru f2
 let () =

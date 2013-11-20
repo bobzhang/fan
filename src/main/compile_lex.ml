@@ -1,5 +1,5 @@
 
-open FAst
+open Astf
 open Ast_gen
 open Automata_def 
 open Lexgen
@@ -228,7 +228,7 @@ let output_entry
     ({auto_mem_size;
     auto_initial_state=(init_num,init_moves);
     auto_actions; },
-     (transitions:automata array)) : FAst.exp  =
+     (transitions:automata array)) : Astf.exp  =
   let actions = seq_sem
       (%exp{ __ocaml_lex_init_lexbuf lexbuf $int':auto_mem_size } ::
        output_memory_actions init_moves) in  

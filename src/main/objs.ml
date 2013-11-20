@@ -1,5 +1,5 @@
 open StdFan
-open FAst
+open Astf
 let strip_ant ant = ant ;;
 %fans{
 keep off;
@@ -8,7 +8,7 @@ derive((* Map2 Fold2 OIter   OEq *)
 };;
 
 
-%ocaml{%include{ "../common/fAst.mli"};;  };;
+%ocaml{%include{ "../common/astf.mli"};;  };;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Ast_gen
 let meta =
   object  inherit  FMeta.meta method! loc _loc _ = lid _loc "loc" end
@@ -16,20 +16,20 @@ let _ =
                       (_loc, (`Lid (_loc, "loc")),
                         (`Dot
                            (_loc, (`Uid (_loc, "Locf")),
-                             (`Lid (_loc, "ghost")))))), e))) : FAst.stru )))
+                             (`Lid (_loc, "ghost")))))), e))) : Astf.stru )))
 let _ =
   Ast_filters.register_stru_filter
     ("strip", (((new Objs.reloc) Locf.ghost)#stru))
 let map_exp =
   function
-  | (`App (_loc,e,`Uid (_,"NOTHING")) : FAst.exp)
-    |(`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) : FAst.exp) -> e
-  | (`Lid (_loc,"__FILE__") : FAst.exp) ->
-      (`Str (_loc, (String.escaped (Locf.file_name _loc))) : FAst.exp )
-  | (`Lid (_loc,"__PWD__") : FAst.exp) ->
+  | (`App (_loc,e,`Uid (_,"NOTHING")) : Astf.exp)
+    |(`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) : Astf.exp) -> e
+  | (`Lid (_loc,"__FILE__") : Astf.exp) ->
+      (`Str (_loc, (String.escaped (Locf.file_name _loc))) : Astf.exp )
+  | (`Lid (_loc,"__PWD__") : Astf.exp) ->
       (`Str (_loc, (String.escaped (Filename.dirname (Locf.file_name _loc)))) : 
-      FAst.exp )
-  | (`Lid (_loc,"__LOCATION__") : FAst.exp) ->
+      Astf.exp )
+  | (`Lid (_loc,"__LOCATION__") : Astf.exp) ->
       (Ast_gen.meta_here _loc _loc :>exp)
   | e -> e
 let _ =
@@ -38,7 +38,7 @@ let _ =
 let make_filter (s,code) =
   let f =
     function
-    | (`StExp (_loc,`Lid (_,s')) : FAst.stru) when s = s' ->
+    | (`StExp (_loc,`Lid (_,s')) : Astf.stru) when s = s' ->
         FanAstN.fill_stru _loc code
     | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
@@ -63,4 +63,4 @@ let _ =
               (`Value
                  (_loc, (`Negative _loc),
                    (`Bind (_loc, (`Lid (_loc, "__fan_repr_of_file")), y))))) : 
-           FAst.stru )))
+           Astf.stru )))

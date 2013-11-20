@@ -1,5 +1,5 @@
 open Astn_util
-open FAstN
+open Astfn
 open StdFan
 let pp_print_typedecl = ObjsN.pp_print_typedecl
 type named_type = (string* typedecl) 
@@ -50,8 +50,8 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
            (function
             | `Mutual tys ->
                 let v = and_of_list (List.map aux tys) in
-                (`Type v : FAstN.stru )
-            | `Single ty -> let v = aux ty in (`Type v : FAstN.stru )) x in
+                (`Type v : Astfn.stru )
+            | `Single ty -> let v = aux ty in (`Type v : Astfn.stru )) x in
        Some (sem_of_list xs) : stru option )
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
@@ -66,7 +66,7 @@ let mk_transform_type_eq () =
     inherit  ObjsN.map as super
     method! stru =
       function
-      | (`Type `TyDcl (_name,vars,ctyp,_) : FAstN.stru) as x ->
+      | (`Type `TyDcl (_name,vars,ctyp,_) : Astfn.stru) as x ->
           let r =
             match ctyp with
             | `TyEq (_,t) -> Ctyp.qualified_app_list t
@@ -82,7 +82,7 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = IdN.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  (`StExp (`Uid "()") : FAstN.stru ))
+                  (`StExp (`Uid "()") : Astfn.stru ))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
@@ -91,7 +91,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = IdN.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Lid dest : FAstN.ctyp ) :: lst))
+           appl_of_list ((`Lid dest : Astfn.ctyp ) :: lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

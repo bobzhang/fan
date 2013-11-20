@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Ast_gen
 open Automata_def
 open Lexgen
@@ -90,7 +90,7 @@ let auto_binds =
                                                                   (_loc,
                                                                     "lex_last_action")))),
                                                           (`Int (_loc, "-1"))))))))))))))))))))))) : 
-  FAst.bind );
+  Astf.bind );
   (`Bind
      (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
        (`Fun
@@ -190,36 +190,36 @@ let auto_binds =
                                                          (`Uid (_loc, "Char")),
                                                          (`Lid (_loc, "code")))),
                                                     (`Lid (_loc, "c"))))))))))))))))))))) : 
-  FAst.bind )]
+  Astf.bind )]
 let output_pats (pats : int list) =
   bar_of_list
-    (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : FAst.pat )) pats)
+    (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats)
 let output_mem_access (i : int) =
   (`ArrayDot
      (_loc,
        (`Field
           (_loc, (`Lid (_loc, "lexbuf")),
             (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_mem")))))),
-       (`Int (_loc, (string_of_int i)))) : FAst.exp )
+       (`Int (_loc, (string_of_int i)))) : Astf.exp )
 let (curr_pos,last_pos,last_action,start_pos) =
   ((`Field
       (_loc, (`Lid (_loc, "lexbuf")),
         (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_curr_pos"))))) : 
-    FAst.exp ),
+    Astf.exp ),
     (`Field
        (_loc, (`Lid (_loc, "lexbuf")),
          (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_pos"))))) : 
-    FAst.exp ),
+    Astf.exp ),
     (`Field
        (_loc, (`Lid (_loc, "lexbuf")),
          (`Dot
             (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_action"))))) : 
-    FAst.exp ),
+    Astf.exp ),
     (`Field
        (_loc, (`Lid (_loc, "lexbuf")),
          (`Dot
             (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_start_pos"))))) : 
-    FAst.exp ))
+    Astf.exp ))
 let output_memory_actions (mvs : memory_action list) =
   (List.map
      (fun x  ->
@@ -227,27 +227,27 @@ let output_memory_actions (mvs : memory_action list) =
         | Copy (tgt,src) ->
             let u = output_mem_access tgt in
             let v = output_mem_access src in
-            (`Assign (_loc, u, v) : FAst.exp )
+            (`Assign (_loc, u, v) : Astf.exp )
         | Set tgt ->
             let u = output_mem_access tgt in
-            (`Assign (_loc, u, curr_pos) : FAst.exp )) mvs : exp list )
+            (`Assign (_loc, u, curr_pos) : Astf.exp )) mvs : exp list )
 let output_action (mems : memory_action list) (r : automata_move) =
   ((output_memory_actions mems) @
      (match r with
       | Backtrack  ->
-          [(`Assign (_loc, curr_pos, last_pos) : FAst.exp ); last_action]
+          [(`Assign (_loc, curr_pos, last_pos) : Astf.exp ); last_action]
       | Goto n ->
           let state = "__ocaml_lex_state" ^ (string_of_int n) in
           [(`App (_loc, (`Lid (_loc, state)), (`Lid (_loc, "lexbuf"))) : 
-          FAst.exp )]) : exp list )
+          Astf.exp )]) : exp list )
 let output_clause (pats : int list) (mems : memory_action list)
   (r : automata_move) =
   let pat = output_pats pats in
   let action = seq_sem (output_action mems r) in
-  (`Case (_loc, pat, action) : FAst.case )
+  (`Case (_loc, pat, action) : Astf.case )
 let output_default_clause mems r =
   let action = seq_sem (output_action mems r) in
-  (`Case (_loc, (`Any _loc), action) : FAst.case )
+  (`Case (_loc, (`Any _loc), action) : Astf.case )
 let output_moves (moves : (automata_move* memory_action list) array) =
   (let t = Hashtbl.create 17 in
    let add_move i (m,mems) =
@@ -272,16 +272,16 @@ let output_trans (i : int) (trans : automata) =
        (function
         | SetTag (t,m) ->
             let u = output_mem_access t in
-            let v = output_mem_access m in (`Assign (_loc, u, v) : FAst.exp )
+            let v = output_mem_access m in (`Assign (_loc, u, v) : Astf.exp )
         | EraseTag t ->
             let u = output_mem_access t in
-            (`Assign (_loc, u, (`Int (_loc, "-1"))) : FAst.exp )) mvs : 
+            (`Assign (_loc, u, (`Int (_loc, "-1"))) : Astf.exp )) mvs : 
     exp list ) in
   let e =
     match trans with
     | Perform (n,mvs) ->
         let es = output_tag_actions mvs in
-        seq_sem (es @ [(`Int (_loc, (string_of_int n)) : FAst.exp )])
+        seq_sem (es @ [(`Int (_loc, (string_of_int n)) : Astf.exp )])
     | Shift (trans,move) ->
         let moves = bar_of_list (output_moves move) in
         seq_sem
@@ -289,21 +289,21 @@ let output_trans (i : int) (trans : automata) =
            | Remember (n,mvs) ->
                let es = output_tag_actions mvs in
                es @
-                 [(`Assign (_loc, last_pos, curr_pos) : FAst.exp );
+                 [(`Assign (_loc, last_pos, curr_pos) : Astf.exp );
                  (`Assign
                     (_loc, last_action, (`Int (_loc, (string_of_int n)))) : 
-                 FAst.exp );
+                 Astf.exp );
                  (`Match
                     (_loc,
                       (`App
                          (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                           (`Lid (_loc, "lexbuf")))), moves) : FAst.exp )]
+                           (`Lid (_loc, "lexbuf")))), moves) : Astf.exp )]
            | No_remember  ->
                [(`Match
                    (_loc,
                      (`App
                         (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                          (`Lid (_loc, "lexbuf")))), moves) : FAst.exp )]) in
+                          (`Lid (_loc, "lexbuf")))), moves) : Astf.exp )]) in
   (`Bind
      (_loc, (`Lid (_loc, ("__ocaml_lex_state" ^ (string_of_int i)))),
        (`Fun
@@ -314,11 +314,11 @@ let output_trans (i : int) (trans : automata) =
                     (_loc, (`Lid (_loc, "lexbuf")),
                       (`Dot
                          (_loc, (`Uid (_loc, "Lexing")),
-                           (`Lid (_loc, "lexbuf")))))), e))))) : FAst.bind )
+                           (`Lid (_loc, "lexbuf")))))), e))))) : Astf.bind )
 let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
-       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), b))) : FAst.exp )) args e
+       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), b))) : Astf.exp )) args e
 let output_automata (transitions : automata array) =
   (Array.to_list
      (Array.mapi (fun i  auto  -> output_trans i auto) transitions) : 
@@ -335,15 +335,15 @@ let output_env (env : t_env) =
      | (Mem i,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), (output_mem_access i))),
-              (`Int (_loc, (string_of_int d)))) : FAst.exp )
+              (`Int (_loc, (string_of_int d)))) : Astf.exp )
      | (Start ,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), start_pos)),
-              (`Int (_loc, (string_of_int d)))) : FAst.exp )
+              (`Int (_loc, (string_of_int d)))) : Astf.exp )
      | (End ,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), curr_pos)),
-              (`Int (_loc, (string_of_int d)))) : FAst.exp ) in
+              (`Int (_loc, (string_of_int d)))) : Astf.exp ) in
    List.map
      (fun (((loc,_) as id),v)  ->
         let (id :pat)= `Lid id in
@@ -354,11 +354,11 @@ let output_env (env : t_env) =
               then
                 (`Dot
                    (_loc, (`Uid (_loc, "Lexing")),
-                     (`Lid (_loc, "sub_lexeme_opt"))) : FAst.exp )
+                     (`Lid (_loc, "sub_lexeme_opt"))) : Astf.exp )
               else
                 (`Dot
                    (_loc, (`Uid (_loc, "Lexing")),
-                     (`Lid (_loc, "sub_lexeme"))) : FAst.exp ) in
+                     (`Lid (_loc, "sub_lexeme"))) : Astf.exp ) in
             let nstart = output_tag_access nstart in
             let nend = output_tag_access nend in
             (`Bind
@@ -367,24 +367,24 @@ let output_env (env : t_env) =
                     (_loc,
                       (`App
                          (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                           nstart)), nend))) : FAst.bind )
+                           nstart)), nend))) : Astf.bind )
         | Ident_char (o,nstart) ->
             let sub =
               if o
               then
                 (`Dot
                    (_loc, (`Uid (_loc, "Lexing")),
-                     (`Lid (_loc, "sub_lexeme_char_opt"))) : FAst.exp )
+                     (`Lid (_loc, "sub_lexeme_char_opt"))) : Astf.exp )
               else
                 (`Dot
                    (_loc, (`Uid (_loc, "Lexing")),
-                     (`Lid (_loc, "sub_lexeme_char"))) : FAst.exp ) in
+                     (`Lid (_loc, "sub_lexeme_char"))) : Astf.exp ) in
             let nstart = output_tag_access nstart in
             (`Bind
                (loc, id,
                  (`App
                     (loc, (`App (loc, sub, (`Lid (loc, "lexbuf")))), nstart))) : 
-              FAst.bind )) env : bind list )
+              Astf.bind )) env : bind list )
 let output_entry
   ({ auto_mem_size; auto_initial_state = (init_num,init_moves); auto_actions
      },(transitions : automata array))
@@ -396,7 +396,7 @@ let output_entry
              (`App
                 (_loc, (`Lid (_loc, "__ocaml_lex_init_lexbuf")),
                   (`Lid (_loc, "lexbuf")))),
-             (`Int (_loc, (string_of_int auto_mem_size)))) : FAst.exp ) ::
+             (`Int (_loc, (string_of_int auto_mem_size)))) : Astf.exp ) ::
        (output_memory_actions init_moves)) in
    let binds = and_of_list (auto_binds @ (output_automata transitions)) in
    let cases =
@@ -406,19 +406,19 @@ let output_entry
               (fun (num,env,act)  ->
                  let n = string_of_int num in
                  match output_env env with
-                 | [] -> (`Case (_loc, (`Int (_loc, n)), act) : FAst.case )
+                 | [] -> (`Case (_loc, (`Int (_loc, n)), act) : Astf.case )
                  | xs ->
                      let bind = and_of_list xs in
                      (`Case
                         (_loc, (`Int (_loc, n)),
                           (`LetIn (_loc, (`Negative _loc), bind, act))) : 
-                       FAst.case ))))
+                       Astf.case ))))
           @
           [(`Case
               (_loc, (`Any _loc),
                 (`App
                    (_loc, (`Lid (_loc, "failwith")),
-                     (`Str (_loc, "lexing: empty token"))))) : FAst.case )]) in
+                     (`Str (_loc, "lexing: empty token"))))) : Astf.case )]) in
    (`Fun
       (_loc,
         (`Case
@@ -518,4 +518,4 @@ let output_entry
                                                         (_loc,
                                                           "__ocaml_lex_result")),
                                                      cases))))))))))))))))))) : 
-     FAst.exp ) : FAst.exp )
+     Astf.exp ) : Astf.exp )

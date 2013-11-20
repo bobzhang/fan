@@ -1,6 +1,6 @@
 
 (** Fan's deriving *)
-open FAstN
+open Astfn
 open Ctyp
 open Sigs_util
 
@@ -56,7 +56,7 @@ val check : string list -> unit
 
 
 
-(** collect the [partial evaluated FAst node] and meta data
+(** collect the [partial evaluated Astf node] and meta data
    The input [y] is handled by [simple_exp_of_ctyp], generally it will
    be  exlcuding adt or variant type
 

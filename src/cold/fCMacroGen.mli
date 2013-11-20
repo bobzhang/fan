@@ -1,6 +1,6 @@
 
 (** Deprecated *)
-open FAst
+open Astf
 
     
 type 'a item_or_def =

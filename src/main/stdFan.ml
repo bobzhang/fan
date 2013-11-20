@@ -306,7 +306,7 @@ let float_repres f =
 
 *)
 
-(* open FAst  *)
+(* open Astf  *)
 (* class primitive =  object *)
 (*   method int _loc (i:int)  =  %ep{$`int:i} *)
 (*   method int32 _loc (i:int32)  = %ep{$`int32:i} *)

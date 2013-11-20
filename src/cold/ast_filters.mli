@@ -1,6 +1,6 @@
 
 (** manage filters in fan *)
-open FAst 
+open Astf 
 
 type 'a filter = 'a -> 'a
 

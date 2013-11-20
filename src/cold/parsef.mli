@@ -1,5 +1,5 @@
 
-open FAst
+open Astf
   
 val exp : Locf.t -> string -> exp
 val pat : Locf.t -> string -> pat

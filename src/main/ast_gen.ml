@@ -1,6 +1,6 @@
 
 
-(** FAst a module for processing abstract syntax.
+(** Astf a module for processing abstract syntax.
 
     It makes use of  structual polymorphism aggresively,
     the signature is quite complex due the use of [loc_of],
@@ -80,7 +80,7 @@ let seq_sem ls = seq (sem_of_list ls)
 
 
 
-let binds bs (e: FAst.exp) =
+let binds bs (e: Astf.exp) =
   match bs with
   | [] -> e
   |_ ->
@@ -88,7 +88,7 @@ let binds bs (e: FAst.exp) =
       let _loc = binds <+> e in
       %exp{let $binds in $e } 
 
-let seq_binds bs (e:FAst.exp) =
+let seq_binds bs (e:Astf.exp) =
   List.fold_right
     (fun b e ->
       let _loc = b <+> e in 

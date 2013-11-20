@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open AstLib
 open LibUtil
 type 'a item_or_def =  
@@ -12,28 +12,28 @@ let substp loc (env : (string* pat) list) =
       "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x : exp) =
     match x with
-    | (`App (_loc,e1,e2) : FAst.exp) ->
-        (`App (loc, (loop e1), (loop e2)) : FAst.pat )
-    | (`Lid (_loc,x) : FAst.exp) ->
+    | (`App (_loc,e1,e2) : Astf.exp) ->
+        (`App (loc, (loop e1), (loop e2)) : Astf.pat )
+    | (`Lid (_loc,x) : Astf.exp) ->
         (try List.assoc x env
-         with | Not_found  -> (`Lid (loc, x) : FAst.pat ))
-    | (`Uid (_loc,x) : FAst.exp) ->
+         with | Not_found  -> (`Lid (loc, x) : Astf.pat ))
+    | (`Uid (_loc,x) : Astf.exp) ->
         (try List.assoc x env
-         with | Not_found  -> (`Uid (loc, x) : FAst.pat ))
-    | (`Int (_loc,x) : FAst.exp) -> (`Int (loc, x) : FAst.pat )
-    | (`Str (_loc,s) : FAst.exp) -> (`Str (loc, s) : FAst.pat )
-    | (`Par (_loc,x) : FAst.exp) -> (`Par (loc, (loop x)) : FAst.pat )
-    | (`Com (_loc,x1,x2) : FAst.exp) ->
-        (`Com (loc, (loop x1), (loop x2)) : FAst.pat )
-    | (`Record (_loc,bi) : FAst.exp) ->
+         with | Not_found  -> (`Uid (loc, x) : Astf.pat ))
+    | (`Int (_loc,x) : Astf.exp) -> (`Int (loc, x) : Astf.pat )
+    | (`Str (_loc,s) : Astf.exp) -> (`Str (loc, s) : Astf.pat )
+    | (`Par (_loc,x) : Astf.exp) -> (`Par (loc, (loop x)) : Astf.pat )
+    | (`Com (_loc,x1,x2) : Astf.exp) ->
+        (`Com (loc, (loop x1), (loop x2)) : Astf.pat )
+    | (`Record (_loc,bi) : Astf.exp) ->
         let rec substbi =
           function
-          | (`Sem (_loc,b1,b2) : FAst.rec_exp) ->
+          | (`Sem (_loc,b1,b2) : Astf.rec_exp) ->
               `Sem (_loc, (substbi b1), (substbi b2))
-          | (`RecBind (_loc,i,e) : FAst.rec_exp) ->
+          | (`RecBind (_loc,i,e) : Astf.rec_exp) ->
               `RecBind (loc, i, (loop e))
           | _ -> bad_pat _loc in
-        (`Record (loc, (substbi bi)) : FAst.pat )
+        (`Record (loc, (substbi bi)) : Astf.pat )
     | _ -> bad_pat loc in
   loop
 class subst loc env =
@@ -41,10 +41,10 @@ class subst loc env =
     inherit  (Objs.reloc loc) as super
     method! exp =
       function
-      | (`Lid (_loc,x) : FAst.exp)|(`Uid (_loc,x) : FAst.exp) as e ->
+      | (`Lid (_loc,x) : Astf.exp)|(`Uid (_loc,x) : Astf.exp) as e ->
           (try List.assoc x env with | Not_found  -> super#exp e)
-      | (`App (_loc,`Uid (_,"LOCATION_OF"),`Lid (_,x)) : FAst.exp)
-        |(`App (_loc,`Uid (_,"LOCATION_OF"),`Uid (_,x)) : FAst.exp) as e ->
+      | (`App (_loc,`Uid (_,"LOCATION_OF"),`Lid (_,x)) : Astf.exp)
+        |(`App (_loc,`Uid (_,"LOCATION_OF"),`Uid (_,x)) : Astf.exp) as e ->
           (try
              let loc = loc_of (List.assoc x env) in
              let (a,b,c,d,e,f,g,h) = Locf.to_tuple loc in
@@ -84,14 +84,14 @@ class subst loc env =
                                            (`Int (_loc, (string_of_int f))))),
                                       (`Int (_loc, (string_of_int g))))),
                                  (if h
-                                  then (`Lid (_loc, "true") : FAst.exp )
-                                  else (`Lid (_loc, "false") : FAst.exp ))))))))) : 
-               FAst.exp )
+                                  then (`Lid (_loc, "true") : Astf.exp )
+                                  else (`Lid (_loc, "false") : Astf.exp ))))))))) : 
+               Astf.exp )
            with | Not_found  -> super#exp e)
       | e -> super#exp e
     method! pat =
       function
-      | (`Lid (_loc,x) : FAst.pat)|(`Uid (_loc,x) : FAst.pat) as p ->
+      | (`Lid (_loc,x) : Astf.pat)|(`Uid (_loc,x) : Astf.pat) as p ->
           (try substp loc [] (List.assoc x env)
            with | Not_found  -> super#pat p)
       | p -> super#pat p
@@ -149,7 +149,7 @@ let define ~exp  ~pat  eo y =
                       | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
                      "`Uid $y");
                 `Sself],
-                 ("let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
+                 ("let el =\n  match param with\n  | (`Par (_loc,e) : Astf.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
                    (Gramf.mk_action
                       (fun (param : 'exp)  (__fan_0 : [> Tokenf.t]) 
                          (_loc : Locf.t)  ->
@@ -157,7 +157,7 @@ let define ~exp  ~pat  eo y =
                          | `Uid _ ->
                              (let el =
                                 match param with
-                                | (`Par (_loc,e) : FAst.exp) ->
+                                | (`Par (_loc,e) : Astf.exp) ->
                                     list_of_com e []
                                 | e -> [e] in
                               if (List.length el) = (List.length sl)
@@ -167,7 +167,7 @@ let define ~exp  ~pat  eo y =
                               else incorrect_number _loc el sl : 'exp )
                          | _ ->
                              failwith
-                               "let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
+                               "let el =\n  match param with\n  | (`Par (_loc,e) : Astf.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
         Gramf.extend_single (params : 'params Gramf.t )
           (None,
             (None, None,
@@ -199,7 +199,7 @@ let define ~exp  ~pat  eo y =
                       | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
                      "`Uid $y");
                 `Sself],
-                 ("let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
+                 ("let pl =\n  match param with\n  | (`Par (_loc,p) : Astf.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
                    (Gramf.mk_action
                       (fun (param : 'pat)  (__fan_0 : [> Tokenf.t]) 
                          (_loc : Locf.t)  ->
@@ -207,7 +207,7 @@ let define ~exp  ~pat  eo y =
                          | `Uid _ ->
                              (let pl =
                                 match param with
-                                | (`Par (_loc,p) : FAst.pat) ->
+                                | (`Par (_loc,p) : Astf.pat) ->
                                     list_of_com p []
                                 | p -> [p] in
                               if (List.length pl) = (List.length sl)
@@ -218,7 +218,7 @@ let define ~exp  ~pat  eo y =
                               else incorrect_number _loc pl sl : 'pat )
                          | _ ->
                              failwith
-                               "let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
+                               "let pl =\n  match param with\n  | (`Par (_loc,p) : Astf.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
   defined := ((y, eo) :: (defined.contents))
 let undef ~exp  ~pat  x =

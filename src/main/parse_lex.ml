@@ -15,7 +15,7 @@ let named_cases =
       (Tokenf.txt list option -> Tokenf.quot option
         -> Locf.t
           -> (Translate_lex.concrete_regexp *
-                FAst.exp) list)) Hashtbl.t )
+                Astf.exp) list)) Hashtbl.t )
 
 let _ =
   let (+>) = Hashtbl.add named_regexps in
@@ -50,7 +50,7 @@ let _ =
   "identchars" +> %re{identchar+}
    end
 
-let append_quot (y:Tokenf.quot option) (e:FAst.exp)  =
+let append_quot (y:Tokenf.quot option) (e:Astf.exp)  =
   match y with
   | None -> e
   | Some y -> (* FIXME -- should not need type annot*)
@@ -537,8 +537,8 @@ let () =
       (d,"re") regexp
       ~mexp:meta_concrete_regexp
       ~mpat:meta_concrete_regexp
-      ~exp_filter:(fun x -> (x : FAst.ep :>FAst.exp))
-      ~pat_filter:(fun x -> (x : FAst.ep :>FAst.pat));
+      ~exp_filter:(fun x -> (x : Astf.ep :>Astf.exp))
+      ~pat_filter:(fun x -> (x : Astf.ep :>Astf.pat));
   end;;
 
 

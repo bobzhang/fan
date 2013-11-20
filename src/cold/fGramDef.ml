@@ -1,4 +1,4 @@
-open FAst
+open Astf
 let pp_print_loc _f _loc = ()
 let pp_print_string = StdFan.pp_print_string
 let pp_print_vid' = Objs.pp_print_vid'

@@ -1,4 +1,4 @@
-open FAst
+open Astf
 
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super

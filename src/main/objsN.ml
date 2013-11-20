@@ -1,10 +1,10 @@
 open StdFan
-open FAstN
+open Astfn
 
 %fans{keep off;
       derive (Print OPrint Map Fold MapWrapper PrintWrapper);};;
 
-%ocaml{ %include{ "fAstN.ml" };; };;
+%ocaml{ %include{ "astfn.ml" };; };;
 
 
 let wildcarder = object (self)

@@ -1,4 +1,4 @@
-open FAst
+open Astf
 let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super
@@ -11,7 +11,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
-               (`App (_loc, (`Vrn (_loc, x)), e) : FAst.pat )
+               (`App (_loc, (`Vrn (_loc, x)), e) : Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : exp) =
@@ -23,61 +23,61 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
                (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
-               FAst.exp )
+               Astf.exp )
            | ("nativeint'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Nativeint")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Nativeint")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Nativeint")), e) : Astf.exp )
            | ("int'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App (_loc, (`Lid (_loc, "string_of_int")), e) in
-               (`App (_loc, (`Vrn (_loc, "Int")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Int")), e) : Astf.exp )
            | ("int32'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Int32")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Int32")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Int32")), e) : Astf.exp )
            | ("int64'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Int64")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Int64")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Int64")), e) : Astf.exp )
            | ("chr'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Char")),
                           (`Lid (_loc, "escaped")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Chr")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Chr")), e) : Astf.exp )
            | ("str'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "String")),
                           (`Lid (_loc, "escaped")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Str")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Str")), e) : Astf.exp )
            | ("flo'",_) ->
-               let e: FAst.exp =
+               let e: Astf.exp =
                  `App (_loc, (`Lid (_loc, "string_of_float")), e) in
-               (`App (_loc, (`Vrn (_loc, "Flo")), e) : FAst.exp )
+               (`App (_loc, (`Vrn (_loc, "Flo")), e) : Astf.exp )
            | ("bool'",_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Lid")),
                     (`IfThenElse
                        (_loc, e, (`Str (_loc, "true")),
-                         (`Str (_loc, "false"))))) : FAst.exp )
+                         (`Str (_loc, "false"))))) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

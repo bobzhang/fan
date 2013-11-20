@@ -37,10 +37,10 @@ include Prelude
 
 let efilter str e =
     let e = Parsef.exp_filter e in let _loc = loc_of e in
-    %exp{($e : FAst.$lid:str)} (* BOOTSTRAPPING, assocaited with module [FAst] *)
+    %exp{($e : Astf.$lid:str)} (* BOOTSTRAPPING, assocaited with module [Astf] *)
 let pfilter str e =
   let p = Parsef.pat_filter e in let _loc = loc_of p in
-  %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING, associat with module [FAst] *);;
+  %pat{($p : Astf.$lid:str)} (* BOOTSTRAPPING, associat with module [Astf] *);;
 
 
 let d = Ns.lang
@@ -221,17 +221,17 @@ end
 
 
 (*************************************************************************)
-(** begin quotation for FAst without locations *)
+(** begin quotation for Astf without locations *)
 
 
 let efilter str e =
     let e = exp_filter_n e in
     let _loc = loc_of e in
-    %exp{($e : FAstN.$lid:str)} (* BOOTSTRAPPING, associated with module [FAstN] *)
+    %exp{($e : Astfn.$lid:str)} (* BOOTSTRAPPING, associated with module [Astfn] *)
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
-  %pat{($p : FAstN.$lid:str)};; (* BOOTSTRAPPING, associated with module [FAstN] *)
+  %pat{($p : Astfn.$lid:str)};; (* BOOTSTRAPPING, associated with module [Astfn] *)
 
 
 begin

@@ -1,6 +1,6 @@
 
 (** Utilities for Fan's deriving mechanism *)
-open FAstN
+open Astfn
 type vrn =
   | Sum 
   | TyVrnEq

@@ -1,4 +1,4 @@
-open FAst
+open Astf
 type 'a t =  
   | Literal
   | Flag

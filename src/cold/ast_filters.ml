@@ -1,5 +1,5 @@
 open Util
-open FAst
+open Astf
 type key = string 
 type 'a filter = 'a -> 'a 
 let interf_filters: (key,sigi filter) Hashtbl.t = Hashtbl.create 40

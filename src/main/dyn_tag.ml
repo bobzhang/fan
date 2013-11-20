@@ -3,10 +3,10 @@
 
 
 (** Dynamic Ast expansion *)
-open FAst
+open Astf
 
 %fans{keep off; derive(DynAst); };;
-%ocaml{%include{ "../common/fAst.mli" };; };;
+%ocaml{%include{ "../common/astf.mli" };; };;
 
 
 type dyn

@@ -1,27 +1,27 @@
-open FAstN
+open Astfn
 let fill_ant _loc x = x
 class primitive =
   object 
-    method int _loc (i : int) = (`Int (_loc, (string_of_int i)) : FAst.ep )
+    method int _loc (i : int) = (`Int (_loc, (string_of_int i)) : Astf.ep )
     method int32 _loc (i : int32) =
-      (`Int32 (_loc, (Int32.to_string i)) : FAst.ep )
+      (`Int32 (_loc, (Int32.to_string i)) : Astf.ep )
     method int64 _loc (i : int64) =
-      (`Int64 (_loc, (Int64.to_string i)) : FAst.ep )
+      (`Int64 (_loc, (Int64.to_string i)) : Astf.ep )
     method nativeint _loc (i : nativeint) =
-      (`Nativeint (_loc, (Nativeint.to_string i)) : FAst.ep )
+      (`Nativeint (_loc, (Nativeint.to_string i)) : Astf.ep )
     method float _loc (i : float) =
-      (`Flo (_loc, (string_of_float i)) : FAst.ep )
+      (`Flo (_loc, (string_of_float i)) : Astf.ep )
     method string _loc (i : string) =
-      (`Str (_loc, (String.escaped i)) : FAst.ep )
-    method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : FAst.ep )
-    method unit _loc (_ : unit) = (`Uid (_loc, "()") : FAst.ep )
-    method ant (_loc : loc) (x : ant) = (x :>FAst.ep)
+      (`Str (_loc, (String.escaped i)) : Astf.ep )
+    method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : Astf.ep )
+    method unit _loc (_ : unit) = (`Uid (_loc, "()") : Astf.ep )
+    method ant (_loc : loc) (x : ant) = (x :>Astf.ep)
     method bool _loc x =
       match x with
-      | true  -> (`Lid (_loc, "true") : FAst.ep )
-      | false  -> (`Lid (_loc, "false") : FAst.ep )
+      | true  -> (`Lid (_loc, "true") : Astf.ep )
+      | false  -> (`Lid (_loc, "false") : Astf.ep )
   end
-let fill_literal: Locf.t -> FAstN.literal -> FAst.literal =
+let fill_literal: Locf.t -> Astfn.literal -> Astf.literal =
   fun loc  ->
     function
     | `Chr _a0 -> `Chr (loc, _a0)
@@ -31,50 +31,50 @@ let fill_literal: Locf.t -> FAstN.literal -> FAst.literal =
     | `Flo _a0 -> `Flo (loc, _a0)
     | `Nativeint _a0 -> `Nativeint (loc, _a0)
     | `Str _a0 -> `Str (loc, _a0)
-let fill_flag: Locf.t -> FAstN.flag -> FAst.flag =
+let fill_flag: Locf.t -> Astfn.flag -> Astf.flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.flag)
-let fill_position_flag: Locf.t -> FAstN.position_flag -> FAst.position_flag =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.flag)
+let fill_position_flag: Locf.t -> Astfn.position_flag -> Astf.position_flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
     | `Normal -> `Normal loc
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.position_flag)
-let rec fill_strings: Locf.t -> FAstN.strings -> FAst.strings =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.position_flag)
+let rec fill_strings: Locf.t -> Astfn.strings -> Astf.strings =
   fun loc  ->
     function
     | `App (_a0,_a1) ->
         let _a0 = fill_strings loc _a0 in
         let _a1 = fill_strings loc _a1 in `App (loc, _a0, _a1)
     | `Str _a0 -> `Str (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.strings)
-let fill_lident: Locf.t -> FAstN.lident -> FAst.lident =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.strings)
+let fill_lident: Locf.t -> Astfn.lident -> Astf.lident =
   fun loc  (`Lid _a0)  -> `Lid (loc, _a0)
-let fill_alident: Locf.t -> FAstN.alident -> FAst.alident =
+let fill_alident: Locf.t -> Astfn.alident -> Astf.alident =
   fun loc  ->
     function
     | `Lid _a0 -> `Lid (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.alident)
-let fill_auident: Locf.t -> FAstN.auident -> FAst.auident =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.alident)
+let fill_auident: Locf.t -> Astfn.auident -> Astf.auident =
   fun loc  ->
     function
     | `Uid _a0 -> `Uid (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.auident)
-let fill_aident: Locf.t -> FAstN.aident -> FAst.aident =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.auident)
+let fill_aident: Locf.t -> Astfn.aident -> Astf.aident =
   fun loc  ->
     function
-    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.aident)
-    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.aident)
-let fill_astring: Locf.t -> FAstN.astring -> FAst.astring =
+    | #alident as _a0 -> (fill_alident loc _a0 :>Astf.aident)
+    | #auident as _a0 -> (fill_auident loc _a0 :>Astf.aident)
+let fill_astring: Locf.t -> Astfn.astring -> Astf.astring =
   fun loc  ->
     function
     | `C _a0 -> `C (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.astring)
-let rec fill_uident: Locf.t -> FAstN.uident -> FAst.uident =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.astring)
+let rec fill_uident: Locf.t -> Astfn.uident -> Astf.uident =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
@@ -83,8 +83,8 @@ let rec fill_uident: Locf.t -> FAstN.uident -> FAst.uident =
     | `App (_a0,_a1) ->
         let _a0 = fill_uident loc _a0 in
         let _a1 = fill_uident loc _a1 in `App (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.uident)
-let rec fill_ident: Locf.t -> FAstN.ident -> FAst.ident =
+    | #auident as _a0 -> (fill_auident loc _a0 :>Astf.uident)
+let rec fill_ident: Locf.t -> Astfn.ident -> Astf.ident =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
@@ -93,9 +93,9 @@ let rec fill_ident: Locf.t -> FAstN.ident -> FAst.ident =
     | `Apply (_a0,_a1) ->
         let _a0 = fill_ident loc _a0 in
         let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
-    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.ident)
-    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.ident)
-let fill_ident': Locf.t -> FAstN.ident' -> FAst.ident' =
+    | #alident as _a0 -> (fill_alident loc _a0 :>Astf.ident)
+    | #auident as _a0 -> (fill_auident loc _a0 :>Astf.ident)
+let fill_ident': Locf.t -> Astfn.ident' -> Astf.ident' =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
@@ -106,7 +106,7 @@ let fill_ident': Locf.t -> FAstN.ident' -> FAst.ident' =
         let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-let rec fill_vid: Locf.t -> FAstN.vid -> FAst.vid =
+let rec fill_vid: Locf.t -> Astfn.vid -> Astf.vid =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
@@ -114,8 +114,8 @@ let rec fill_vid: Locf.t -> FAstN.vid -> FAst.vid =
         let _a1 = fill_vid loc _a1 in `Dot (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.vid)
-let fill_vid': Locf.t -> FAstN.vid' -> FAst.vid' =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.vid)
+let fill_vid': Locf.t -> Astfn.vid' -> Astf.vid' =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
@@ -123,28 +123,28 @@ let fill_vid': Locf.t -> FAstN.vid' -> FAst.vid' =
         let _a1 = fill_vid loc _a1 in `Dot (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-let rec fill_dupath: Locf.t -> FAstN.dupath -> FAst.dupath =
+let rec fill_dupath: Locf.t -> Astfn.dupath -> Astf.dupath =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
         let _a0 = fill_dupath loc _a0 in
         let _a1 = fill_dupath loc _a1 in `Dot (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.dupath)
-let fill_dlpath: Locf.t -> FAstN.dlpath -> FAst.dlpath =
+    | #auident as _a0 -> (fill_auident loc _a0 :>Astf.dupath)
+let fill_dlpath: Locf.t -> Astfn.dlpath -> Astf.dlpath =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
         let _a0 = fill_dupath loc _a0 in
         let _a1 = fill_alident loc _a1 in `Dot (loc, _a0, _a1)
-    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.dlpath)
-let fill_any: Locf.t -> FAstN.any -> FAst.any = fun loc  `Any  -> `Any loc
-let rec fill_ctyp: Locf.t -> FAstN.ctyp -> FAst.ctyp =
+    | #alident as _a0 -> (fill_alident loc _a0 :>Astf.dlpath)
+let fill_any: Locf.t -> Astfn.any -> Astf.any = fun loc  `Any  -> `Any loc
+let rec fill_ctyp: Locf.t -> Astfn.ctyp -> Astf.ctyp =
   fun loc  ->
     function
     | `Alias (_a0,_a1) ->
         let _a0 = fill_ctyp loc _a0 in
         let _a1 = fill_alident loc _a1 in `Alias (loc, _a0, _a1)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.ctyp)
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.ctyp)
     | `App (_a0,_a1) ->
         let _a0 = fill_ctyp loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `App (loc, _a0, _a1)
@@ -158,7 +158,7 @@ let rec fill_ctyp: Locf.t -> FAstN.ctyp -> FAst.ctyp =
     | `OptLabl (_a0,_a1) ->
         let _a0 = fill_alident loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `OptLabl (loc, _a0, _a1)
-    | #ident' as _a0 -> (fill_ident' loc _a0 :>FAst.ctyp)
+    | #ident' as _a0 -> (fill_ident' loc _a0 :>Astf.ctyp)
     | `TyObj (_a0,_a1) ->
         let _a0 = fill_name_ctyp loc _a0 in
         let _a1 = fill_flag loc _a1 in `TyObj (loc, _a0, _a1)
@@ -189,20 +189,20 @@ let rec fill_ctyp: Locf.t -> FAstN.ctyp -> FAst.ctyp =
         let _a0 = fill_row_field loc _a0 in
         let _a1 = fill_tag_names loc _a1 in `PolyInfSup (loc, _a0, _a1)
     | `Package _a0 -> let _a0 = fill_mtyp loc _a0 in `Package (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.ctyp)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.ctyp)
 and fill_type_parameters:
-  Locf.t -> FAstN.type_parameters -> FAst.type_parameters =
+  Locf.t -> Astfn.type_parameters -> Astf.type_parameters =
   fun loc  ->
     function
     | `Com (_a0,_a1) ->
         let _a0 = fill_type_parameters loc _a0 in
         let _a1 = fill_type_parameters loc _a1 in `Com (loc, _a0, _a1)
     | `Ctyp _a0 -> let _a0 = fill_ctyp loc _a0 in `Ctyp (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_parameters)
-and fill_row_field: Locf.t -> FAstN.row_field -> FAst.row_field =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.type_parameters)
+and fill_row_field: Locf.t -> Astfn.row_field -> Astf.row_field =
   fun loc  ->
     function
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.row_field)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.row_field)
     | `Bar (_a0,_a1) ->
         let _a0 = fill_row_field loc _a0 in
         let _a1 = fill_row_field loc _a1 in `Bar (loc, _a0, _a1)
@@ -211,15 +211,15 @@ and fill_row_field: Locf.t -> FAstN.row_field -> FAst.row_field =
         let _a0 = fill_astring loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `TyVrnOf (loc, _a0, _a1)
     | `Ctyp _a0 -> let _a0 = fill_ctyp loc _a0 in `Ctyp (loc, _a0)
-and fill_tag_names: Locf.t -> FAstN.tag_names -> FAst.tag_names =
+and fill_tag_names: Locf.t -> Astfn.tag_names -> Astf.tag_names =
   fun loc  ->
     function
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.tag_names)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.tag_names)
     | `App (_a0,_a1) ->
         let _a0 = fill_tag_names loc _a0 in
         let _a1 = fill_tag_names loc _a1 in `App (loc, _a0, _a1)
     | `TyVrn _a0 -> let _a0 = fill_astring loc _a0 in `TyVrn (loc, _a0)
-and fill_typedecl: Locf.t -> FAstN.typedecl -> FAst.typedecl =
+and fill_typedecl: Locf.t -> Astfn.typedecl -> Astf.typedecl =
   fun loc  ->
     function
     | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -236,8 +236,8 @@ and fill_typedecl: Locf.t -> FAstN.typedecl -> FAst.typedecl =
     | `And (_a0,_a1) ->
         let _a0 = fill_typedecl loc _a0 in
         let _a1 = fill_typedecl loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.typedecl)
-and fill_type_constr: Locf.t -> FAstN.type_constr -> FAst.type_constr =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.typedecl)
+and fill_type_constr: Locf.t -> Astfn.type_constr -> Astf.type_constr =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
@@ -246,14 +246,14 @@ and fill_type_constr: Locf.t -> FAstN.type_constr -> FAst.type_constr =
     | `Eq (_a0,_a1) ->
         let _a0 = fill_ctyp loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_constr)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.type_constr)
 and fill_opt_type_constr:
-  Locf.t -> FAstN.opt_type_constr -> FAst.opt_type_constr =
+  Locf.t -> Astfn.opt_type_constr -> Astf.opt_type_constr =
   fun loc  ->
     function
     | `Some _a0 -> let _a0 = fill_type_constr loc _a0 in `Some (loc, _a0)
     | `None -> `None loc
-and fill_decl_param: Locf.t -> FAstN.decl_param -> FAst.decl_param =
+and fill_decl_param: Locf.t -> Astfn.decl_param -> Astf.decl_param =
   fun loc  ->
     function
     | `Quote (_a0,_a1) ->
@@ -262,8 +262,8 @@ and fill_decl_param: Locf.t -> FAstN.decl_param -> FAst.decl_param =
     | `QuoteAny _a0 ->
         let _a0 = fill_position_flag loc _a0 in `QuoteAny (loc, _a0)
     | `Any -> `Any loc
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.decl_param)
-and fill_decl_params: Locf.t -> FAstN.decl_params -> FAst.decl_params =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.decl_param)
+and fill_decl_params: Locf.t -> Astfn.decl_params -> Astf.decl_params =
   fun loc  ->
     function
     | `Quote (_a0,_a1) ->
@@ -275,14 +275,14 @@ and fill_decl_params: Locf.t -> FAstN.decl_params -> FAst.decl_params =
     | `Com (_a0,_a1) ->
         let _a0 = fill_decl_params loc _a0 in
         let _a1 = fill_decl_params loc _a1 in `Com (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.decl_params)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.decl_params)
 and fill_opt_decl_params:
-  Locf.t -> FAstN.opt_decl_params -> FAst.opt_decl_params =
+  Locf.t -> Astfn.opt_decl_params -> Astf.opt_decl_params =
   fun loc  ->
     function
     | `Some _a0 -> let _a0 = fill_decl_params loc _a0 in `Some (loc, _a0)
     | `None -> `None loc
-and fill_type_info: Locf.t -> FAstN.type_info -> FAst.type_info =
+and fill_type_info: Locf.t -> Astfn.type_info -> Astf.type_info =
   fun loc  ->
     function
     | `TyMan (_a0,_a1,_a2) ->
@@ -295,14 +295,14 @@ and fill_type_info: Locf.t -> FAstN.type_info -> FAst.type_info =
     | `TyEq (_a0,_a1) ->
         let _a0 = fill_flag loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `TyEq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_info)
-and fill_type_repr: Locf.t -> FAstN.type_repr -> FAst.type_repr =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.type_info)
+and fill_type_repr: Locf.t -> Astfn.type_repr -> Astf.type_repr =
   fun loc  ->
     function
     | `Record _a0 -> let _a0 = fill_name_ctyp loc _a0 in `Record (loc, _a0)
     | `Sum _a0 -> let _a0 = fill_or_ctyp loc _a0 in `Sum (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_repr)
-and fill_name_ctyp: Locf.t -> FAstN.name_ctyp -> FAst.name_ctyp =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.type_repr)
+and fill_name_ctyp: Locf.t -> Astfn.name_ctyp -> Astf.name_ctyp =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
@@ -314,8 +314,8 @@ and fill_name_ctyp: Locf.t -> FAstN.name_ctyp -> FAst.name_ctyp =
     | `TyColMut (_a0,_a1) ->
         let _a0 = fill_alident loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `TyColMut (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.name_ctyp)
-and fill_or_ctyp: Locf.t -> FAstN.or_ctyp -> FAst.or_ctyp =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.name_ctyp)
+and fill_or_ctyp: Locf.t -> Astfn.or_ctyp -> Astf.or_ctyp =
   fun loc  ->
     function
     | `Bar (_a0,_a1) ->
@@ -327,19 +327,19 @@ and fill_or_ctyp: Locf.t -> FAstN.or_ctyp -> FAst.or_ctyp =
     | `Of (_a0,_a1) ->
         let _a0 = fill_auident loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `Of (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.or_ctyp)
-and fill_of_ctyp: Locf.t -> FAstN.of_ctyp -> FAst.of_ctyp =
+    | #auident as _a0 -> (fill_auident loc _a0 :>Astf.or_ctyp)
+and fill_of_ctyp: Locf.t -> Astfn.of_ctyp -> Astf.of_ctyp =
   fun loc  ->
     function
     | `Of (_a0,_a1) ->
         let _a0 = fill_vid loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `Of (loc, _a0, _a1)
-    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.of_ctyp)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.of_ctyp)
-and fill_pat: Locf.t -> FAstN.pat -> FAst.pat =
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>Astf.of_ctyp)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.of_ctyp)
+and fill_pat: Locf.t -> Astfn.pat -> Astf.pat =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.pat)
+    | #vid as _a0 -> (fill_vid loc _a0 :>Astf.pat)
     | `App (_a0,_a1) ->
         let _a0 = fill_pat loc _a0 in
         let _a1 = fill_pat loc _a1 in `App (loc, _a0, _a1)
@@ -351,9 +351,9 @@ and fill_pat: Locf.t -> FAstN.pat -> FAst.pat =
         let _a0 = fill_pat loc _a0 in
         let _a1 = fill_pat loc _a1 in `Sem (loc, _a0, _a1)
     | `Par _a0 -> let _a0 = fill_pat loc _a0 in `Par (loc, _a0)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.pat)
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.pat)
     | `Record _a0 -> let _a0 = fill_rec_pat loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.pat)
+    | #literal as _a0 -> (fill_literal loc _a0 :>Astf.pat)
     | `Alias (_a0,_a1) ->
         let _a0 = fill_pat loc _a0 in
         let _a1 = fill_alident loc _a1 in `Alias (loc, _a0, _a1)
@@ -387,7 +387,7 @@ and fill_pat: Locf.t -> FAstN.pat -> FAst.pat =
     | `ModuleConstraint (_a0,_a1) ->
         let _a0 = fill_auident loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `ModuleConstraint (loc, _a0, _a1)
-and fill_rec_pat: Locf.t -> FAstN.rec_pat -> FAst.rec_pat =
+and fill_rec_pat: Locf.t -> Astfn.rec_pat -> Astf.rec_pat =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
@@ -396,12 +396,12 @@ and fill_rec_pat: Locf.t -> FAstN.rec_pat -> FAst.rec_pat =
     | `Sem (_a0,_a1) ->
         let _a0 = fill_rec_pat loc _a0 in
         let _a1 = fill_rec_pat loc _a1 in `Sem (loc, _a0, _a1)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_pat)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_pat)
-and fill_exp: Locf.t -> FAstN.exp -> FAst.exp =
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.rec_pat)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.rec_pat)
+and fill_exp: Locf.t -> Astfn.exp -> Astf.exp =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.exp)
+    | #vid as _a0 -> (fill_vid loc _a0 :>Astf.exp)
     | `App (_a0,_a1) ->
         let _a0 = fill_exp loc _a0 in
         let _a1 = fill_exp loc _a1 in `App (loc, _a0, _a1)
@@ -413,9 +413,9 @@ and fill_exp: Locf.t -> FAstN.exp -> FAst.exp =
         let _a0 = fill_exp loc _a0 in
         let _a1 = fill_exp loc _a1 in `Sem (loc, _a0, _a1)
     | `Par _a0 -> let _a0 = fill_exp loc _a0 in `Par (loc, _a0)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.exp)
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.exp)
     | `Record _a0 -> let _a0 = fill_rec_exp loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.exp)
+    | #literal as _a0 -> (fill_literal loc _a0 :>Astf.exp)
     | `RecordWith (_a0,_a1) ->
         let _a0 = fill_rec_exp loc _a0 in
         let _a1 = fill_exp loc _a1 in `RecordWith (loc, _a0, _a1)
@@ -512,7 +512,7 @@ and fill_exp: Locf.t -> FAstN.exp -> FAst.exp =
         let _a1 = fill_exp loc _a1 in `LocalTypeFun (loc, _a0, _a1)
     | `Package_exp _a0 ->
         let _a0 = fill_mexp loc _a0 in `Package_exp (loc, _a0)
-and fill_rec_exp: Locf.t -> FAstN.rec_exp -> FAst.rec_exp =
+and fill_rec_exp: Locf.t -> Astfn.rec_exp -> Astf.rec_exp =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
@@ -521,12 +521,12 @@ and fill_rec_exp: Locf.t -> FAstN.rec_exp -> FAst.rec_exp =
     | `RecBind (_a0,_a1) ->
         let _a0 = fill_vid loc _a0 in
         let _a1 = fill_exp loc _a1 in `RecBind (loc, _a0, _a1)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_exp)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_exp)
-and fill_mtyp: Locf.t -> FAstN.mtyp -> FAst.mtyp =
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.rec_exp)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.rec_exp)
+and fill_mtyp: Locf.t -> Astfn.mtyp -> Astf.mtyp =
   fun loc  ->
     function
-    | #ident' as _a0 -> (fill_ident' loc _a0 :>FAst.mtyp)
+    | #ident' as _a0 -> (fill_ident' loc _a0 :>Astf.mtyp)
     | `Sig _a0 -> let _a0 = fill_sigi loc _a0 in `Sig (loc, _a0)
     | `SigEnd -> `SigEnd loc
     | `Functor (_a0,_a1,_a2) ->
@@ -538,8 +538,8 @@ and fill_mtyp: Locf.t -> FAstN.mtyp -> FAst.mtyp =
         let _a1 = fill_constr loc _a1 in `With (loc, _a0, _a1)
     | `ModuleTypeOf _a0 ->
         let _a0 = fill_mexp loc _a0 in `ModuleTypeOf (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mtyp)
-and fill_sigi: Locf.t -> FAstN.sigi -> FAst.sigi =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.mtyp)
+and fill_sigi: Locf.t -> Astfn.sigi -> Astf.sigi =
   fun loc  ->
     function
     | `Val (_a0,_a1) ->
@@ -576,8 +576,8 @@ and fill_sigi: Locf.t -> FAstN.sigi -> FAst.sigi =
         let _a1 = fill_ident loc _a1 in `Open (loc, _a0, _a1)
     | `Include _a0 -> let _a0 = fill_mtyp loc _a0 in `Include (loc, _a0)
     | `RecModule _a0 -> let _a0 = fill_mbind loc _a0 in `RecModule (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.sigi)
-and fill_mbind: Locf.t -> FAstN.mbind -> FAst.mbind =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.sigi)
+and fill_mbind: Locf.t -> Astfn.mbind -> Astf.mbind =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
@@ -590,8 +590,8 @@ and fill_mbind: Locf.t -> FAstN.mbind -> FAst.mbind =
     | `Constraint (_a0,_a1) ->
         let _a0 = fill_auident loc _a0 in
         let _a1 = fill_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mbind)
-and fill_constr: Locf.t -> FAstN.constr -> FAst.constr =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.mbind)
+and fill_constr: Locf.t -> Astfn.constr -> Astf.constr =
   fun loc  ->
     function
     | `TypeEq (_a0,_a1) ->
@@ -612,8 +612,8 @@ and fill_constr: Locf.t -> FAstN.constr -> FAst.constr =
     | `And (_a0,_a1) ->
         let _a0 = fill_constr loc _a0 in
         let _a1 = fill_constr loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.constr)
-and fill_bind: Locf.t -> FAstN.bind -> FAst.bind =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.constr)
+and fill_bind: Locf.t -> Astfn.bind -> Astf.bind =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
@@ -622,8 +622,8 @@ and fill_bind: Locf.t -> FAstN.bind -> FAst.bind =
     | `Bind (_a0,_a1) ->
         let _a0 = fill_pat loc _a0 in
         let _a1 = fill_exp loc _a1 in `Bind (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.bind)
-and fill_case: Locf.t -> FAstN.case -> FAst.case =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.bind)
+and fill_case: Locf.t -> Astfn.case -> Astf.case =
   fun loc  ->
     function
     | `Bar (_a0,_a1) ->
@@ -636,11 +636,11 @@ and fill_case: Locf.t -> FAstN.case -> FAst.case =
         let _a0 = fill_pat loc _a0 in
         let _a1 = fill_exp loc _a1 in
         let _a2 = fill_exp loc _a2 in `CaseWhen (loc, _a0, _a1, _a2)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.case)
-and fill_mexp: Locf.t -> FAstN.mexp -> FAst.mexp =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.case)
+and fill_mexp: Locf.t -> Astfn.mexp -> Astf.mexp =
   fun loc  ->
     function
-    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.mexp)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>Astf.mexp)
     | `App (_a0,_a1) ->
         let _a0 = fill_mexp loc _a0 in
         let _a1 = fill_mexp loc _a1 in `App (loc, _a0, _a1)
@@ -655,8 +655,8 @@ and fill_mexp: Locf.t -> FAstN.mexp -> FAst.mexp =
         let _a1 = fill_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
     | `PackageModule _a0 ->
         let _a0 = fill_exp loc _a0 in `PackageModule (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mexp)
-and fill_stru: Locf.t -> FAstN.stru -> FAst.stru =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.mexp)
+and fill_stru: Locf.t -> Astfn.stru -> Astf.stru =
   fun loc  ->
     function
     | `Class _a0 -> let _a0 = fill_cldecl loc _a0 in `Class (loc, _a0)
@@ -695,8 +695,8 @@ and fill_stru: Locf.t -> FAstN.stru -> FAst.stru =
     | `Value (_a0,_a1) ->
         let _a0 = fill_flag loc _a0 in
         let _a1 = fill_bind loc _a1 in `Value (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.stru)
-and fill_cltdecl: Locf.t -> FAstN.cltdecl -> FAst.cltdecl =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.stru)
+and fill_cltdecl: Locf.t -> Astfn.cltdecl -> Astf.cltdecl =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
@@ -711,11 +711,11 @@ and fill_cltdecl: Locf.t -> FAstN.cltdecl -> FAst.cltdecl =
         let _a0 = fill_flag loc _a0 in
         let _a1 = fill_ident loc _a1 in
         let _a2 = fill_cltyp loc _a2 in `CtDeclS (loc, _a0, _a1, _a2)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cltdecl)
-and fill_cltyp: Locf.t -> FAstN.cltyp -> FAst.cltyp =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.cltdecl)
+and fill_cltyp: Locf.t -> Astfn.cltyp -> Astf.cltyp =
   fun loc  ->
     function
-    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.cltyp)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>Astf.cltyp)
     | `ClApply (_a0,_a1) ->
         let _a0 = fill_vid loc _a0 in
         let _a1 = fill_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
@@ -731,8 +731,8 @@ and fill_cltyp: Locf.t -> FAstN.cltyp -> FAst.cltyp =
     | `And (_a0,_a1) ->
         let _a0 = fill_cltyp loc _a0 in
         let _a1 = fill_cltyp loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cltyp)
-and fill_clsigi: Locf.t -> FAstN.clsigi -> FAst.clsigi =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.cltyp)
+and fill_clsigi: Locf.t -> Astfn.clsigi -> Astf.clsigi =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
@@ -756,8 +756,8 @@ and fill_clsigi: Locf.t -> FAstN.clsigi -> FAst.clsigi =
     | `Eq (_a0,_a1) ->
         let _a0 = fill_ctyp loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clsigi)
-and fill_cldecl: Locf.t -> FAstN.cldecl -> FAst.cldecl =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.clsigi)
+and fill_cldecl: Locf.t -> Astfn.cldecl -> Astf.cldecl =
   fun loc  ->
     function
     | `ClDecl (_a0,_a1,_a2,_a3) ->
@@ -772,14 +772,14 @@ and fill_cldecl: Locf.t -> FAstN.cldecl -> FAst.cldecl =
     | `And (_a0,_a1) ->
         let _a0 = fill_cldecl loc _a0 in
         let _a1 = fill_cldecl loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cldecl)
-and fill_clexp: Locf.t -> FAstN.clexp -> FAst.clexp =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.cldecl)
+and fill_clexp: Locf.t -> Astfn.clexp -> Astf.clexp =
   fun loc  ->
     function
     | `CeApp (_a0,_a1) ->
         let _a0 = fill_clexp loc _a0 in
         let _a1 = fill_exp loc _a1 in `CeApp (loc, _a0, _a1)
-    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.clexp)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>Astf.clexp)
     | `ClApply (_a0,_a1) ->
         let _a0 = fill_vid loc _a0 in
         let _a1 = fill_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
@@ -799,8 +799,8 @@ and fill_clexp: Locf.t -> FAstN.clexp -> FAst.clexp =
     | `Constraint (_a0,_a1) ->
         let _a0 = fill_clexp loc _a0 in
         let _a1 = fill_cltyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clexp)
-and fill_clfield: Locf.t -> FAstN.clfield -> FAst.clfield =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.clexp)
+and fill_clfield: Locf.t -> Astfn.clfield -> Astf.clfield =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
@@ -842,11 +842,11 @@ and fill_clfield: Locf.t -> FAstN.clfield -> FAst.clfield =
         let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
     | `Initializer _a0 ->
         let _a0 = fill_exp loc _a0 in `Initializer (loc, _a0)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clfield)
-let rec fill_ep: Locf.t -> FAstN.ep -> FAst.ep =
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.clfield)
+let rec fill_ep: Locf.t -> Astfn.ep -> Astf.ep =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.ep)
+    | #vid as _a0 -> (fill_vid loc _a0 :>Astf.ep)
     | `App (_a0,_a1) ->
         let _a0 = fill_ep loc _a0 in
         let _a1 = fill_ep loc _a1 in `App (loc, _a0, _a1)
@@ -861,12 +861,12 @@ let rec fill_ep: Locf.t -> FAstN.ep -> FAst.ep =
     | `Constraint (_a0,_a1) ->
         let _a0 = fill_ep loc _a0 in
         let _a1 = fill_ctyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.ep)
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.ep)
     | `ArrayEmpty -> `ArrayEmpty loc
     | `Array _a0 -> let _a0 = fill_ep loc _a0 in `Array (loc, _a0)
     | `Record _a0 -> let _a0 = fill_rec_bind loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.ep)
-and fill_rec_bind: Locf.t -> FAstN.rec_bind -> FAst.rec_bind =
+    | #literal as _a0 -> (fill_literal loc _a0 :>Astf.ep)
+and fill_rec_bind: Locf.t -> Astfn.rec_bind -> Astf.rec_bind =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
@@ -875,12 +875,12 @@ and fill_rec_bind: Locf.t -> FAstN.rec_bind -> FAst.rec_bind =
     | `Sem (_a0,_a1) ->
         let _a0 = fill_rec_bind loc _a0 in
         let _a1 = fill_rec_bind loc _a1 in `Sem (loc, _a0, _a1)
-    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_bind)
-    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_bind)
+    | #any as _a0 -> (fill_any loc _a0 :>Astf.rec_bind)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.rec_bind)
 class meta =
   object (self : 'self_type)
     inherit  primitive
-    method literal : 'loc -> literal -> FAst.ep=
+    method literal : 'loc -> literal -> Astf.ep=
       fun _loc  ->
         function
         | `Chr _a0 ->
@@ -897,20 +897,20 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Nativeint")), (self#string _loc _a0))
         | `Str _a0 ->
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
-    method flag : 'loc -> flag -> FAst.ep=
+    method flag : 'loc -> flag -> Astf.ep=
       fun _loc  ->
         function
         | `Positive -> `Vrn (_loc, "Positive")
         | `Negative -> `Vrn (_loc, "Negative")
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method position_flag : 'loc -> position_flag -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method position_flag : 'loc -> position_flag -> Astf.ep=
       fun _loc  ->
         function
         | `Positive -> `Vrn (_loc, "Positive")
         | `Negative -> `Vrn (_loc, "Negative")
         | `Normal -> `Vrn (_loc, "Normal")
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method strings : 'loc -> strings -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method strings : 'loc -> strings -> Astf.ep=
       fun _loc  ->
         function
         | `App (_a0,_a1) ->
@@ -923,33 +923,33 @@ class meta =
                           (self#strings _loc _a1))))))
         | `Str _a0 ->
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method lident : 'loc -> lident -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method lident : 'loc -> lident -> Astf.ep=
       fun _loc  (`Lid _a0)  ->
         `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
-    method alident : 'loc -> alident -> FAst.ep=
+    method alident : 'loc -> alident -> Astf.ep=
       fun _loc  ->
         function
         | `Lid _a0 ->
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method auident : 'loc -> auident -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method auident : 'loc -> auident -> Astf.ep=
       fun _loc  ->
         function
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method aident : 'loc -> aident -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method aident : 'loc -> aident -> Astf.ep=
       fun _loc  ->
         function
-        | #alident as _a0 -> (self#alident _loc _a0 :>FAst.ep)
-        | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
-    method astring : 'loc -> astring -> FAst.ep=
+        | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
+        | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
+    method astring : 'loc -> astring -> Astf.ep=
       fun _loc  ->
         function
         | `C _a0 -> `App (_loc, (`Vrn (_loc, "C")), (self#string _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method uident : 'loc -> uident -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method uident : 'loc -> uident -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -968,8 +968,8 @@ class meta =
                      (`Com
                         (_loc, (self#uident _loc _a0),
                           (self#uident _loc _a1))))))
-        | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
-    method ident : 'loc -> ident -> FAst.ep=
+        | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
+    method ident : 'loc -> ident -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -986,9 +986,9 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
-        | #alident as _a0 -> (self#alident _loc _a0 :>FAst.ep)
-        | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
-    method ident' : 'loc -> ident' -> FAst.ep=
+        | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
+        | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
+    method ident' : 'loc -> ident' -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -1009,7 +1009,7 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-    method vid : 'loc -> vid -> FAst.ep=
+    method vid : 'loc -> vid -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -1022,8 +1022,8 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method vid' : 'loc -> vid' -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method vid' : 'loc -> vid' -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -1036,7 +1036,7 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-    method dupath : 'loc -> dupath -> FAst.ep=
+    method dupath : 'loc -> dupath -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -1047,8 +1047,8 @@ class meta =
                      (`Com
                         (_loc, (self#dupath _loc _a0),
                           (self#dupath _loc _a1))))))
-        | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
-    method dlpath : 'loc -> dlpath -> FAst.ep=
+        | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
+    method dlpath : 'loc -> dlpath -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -1059,10 +1059,10 @@ class meta =
                      (`Com
                         (_loc, (self#dupath _loc _a0),
                           (self#alident _loc _a1))))))
-        | #alident as _a0 -> (self#alident _loc _a0 :>FAst.ep)
-    method any : 'loc -> any -> FAst.ep=
+        | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
+    method any : 'loc -> any -> Astf.ep=
       fun _loc  `Any  -> `Vrn (_loc, "Any")
-    method ctyp : 'loc -> ctyp -> FAst.ep=
+    method ctyp : 'loc -> ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Alias (_a0,_a1) ->
@@ -1072,7 +1072,7 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#ctyp _loc _a0), (self#alident _loc _a1))))))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -1101,7 +1101,7 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
-        | #ident' as _a0 -> (self#ident' _loc _a0 :>FAst.ep)
+        | #ident' as _a0 -> (self#ident' _loc _a0 :>Astf.ep)
         | `TyObj (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "TyObj")),
@@ -1167,8 +1167,8 @@ class meta =
                           (self#tag_names _loc _a1))))))
         | `Package _a0 ->
             `App (_loc, (`Vrn (_loc, "Package")), (self#mtyp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method type_parameters : 'loc -> type_parameters -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method type_parameters : 'loc -> type_parameters -> Astf.ep=
       fun _loc  ->
         function
         | `Com (_a0,_a1) ->
@@ -1181,11 +1181,11 @@ class meta =
                           (self#type_parameters _loc _a1))))))
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method row_field : 'loc -> row_field -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method row_field : 'loc -> row_field -> Astf.ep=
       fun _loc  ->
         function
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
         | `Bar (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "Bar")),
@@ -1205,10 +1205,10 @@ class meta =
                         (_loc, (self#astring _loc _a0), (self#ctyp _loc _a1))))))
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
-    method tag_names : 'loc -> tag_names -> FAst.ep=
+    method tag_names : 'loc -> tag_names -> Astf.ep=
       fun _loc  ->
         function
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -1219,7 +1219,7 @@ class meta =
                           (self#tag_names _loc _a1))))))
         | `TyVrn _a0 ->
             `App (_loc, (`Vrn (_loc, "TyVrn")), (self#astring _loc _a0))
-    method typedecl : 'loc -> typedecl -> FAst.ep=
+    method typedecl : 'loc -> typedecl -> Astf.ep=
       fun _loc  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -1252,8 +1252,8 @@ class meta =
                      (`Com
                         (_loc, (self#typedecl _loc _a0),
                           (self#typedecl _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method type_constr : 'loc -> type_constr -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method type_constr : 'loc -> type_constr -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1270,14 +1270,14 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method opt_type_constr : 'loc -> opt_type_constr -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method opt_type_constr : 'loc -> opt_type_constr -> Astf.ep=
       fun _loc  ->
         function
         | `Some _a0 ->
             `App (_loc, (`Vrn (_loc, "Some")), (self#type_constr _loc _a0))
         | `None -> `Vrn (_loc, "None")
-    method decl_param : 'loc -> decl_param -> FAst.ep=
+    method decl_param : 'loc -> decl_param -> Astf.ep=
       fun _loc  ->
         function
         | `Quote (_a0,_a1) ->
@@ -1293,8 +1293,8 @@ class meta =
               (_loc, (`Vrn (_loc, "QuoteAny")),
                 (self#position_flag _loc _a0))
         | `Any -> `Vrn (_loc, "Any")
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method decl_params : 'loc -> decl_params -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method decl_params : 'loc -> decl_params -> Astf.ep=
       fun _loc  ->
         function
         | `Quote (_a0,_a1) ->
@@ -1318,14 +1318,14 @@ class meta =
                      (`Com
                         (_loc, (self#decl_params _loc _a0),
                           (self#decl_params _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method opt_decl_params : 'loc -> opt_decl_params -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method opt_decl_params : 'loc -> opt_decl_params -> Astf.ep=
       fun _loc  ->
         function
         | `Some _a0 ->
             `App (_loc, (`Vrn (_loc, "Some")), (self#decl_params _loc _a0))
         | `None -> `Vrn (_loc, "None")
-    method type_info : 'loc -> type_info -> FAst.ep=
+    method type_info : 'loc -> type_info -> Astf.ep=
       fun _loc  ->
         function
         | `TyMan (_a0,_a1,_a2) ->
@@ -1352,16 +1352,16 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#flag _loc _a0), (self#ctyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method type_repr : 'loc -> type_repr -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method type_repr : 'loc -> type_repr -> Astf.ep=
       fun _loc  ->
         function
         | `Record _a0 ->
             `App (_loc, (`Vrn (_loc, "Record")), (self#name_ctyp _loc _a0))
         | `Sum _a0 ->
             `App (_loc, (`Vrn (_loc, "Sum")), (self#or_ctyp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method name_ctyp : 'loc -> name_ctyp -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method name_ctyp : 'loc -> name_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -1386,8 +1386,8 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method or_ctyp : 'loc -> or_ctyp -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method or_ctyp : 'loc -> or_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
@@ -1412,8 +1412,8 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
-        | #auident as _a0 -> (self#auident _loc _a0 :>FAst.ep)
-    method of_ctyp : 'loc -> of_ctyp -> FAst.ep=
+        | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
+    method of_ctyp : 'loc -> of_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Of (_a0,_a1) ->
@@ -1422,12 +1422,12 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#vid _loc _a0), (self#ctyp _loc _a1))))))
-        | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method pat : 'loc -> pat -> FAst.ep=
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method pat : 'loc -> pat -> Astf.ep=
       fun _loc  ->
         function
-        | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -1449,10 +1449,10 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#pat _loc _a0), (self#pat _loc _a1))))))
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#pat _loc _a0))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | `Record _a0 ->
             `App (_loc, (`Vrn (_loc, "Record")), (self#rec_pat _loc _a0))
-        | #literal as _a0 -> (self#literal _loc _a0 :>FAst.ep)
+        | #literal as _a0 -> (self#literal _loc _a0 :>Astf.ep)
         | `Alias (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "Alias")),
@@ -1522,7 +1522,7 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
-    method rec_pat : 'loc -> rec_pat -> FAst.ep=
+    method rec_pat : 'loc -> rec_pat -> Astf.ep=
       fun _loc  ->
         function
         | `RecBind (_a0,_a1) ->
@@ -1539,12 +1539,12 @@ class meta =
                      (`Com
                         (_loc, (self#rec_pat _loc _a0),
                           (self#rec_pat _loc _a1))))))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method exp : 'loc -> exp -> FAst.ep=
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method exp : 'loc -> exp -> Astf.ep=
       fun _loc  ->
         function
-        | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -1566,10 +1566,10 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#exp _loc _a0), (self#exp _loc _a1))))))
         | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (self#exp _loc _a0))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | `Record _a0 ->
             `App (_loc, (`Vrn (_loc, "Record")), (self#rec_exp _loc _a0))
-        | #literal as _a0 -> (self#literal _loc _a0 :>FAst.ep)
+        | #literal as _a0 -> (self#literal _loc _a0 :>Astf.ep)
         | `RecordWith (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "RecordWith")),
@@ -1772,7 +1772,7 @@ class meta =
                         (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Package_exp _a0 ->
             `App (_loc, (`Vrn (_loc, "Package_exp")), (self#mexp _loc _a0))
-    method rec_exp : 'loc -> rec_exp -> FAst.ep=
+    method rec_exp : 'loc -> rec_exp -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -1789,12 +1789,12 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#vid _loc _a0), (self#exp _loc _a1))))))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method mtyp : 'loc -> mtyp -> FAst.ep=
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method mtyp : 'loc -> mtyp -> Astf.ep=
       fun _loc  ->
         function
-        | #ident' as _a0 -> (self#ident' _loc _a0 :>FAst.ep)
+        | #ident' as _a0 -> (self#ident' _loc _a0 :>Astf.ep)
         | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (self#sigi _loc _a0))
         | `SigEnd -> `Vrn (_loc, "SigEnd")
         | `Functor (_a0,_a1,_a2) ->
@@ -1816,8 +1816,8 @@ class meta =
                         (_loc, (self#mtyp _loc _a0), (self#constr _loc _a1))))))
         | `ModuleTypeOf _a0 ->
             `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (self#mexp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method sigi : 'loc -> sigi -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method sigi : 'loc -> sigi -> Astf.ep=
       fun _loc  ->
         function
         | `Val (_a0,_a1) ->
@@ -1890,8 +1890,8 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Include")), (self#mtyp _loc _a0))
         | `RecModule _a0 ->
             `App (_loc, (`Vrn (_loc, "RecModule")), (self#mbind _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method mbind : 'loc -> mbind -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method mbind : 'loc -> mbind -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1918,8 +1918,8 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method constr : 'loc -> constr -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method constr : 'loc -> constr -> Astf.ep=
       fun _loc  ->
         function
         | `TypeEq (_a0,_a1) ->
@@ -1962,8 +1962,8 @@ class meta =
                      (`Com
                         (_loc, (self#constr _loc _a0),
                           (self#constr _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method bind : 'loc -> bind -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method bind : 'loc -> bind -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1978,8 +1978,8 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#pat _loc _a0), (self#exp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method case : 'loc -> case -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method case : 'loc -> case -> Astf.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
@@ -2003,11 +2003,11 @@ class meta =
                         (_loc, (self#pat _loc _a0),
                           (`Com
                              (_loc, (self#exp _loc _a1), (self#exp _loc _a2))))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method mexp : 'loc -> mexp -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method mexp : 'loc -> mexp -> Astf.ep=
       fun _loc  ->
         function
-        | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -2035,8 +2035,8 @@ class meta =
                      (`Com (_loc, (self#mexp _loc _a0), (self#mtyp _loc _a1))))))
         | `PackageModule _a0 ->
             `App (_loc, (`Vrn (_loc, "PackageModule")), (self#exp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method stru : 'loc -> stru -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method stru : 'loc -> stru -> Astf.ep=
       fun _loc  ->
         function
         | `Class _a0 ->
@@ -2115,8 +2115,8 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#flag _loc _a0), (self#bind _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method cltdecl : 'loc -> cltdecl -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method cltdecl : 'loc -> cltdecl -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -2149,11 +2149,11 @@ class meta =
                           (`Com
                              (_loc, (self#ident _loc _a1),
                                (self#cltyp _loc _a2))))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method cltyp : 'loc -> cltyp -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method cltyp : 'loc -> cltyp -> Astf.ep=
       fun _loc  ->
         function
-        | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
         | `ClApply (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "ClApply")),
@@ -2188,8 +2188,8 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#cltyp _loc _a0), (self#cltyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method clsigi : 'loc -> clsigi -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method clsigi : 'loc -> clsigi -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -2240,8 +2240,8 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method cldecl : 'loc -> cldecl -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method cldecl : 'loc -> cldecl -> Astf.ep=
       fun _loc  ->
         function
         | `ClDecl (_a0,_a1,_a2,_a3) ->
@@ -2274,8 +2274,8 @@ class meta =
                      (`Com
                         (_loc, (self#cldecl _loc _a0),
                           (self#cldecl _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method clexp : 'loc -> clexp -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method clexp : 'loc -> clexp -> Astf.ep=
       fun _loc  ->
         function
         | `CeApp (_a0,_a1) ->
@@ -2284,7 +2284,7 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#clexp _loc _a0), (self#exp _loc _a1))))))
-        | #vid' as _a0 -> (self#vid' _loc _a0 :>FAst.ep)
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
         | `ClApply (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "ClApply")),
@@ -2328,8 +2328,8 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#clexp _loc _a0), (self#cltyp _loc _a1))))))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method clfield : 'loc -> clfield -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method clfield : 'loc -> clfield -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -2423,11 +2423,11 @@ class meta =
                      (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | `Initializer _a0 ->
             `App (_loc, (`Vrn (_loc, "Initializer")), (self#exp _loc _a0))
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
-    method ep : 'loc -> ep -> FAst.ep=
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
+    method ep : 'loc -> ep -> Astf.ep=
       fun _loc  ->
         function
-        | #vid as _a0 -> (self#vid _loc _a0 :>FAst.ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
         | `App (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "App")),
@@ -2455,14 +2455,14 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#ep _loc _a0), (self#ctyp _loc _a1))))))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
         | `Array _a0 ->
             `App (_loc, (`Vrn (_loc, "Array")), (self#ep _loc _a0))
         | `Record _a0 ->
             `App (_loc, (`Vrn (_loc, "Record")), (self#rec_bind _loc _a0))
-        | #literal as _a0 -> (self#literal _loc _a0 :>FAst.ep)
-    method rec_bind : 'loc -> rec_bind -> FAst.ep=
+        | #literal as _a0 -> (self#literal _loc _a0 :>Astf.ep)
+    method rec_bind : 'loc -> rec_bind -> Astf.ep=
       fun _loc  ->
         function
         | `RecBind (_a0,_a1) ->
@@ -2479,7 +2479,7 @@ class meta =
                      (`Com
                         (_loc, (self#rec_bind _loc _a0),
                           (self#rec_bind _loc _a1))))))
-        | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
+        | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
+        | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
   end
 let m = new meta

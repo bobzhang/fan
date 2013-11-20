@@ -1,7 +1,7 @@
 
 (** Experimental: macro feature*)  
 
-open FAst
+open Astf
 
 (*
   %macro{M a b c}

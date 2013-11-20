@@ -17,7 +17,7 @@ let _ =
                            { tag = `Key; word = (A "|"); tag_name = "Key" }
                        } : Tokenf.pattern )))];
             annot =
-              "let p =\n  Ast_gen.bar_of_list\n    (List.map\n       (fun (x : Tokenf.txt)  ->\n          let v = x.txt in\n          let i = Hashtbl.hash v in\n          (`Case\n             (_loc, (`Int (_loc, (string_of_int i))),\n               (`App\n                  (_loc,\n                    (`App (_loc, (`Lid (_loc, \"=\")), (`Lid (_loc, \"s\")))),\n                    (`Str (_loc, v))))) : FAst.case )) xs) in\n(`Fun\n   (_loc,\n     (`Case\n        (_loc,\n          (`Constraint (_loc, (`Lid (_loc, \"s\")), (`Lid (_loc, \"string\")))),\n          (`Fun\n             (_loc,\n               (`Bar\n                  (_loc, p,\n                    (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))))))) : \n  FAst.exp )\n";
+              "let p =\n  Ast_gen.bar_of_list\n    (List.map\n       (fun (x : Tokenf.txt)  ->\n          let v = x.txt in\n          let i = Hashtbl.hash v in\n          (`Case\n             (_loc, (`Int (_loc, (string_of_int i))),\n               (`App\n                  (_loc,\n                    (`App (_loc, (`Lid (_loc, \"=\")), (`Lid (_loc, \"s\")))),\n                    (`Str (_loc, v))))) : Astf.case )) xs) in\n(`Fun\n   (_loc,\n     (`Case\n        (_loc,\n          (`Constraint (_loc, (`Lid (_loc, \"s\")), (`Lid (_loc, \"string\")))),\n          (`Fun\n             (_loc,\n               (`Bar\n                  (_loc, p,\n                    (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))))))) : \n  Astf.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun (xs : Tokenf.txt list)  (_loc : Locf.t)  ->
@@ -34,7 +34,7 @@ let _ =
                                          (`App
                                             (_loc, (`Lid (_loc, "=")),
                                               (`Lid (_loc, "s")))),
-                                         (`Str (_loc, v))))) : FAst.case ))
+                                         (`Str (_loc, v))))) : Astf.case ))
                             xs) in
                      (`Fun
                         (_loc,
@@ -50,7 +50,7 @@ let _ =
                                          (`Case
                                             (_loc, (`Any _loc),
                                               (`Lid (_loc, "false"))))))))))) : 
-                       FAst.exp ) : 'hash_p ) : Tokenf.txt list ->
+                       Astf.exp ) : 'hash_p ) : Tokenf.txt list ->
                                                   Locf.t -> 'hash_p ))
           }]
      } : Gramf.olevel );

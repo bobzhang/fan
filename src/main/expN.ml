@@ -3,7 +3,7 @@
 %%control{ default "exp-";}
 (* FIXME more  precise location for [resolve_name]*)
 
-open FAstN
+open Astfn
 open Astn_util
 open Fid
 
@@ -48,7 +48,7 @@ let mk_record label_exps : exp=
 (* Multiple stage code *)
 let mee_comma x y =
 
-  (* (`App ((`App ((`App ((`Vrn "Com"), (`Lid "_loc"))), x)), y) : FAstN.exp ) *)
+  (* (`App ((`App ((`App ((`Vrn "Com"), (`Lid "_loc"))), x)), y) : Astfn.exp ) *)
   %exp-{`Com(_loc,$x,$y)}
   (* %exp-{%exp'{${$x}, ${$y}} } *)(** BOOTSTRAPPING*)
 
@@ -57,7 +57,7 @@ let mee_comma x y =
     both work, I did not see obvious performance difference *)
 let mee_app x y = (* BOOTSTRAPPING *)
   %exp-{`App (_loc, $x,$y)}
-  (* (`App ((`App ((`App ((`Vrn "App"), (`Lid "_loc"))), x)), y) : FAstN.exp ) *)
+  (* (`App ((`App ((`App ((`Vrn "App"), (`Lid "_loc"))), x)), y) : Astfn.exp ) *)
 
   (* %exp-{%exp'{${$x} ${$y}}} *)
 
@@ -66,7 +66,7 @@ let mee_of_str s = (*    BOOTSTRAPING *)
   let len = String.length s in
   if s.[0]='`' then
     let s = String.sub s 1 (len - 1) in
-    (* (`App ((`Vrn "Vrn"), (`Par (`Com ((`Lid "_loc"), (`Str s))))) : FAstN.exp )     *)
+    (* (`App ((`Vrn "Vrn"), (`Par (`Com ((`Lid "_loc"), (`Str s))))) : Astfn.exp )     *)
     %exp-{%exp'{$vrn{($str:s)}}}
   else
      %exp-{ %exp'{ $uid{$str:s} } } 

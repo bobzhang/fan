@@ -186,7 +186,7 @@ let add_quotation ?(lexer=Flex_lib.from_stream)
       let exp_ast = pat_filter meta_ast in
       (** BOOTSTRAPPING -- FIXME -- not all quotation expansion need this
           ad-hoc processing ast nodes with location expansion *)
-      let rec subst_first_loc name (x : FAst.pat) : FAst.pat =
+      let rec subst_first_loc name (x : Astf.pat) : Astf.pat =
         match x with 
         | `App(loc, `Vrn (_,u), (`Par (_, `Com (_,`Any _,rest)))) ->
             `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
@@ -234,20 +234,20 @@ let of_pat ?lexer ~name  ~entry  () =
 let of_exp ?lexer ~name  ~entry () =
   let expand_fun = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, expand_fun loc loc_name_opt s) : FAst.stru ) in
+    (`StExp (loc, expand_fun loc loc_name_opt s) : Astf.stru ) in
   begin
     add name Dyn_tag.exp expand_fun;
     add name Dyn_tag.stru mk_fun
   end
 let of_ep ?lexer ~name ~entry () =
-  let (expand_fun : FAst.ep Tokenf.expand_fun)  = make_parser ?lexer entry in
+  let (expand_fun : Astf.ep Tokenf.expand_fun)  = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s :> FAst.exp)) : FAst.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s :> Astf.exp)) : Astf.stru ) in
   begin
     add name Dyn_tag.pat
-      (make_parser ?lexer  entry : FAst.ep Tokenf.expand_fun :> FAst.pat Tokenf.expand_fun);
+      (make_parser ?lexer  entry : Astf.ep Tokenf.expand_fun :> Astf.pat Tokenf.expand_fun);
     add name Dyn_tag.exp
-      (expand_fun :FAst.ep Tokenf.expand_fun :> FAst.exp Tokenf.expand_fun);
+      (expand_fun :Astf.ep Tokenf.expand_fun :> Astf.exp Tokenf.expand_fun);
     add name Dyn_tag.stru mk_fun
   end
 let of_pat_with_filter ?lexer ~name  ~entry  ~filter ()  =
@@ -277,7 +277,7 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
   let expand_fun loc loc_name_opt s =
     filter (make_parser ?lexer entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   begin
     add name Dyn_tag.exp expand_fun;
     add name Dyn_tag.stru mk_fun

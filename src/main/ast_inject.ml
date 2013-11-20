@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Util
 
 type key = string

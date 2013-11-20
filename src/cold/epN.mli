@@ -1,7 +1,7 @@
 
-(** Ast Utilities for [FAstN.ep] *)
+(** Ast Utilities for [Astfn.ep] *)
   
-open FAstN
+open Astfn
 
 val tuple_of_number : ep -> int -> ep
 

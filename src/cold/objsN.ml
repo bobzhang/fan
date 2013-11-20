@@ -1,5 +1,5 @@
 open StdFan
-open FAstN
+open Astfn
 let pp_print_loc: Format.formatter -> loc -> unit =
   fun fmt  _a0  -> Locf.pp_print_t fmt _a0
 let pp_print_ant: Format.formatter -> ant -> unit =
@@ -3222,7 +3222,7 @@ let wildcarder =
     inherit  map as super
     method! pat =
       function
-      | (`Lid _loc : FAstN.pat) -> (`Any : FAstN.pat )
-      | (`Alias (p,_) : FAstN.pat) -> self#pat p
+      | (`Lid _loc : Astfn.pat) -> (`Any : Astfn.pat )
+      | (`Alias (p,_) : Astfn.pat) -> self#pat p
       | p -> super#pat p
   end

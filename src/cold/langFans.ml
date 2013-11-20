@@ -83,10 +83,10 @@ let _ =
       (None, None,
         [([`Slist1
              (`Snterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))],
-           ("(`Uid (_loc, \"()\") : FAst.exp )\n",
+           ("(`Uid (_loc, \"()\") : Astf.exp )\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
-                   ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))))]))
+                   ((`Uid (_loc, "()") : Astf.exp ) : 'fan_quots )))))]))
 let _ =
   Foptions.add
     ("-keep", (Arg.Set FState.keep), "Keep the included type definitions");

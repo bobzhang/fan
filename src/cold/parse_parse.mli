@@ -3,7 +3,7 @@
 (** The front-end of Fan's gram DDSL *)
 
   
-open FAst
+open Astf
 
 
 
@@ -15,12 +15,12 @@ open FAst
      be used alone
      {[
      with str t extend_header %{ U.M };
-     - : FAst.ident option * FAst.ident = (None, `Uid (, "Gramf"))
+     - : Astf.ident option * Astf.ident = (None, `Uid (, "Gramf"))
      with str t extend_header %{ U };
-     - : FAst.ident option * FAst.ident =
+     - : Astf.ident option * Astf.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
      with str t extend_header %{ (g:U.t) };
-     - : FAst.ident option * FAst.ident = (Some (`Lid (, "g")), `Uid (, "U"))
+     - : Astf.ident option * Astf.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features *)    
 val extend_header : (vid option * vid) Gramf.t
@@ -31,7 +31,7 @@ val qualuid : vid Gramf.t
 (** parse qualified  [X.Y.g]
      {[
      with str t qualid %{ A.B.g };
-     - : FAst.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
+     - : Astf.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]} *)
 
 val qualid : vid Gramf.t
@@ -39,7 +39,7 @@ val qualid : vid Gramf.t
 (** parse qualified path ending with [X.t]
      {[
      with str t t_qualid %{ A.U.t };
-     - : FAst.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
+     - : Astf.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
      ]} *)
 val t_qualid : vid Gramf.t
     
@@ -149,9 +149,9 @@ val level :  Gram_def.level Gramf.t
 
      the function [text_of_functorial_extend] is the driving force
      it has type
-     {[ FAst.loc ->
-     FAst.ident option ->
-     Gram_def.name list option -> Gram_def.entry list -> FAst.exp
+     {[ Astf.loc ->
+     Astf.ident option ->
+     Gram_def.name list option -> Gram_def.entry list -> Astf.exp
      ]} *) 
 val extend_body : exp Gramf.t
 

@@ -1,5 +1,5 @@
 
-open FAstN
+open Astfn
 
 (** this is caused by #ant problem, which requires [fill_ant] to be
     specifiied *)
@@ -19,7 +19,7 @@ class primitive =  object
   method unit _loc (_:unit) = %ep{()}
   (*default use [meta_loc] for expession*)   
   (* method loc _loc (_l:loc) : ep= `Lid (_loc, !Locf.name) *)
-  method ant (_loc:loc) (x:ant)  = (x:> FAst.ep)
+  method ant (_loc:loc) (x:ant)  = (x:> Astf.ep)
   (* FIXME bool antiquot *)
   method bool _loc x  =
     match x with
@@ -27,7 +27,7 @@ class primitive =  object
     | false -> %ep{ false } 
 end;;
 
-%ocaml{ %include{ "fAstN.ml" };; };;
+%ocaml{ %include{ "astfn.ml" };; };;
 
 let m = new meta
 

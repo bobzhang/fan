@@ -12,7 +12,7 @@ and t =
 
 class map :
   object
-    method ant : FAst.ant -> FAst.ant
+    method ant : Astf.ant -> Astf.ant
     method lident : lident -> lident
     method loc : Location.t -> Location.t
     method t : t -> t

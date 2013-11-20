@@ -10,7 +10,7 @@ Format:
 open Util
 open Ast_basic
 
-(** A Hook To FAst Filters *)
+(** A Hook To Astf Filters *)
 (* type plugin_name = string  *)
 
 let filters : (Sigs_util.plugin_name, Sigs_util.plugin) Hashtbl.t  = Hashtbl.create 30;;
@@ -168,8 +168,8 @@ end
 
 
 
-let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru = 
-  let x : FAst.stru = `Type(_loc,tdl)  in
+let genenrate_type_code _loc tdl (ns:Astf.strings) : Astf.stru = 
+  let x : Astf.stru = `Type(_loc,tdl)  in
   let ns = list_of_app ns [ ] in
   let filters =
     List.map (function
@@ -184,8 +184,8 @@ let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru =
       (State.current_filters, filters)
       (State.keep, false)
       (fun _  ->
-        match (traversal ())#mexp (`Struct(_loc,x): FAst.mexp) with
-        | (`Struct(_loc,s):FAst.mexp) -> s
+        match (traversal ())#mexp (`Struct(_loc,x): Astf.mexp) with
+        | (`Struct(_loc,s):Astf.mexp) -> s
         | _ -> assert false) in
   `Sem(_loc,x,code) 
 

@@ -82,7 +82,7 @@ let _ =
               (`App ((`Vrn "Lid"), `Any)), "`Lid _");
           `Skeyword "=";
           `Snterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
-           ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
+           ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n",
              (Gramf.mk_action
                 (fun (r : 'regexp)  _  (__fan_1 : [> Tokenf.t])  _ 
                    (_loc : Locf.t)  ->
@@ -96,11 +96,11 @@ let _ =
                            exit 2)
                         else
                           (Hashtbl.add named_regexps x r;
-                           (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )) : 
+                           (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )) : 
                        'declare_regexp )
                    | _ ->
                        failwith
-                         "if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n"))));
+                         "if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n"))));
         ([`Sself; `Sself],
           ("x\n",
             (Gramf.mk_action

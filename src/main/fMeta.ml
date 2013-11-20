@@ -1,6 +1,6 @@
 %%control{ default "ep"; }
 
-open FAst
+open Astf
 
 class primitive =  object
   method int _loc (i:int) : ep =  %{$int':i}
@@ -28,6 +28,6 @@ end;;
 
 
 %fans{keep off; derive (MetaObj); };;
-%ocaml{%include{ "../common/fAst.mli"};; };;
+%ocaml{%include{ "../common/astf.mli"};; };;
 
   

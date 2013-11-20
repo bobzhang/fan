@@ -14,7 +14,7 @@ Ast_gen:
 
 };;
 
-open FAst
+open Astf
 open Util
 
 

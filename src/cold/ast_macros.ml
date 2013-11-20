@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Ast_gen
 type key = string 
 type expander = exp -> exp 
@@ -11,25 +11,25 @@ let rec fib =
   | _ -> invalid_arg "fib"
 let fibm y =
   match y with
-  | (`Int (_loc,x) : FAst.exp) ->
-      (`Int (_loc, (string_of_int (fib @@ (int_of_string x)))) : FAst.exp )
+  | (`Int (_loc,x) : Astf.exp) ->
+      (`Int (_loc, (string_of_int (fib @@ (int_of_string x)))) : Astf.exp )
   | x ->
       let _loc = loc_of x in
-      (`App (_loc, (`Lid (_loc, "fib")), x) : FAst.exp )
+      (`App (_loc, (`Lid (_loc, "fib")), x) : Astf.exp )
 let _ = register_macro ("FIB", fibm)
 let macro_expander =
   object (self)
     inherit  Objs.map as super
     method! exp =
       function
-      | (`App (_loc,`Uid (_,a),y) : FAst.exp) ->
+      | (`App (_loc,`Uid (_,a),y) : Astf.exp) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#exp (f y)
             with
             | Not_found  ->
                 (fun ()  ->
-                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : FAst.exp ))))
+                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : Astf.exp ))))
             ()
       | e -> super#exp e
   end

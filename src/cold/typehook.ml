@@ -53,7 +53,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
        acc)
   | (None ,Some code) ->
       let code = FanAstN.fill_stru sloc code in
-      (`Sem (sloc, acc, code) : FAst.stru )
+      (`Sem (sloc, acc, code) : Astf.stru )
   | (_,None ) -> acc
 let traversal () =
   (object (self : 'self_type)
@@ -73,7 +73,7 @@ let traversal () =
      method update_cur_and_types f = cur_and_types <- f cur_and_types
      method! mexp =
        function
-       | (`Struct (sloc,u) : FAst.mexp) ->
+       | (`Struct (sloc,u) : Astf.mexp) ->
            (self#in_module;
             (let res = self#stru u in
              let mtyps = List.rev self#get_cur_mtyps in
@@ -85,12 +85,12 @@ let traversal () =
                  (!State.current_filters)
                  (if !State.keep
                   then res
-                  else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
-             self#out_module; (`Struct (sloc, result) : FAst.mexp )))
+                  else (`StExp (sloc, (`Uid (sloc, "()"))) : Astf.stru )) in
+             self#out_module; (`Struct (sloc, result) : Astf.mexp )))
        | x -> super#mexp x
      method! stru =
        function
-       | (`Type (_loc,`And (_,_,_)) : FAst.stru) as x ->
+       | (`Type (_loc,`And (_,_,_)) : Astf.stru) as x ->
            (self#in_and_types;
             (let _ = super#stru x in
              self#update_cur_mtyps
@@ -99,21 +99,21 @@ let traversal () =
              self#out_and_types;
              if !State.keep
              then x
-             else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )))
+             else (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
-       | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : FAst.stru) as
+       | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->
            let item = `Single (name, (Objs.strip_typedecl t)) in
            let () =
              if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in
            (self#update_cur_mtyps (fun lst  -> item :: lst); x)
-       | (`Value (_loc,`Negative _,_) : FAst.stru)
-         |(`ModuleType (_loc,_,_) : FAst.stru)
-         |(`Include (_loc,_) : FAst.stru)
-         |(`External (_loc,_,_,_) : FAst.stru)|(`StExp (_loc,_) : FAst.stru)
-         |(`Exception (_loc,_) : FAst.stru)
-         |(`Directive (_loc,_,_) : FAst.stru) as x -> x
+       | (`Value (_loc,`Negative _,_) : Astf.stru)
+         |(`ModuleType (_loc,_,_) : Astf.stru)
+         |(`Include (_loc,_) : Astf.stru)
+         |(`External (_loc,_,_,_) : Astf.stru)|(`StExp (_loc,_) : Astf.stru)
+         |(`Exception (_loc,_) : Astf.stru)
+         |(`Directive (_loc,_,_) : Astf.stru) as x -> x
        | x -> super#stru x
      method! typedecl =
        function
@@ -125,8 +125,8 @@ let traversal () =
             t)
        | t -> super#typedecl t
    end : traversal )
-let genenrate_type_code _loc tdl (ns : FAst.strings) =
-  (let x: FAst.stru = `Type (_loc, tdl) in
+let genenrate_type_code _loc tdl (ns : Astf.strings) =
+  (let x: Astf.stru = `Type (_loc, tdl) in
    let ns = list_of_app ns [] in
    let filters =
      List.map
@@ -141,8 +141,8 @@ let genenrate_type_code _loc tdl (ns : FAst.strings) =
    let code =
      Ref.protect2 (State.current_filters, filters) (State.keep, false)
        (fun _  ->
-          match (traversal ())#mexp (`Struct (_loc, x) : FAst.mexp ) with
-          | (`Struct (_loc,s) : FAst.mexp) -> s
+          match (traversal ())#mexp (`Struct (_loc, x) : Astf.mexp ) with
+          | (`Struct (_loc,s) : Astf.mexp) -> s
           | _ -> assert false) in
-   `Sem (_loc, x, code) : FAst.stru )
+   `Sem (_loc, x, code) : Astf.stru )
 let () = Ast2pt.generate_type_code := genenrate_type_code

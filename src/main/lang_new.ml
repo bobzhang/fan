@@ -5,7 +5,7 @@ Ast_gen:
 };;
 
 
-open FAst
+open Astf
 
 %create{qualid nonterminals newterminals t_qualid qualuid};;
 

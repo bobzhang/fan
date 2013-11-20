@@ -6,7 +6,7 @@ let named_regexps: (string,Translate_lex.concrete_regexp) Hashtbl.t =
 let named_cases:
   (string,Tokenf.txt list option ->
             Tokenf.quot option ->
-              Locf.t -> (Translate_lex.concrete_regexp* FAst.exp) list)
+              Locf.t -> (Translate_lex.concrete_regexp* Astf.exp) list)
     Hashtbl.t
   = Hashtbl.create 13
 let _ =
@@ -247,12 +247,12 @@ let _ =
             (192, 214);
             (216, 246);
             (248, 255)])))
-let append_quot (y : Tokenf.quot option) (e : FAst.exp) =
+let append_quot (y : Tokenf.quot option) (e : Astf.exp) =
   match y with
   | None  -> e
   | Some y ->
       let a = Parsef.expand_exp y in
-      let _loc = y.loc in (`Seq (_loc, (`Sem (_loc, e, a))) : FAst.exp )
+      let _loc = y.loc in (`Seq (_loc, (`Sem (_loc, e, a))) : Astf.exp )
 let _ =
   Hashtblf.add_list named_cases
     [("ocaml_uid",
@@ -287,7 +287,7 @@ let _ =
                         };
                       loc_ghost = false
                     } : Locf.t ), "txt"))),
-              ((let default: FAst.exp =
+              ((let default: Astf.exp =
                   `App
                     (_loc, (`Vrn (_loc, "Uid")),
                       (`Record
@@ -350,7 +350,7 @@ let _ =
                                         (`App
                                            (_loc, (`Lid (_loc, "=")),
                                              (`Lid (_loc, "txt")))),
-                                        (`Str (_loc, v))))) : FAst.case )) x) in
+                                        (`Str (_loc, v))))) : Astf.case )) x) in
                     (`LetIn
                        (_loc, (`Negative _loc),
                          (`Bind
@@ -424,7 +424,7 @@ let _ =
                                              (`RecBind
                                                 (_loc, (`Lid (_loc, "txt")),
                                                   (`Lid (_loc, "txt")))))))))),
-                              default))) : FAst.exp ))))])));
+                              default))) : Astf.exp ))))])));
     ("ocaml_lid",
       ((fun ls  _  _loc  ->
           [((Bind
@@ -457,7 +457,7 @@ let _ =
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt"))),
-             ((let default: FAst.exp =
+             ((let default: Astf.exp =
                  `App
                    (_loc, (`Vrn (_loc, "Lid")),
                      (`Record
@@ -519,7 +519,7 @@ let _ =
                                        (`App
                                           (_loc, (`Lid (_loc, "=")),
                                             (`Lid (_loc, "txt")))),
-                                       (`Str (_loc, v))))) : FAst.case )) x) in
+                                       (`Str (_loc, v))))) : Astf.case )) x) in
                    (`LetIn
                       (_loc, (`Negative _loc),
                         (`Bind
@@ -593,7 +593,7 @@ let _ =
                                             (`RecBind
                                                (_loc, (`Lid (_loc, "txt")),
                                                  (`Lid (_loc, "txt")))))))))),
-                             default))) : FAst.exp ))))])));
+                             default))) : Astf.exp ))))])));
     ("kwd_symbol",
       ((fun ls  _  _loc  ->
           match ls with
@@ -681,7 +681,7 @@ let _ =
                                                (`Lid (_loc, "txt")))))))))),
                            (`Dot
                               (_loc, (`Uid (_loc, "Tokenf")),
-                                (`Lid (_loc, "t"))))))) : FAst.exp ))]
+                                (`Lid (_loc, "t"))))))) : Astf.exp ))]
           | None  -> Locf.failf _loc "no following strings after kwd_symbol")));
     ("ocaml_int",
       ((fun _  _  _loc  ->
@@ -753,7 +753,7 @@ let _ =
                                       (`Lid (_loc, "lexbuf")))))),
                             (`RecBind
                                (_loc, (`Lid (_loc, "txt")),
-                                 (`Lid (_loc, "txt"))))))))) : FAst.exp ))])));
+                                 (`Lid (_loc, "txt"))))))))) : Astf.exp ))])));
     ("ocaml_num_literal",
       ((fun _  _  _loc  ->
           [((Bind
@@ -962,7 +962,7 @@ let _ =
                                                                (`Lid
                                                                   (_loc,
                                                                     "txt"))))))))))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("ocaml_char",
       ((fun _  _  _loc  ->
           [((Sequence
@@ -1110,7 +1110,7 @@ let _ =
                                                 (`Lid (_loc, "txt")))))))))),
                             (`Dot
                                (_loc, (`Uid (_loc, "Tokenf")),
-                                 (`Lid (_loc, "t"))))))))) : FAst.exp ));
+                                 (`Lid (_loc, "t"))))))))) : Astf.exp ));
           ((Sequence
               ((Sequence
                   ((Characters [(39, 39)]),
@@ -1213,7 +1213,7 @@ let _ =
                                    (_loc, (`Lid (_loc, "txt")),
                                      (`Lid (_loc, "txt")))))))))),
                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) : 
-            FAst.exp ));
+            Astf.exp ));
           ((Sequence
               ((Sequence ((Characters [(39, 39)]), (Characters [(92, 92)]))),
                 (Bind
@@ -1275,7 +1275,7 @@ let _ =
                                         (_loc, (`Lid (_loc, "loc_ghost")),
                                           (`Lid (_loc, "false")))))))))),
                       (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))))) : 
-            FAst.exp ))])));
+            Astf.exp ))])));
     ("ocaml_float_literal",
       ((fun _  _  _loc  ->
           [((Bind
@@ -1369,7 +1369,7 @@ let _ =
                                     (_loc, (`Lid (_loc, "txt")),
                                       (`Lid (_loc, "txt")))))))))),
                   (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("ocaml_comment",
       ((fun _  q  _loc  ->
           [((Sequence
@@ -1487,13 +1487,13 @@ let _ =
                                                            (_loc,
                                                              "buff_contents")))),
                                                    (`Lid (_loc, "c"))))))))))))))) : 
-                FAst.exp )))])));
+                Astf.exp )))])));
     ("whitespace",
       ((fun _  q  _loc  ->
           [((Sequence
                ((Repetition (Characters [(9, 9); (12, 12); (32, 32)])),
                  (Characters [(9, 9); (12, 12); (32, 32)]))),
-             (append_quot q (`Uid (_loc, "()") : FAst.exp )));
+             (append_quot q (`Uid (_loc, "()") : Astf.exp )));
           ((Alternative
               ((Alternative
                   ((Characters [(10, 10)]), (Characters [(13, 13)]))),
@@ -1504,7 +1504,7 @@ let _ =
                     (`Dot
                        (_loc, (`Uid (_loc, "Lexing_util")),
                          (`Lid (_loc, "update_loc")))),
-                    (`Lid (_loc, "lexbuf"))) : FAst.exp )))])));
+                    (`Lid (_loc, "lexbuf"))) : Astf.exp )))])));
     ("ocaml_string",
       ((fun _  _  _loc  ->
           [((Characters [(34, 34)]),
@@ -1595,7 +1595,7 @@ let _ =
                                                                   (_loc,
                                                                     "buff_contents")))),
                                                           (`Lid (_loc, "c"))))))))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("default",
       ((fun _  _  _loc  ->
           [((Bind
@@ -1634,7 +1634,7 @@ let _ =
                        (`Dot
                           (_loc, (`Uid (_loc, "Lexing_util")),
                             (`Lid (_loc, "from_lexbuf")))),
-                       (`Lid (_loc, "lexbuf"))))) : FAst.exp ))])));
+                       (`Lid (_loc, "lexbuf"))))) : Astf.exp ))])));
     ("ocaml_eof",
       ((fun _  _  _loc  ->
           [(Eof,
@@ -1723,7 +1723,7 @@ let _ =
                                       (`Dot
                                          (_loc, (`Uid (_loc, "Tokenf")),
                                            (`Lid (_loc, "t"))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("ocaml_simple_quotation",
       ((fun _  _  _loc  ->
           [((Sequence ((Characters [(37, 37)]), (Characters [(123, 123)]))),
@@ -1880,7 +1880,7 @@ let _ =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "lex_curr_p"))))))))))))))))))))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("ocaml_quotation",
       ((fun _  _  _loc  ->
           [((Bind
@@ -2251,7 +2251,7 @@ let _ =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "retract"))))))))))))))))))))))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("ocaml_double_quotation",
       ((fun _  _  _loc  ->
           [((Bind
@@ -2748,7 +2748,7 @@ let _ =
                                                                     `Lid
                                                                     (_loc,
                                                                     "t"))))))))))))))))))))))) : 
-             FAst.exp ))])));
+             Astf.exp ))])));
     ("line_directive",
       ((fun _  q  _loc  ->
           [((Sequence
@@ -2846,7 +2846,7 @@ let _ =
                                          (`Lid (_loc, "num")))))))),
                           (`Label
                              (_loc, (`Lid (_loc, "absolute")),
-                               (`Lid (_loc, "true"))))))) : FAst.exp )))])));
+                               (`Lid (_loc, "true"))))))) : Astf.exp )))])));
     ("ocaml_ant",
       ((fun _  _  _loc  ->
           [((Bind
@@ -3053,7 +3053,7 @@ let _ =
                                                                     "None")))))))))))))))))),
                        (`Dot
                           (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
-             FAst.exp ));
+             Astf.exp ));
           ((Bind
               ((Sequence
                   ((Sequence
@@ -3302,7 +3302,7 @@ let _ =
                                                                     (`Uid
                                                                     (_loc,
                                                                     "None"))))))))))))))))))))))))))) : 
-            FAst.exp ));
+            Astf.exp ));
           ((Sequence
               ((Characters [(36, 36)]),
                 (Bind
@@ -3341,7 +3341,7 @@ let _ =
                       (`Dot
                          (_loc, (`Uid (_loc, "Lexing_util")),
                            (`Lid (_loc, "from_lexbuf")))),
-                      (`Lid (_loc, "lexbuf"))))) : FAst.exp ))])))]
+                      (`Lid (_loc, "lexbuf"))))) : Astf.exp ))])))]
 let meta_cset _loc (x : Fcset.t) =
   Fan_ops.meta_list
     (fun _loc  (a,b)  ->
@@ -3349,32 +3349,32 @@ let meta_cset _loc (x : Fcset.t) =
           (_loc,
             (`Com
                (_loc, (`Int (_loc, (string_of_int a))),
-                 (`Int (_loc, (string_of_int b)))))) : FAst.ep )) _loc x
+                 (`Int (_loc, (string_of_int b)))))) : Astf.ep )) _loc x
 let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
   match x with
-  | Epsilon  -> (`Uid (_loc, "Epsilon") : FAst.ep )
-  | Eof  -> (`Uid (_loc, "Eof") : FAst.ep )
+  | Epsilon  -> (`Uid (_loc, "Epsilon") : Astf.ep )
+  | Eof  -> (`Uid (_loc, "Eof") : Astf.ep )
   | Characters a ->
       (`App (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a)) : 
-      FAst.ep )
+      Astf.ep )
   | Sequence (a0,a1) ->
       (`App
          (_loc,
            (`App
               (_loc, (`Uid (_loc, "Sequence")),
                 (meta_concrete_regexp _loc a0))),
-           (meta_concrete_regexp _loc a1)) : FAst.ep )
+           (meta_concrete_regexp _loc a1)) : Astf.ep )
   | Alternative (a0,a1) ->
       (`App
          (_loc,
            (`App
               (_loc, (`Uid (_loc, "Alternative")),
                 (meta_concrete_regexp _loc a0))),
-           (meta_concrete_regexp _loc a1)) : FAst.ep )
+           (meta_concrete_regexp _loc a1)) : Astf.ep )
   | Repetition a ->
       (`App
          (_loc, (`Uid (_loc, "Repetition")), (meta_concrete_regexp _loc a)) : 
-      FAst.ep )
+      Astf.ep )
   | Bind (a,(loc,s)) ->
       (`App
          (_loc, (`Uid (_loc, "Bind")),
@@ -3386,8 +3386,8 @@ let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
                         (_loc,
                           (`Com
                              (_loc, (Ast_gen.meta_here _loc loc),
-                               (`Str (loc, (String.escaped s)) : FAst.ep )))))))))) : 
-      FAst.ep )
+                               (`Str (loc, (String.escaped s)) : Astf.ep )))))))))) : 
+      Astf.ep )
 let _ = Hashtbl.add named_regexps "eof" Eof
 exception UnboundRegexp
 exception UnboundCase
@@ -3455,7 +3455,7 @@ let _ =
                  (`Dot
                     (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))),
                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
-         FAst.exp ))
+         Astf.exp ))
     (fun l  _  _loc  ->
        let e = make_automata true l in
        (`Constraint
@@ -3465,7 +3465,7 @@ let _ =
                  (`Dot
                     (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))),
                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
-         FAst.exp ))
+         Astf.exp ))
 let _ =
   Gramf.extend_single (case : 'case Gramf.t )
     ({
@@ -3668,7 +3668,7 @@ let _ =
                 Tokenf.pattern );
               Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
             annot =
-              "if Hashtbl.mem named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n";
+              "if Hashtbl.mem named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n";
             fn =
               (Gramf.mk_action
                  (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
@@ -3680,10 +3680,10 @@ let _ =
                        (Fan_warnings.emitf xloc.loc_start
                           "fanlex (warning): multiple definition of named regexp '%s'\n"
                           x;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru ))
+                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru ))
                      else
                        (Hashtbl.add named_regexps x r;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )) : 
+                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )) : 
                       'declare_regexp ) : 'regexp ->
                                             Tokenf.txt ->
                                               Tokenf.txt ->
@@ -4040,5 +4040,5 @@ let () =
     ~entry:declare_regexp ();
   Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream (d, "re") regexp
     ~mexp:meta_concrete_regexp ~mpat:meta_concrete_regexp
-    ~exp_filter:(fun x  -> (x : FAst.ep  :>FAst.exp))
-    ~pat_filter:(fun x  -> (x : FAst.ep  :>FAst.pat))
+    ~exp_filter:(fun x  -> (x : Astf.ep  :>Astf.exp))
+    ~pat_filter:(fun x  -> (x : Astf.ep  :>Astf.pat))

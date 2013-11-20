@@ -141,7 +141,7 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     fid code_template comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
-    expN fAstN control control_require fMeta \
+    expN astfn control control_require fMeta \
     gram_def  \
     compile_gram \
     sigs_util  fanAstN  \

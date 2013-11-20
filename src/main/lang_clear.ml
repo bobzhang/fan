@@ -6,7 +6,7 @@ Ast_gen:
   ;
 
 };;
-open FAst
+open Astf
   
 %create{
 a_lident

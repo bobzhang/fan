@@ -44,8 +44,8 @@ let parsetree_of_implem ?(input_file = "-") ?output_file ast =
 
 type backend = {
     descr : string ;
-    implem : FAst.stru printer_fun;
-    interf : FAst.sigi printer_fun;
+    implem : Astf.stru printer_fun;
+    interf : Astf.sigi printer_fun;
   }
       
 let backends :

@@ -2,7 +2,7 @@
 
 
 
-open FAstN
+open Astfn
 open Astn_util
 open Util
 

@@ -4,7 +4,7 @@
     it's generatlly a dangerous behavior, since if you do it in-consistently,
     this may result in an in-consistent behavior *) 
 
-open FAst
+open Astf
 
 (** type [parser_fun] defines the interface for Fan's parser
     for example, the exported function [parse_implem] has type
@@ -44,10 +44,10 @@ val parse_file :
       string -> 'a parser_fun -> 'a option
 
 val stru_printer :
-    (?input_file:string -> ?output_file:string -> FAst.stru option -> unit) ref
+    (?input_file:string -> ?output_file:string -> Astf.stru option -> unit) ref
 
 val sigi_printer :
-    (?input_file:string -> ?output_file:string -> FAst.sigi option -> unit) ref
+    (?input_file:string -> ?output_file:string -> Astf.sigi option -> unit) ref
     
 
 module CurrentPrinter : sig

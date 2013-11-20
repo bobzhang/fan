@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Compile_stream
 
 val parser_ipat : pat Gramf.t

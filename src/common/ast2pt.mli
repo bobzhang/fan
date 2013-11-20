@@ -1,7 +1,7 @@
 
 (** Dumping Fan's abstract syntax into OCaml's parsetree *)
   
-open FAst
+open Astf
 open Format
   
 val mkvirtual : flag -> Asttypes.virtual_flag
@@ -182,30 +182,30 @@ val print_stru           : formatter -> stru -> unit
 val print_ctyp           : formatter -> ctyp -> unit
 
 (** Filled by [typehook] module *)  
-val generate_type_code   : (FAst.loc -> FAst.typedecl -> FAst.strings -> FAst.stru) ref
+val generate_type_code   : (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref
 (** Filled by [Objs] module *)    
-val dump_ident           : (FAst.ident -> string) ref
-val dump_row_field       : (FAst.row_field -> string) ref
-val dump_name_ctyp       : (FAst.name_ctyp -> string) ref
-val dump_constr          : (FAst.constr -> string) ref
-val dump_mtyp            : (FAst.mtyp -> string) ref
-val dump_ctyp            : (FAst.ctyp -> string) ref
-val dump_or_ctyp         : (FAst.or_ctyp -> string) ref
-val dump_pat             : (FAst.pat -> string) ref
-val dump_type_parameters : (FAst.type_parameters -> string) ref
-val dump_exp             : (FAst.exp -> string) ref
-val dump_case            : (FAst.case -> string) ref
-val dump_rec_exp         : (FAst.rec_exp -> string) ref
-val dump_type_constr     : (FAst.type_constr -> string) ref
-val dump_typedecl        : (FAst.typedecl -> string) ref
-val dump_sigi            : (FAst.sigi -> string) ref
-val dump_mbind           : (FAst.mbind -> string) ref
-val dump_mexp            : (FAst.mexp -> string) ref
-val dump_stru            : (FAst.stru -> string) ref
-val dump_cltyp           : (FAst.cltyp -> string) ref
-val dump_cldecl          : (FAst.cldecl -> string) ref
-val dump_cltdecl         : (FAst.cltdecl -> string) ref
-val dump_clsigi          : (FAst.clsigi -> string) ref
-val dump_clexp           : (FAst.clexp -> string) ref
-val dump_clfield         : (FAst.clfield -> string) ref
+val dump_ident           : (Astf.ident -> string) ref
+val dump_row_field       : (Astf.row_field -> string) ref
+val dump_name_ctyp       : (Astf.name_ctyp -> string) ref
+val dump_constr          : (Astf.constr -> string) ref
+val dump_mtyp            : (Astf.mtyp -> string) ref
+val dump_ctyp            : (Astf.ctyp -> string) ref
+val dump_or_ctyp         : (Astf.or_ctyp -> string) ref
+val dump_pat             : (Astf.pat -> string) ref
+val dump_type_parameters : (Astf.type_parameters -> string) ref
+val dump_exp             : (Astf.exp -> string) ref
+val dump_case            : (Astf.case -> string) ref
+val dump_rec_exp         : (Astf.rec_exp -> string) ref
+val dump_type_constr     : (Astf.type_constr -> string) ref
+val dump_typedecl        : (Astf.typedecl -> string) ref
+val dump_sigi            : (Astf.sigi -> string) ref
+val dump_mbind           : (Astf.mbind -> string) ref
+val dump_mexp            : (Astf.mexp -> string) ref
+val dump_stru            : (Astf.stru -> string) ref
+val dump_cltyp           : (Astf.cltyp -> string) ref
+val dump_cldecl          : (Astf.cldecl -> string) ref
+val dump_cltdecl         : (Astf.cltdecl -> string) ref
+val dump_clsigi          : (Astf.clsigi -> string) ref
+val dump_clexp           : (Astf.clexp -> string) ref
+val dump_clfield         : (Astf.clfield -> string) ref
     

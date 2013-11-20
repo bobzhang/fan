@@ -1,6 +1,6 @@
 %%control{default "ctyp-";}
 
-open FAstN
+open Astfn
 open Astn_util
 open Util
 open Fid

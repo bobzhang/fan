@@ -7,7 +7,7 @@
 
 open Util
 open Parsetree_util
-open! FAst (* FIXME later*)
+open! Astf (* FIXME later*)
 open Ast_basic
 
 
@@ -72,7 +72,7 @@ let dump_clfield         = ref (fun _ -> failwith "Ast2pt.dump_clfield not imple
 
 
 let generate_type_code :
-  (FAst.loc -> FAst.typedecl -> FAst.strings -> FAst.stru) ref =
+  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
   ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
 
 
@@ -90,21 +90,21 @@ let flag loc (x:flag) : Asttypes.override_flag =
   | `Negative _  -> Fresh
   |  _ -> error loc "antiquotation not allowed here" 
 
-let mkdirection (x: FAst.flag) : Asttypes.direction_flag =
+let mkdirection (x: Astf.flag) : Asttypes.direction_flag =
   match x with 
   | `Positive _ -> Upto
   | `Negative _ -> Downto
   | `Ant (_loc,_) -> ant_error _loc 
 
-let mkrf (x: FAst.flag) : Asttypes.rec_flag =
+let mkrf (x: Astf.flag) : Asttypes.rec_flag =
   match x with 
   | `Positive _  -> Recursive
   | `Negative _  -> Nonrecursive
   | `Ant(_loc,_) -> ant_error _loc
 
 
-let ident_tag (i : FAst.ident) :  Longident.t * [> `app | `lident | `uident ] =
-  let rec self (i:FAst.ident) acc =
+let ident_tag (i : Astf.ident) :  Longident.t * [> `app | `lident | `uident ] =
+  let rec self (i:Astf.ident) acc =
     let _loc = unsafe_loc_of i in
     match i with
     | `Dot (_,`Lid (_,"*predef*"),`Lid (_,"option")) ->
@@ -143,7 +143,7 @@ let ident_tag (i : FAst.ident) :  Longident.t * [> `app | `lident | `uident ] =
 
 let ident_noloc i = fst (ident_tag  i)
 
-let ident (i:FAst.ident) :  Longident.t Location.loc  =
+let ident (i:Astf.ident) :  Longident.t Location.loc  =
   with_loc (ident_noloc  i) (unsafe_loc_of i)
 
 let long_lident  id =
@@ -152,7 +152,7 @@ let long_lident  id =
   | _ ->
     Locf.failf (unsafe_loc_of id)  "invalid long identifier %s" (!dump_ident id)
 
-let long_type_ident: FAst.ident -> Longident.t Location.loc =
+let long_type_ident: Astf.ident -> Longident.t Location.loc =
   long_lident 
 
 let long_class_ident = long_lident
@@ -167,29 +167,29 @@ let long_uident_noloc  (i:ident) =
 let long_uident  i =
   with_loc (long_uident_noloc  i) (unsafe_loc_of i)
 
-let rec ctyp_long_id_prefix (t:FAst.ctyp) : Longident.t =
+let rec ctyp_long_id_prefix (t:Astf.ctyp) : Longident.t =
   match t with
-  | #FAst.ident' as i  -> ident_noloc i
+  | #Astf.ident' as i  -> ident_noloc i
   | `App(_loc,m1,m2) ->
     let li1 = ctyp_long_id_prefix m1 in
     let li2 = ctyp_long_id_prefix m2 in
     Lapply (li1, li2)
   | t -> Locf.failf (unsafe_loc_of t) "invalid module expression %s" (!dump_ctyp t) 
 
-let ctyp_long_id (t:FAst.ctyp) : (bool *   Longident.t Location.loc) =
+let ctyp_long_id (t:Astf.ctyp) : (bool *   Longident.t Location.loc) =
   match t with
-  | #FAst.ident' as i -> false, long_type_ident i
+  | #Astf.ident' as i -> false, long_type_ident i
   | `ClassPath (_, i) -> true, ident i
   | t -> Locf.failf (unsafe_loc_of t) "invalid type %s" @@ !dump_ctyp t
 
-let predef_option loc : FAst.ctyp =
+let predef_option loc : Astf.ctyp =
   `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"))
 
-let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
+let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
   let _loc = unsafe_loc_of x in
   match x with 
-  |  (#FAst.ident' as i) ->
-    let li = long_type_ident (i:>FAst.ident) in
+  |  (#Astf.ident' as i) ->
+    let li = long_type_ident (i:>Astf.ident) in
     mktyp _loc @@ Ptyp_constr (li, [])
   | `Alias(_,t1,`Lid(_,s)) -> 
     mktyp _loc @@ Ptyp_alias (ctyp t1, s)
@@ -810,7 +810,7 @@ let rec exp (x : exp) : Parsetree.expression =
               (`LetIn
                  (_loc, rf, bi,
                   (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))),
-              cas)), (`Uid (_loc, "()"))) : FAst.exp )
+              cas)), (`Uid (_loc, "()"))) : Astf.exp )
   (* {:exp| *)
   (*  (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |} *)
 
@@ -845,7 +845,7 @@ let rec exp (x : exp) : Parsetree.expression =
     mkexp _loc @@ Pexp_record (mklabexp lel,Some (exp eo))
   | `Seq (_,e) ->
     let rec loop = function
-      | [] -> exp (`Uid (_loc, "()") : FAst.exp )
+      | [] -> exp (`Uid (_loc, "()") : Astf.exp )
       | [e] -> exp e
       | e :: el ->
         let _loc = Locf.merge (unsafe_loc_of e) _loc in
@@ -894,11 +894,11 @@ and label_exp (x : exp) =
 
 and bind (x:bind) acc =
   match x with
-  | (`And (_loc,x,y) : FAst.bind) -> bind x (bind y acc)
+  | (`And (_loc,x,y) : Astf.bind) -> bind x (bind y acc)
   | (`Bind
-       (_loc,(`Lid (sloc,bind_name) : FAst.pat),`Constraint
+       (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint
           (_,e,`TyTypePol (_,vs,ty)))
-     : FAst.bind) ->
+     : Astf.bind) ->
     let rec id_to_string (x : ctyp) =
       match x with
       | `Lid (_,x) -> [x]
@@ -923,11 +923,11 @@ and bind (x:bind) acc =
            ((mkpat (Ppat_var (with_loc bind_name sloc))),
             (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
     let e = mk_newtypes vars in (pat, e) :: acc
-  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : FAst.bind) ->
-    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : FAst.pat )),
+  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Astf.bind) ->
+    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )),
      (exp e))
     :: acc
-  | (`Bind (_loc,p,e) : FAst.bind) -> ((pat p), (exp e)) :: acc
+  | (`Bind (_loc,p,e) : Astf.bind) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x:case) = 
   let cases = list_of_bar x [] in
@@ -946,7 +946,7 @@ and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
-      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i : vid :>ident), exp e)
+      | (`RecBind (_loc,i,e) : Astf.rec_exp) -> Some (ident (i : vid :>ident), exp e)
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 
@@ -1000,7 +1000,7 @@ and mktype_decl (x:typedecl)  =
 
       | (t:typedecl) ->
         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
-and mtyp : FAst.mtyp -> Parsetree.module_type =
+and mtyp : Astf.mtyp -> Parsetree.module_type =
   let  mkwithc (wc:constr)  =
     let mkwithtyp (pwith_type: Parsetree.type_declaration -> Parsetree.with_constraint)
         loc priv id_tpl ct =
@@ -1082,13 +1082,13 @@ and module_sig_bind (x:mbind)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
     (with_loc s sloc, mtyp mt) :: acc
   | t -> Locf.failf (unsafe_loc_of t) "module_sig_bind: %s" (!dump_mbind t) 
-and module_str_bind (x:FAst.mbind) acc =
+and module_str_bind (x:Astf.mbind) acc =
   match x with 
   | `And(_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
     (with_loc s sloc, mtyp mt, mexp me) :: acc
   | t -> Locf.failf (unsafe_loc_of t) "module_str_bind: %s" (!dump_mbind t)
-and mexp (x:FAst.mexp)=
+and mexp (x:Astf.mexp)=
   match x with 
   | #vid'  as i ->
     let loc = unsafe_loc_of i in  mkmod loc (Pmod_ident (long_uident (i:vid':>ident)))
@@ -1159,7 +1159,7 @@ and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
   | `Value (_,rf,bi) ->
     mkstr loc (Pstr_value (mkrf rf,bind bi [])) :: l
   | x-> Locf.failf loc "stru : %s" (!dump_stru x) 
-and cltyp (x:FAst.cltyp) =
+and cltyp (x:Astf.cltyp) =
   match x with
   | `ClApply(loc, id, tl) -> 
     mkcty loc
@@ -1244,7 +1244,7 @@ and clsigi (c:clsigi) (l:  Parsetree.class_type_field list) : Parsetree.class_ty
     mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l
   | t -> Locf.failf (unsafe_loc_of t) "clsigi :%s" (!dump_clsigi t) 
 
-and clexp  (x:FAst.clexp) :  Parsetree.class_expr =
+and clexp  (x:Astf.clexp) :  Parsetree.class_expr =
   let loc = unsafe_loc_of x in
   match x with 
   | `CeApp _ ->
@@ -1327,9 +1327,9 @@ let directive (x:exp) : Parsetree.directive_argument =
     if x ="true" then Pdir_bool true
     else Pdir_bool false
   | e ->
-    let ident_of_exp : FAst.exp -> FAst.ident =
+    let ident_of_exp : Astf.exp -> Astf.ident =
       let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
-      let rec self (x:FAst.exp) : ident =
+      let rec self (x:Astf.exp) : ident =
         let _loc = unsafe_loc_of x in
         match x with 
         | `App(_,e1,e2) -> `Apply(_loc,self e1, self e2)

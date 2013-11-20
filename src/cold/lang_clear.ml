@@ -1,6 +1,6 @@
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
-open FAst
+open Astf
 let a_lident = Gramf.mk "a_lident"
 let nonterminalsclear: exp Gramf.t = Gramf.mk "nonterminalsclear"
 let qualuid = Gramf.mk "qualuid"
@@ -67,7 +67,7 @@ let _ =
               [Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
               List1 (Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))];
             annot =
-              "(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           FAst.exp ))))\n  |> seq_sem\n";
+              "(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           Astf.exp ))))\n  |> seq_sem\n";
             fn =
               (Gramf.mk_action
                  (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 
@@ -80,7 +80,7 @@ let _ =
                               (`App
                                  (_loc,
                                    (`Dot (_loc, t, (`Lid (_loc, "clear")))),
-                                   x) : FAst.exp ))))
+                                   x) : Astf.exp ))))
                        |> seq_sem : 'nonterminalsclear ) : 'a_lident list ->
                                                              'qualuid ->
                                                                Locf.t ->

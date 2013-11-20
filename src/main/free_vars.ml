@@ -1,7 +1,7 @@
 
 
 
-open FAst
+open Astf
 
 
 (* syntax error class declaration TODO FIXME *)

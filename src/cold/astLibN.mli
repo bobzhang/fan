@@ -1,7 +1,7 @@
 
 (**
   A module for handling abstract syntax without locations *)
-open FAstN
+open Astfn
 
 val sem : 'a -> 'b -> [> `Sem of 'a * 'b ]
 val com : 'a -> 'b -> [> `Com of 'a * 'b ]

@@ -10,7 +10,7 @@ Syntaxf:
   ;
 };;
 
-open FAst
+open Astf
 
 
 %create{ 

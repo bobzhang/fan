@@ -100,7 +100,7 @@ let add_quotation ?(lexer= Flex_lib.from_stream)  ~exp_filter  ~pat_filter
          let ast = Gramlib.parse_string ~lexer entry_eoi ~loc:_loc s in
          let meta_ast = mpat _loc ast in
          let exp_ast = pat_filter meta_ast in
-         let rec subst_first_loc name (x : FAst.pat) =
+         let rec subst_first_loc name (x : Astf.pat) =
            (match x with
             | `App (loc,`Vrn (_,u),`Par (_,`Com (_,`Any _,rest))) ->
                 `App
@@ -110,7 +110,7 @@ let add_quotation ?(lexer= Flex_lib.from_stream)  ~exp_filter  ~pat_filter
                 `App (_loc, (`Vrn (_loc, u)), (`Lid (_loc, name)))
             | `Constraint (_loc,a,ty) ->
                 `Constraint (_loc, (subst_first_loc name a), ty)
-            | p -> p : FAst.pat ) in
+            | p -> p : Astf.pat ) in
          match loc_name_opt with
          | None  -> subst_first_loc (!Locf.name) exp_ast
          | Some "_" -> exp_ast
@@ -133,17 +133,17 @@ let of_pat ?lexer  ~name  ~entry  () =
 let of_exp ?lexer  ~name  ~entry  () =
   let expand_fun = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   add name Dyn_tag.exp expand_fun; add name Dyn_tag.stru mk_fun
 let of_ep ?lexer  ~name  ~entry  () =
-  let (expand_fun :FAst.ep Tokenf.expand_fun)= make_parser ?lexer entry in
+  let (expand_fun :Astf.ep Tokenf.expand_fun)= make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s :>FAst.exp)) : FAst.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s :>Astf.exp)) : Astf.stru ) in
   add name Dyn_tag.pat
-    (make_parser ?lexer entry : FAst.ep Tokenf.expand_fun  :>FAst.pat
+    (make_parser ?lexer entry : Astf.ep Tokenf.expand_fun  :>Astf.pat
                                                                Tokenf.expand_fun);
   add name Dyn_tag.exp
-    (expand_fun : FAst.ep Tokenf.expand_fun  :>FAst.exp Tokenf.expand_fun);
+    (expand_fun : Astf.ep Tokenf.expand_fun  :>Astf.exp Tokenf.expand_fun);
   add name Dyn_tag.stru mk_fun
 let of_pat_with_filter ?lexer  ~name  ~entry  ~filter  () =
   add name Dyn_tag.pat
@@ -165,5 +165,5 @@ let of_exp_with_filter ?lexer  ~name  ~entry  ~filter  () =
   let expand_fun loc loc_name_opt s =
     filter (make_parser ?lexer entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   add name Dyn_tag.exp expand_fun; add name Dyn_tag.stru mk_fun

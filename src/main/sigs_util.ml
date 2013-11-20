@@ -1,6 +1,6 @@
 
 open Astn_util
-open FAstN
+open Astfn
 
 open StdFan (* for [pp_print_list] [pp_print_string] *)
 

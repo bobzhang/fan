@@ -885,11 +885,11 @@ let _ =
             symbols =
               [List1
                  (Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))];
-            annot = "(`Uid (_loc, \"()\") : FAst.exp )\n";
+            annot = "(`Uid (_loc, \"()\") : Astf.exp )\n";
             fn =
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots ) : 
+                    ((`Uid (_loc, "()") : Astf.exp ) : 'fan_quots ) : 
                  'fan_quot_semi list -> Locf.t -> 'fan_quots ))
           }]
      } : Gramf.olevel )

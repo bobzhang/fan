@@ -3,7 +3,7 @@
 
 (** Internal use: injection language by codetemplate *)
 
-open FAst
+open Astf
 
 type key = string
       

@@ -1,4 +1,4 @@
-open FAst
+open Astf
 open Util
 type key = string 
 let inject_exp_tbl: (key,exp) Hashtbl.t = Hashtbl.create 40

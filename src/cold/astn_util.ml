@@ -1,4 +1,4 @@
-open FAstN
+open Astfn
 let sem a b = `Sem (a, b)
 let com a b = `Com (a, b)
 let app a b = `App (a, b)
@@ -24,7 +24,7 @@ let binds bs (e : exp) =
   | [] -> e
   | _ ->
       let binds = and_of_list bs in
-      (`LetIn (`Negative, binds, e) : FAstN.exp )
+      (`LetIn (`Negative, binds, e) : Astfn.exp )
 let lid n = `Lid n
 let uid n = `Uid n
 let unit: ep = `Uid "()"

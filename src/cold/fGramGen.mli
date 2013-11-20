@@ -1,5 +1,5 @@
 open Gram_def
-open FAst
+open Astf
 val print_warning : Locf.t -> string -> unit
 
 val prefix : string

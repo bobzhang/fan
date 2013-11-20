@@ -1,7 +1,7 @@
 
 (** Fan's core nonterminals exported *)  
 
-open FAst
+open Astf
 
 
 

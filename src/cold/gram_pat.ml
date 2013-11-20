@@ -4,7 +4,7 @@ let pp_print_vid = Objs.pp_print_vid
 let pp_print_alident = Objs.pp_print_alident
 let pp_print_ant = Objs.pp_print_ant
 let fprintf = Format.fprintf
-open FAst
+open Astf
 let pp_print_loc _f _loc = ()
 class mapbase =
   object 

@@ -10,5 +10,5 @@
    diffierent gram
  *)
 
-val fan_quots : FAst.exp Gramf.t
+val fan_quots : Astf.exp Gramf.t
 val fan_quot : unit Gramf.t

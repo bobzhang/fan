@@ -10,7 +10,7 @@ Format:
   fprintf
   ;
 };;
-open FAst
+open Astf
 let pp_print_loc _f _loc  = ()
 class mapbase = object
   method loc (x:loc) =  x

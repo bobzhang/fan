@@ -14,7 +14,7 @@ Ast_gen:
   appl_of_list
   ;
 };;
-open FAst
+open Astf
 open! Syntaxf
 
 
@@ -856,7 +856,7 @@ let apply () = begin
       class_signature:
       [ Ant (""|"csg" ,s); ? ";" %{ mk_ant  ~c:"clsigi" s}
       | Ant (""|"csg" ,s); ? ";"; S as csg %{
-          (`Sem (_loc, mk_ant ~c:"clsigi"  s, csg) : FAst.clsigi )}
+          (`Sem (_loc, mk_ant ~c:"clsigi"  s, csg) : Astf.clsigi )}
       | clsigi as csg; ? ";" %{ csg}
       | clsigi as csg; ? ";"; S as xs %{ `Sem(_loc,csg,xs)}
       ]
@@ -866,11 +866,11 @@ let apply () = begin
       | Quot x %{ Ast_quotation.expand  x Dyn_tag.clsigi}
       | "inherit"; cltyp as cs %{ `SigInherit(_loc,cs)}
       | "val"; opt_mutable as mf; opt_virtual as mv;a_lident as l; ":"; ctyp as t %{
-        (`CgVal (_loc, l, mf, mv, t) : FAst.clsigi )}
+        (`CgVal (_loc, l, mf, mv, t) : Astf.clsigi )}
       | "method"; "virtual"; opt_private as pf; a_lident as l; ":";ctyp as t 
-          %{(`VirMeth (_loc, l, pf, t) : FAst.clsigi )}
-      | "method"; opt_private as pf; a_lident as l; ":";ctyp as t %{(`Method (_loc, l, pf, t) : FAst.clsigi )}
-      | "constraint"; ctyp as t1; "="; ctyp as t2 %{ (`Eq (_loc, t1, t2) : FAst.clsigi )} ] };  
+          %{(`VirMeth (_loc, l, pf, t) : Astf.clsigi )}
+      | "method"; opt_private as pf; a_lident as l; ":";ctyp as t %{(`Method (_loc, l, pf, t) : Astf.clsigi )}
+      | "constraint"; ctyp as t1; "="; ctyp as t2 %{ (`Eq (_loc, t1, t2) : Astf.clsigi )} ] };  
 
     %extend{
       class_structure:
@@ -897,7 +897,7 @@ let apply () = begin
         | "inherit"; opt_override as o; clexp as ce %{`Inherit(_loc,o,ce)}
         | "inherit"; opt_override as o; clexp as ce; "as"; a_lident as i %{`InheritAs(_loc,o,ce,i)}
         | value_val_opt_override as o; opt_mutable as mf; a_lident as lab; cvalue_bind as e %{
-          (`CrVal (_loc, lab, o, mf, e) : FAst.clfield )}
+          (`CrVal (_loc, lab, o, mf, e) : Astf.clfield )}
 
         | "val"; "virtual"; opt_mutable as mf; a_lident as l; ":"; ctyp as t %{
           `VirVal (_loc, l, mf, t)}                    

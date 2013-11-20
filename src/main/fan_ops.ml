@@ -1,13 +1,13 @@
 %%control{ default "exp'" ;}
 
 open Util
-open FAst
+open Astf
 open Ast_gen
 
 
 
 (* +-----------------------------------------------------------------+
-   | Common functions for FAst processing                             |
+   | Common functions for Astf processing                             |
    +-----------------------------------------------------------------+ *)
 
 

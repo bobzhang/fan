@@ -3,7 +3,7 @@ let cstream = Compile_stream.cstream
 let exp = Syntaxf.exp
 let a_lident = Syntaxf.a_lident
 let pat = Syntaxf.pat
-open FAst
+open Astf
 let parser_ipat = Gramf.mk "parser_ipat"
 let parser_exp = Gramf.mk "parser_exp"
 let stream_pat_comp = Gramf.mk "stream_pat_comp"
@@ -84,11 +84,11 @@ let _ =
              [Token
                 ({ descr = { tag = `Key; word = (A "_"); tag_name = "Key" } } : 
                 Tokenf.pattern )];
-           annot = "(`Any _loc : FAst.pat )\n";
+           annot = "(`Any _loc : Astf.pat )\n";
            fn =
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
-                   ((`Any _loc : FAst.pat ) : 'parser_ipat ) : Tokenf.txt ->
+                   ((`Any _loc : Astf.pat ) : 'parser_ipat ) : Tokenf.txt ->
                                                                  Locf.t ->
                                                                    'parser_ipat ))
          }]

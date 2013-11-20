@@ -1,16 +1,16 @@
 let gen_stru = Derive.gen_stru
 let gen_object = Derive.gen_object
-open FAstN
+open Astfn
 open Astn_util
 open Util
 open Sigs_util
 let mk_variant _cons =
   (function
-   | [] -> (`Lid "true" : FAstN.exp )
+   | [] -> (`Lid "true" : Astfn.exp )
    | ls ->
        Listf.reduce_left_with
          ~compose:(fun x  y  ->
-                     (`App ((`App ((`Lid "&&"), x)), y) : FAstN.exp ))
+                     (`App ((`App ((`Lid "&&"), x)), y) : Astfn.exp ))
          ~project:(fun (x : Ctyp.ty_info)  -> x.info_exp) ls : Ctyp.ty_info
                                                                  list -> 
                                                                  exp )
@@ -21,10 +21,10 @@ let mk_record: Ctyp.record_col list -> exp =
       (mk_variant "")
 let (gen_eq,gen_eqobj) =
   ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
-      ~default:(`Lid "false" : FAstN.exp ) ()),
+      ~default:(`Lid "false" : Astfn.exp ) ()),
     (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
        ~class_name:"eq" ~mk_variant ~arity:2
-       ~default:(`Lid "false" : FAstN.exp ) ()))
+       ~default:(`Lid "false" : Astfn.exp ) ()))
 let some f x = Some (f x)
 let _ =
   List.iter Typehook.register
@@ -33,12 +33,12 @@ let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
       (function
-       | [] -> (`Lid "self" : FAstN.exp )
+       | [] -> (`Lid "self" : Astfn.exp )
        | ls ->
            Listf.reduce_right
              (fun v  acc  ->
                 (`LetIn (`Negative, (`Bind ((`Lid "self"), v)), acc) : 
-                FAstN.exp )) ls) in
+                Astfn.exp )) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
     (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
@@ -48,7 +48,7 @@ let (gen_fold,gen_fold2) =
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) : 
-       FAstN.exp ) ()))
+       Astfn.exp ) ()))
 let _ =
   List.iter Typehook.register
     [("Fold", (some gen_fold)); ("Fold2", (some gen_fold2))]
@@ -60,14 +60,14 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          (`LetIn (`Negative, (`Bind ((x.ep0 :>pat), (x.info_exp))), res) : 
-         FAstN.exp )) params (result :>exp) in
+         Astfn.exp )) params (result :>exp) in
   let mk_tuple params =
     let result =
       (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com in
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          (`LetIn (`Negative, (`Bind ((x.ep0 :>pat), (x.info_exp))), res) : 
-         FAstN.exp )) params (result :>exp) in
+         Astfn.exp )) params (result :>exp) in
   let mk_record cols =
     let result =
       (cols |>
@@ -79,14 +79,14 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun ({ info = { info_exp = exp; ep0;_};_} : Ctyp.record_col)  res  ->
          let pat0 = (ep0 :>pat) in
-         (`LetIn (`Negative, (`Bind (pat0, exp)), res) : FAstN.exp )) cols
+         (`LetIn (`Negative, (`Bind (pat0, exp)), res) : Astfn.exp )) cols
       result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" ~mk_variant ()),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "map2 failure")) : 
-       FAstN.exp ) ()))
+       Astfn.exp ) ()))
 let _ =
   [("Map", (some gen_map)); ("Map2", (some gen_map2))] |>
     (List.iter Typehook.register)
@@ -106,7 +106,7 @@ let gen_strip =
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               FAstN.exp )) params' result in
+               Astfn.exp )) params' result in
   let mk_tuple params =
     let result =
       ((params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com :>
@@ -119,21 +119,21 @@ let gen_strip =
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               FAstN.exp )) params result in
+               Astfn.exp )) params result in
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun x  ->
               ((`Arrow
-                  ((`Dot ((`Uid "FAst"), (`Lid x))),
-                    (`Dot ((`Uid "FAstN"), (`Lid x)))) : FAstN.ctyp ),
-                (`Dot ((`Uid "FAstN"), (`Lid x)) : FAstN.ctyp ))) ()
+                  ((`Dot ((`Uid "Astf"), (`Lid x))),
+                    (`Dot ((`Uid "Astfn"), (`Lid x)))) : Astfn.ctyp ),
+                (`Dot ((`Uid "Astfn"), (`Lid x)) : Astfn.ctyp ))) ()
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", (some gen_strip))
 let gen_fill =
   let mk_variant cons params =
     let result =
-      (appl_of_list ((EpN.of_str cons) :: (`Lid "loc" : FAstN.ep ) ::
+      (appl_of_list ((EpN.of_str cons) :: (`Lid "loc" : Astfn.ep ) ::
          (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
       exp) in
     List.fold_right
@@ -144,7 +144,7 @@ let gen_fill =
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               FAstN.exp )) params result in
+               Astfn.exp )) params result in
   let mk_tuple params =
     let result =
       ((params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com :>
@@ -157,7 +157,7 @@ let gen_fill =
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               FAstN.exp )) params result in
+               Astfn.exp )) params result in
   let mk_record _cols = assert false in
   gen_stru ~id:(`Pre "fill_") ~mk_tuple ~mk_record ~mk_variant ~names:
     ["loc"]
@@ -165,9 +165,9 @@ let gen_fill =
               ((`Arrow
                   ((`Dot ((`Uid "Locf"), (`Lid "t"))),
                     (`Arrow
-                       ((`Dot ((`Uid "FAstN"), (`Lid x))),
-                         (`Dot ((`Uid "FAst"), (`Lid x)))))) : FAstN.ctyp ),
-                (`Dot ((`Uid "FAst"), (`Lid x)) : FAstN.ctyp ))) ()
+                       ((`Dot ((`Uid "Astfn"), (`Lid x))),
+                         (`Dot ((`Uid "Astf"), (`Lid x)))))) : Astfn.ctyp ),
+                (`Dot ((`Uid "Astf"), (`Lid x)) : Astfn.ctyp ))) ()
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Fill", (some gen_fill))
@@ -195,7 +195,7 @@ let gen_meta_exp =
     ~mk_variant ()
 let gen_meta =
   gen_object
-    ~kind:(Concrete (`Dot ((`Uid "FAst"), (`Lid "ep")) : FAstN.ctyp ))
+    ~kind:(Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) : Astfn.ctyp ))
     ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
 let _ =
@@ -209,7 +209,7 @@ let mkfmt pre sep post fields =
   let s = pre ^ ((String.concat sep fields) ^ post) in
   (`App
      ((`App ((`Dot ((`Uid "Format"), (`Lid "fprintf"))), (`Lid "fmt"))),
-       (`Str s)) : FAstN.exp )
+       (`Str s)) : Astfn.exp )
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =
@@ -235,10 +235,10 @@ let gen_print =
     ~annot:(fun s  ->
               ((`Arrow
                   ((`Dot ((`Uid "Format"), (`Lid "formatter"))),
-                    (`Arrow ((`Lid s), (`Lid "unit")))) : FAstN.ctyp ),
-                (`Lid "unit" : FAstN.ctyp ))) ~mk_variant:mk_variant_print ()
+                    (`Arrow ((`Lid s), (`Lid "unit")))) : Astfn.ctyp ),
+                (`Lid "unit" : Astfn.ctyp ))) ~mk_variant:mk_variant_print ()
 let gen_print_obj =
-  gen_object ~kind:(Concrete (`Lid "unit" : FAstN.ctyp ))
+  gen_object ~kind:(Concrete (`Lid "unit" : Astfn.ctyp ))
     ~mk_tuple:mk_tuple_print ~base:"printbase" ~class_name:"print"
     ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 let _ =
@@ -252,7 +252,7 @@ let mk_variant_iter _cons params =
          params |>
            (List.map
               (fun (x : Ctyp.ty_info)  ->
-                 (`App ((x.name_exp), (x.id_ep : ep  :>exp)) : FAstN.exp ))) in
+                 (`App ((x.name_exp), (x.id_ep : ep  :>exp)) : Astfn.exp ))) in
        seq_sem lst : exp )
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =
@@ -261,7 +261,7 @@ let mk_record_iter cols =
       (List.map
          (fun (x : Ctyp.record_col)  ->
             let id_exp = ((x.info).id_ep :>exp) in
-            (`App (((x.info).name_exp), id_exp) : FAstN.exp ))) in
+            (`App (((x.info).name_exp), id_exp) : Astfn.exp ))) in
   seq_sem lst
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
@@ -296,26 +296,26 @@ let generate (mtyps : mtyps) =
        (fun key  arity  acc  ->
           if arity = 1
           then
-            let case: FAstN.case =
+            let case: Astfn.case =
               `Case ((`App ((`Vrn key), (`Lid "_loc"))), (`Lid "_loc")) in
             match acc with
             | None  -> Some case
-            | Some acc -> Some (`Bar (case, acc) : FAstN.case )
+            | Some acc -> Some (`Bar (case, acc) : Astfn.case )
           else
             if arity > 1
             then
-              (let pats = (`Lid "_loc" : FAstN.pat ) ::
-                 (Listf.init (arity - 1) (const (`Any : FAstN.pat ))) in
-               let case: FAstN.case =
+              (let pats = (`Lid "_loc" : Astfn.pat ) ::
+                 (Listf.init (arity - 1) (const (`Any : Astfn.pat ))) in
+               let case: Astfn.case =
                  `Case ((`App ((`Vrn key), (tuple_com pats))), (`Lid "_loc")) in
                match acc with
                | None  -> Some case
-               | Some acc -> Some (`Bar (case, acc) : FAstN.case ))
+               | Some acc -> Some (`Bar (case, acc) : Astfn.case ))
             else failwithf "arity=0 key:%s" key) tbl None in
    match case with
    | Some case ->
        (`Value (`Negative, (`Bind ((`Lid "loc_of"), (`Fun case)))) : 
-       FAstN.stru )
+       Astfn.stru )
    | None  -> failwithf "PluginsN.generate null case" : stru )
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
@@ -333,16 +333,16 @@ let generate (mtyps : mtyps) =
      (`Type
         (`TyDcl
            ((`Lid "t"), (`Some (`Quote (`Normal, (`Lid "a")))),
-             (`TyRepr (`Negative, (`Sum x))), `None)) : FAstN.stru ) in
+             (`TyRepr (`Negative, (`Sum x))), `None)) : Astfn.stru ) in
    let to_string =
      let case =
        bar_of_list
          (List.map
             (fun x  ->
                let u = String.capitalize x in
-               (`Case ((`Uid u), (`Str x)) : FAstN.case )) tys) in
+               (`Case ((`Uid u), (`Str x)) : Astfn.case )) tys) in
      (`Value (`Negative, (`Bind ((`Lid "of_string"), (`Fun case)))) : 
-       FAstN.stru ) in
+       Astfn.stru ) in
    let tags =
      List.map
        (fun x  ->
@@ -352,7 +352,7 @@ let generate (mtyps : mtyps) =
                (`Bind
                   ((`Lid x),
                     (`Constraint ((`Uid u), (`App ((`Lid "t"), (`Lid x)))))))) : 
-            FAstN.stru )) tys in
+            Astfn.stru )) tys in
    sem_of_list (typedecl :: to_string :: tags) : stru )
 let _ =
   Typehook.register
@@ -383,7 +383,7 @@ let generate (mtyps : mtyps) =
                                                          ((`Lid "super"),
                                                            (`Lid f))),
                                                        (`Lid "x"))))))))))))))))))) : 
-     FAstN.stru ) : stru ) in
+     Astfn.stru ) : stru ) in
    stru_from_ty ~f:aux mtyps : stru )
 let _ =
   Typehook.register ~filter:(fun _  -> true) ("MapWrapper", (some generate))
@@ -395,11 +395,11 @@ let generate (mtyps : mtyps) =
               ((`Lid ("dump_" ^ f)),
                 (`App
                    ((`Dot ((`Uid "Formatf"), (`Lid "to_string"))),
-                     (`Send ((`Lid "dump"), (`Lid f)))))))) : FAstN.stru ) : 
+                     (`Send ((`Lid "dump"), (`Lid f)))))))) : Astfn.stru ) : 
      stru ) in
    sem
      (`Value (`Negative, (`Bind ((`Lid "dump"), (`New (`Lid "print"))))) : 
-     FAstN.stru ) (stru_from_ty ~f:aux mtyps) : stru )
+     Astfn.stru ) (stru_from_ty ~f:aux mtyps) : stru )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
@@ -411,13 +411,13 @@ let generate (mtyps : mtyps) =
        let obj =
          ObjsN.map_row_field @@
            (function
-            | (`TyVrnOf (x,`Lid "loc") : FAstN.row_field) ->
-                (`TyVrn x : FAstN.row_field )
-            | (`TyVrnOf (x,`Par `Sta (`Lid "loc",y)) : FAstN.row_field) ->
+            | (`TyVrnOf (x,`Lid "loc") : Astfn.row_field) ->
+                (`TyVrn x : Astfn.row_field )
+            | (`TyVrnOf (x,`Par `Sta (`Lid "loc",y)) : Astfn.row_field) ->
                 (match y with
-                 | (`Sta (_loc,_) : FAstN.ctyp) ->
-                     (`TyVrnOf (x, (`Par y)) : FAstN.row_field )
-                 | _ -> (`TyVrnOf (x, y) : FAstN.row_field ))
+                 | (`Sta (_loc,_) : Astfn.ctyp) ->
+                     (`TyVrnOf (x, (`Par y)) : Astfn.row_field )
+                 | _ -> (`TyVrnOf (x, y) : Astfn.row_field ))
             | x -> x) in
        obj#typedecl ty
      else ty in

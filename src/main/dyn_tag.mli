@@ -1,4 +1,4 @@
-open FAst
+open Astf
 type 'a t
 val of_string : 'a t -> string
 val literal : literal t

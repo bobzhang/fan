@@ -1,4 +1,4 @@
-open FAst
+open Astf
 let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp
 let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat
 let ep = Gramf.mk "ep"
@@ -13,12 +13,12 @@ let _ =
               [Token
                  ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                  Tokenf.pattern )];
-            annot = "(`Lid (_loc, x) : FAst.ep )\n";
+            annot = "(`Lid (_loc, x) : Astf.ep )\n";
             fn =
               (Gramf.mk_action
                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
-                    ((`Lid (_loc, x) : FAst.ep ) : 'ep ) : Tokenf.txt ->
+                    ((`Lid (_loc, x) : Astf.ep ) : 'ep ) : Tokenf.txt ->
                                                              Locf.t -> 'ep ))
           }]
      } : Gramf.olevel )

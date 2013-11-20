@@ -1,4 +1,4 @@
-open FAstN
+open Astfn
 open Astn_util
 open Util
 let rec tvar_of_ident: vid -> string =

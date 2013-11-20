@@ -1,6 +1,6 @@
 
 (** internal usage *)
-open FAst
+open Astf
 
 type ty_meta = {
   str : string;

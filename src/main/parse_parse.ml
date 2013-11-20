@@ -17,12 +17,12 @@ Ast_gen:
 };;
 
   
-open FAst
+open Astf
 
 
-let mk_name (i:FAst.vid) : Gram_def.name =
+let mk_name (i:Astf.vid) : Gram_def.name =
   let rec aux  x =
-    match (x:FAst.vid) with
+    match (x:Astf.vid) with
     | `Lid (_,x) | `Uid(_,x) -> x
     | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
     | _ -> failwith "internal error in the Grammar extension" in

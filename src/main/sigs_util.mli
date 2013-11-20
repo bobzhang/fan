@@ -1,7 +1,7 @@
 
 (** Utilities for deriving mechanism *)
   
-open FAstN
+open Astfn
   
 type named_type = (string* typedecl)
 and and_types = named_type list
