@@ -2444,6 +2444,7 @@ let () =
     "`flo";
     "`chr";
     "`str"];
+  make_quot Dyn_tag.exp ~i:170 exp;
   List.iter (make_ant ~c:"exp" ~i:170 exp)
     ["exp";
     "";
@@ -2478,7 +2479,24 @@ let () =
   make_quot Dyn_tag.mbind mbind;
   List.iter (make_ant ~c:"mexp" mbind) ["mbind"; ""];
   make_quot Dyn_tag.mbind module_rec_declaration;
-  List.iter (make_ant ~c:"mbind" module_rec_declaration) ["mbind"; ""]
+  List.iter (make_ant ~c:"mbind" module_rec_declaration) ["mbind"; ""];
+  make_quot Dyn_tag.constr constr;
+  List.iter (make_ant ~c:"constr" constr) [""; "constr"];
+  make_quot ~i:60 Dyn_tag.mtyp mtyp;
+  List.iter (make_ant ~c:"mtyp" ~i:60 mtyp) [""; "mtyp"];
+  make_quot Dyn_tag.sigi sigi;
+  List.iter (make_ant ~c:"sigi" sigi) [""; "sigi"];
+  make_quot Dyn_tag.stru stru;
+  List.iter (make_ant ~c:"stru" stru) [""; "stri"];
+  make_quot Dyn_tag.clsigi clsigi;
+  List.iter (make_ant ~c:"clsigi" clsigi) [""; "csg"];
+  make_quot Dyn_tag.clfield clfield;
+  List.iter (make_ant ~c:"clfield" clfield) [""; "cst"];
+  make_quot Dyn_tag.clexp ~i:30 clexp;
+  List.iter (make_ant ~c:"clexp" ~i:30 clexp) [""; "cexp"];
+  make_quot Dyn_tag.cltyp cltyp;
+  List.iter (make_ant ~c:"cltyp" cltyp) [""; "ctyp"];
+  List.iter (make_ant ~c:"ctyp" meth_decl) [""; "typ"]
 let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      ({
@@ -3020,48 +3038,6 @@ let apply () =
               [Token
                  ({
                     descr =
-                      { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"constr\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr ) : 
-                 Tokenf.ant -> Locf.t -> 'constr ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "constr"); tag_name = "Ant"
-                      }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"constr\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"constr" s : 'constr ) : 
-                 Tokenf.ant -> Locf.t -> 'constr ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.constr\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.constr : 'constr ) : 
-                 Tokenf.quot -> Locf.t -> 'constr ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
                       { tag = `Key; word = (A "type"); tag_name = "Key" }
                   } : Tokenf.pattern );
               Nterm
@@ -3564,58 +3540,17 @@ let apply () =
         productions =
           [{
              symbols =
-               [Token
-                  ({
-                     descr =
-                       { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                   } : Tokenf.pattern )];
-             annot = "mk_ant ~c:\"mtyp\" s\n";
+               [Nterm
+                  (Gramf.obj
+                     (module_longident_with_app : 'module_longident_with_app
+                                                    Gramf.t ))];
+             annot = "(i : ident  :>mtyp)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp ) : 
-                  Tokenf.ant -> Locf.t -> 'mtyp ))
+                  (fun (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
+                     ((i : ident  :>mtyp) : 'mtyp ) : 'module_longident_with_app
+                                                        -> Locf.t -> 'mtyp ))
            };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "mtyp"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"mtyp\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"mtyp" s : 'mtyp ) : 
-                 Tokenf.ant -> Locf.t -> 'mtyp ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.mtyp\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.mtyp : 'mtyp ) : 
-                 Tokenf.quot -> Locf.t -> 'mtyp ))
-          };
-          {
-            symbols =
-              [Nterm
-                 (Gramf.obj
-                    (module_longident_with_app : 'module_longident_with_app
-                                                   Gramf.t ))];
-            annot = "(i : ident  :>mtyp)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
-                    ((i : ident  :>mtyp) : 'mtyp ) : 'module_longident_with_app
-                                                       -> Locf.t -> 'mtyp ))
-          };
           {
             symbols =
               [Token
@@ -3799,58 +3734,17 @@ let apply () =
                [Token
                   ({
                      descr =
-                       { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                   } : Tokenf.pattern )];
-             annot = "mk_ant ~c:\"sigi\" s\n";
+                       { tag = `Key; word = (A "include"); tag_name = "Key" }
+                   } : Tokenf.pattern );
+               Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))];
+             annot = "`Include (_loc, mt)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi ) : 
-                  Tokenf.ant -> Locf.t -> 'sigi ))
+                  (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
+                     (`Include (_loc, mt) : 'sigi ) : 'mtyp ->
+                                                        Tokenf.txt ->
+                                                          Locf.t -> 'sigi ))
            };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "sigi"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"sigi\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"sigi" s : 'sigi ) : 
-                 Tokenf.ant -> Locf.t -> 'sigi ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.sigi\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.sigi : 'sigi ) : 
-                 Tokenf.quot -> Locf.t -> 'sigi ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "include"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))];
-            annot = "`Include (_loc, mt)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
-                    (`Include (_loc, mt) : 'sigi ) : 'mtyp ->
-                                                       Tokenf.txt ->
-                                                         Locf.t -> 'sigi ))
-          };
           {
             symbols =
               [Token
@@ -5700,30 +5594,15 @@ let apply () =
           [{
              symbols =
                [Token
-                  ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
+                  ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
                   Tokenf.pattern )];
-             annot = "Ast_quotation.expand x Dyn_tag.exp\n";
+             annot = "`Int (_loc, s)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                     let x = __fan_0 in
-                     (Ast_quotation.expand x Dyn_tag.exp : 'exp ) : Tokenf.quot
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'exp ))
+                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                     let s = __fan_0.txt in (`Int (_loc, s) : 'exp ) : 
+                  Tokenf.txt -> Locf.t -> 'exp ))
            };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
-                 Tokenf.pattern )];
-            annot = "`Int (_loc, s)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in (`Int (_loc, s) : 'exp ) : 
-                 Tokenf.txt -> Locf.t -> 'exp ))
-          };
           {
             symbols =
               [Token
@@ -9502,7 +9381,7 @@ let apply () =
       } : Gramf.olevel );
    Gramf.extend_single (stru : 'stru Gramf.t )
      ({
-        label = (Some 10);
+        label = None;
         lassoc = true;
         productions =
           [{
@@ -9998,47 +9877,6 @@ let apply () =
                                                        Locf.t -> 'stru ))
           };
           {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"stru\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru ) : 
-                 Tokenf.ant -> Locf.t -> 'stru ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "stri"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"stru\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"stru" s : 'stru ) : 
-                 Tokenf.ant -> Locf.t -> 'stru ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.stru\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.stru : 'stru ) : 
-                 Tokenf.quot -> Locf.t -> 'stru ))
-          };
-          {
             symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
             annot = "`StExp (_loc, e)\n";
             fn =
@@ -10287,59 +10125,18 @@ let apply () =
                [Token
                   ({
                      descr =
-                       { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                   } : Tokenf.pattern )];
-             annot = "mk_ant ~c:\"clsigi\" s\n";
+                       { tag = `Key; word = (A "inherit"); tag_name = "Key" }
+                   } : Tokenf.pattern );
+               Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))];
+             annot = "`SigInherit (_loc, cs)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi ) : 
-                  Tokenf.ant -> Locf.t -> 'clsigi ))
+                  (fun (cs : 'cltyp)  _  (_loc : Locf.t)  ->
+                     (`SigInherit (_loc, cs) : 'clsigi ) : 'cltyp ->
+                                                             Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'clsigi ))
            };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "csg"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"clsigi\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clsigi" s : 'clsigi ) : 
-                 Tokenf.ant -> Locf.t -> 'clsigi ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.clsigi\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clsigi : 'clsigi ) : 
-                 Tokenf.quot -> Locf.t -> 'clsigi ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "inherit"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))];
-            annot = "`SigInherit (_loc, cs)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (cs : 'cltyp)  _  (_loc : Locf.t)  ->
-                    (`SigInherit (_loc, cs) : 'clsigi ) : 'cltyp ->
-                                                            Tokenf.txt ->
-                                                              Locf.t ->
-                                                                'clsigi ))
-          };
           {
             symbols =
               [Token
@@ -10870,63 +10667,22 @@ let apply () =
                [Token
                   ({
                      descr =
-                       { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                   } : Tokenf.pattern )];
-             annot = "mk_ant ~c:\"clfield\" s\n";
+                       { tag = `Key; word = (A "inherit"); tag_name = "Key" }
+                   } : Tokenf.pattern );
+               Nterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
+               Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))];
+             annot = "`Inherit (_loc, o, ce)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield ) : 
-                  Tokenf.ant -> Locf.t -> 'clfield ))
-           };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "cst"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"clfield\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clfield" s : 'clfield ) : 
-                 Tokenf.ant -> Locf.t -> 'clfield ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.clfield\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clfield : 'clfield ) : 
-                 Tokenf.quot -> Locf.t -> 'clfield ))
-          };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "inherit"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Nterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
-              Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))];
-            annot = "`Inherit (_loc, o, ce)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : Locf.t) 
-                    -> (`Inherit (_loc, o, ce) : 'clfield ) : 'clexp ->
-                                                                'opt_override
-                                                                  ->
-                                                                  Tokenf.txt
+                  (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : Locf.t)
+                      -> (`Inherit (_loc, o, ce) : 'clfield ) : 'clexp ->
+                                                                  'opt_override
+                                                                    ->
+                                                                    Tokenf.txt
                                                                     ->
                                                                     Locf.t ->
                                                                     'clfield ))
-          };
+           };
           {
             symbols =
               [Token
@@ -11444,66 +11200,26 @@ let apply () =
         productions =
           [{
              symbols =
-               [Token
-                  ({
-                     descr =
-                       { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                   } : Tokenf.pattern )];
-             annot = "mk_ant ~c:\"clexp\" s\n";
+               [Nterm (Gramf.obj (vid : 'vid Gramf.t ));
+               Token
+                 ({ descr = { tag = `Key; word = (A "["); tag_name = "Key" }
+                  } : Tokenf.pattern );
+               Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
+               Token
+                 ({ descr = { tag = `Key; word = (A "]"); tag_name = "Key" }
+                  } : Tokenf.pattern )];
+             annot = "`ClApply (_loc, ci, t)\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                     let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp ) : 
-                  Tokenf.ant -> Locf.t -> 'clexp ))
-           };
-          {
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind "cexp"); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"clexp\" s\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"clexp" s : 'clexp ) : 
-                 Tokenf.ant -> Locf.t -> 'clexp ))
-          };
-          {
-            symbols =
-              [Token
-                 ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                 Tokenf.pattern )];
-            annot = "Ast_quotation.expand x Dyn_tag.clexp\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                    let x = __fan_0 in
-                    (Ast_quotation.expand x Dyn_tag.clexp : 'clexp ) : 
-                 Tokenf.quot -> Locf.t -> 'clexp ))
-          };
-          {
-            symbols =
-              [Nterm (Gramf.obj (vid : 'vid Gramf.t ));
-              Token
-                ({ descr = { tag = `Key; word = (A "["); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
-              Token
-                ({ descr = { tag = `Key; word = (A "]"); tag_name = "Key" } } : 
-                Tokenf.pattern )];
-            annot = "`ClApply (_loc, ci, t)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : Locf.t) 
-                    -> (`ClApply (_loc, ci, t) : 'clexp ) : Tokenf.txt ->
-                                                              'comma_ctyp ->
-                                                                Tokenf.txt ->
-                                                                  'vid ->
+                  (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : Locf.t) 
+                     -> (`ClApply (_loc, ci, t) : 'clexp ) : Tokenf.txt ->
+                                                               'comma_ctyp ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'vid ->
                                                                     Locf.t ->
                                                                     'clexp ))
-          };
+           };
           {
             symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
             annot = "(ci :>clexp)\n";
@@ -11994,66 +11710,25 @@ let apply () =
        productions =
          [{
             symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"cltyp\" s\n";
+              [Nterm (Gramf.obj (vid : 'vid Gramf.t ));
+              Token
+                ({ descr = { tag = `Key; word = (A "["); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
+              Token
+                ({ descr = { tag = `Key; word = (A "]"); tag_name = "Key" } } : 
+                Tokenf.pattern )];
+            annot = "`ClApply (_loc, i, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp ) : 
-                 Tokenf.ant -> Locf.t -> 'cltyp ))
+                 (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : Locf.t) 
+                    -> (`ClApply (_loc, i, t) : 'cltyp ) : Tokenf.txt ->
+                                                             'comma_ctyp ->
+                                                               Tokenf.txt ->
+                                                                 'vid ->
+                                                                   Locf.t ->
+                                                                    'cltyp ))
           };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "ctyp"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"cltyp\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"cltyp" s : 'cltyp ) : 
-                Tokenf.ant -> Locf.t -> 'cltyp ))
-         };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" } } : 
-                Tokenf.pattern )];
-           annot = "Ast_quotation.expand x Dyn_tag.cltyp\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
-                   let x = __fan_0 in
-                   (Ast_quotation.expand x Dyn_tag.cltyp : 'cltyp ) : 
-                Tokenf.quot -> Locf.t -> 'cltyp ))
-         };
-         {
-           symbols =
-             [Nterm (Gramf.obj (vid : 'vid Gramf.t ));
-             Token
-               ({ descr = { tag = `Key; word = (A "["); tag_name = "Key" } } : 
-               Tokenf.pattern );
-             Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
-             Token
-               ({ descr = { tag = `Key; word = (A "]"); tag_name = "Key" } } : 
-               Tokenf.pattern )];
-           annot = "`ClApply (_loc, i, t)\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : Locf.t)  ->
-                   (`ClApply (_loc, i, t) : 'cltyp ) : Tokenf.txt ->
-                                                         'comma_ctyp ->
-                                                           Tokenf.txt ->
-                                                             'vid ->
-                                                               Locf.t ->
-                                                                 'cltyp ))
-         };
          {
            symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
            annot = "(i :>cltyp)\n";
@@ -12555,49 +12230,21 @@ let apply_ctyp () =
        productions =
          [{
             symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"ctyp\" s\n";
+              [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+              Token
+                ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
+            annot = "`TyCol (_loc, lab, t)\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl ) : 
-                 Tokenf.ant -> Locf.t -> 'meth_decl ))
-          };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "typ"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"ctyp\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"ctyp" s : 'meth_decl ) : 
-                Tokenf.ant -> Locf.t -> 'meth_decl ))
-         };
-         {
-           symbols =
-             [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-             Token
-               ({ descr = { tag = `Key; word = (A ":"); tag_name = "Key" } } : 
-               Tokenf.pattern );
-             Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
-           annot = "`TyCol (_loc, lab, t)\n";
-           fn =
-             (Gramf.mk_action
-                (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : Locf.t)  ->
-                   (`TyCol (_loc, lab, t) : 'meth_decl ) : 'ctyp ->
-                                                             Tokenf.txt ->
-                                                               'a_lident ->
-                                                                 Locf.t ->
-                                                                   'meth_decl ))
-         }]
+                 (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : Locf.t)  ->
+                    (`TyCol (_loc, lab, t) : 'meth_decl ) : 'ctyp ->
+                                                              Tokenf.txt ->
+                                                                'a_lident ->
+                                                                  Locf.t ->
+                                                                    'meth_decl ))
+          }]
      } : Gramf.olevel );
   Gramf.extend_single (opt_meth_list : 'opt_meth_list Gramf.t )
     ({
