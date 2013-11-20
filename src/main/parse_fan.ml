@@ -103,6 +103,12 @@ let make_comma atom nt =
     [ S as p1; ","; S as p2 %{`Com(_loc,p1,p2)}
     | atom as p %{p}]}
 
+(* let make_ant ?(c="") x nt =  *)
+(*     %extend{ *)
+(*   nt: *)
+(*     [ Ant($x, s) %{mk_ant ~c s }] *)
+(*   } *)
+    
 let make_pat exp =
   %extend{
        pat_quot:

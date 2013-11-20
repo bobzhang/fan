@@ -28,13 +28,6 @@ let mk_name (i:Astf.vid) : Gram_def.name =
     | _ -> failwith "internal error in the Grammar extension" in
   {id = i ; tvar = aux i; loc = loc_of i}
 
-(* let g = *)
-(*   Gramf.create_lexer ~annot:"Grammar's lexer" *)
-(*     ~keywords:[(\* "("; ")" ; ",";  "|";  ":"; *\) *)
-(*                (\* "."; ";"; "{"; "}"; "[";"]"; *\) *)
-(*                (\* "+";"*";"?"; "="; "_"; "@"; *\) *)
-(*                ] ();; *)
-
 
 let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
   Hashtbl.create 50     
@@ -69,12 +62,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   (* FIXME bring antiquotation back later*)
   (****************************************)                  
   simple_token @Inline :
-  [ ("EOI" as v) %{
-    {text = Token(_loc,
-                   %exp{({descr = { tag = $vrn:v ; word = Any; tag_name = $str:v }}:Tokenf.pattern)});
-     styp = %ctyp'{Tokenf.txt};
-     bounds = []; outer_pattern = None  }}
-  | ("Lid"|"Uid"|"Str" as v); Str x %{
+  [ ("Lid"|"Uid"|"Str" as v); Str x %{
     {text = Token(_loc,
                    %exp{({descr = {tag = $vrn:v; word = A $str:x; tag_name = $str:v }}:Tokenf.pattern)});
      styp = %ctyp'{Tokenf.txt};
@@ -188,7 +176,20 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   [ @simple_token %{fun (txt :Gram_def.osymbol) ->
     [ (({kind = Gram_def.KNormal; txt= [txt]}) : Gram_def.osymbol list Gram_def.decorate) ]}
   | @simple_symbol %{fun (txt : Gram_def.osymbol) ->
-      [({kind = KNormal; txt = [txt] } : Gram_def.osymbol list Gram_def.decorate)]} 
+      [({kind = KNormal; txt = [txt] } : Gram_def.osymbol list Gram_def.decorate)]}
+(*
+  | ("Ant" as v); "("; Ant("ant",a); ",", Lid@xloc s; ")" %{
+      [{kind = KNormal;
+        txt =
+        [{
+         text = Token(_loc,
+                      %exp{({descr = {tag = $vrn:v;
+                                      word = Kind $str{x.txt};
+                                      tag_name = $str:v}}:Tokenf.pattern)});
+         styp= %ctyp'{Tokenf.ant};
+         bounds = ;
+         outer_pattern = None}]}]
+*)                                             }
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       match ps with
       | (vs,loc,y) ->

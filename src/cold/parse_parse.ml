@@ -92,14 +92,19 @@ let _ =
               [Token
                  ({
                     descr =
-                      { tag = `Key; word = (A "EOI"); tag_name = "Key" }
-                  } : Tokenf.pattern )];
+                      { tag = `Key; word = (A "Lid"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                Tokenf.pattern )];
             annot =
-              "{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`Uid (_loc, \"Any\")))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         Astf.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n";
+              "{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         Astf.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.txt)  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let v = __fan_0.txt in
+                    let x = __fan_1.txt in
                     ({
                        text =
                          (Token
@@ -126,9 +131,13 @@ let _ =
                                                                  (`Lid
                                                                     (_loc,
                                                                     "word")),
-                                                                 (`Uid
+                                                                 (`App
                                                                     (_loc,
-                                                                    "Any")))),
+                                                                    (`Uid
+                                                                    (_loc,
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
                                                             (`RecBind
                                                                (_loc,
                                                                  (`Lid
@@ -147,78 +156,9 @@ let _ =
                        bounds = [];
                        outer_pattern = None
                      } : 'single_symbol ) : Tokenf.txt ->
-                                              Locf.t -> 'single_symbol ))
+                                              Tokenf.txt ->
+                                                Locf.t -> 'single_symbol ))
           };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Key; word = (A "Lid"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-               Tokenf.pattern )];
-           annot =
-             "{\n  text =\n    (Token\n       (_loc,\n         (`Constraint\n            (_loc,\n              (`Record\n                 (_loc,\n                   (`RecBind\n                      (_loc, (`Lid (_loc, \"descr\")),\n                        (`Record\n                           (_loc,\n                             (`Sem\n                                (_loc,\n                                  (`RecBind\n                                     (_loc, (`Lid (_loc, \"tag\")),\n                                       (`Vrn (_loc, v)))),\n                                  (`Sem\n                                     (_loc,\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"word\")),\n                                            (`App\n                                               (_loc, (`Uid (_loc, \"A\")),\n                                                 (`Str (_loc, x)))))),\n                                       (`RecBind\n                                          (_loc, (`Lid (_loc, \"tag_name\")),\n                                            (`Str (_loc, v)))))))))))))),\n              (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n         Astf.exp )));\n  styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n  bounds = [];\n  outer_pattern = None\n}\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_1 : Tokenf.txt)  (__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
-                   let v = __fan_0.txt in
-                   let x = __fan_1.txt in
-                   ({
-                      text =
-                        (Token
-                           (_loc,
-                             (`Constraint
-                                (_loc,
-                                  (`Record
-                                     (_loc,
-                                       (`RecBind
-                                          (_loc, (`Lid (_loc, "descr")),
-                                            (`Record
-                                               (_loc,
-                                                 (`Sem
-                                                    (_loc,
-                                                      (`RecBind
-                                                         (_loc,
-                                                           (`Lid
-                                                              (_loc, "tag")),
-                                                           (`Vrn (_loc, v)))),
-                                                      (`Sem
-                                                         (_loc,
-                                                           (`RecBind
-                                                              (_loc,
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "word")),
-                                                                (`App
-                                                                   (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "A")),
-                                                                    (`Str
-                                                                    (_loc, x)))))),
-                                                           (`RecBind
-                                                              (_loc,
-                                                                (`Lid
-                                                                   (_loc,
-                                                                    "tag_name")),
-                                                                (`Str
-                                                                   (_loc, v)))))))))))))),
-                                  (`Dot
-                                     (_loc, (`Uid (_loc, "Tokenf")),
-                                       (`Lid (_loc, "pattern"))))) : 
-                             Astf.exp )));
-                      styp =
-                        (`Dot
-                           (_loc, (`Uid (_loc, "Tokenf")),
-                             (`Lid (_loc, "txt"))));
-                      bounds = [];
-                      outer_pattern = None
-                    } : 'single_symbol ) : Tokenf.txt ->
-                                             Tokenf.txt ->
-                                               Locf.t -> 'single_symbol ))
-         };
          {
            symbols =
              [Token
@@ -3691,14 +3631,19 @@ let _ =
               [Token
                  ({
                     descr =
-                      { tag = `Key; word = (A "EOI"); tag_name = "Key" }
-                  } : Tokenf.pattern )];
+                      { tag = `Key; word = (A "Lid"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                Tokenf.pattern )];
             annot =
-              "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`Uid (_loc, \"Any\")))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           Astf.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
+              "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           Astf.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.txt)  (__fan_0 : Tokenf.txt) 
+                    (_loc : Locf.t)  ->
                     let v = __fan_0.txt in
+                    let x = __fan_1.txt in
                     ((fun (txt : Gram_def.osymbol)  ->
                         [({ kind = Gram_def.KNormal; txt = [txt] } : 
                         Gram_def.osymbol list Gram_def.decorate )])
@@ -3729,9 +3674,13 @@ let _ =
                                                                    (`Lid
                                                                     (_loc,
                                                                     "word")),
-                                                                   (`Uid
+                                                                   (`App
                                                                     (_loc,
-                                                                    "Any")))),
+                                                                    (`Uid
+                                                                    (_loc,
+                                                                    "A")),
+                                                                    (`Str
+                                                                    (_loc, x)))))),
                                                               (`RecBind
                                                                  (_loc,
                                                                    (`Lid
@@ -3749,81 +3698,9 @@ let _ =
                                 (`Lid (_loc, "txt"))));
                          bounds = [];
                          outer_pattern = None
-                       } : 'simple ) : Tokenf.txt -> Locf.t -> 'simple ))
+                       } : 'simple ) : Tokenf.txt ->
+                                         Tokenf.txt -> Locf.t -> 'simple ))
           };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Key; word = (A "Lid"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-               Tokenf.pattern )];
-           annot =
-             "(fun (txt : Gram_def.osymbol)  ->\n   [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol list\n                                                  Gram_def.decorate )])\n  {\n    text =\n      (Token\n         (_loc,\n           (`Constraint\n              (_loc,\n                (`Record\n                   (_loc,\n                     (`RecBind\n                        (_loc, (`Lid (_loc, \"descr\")),\n                          (`Record\n                             (_loc,\n                               (`Sem\n                                  (_loc,\n                                    (`RecBind\n                                       (_loc, (`Lid (_loc, \"tag\")),\n                                         (`Vrn (_loc, v)))),\n                                    (`Sem\n                                       (_loc,\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"word\")),\n                                              (`App\n                                                 (_loc, (`Uid (_loc, \"A\")),\n                                                   (`Str (_loc, x)))))),\n                                         (`RecBind\n                                            (_loc, (`Lid (_loc, \"tag_name\")),\n                                              (`Str (_loc, v)))))))))))))),\n                (`Dot\n                   (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"pattern\"))))) : \n           Astf.exp )));\n    styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"txt\"))));\n    bounds = [];\n    outer_pattern = None\n  }\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_1 : Tokenf.txt)  (__fan_0 : Tokenf.txt) 
-                   (_loc : Locf.t)  ->
-                   let v = __fan_0.txt in
-                   let x = __fan_1.txt in
-                   ((fun (txt : Gram_def.osymbol)  ->
-                       [({ kind = Gram_def.KNormal; txt = [txt] } : Gram_def.osymbol
-                                                                    list
-                                                                    Gram_def.decorate )])
-                      {
-                        text =
-                          (Token
-                             (_loc,
-                               (`Constraint
-                                  (_loc,
-                                    (`Record
-                                       (_loc,
-                                         (`RecBind
-                                            (_loc, (`Lid (_loc, "descr")),
-                                              (`Record
-                                                 (_loc,
-                                                   (`Sem
-                                                      (_loc,
-                                                        (`RecBind
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc, "tag")),
-                                                             (`Vrn (_loc, v)))),
-                                                        (`Sem
-                                                           (_loc,
-                                                             (`RecBind
-                                                                (_loc,
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "word")),
-                                                                  (`App
-                                                                    (_loc,
-                                                                    (`Uid
-                                                                    (_loc,
-                                                                    "A")),
-                                                                    (`Str
-                                                                    (_loc, x)))))),
-                                                             (`RecBind
-                                                                (_loc,
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "tag_name")),
-                                                                  (`Str
-                                                                    (_loc, v)))))))))))))),
-                                    (`Dot
-                                       (_loc, (`Uid (_loc, "Tokenf")),
-                                         (`Lid (_loc, "pattern"))))) : 
-                               Astf.exp )));
-                        styp =
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Tokenf")),
-                               (`Lid (_loc, "txt"))));
-                        bounds = [];
-                        outer_pattern = None
-                      } : 'simple ) : Tokenf.txt ->
-                                        Tokenf.txt -> Locf.t -> 'simple ))
-         };
          {
            symbols =
              [Token
