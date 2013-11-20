@@ -250,121 +250,11 @@ type 'a parse  = stream -> 'a
 
 type filter = stream -> stream
   
-(* type filter_error = *)
-(*   | Illegal_token of string *)
-(*   | Keyword_as_label of string *)
-
-(* exception TokenError of  filter_error *)
-
-(* let filter_err error loc = raise @@ Locf.Exc_located (loc, TokenError error) *)
-
-
-(* let pp_print_error: filter_error Formatf.t  = *)
-(*   fun fmt  -> *)
-(*     function *)
-(*     | Illegal_token _a0 -> *)
-(*         Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" Format.pp_print_string _a0 *)
-(*     | Keyword_as_label _a0 -> *)
-(*         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string *)
-(*           _a0 *)
 (* BOOTSTRAPPING --  *)
 let to_string = Formatf.to_string pp_print_t
         
 let print ppf x = Format.pp_print_string ppf (to_string x)
           
-(* let string_of_error_msg = Formatf.to_string pp_print_error;; *)
-
-(* [Sym] should always be filtered into keywords *)  
-(* let keyword_conversion (tok:t) kwds = *)
-(*   match tok with *)
-(*   | `Sym u  | `Lid u | `Pre u (\* for example "??"*\) *)
-(*   | `Uid u when Setf.String.mem u.txt  kwds -> *)
-(*       (\* Format.eprintf "%a@." print tok ; *\) *)
-(*       `Key u *)
-(*   | `Inf u  (\* * *\) when Setf.String.mem u.txt kwds -> *)
-(*       (\* Format.eprintf "%a@." print tok ;       *\) *)
-(*       `Key {loc = u.loc; txt = u.txt} *)
-
-(*   | `Eident u -> `Lid u *)
-(*   | _ -> tok  *)
-
-(* let check_keyword_as_label (tok:t)  kwds = *)
-(*   match tok with *)
-(*   |`Label u | `Optlabel u when Setf.String.mem u.txt kwds *)
-(*     -> filter_err (Keyword_as_label u.txt) u.loc  *)
-(*   | _               -> ()   *)
-
-(* type filter_plugin = { *)
-(*     mutable kwds : Setf.String.t; *)
-(*     mutable filter : filter option; *)
-(*   }         *)
-(* let check_unknown_keywords (tok:t) loc = *)
-(*   match tok with *)
-(*   | `Sym s -> filter_err (Illegal_token s.txt) loc *)
-(*   | _        -> ()  *)
-
-(* let filter x = *)
-(*   let f (t:t) = *)
-(*     let t = keyword_conversion t x.kwds in begin *)
-(*       check_keyword_as_label t x.kwds; *)
-(*       t  *)
-(*     end in *)
-(*   match x.filter with *)
-(*   | None -> Streamf.map f  *)
-(*   | Some filter -> fun strm -> filter (Streamf.map f strm) *)
-(* ======= *)
-(* let pp_print_error: filter_error Formatf.t  = *)
-(*   fun fmt  -> *)
-(*     function *)
-(*     | Illegal_token _a0 -> *)
-(*         Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" Format.pp_print_string _a0 *)
-(*     | Keyword_as_label _a0 -> *)
-(*         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string *)
-(*           _a0 *)
-(* let string_of_error_msg = Formatf.to_string pp_print_error;; *)
-
-(* [Sym] should always be filtered into keywords *)  
-(* let keyword_conversion (tok:t) kwds = *)
-(*   match tok with *)
-(*   | `Sym u  | `Lid u | `Pre u (\* for example "??"*\) *)
-(*   | `Uid u when Setf.String.mem u.txt  kwds -> `Key u *)
-(*   | `Inf u  (\* * *\) when Setf.String.mem u.txt kwds -> *)
-(*       `Key {loc = u.loc; txt = u.txt} *)
-(*   | `Eident u -> `Lid u *)
-(*   | _ -> tok  *)
-
-(* let check_keyword_as_label (tok:t)  kwds = *)
-(*   match tok with *)
-(*   |`Label u | `Optlabel u when Setf.String.mem u.txt kwds *)
-(*     -> filter_err (Keyword_as_label u.txt) u.loc  *)
-(*   | _               -> ()   *)
-
-(* type filter_plugin = { *)
-(*     mutable kwds : Setf.String.t; *)
-(*     mutable filter : filter option; *)
-(*   }         *)
-(* let check_unknown_keywords (tok:t) loc = *)
-(*   match tok with *)
-(*   | `Sym s -> filter_err (Illegal_token s.txt) loc *)
-(*   | _        -> ()  *)
-
-(* let filter x = *)
-(*   let f (t:t) = *)
-(*     let t = keyword_conversion t x.kwds in begin *)
-(*       check_keyword_as_label t x.kwds; *)
-(*       t  *)
-(*     end in *)
-(*   match x.filter with *)
-(*   | None -> Streamf.map f  *)
-(*   | Some filter -> fun strm -> filter (Streamf.map f strm) *)
-(* >>>>>>> not_check *)
-
-
-
-    
-
-
-
 let strip (x:t) : Obj.t  =
   Obj.field (Obj.repr x) 1 
  
@@ -453,13 +343,6 @@ let match_token (x:pattern)  =
      | A s -> (Obj.magic (Obj.field obj 1) : string) = s
      | Level i -> (Obj.magic (Obj.field obj 2) : int) = i))
 
-
-  
-        
-(* let () = *)
-(*   Printexc.register_printer @@ function *)
-(*   |TokenError e -> Some (string_of_error_msg e) *)
-(*   | _ -> None *)
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake common/tokenf.cmo" *)
