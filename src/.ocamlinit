@@ -59,7 +59,7 @@ let p_type_declaration  =  AstPrint.default#type_declaration;;
 
 let env = !Toploop.toplevel_env;;
 module O = Obj;;
-open FAst;;
+open Astf;;
 (* test dump *)
 let t_dump s =  t stru s |> Ast2pt.stru;;
 let t_meta  = Gramlib.parse_string Parse_parse.simple;;

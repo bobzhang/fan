@@ -792,8 +792,7 @@ let apply () = begin
       virtual_flag_quot: [  opt_virtual as x %{x} ] 
       row_var_flag_quot: [  opt_dot_dot as x %{x} ] 
       override_flag_quot:[  opt_override as x %{x} ] 
-      pat_eoi:  [ pat as x; EOI  %{x} ] 
-      exp_eoi:  [ exp as x; EOI %{x} ]  };
+};
   with stru
     %extend{
     (** ml file  entrance *)    

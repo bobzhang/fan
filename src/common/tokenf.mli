@@ -188,7 +188,7 @@ type pattern = {
 type stream =  t Streamf.t 
       
 type 'a parse = stream -> 'a
-
+type 'a lex = Locf.t -> char Streamf.t -> 'a
 type filter = stream -> stream
 
 

@@ -1,28 +1,36 @@
 open Astf
 
 
-let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp 
-let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat
+(* let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp  *)
+(* let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat *)
 ;;
 %create{ep};;
 %extend{
 ep: [Lid x %ep{$lid:x}]
 };;    
-let antiquot_ident = Gramlib.eoi_entry Syntaxf.ident
+(* let antiquot_ident = Gramlib.eoi_entry Syntaxf.ident *)
 
 
-let antiquot_ep = Gramlib.eoi_entry ep
-let exp loc str = Gramlib.parse_string antiquot_exp ~loc str
+(* let antiquot_ep = Gramlib.eoi_entry ep *)
 
-let pat loc str = Gramlib.parse_string antiquot_pat ~loc str
+let exp  loc str =
+  Gramlib.parse_string_eoi   Syntaxf.exp (* antiquot_exp *) ~loc str
+
+let pat loc str =
+  Gramlib.parse_string_eoi  Syntaxf.pat (* antiquot_pat *) ~loc str
 
 (* FIXME -- to be improved *)
-let ep loc str : ep = (Gramlib.parse_string antiquot_ep ~loc str ) 
+let ep  loc str : ep =
+  Gramlib.parse_string_eoi  ep  ~loc str 
     
-let ident loc str = Gramlib.parse_string antiquot_ident ~loc str
+let ident  loc str =
+  Gramlib.parse_string Syntaxf.ident(* antiquot_ident *) ~loc str
 
-let anti_filter = Ant.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat
+let anti_filter =
+  Ant.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat
+
 let exp_filter (x:ep) = (anti_filter#exp (x:>exp))
+
 let pat_filter (x:ep) = (anti_filter#pat (x:>pat))
 
 let anti_filter_n = AntN.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat

@@ -68,7 +68,7 @@ val direction_flag_quot : flag Gramf.t
 
 val eq_exp : (alident -> pat -> pat) Gramf.t 
 val exp : exp Gramf.t
-val exp_eoi : exp Gramf.t
+
 val exp_quot : exp Gramf.t
 val field_exp : rec_exp Gramf.t
 val field_exp_list : rec_exp Gramf.t
@@ -120,7 +120,7 @@ val opt_virtual : flag Gramf.t
 val virtual_flag_quot : flag Gramf.t
 val pat : pat Gramf.t
 
-val pat_eoi : pat Gramf.t
+
 val pat_quot : pat Gramf.t
 val row_field : row_field Gramf.t
 val sem_exp : exp Gramf.t

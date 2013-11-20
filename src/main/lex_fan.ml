@@ -1,3 +1,67 @@
+(*
+  source info : lexer.mll from 4.02dev+trunk
+  "mod", INFIXOP3("mod");
+  "land", INFIXOP3("land");
+  "lor", INFIXOP3("lor");
+  "lxor", INFIXOP3("lxor");
+  "lsl", INFIXOP4("lsl");
+  "lsr", INFIXOP4("lsr");
+  "asr", INFIXOP4("asr")
+
+  | "#"  
+  | "&"  
+  | "&&" 
+  | "`"  
+  | "'"  
+  | "("  
+  | ")"  
+  | "*"  
+  | ","  
+  | "->" 
+  | "."  
+  | ".." 
+  | ":"  
+  | "::" 
+  | ":=" 
+  | ":>" 
+  | ";"  
+  | ";;" 
+  | "<"  
+  | "<-" 
+  | "="  
+  | "["  
+  | "[|" 
+  | "[<" 
+  | "[>" 
+  | "]"  
+  | "{"  
+  | "{<" 
+  | "|"  
+  | "||" 
+  | "|]" 
+  | ">"  
+  | ">]" 
+  | "}"  
+  | ">}" 
+  | "[@" 
+  | "[%" 
+  | "[%%"
+  | "[@@"
+  | "!"  
+  | "!=" { INFIXOP0  }
+  | "+"  
+  | "+." 
+  | "-"  
+  | "-." 
+  | "!" symbolchar + { PREFIXOP }
+  | ['~' '?'] symbolchar + { PREFIXOP }
+  | ['=' '<' '>' '|' '&' '$'] symbolchar * { INFIXOP0 }
+  | ['@' '^'] symbolchar * { INFIXOP1 }
+  | ['+' '-'] symbolchar * { INFIXOP2 }
+  | "**" symbolchar * { INFIXOP4 }
+  | '%'     
+  | ['*' '/' '%'] symbolchar * { INFIXOP3 }
+ *)    
 
 %regex{ (** FIXME remove duplication later see lexing_util.cmo *)
 let not_star_symbolchar =

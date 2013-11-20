@@ -81,6 +81,7 @@ val trace_parser: bool ref
 
 val parse_origin_tokens:  'a t -> stream -> 'a
       
+val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a
     
 val clear: 'a t -> unit
 
@@ -92,7 +93,7 @@ val obj: 'a t -> entry
 
 val repr: entry -> 'a t
     
-(* val gram: gram *)
+
 
 (** create a standalone gram
     {[
@@ -102,32 +103,19 @@ val repr: entry -> 'a t
     |}
     ]}
  *)
-(* val create_lexer: *)
-(*     ?filter:Tokenf.filter option -> *)
-(*       annot:string -> keywords: string list -> unit -> gram *)
-
-(* val mk_dynamic: gram -> string -> 'a t *)
-
-(* val gram_of_entry: 'a t -> gram *)
     
 val mk: string -> 'a t
-
-(* val get_filter: unit -> Tokenf.filter_plugin *)
-
-(* val filter_of_gram : 'a t -> Tokenf.filter_plugin *)
 
       
 val debug_origin_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
 
-(* val debug_filtered_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a *)
-
-
-
 val wrap_stream_parser : ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
-
+    
 
 val delete_rule :  'a t -> symbol list -> unit
+
 val extend_single : 'a t -> single_extend_statement -> unit
+
 val unsafe_extend_single : 'a t -> single_extend_statement -> unit    
 
 

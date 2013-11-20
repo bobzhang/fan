@@ -17,7 +17,9 @@
   cltyp_plus com_ctyp comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
   ctyp cvalue_bind flag direction_flag_quot
-   eq_exp exp exp_eoi field_exp field_exp_list fun_bind
+  eq_exp exp
+  
+  field_exp field_exp_list fun_bind
   fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
   label_pat_list label_pat label_longident
@@ -28,7 +30,6 @@
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
   override_flag_quot
   pat
-  pat_eoi
   row_field  sem_exp  sem_exp_for_list  sem_pat  sem_pat_for_list  semi  sequence
   sigi  sigis  star_ctyp  stru  strus  top_phrase
   type_declaration  type_ident_and_parameters  type_longident  type_longident_and_parameters

@@ -1,6 +1,4 @@
 open Astf
-let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp
-let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat
 let ep = Gramf.mk "ep"
 let _ =
   Gramf.extend_single (ep : 'ep Gramf.t )
@@ -22,12 +20,10 @@ let _ =
                                                              Locf.t -> 'ep ))
           }]
      } : Gramf.olevel )
-let antiquot_ident = Gramlib.eoi_entry Syntaxf.ident
-let antiquot_ep = Gramlib.eoi_entry ep
-let exp loc str = Gramlib.parse_string antiquot_exp ~loc str
-let pat loc str = Gramlib.parse_string antiquot_pat ~loc str
-let ep loc str = (Gramlib.parse_string antiquot_ep ~loc str : ep )
-let ident loc str = Gramlib.parse_string antiquot_ident ~loc str
+let exp loc str = Gramlib.parse_string_eoi Syntaxf.exp ~loc str
+let pat loc str = Gramlib.parse_string_eoi Syntaxf.pat ~loc str
+let ep loc str = (Gramlib.parse_string_eoi ep ~loc str : ep )
+let ident loc str = Gramlib.parse_string Syntaxf.ident ~loc str
 let anti_filter = Ant.antiquot_expander ~parse_exp:exp ~parse_pat:pat
 let exp_filter (x : ep) = anti_filter#exp (x :>exp)
 let pat_filter (x : ep) = anti_filter#pat (x :>pat)

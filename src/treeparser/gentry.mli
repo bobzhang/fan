@@ -23,43 +23,21 @@ val obj : 'a t -> entry
 
 val repr : entry -> 'a t
 
-(* val gram_of_entry : 'a t -> gram *)
-
 
 (**  The main entrance to consume the parser,
      it call [action_parse] internally, which would call [entry.start 0 ],
      the filter of the gram is not applied  *)  
 val parse_origin_tokens : 'a t -> Tokenf.stream -> 'a
 
-(** The same as [parse_origin_tokens] except that filter is applied *)    
-(* val filter_and_parse_tokens : 'a t -> Tokenf.stream -> 'a *)
 
-(** The default lexer, i.e, [Flex_lib.form_stream],
-     *)
-(* val lex_string : Locf.t -> string -> Tokenf.stream *)
-
-(** It would call the default lexer [gfilter], however, the filter
-    is parameterized by the entry *)    
-(* val parse_string : *)
-(*     ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) -> *)
-(*       ?loc:Locf.t -> 'a t -> string -> 'b *)
-
-(* val filter_of_gram : 'a t -> Tokenf.filter_plugin *)
-
-    
-(** call the [gfilter], and use [glexer] *)
-(* val parse : 'a t -> Locf.t -> char Streamf.t -> 'a *)
-    
-
-
-
-
+val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a
 (** mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future *)    
 (* val extend : *)
 (*   'a t -> position  option * olevel list -> unit *)
 (* val unsafe_extend : *)
 (*     'a t -> position  option * olevel list -> unit *)
+
 
 val extend_single :
   'a t -> Gdefs.single_extend_statement  -> unit

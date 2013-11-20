@@ -16,10 +16,8 @@ let dump ppf e = Format.fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
-(* let filter_of_gram (x :'a t) = x.gram.gfilter *)
 
-let mk_dynamic (* g *) n : 'a t ={
-  (* gram = g; *)
+let mk_dynamic  n : 'a t ={
   name = n;
   start = Gtools.empty_entry n;
   continue  = (fun _ _ _ _ -> raise Streamf.NotConsumed);
@@ -38,10 +36,7 @@ let repr x = x
 
 
 
-(* let gram_of_entry (e:'a t) = e.gram *)
-
 (** driver of the parse, it would call [start]
-   
  *)
 let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   try 
@@ -56,13 +51,30 @@ let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   | Locf.Exc_located (_, _) as exc -> raise exc
   | exc -> 
       Locf.raise (Token_stream.cur_loc ts) exc
+
+let eoi_action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
+  try 
+    let p = if !trace_parser then Format.fprintf else Format.ifprintf in
+    (p Format.err_formatter "@[<4>%s@ " entry.name ;
+    let res = entry.start 0 ts in
+    let () = p Format.err_formatter "@]@." in
+    match Streamf.peek ts with
+    | Some (`EOI _) -> res
+    | Some x  -> Locf.failf (Tokenf.get_loc x)  "EOI expected"
+    | None -> res)
+  with
+  | Streamf.NotConsumed ->
+      Locf.raise (Token_stream.cur_loc ts) (Streamf.Error ("illegal begin of " ^ entry.name))
+  | Locf.Exc_located (_, _) as exc -> raise exc
+  | exc -> 
+      Locf.raise (Token_stream.cur_loc ts) exc
+
+let parse_tokens_eoi entry stream =         
+  Gaction.get (eoi_action_parse entry stream)
     
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
-(* let filter_and_parse_tokens (entry:'a t) ts = *)
-(*   parse_origin_tokens entry (Tokenf.filter entry.gram.gfilter  ts) *)
-       
 
 let extend_single = Ginsert.extend_single ;;
 let copy = Ginsert.copy;;
@@ -75,5 +87,5 @@ let parser_of_symbol = Gparser.parser_of_symbol
 
     
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/gentry.cmo" *)
+(* compile-command: "pmake gentry.cmo" *)
 (* end: *)

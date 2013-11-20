@@ -3,8 +3,12 @@ let parse_string ?(lexer= Flex_lib.from_stream)  ?(loc= Locf.string_loc)
   (entry : 'a Gramf.t) str =
   ((str |> Streamf.of_string) |> (lexer loc)) |>
     (Gramf.parse_origin_tokens entry)
-let parse (entry : 'a Gramf.t) loc cs =
-  Gramf.parse_origin_tokens entry (Flex_lib.from_stream loc cs)
+let parse_string_eoi ?(lexer= Flex_lib.from_stream)  ?(loc= Locf.string_loc) 
+  (entry : 'a Gramf.t) str =
+  ((str |> Streamf.of_string) |> (lexer loc)) |>
+    (Gramf.parse_tokens_eoi entry)
+let parse ?(lexer= Flex_lib.from_stream)  (entry : 'a Gramf.t) loc cs =
+  (Gramf.parse_origin_tokens entry) @@ (lexer loc cs)
 let token_stream_of_string s = lex_string Locf.string_loc s
 let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
@@ -21,24 +25,3 @@ let parse_string_of_entry ?(loc= Locf.mk "<string>")  entry s =
       (Format.eprintf "%s" (Printexc.to_string e);
        Locf.error_report (loc, s);
        Locf.raise loc e)
-let eoi_entry entry =
-  let entry_eoi = Gramf.mk ((Gramf.name entry) ^ "_eoi") in
-  Gramf.extend_single (entry_eoi : 'entry_eoi Gramf.t )
-    ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Nterm (Gramf.obj (entry : 'entry Gramf.t ));
-              Token
-                ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                Tokenf.pattern )];
-            annot = "x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  (x : 'entry)  (_loc : Locf.t)  -> (x : 'entry_eoi ) : 
-                 Tokenf.txt -> 'entry -> Locf.t -> 'entry_eoi ))
-          }]
-     } : Gramf.olevel );
-  entry_eoi
