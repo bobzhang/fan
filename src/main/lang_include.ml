@@ -10,12 +10,12 @@ let rec token = %lex_fan{
 
 let lexer = Lexing_util.adapt_to_stream token
     
-let g =
-  Gramf.create_lexer ~annot:"include" ~keywords:[] ();;
-    
-%create{ (g:Gramf.t) include_quot };;
+(* let g = *)
+(*   Gramf.create_lexer ~annot:"include" ~keywords:[] ();; *)
+;;    
+%create{ (* (g:Gramf.t) *) include_quot };;
 
-%extend{ (g:Gramf.t)
+%extend{ (* (g:Gramf.t) *)
 include_quot:
   [Str s %{ (* FIXME *)
     let (keep,cf) = State.((keep,current_filters)) in

@@ -168,7 +168,8 @@ let expand (x:Tokenf.quot) (tag:'a Dyn_tag.t) : 'a =
    2. the context is a bit missing when expand the antiquotation..
    it expands differently when in exp or pat... 
  *)
-let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
+let add_quotation ?(lexer=Flex_lib.from_stream)
+    ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
   let entry_eoi = Gramlib.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations,true) (current_loc_name, loc_name_opt)
@@ -179,7 +180,8 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
     `StExp(loc,exp_ast) in
   let expand_pat _loc loc_name_opt s =
     Ref.protect Configf.antiquotations true begin fun _ ->
-      let ast = Gramlib.parse_string entry_eoi ~loc:_loc s in
+
+      let ast = Gramlib.parse_string ~lexer entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
       (** BOOTSTRAPPING -- FIXME -- not all quotation expansion need this

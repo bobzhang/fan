@@ -416,7 +416,7 @@ let _ =
                 Tokenf.pattern );
               List1 (Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))];
             annot =
-              "let mk: FAst.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n";
+              "let mk: FAst.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n";
             fn =
               (Gramf.mk_action
                  (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
@@ -427,31 +427,6 @@ let _ =
                            (`Dot (_loc, t, (`Lid (_loc, "mk_dynamic")))),
                            (x : vid  :>exp)) in
                      sem_of_list
-                       ((`Value
-                           (_loc, (`Negative _loc),
-                             (`Bind
-                                (_loc, (x :>pat),
-                                  (`App
-                                     (_loc,
-                                       (`App
-                                          (_loc,
-                                            (`App
-                                               (_loc,
-                                                 (`Dot
-                                                    (_loc, t,
-                                                      (`Lid
-                                                         (_loc,
-                                                           "create_lexer")))),
-                                                 (`Label
-                                                    (_loc,
-                                                      (`Lid (_loc, "annot")),
-                                                      (`Str (_loc, "")))))),
-                                            (`Label
-                                               (_loc,
-                                                 (`Lid (_loc, "keywords")),
-                                                 (`Uid (_loc, "[]")))))),
-                                       (`Uid (_loc, "()"))))))) : FAst.stru )
-                       ::
                        (List.map
                           (fun (_loc,x,descr,ty)  ->
                              match (descr, ty) with
@@ -490,7 +465,7 @@ let _ =
                                                 (`App
                                                    (_loc, mk,
                                                      (`Str (_loc, x)))), typ))))) : 
-                                 FAst.stru )) ls)) : 'newterminals ) : 
+                                 FAst.stru )) ls) : 'newterminals ) : 
                  'type_entry list ->
                    Tokenf.txt ->
                      't_qualid ->

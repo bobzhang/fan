@@ -83,7 +83,8 @@ let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
                (Tokenf.string_of_name name) pos_tag in
        let expander = ExpFun.unpack tag pack in Tokenf.quot_expand expander x : 
   'a )
-let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
+let add_quotation ?(lexer= Flex_lib.from_stream)  ~exp_filter  ~pat_filter 
+  ~mexp  ~mpat  name entry =
   let entry_eoi = Gramlib.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations, true)
@@ -96,7 +97,7 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
   let expand_pat _loc loc_name_opt s =
     Ref.protect Configf.antiquotations true
       (fun _  ->
-         let ast = Gramlib.parse_string entry_eoi ~loc:_loc s in
+         let ast = Gramlib.parse_string ~lexer entry_eoi ~loc:_loc s in
          let meta_ast = mpat _loc ast in
          let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name (x : FAst.pat) =

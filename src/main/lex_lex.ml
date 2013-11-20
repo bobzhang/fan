@@ -6,12 +6,13 @@ let (!!)  = Location_util.from_lexbuf ;;
 
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
-  | @ocaml_lid
+  | @ocaml_lid("as"|"eof"|"let")
   | @ocaml_char
   | @ocaml_string
-  | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-  |"]" | "*" | "?" | "+" | "(" | ")" | "-" | "@" as txt %{
-    `Sym {loc  =  !! lexbuf ;txt}}
+  | @kwd_symbol
+   ("#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" | "@")(*  as txt %{ *)
+    (* `Sym {loc  =  !! lexbuf ;txt}} *)
   | @ocaml_comment %{token lexbuf}
   | @ocaml_quotation
   | @ocaml_eof

@@ -115,8 +115,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             (Lexing_util.from_lexbuf lexbuf)
       | _ -> failwith "lexing: empty token"))
 let lexer = Lexing_util.adapt_to_stream token
-let g = Gramf.create_lexer ~annot:"include" ~keywords:[] ()
-let include_quot = Gramf.mk_dynamic g "include_quot"
+let include_quot = Gramf.mk "include_quot"
 let _ =
   Gramf.extend_single (include_quot : 'include_quot Gramf.t )
     ({

@@ -3964,7 +3964,7 @@ let () =
     ~entry:lex_fan ();
   Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")
     ~entry:declare_regexp ();
-  Ast_quotation.add_quotation (d, "re") regexp ~mexp:meta_concrete_regexp
-    ~mpat:meta_concrete_regexp
+  Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream (d, "re") regexp
+    ~mexp:meta_concrete_regexp ~mpat:meta_concrete_regexp
     ~exp_filter:(fun x  -> (x : FAst.ep  :>FAst.exp))
     ~pat_filter:(fun x  -> (x : FAst.ep  :>FAst.pat))

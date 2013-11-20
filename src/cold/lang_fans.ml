@@ -677,23 +677,10 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ -> failwith "lexing: empty token"))
-let g =
-  Gramf.create_lexer ~annot:"fans"
-    ~keywords:["derive";
-              "unload";
-              "clear";
-              "keep";
-              "on";
-              "off";
-              "show_code";
-              "(";
-              ")";
-              ",";
-              ";"] ()
-let fan_quot = Gramf.mk_dynamic g "fan_quot"
-let fan_quots = Gramf.mk_dynamic g "fan_quots"
+let fan_quot = Gramf.mk "fan_quot"
+let fan_quots = Gramf.mk "fan_quots"
 let _ =
-  let grammar_entry_create x = Gramf.mk_dynamic g x in
+  let grammar_entry_create x = Gramf.mk x in
   let id: 'id Gramf.t = grammar_entry_create "id"
   and fan_quot_semi: 'fan_quot_semi Gramf.t =
     grammar_entry_create "fan_quot_semi" in

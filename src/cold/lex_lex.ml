@@ -1843,16 +1843,35 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Lid
-            {
-              loc =
-                {
-                  loc_start = (lexbuf.lex_start_p);
-                  loc_end = (lexbuf.lex_curr_p);
-                  loc_ghost = false
-                };
-              txt
-            }
+          let v = Hashtbl.hash txt in
+          if
+            ((function
+              | 916095096 -> txt = "as"
+              | 471646663 -> txt = "eof"
+              | 1050473980 -> txt = "let"
+              | _ -> false)) v
+          then
+            `Key
+              {
+                loc =
+                  {
+                    loc_start = (lexbuf.lex_start_p);
+                    loc_end = (lexbuf.lex_curr_p);
+                    loc_ghost = false
+                  };
+                txt
+              }
+          else
+            `Lid
+              {
+                loc =
+                  {
+                    loc_start = (lexbuf.lex_start_p);
+                    loc_end = (lexbuf.lex_curr_p);
+                    loc_ghost = false
+                  };
+                txt
+              }
       | 3 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -1908,9 +1927,17 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
              })
       | 7 ->
           let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Sym { loc = (!! lexbuf); txt }
+            Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos lexbuf.lex_curr_pos in
+          (`Key
+             {
+               loc =
+                 {
+                   loc_start = (lexbuf.lex_start_p);
+                   loc_end = (lexbuf.lex_curr_p);
+                   loc_ghost = false
+                 };
+               txt
+             } : Tokenf.t )
       | 8 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
