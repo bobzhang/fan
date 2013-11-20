@@ -104,13 +104,17 @@ let make_comma atom nt =
     | atom as p %{p}]}
 
     
-let make_ant ?(c="") i nt x=
+let make_ant ?(c="") ?(i=10) nt x=
     %extend{
   nt: $i
     [ Ant($x, s) %{mk_ant ~c s }]
   }
 
-
+let make_quot tag ?(i=10) nt = (* FIXME *)
+  %extend{
+  nt: $i
+    [Quot x %{Ast_quotation.expand x tag}]}
+    
 let make_pat exp =
   %extend{
        pat_quot:
@@ -247,7 +251,7 @@ let () =
     make_comma exp comma_exp;
     make_case exp pat ;
     make_pat exp;
-    List.iter (make_ant ~c:"pat" 50 pat )
+    List.iter (make_ant ~c:"pat" ~i:50 pat )
       ["" ;"pat" ;"par" ;"int" ;
        "int32" ;"int64" ;"vrn" ;"flo" ;
        "chr" ;"nativeint" ;"str" ;"int'" ;
@@ -255,7 +259,7 @@ let () =
        "flo'" ;"chr'" ;"str'" ;"`int" ;
        "`int32" ;"`int64" ;"`nativeint" ;
        "`flo" ;"`chr" ;"`str"];
-    List.iter (make_ant ~c:"exp" 170 exp)
+    List.iter (make_ant ~c:"exp" ~i:170 exp)
       ["exp" ;"" ;"par" ;"seq" ;"chr" ;
        "int" ;"int32" ;"str" ;"int64" ;
        "flo" ;"nativeint" ; "vrn" ;
@@ -263,8 +267,14 @@ let () =
        "bool'" ;"int'" ;"int32'" ;
        "flo'" ;"str'" ;"`chr" ;
        "`int64" ;"`nativeint" ;
-       "`bool" ;"`int" ;"`int32" ;"`flo" ;"`str"]
-
+       "`bool" ;"`int" ;"`int32" ;"`flo" ;"`str"];
+    List.iter (make_ant ~c:"mexp" ~i:30 mexp)
+      ["";"mexp"];
+    make_quot  Dyn_tag.mexp ~i:30 mexp;
+    make_quot Dyn_tag.mbind mbind;
+    List.iter (make_ant ~c:"mexp" mbind) ["mbind";""];
+    make_quot Dyn_tag.mbind module_rec_declaration;
+    List.iter (make_ant ~c:"mbind" module_rec_declaration) ["mbind";""];
   end
 
 let apply () = begin 
@@ -288,9 +298,7 @@ let apply () = begin
       mexp: 20 
         [ S as me1; S as me2 %{ `App (_loc, me1, me2)} ]
       mexp: 30 
-        [ Ant (""|"mexp", s) %{  mk_ant ~c:"mexp" s}
-        | Quot x %{Ast_quotation.expand x Dyn_tag.mexp}
-        | module_longident as i  %{ (i:>mexp)}
+        [ module_longident as i  %{ (i:>mexp)}
         | "("; S as me; ":"; mtyp as mt; ")" %{ `Constraint (_loc, me, mt)}
             (* FIXME improve ?[":"; mtyp as mt ] *)
         | "("; S as me; ")" %{  me}
@@ -307,13 +315,9 @@ let apply () = begin
         | a_uident as m; ":"; mtyp as mt; "="; mexp as me %{ `ModuleBind(_loc,m,mt,me)}]
         mbind:
         [ S as b1; "and"; S as b2 %{ `And(_loc,b1,b2)}
-        | Ant ("mbind" |"" ,s) %{mk_ant  ~c:"mbind" s}
-        | Quot x  %{Ast_quotation.expand  x Dyn_tag.mbind}
         | a_uident as m; ":"; mtyp as mt; "="; mexp as me %{`ModuleBind (_loc, m, mt, me)}]
         module_rec_declaration:
         [ S as m1; "and"; S as m2 %{`And(_loc,m1,m2)}
-        | Ant (""|"mbind",s) %{mk_ant ~c:"mbind"  s}
-        | Quot x %{Ast_quotation.expand  x Dyn_tag.mbind}
         | a_uident as m; ":"; mtyp as mt %{`Constraint(_loc,m,mt)} ] };
 
      %extend{
