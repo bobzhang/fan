@@ -25,7 +25,7 @@ val empty_lev : label  -> bool  -> level
 
 
 (** make sure the [entry] share the same gram with the symbol *)          
-val check_gram : entry -> symbol -> unit
+(* val check_gram : entry -> symbol -> unit *)
 
 (** Scan the symbol to get the keyword list, the second argument is acc, which is empty  
     in most cases *)

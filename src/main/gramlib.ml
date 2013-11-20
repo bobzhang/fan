@@ -7,12 +7,12 @@ let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a 
   str
    |> Streamf.of_string
    |> lexer loc
-   |> Tokenf.filter (Gramf.filter_of_gram entry)
+   (* |> Tokenf.filter (Gramf.filter_of_gram entry) *)
    |> Gramf.parse_origin_tokens entry
        
 let parse (entry:'a Gramf.t) loc cs =
   Gramf.parse_origin_tokens entry
-    (Tokenf.filter (Gramf.filter_of_gram entry)
+    ((* Tokenf.filter (Gramf.filter_of_gram entry) *)
        (Flex_lib.from_stream loc cs))
 ;;
 

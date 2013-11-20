@@ -5831,17 +5831,17 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-          `Eident { loc = (!! lexbuf); txt }
+          `Lid { loc = (!! lexbuf); txt }
       | 14 ->
           let txt =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          `Eident { loc = (!! lexbuf); txt }
+          `Lid { loc = (!! lexbuf); txt }
       | 15 ->
           let txt =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          `Eident { loc = (!! lexbuf); txt }
+          `Lid { loc = (!! lexbuf); txt }
       | 16 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

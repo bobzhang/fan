@@ -7,13 +7,13 @@ type 'a t = 'a Gentry.t
 
 type position = int
 
-val filter: stream -> stream      
+(* val filter: stream -> stream       *)
 
 (** Basially a filter attached to the stream lexer *)    
-type gram = Gdefs.gram = {
-  annot:string;
-  gfilter : Tokenf.filter_plugin;
-}
+(* type gram = Gdefs.gram = { *)
+(*   annot:string; *)
+(*   gfilter : Tokenf.filter_plugin; *)
+(* } *)
 
 type action = Gaction.t
 
@@ -92,7 +92,7 @@ val obj: 'a t -> entry
 
 val repr: entry -> 'a t
     
-val gram: gram
+(* val gram: gram *)
 
 (** create a standalone gram
     {[
@@ -108,18 +108,18 @@ val gram: gram
 
 (* val mk_dynamic: gram -> string -> 'a t *)
 
-val gram_of_entry: 'a t -> gram
+(* val gram_of_entry: 'a t -> gram *)
     
 val mk: string -> 'a t
 
-val get_filter: unit -> Tokenf.filter_plugin
+(* val get_filter: unit -> Tokenf.filter_plugin *)
 
-val filter_of_gram : 'a t -> Tokenf.filter_plugin
+(* val filter_of_gram : 'a t -> Tokenf.filter_plugin *)
 
       
 val debug_origin_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
 
-val debug_filtered_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
+(* val debug_filtered_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a *)
 
 
 

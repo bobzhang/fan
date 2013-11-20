@@ -6,9 +6,9 @@ val delete_rule_in_tree :
   symbol list ->
   tree -> (symbol list option * tree) option
       
-val decr_keyw_use : gram -> symbol -> unit
+(* val decr_keyw_use (\* : gram -> *\) symbol -> unit *)
 
-val decr_keyw_use_in_tree : gram -> tree -> unit
+(* val decr_keyw_use_in_tree : gram -> tree -> unit *)
     
 val delete_rule_in_suffix :
   entry ->

@@ -3,7 +3,7 @@
 
 
 
-open Util
+(* open Util *)
 open Format
 
 let higher (s1 : Gdefs.symbol) (s2 : Gdefs.symbol)  =
@@ -33,30 +33,30 @@ let empty_lev l lassoc : Gdefs.level =
 
 
 
-let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) =
-  match x with
-  | Nterm e ->
-    if entry.gram  != e.gram  then 
-      failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
-        entry.name e.name
-  | Snterml (e, _) ->
-      if e.gram != entry.gram then 
-        failwithf
-          "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
-          entry.name e.name
-  | List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | List0 s | List1 s | Try s | Peek s -> check_gram entry s
-  | Self | Token _  -> ()
+(* let rec check_gram (entry : Gdefs.entry) (x:Gdefs.symbol) = *)
+(*   match x with *)
+(*   | Nterm e -> *)
+(*     (\* if entry.gram  != e.gram  then  *\) *)
+(*     (\*   failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@." *\) *)
+(*     (\*     entry.name e.name *\) *)
+(*   | Snterml (e, _) -> *)
+(*       (\* if e.gram != entry.gram then  *\) *)
+(*       (\*   failwithf *\) *)
+(*       (\*     "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@." *\) *)
+(*       (\*     entry.name e.name *\) *)
+(*   | List0sep (s, t) -> begin check_gram entry t; check_gram entry s end *)
+(*   | List1sep (s, t) -> begin check_gram entry t; check_gram entry s end *)
+(*   | List0 s | List1 s | Try s | Peek s -> check_gram entry s *)
+(*   | Self | Token _  -> () *)
         
-and tree_check_gram entry (x:Gdefs.tree) =
-  match x with 
-  | Node {node ; brother; son } -> begin 
-    check_gram entry node;
-    tree_check_gram entry brother;
-    tree_check_gram entry son
-  end
-  | LocAct  _ | DeadEnd -> () 
+(* and tree_check_gram entry (x:Gdefs.tree) = *)
+(*   match x with  *)
+(*   | Node {node ; brother; son } -> begin  *)
+(*     check_gram entry node; *)
+(*     tree_check_gram entry brother; *)
+(*     tree_check_gram entry son *)
+(*   end *)
+(*   | LocAct  _ | DeadEnd -> ()  *)
 
 
   
@@ -177,7 +177,7 @@ and scan_olevel entry (lb:Gdefs.olevel) (* (x,y,prods) *) =
 and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gdefs.production  = 
   {x with symbols =
    (List.map
-     (fun symbol -> 
+     (fun (symbol:Gdefs.symbol) -> 
        (* let keywords = using_symbol  symbol [] in *)
        (* let diff = *)
        (*   Setf.String.elements @@ *)
@@ -188,7 +188,7 @@ and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gd
        (*     failwithf *)
        (*       "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot *)
        (*     @@ Listf.reduce_left (^) diff in *)
-       let () = check_gram entry symbol in
+       (* let () = check_gram entry symbol in *)
        match symbol with
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol
@@ -204,11 +204,11 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
     : Gdefs.production  = 
   {x with symbols =
    (List.map
-     (fun symbol -> 
-       let keywords = using_symbol  symbol [] in
-       let () = entry.gram.gfilter.kwds <-
-         Setf.String.add_list entry.gram.gfilter.kwds keywords in
-       let () = check_gram entry symbol in
+     (fun (symbol: Gdefs.symbol) -> 
+       (* let keywords = using_symbol  symbol [] in *)
+       (* let () = entry.gram.gfilter.kwds <- *)
+       (*   Setf.String.add_list entry.gram.gfilter.kwds keywords in *)
+       (* let () = check_gram entry symbol in *)
        match symbol with
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol) symbols)}

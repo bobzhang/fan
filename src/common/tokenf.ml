@@ -109,7 +109,6 @@ type t =
   | `Sym          of txt
   | `Lid          of txt
   | `Uid          of txt
-  | `Eident       of txt 
   | `Int          of txt
   | `Int32        of txt
   | `Int64        of txt
@@ -130,7 +129,6 @@ type tag =
   | `Sym          
   | `Lid          
   | `Uid          
-  | `Eident       (* (+)*)
   | `Int          
   | `Int32        
   | `Int64        
@@ -214,8 +212,6 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
       Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string x.txt
   | `Uid x ->
       Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string x.txt
-  | `Eident x ->
-      Format.fprintf fmt "@[<1>(`Eident@ %a)@]" Format.pp_print_string x.txt
   | `Int x ->
       Format.fprintf fmt "@[<1>(`Int@ %a)@]"
         Format.pp_print_string x.txt
@@ -254,67 +250,114 @@ type 'a parse  = stream -> 'a
 
 type filter = stream -> stream
   
-type filter_error =
-  | Illegal_token of string
-  | Keyword_as_label of string
+(* type filter_error = *)
+(*   | Illegal_token of string *)
+(*   | Keyword_as_label of string *)
 
-exception TokenError of  filter_error
+(* exception TokenError of  filter_error *)
 
-let filter_err error loc = raise @@ Locf.Exc_located (loc, TokenError error)
+(* let filter_err error loc = raise @@ Locf.Exc_located (loc, TokenError error) *)
 
-let pp_print_error: filter_error Formatf.t  =
-  fun fmt  ->
-    function
-    | Illegal_token _a0 ->
-        Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" Format.pp_print_string _a0
-    | Keyword_as_label _a0 ->
-        Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string
-          _a0
+
+(* let pp_print_error: filter_error Formatf.t  = *)
+(*   fun fmt  -> *)
+(*     function *)
+(*     | Illegal_token _a0 -> *)
+(*         Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" Format.pp_print_string _a0 *)
+(*     | Keyword_as_label _a0 -> *)
+(*         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string *)
+(*           _a0 *)
 (* BOOTSTRAPPING --  *)
 let to_string = Formatf.to_string pp_print_t
         
 let print ppf x = Format.pp_print_string ppf (to_string x)
           
-let string_of_error_msg = Formatf.to_string pp_print_error;;
+(* let string_of_error_msg = Formatf.to_string pp_print_error;; *)
 
 (* [Sym] should always be filtered into keywords *)  
-let keyword_conversion (tok:t) kwds =
-  match tok with
-  | `Sym u  | `Lid u | `Pre u (* for example "??"*)
-  | `Uid u when Setf.String.mem u.txt  kwds ->
-      (* Format.eprintf "%a@." print tok ; *)
-      `Key u
-  | `Inf u  (* * *) when Setf.String.mem u.txt kwds ->
-      (* Format.eprintf "%a@." print tok ;       *)
-      `Key {loc = u.loc; txt = u.txt}
+(* let keyword_conversion (tok:t) kwds = *)
+(*   match tok with *)
+(*   | `Sym u  | `Lid u | `Pre u (\* for example "??"*\) *)
+(*   | `Uid u when Setf.String.mem u.txt  kwds -> *)
+(*       (\* Format.eprintf "%a@." print tok ; *\) *)
+(*       `Key u *)
+(*   | `Inf u  (\* * *\) when Setf.String.mem u.txt kwds -> *)
+(*       (\* Format.eprintf "%a@." print tok ;       *\) *)
+(*       `Key {loc = u.loc; txt = u.txt} *)
 
-  | `Eident u -> `Lid u
-  | _ -> tok 
+(*   | `Eident u -> `Lid u *)
+(*   | _ -> tok  *)
 
-let check_keyword_as_label (tok:t)  kwds =
-  match tok with
-  |`Label u | `Optlabel u when Setf.String.mem u.txt kwds
-    -> filter_err (Keyword_as_label u.txt) u.loc 
-  | _               -> ()  
+(* let check_keyword_as_label (tok:t)  kwds = *)
+(*   match tok with *)
+(*   |`Label u | `Optlabel u when Setf.String.mem u.txt kwds *)
+(*     -> filter_err (Keyword_as_label u.txt) u.loc  *)
+(*   | _               -> ()   *)
 
-type filter_plugin = {
-    mutable kwds : Setf.String.t;
-    mutable filter : filter option;
-  }        
-let check_unknown_keywords (tok:t) loc =
-  match tok with
-  | `Sym s -> filter_err (Illegal_token s.txt) loc
-  | _        -> () 
+(* type filter_plugin = { *)
+(*     mutable kwds : Setf.String.t; *)
+(*     mutable filter : filter option; *)
+(*   }         *)
+(* let check_unknown_keywords (tok:t) loc = *)
+(*   match tok with *)
+(*   | `Sym s -> filter_err (Illegal_token s.txt) loc *)
+(*   | _        -> ()  *)
 
-let filter x =
-  let f (t:t) =
-    let t = keyword_conversion t x.kwds in begin
-      check_keyword_as_label t x.kwds;
-      t 
-    end in
-  match x.filter with
-  | None -> Streamf.map f 
-  | Some filter -> fun strm -> filter (Streamf.map f strm)
+(* let filter x = *)
+(*   let f (t:t) = *)
+(*     let t = keyword_conversion t x.kwds in begin *)
+(*       check_keyword_as_label t x.kwds; *)
+(*       t  *)
+(*     end in *)
+(*   match x.filter with *)
+(*   | None -> Streamf.map f  *)
+(*   | Some filter -> fun strm -> filter (Streamf.map f strm) *)
+(* ======= *)
+(* let pp_print_error: filter_error Formatf.t  = *)
+(*   fun fmt  -> *)
+(*     function *)
+(*     | Illegal_token _a0 -> *)
+(*         Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" Format.pp_print_string _a0 *)
+(*     | Keyword_as_label _a0 -> *)
+(*         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string *)
+(*           _a0 *)
+(* let string_of_error_msg = Formatf.to_string pp_print_error;; *)
+
+(* [Sym] should always be filtered into keywords *)  
+(* let keyword_conversion (tok:t) kwds = *)
+(*   match tok with *)
+(*   | `Sym u  | `Lid u | `Pre u (\* for example "??"*\) *)
+(*   | `Uid u when Setf.String.mem u.txt  kwds -> `Key u *)
+(*   | `Inf u  (\* * *\) when Setf.String.mem u.txt kwds -> *)
+(*       `Key {loc = u.loc; txt = u.txt} *)
+(*   | `Eident u -> `Lid u *)
+(*   | _ -> tok  *)
+
+(* let check_keyword_as_label (tok:t)  kwds = *)
+(*   match tok with *)
+(*   |`Label u | `Optlabel u when Setf.String.mem u.txt kwds *)
+(*     -> filter_err (Keyword_as_label u.txt) u.loc  *)
+(*   | _               -> ()   *)
+
+(* type filter_plugin = { *)
+(*     mutable kwds : Setf.String.t; *)
+(*     mutable filter : filter option; *)
+(*   }         *)
+(* let check_unknown_keywords (tok:t) loc = *)
+(*   match tok with *)
+(*   | `Sym s -> filter_err (Illegal_token s.txt) loc *)
+(*   | _        -> ()  *)
+
+(* let filter x = *)
+(*   let f (t:t) = *)
+(*     let t = keyword_conversion t x.kwds in begin *)
+(*       check_keyword_as_label t x.kwds; *)
+(*       t  *)
+(*     end in *)
+(*   match x.filter with *)
+(*   | None -> Streamf.map f  *)
+(*   | Some filter -> fun strm -> filter (Streamf.map f strm) *)
+(* >>>>>>> not_check *)
 
 
 
@@ -347,8 +390,7 @@ let get_string (x:t) :  string =
   | `Str x
   | `Label x
   | `Optlabel x
-  | `EOI x  
-  | `Eident x -> x.txt
+  | `EOI x  -> x.txt
   | `Quot x -> x.txt
   | `DirQuotation x -> x.txt
   | `Ant x -> x.txt
@@ -370,8 +412,7 @@ let get_loc (x:t) =
   | `Str x
   | `Label x
   | `Optlabel x
-  | `EOI x 
-  | `Eident x -> x.loc
+  | `EOI x  -> x.loc
   | `Ant x -> x.loc
   | `Quot x -> x.loc
   | `DirQuotation x -> x.loc
@@ -415,10 +456,10 @@ let match_token (x:pattern)  =
 
   
         
-let () =
-  Printexc.register_printer @@ function
-  |TokenError e -> Some (string_of_error_msg e)
-  | _ -> None
+(* let () = *)
+(*   Printexc.register_printer @@ function *)
+(*   |TokenError e -> Some (string_of_error_msg e) *)
+(*   | _ -> None *)
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake common/tokenf.cmo" *)

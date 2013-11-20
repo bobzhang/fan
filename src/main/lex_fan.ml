@@ -57,14 +57,14 @@ let  rec token   = %lex_fan{
    | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
    | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
    | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{
-     `Eident { loc = !! lexbuf ; txt}}
+     `Lid { loc = !! lexbuf ; txt}}
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
-     `Eident {loc = !!lexbuf;txt}}
+     `Lid {loc = !!lexbuf;txt}}
    | '(' ocaml_blank*
        ("or"
        | "mod"|"land"|"lor" |"lxor"
        |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
-     `Eident {loc = !! lexbuf;txt}}
+     `Lid {loc = !! lexbuf;txt}}
        (* && - Inf 0
           -. - Inf 2
 

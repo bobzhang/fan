@@ -16,10 +16,10 @@ let dump ppf e = Format.fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
-let filter_of_gram (x :'a t) = x.gram.gfilter
+(* let filter_of_gram (x :'a t) = x.gram.gfilter *)
 
-let mk_dynamic g n : 'a t ={
-  gram = g;
+let mk_dynamic (* g *) n : 'a t ={
+  (* gram = g; *)
   name = n;
   start = Gtools.empty_entry n;
   continue  = (fun _ _ _ _ -> raise Streamf.NotConsumed);
@@ -38,7 +38,7 @@ let repr x = x
 
 
 
-let gram_of_entry (e:'a t) = e.gram
+(* let gram_of_entry (e:'a t) = e.gram *)
 
 (** driver of the parse, it would call [start]
    
@@ -60,8 +60,8 @@ let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
-let filter_and_parse_tokens (entry:'a t) ts =
-  parse_origin_tokens entry (Tokenf.filter entry.gram.gfilter  ts)
+(* let filter_and_parse_tokens (entry:'a t) ts = *)
+(*   parse_origin_tokens entry (Tokenf.filter entry.gram.gfilter  ts) *)
        
 
 let extend_single = Ginsert.extend_single ;;
