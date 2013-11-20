@@ -174,7 +174,7 @@ let add_quotation ?(lexer=Flex_lib.from_stream)
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
-        Gramlib.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
+        Gramlib.parse_string ~lexer entry_eoi ~loc s |> mexp loc |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
