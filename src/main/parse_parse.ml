@@ -40,7 +40,7 @@ let g =
                "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level";
                 "RA";"+";"*";"?"; "="; "_"; "@";
-               "Inline";
+               "Inline"; "true"; "false";
                "Local"] ();;
 
 
@@ -403,7 +403,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
        %{{assoc;rules}} ]
 
   assoc :
-  [ "RA"  %exp{false}
+  [ ("RA"|"false")  %exp{false}
+  | "true" %exp{true}
   | Ant("bool",x) %{Tokenf.ant_expand Parsef.exp x}]
 
       

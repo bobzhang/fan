@@ -3,16 +3,15 @@
 
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
-  | @ocaml_lid
+  | @ocaml_lid("true"|"false")
   | @ocaml_uid
   | @ocaml_string
   | @ocaml_int
   | @ocaml_char
   | @ocaml_ant
-  | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
+  | @kwd_symbol("#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" | ":" | "@" |"{" | "}"
-  |";" |"." | "," as txt %{
-    `Sym {loc = Lexing_util.from_lexbuf lexbuf;txt}}
+  |";" |"." | ",")
   | @ocaml_comment %{token lexbuf}
   | @ocaml_quotation
   | @ocaml_eof

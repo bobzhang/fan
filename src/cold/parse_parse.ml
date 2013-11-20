@@ -68,6 +68,8 @@ let g =
               "_";
               "@";
               "Inline";
+              "true";
+              "false";
               "Local"] ()
 let inline_rules: (string,Gram_def.rule list) Hashtbl.t = Hashtbl.create 50
 let query_inline (x : string) = Hashtblf.find_opt inline_rules x
@@ -8535,6 +8537,38 @@ let _ =
                     ((`Lid (_loc, "false") : FAst.exp ) : 'assoc ) : 
                  Tokenf.txt -> Locf.t -> 'assoc ))
           };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "false"); tag_name = "Key" }
+                 } : Tokenf.pattern )];
+           annot = "(`Lid (_loc, \"false\") : FAst.exp )\n";
+           fn =
+             (Gramf.mk_action
+                (fun _  (_loc : Locf.t)  ->
+                   ((`Lid (_loc, "false") : FAst.exp ) : 'assoc ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'assoc ))
+         };
+         {
+           symbols =
+             [Token
+                ({
+                   descr =
+                     { tag = `Key; word = (A "true"); tag_name = "Key" }
+                 } : Tokenf.pattern )];
+           annot = "(`Lid (_loc, \"true\") : FAst.exp )\n";
+           fn =
+             (Gramf.mk_action
+                (fun _  (_loc : Locf.t)  ->
+                   ((`Lid (_loc, "true") : FAst.exp ) : 'assoc ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'assoc ))
+         };
          {
            symbols =
              [Token
