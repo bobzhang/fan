@@ -13,7 +13,7 @@ FILES = \
     configf\
     locf  fcset fdir foptions\
     tokenf lex_util lexgen location_util parsetree_util\
-    tokenEval translate_lex fan_util \
+    escape translate_lex fan_util \
     fan_warnings token_stream
     
 .PHONY: clean lib

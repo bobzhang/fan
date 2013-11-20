@@ -189,7 +189,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
          styp= %ctyp'{Tokenf.ant};
          bounds = ;
          outer_pattern = None}]}]
-*)                                             }
+*)                                             
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       match ps with
       | (vs,loc,y) ->

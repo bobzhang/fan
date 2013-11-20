@@ -462,7 +462,7 @@ let rec mkrangepat loc c1 c2 =
 let  pat_literal _loc (x:literal) : Parsetree.pattern =
   match x with 
   | `Chr (_,s) ->
-    mkpat _loc @@ Ppat_constant (Const_char (TokenEval.char_of_char_token _loc s))
+    mkpat _loc @@ Ppat_constant (Const_char (Escape.char_of_char_token _loc s))
   | `Int (_,s) ->
     let i =
       try int_of_string s
@@ -498,14 +498,14 @@ let  pat_literal _loc (x:literal) : Parsetree.pattern =
   | `Str (_,s) ->
     mkpat _loc @@
       Ppat_constant
-        (Const_string (TokenEval.string_of_string_token _loc s))
+        (Const_string (Escape.string_of_string_token _loc s))
 
 
 
 let exp_literal _loc (x:literal) : Parsetree.expression =
   match x with
   | `Chr (_,s) ->
-    mkexp _loc (Pexp_constant (Const_char (TokenEval.char_of_char_token _loc s)))
+    mkexp _loc (Pexp_constant (Const_char (Escape.char_of_char_token _loc s)))
   | `Int (_,s) ->
     let i =
       try int_of_string s with Failure _ ->
@@ -530,7 +530,7 @@ let exp_literal _loc (x:literal) : Parsetree.expression =
         error _loc "Integer literal exceeds the range of representable integers of type nativeint"
     in mkexp _loc (Pexp_constant (Const_nativeint nati))
   | `Str (_,s) ->
-    mkexp _loc @@ Pexp_constant (Const_string (TokenEval.string_of_string_token _loc s))
+    mkexp _loc @@ Pexp_constant (Const_string (Escape.string_of_string_token _loc s))
 
 
 
@@ -576,8 +576,8 @@ let rec pat (x : pat) : Parsetree.pattern =
   | `PaRng (_,p1,p2) ->
     (match p1, p2 with
      | `Chr (loc1,c1),`Chr (loc2,c2) ->
-       let c1 = TokenEval.char_of_char_token loc1 c1 in
-       let c2 = TokenEval.char_of_char_token loc2 c2 in
+       let c1 = Escape.char_of_char_token loc1 c1 in
+       let c2 = Escape.char_of_char_token loc2 c2 in
        mkrangepat _loc c1 c2
      | _ -> error _loc "range pattern allowed only for characters")
 

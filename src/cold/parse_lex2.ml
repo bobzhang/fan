@@ -157,28 +157,28 @@ let _ =
         ([`Stoken
             (((function | `Chr _ -> true | _ -> false)),
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
-          ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
+          ("Characters (Fcset.singleton (Char.code @@ (Escape.char c)))\n",
             (Gramf.mk_action
                (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Chr c ->
                       (Characters
-                         (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
+                         (Fcset.singleton (Char.code @@ (Escape.char c))) : 
                       'regexp )
                   | _ ->
                       failwith
-                        "Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n"))));
+                        "Characters (Fcset.singleton (Char.code @@ (Escape.char c)))\n"))));
         ([`Stoken
             (((function | `Str _ -> true | _ -> false)),
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
-          ("regexp_for_string @@ (TokenEval.string s)\n",
+          ("regexp_for_string @@ (Escape.string s)\n",
             (Gramf.mk_action
                (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Str s ->
-                      (regexp_for_string @@ (TokenEval.string s) : 'regexp )
+                      (regexp_for_string @@ (Escape.string s) : 'regexp )
                   | _ ->
-                      failwith "regexp_for_string @@ (TokenEval.string s)\n"))));
+                      failwith "regexp_for_string @@ (Escape.string s)\n"))));
         ([`Skeyword "[";
          `Snterm (Gramf.obj (char_class : 'char_class Gramf.t ));
          `Skeyword "]"],
@@ -250,31 +250,31 @@ let _ =
           `Stoken
             (((function | `Chr _ -> true | _ -> false)),
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
-           ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
+           ("let c1 = Char.code @@ (Escape.char c1) in\nlet c2 = Char.code @@ (Escape.char c2) in Fcset.interval c1 c2\n",
              (Gramf.mk_action
                 (fun (__fan_2 : [> Tokenf.t])  _  (__fan_0 : [> Tokenf.t]) 
                    (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
                    | (`Chr c2,`Chr c1) ->
-                       (let c1 = Char.code @@ (TokenEval.char c1) in
-                        let c2 = Char.code @@ (TokenEval.char c2) in
+                       (let c1 = Char.code @@ (Escape.char c1) in
+                        let c2 = Char.code @@ (Escape.char c2) in
                         Fcset.interval c1 c2 : 'char_class1 )
                    | _ ->
                        failwith
-                         "let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n"))));
+                         "let c1 = Char.code @@ (Escape.char c1) in\nlet c2 = Char.code @@ (Escape.char c2) in Fcset.interval c1 c2\n"))));
         ([`Stoken
             (((function | `Chr _ -> true | _ -> false)),
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
-          ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
+          ("Fcset.singleton (Char.code @@ (Escape.char c1))\n",
             (Gramf.mk_action
                (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Chr c1 ->
-                      (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
+                      (Fcset.singleton (Char.code @@ (Escape.char c1)) : 
                       'char_class1 )
                   | _ ->
                       failwith
-                        "Fcset.singleton (Char.code @@ (TokenEval.char c1))\n"))));
+                        "Fcset.singleton (Char.code @@ (Escape.char c1))\n"))));
         ([`Sself; `Sself],
           ("Fcset.union cc1 cc2\n",
             (Gramf.mk_action

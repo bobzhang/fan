@@ -130,7 +130,7 @@ let _ =
            Listf.reduce_left_with ~compose:(fun r1 r2 ->
              ((Alternative (r1,r2)):Translate_lex.concrete_regexp))
              ~project:(fun (x:Tokenf.txt) ->
-               regexp_for_string @@ TokenEval.string x.txt)
+               regexp_for_string @@ Escape.string x.txt)
              ls in
          [(regexp,
            %exp{
@@ -484,8 +484,8 @@ end;;
   [ S as r1;S as r2 %{ Sequence(r1,r2)}]  
   regexp: 50  
   [ "_" %{ Characters Fcset.all_chars}
-  | Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
-  | Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
+  | Chr c %{ Characters (Fcset.singleton (Char.code @@ Escape.char c))}
+  | Str s %{ regexp_for_string @@ Escape.string s (* FIXME *)}
   | "["; char_class as cc; "]" %{ Characters cc}
   | S as r1;"*" %{ Repetition r1}
   | S as r1;"?" %{ Alternative (Epsilon,r1)}
@@ -510,10 +510,10 @@ end;;
 
   char_class1:
   [ Chr c1; "-"; Chr c2 %{
-    let c1 = Char.code @@ TokenEval.char c1 in
-    let c2 = Char.code @@ TokenEval.char c2 in
+    let c1 = Char.code @@ Escape.char c1 in
+    let c2 = Char.code @@ Escape.char c2 in
     Fcset.interval c1 c2}
-  | Chr c1   %{ Fcset.singleton (Char.code @@ TokenEval.char c1)}
+  | Chr c1   %{ Fcset.singleton (Char.code @@ Escape.char c1)}
   | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }
   ] };;  
 
