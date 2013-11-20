@@ -254,7 +254,17 @@ let () =
        "int32'" ;"int64'" ;"nativeint'" ;
        "flo'" ;"chr'" ;"str'" ;"`int" ;
        "`int32" ;"`int64" ;"`nativeint" ;
-       "`flo" ;"`chr" ;"`str"]
+       "`flo" ;"`chr" ;"`str"];
+    List.iter (make_ant ~c:"exp" 170 exp)
+      ["exp" ;"" ;"par" ;"seq" ;"chr" ;
+       "int" ;"int32" ;"str" ;"int64" ;
+       "flo" ;"nativeint" ; "vrn" ;
+       "chr'" ;"int64'" ;"nativeint'" ;
+       "bool'" ;"int'" ;"int32'" ;
+       "flo'" ;"str'" ;"`chr" ;
+       "`int64" ;"`nativeint" ;
+       "`bool" ;"`int" ;"`int32" ;"`flo" ;"`str"]
+
   end
 
 let apply () = begin 
@@ -543,15 +553,6 @@ let apply () = begin
         | Pre@xloc x; S as e %{`App(_loc,`Lid(xloc,x),e )}]
        exp : 170 
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}
-        | Ant ("exp" |"" |"par" |"seq" |"chr"
-                |"int" |"int32" |"str" |"int64"
-                |"flo" |"nativeint" | "vrn"
-                |"chr'" |"int64'" |"nativeint'"
-                |"bool'" |"int'" |"int32'"
-                |"flo'" |"str'" |"`chr"
-                |"`int64" |"`nativeint" |"`bool"
-                |"`int" |"`int32" |"`flo" |"`str"
-                , s) %{mk_ant ~c:"exp" s}
         | @primitve 
         | TRY module_longident_dot_lparen as i;S as e; ")" %{
             `LetOpen (_loc,`Negative _loc, i, e)}
