@@ -102,11 +102,11 @@ val gram: gram
     |}
     ]}
  *)
-val create_lexer:
-    ?filter:Tokenf.filter option ->
-      annot:string -> keywords: string list -> unit -> gram
+(* val create_lexer: *)
+(*     ?filter:Tokenf.filter option -> *)
+(*       annot:string -> keywords: string list -> unit -> gram *)
 
-val mk_dynamic: gram -> string -> 'a t
+(* val mk_dynamic: gram -> string -> 'a t *)
 
 val gram_of_entry: 'a t -> gram
     
