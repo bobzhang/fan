@@ -4600,15 +4600,12 @@ let apply () =
                                   Tokenf.txt -> 'sigi -> Locf.t -> 'interf ))
           };
           {
-            symbols =
-              [Token
-                 ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                 Tokenf.pattern )];
+            symbols = [];
             annot = "([], None)\n";
             fn =
               (Gramf.mk_action
-                 (fun _  (_loc : Locf.t)  -> (([], None) : 'interf ) : 
-                 Tokenf.txt -> Locf.t -> 'interf ))
+                 (fun (_loc : Locf.t)  -> (([], None) : 'interf ) : Locf.t ->
+                                                                    'interf ))
           }]
       } : Gramf.olevel ));
   (let grammar_entry_create x = Gramf.mk x in
@@ -10037,15 +10034,12 @@ let apply () =
                     'implem ) : 'implem -> 'stru -> Locf.t -> 'implem ))
           };
           {
-            symbols =
-              [Token
-                 ({ descr = { tag = `EOI; word = Any; tag_name = "EOI" } } : 
-                 Tokenf.pattern )];
+            symbols = [];
             annot = "([], None)\n";
             fn =
               (Gramf.mk_action
-                 (fun _  (_loc : Locf.t)  -> (([], None) : 'implem ) : 
-                 Tokenf.txt -> Locf.t -> 'implem ))
+                 (fun (_loc : Locf.t)  -> (([], None) : 'implem ) : Locf.t ->
+                                                                    'implem ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (top_phrase : 'top_phrase Gramf.t )

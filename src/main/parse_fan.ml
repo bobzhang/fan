@@ -395,7 +395,7 @@ let apply () = begin
     interf:
     [ sigi as si; ?";;";  S as rest %{
       let (sil,stopped) = rest in (si :: sil, stopped)}
-    | EOI %{ ([], None)} ]  };
+    |  %{ ([], None)} ]  };
 
     %extend{
       exp_quot:
@@ -803,10 +803,13 @@ let apply () = begin
             Fdir.handle_quot x;
             ([], Some _loc)
           end}
-      | stru as si; ";;"; S as rest %{ let (sil, stopped) = rest in (si :: sil, stopped)}
-      | stru as si;  S as rest %{ let (sil, stopped) = rest in (si :: sil, stopped)}
+      | stru as si; ";;"; S as rest %{
+       (* si::rest *)
+       let (sil, stopped) = rest in (si :: sil, stopped)}
+      | stru as si;  S as rest
+         %{let (sil, stopped) = rest in (si :: sil, stopped)}
          (* FIXME merge with the above in the future*)            
-      | EOI %{ ([], None)} ]
+      |  %{ ([], None)} ]
       (** entrance for toplevel *)
       top_phrase:
       [ "#"; a_lident as n; exp as dp; ";;" %{ `Directive(_loc,n,dp)}
