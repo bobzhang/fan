@@ -145,29 +145,29 @@ let gkeywords = ref (Setf.String.of_list default_keywords)
 
 
           
-let gram =  {
-  annot="Fan";
-  gfilter =
-  { kwds =   Setf.String.of_list default_keywords ;
-    filter = None;  }
-}
+(* let gram =  { *)
+(*   annot="Fan"; *)
+(*   (\* gfilter = *\) *)
+(*   { kwds =   Setf.String.of_list default_keywords ; *)
+(*     filter = None;  } *)
+(* } *)
 
-let filter = Tokenf.filter gram.gfilter
+(* let filter = Tokenf.filter gram.gfilter *)
   
-let create_lexer ?(filter=None) ~annot ~keywords   () = {
-  annot;
-  gfilter = {
-  kwds = Setf.String.of_list keywords;
-  filter;  
-  }
- }
+(* let create_lexer ?(filter=None) ~annot ~keywords   () = { *)
+(*   annot; *)
+(*   gfilter = { *)
+(*   kwds = Setf.String.of_list keywords; *)
+(*   filter;   *)
+(*   } *)
+(*  } *)
 
 
 (* FIXME duplicate some code from Entry *)
-let mk f = mk_dynamic gram f
+let mk f = mk_dynamic (* gram *) f
 
 
-let get_filter () = gram.gfilter
+(* let get_filter () = gram.gfilter *)
 
 
 
@@ -175,8 +175,8 @@ let get_filter () = gram.gfilter
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
   parse_origin_tokens entry tokens
   
-let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry tokens 
+(* let debug_filtered_token_stream entry tokens = *)
+(*   filter_and_parse_tokens entry tokens  *)
 
     
 let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =

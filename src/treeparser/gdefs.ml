@@ -10,16 +10,16 @@ type position = int
 (* the [location] and the parsed value *)
 type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
     
-type gram = {
-    annot : string;
-    gfilter         : Tokenf.filter_plugin;
-  }
+(* type gram = { *)
+(*     annot : string; *)
+(*     gfilter         : Tokenf.filter_plugin; *)
+(*   } *)
 
 
 
     
 type entry = {
-    gram     : gram;
+    (* gram     : gram; *)
     name     : string;
     mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;

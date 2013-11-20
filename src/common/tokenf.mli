@@ -197,10 +197,10 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
-type filter_plugin = {
-    mutable kwds : Setf.String.t;
-    mutable filter : filter option;
-  }        
+(* type filter_plugin = { *)
+(*     mutable kwds : Setf.String.t; *)
+(*     mutable filter : filter option; *)
+(*   }         *)
 
 (** extract the quot information for expanding
     mainly remove the border
@@ -235,7 +235,7 @@ val empty_name : name
 
 val name_of_string : string -> name
 
-val filter : filter_plugin -> filter
+(* val filter : filter_plugin -> filter *)
 
 val eq_pattern : pattern -> pattern -> bool
 val string_of_pattern : pattern -> string    

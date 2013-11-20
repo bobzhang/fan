@@ -66,7 +66,7 @@ let rec delete_rule_in_suffix entry symbols (xs:Gdefs.level list) =
       (match delete_rule_in_tree entry symbols lev.lsuffix with
       | Some (dsl, t) ->begin 
         (match dsl with
-        | Some dsl -> List.iter (decr_keyw_use entry.gram) dsl
+        | Some _ (* dsl *) -> () (* List.iter (decr_keyw_use entry.gram) dsl *)
         | None -> () );
         match t with
         | DeadEnd when lev.lprefix == DeadEnd -> levs
@@ -85,7 +85,7 @@ let rec delete_rule_in_prefix entry symbols (xs:Gdefs.level list) =
       (match delete_rule_in_tree entry symbols lev.lprefix with
       | Some (dsl, t) -> begin 
           (match dsl with
-          | Some dsl -> List.iter (decr_keyw_use entry.gram) dsl
+          | Some _(* dsl *) -> () (* List.iter (decr_keyw_use entry.gram) dsl *)
           | None -> ()) ;
           match t with
           | DeadEnd when lev.lsuffix == DeadEnd -> levs

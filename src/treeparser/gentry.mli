@@ -15,7 +15,7 @@ val dump : Format.formatter -> 'a t -> unit
 val trace_parser : bool ref
 
 (** the entry would not share the lexer filter with [glexer] used by fan *)    
-val mk_dynamic : gram -> string -> 'a t
+val mk_dynamic : (* gram -> *) string -> 'a t
 
 val clear : 'a t -> unit
 
@@ -23,7 +23,7 @@ val obj : 'a t -> entry
 
 val repr : entry -> 'a t
 
-val gram_of_entry : 'a t -> gram
+(* val gram_of_entry : 'a t -> gram *)
 
 
 (**  The main entrance to consume the parser,
@@ -32,7 +32,7 @@ val gram_of_entry : 'a t -> gram
 val parse_origin_tokens : 'a t -> Tokenf.stream -> 'a
 
 (** The same as [parse_origin_tokens] except that filter is applied *)    
-val filter_and_parse_tokens : 'a t -> Tokenf.stream -> 'a
+(* val filter_and_parse_tokens : 'a t -> Tokenf.stream -> 'a *)
 
 (** The default lexer, i.e, [Flex_lib.form_stream],
      *)
@@ -44,7 +44,7 @@ val filter_and_parse_tokens : 'a t -> Tokenf.stream -> 'a
 (*     ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) -> *)
 (*       ?loc:Locf.t -> 'a t -> string -> 'b *)
 
-val filter_of_gram : 'a t -> Tokenf.filter_plugin
+(* val filter_of_gram : 'a t -> Tokenf.filter_plugin *)
 
     
 (** call the [gfilter], and use [glexer] *)
