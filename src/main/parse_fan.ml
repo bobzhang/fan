@@ -103,12 +103,14 @@ let make_comma atom nt =
     [ S as p1; ","; S as p2 %{`Com(_loc,p1,p2)}
     | atom as p %{p}]}
 
-(* let make_ant ?(c="") x nt =  *)
-(*     %extend{ *)
-(*   nt: *)
-(*     [ Ant($x, s) %{mk_ant ~c s }] *)
-(*   } *)
     
+let make_ant ?(c="") i nt x=
+    %extend{
+  nt: $i
+    [ Ant($x, s) %{mk_ant ~c s }]
+  }
+
+
 let make_pat exp =
   %extend{
        pat_quot:
@@ -156,47 +158,35 @@ let make_pat exp =
        | pat_constr as p1 %{ p1}
        | "lazy"; S as p %{ `Lazy (_loc, p)}  ]
        pat: 50
-       [ Ant
-           ("" |"pat" |"par" |"int"
-         |"int32" |"int64" |"vrn" |"flo"
-         |"chr" |"nativeint" |"str"
-         |"int'" |"int32'" |"int64'"
-         |"nativeint'" |"flo'" |"chr'"
-         |"str'" |"`int" |"`int32"
-         |"`int64" |"`nativeint" |"`flo"
-         |"`chr" |"`str",s)
-          %{ mk_ant ~c:"pat" s}
-        | vid as i %{ (i : vid :> pat)}
-        | @primitve
-        | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
-        | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
-        | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
-        | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
-        | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
-        | "["; "]" %{ `Uid (_loc, "[]")}
-        | "["; sem_pat_for_list as s; "]" %{ s}
-        | "[|"; "|]" %{ `ArrayEmpty(_loc)}
-        | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
-        | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
-        | "("; ")" %{ `Uid (_loc, "()")}
-        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
-        | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
+       [ vid as i %{ (i : vid :> pat)}
+       | @primitve
+       | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
+       | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
+       | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
+       | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
+       | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
+       | "["; "]" %{ `Uid (_loc, "[]")}
+       | "["; sem_pat_for_list as s; "]" %{ s}
+       | "[|"; "|]" %{ `ArrayEmpty(_loc)}
+       | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
+       | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
+       | "("; ")" %{ `Uid (_loc, "()")}
+       | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
+       | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
             `ModuleConstraint(_loc,m, `Package(_loc,pt))}
-        | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
-            `ModuleConstraint (_loc, m, mk_ant s)}
-        | "("; S as p; ")" %{ p}
-        | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
-        | "("; S as p; "as";  a_lident as s; ")" %{ `Alias (_loc, p, s)}
-        | "("; S as p; ","; comma_pat as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
-        | "#"; type_longident as i %{ `ClassPath(_loc,i)}              
+       | "(" ; "module"; a_uident as m;":"; Ant("opt" ,s ); ")" %{
+           `ModuleConstraint (_loc, m, mk_ant s)}
+       | "("; S as p; ")" %{ p}
+       | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
+       | "("; S as p; "as";  a_lident as s; ")" %{ `Alias (_loc, p, s)}
+       | "("; S as p; ","; comma_pat as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
+       | "#"; type_longident as i %{ `ClassPath(_loc,i)}              
 
           (* duplicated may be removed later with [pat Level "apply"] *)
         
-        | "~"; a_lident as i; ":"; S as p %{`Label (_loc, i, p)}
-        | Label i; S as p   %{`Label (_loc, (`Lid (_loc, i)), p) }
-
-        | @atom_pat
-        ]
+       | "~"; a_lident as i; ":"; S as p %{`Label (_loc, i, p)}
+       | Label i; S as p   %{`Label (_loc, (`Lid (_loc, i)), p) }
+       | @atom_pat]
 
        ipat:
         [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
@@ -257,6 +247,14 @@ let () =
     make_comma exp comma_exp;
     make_case exp pat ;
     make_pat exp;
+    List.iter (make_ant ~c:"pat" 50 pat )
+      ["" ;"pat" ;"par" ;"int" ;
+       "int32" ;"int64" ;"vrn" ;"flo" ;
+       "chr" ;"nativeint" ;"str" ;"int'" ;
+       "int32'" ;"int64'" ;"nativeint'" ;
+       "flo'" ;"chr'" ;"str'" ;"`int" ;
+       "`int32" ;"`int64" ;"`nativeint" ;
+       "`flo" ;"`chr" ;"`str"]
   end
 
 let apply () = begin 

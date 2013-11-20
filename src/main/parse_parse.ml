@@ -177,19 +177,19 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     [ (({kind = Gram_def.KNormal; txt= [txt]}) : Gram_def.osymbol list Gram_def.decorate) ]}
   | @simple_symbol %{fun (txt : Gram_def.osymbol) ->
       [({kind = KNormal; txt = [txt] } : Gram_def.osymbol list Gram_def.decorate)]}
-(*
-  | ("Ant" as v); "("; Ant("ant",a); ",", Lid@xloc s; ")" %{
+
+  | ("Ant" as v); "("; Ant("",x); ","; Lid@xloc s; ")" %{
       [{kind = KNormal;
         txt =
         [{
          text = Token(_loc,
-                      %exp{({descr = {tag = $vrn:v;
-                                      word = Kind $str{x.txt};
-                                      tag_name = $str:v}}:Tokenf.pattern)});
+                      %exp{({descr =
+                             {tag = $vrn:v;
+                              word = Kind ${Tokenf.ant_expand Parsef.exp x};
+                              tag_name = $str:v}}:Tokenf.pattern)});
          styp= %ctyp'{Tokenf.ant};
-         bounds = ;
-         outer_pattern = None}]}]
-*)                                             
+         bounds = [((xloc,s),None)];
+         outer_pattern = None}]}]}                                             
   |  ("Ant" as v); "("; or_strs as ps;",";Lid@xloc s; ")" %{
       match ps with
       | (vs,loc,y) ->

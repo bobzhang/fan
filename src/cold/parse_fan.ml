@@ -395,6 +395,25 @@ let make_comma atom nt =
                                                                     'nt ))
          }]
      } : Gramf.olevel )
+let make_ant ?(c= "")  i nt x =
+  Gramf.extend_single (nt : 'nt Gramf.t )
+    ({
+       label = (Some i);
+       lassoc = true;
+       productions =
+         [{
+            symbols =
+              [Token
+                 ({ descr = { tag = `Ant; word = (Kind x); tag_name = "Ant" }
+                  } : Tokenf.pattern )];
+            annot = "mk_ant ~c s\n";
+            fn =
+              (Gramf.mk_action
+                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                    let s = __fan_0 in (mk_ant ~c s : 'nt ) : Tokenf.ant ->
+                                                                Locf.t -> 'nt ))
+          }]
+     } : Gramf.olevel )
 let make_pat exp =
   let grammar_entry_create x = Gramf.mk x in
   let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
@@ -634,423 +653,13 @@ let make_pat exp =
        lassoc = true;
        productions =
          [{
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                  } : Tokenf.pattern )];
-            annot = "mk_ant ~c:\"pat\" s\n";
+            symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
+            annot = "(i : vid  :>pat)\n";
             fn =
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                    let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : 
-                 Tokenf.ant -> Locf.t -> 'pat ))
+                 (fun (i : 'vid)  (_loc : Locf.t)  ->
+                    ((i : vid  :>pat) : 'pat ) : 'vid -> Locf.t -> 'pat ))
           };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "pat"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "par"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int32"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int64"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "vrn"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "flo"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "chr"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     {
-                       tag = `Ant;
-                       word = (Kind "nativeint");
-                       tag_name = "Ant"
-                     }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "str"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int32'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "int64'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     {
-                       tag = `Ant;
-                       word = (Kind "nativeint'");
-                       tag_name = "Ant"
-                     }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "flo'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "chr'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "str'"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`int"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`int32"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`int64"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     {
-                       tag = `Ant;
-                       word = (Kind "`nativeint");
-                       tag_name = "Ant"
-                     }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`flo"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`chr"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Ant; word = (Kind "`str"); tag_name = "Ant" }
-                 } : Tokenf.pattern )];
-           annot = "mk_ant ~c:\"pat\" s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                   let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'pat ))
-         };
-         {
-           symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
-           annot = "(i : vid  :>pat)\n";
-           fn =
-             (Gramf.mk_action
-                (fun (i : 'vid)  (_loc : Locf.t)  ->
-                   ((i : vid  :>pat) : 'pat ) : 'vid -> Locf.t -> 'pat ))
-         };
          {
            symbols =
              [Token
@@ -2789,7 +2398,33 @@ let () =
   make_comma ipat comma_ipat;
   make_comma exp comma_exp;
   make_case exp pat;
-  make_pat exp
+  make_pat exp;
+  List.iter (make_ant ~c:"pat" 50 pat)
+    ["";
+    "pat";
+    "par";
+    "int";
+    "int32";
+    "int64";
+    "vrn";
+    "flo";
+    "chr";
+    "nativeint";
+    "str";
+    "int'";
+    "int32'";
+    "int64'";
+    "nativeint'";
+    "flo'";
+    "chr'";
+    "str'";
+    "`int";
+    "`int32";
+    "`int64";
+    "`nativeint";
+    "`flo";
+    "`chr";
+    "`str"]
 let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      ({

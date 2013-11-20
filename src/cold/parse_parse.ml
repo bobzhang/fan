@@ -7254,6 +7254,102 @@ let _ =
              Token
                ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
                Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A ","); tag_name = "Key" } } : 
+               Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+               Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
+               Tokenf.pattern )];
+           annot =
+             "[{\n   kind = KNormal;\n   txt =\n     [{\n        text =\n          (Token\n             (_loc,\n               (`Constraint\n                  (_loc,\n                    (`Record\n                       (_loc,\n                         (`RecBind\n                            (_loc, (`Lid (_loc, \"descr\")),\n                              (`Record\n                                 (_loc,\n                                   (`Sem\n                                      (_loc,\n                                        (`RecBind\n                                           (_loc, (`Lid (_loc, \"tag\")),\n                                             (`Vrn (_loc, v)))),\n                                        (`Sem\n                                           (_loc,\n                                             (`RecBind\n                                                (_loc, (`Lid (_loc, \"word\")),\n                                                  (`App\n                                                     (_loc,\n                                                       (`Uid (_loc, \"Kind\")),\n                                                       (Tokenf.ant_expand\n                                                          Parsef.exp x))))),\n                                             (`RecBind\n                                                (_loc,\n                                                  (`Lid (_loc, \"tag_name\")),\n                                                  (`Str (_loc, v)))))))))))))),\n                    (`Dot\n                       (_loc, (`Uid (_loc, \"Tokenf\")),\n                         (`Lid (_loc, \"pattern\"))))) : Astf.exp )));\n        styp = (`Dot (_loc, (`Uid (_loc, \"Tokenf\")), (`Lid (_loc, \"ant\"))));\n        bounds = [((xloc, s), None)];\n        outer_pattern = None\n      }]\n }]\n";
+           fn =
+             (Gramf.mk_action
+                (fun _  (__fan_4 : Tokenf.txt)  _  (__fan_2 : Tokenf.ant)  _ 
+                   (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                   let v = __fan_0.txt in
+                   let x = __fan_2 in
+                   let xloc = __fan_4.loc in
+                   let s = __fan_4.txt in
+                   ([{
+                       kind = KNormal;
+                       txt =
+                         [{
+                            text =
+                              (Token
+                                 (_loc,
+                                   (`Constraint
+                                      (_loc,
+                                        (`Record
+                                           (_loc,
+                                             (`RecBind
+                                                (_loc,
+                                                  (`Lid (_loc, "descr")),
+                                                  (`Record
+                                                     (_loc,
+                                                       (`Sem
+                                                          (_loc,
+                                                            (`RecBind
+                                                               (_loc,
+                                                                 (`Lid
+                                                                    (_loc,
+                                                                    "tag")),
+                                                                 (`Vrn
+                                                                    (_loc, v)))),
+                                                            (`Sem
+                                                               (_loc,
+                                                                 (`RecBind
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "word")),
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`Uid
+                                                                    (_loc,
+                                                                    "Kind")),
+                                                                    (Tokenf.ant_expand
+                                                                    Parsef.exp
+                                                                    x))))),
+                                                                 (`RecBind
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "tag_name")),
+                                                                    (`Str
+                                                                    (_loc, v)))))))))))))),
+                                        (`Dot
+                                           (_loc, (`Uid (_loc, "Tokenf")),
+                                             (`Lid (_loc, "pattern"))))) : 
+                                   Astf.exp )));
+                            styp =
+                              (`Dot
+                                 (_loc, (`Uid (_loc, "Tokenf")),
+                                   (`Lid (_loc, "ant"))));
+                            bounds = [((xloc, s), None)];
+                            outer_pattern = None
+                          }]
+                     }] : 'simple ) : Tokenf.txt ->
+                                        Tokenf.txt ->
+                                          Tokenf.txt ->
+                                            Tokenf.ant ->
+                                              Tokenf.txt ->
+                                                Tokenf.txt ->
+                                                  Locf.t -> 'simple ))
+         };
+         {
+           symbols =
+             [Token
+                ({ descr = { tag = `Key; word = (A "Ant"); tag_name = "Key" }
+                 } : Tokenf.pattern );
+             Token
+               ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
+               Tokenf.pattern );
              Nterm (Gramf.obj (or_strs : 'or_strs Gramf.t ));
              Token
                ({ descr = { tag = `Key; word = (A ","); tag_name = "Key" } } : 
