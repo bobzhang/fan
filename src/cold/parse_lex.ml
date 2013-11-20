@@ -3295,28 +3295,7 @@ let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
 let _ = Hashtbl.add named_regexps "eof" Eof
 exception UnboundRegexp
 exception UnboundCase
-let g =
-  Gramf.create_lexer ~annot:"Lexer's lexer"
-    ~keywords:["as";
-              "eof";
-              "let";
-              "#";
-              "|";
-              "^";
-              "<";
-              "->";
-              "=";
-              "_";
-              "*";
-              "[";
-              "]";
-              "*";
-              "?";
-              "+";
-              "(";
-              ")";
-              "-";
-              "@"] ()
+let g = Gramf.create_lexer ~annot:"Lexer's lexer" ~keywords:["^"] ()
 let regexp = Gramf.mk_dynamic g "regexp"
 let char_class = Gramf.mk_dynamic g "char_class"
 let char_class1 = Gramf.mk_dynamic g "char_class1"

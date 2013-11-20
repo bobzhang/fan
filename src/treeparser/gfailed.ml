@@ -152,8 +152,9 @@ let tree_failed ?(verbose=false) entry prev_symb_result (prev_symb:Gdefs.symbol)
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected"
         end
-    | Try _ | Peek _ (*NP: not sure about this*) (* | `Opt _ *)  -> txt ^ " expected"
-    | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in
+    | Try _ | Peek _ (*NP: not sure about this*)   -> txt ^ " expected"
+    | Snterml _ | Self | Nterm _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb                                                                            
+    | Token v  -> "Token pattern:" ^ Tokenf.string_of_pattern v ^ " " ^ txt ^ " expected after " ^ name_of_symbol entry prev_symb in
   begin
     (* it may not necessary fail when  we use try somewhere*)
     if verbose then

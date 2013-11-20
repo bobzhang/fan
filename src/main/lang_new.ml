@@ -67,8 +67,7 @@ newterminals :
       let mk  =
         %exp{$id:t.mk_dynamic ${(x:vid:>exp)} }  in
       sem_of_list (* FIXME improve  -- to remove *)
-        ((* %stru{ let ${(x :>pat)} = $id:t.create_lexer ~annot:"" ~keywords:[] ()} :: *)
-         ( List.map
+        ( List.map
             (fun (_loc,x,descr,ty) ->
               match (descr,ty) with
               |(Some d,None) ->
@@ -78,7 +77,7 @@ newterminals :
               |(None,None) ->
                   %stru{ let $lid:x = $mk $str:x  }
               | (None,Some typ) ->
-                  %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)) }]
+                  %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls) }]
 }  
 let _ =
   let d = Ns.lang in

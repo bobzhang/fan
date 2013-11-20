@@ -270,15 +270,24 @@ let pp_print_error: filter_error Formatf.t  =
     | Keyword_as_label _a0 ->
         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string
           _a0
+(* BOOTSTRAPPING --  *)
+let to_string = Formatf.to_string pp_print_t
+        
+let print ppf x = Format.pp_print_string ppf (to_string x)
+          
 let string_of_error_msg = Formatf.to_string pp_print_error;;
 
 (* [Sym] should always be filtered into keywords *)  
 let keyword_conversion (tok:t) kwds =
   match tok with
   | `Sym u  | `Lid u | `Pre u (* for example "??"*)
-  | `Uid u when Setf.String.mem u.txt  kwds -> `Key u
+  | `Uid u when Setf.String.mem u.txt  kwds ->
+      (* Format.eprintf "%a@." print tok ; *)
+      `Key u
   | `Inf u  (* * *) when Setf.String.mem u.txt kwds ->
+      (* Format.eprintf "%a@." print tok ;       *)
       `Key {loc = u.loc; txt = u.txt}
+
   | `Eident u -> `Lid u
   | _ -> tok 
 
@@ -311,10 +320,6 @@ let filter x =
 
     
 
-(* BOOTSTRAPPING --  *)
-let to_string = Formatf.to_string pp_print_t
-        
-let print ppf x = Format.pp_print_string ppf (to_string x)
 
 
 let strip (x:t) : Obj.t  =

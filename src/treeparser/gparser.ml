@@ -104,7 +104,7 @@ let rec parser_of_tree (entry:Gdefs.entry)
                      | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
-    let ((* (arity,_symbols,_,parse) *)x,loc) =  with_loc parse strm in 
+    let (x,loc) =  with_loc parse strm in 
     let ans = ref x.fn in
     (for _i = 1 to x.arity do
       let  v = ArgContainer.pop q in

@@ -381,25 +381,18 @@ end
 
 exception UnboundRegexp;;
 exception UnboundCase;;
-let g =
-  Gramf.create_lexer ~annot:"Lexer's lexer"
-    ~keywords:["as";"eof";"let";
-               "#" ; "|" ; "^" ;
-               "<" ; "->" ;"=" ;
-               "_" ; "*" ; "[" ;
-               "]" ; "*" ; "?" ;
-               "+" ; "(" ; ")" ;
-               "-" ; "@" ] ();;
+(* let g = *)
+(*   Gramf.create_lexer ~annot:"Lexer's lexer" *)
+(*     ~keywords: *)
+(*     [(\* "^" *\)] ();; *)
 
-%create{(g:Gramf.t) regexp
+%create{(* (g:Gramf.t) *) regexp
           char_class
           char_class1
           lex
           declare_regexp
           lex_fan
-          (* lex_stream *)
-          case 
-      };;
+          case};;
 
 (*
    since we do unsafe_extend on top of Gramf...
