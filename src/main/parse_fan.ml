@@ -81,7 +81,7 @@ let make_case exp pat =
   case0:
   [ Ant ("case" | "", s) %{ mk_ant  s}
   | Ant ("",s) ;"when";exp as w;"->"; exp as e %{
-    `CaseWhen(_loc,mk_ant  s, w,e )}
+    `CaseWhen(_loc,mk_ant  s, w,e )} (* %case{$p -> $e  }*)
   | Ant ("",s); "->"; exp as e %{
     `Case(_loc,mk_ant  s ,e)}
   | pat_as_pat_opt as p; "when"; exp as w;  "->"; exp as e %{
@@ -110,6 +110,8 @@ let make_ant ?(c="") ?(i=10) nt x=
     [ Ant($x, s) %{mk_ant ~c s }]
   }
 
+let make_ants ?c ?i nt xs =  List.iter (make_ant ?c ?i nt) xs
+    
 let make_quot tag ?(i=10) nt = (* FIXME *)
   %extend{
   nt: $i
@@ -252,7 +254,7 @@ let () =
     make_case exp pat ;
     make_pat exp;
 
-    List.iter (make_ant ~c:"pat" ~i:50 pat )
+    make_ants ~c:"pat" ~i:50 pat 
       ["" ;"pat" ;"par" ;"int" ;
        "int32" ;"int64" ;"vrn" ;"flo" ;
        "chr" ;"nativeint" ;"str" ;"int'" ;
@@ -262,7 +264,7 @@ let () =
        "`flo" ;"`chr" ;"`str"];
 
     make_quot Dyn_tag.exp ~i:170 exp;
-    List.iter (make_ant ~c:"exp" ~i:170 exp)
+    make_ants ~c:"exp" ~i:170 exp
       ["exp" ;"" ;"par" ;"seq" ;"chr" ;
        "int" ;"int32" ;"str" ;"int64" ;
        "flo" ;"nativeint" ; "vrn" ;
@@ -273,42 +275,42 @@ let () =
        "`bool" ;"`int" ;"`int32" ;"`flo" ;"`str"];
 
     
-    List.iter (make_ant ~c:"mexp" ~i:30 mexp)
+    make_ants ~c:"mexp" ~i:30 mexp
       ["";"mexp"];
 
     make_quot  Dyn_tag.mexp ~i:30 mexp;
 
     make_quot Dyn_tag.mbind mbind;
-    List.iter (make_ant ~c:"mexp" mbind) ["mbind";""];
+    make_ants ~c:"mexp" mbind ["mbind";""];
 
     make_quot Dyn_tag.mbind module_rec_declaration;
-    List.iter (make_ant ~c:"mbind" module_rec_declaration) ["mbind";""];
+    make_ants ~c:"mbind" module_rec_declaration ["mbind";""];
 
     make_quot Dyn_tag.constr constr;
-    List.iter (make_ant ~c:"constr" constr) ["";"constr"];
+    make_ants ~c:"constr" constr ["";"constr"];
 
     make_quot ~i:60 Dyn_tag.mtyp mtyp;
-    List.iter (make_ant ~c:"mtyp" ~i:60 mtyp) ["";"mtyp"];
+    make_ants ~c:"mtyp" ~i:60 mtyp ["";"mtyp"];
 
     make_quot Dyn_tag.sigi sigi;
-    List.iter (make_ant ~c:"sigi" sigi) ["";"sigi"];
+    make_ants ~c:"sigi" sigi ["";"sigi"];
 
     make_quot Dyn_tag.stru stru;
-    List.iter (make_ant ~c:"stru" stru) ["";"stri"];
+    make_ants ~c:"stru" stru ["";"stri"];
 
     make_quot Dyn_tag.clsigi clsigi;
-    List.iter (make_ant ~c:"clsigi" clsigi) ["";"csg"];
+    make_ants ~c:"clsigi" clsigi ["";"csg"];
 
     make_quot Dyn_tag.clfield clfield;
-    List.iter (make_ant ~c:"clfield" clfield) ["";"cst"];
+    make_ants ~c:"clfield" clfield ["";"cst"];
 
     make_quot Dyn_tag.clexp ~i:30 clexp;
-    List.iter (make_ant ~c:"clexp" ~i:30 clexp) ["";"cexp"];
+    make_ants ~c:"clexp" ~i:30 clexp ["";"cexp"];
 
     make_quot Dyn_tag.cltyp cltyp;
-    List.iter (make_ant ~c:"cltyp" cltyp) ["";"ctyp"];
+    make_ants ~c:"cltyp" cltyp ["";"ctyp"];
 
-    List.iter (make_ant ~c:"ctyp" meth_decl) ["";"typ"];
+    make_ants ~c:"ctyp" meth_decl ["";"typ"];
   end
 
 let apply () = begin 
