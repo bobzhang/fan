@@ -5,7 +5,7 @@ let () =
 let test_ident_location  _ =
   let result =
     try Some
-        (Ast2pt.exp (Gramf.parse_string Syntaxf.exp %str{ X.x})).pexp_desc
+        (Ast2pt.exp (Gramlib.parse_string Syntaxf.exp %str{ X.x})).pexp_desc
     with _ -> None in
   match result with
   | None -> assert_failure "parse error"

@@ -248,36 +248,11 @@ let test_symb _ =
     "(%***{)"
     |> get_tokens
     |> %p{
-      [ `Sym ({txt = "(";
-              loc = 
-              {Locf.loc_start =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-               loc_end =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-               loc_ghost = false}}:Tokenf.txt);
+      [ `Key ({txt = "(";_}:Tokenf.txt);
         `Inf ({txt = "%***";
-               loc = 
-               {Locf.loc_start =
-                {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-                loc_end =
-                {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-                loc_ghost = false};
-               level = 3;
-             }:Tokenf.op);
-        `Sym ({txt= "{";
-              loc = 
-              {Locf.loc_start =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-               loc_end =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
-               loc_ghost = false}}:Tokenf.txt);
-        `Sym ({txt = ")";
-              loc =
-              {Locf.loc_start =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
-               loc_end =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
-               loc_ghost = false}}:Tokenf.txt);
+               level = 3;_}:Tokenf.op);
+        `Key ({txt= "{";_}:Tokenf.txt);
+        `Key ({txt = ")";_}:Tokenf.txt);
         `EOI _ ]}
     |> not then
     %err{test_symb}
@@ -290,7 +265,7 @@ let test_symb_percent _ =
   if
     "->%"
    |> get_tokens
-   |> %p{   [`Inf ({txt= "->%"; _} :Tokenf.op); `EOI _ ]}
+   |> %p{[`Inf ({txt= "->%"; _} :Tokenf.op); `EOI _ ]}
    |> not then
     %err{test_symb_percent}
 
@@ -300,7 +275,7 @@ let test_symb_percent1 _ =
   if
     "[%"
     |> get_tokens
-    |> %p{[`Sym ({txt = "["; _} : Tokenf.txt);
+    |> %p{[`Key ({txt = "["; _} : Tokenf.txt);
            `Inf ({txt = "%"; level= 3; _} : Tokenf.op);
            `EOI _  ]}
     |> not
@@ -329,7 +304,7 @@ let test_symb_percent4 _ =
   if
     "(%)"
     |> get_tokens
-    |> %p{[`Eident ({txt="%";_}:Tokenf.txt); `EOI _ ]}
+    |> %p{[`Lid ({txt="%";_}:Tokenf.txt); `EOI _ ]}
     |> not then
     %err{test_symb_percent4}
 
@@ -339,7 +314,7 @@ let test_symb_percent5 _ =
   if
     "(%"
   |> get_tokens
-  |> %p{[`Sym ({txt = "(";_}:Tokenf.txt);
+  |> %p{[`Key ({txt = "(";_}:Tokenf.txt);
          `Inf ({txt="%";level = 3; _}:Tokenf.op); `EOI _ ]}
   |> not then
     %err{test_symb_percent5}

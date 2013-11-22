@@ -1,8 +1,11 @@
 open OUnit
-open Test_util
-let test_pat1 _ = 
-  %pat-'{`a(a,b,c)} ===
-   `App (`App (`App (`Vrn "a",`Lid "a"), `Lid "b"), `Lid "c")
+(* open Test_util *)
+let test_pat1 _ =
+  if 
+    %pat-'{`a(a,b,c)} =
+    `App(`Vrn"a", `Par(`Com(`Lid "a",`Com(`Lid "b",`Lid "c"))))
+   |> not then
+    %err{test_pat1}
 
 let suite =
   "Quotation_expand" >:::
