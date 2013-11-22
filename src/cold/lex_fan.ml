@@ -6004,5 +6004,6 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ -> failwith "lexing: empty token"))
-let from_lexbuf lb =
-  (let next _ = Some (token lb) in Streamf.from next : Tokenf.stream )
+let from_lexbuf = Lexing_util.adapt_to_buf token
+let from_stream = Lexing_util.adapt_to_stream token
+let from_string = Lexing_util.adapt_to_string token

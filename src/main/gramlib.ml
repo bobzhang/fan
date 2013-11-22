@@ -1,21 +1,22 @@
-let lex_string loc str = Flex_lib.from_stream  loc (Streamf.of_string str)
+
+let lex_string loc str = Lex_fan.from_stream  loc (Streamf.of_string str)
 
 
-let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
+let parse_string ?(lexer=Lex_fan.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
     str =
   str
    |> Streamf.of_string
    |> lexer loc
    |> Gramf.parse_origin_tokens entry
 
-let parse_string_eoi ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
+let parse_string_eoi ?(lexer=Lex_fan.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
     str =
   str
    |> Streamf.of_string
    |> lexer loc
    |> Gramf.parse_tokens_eoi entry
     
-let parse ?(lexer= Flex_lib.from_stream) (entry:'a Gramf.t) loc cs =
+let parse ?(lexer= Lex_fan.from_stream) (entry:'a Gramf.t) loc cs =
   Gramf.parse_origin_tokens entry @@ lexer loc cs 
 ;;
 

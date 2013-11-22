@@ -8,7 +8,7 @@ open Test_util
 
 
 let get_tokens s =
-  Flex_lib.list_of_string ~verbose:false s 
+  Lexing_util.list_of_string ~verbose:false Lex_fan.token s 
 
     
 let test_empty_string _ =

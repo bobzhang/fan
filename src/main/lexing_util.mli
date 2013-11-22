@@ -107,8 +107,15 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
 
 
 val adapt_to_stream : (Lexing.lexbuf -> 'a) -> Locf.t -> char Streamf.t -> 'a Streamf.t
+val adapt_to_string : (Lexing.lexbuf -> 'a) -> Locf.t -> string -> 'a Streamf.t
+val adapt_to_buf : ('a -> 'b) -> 'a -> 'b Streamf.t    
 
-val clean : Tokenf.stream -> Tokenf.stream    
+
+    
+val debug_of_string : (Lexing.lexbuf -> Tokenf.t) -> string -> unit
+val debug_of_file : (Lexing.lexbuf -> Tokenf.t) -> string -> unit
+val list_of_string : (Lexing.lexbuf -> Tokenf.t) -> ?verbose:bool -> string -> Tokenf.t list
+val get_tokens : (Lexing.lexbuf -> Tokenf.t) -> string -> Tokenf.t list    
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake lexing_util.cmo" *)
 (* end: *)

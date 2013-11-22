@@ -292,13 +292,70 @@ let adapt_to_stream token =
     Streamf.from (fun _ -> Some (token  lb))
   end
 
+
+let adapt_to_string token =
+  fun {Locf.loc_start;_} str ->
+  let lb = Lexing.from_string str in begin 
+    lb.lex_abs_pos <- loc_start.pos_cnum;
+    lb.lex_curr_p <- loc_start;
+    let next _ = Some (token lb) in 
+    Streamf.from next 
+  end
+
+let adapt_to_buf token =
+  fun lb ->
+    Streamf.from (fun _ -> Some (token lb))
+      
 (* remove trailing `EOI*)  
 let rec clean : Tokenf.stream -> Tokenf.stream =  %parser{
   | (`EOI _ as x)  -> %stream{ x}
   |  x; 'xs  -> %stream{ x; 'clean xs}
   |  -> %stream{} }
 
+let rec strict_clean : Tokenf.stream -> Tokenf.stream = %parser{
+  | `EOI _  -> %stream{}
+  | x; 'xs  -> %stream{ x; 'strict_clean xs }
+  |  -> %stream{}} 
 
+
+let debug_of_string  token  str =
+  let from_string = adapt_to_string token in
+  let loc = Locf.string_loc  in
+  let stream = from_string loc str  in
+  stream
+  |> clean
+  |> Streamf.iter
+      (fun t -> Format.fprintf Format.std_formatter "%a@\n" Tokenf.print t )
+
+let debug_of_file  token file =
+  let from_stream = adapt_to_stream token  in
+  let loc = Locf.mk file in
+  let chan = open_in file in
+  let stream = Streamf.of_channel  chan in
+  from_stream  loc stream |> clean |>
+  Streamf.iter @@
+  fun t  ->
+    Format.fprintf Format.std_formatter "%a@\n" Tokenf.print t
+
+let list_of_string token ?(verbose=true) str =
+  let from_string = adapt_to_string token in
+  let result = ref [] in
+  let loc = Locf.string_loc  in
+  let stream = from_string loc str  in
+  begin 
+    stream
+    |> clean
+    |> Streamf.iter
+        (fun t -> begin
+          result := t :: !result ;
+          if verbose then 
+            Format.fprintf Format.std_formatter "%a@\n" Tokenf.print t 
+        end) ;
+   List.rev !result 
+  end
+
+let get_tokens = list_of_string ~verbose:false 
+      
 let _ =
   Printexc.register_printer @@ function
     | Lexing_error e -> Some (lex_error_to_string e)
