@@ -100,8 +100,14 @@ let lid _loc n = `Lid(_loc,n)
 let uid _loc n = `Uid(_loc,n)
 let unit _loc = `Uid(_loc,"()")
 
+
+(** generate patterns or expressions *)    
 let ep_of_cons _loc n ps =
-  appl_of_list ((uid _loc n) :: ps)
+  match ps with
+  | [] -> uid _loc n
+  | _ ->
+      app (uid _loc n) (`Par (_loc, com_of_list ps))
+
 
 let tuple_com_unit _loc = function
   | [] -> unit _loc
