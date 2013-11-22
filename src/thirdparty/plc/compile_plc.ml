@@ -1,5 +1,5 @@
 
-open FAst
+open Astf
 open Ast_gen
 
 let format_loc _loc =
@@ -34,7 +34,7 @@ let fun_apply _loc e args =
 
 let sequence _loc = fun
   | [e] -> e
-  | es -> %exp{do ${sem_of_list es} done}
+  | es -> %exp{begin ${sem_of_list es} end}
 
 let test_expr _loc l =
   let l = List.map (fun (a,b) -> (lid _loc a, lid _loc b)) l in
@@ -159,7 +159,7 @@ let or_of_list xs =
   	Ast_basic.of_listr orf xs
 
 (** Generate "plval" type declaration with Prolog compounds (and integers). *)
-let value_type _loc (comps : int Mapf.String.t) : FAst.stru =
+let value_type _loc (comps : int Mapf.String.t) : Astf.stru =
   let ctyp_of_cons _loc n cs : or_ctyp =
     match cs with
     | [] -> uid _loc n

@@ -24,19 +24,13 @@ let unwrap_rule_or_masks rd =
       Ast_plc.PredMap.empty rd
     ;;
 
-Foptions.add ("-nogroup",
-              (Unit (fun () -> group_rs := Compile_plc.nogroup_rs)),
-              "Don't try to optimally group predicate rules" )
+let () =
+  Foptions.add ("-nogroup",
+                (Unit (fun () -> group_rs := Compile_plc.nogroup_rs)),
+                "Don't try to optimally group predicate rules" );;
 
 
-let g = Gramf.create_lexer ~annot:"prolog"
-    ~keywords:[".";":";"-";",";"(";")";"=";
-               "\\=";"is";"=:=";"=\\=";"<";
-               "=<";">";">=";"+"; "_";"!";
-               "[";"]";"|";"%:";"?";":-"]
-    ();;
-
-%create{(g:Gramf.t) prog rule_or_mask rule body args term bar_term mask  arg_mask};;
+%create{prog rule_or_mask rule body args term bar_term mask  arg_mask};;
 
 %extend{
 prog:
@@ -52,27 +46,26 @@ rule:
     ((x,List.length t),t,b,_loc) }]
 body: [ ":-"; L1 term SEP "," as r %{r} ]
 args: [ "(";  L1 term SEP "," as r; ")" %{r} ]
-term:
-  { "relop" NA
-      [ S as x; ("="|"\\="|"is"|"=:="|"=\\="|"<"|"=<"|">"|">=" as  op );
-        S as y %{Comp (Names.transform op,[x;y],_loc)}]
-      "add" LA
-      [ S as x; ("+"|"-" as op ); S as y %{Comp (Names.transform op,[x;y],_loc)}]
-      "unary minus" NA
-      [ "-"; Int s %{Integer (-(int_of_string s), _loc)}  (* FIXME-NRG *)
-      | "-"; S as x %{Comp (Names.neg,[x],_loc)} ]
-      "simple" NA
-      [ Lid x; ? args as t %{
-        (match (x,t) with
-        | (x,None) -> Comp (x,[],_loc)
-        | (x,Some t) -> Comp (x,t,_loc))}
-      | "_" %{Anon _loc}
-      | "!" %{Comp (Names.cut,[],_loc)}
-      | Uid x %{Var (x,_loc)}
-      | Int s %{Integer (int_of_string s, _loc)}
-      | "("; S as t; ")" %{t}
-      | "["; L0 S SEP "," as t; ? bar_term as e; "]" %{ term_list _loc t e}
-      ]}
+term: 10
+  [ S as x; ("="|"\\="|"is"|"=:="|"=\\="|"<"|"=<"|">"|">=" as  op );
+    S as y %{Comp (Names.transform op,[x;y],_loc)}]
+term: 20
+  [ S as x; ("+"|"-" as op ); S as y %{Comp (Names.transform op,[x;y],_loc)}]
+term: 30
+  [ "-"; Int s %{Integer (-(int_of_string s), _loc)}  (* FIXME-NRG *)
+  | "-"; S as x %{Comp (Names.neg,[x],_loc)} ]
+term: 40  
+  [ Lid x; ? args as t %{
+    (match (x,t) with
+    | (x,None) -> Comp (x,[],_loc)
+    | (x,Some t) -> Comp (x,t,_loc))}
+  | "_" %{Anon _loc}
+  | "!" %{Comp (Names.cut,[],_loc)}
+  | Uid x %{Var (x,_loc)}
+  | Int s %{Integer (int_of_string s, _loc)}
+  | "("; S as t; ")" %{t}
+  | "["; L0 S SEP "," as t; ? bar_term as e; "]" %{ term_list _loc t e}]
+  
 bar_term: [ "|"; term as t %{t} ]
 mask: [ "%:"; Lid x; "(";  L1 arg_mask SEP "," as t; ")" %{((x, List.length t),t,_loc)} ]
 arg_mask:
