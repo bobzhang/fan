@@ -3,17 +3,7 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-
-
 type position = int
-
-(* val filter: stream -> stream       *)
-
-(** Basially a filter attached to the stream lexer *)    
-(* type gram = Gdefs.gram = { *)
-(*   annot:string; *)
-(*   gfilter : Tokenf.filter_plugin; *)
-(* } *)
 
 type action = Gaction.t
 
@@ -21,6 +11,7 @@ type action = Gaction.t
 type entry = Gdefs.entry 
 
 and level =Gdefs.level 
+
 and symbol =
     (* The concrete representation is needed here
        at least for polymorphic variant, otherwise the
@@ -73,9 +64,9 @@ type delete_statment = symbol list
       
 val name: 'a t -> string
 
-val print: Format.formatter -> 'a t -> unit
+val print: 'a t Formatf.t 
     
-val dump: Format.formatter -> 'a t -> unit
+val dump: 'a t Formatf.t
 
 val trace_parser: bool ref
 
