@@ -5844,9 +5844,17 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           `Lid { loc = (!! lexbuf); txt }
       | 16 ->
           let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-              (lexbuf.Lexing.lex_curr_pos + 0) in
-          `Key { loc = (!! lexbuf); txt }
+            Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos lexbuf.lex_curr_pos in
+          (`Key
+             {
+               loc =
+                 {
+                   loc_start = (lexbuf.lex_start_p);
+                   loc_end = (lexbuf.lex_curr_p);
+                   loc_ghost = false
+                 };
+               txt
+             } : Tokenf.t )
       | 17 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

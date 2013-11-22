@@ -124,40 +124,17 @@ let  rec token   = %lex_fan{
      `Lid { loc = !! lexbuf ; txt}}
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
      `Lid {loc = !!lexbuf;txt}}
-   | '(' ocaml_blank*
-       ("or"
-       | "mod"|"land"|"lor" |"lxor"
-       |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
+   | '(' ocaml_blank* ("or" | "mod"|"land"|"lor" |"lxor"
+     |"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      `Lid {loc = !! lexbuf;txt}}
-       (* && - Inf 0
-          -. - Inf 2
-
-          -  - Inf 2
-          +  - Inf 2
-
-          ?? - Pre
-          || - 0
-          <    0
-          ->   2
-          =    0
-          |    0
-          ==   0 
-          *    3
-          <-   0
-          &    0
-          ^    1
-          >    0 
-        *)
-       
-   | ( "&&" | "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"|"+"|"-"
-   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}" |"-."
+   | @kwd_symbol( "&&" | "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"|"+"|"-"
+   | ":=" | ":>" | ";"  | ";;" | "{"|"}" |"-."
    | "{<" |">}"
    | "("  | "[|" | "["  | "[<" | "[=" | "[>"
    | ")" | "|]" | "]" | ">]"
-   | "??" (* FIXME *)
    | "||" | "<" | "->" |  "=" | "|" | "==" | "*" | "<-"
    | "&"  | ">" 
-   | "!"  | "~" |  "?"    ) as txt  %{ `Key {loc = !! lexbuf ;txt}}
+   | "!"  | "~" |  "?"   |"??"  (* FIXME*))
        
    | '!' symbolchar+ as txt %{ `Pre{loc= !!lexbuf; txt}}
    | ['~' '?'] symbolchar+ as txt  %{`Pre{loc = !!lexbuf; txt }}
