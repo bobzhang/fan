@@ -172,8 +172,7 @@ let  rec token   = %lex_fan{
        begin
          Lexing_util.warn Comment_not_end (!! lexbuf) ;
          Lexing_util.move_curr_p (-1) lexbuf;
-         let loc = !! lexbuf in
-         `Sym {loc;txt="*"}
+         `Inf{loc = !!lexbuf; txt ="*";level = 3}
        end}
    | @ocaml_double_quotation
    | @line_directive %{token lexbuf}       

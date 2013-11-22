@@ -5885,7 +5885,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | 24 ->
           (Lexing_util.warn Comment_not_end (!! lexbuf);
            Lexing_util.move_curr_p (-1) lexbuf;
-           (let loc = !! lexbuf in `Sym { loc; txt = "*" }))
+           `Inf { loc = (!! lexbuf); txt = "*"; level = 3 })
       | 25 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf

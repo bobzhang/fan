@@ -106,7 +106,6 @@ type space_token =
 
 type t =
   [ `Key          of txt
-  | `Sym          of txt
   | `Lid          of txt
   | `Uid          of txt
   | `Int          of txt
@@ -126,7 +125,6 @@ type t =
   | `Ant          of ant ]
 type tag =
   [`Key          
-  | `Sym          
   | `Lid          
   | `Uid          
   | `Int          
@@ -206,8 +204,6 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
       Format.fprintf fmt "@[<1>(`Pre@ %a)@]" Format.pp_print_string x.txt
   | `Key x ->
       Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string x.txt
-  | `Sym x ->
-      Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string x.txt
   | `Lid x ->
       Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string x.txt
   | `Uid x ->
@@ -268,7 +264,6 @@ let get_string (x:t) :  string =
   match x with
   | `Pre x 
   | `Key x
-  | `Sym x
   | `Lid x
   | `Uid x
   | `Int  x
@@ -289,7 +284,6 @@ let get_string (x:t) :  string =
 let get_loc (x:t) =
   match x with
   | `Key x
-  | `Sym x
   | `Lid x
   | `Uid x
   | `Int  x
