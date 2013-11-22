@@ -34,7 +34,7 @@ and action =
 and rule = {
     env : (locid * exp ) list;
     prod : osymbol list ;
-    action : action (* exp option *)
+    action : action
   }
 and label = string option
 
