@@ -24,11 +24,6 @@ let unwrap_rule_or_masks rd =
       Ast_plc.PredMap.empty rd
     ;;
 
-let () =
-  Foptions.add ("-nogroup",
-                (Unit (fun () -> group_rs := Compile_plc.nogroup_rs)),
-                "Don't try to optimally group predicate rules" );;
-
 
 %create{prog rule_or_mask rule body args term bar_term mask  arg_mask};;
 
@@ -73,5 +68,15 @@ arg_mask:
    | "-"; ? Uid  %{ArgOpen _loc}
    | "?";  ? Uid %{ArgAny _loc}]};;
 
-Ast_quotation.of_stru ~lexer:Lex_plc.from_stream ~name:(Ns.lang,"plc")  ~entry:prog ()
+
+let () =
+  begin 
+    Options.add ("-nogroup",
+                  (Unit (fun () -> group_rs := Compile_plc.nogroup_rs)),
+                  "Don't try to optimally group predicate rules" );
+    Ast_quotation.of_stru ~lexer:Lex_plc.from_stream ~name:(Ns.lang,"plc")  ~entry:prog ()
+  end 
+
+
+
 

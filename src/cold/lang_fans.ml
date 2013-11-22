@@ -895,8 +895,8 @@ let _ =
      } : Gramf.olevel )
 let lexer = Lexing_util.adapt_to_stream token
 let _ =
-  Foptions.add
+  Options.add
     ("-keep", (Arg.Set State.keep), "Keep the included type definitions");
-  Foptions.add
+  Options.add
     ("-loaded-plugins", (Arg.Unit Typehook.show_modules), "Show plugins");
   Ast_quotation.of_exp ~name:(Ns.lang, "fans") ~lexer ~entry:fan_quots ()

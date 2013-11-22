@@ -23,10 +23,10 @@ let _ =
            (Format.sprintf "%s:@\n%s" (Locf.to_string loc)
               (Printexc.to_string exn))
      | _ -> None);
-  Foptions.adds MkFan.initial_spec_list;
+  Options.adds MkFan.initial_spec_list;
   Ast_parsers.use_parsers ["revise"; "stream"];
   (try
-     Arg.parse_dynamic Foptions.init_spec_list MkFan.anon_fun
+     Arg.parse_dynamic Options.init_spec_list MkFan.anon_fun
        "fan <options> <file>\nOptions are:\n"
    with
    | exc -> (Format.eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2))

@@ -26,11 +26,11 @@ let _ =
           FEval.eval_ast Format.err_formatter s 
         );
     register_bin_printer (); (** default *)
-    Foptions.adds Fan_args.initial_spec_list;
+    Options.adds Fan_args.initial_spec_list;
     Ast_parsers.use_parsers [ "revise"];
     try
       Arg.parse_dynamic
-        Foptions.init_spec_list
+        Options.init_spec_list
         Fan_args.anon_fun "fan <options> <file>\nOptions are:\n"
     with exc -> begin Format.eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end
   end

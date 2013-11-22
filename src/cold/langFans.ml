@@ -88,7 +88,7 @@ let _ =
                 (fun _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : Astf.exp ) : 'fan_quots )))))]))
 let _ =
-  Foptions.add
+  Options.add
     ("-keep", (Arg.Set FState.keep), "Keep the included type definitions");
-  Foptions.add
+  Options.add
     ("-loaded-plugins", (Arg.Unit Typehook.show_modules), "Show plugins")

@@ -1,12 +1,4 @@
 
-%import{
-Location_util:
-  from_lexbuf as (!!)
-   ;
-};;    
-
-
-
 let  rec token  = %lex_fan{
   | @whitespace %{token lexbuf}
   | @ocaml_lid("_"|"is")
@@ -19,8 +11,5 @@ let  rec token  = %lex_fan{
   | @ocaml_comment %{token lexbuf}
   | @ocaml_eof
   | @default}
-
-    
-
 
 let from_stream = Lexing_util.adapt_to_stream token 
