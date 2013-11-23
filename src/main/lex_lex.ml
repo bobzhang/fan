@@ -6,7 +6,7 @@ let (!!)  = Location_util.from_lexbuf ;;
 
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
-  | @ocaml_lid("as"|"eof"|"let"|"_")
+  | @ocaml_lid("as"|"let")
   | @ocaml_char
   | @ocaml_string
   | @kwd_symbol(

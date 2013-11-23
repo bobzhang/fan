@@ -153,6 +153,7 @@ FAN_FILES = \
     parse_stream \
     plugins prelude stdFan typehook\
     parse_lex \
+    predef_lex \
     lang_fans lang_include lang_save \
     fan_ops state dyn_tag \
     syntaxf \
