@@ -2,12 +2,6 @@
 let lex_string loc str = Lex_fan.from_stream  loc (Streamf.of_string str)
 
 
-let parse_string ?(lexer=Lex_fan.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
-    str =
-  str
-   |> Streamf.of_string
-   |> lexer loc
-   |> Gramf.parse_origin_tokens entry
 
 let parse_string_eoi ?(lexer=Lex_fan.from_stream) ?(loc=Locf.string_loc) (entry:'a Gramf.t)
     str =
@@ -17,7 +11,8 @@ let parse_string_eoi ?(lexer=Lex_fan.from_stream) ?(loc=Locf.string_loc) (entry:
    |> Gramf.parse_tokens_eoi entry
     
 let parse ?(lexer= Lex_fan.from_stream) (entry:'a Gramf.t) loc cs =
-  Gramf.parse_origin_tokens entry @@ lexer loc cs 
+  (* Gramf.parse_origin_tokens entry @@ lexer loc cs  *)
+  Gramf.parse_tokens_eoi entry @@ lexer loc cs 
 ;;
 
 let token_stream_of_string s =
@@ -35,7 +30,7 @@ let parse_include_file entry =
       parse entry (Locf.mk file) st
 
 let parse_string_of_entry ?(loc=Locf.mk "<string>") entry  s =
-  try parse_string entry  ~loc s  with
+  try parse_string_eoi entry  ~loc s  with
     Locf.Exc_located(loc, e) -> begin
       Format.eprintf "%s" (Printexc.to_string e);
       Locf.error_report (loc,s);
