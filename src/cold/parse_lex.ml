@@ -303,59 +303,6 @@ let _ =
                                          Tokenf.txt -> Locf.t -> 'case ))
          }]
      } : Gramf.olevel );
-  Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
-    ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "let"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Token
-                ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                Tokenf.pattern );
-              Token
-                ({ descr = { tag = `Key; word = (A "="); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
-            annot =
-              "if Hashtbl.mem Predef_lex.named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\nelse\n  (Hashtbl.add Predef_lex.named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
-                    (_loc : Locf.t)  ->
-                    let xloc = __fan_1.loc in
-                    let x = __fan_1.txt in
-                    (if Hashtbl.mem Predef_lex.named_regexps x
-                     then
-                       (Fan_warnings.emitf xloc.loc_start
-                          "fanlex (warning): multiple definition of named regexp '%s'\n"
-                          x;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru ))
-                     else
-                       (Hashtbl.add Predef_lex.named_regexps x r;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )) : 
-                      'declare_regexp ) : 'regexp ->
-                                            Tokenf.txt ->
-                                              Tokenf.txt ->
-                                                Tokenf.txt ->
-                                                  Locf.t -> 'declare_regexp ))
-          };
-         {
-           symbols = [Self; Self];
-           annot = "x\n";
-           fn =
-             (Gramf.mk_action
-                (fun (x : 'declare_regexp)  _  (_loc : Locf.t)  ->
-                   (x : 'declare_regexp ) : 'declare_regexp ->
-                                              'declare_regexp ->
-                                                Locf.t -> 'declare_regexp ))
-         }]
-     } : Gramf.olevel );
   Gramf.extend_single (regexp : 'regexp Gramf.t )
     ({
        label = (Some 10);
@@ -658,6 +605,59 @@ let _ =
                 (fun (cc2 : 'char_class1)  (cc1 : 'char_class1) 
                    (_loc : Locf.t)  -> (Fcset.union cc1 cc2 : 'char_class1 ) : 
                 'char_class1 -> 'char_class1 -> Locf.t -> 'char_class1 ))
+         }]
+     } : Gramf.olevel );
+  Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
+    ({
+       label = None;
+       lassoc = true;
+       productions =
+         [{
+            symbols =
+              [Token
+                 ({
+                    descr =
+                      { tag = `Key; word = (A "let"); tag_name = "Key" }
+                  } : Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
+                Tokenf.pattern );
+              Token
+                ({ descr = { tag = `Key; word = (A "="); tag_name = "Key" } } : 
+                Tokenf.pattern );
+              Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
+            annot =
+              "if Hashtbl.mem Predef_lex.named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\nelse\n  (Hashtbl.add Predef_lex.named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n";
+            fn =
+              (Gramf.mk_action
+                 (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
+                    (_loc : Locf.t)  ->
+                    let xloc = __fan_1.loc in
+                    let x = __fan_1.txt in
+                    (if Hashtbl.mem Predef_lex.named_regexps x
+                     then
+                       (Fan_warnings.emitf xloc.loc_start
+                          "fanlex (warning): multiple definition of named regexp '%s'\n"
+                          x;
+                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru ))
+                     else
+                       (Hashtbl.add Predef_lex.named_regexps x r;
+                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )) : 
+                      'declare_regexp ) : 'regexp ->
+                                            Tokenf.txt ->
+                                              Tokenf.txt ->
+                                                Tokenf.txt ->
+                                                  Locf.t -> 'declare_regexp ))
+          };
+         {
+           symbols = [Self; Self];
+           annot = "x\n";
+           fn =
+             (Gramf.mk_action
+                (fun (x : 'declare_regexp)  _  (_loc : Locf.t)  ->
+                   (x : 'declare_regexp ) : 'declare_regexp ->
+                                              'declare_regexp ->
+                                                Locf.t -> 'declare_regexp ))
          }]
      } : Gramf.olevel )
 let () =

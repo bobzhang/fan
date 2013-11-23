@@ -1,5 +1,3 @@
-(* %%control{default "exp";};; *)
-
 open Astf
 open Ast_gen
 

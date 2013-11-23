@@ -10,19 +10,20 @@ let list_of_list =
         let _loc = Locf.merge (loc_of e1) (loc_of v) in
         (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), v) : Astf.exp ) in
   loop
-let meta_int _loc i = `Int (_loc, (string_of_int i))
-let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
-let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
-let meta_nativeint _loc i = `Nativeint (_loc, (Nativeint.to_string i))
-let meta_float _loc i = `Flo (_loc, (string_of_float i))
-let meta_string _loc i = `Str (_loc, (String.escaped i))
-let meta_char _loc i = `Chr (_loc, (Char.escaped i))
-let meta_unit _loc _ = `Uid (_loc, "()")
+let meta_int _loc i = (`Int (string_of_int i) : Astfn.exp )
+let meta_int32 _loc i = (`Int32 (Int32.to_string i) : Astfn.exp )
+let meta_int64 _loc i = (`Int64 (Int64.to_string i) : Astfn.exp )
+let meta_nativeint _loc i = (`Nativeint (Nativeint.to_string i) : Astfn.exp )
+let meta_float _loc i = (`Flo (string_of_float i) : Astfn.exp )
+let meta_string _loc i = (`Str (String.escaped i) : Astfn.exp )
+let meta_char _loc i = (`Chr (Char.escaped i) : Astfn.exp )
+let meta_unit _loc _ = (`Uid "()" : Astfn.exp )
 let meta_bool _loc =
-  function | true  -> `Lid (_loc, "true") | false  -> `Lid (_loc, "false")
+  function
+  | true  -> (`Lid "true" : Astfn.exp )
+  | false  -> (`Lid "false" : Astfn.exp )
 let meta_ref mf_a _loc i =
-  `Record
-    (_loc, (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc (!i)))))
+  (`Record (`RecBind ((`Lid "contents"), (mf_a _loc (!i)))) : Astfn.exp )
 let mklist loc =
   let rec loop top =
     function
@@ -35,8 +36,8 @@ let meta_list mf_a _loc ls =
   mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
 let meta_option mf_a _loc =
   function
-  | None  -> `Uid (_loc, "None")
-  | Some x -> `App (_loc, (`Uid (_loc, "Some")), (mf_a _loc x))
+  | None  -> (`Uid "None" : Astfn.exp )
+  | Some x -> (`App ((`Uid "Some"), (mf_a _loc x)) : Astfn.exp )
 let meta_arrow (type t) (_mf_a : Locf.t -> 'a -> t)
   (_mf_b : Locf.t -> 'b -> t) (_loc : Locf.t) (_x : 'a -> 'b) =
   invalid_arg "meta_arrow not implemented"

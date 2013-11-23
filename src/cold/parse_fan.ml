@@ -9021,7 +9021,9 @@ let apply () =
                                                       'override_flag_quot ))
            }]
       } : Gramf.olevel ));
-  (Gramf.extend_single (implem : 'implem Gramf.t )
+  (let grammar_entry_create x = Gramf.mk x in
+   let quots: 'quots Gramf.t = grammar_entry_create "quots" in
+   Gramf.extend_single (quots : 'quots Gramf.t )
      ({
         label = None;
         lassoc = true;
@@ -9036,46 +9038,73 @@ let apply () =
                          word = Any;
                          tag_name = "DirQuotation"
                        }
-                   } : Tokenf.pattern )];
-             annot = "Ast_quotation.handle_quot x; ([], (Some _loc))\n";
+                   } : Tokenf.pattern );
+               Token
+                 ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
+                  } : Tokenf.pattern )];
+             annot = "Ast_quotation.handle_quot x\n";
              fn =
                (Gramf.mk_action
-                  (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
+                  (fun _  (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                      let x = __fan_0 in
-                     (Ast_quotation.handle_quot x; ([], (Some _loc)) : 
-                       'implem ) : Tokenf.quot -> Locf.t -> 'implem ))
+                     (Ast_quotation.handle_quot x : 'quots ) : Tokenf.txt ->
+                                                                 Tokenf.quot
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'quots ))
            };
           {
+            symbols = [Self; Self];
+            annot = "()\n";
+            fn =
+              (Gramf.mk_action
+                 (fun _  _  (_loc : Locf.t)  -> (() : 'quots ) : 'quots ->
+                                                                   'quots ->
+                                                                    Locf.t ->
+                                                                    'quots ))
+          }]
+      } : Gramf.olevel );
+   Gramf.extend_single (implem : 'implem Gramf.t )
+     ({
+        label = None;
+        lassoc = true;
+        productions =
+          [{
+             symbols = [];
+             annot = "x\n";
+             fn =
+               (Gramf.mk_action
+                  (fun (_loc : Locf.t)  -> let x = None in (x : 'implem ) : 
+                  Locf.t -> 'implem ))
+           };
+          {
+            symbols = [Nterm (Gramf.obj (quots : 'quots Gramf.t ))];
+            annot = "x\n";
+            fn =
+              (Gramf.mk_action
+                 (fun _  (_loc : Locf.t)  -> let x = None in (x : 'implem ) : 
+                 'quots -> Locf.t -> 'implem ))
+          };
+          {
+            symbols = [Nterm (Gramf.obj (strus : 'strus Gramf.t ))];
+            annot = "x\n";
+            fn =
+              (Gramf.mk_action
+                 (fun (x : 'strus)  (_loc : Locf.t)  ->
+                    let x = Some x in (x : 'implem ) : 'strus ->
+                                                         Locf.t -> 'implem ))
+          };
+          {
             symbols =
-              [Nterm (Gramf.obj (stru : 'stru Gramf.t ));
-              Token
-                ({ descr = { tag = `Key; word = (A ";;"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-              Self];
-            annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
+              [Nterm (Gramf.obj (quots : 'quots Gramf.t ));
+              Nterm (Gramf.obj (strus : 'strus Gramf.t ))];
+            annot = "x\n";
             fn =
               (Gramf.mk_action
-                 (fun (rest : 'implem)  _  (si : 'stru)  (_loc : Locf.t)  ->
-                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                    'implem ) : 'implem ->
-                                  Tokenf.txt -> 'stru -> Locf.t -> 'implem ))
-          };
-          {
-            symbols = [Nterm (Gramf.obj (stru : 'stru Gramf.t )); Self];
-            annot = "let (sil,stopped) = rest in ((si :: sil), stopped)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (rest : 'implem)  (si : 'stru)  (_loc : Locf.t)  ->
-                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
-                    'implem ) : 'implem -> 'stru -> Locf.t -> 'implem ))
-          };
-          {
-            symbols = [];
-            annot = "([], None)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (([], None) : 'implem ) : Locf.t ->
-                                                                    'implem ))
+                 (fun (x : 'strus)  _  (_loc : Locf.t)  ->
+                    let x = Some x in (x : 'implem ) : 'strus ->
+                                                         'quots ->
+                                                           Locf.t -> 'implem ))
           }]
       } : Gramf.olevel );
    Gramf.extend_single (top_phrase : 'top_phrase Gramf.t )

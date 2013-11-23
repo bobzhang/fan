@@ -121,9 +121,7 @@ let () =
       implem = ast_of_implem;
       interf = ast_of_interf
     }
-let parse_implem loc cs =
-  let l = (simple_wrap loc cs) @@ (Gramlib.parse Syntaxf.implem) in
-  match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
+let parse_implem loc cs = Gramlib.parse Syntaxf.implem loc cs
 let parse_interf loc cs =
   let l = (simple_wrap loc cs) @@ (Gramlib.parse Syntaxf.interf) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
@@ -159,21 +157,9 @@ let toplevel_phrase token_stream =
   let stru = Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream in
   let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
 let use_file token_stream =
-  let loop () =
-    let (pl,stopped_at_directive) =
-      Gramf.parse_origin_tokens Syntaxf.implem token_stream in
-    if stopped_at_directive <> None
-    then match pl with | _ -> (pl, false)
-    else (pl, true) in
-  let (pl0,eoi) = loop () in
-  let pl =
-    if eoi
-    then []
-    else
-      (let rec loop () =
-         let (pl,stopped_at_directive) =
-           Gramf.parse_origin_tokens Syntaxf.implem token_stream in
-         if stopped_at_directive <> None then pl @ (loop ()) else pl in
-       loop ()) in
-  List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))
-    (pl0 @ pl)
+  let s = Gramf.parse_origin_tokens Syntaxf.implem token_stream in
+  match s with
+  | None  -> []
+  | Some s ->
+      List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))
+        (Ast_basic.list_of_sem s [])

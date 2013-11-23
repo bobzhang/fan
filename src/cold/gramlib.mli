@@ -1,10 +1,10 @@
 
 val lex_string : Locf.t -> string -> Tokenf.stream
     
-val parse_string :
-  ?lexer:Tokenf.stream Tokenf.lex
-  ->
-    ?loc:Locf.t -> 'a Gramf.t -> string -> 'a
+(* val parse_string : *)
+(*   ?lexer:Tokenf.stream Tokenf.lex *)
+(*   -> *)
+(*     ?loc:Locf.t -> 'a Gramf.t -> string -> 'a *)
 
 val parse_string_eoi :
   ?lexer:Tokenf.stream Tokenf.lex
