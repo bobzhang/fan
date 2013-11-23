@@ -1847,9 +1847,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           if
             ((function
               | 916095096 -> txt = "as"
-              | 471646663 -> txt = "eof"
               | 1050473980 -> txt = "let"
-              | 479219308 -> txt = "_"
               | _ -> false)) v
           then
             `Key
