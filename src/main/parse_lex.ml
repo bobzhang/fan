@@ -25,10 +25,6 @@ let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp )  =
   %ep{Bind (${meta_concrete_regexp _loc  a},
   (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))}
 
-        
-(* let _ = begin *)
-(*   Hashtbl.add named_regexps "eof" Eof ; *)
-(* end *)
 
 exception UnboundRegexp;;
 exception UnboundCase;;

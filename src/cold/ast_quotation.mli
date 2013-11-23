@@ -120,3 +120,9 @@ val of_exp_with_filter :
     -> unit -> unit
               
 
+val register : Tokenf.name * unit Tokenf.expand_fun -> unit
+
+val handle_quot : Tokenf.quot -> unit    
+
+val register_unit_parser :
+    ?lexer:Tokenf.stream Tokenf.lex -> Tokenf.name * unit Gramf.t -> unit

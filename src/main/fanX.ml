@@ -20,12 +20,12 @@ let _ =
     initial_env ();
     (* Toploop.set_paths(); *)
     (* Toploop.initialize_toplevel_env (); *)
-    Fdir.register
-      ("eval",fun loc c ->
-          let s  = Gramf.parse_string ~loc Syntaxf.strus c  in
+    Fdir.register (* FIXME does not compile *)
+      (Tokenf.name_of_string "eval",fun loc _ c ->
+          let s  = Gramlib.parse_string ~loc Syntaxf.strus c  in
           FEval.eval_ast Format.err_formatter s 
         );
-    register_bin_printer (); (** default *)
+    (* register_bin_printer (); (\** default *\) *)
     Options.adds Fan_args.initial_spec_list;
     Ast_parsers.use_parsers [ "revise"];
     try

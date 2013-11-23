@@ -166,3 +166,19 @@ let of_exp_with_filter ?lexer  ~name  ~entry  ~filter  () =
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   add name Dyn_tag.exp expand_fun; add name Dyn_tag.stru mk_fun
+let dir_table: (Tokenf.name,unit Tokenf.expand_fun) Hashtbl.t =
+  Hashtbl.create 50
+let handle_quot (x : Tokenf.quot) =
+  (let handler =
+     try Hashtbl.find dir_table x.name
+     with
+     | Not_found  ->
+         (Locf.failf x.loc "Unfound directive language %s") @@
+           (Tokenf.string_of_name x.name) in
+   Tokenf.quot_expand handler x : unit )
+let register (v,f) =
+  if Hashtbl.mem dir_table v
+  then (Format.eprintf "%s already registered") @@ (Tokenf.string_of_name v)
+  else Hashtbl.add dir_table v f
+let register_unit_parser ?lexer  (v,entry) =
+  let expand = make_parser ?lexer entry in register (v, expand)

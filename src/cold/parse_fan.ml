@@ -9037,13 +9037,13 @@ let apply () =
                          tag_name = "DirQuotation"
                        }
                    } : Tokenf.pattern )];
-             annot = "Fdir.handle_quot x; ([], (Some _loc))\n";
+             annot = "Ast_quotation.handle_quot x; ([], (Some _loc))\n";
              fn =
                (Gramf.mk_action
                   (fun (__fan_0 : Tokenf.quot)  (_loc : Locf.t)  ->
                      let x = __fan_0 in
-                     (Fdir.handle_quot x; ([], (Some _loc)) : 'implem ) : 
-                  Tokenf.quot -> Locf.t -> 'implem ))
+                     (Ast_quotation.handle_quot x; ([], (Some _loc)) : 
+                       'implem ) : Tokenf.quot -> Locf.t -> 'implem ))
            };
           {
             symbols =

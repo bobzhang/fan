@@ -11,7 +11,8 @@ FILES = \
     astPrint ast_basic\
     id_set\
     configf\
-    locf  fcset fdir options\
+    locf  fcset\
+    options\
     tokenf lex_util lexgen location_util parsetree_util\
     escape translate_lex fan_util \
     fan_warnings token_stream

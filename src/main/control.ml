@@ -40,10 +40,11 @@ let rec token = %lex_fan{
 
 let lexer = Lexing_util.adapt_to_stream token 
 let () =
-  Fdir.register
-    (Tokenf.name_of_string "control",
-     (fun loc _ c ->
-       Gramlib.parse_string ~loc  items ~lexer c ));;
+  Ast_quotation.register_unit_parser ~lexer
+    (Tokenf.name_of_string "control", items)
+    (* (Tokenf.name_of_string "control", *)
+    (*  (fun loc _ c -> *)
+    (*    Gramlib.parse_string ~loc  items ~lexer c )) *);;
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/control.cmo " *)

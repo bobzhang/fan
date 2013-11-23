@@ -836,9 +836,9 @@ let apply () = begin
     (** ml file  entrance *)    
       implem:
       [
-        DirQuotation x  %{ (* FIXME (a,b,c) pattern broken *)
+        DirQuotation x  %{ 
           begin
-            Fdir.handle_quot x;
+            Ast_quotation.handle_quot x;
             ([], Some _loc)
           end}
       | stru as si; ";;"; S as rest %{
