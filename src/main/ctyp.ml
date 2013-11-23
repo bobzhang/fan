@@ -1,4 +1,4 @@
-%%control{default "ctyp-";}
+(* %%control{default "ctyp-";};; *)
 
 open Astfn
 open Astn_util
@@ -92,7 +92,7 @@ let arrow_of_list f = Listf.reduce_right arrow f
 let app_arrow lst acc = List.fold_right arrow lst acc
     
 let (<+) (names: string list ) (ty:ctyp) =
-  List.fold_right (fun name acc -> %{'$lid:name -> $acc }) names ty
+  List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) names ty
     
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
@@ -118,7 +118,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   Listf.init arity
     (fun i ->
       Listf.init n
-        @@ fun j -> %{'$lid{allx ~off:i j}} )
+        @@ fun j -> %ctyp-{'$lid{allx ~off:i j}} )
   |> List.concat |> appl_of_list
 
 
@@ -127,7 +127,7 @@ let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
      Listf.init len
-       (fun i -> %{'$lid{allx ~off i}}))
+       (fun i -> %ctyp-{'$lid{allx ~off i}}))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -150,7 +150,7 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   @raise Invalid_argument 
 
   {[
-  list_of_record %ctyp{ u:int;m:mutable int };
+  list_of_record %ctyp-{ u:int;m:mutable int };
   [{label = "u"; is_mutable = false; ctyp = `Id (, `Lid (, "int"))};
   {label = "m"; is_mutable = true; ctyp = `Id (, `Lid (, "int"))}]
   ]}
@@ -203,9 +203,9 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let app_src   =
     app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let result_type = (* %{ 'result } *)
-    %{'$lid{"result"^string_of_int !result_id}} in
+    %ctyp-{'$lid{"result"^string_of_int !result_id}} in
   let _ = incr result_id in
-  let self_type = %{'self_type}  in 
+  let self_type = %ctyp-{'self_type}  in 
   let (quant,dst) =
     match k with
     |Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -218,12 +218,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     Listf.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Listf.init number @@ fun _ -> %{ '$lid{allx ~off:0 i}} in
+        Listf.init number @@ fun _ -> %ctyp-{ '$lid{allx ~off:0 i}} in
       match k with
       |Obj u  ->
           let dst =
             match  u with
-            | Map -> let x  = allx ~off:1 i in %{  '$lid:x }
+            | Map -> let x  = allx ~off:1 i in %ctyp-{  '$lid:x }
             | Iter -> result_type
             | Concrete c -> c
             | Fold-> self_type  in
@@ -234,7 +234,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-  (%{!$quantifiers . ${params +> base}},dst)
+  (%ctyp-{!$quantifiers . ${params +> base}},dst)
 
 
 
@@ -259,7 +259,7 @@ let is_recursive ty_dcl =
         inherit ObjsN.fold as super;
         val mutable is_recursive = false;
         method! ctyp = function
-          | %{ $lid:i } when i = name -> begin
+          | %ctyp-{ $lid:i } when i = name -> begin
               is_recursive <- true;
               self
           end
@@ -290,9 +290,9 @@ let is_recursive ty_dcl =
  *)  
 let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   match x with 
-  | %{ $_ $_ } as x->
+  | %ctyp-{ $_ $_ } as x->
       (match Ast_basic.N.list_of_app x [] with
-      | %{ $lid:_  } :: _  -> None
+      | %ctyp-{ $lid:_  } :: _  -> None
       | (#ident' as i) ::ys  ->
           Some (i,ys)
       | _ -> None)
@@ -321,7 +321,7 @@ let abstract_list (x:typedecl)=
 (* 
    {[
    reduce_data_ctors
-   %ctyp{ A of option int and float | B of float } []
+   %ctyp-{ A of option int and float | B of float } []
    (fun  s xs acc ->
    (prerr_endline s;  [xs :: acc] ))  ;
    A

@@ -1,5 +1,4 @@
 
-%%control{ default "exp-" ; }
 %import{
 Derive:
   gen_stru
@@ -110,13 +109,13 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
         let pat0 = (ep0 :> pat) in 
-        %{let $pat:pat0 = $exp in $res }) cols result in
+        %exp-{let $pat:pat0 = $exp in $res }) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
      ~mk_variant  (),
    gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
-     ~arity:2 ~default: %{  invalid_arg "map2 failure" } ());;
+     ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());;
 
 begin
   [("Map",some gen_map);

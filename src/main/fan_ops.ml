@@ -1,4 +1,4 @@
-%%control{ default "exp'" ;}
+
 
 open Util
 open Astf
@@ -39,24 +39,24 @@ let list_of_list =
 (* FIXME  double semi colon needed before *)  
 
 
-let meta_int _loc i =  %{$int':i}
+let meta_int _loc i =  %exp-{$int':i}
 
-let meta_int32 _loc i =  %{$int32':i}
+let meta_int32 _loc i =  %exp-{$int32':i}
 
-let meta_int64 _loc i =  %{$int64':i}
+let meta_int64 _loc i =  %exp-{$int64':i}
   
-let meta_nativeint _loc i =  %{$nativeint':i}
+let meta_nativeint _loc i =  %exp-{$nativeint':i}
   
-let meta_float _loc i = %{$flo':i}
+let meta_float _loc i = %exp-{$flo':i}
   
-let meta_string _loc i = %{$str':i}
+let meta_string _loc i = %exp-{$str':i}
   
-let meta_char _loc i = %{$chr':i}
-let meta_unit _loc _ =  %{()}
-let meta_bool _loc =  function | true -> %{true} | false -> %{false} 
+let meta_char _loc i = %exp-{$chr':i}
+let meta_unit _loc _ =  %exp-{()}
+let meta_bool _loc =  function | true -> %exp-{true} | false -> %exp-{false} 
 
 let meta_ref mf_a _loc i =
-  %{ {contents= ${mf_a _loc !i} } }
+  %exp-{ {contents= ${mf_a _loc !i} } }
 
 
   
@@ -64,12 +64,12 @@ let meta_ref mf_a _loc i =
    duplicated with ExprPatt to remove cyclic dependency *)
 let mklist loc =
   let rec loop top =  function
-    | [] -> %@loc{ [] }
+    | [] -> %exp'@loc{ [] }
     | e1 :: el ->
         let _loc =
           if top then loc else Locf.merge (loc_of (e1)) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el))
-          (* %{ [$e1 :: $(loop false el)] } *)
+          (* %exp-{ [$e1 :: $(loop false el)] } *)
   in loop true 
 
 let meta_list mf_a _loc  ls =
@@ -77,8 +77,8 @@ let meta_list mf_a _loc  ls =
   
   
 let meta_option mf_a _loc  = function
-  | None -> %{None}
-  | Some x -> %{Some ${mf_a _loc x}} 
+  | None -> %exp-{None}
+  | Some x -> %exp-{Some ${mf_a _loc x}} 
 
 let meta_arrow (type t)
     (_mf_a: Locf.t -> 'a -> t)
@@ -152,10 +152,10 @@ let ident_of_ctyp : ctyp -> ident =
 
 
 (* let rec is_constructor =  with ident fun *)
-(*     [ %{ $_.$i } -> is_constructor i *)
-(*     | %{ $uid:_ } -> true *)
-(*     | %{ $lid:_ } | %{ ($_ $_) } -> false *)
-(*     | %{ $anti:_ } -> assert false ]; *)
+(*     [ %exp-{ $_.$i } -> is_constructor i *)
+(*     | %exp-{ $uid:_ } -> true *)
+(*     | %exp-{ $lid:_ } | %exp-{ ($_ $_) } -> false *)
+(*     | %exp-{ $anti:_ } -> assert false ]; *)
 
 (* let is_pat_constructor = fun *)
 (*     [ `Id(_,i) -> is_constructor i *)

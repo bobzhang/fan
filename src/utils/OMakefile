@@ -1,7 +1,8 @@
 
 
 FILES = charf stringf streamf return listf dyn_array  mapf setf hashset \
-    filenamef hashtblf ref stackf option bufferf arrayf formatf int util
+    filenamef hashtblf ref stackf option bufferf arrayf formatf int util \
+    stdFan
 
 .PHONY: clean lib    
 lib: $(OCamlLibrary libutils, $(FILES))

@@ -85,18 +85,6 @@ end;;
             raise UnboundCase
           end in
         res {tokens_opt = Some l;  quot_opt = y; loc =  xloc}}]  
-  declare_regexp:
-  ["let"; Lid@xloc x ; "=";regexp as r %{
-    if Hashtbl.mem Predef_lex.named_regexps x then begin 
-      Fan_warnings.emitf  xloc.loc_start
-        "fanlex (warning): multiple definition of named regexp '%s'\n" x;
-       %stru{let _ = ()}
-    end
-    else begin
-      Hashtbl.add Predef_lex.named_regexps x r;
-      %stru{let _ = () }
-    end}
-  | S; S as x %{x}]
   regexp: 10
   [S as r1;"as"; Lid@xloc y %{ Bind(r1,(xloc,y))} ]
   regexp: 20          
@@ -139,7 +127,22 @@ end;;
     Fcset.interval c1 c2}
   | Chr c1   %{ Fcset.singleton (Char.code @@ Escape.char c1)}
   | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }
-  ] };;  
+  ]
+
+  declare_regexp:
+  ["let"; Lid@xloc x ; "=";regexp as r %{
+    if Hashtbl.mem Predef_lex.named_regexps x then begin 
+      Fan_warnings.emitf  xloc.loc_start
+        "fanlex (warning): multiple definition of named regexp '%s'\n" x;
+       %stru{let _ = ()}
+    end
+    else begin
+      Hashtbl.add Predef_lex.named_regexps x r;
+      %stru{let _ = () }
+    end}
+  | S; S as x %{x}]
+
+      };;  
 
 
 
@@ -152,6 +155,7 @@ let () =
       ~name:(d,"lex_fan") ~entry:lex_fan ();
     (* Ast_quotation.of_exp ~lexer:Lex_lex.from_stream *)
     (*   ~name:(d,"lex_stream") ~entry:lex_stream (); *)
+    
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
       ~name:(d,"regex")

@@ -1,7 +1,5 @@
 
 
-%%control{ default "exp-";}
-(* FIXME more  precise location for [resolve_name]*)
 
 open Astfn
 open Astn_util
@@ -10,7 +8,7 @@ open Fid
 
 
 let mkfun names acc  =
-  List.fold_right  (fun name acc ->  %{ function | $lid:name -> $acc }) names acc 
+  List.fold_right  (fun name acc ->  %exp-{ function | $lid:name -> $acc }) names acc 
 
 
   
@@ -18,10 +16,10 @@ let currying cases ~arity =
   let cases = bar_of_list cases in 
   if  arity >= 2 then 
     let names = Listf.init arity (fun i -> x ~off:i 0) in
-    let exps = Listf.map (fun s-> %{ $lid:s } ) names in
+    let exps = Listf.map (fun s-> %exp-{ $lid:s } ) names in
     let x = tuple_com exps in
-    mkfun names  %{ match $x with | $cases } 
-  else %{ function | $cases }
+    mkfun names  %exp-{ match $x with | $cases } 
+  else %exp-{ function | $cases }
 
 
 let eta_expand (exp:exp) number : exp =
@@ -30,8 +28,8 @@ let eta_expand (exp:exp) number : exp =
       
 
 let unknown len =
-  if len = 0 then %{self#unknown }
-  else %{ failwith  "not implemented!" }
+  if len = 0 then %exp-{self#unknown }
+  else %exp-{ failwith  "not implemented!" }
 
 
 

@@ -833,21 +833,19 @@ let apply () = begin
 };
   with stru
     %extend{
-    (** ml file  entrance *)    
+    (** ml file  entrance *)
+      quots@Local:
+      [ DirQuotation x ; ";;" %{Ast_quotation.handle_quot x}
+      | S ; S %{()}]           
       implem:
-      [
-        DirQuotation x  %{ 
-          begin
-            Ast_quotation.handle_quot x;
-            ([], Some _loc)
-          end}
-      | stru as si; ";;"; S as rest %{
-       (* si::rest *)
-       let (sil, stopped) = rest in (si :: sil, stopped)}
-      | stru as si;  S as rest
-         %{let (sil, stopped) = rest in (si :: sil, stopped)}
-         (* FIXME merge with the above in the future*)            
-      |  %{ ([], None)} ]
+      [ ? quots; ?strus as x   %{x}]
+      (* | stru as si; ";;"; S as rest %{ *)
+      (*  (\* si::rest *\) *)
+      (*  let (sil, stopped) = rest in (si :: sil, stopped)} *)
+      (* | stru as si;  S as rest *)
+      (*    %{let (sil, stopped) = rest in (si :: sil, stopped)} *)
+      (*    (\* FIXME merge with the above in the future*\)             *)
+      (* |  %{ ([], None)} ] *)
       (** entrance for toplevel *)
       top_phrase:
       [ "#"; a_lident as n; exp as dp; ";;" %{ `Directive(_loc,n,dp)}

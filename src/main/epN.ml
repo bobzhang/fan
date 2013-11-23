@@ -1,5 +1,5 @@
 
-%%control{ default "exp-'"; }
+
 
 
 
@@ -13,9 +13,9 @@ let of_str (s:string) : ep =
     invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
-    | '`'-> %{  $vrn{ String.sub s 1 (len - 1)} }
-    | x when Charf.is_uppercase x -> %{$uid:s}
-    | _ -> %{ $lid:s } 
+    | '`'-> %exp-'{  $vrn{ String.sub s 1 (len - 1)} }
+    | x when Charf.is_uppercase x -> %exp-'{$uid:s}
+    | _ -> %exp-'{ $lid:s } 
 
 
 
@@ -28,7 +28,7 @@ let gen_tuple_first ~number ~off =
       Int.fold_left ~start:1 ~until:(number-1)
         ~acc:(xid ~off 0 )
         (fun acc i -> com acc (xid ~off i) ) in
-    %{$par:lst}
+    %exp-'{$par:lst}
   | _ -> invalid_arg "n < 1 in gen_tuple_first" 
 
 (*
@@ -40,14 +40,14 @@ let gen_tuple_first ~number ~off =
 
 let gen_tuple_second ~number ~off =
   match number with 
-  | 1 -> %{ $id{xid ~off:0 off} }
+  | 1 -> %exp-'{ $id{xid ~off:0 off} }
       
   | n when n > 1 -> 
     let lst =
       Int.fold_left ~start:1 ~until:(number - 1)
-        ~acc:(%{ $id{xid ~off:0 off} })
-        (fun acc i -> com acc %{ $id{xid ~off:i off } } ) in
-    %{ $par:lst }
+        ~acc:(%exp-'{ $id{xid ~off:0 off} })
+        (fun acc i -> com acc %exp-'{ $id{xid ~off:i off } } ) in
+    %exp-'{ $par:lst }
   | _ -> 
         invalid_arg "n < 1 in gen_tuple_first "
 
@@ -66,15 +66,15 @@ let gen_tuple_second ~number ~off =
 let tuple_of_number ast n : ep =
   let res = Int.fold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
-  if n > 1 then %{ $par:res } (* FIXME why %{ $par:x } cause an ghost location error*)
+  if n > 1 then %exp-'{ $par:res } (* FIXME why %exp-'{ $par:x } cause an ghost location error*)
   else res
 
 let of_vstr_number name i : ep=
   let items = Listf.init i xid  in
-  if items = [] then %{$vrn:name}
+  if items = [] then %exp-'{$vrn:name}
   else
     let item = tuple_com items  in
-    %{ $vrn:name $item }
+    %exp-'{ $vrn:name $item }
       
     
 (*
@@ -92,7 +92,7 @@ let of_vstr_number name i : ep=
 *)
 let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = Listf.init arity
-      (fun i -> Listf.init n (fun j -> %{ $id{xid ~off:i j} } )) in
+      (fun i -> Listf.init n (fun j -> %exp-'{ $id{xid ~off:i j} } )) in
   let pat = of_str @@ cons_transform cons in 
   args |> List.map
     (function
@@ -125,7 +125,7 @@ let mk_record ?(arity=1) cols : ep  =
         let v = sem_of_list @@ mk_list i in
         com acc %exp-'{{$v}} in
   if arity > 1 then
-    %{$par:res}
+    %exp-'{$par:res}
   else res     
 
 

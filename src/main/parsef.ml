@@ -24,7 +24,7 @@ let ep  loc str : ep =
   Gramlib.parse_string_eoi  ep  ~loc str 
     
 let ident  loc str =
-  Gramlib.parse_string Syntaxf.ident(* antiquot_ident *) ~loc str
+  Gramlib.parse_string_eoi Syntaxf.ident(* antiquot_ident *) ~loc str
 
 let anti_filter =
   Ant.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat
