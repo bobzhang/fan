@@ -2,14 +2,9 @@
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
 %%regex{
+let quotation_prefix = '%'? '%' quotation_name? ('@' ident )? "{"};;
 
-let locname = ident
-let quotation_prefix =
-  '%'? '%' quotation_name? ('@' locname )? "{"
 
-let lident = lowercase identchar *
-let antifollowident =   identchar +   
-};;
 
 %import{
 Format:

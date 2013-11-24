@@ -103,7 +103,8 @@ let mkrf (x: Astf.flag) : Asttypes.rec_flag =
   | `Ant(_loc,_) -> ant_error _loc
 
 
-let ident_tag (i : Astf.ident) :  Longident.t * [> `app | `lident | `uident ] =
+let ident_tag (i : Astf.ident) :
+    (Longident.t * [> `app | `lident | `uident ]) =
   let rec self (i:Astf.ident) acc =
     let _loc = unsafe_loc_of i in
     match i with
@@ -113,14 +114,14 @@ let ident_tag (i : Astf.ident) :  Longident.t * [> `app | `lident | `uident ] =
     | `Apply (_,i1,i2) ->
         begin 
           match (self i1 None, self i2 None, acc) with
-          | Some (l,_),Some (r,_),None  ->
+          | (Some (l,_),Some (r,_),None)  ->
               Some (Lapply (l, r), `app)
           | _ ->
               Locf.failf  _loc "invalid long identifer %s" @@ !dump_ident i
         end
     | `Uid (_,s) ->
         begin 
-          match acc, s with
+          match (acc, s) with
           | (None ,"") -> None
           | (None ,s) -> Some (lident s, `uident)
           | (Some (_,(`uident|`app)),"") -> acc
@@ -178,8 +179,8 @@ let rec ctyp_long_id_prefix (t:Astf.ctyp) : Longident.t =
 
 let ctyp_long_id (t:Astf.ctyp) : (bool *   Longident.t Location.loc) =
   match t with
-  | #Astf.ident' as i -> false, long_type_ident i
-  | `ClassPath (_, i) -> true, ident i
+  | #Astf.ident' as i -> (false, long_type_ident i)
+  | `ClassPath (_, i) -> (true, ident i)
   | t -> Locf.failf (unsafe_loc_of t) "invalid type %s" @@ !dump_ctyp t
 
 let predef_option loc : Astf.ctyp =
@@ -286,8 +287,8 @@ and package_type_constraints
         (!dump_constr x) 
 
 and package_type (x : mtyp) :
-  Longident.t Asttypes.loc *
-    (Longident.t Asttypes.loc * Parsetree.core_type) list  =
+  (Longident.t Asttypes.loc *
+    (Longident.t Asttypes.loc * Parsetree.core_type) list)  =
   match x with 
   | `With(_loc,(#ident' as i),wc) ->
     (long_uident i, package_type_constraints wc [])
@@ -311,7 +312,7 @@ let mkprivate (x:flag) : Asttypes.private_flag =
   | `Ant(_loc,_)-> ant_error _loc 
 
 let mktrecord (x: name_ctyp) :
-  string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc=
+  (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc)=
   match x with 
   |`TyColMut(_loc,`Lid(sloc,s),t) ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
@@ -321,7 +322,7 @@ let mktrecord (x: name_ctyp) :
            (!dump_name_ctyp t)
 
 let mkvariant (x:or_ctyp) :
-  string Location.loc * Parsetree.core_type list *  Parsetree.core_type option * Locf.t =
+  (string Location.loc * Parsetree.core_type list *  Parsetree.core_type option * Locf.t) =
   let _loc = unsafe_loc_of x in
   match x with
   | `Uid(_,s) -> (with_loc  s _loc, [], None,  _loc)
@@ -574,8 +575,8 @@ let rec pat (x : pat) : Parsetree.pattern =
   | `ArrayEmpty _ -> mkpat _loc @@ Ppat_array []
   | `Bar (_,p1,p2) -> mkpat _loc  @@ Ppat_or (pat p1, pat p2)
   | `PaRng (_,p1,p2) ->
-    (match p1, p2 with
-     | `Chr (loc1,c1),`Chr (loc2,c2) ->
+    (match (p1, p2) with
+     | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
        let c1 = Escape.char_of_char_token loc1 c1 in
        let c2 = Escape.char_of_char_token loc2 c2 in
        mkrangepat _loc c1 c2
@@ -589,7 +590,7 @@ let rec pat (x : pat) : Parsetree.pattern =
       List.partition (function | `Any _ -> true | _ -> false) ps in
     let mklabpat (p : rec_pat) =
       match p with
-      | `RecBind (_loc,i,p) -> ident (i:>ident), pat p
+      | `RecBind (_loc,i,p) -> (ident (i:>ident), pat p)
       | p -> error (unsafe_loc_of p) "invalid pattern" in
     mkpat _loc
       (Ppat_record
@@ -628,8 +629,8 @@ let normalize_vid (x:vid) =
   | `Dot (loc,_,_)  -> (* FIXME *)
       let rec aux u =
         match u with 
-        | `Lid(_,x) -> `Lid x , []
-        | `Uid (_,x) -> `Uid x,[]
+        | `Lid(_,x) -> (`Lid x , [])
+        | `Uid (_,x) -> (`Uid x, [])
         | `Ant _ -> assert false               
         | `Dot(_,a,b) ->
             let (x,rest) = aux b in
@@ -641,9 +642,9 @@ let normalize_vid (x:vid) =
         | `Ant _ -> assert false in
       begin
         match aux x with
-        | `Lid x , xs ->
+        | (`Lid x , xs) ->
             (false,mkli loc x xs)
-        | `Uid x , xs ->
+        | (`Uid x , xs) ->
             (true,mkli loc x xs)
       end
   | `Uid (loc,i) -> (true, mkli loc i [] )
@@ -745,36 +746,29 @@ let rec exp (x : exp) : Parsetree.expression =
          `Case(_,
                (`LabelS _ | `Label _ | `OptLablS _
                | `OptLabl _ | `OptLablExpr _  as l)  ,e)) ->
-    let lab, p,e1  =
+    let (lab, p,e1)  =
       match l with
-      |`LabelS(_,(`Lid (_,lab) as l)) ->
-        lab,pat l,None
-      |`OptLablS(_,(`Lid(_,lab) as l)) ->
-        "?"^lab, pat l,None
-      |`Label(_,`Lid(_,lab),po) -> lab,pat po,None
+      |`LabelS(_,(`Lid (_,lab) as l)) -> (lab,pat l,None)
+      |`OptLablS(_,(`Lid(_,lab) as l)) -> ("?"^lab, pat l,None)
+      |`Label(_,`Lid(_,lab),po) -> (lab,pat po,None)
       |`OptLabl(_,`Lid(_,lab),po) ->
-        "?" ^ paolab lab po, pat po,None
+        ("?" ^ paolab lab po, pat po,None)
       |`OptLablExpr(_,`Lid(_,lab),po,e1) ->
-        "?" ^ paolab lab po, pat po, Some (exp e1)
+        ("?" ^ paolab lab po, pat po, Some (exp e1))
       | _ -> assert false in
-    mkexp _loc @@
-      Pexp_function (lab, e1, [(p,exp e)])
+    mkexp _loc @@ Pexp_function (lab, e1, [(p,exp e)])
   | `Fun(_,
          `CaseWhen(_,
                    (`LabelS _ | `Label _ | `OptLablS _  | `OptLablExpr _ | `OptLabl _ as l ),
                    w,e)) ->
-    let lab,p,e1 =
+    let (lab,p,e1) =
       match l with
-      |`LabelS(_,(`Lid(_,lab) as l)) ->
-        lab,pat l,None
-      |`Label (_,`Lid(_,lab),po) ->
-        lab, pat po,None
-      |`OptLablS(_,(`Lid(_,lab) as l)) ->
-        "?"^lab, pat l,None
-      |`OptLabl(_,`Lid(_,lab),po) ->
-        "?"^paolab lab po, pat po,None
+      |`LabelS(_,(`Lid(_,lab) as l)) -> (lab,pat l,None)
+      |`Label (_,`Lid(_,lab),po) -> (lab, pat po,None)
+      |`OptLablS(_,(`Lid(_,lab) as l)) -> ("?"^lab, pat l,None)
+      |`OptLabl(_,`Lid(_,lab),po) -> ("?"^paolab lab po, pat po,None)
       |`OptLablExpr(_,`Lid(_,lab),po,e1) ->
-        "?"^ paolab lab po, pat po, Some (exp e1)
+          ("?"^ paolab lab po, pat po, Some (exp e1))
       | _ -> assert false in
     mkexp _loc @@ Pexp_function
         (lab, e1, [( p, mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))])
@@ -1374,5 +1368,5 @@ let print_ctyp f e =
 
 
 (* local variables: *)
-(* compile-command: "pmake lib" *)
+(* compile-command: "cd .. && pmake main_annot/ast2pt.cmo" *)
 (* end: *)
