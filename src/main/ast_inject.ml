@@ -40,11 +40,11 @@ let register_inject_clfield (k,f) =
 };;
 
 let open Ast_quotation in
-let domains = Ns.inject in 
+let domain = Ns.inject in 
 begin
-  of_exp ~name:{domains; name = "exp"} ~entry:inject_exp ();
-  of_stru ~name:{domains; name =  "stru"} ~entry:inject_stru ();
-  of_clfield ~name:{domains; name =  "clfield"} ~entry:inject_clfield ();  
+  of_exp ~name:{domain; name = "exp"} ~entry:inject_exp ();
+  of_stru ~name:{domain; name =  "stru"} ~entry:inject_stru ();
+  of_clfield ~name:{domain; name =  "clfield"} ~entry:inject_clfield ();  
 end
 
 (* local variables: *)

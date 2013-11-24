@@ -38,7 +38,7 @@ Ast_gen:
         end} } ]};;
 
 let _ = begin
-  Ast_quotation.of_exp ~name:{domains = Ns.lang; name =  "save"} ~entry:save_quot ();
+  Ast_quotation.of_exp ~name:{domain = Ns.lang; name =  "save"} ~entry:save_quot ();
 end
 
 (* local variables: *)

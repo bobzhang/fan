@@ -1,7 +1,7 @@
 let pp_print_string = Format.pp_print_string
 let bprintf = Format.bprintf
 let fprintf = Format.fprintf
-let paths: Tokenf.domains list ref =
+let paths: Tokenf.domain list ref =
   ref
     [`Absolute ["Fan"; "Lang"];
     `Absolute ["Fan"; "Lang"; "Meta"];
@@ -10,7 +10,7 @@ let concat_domain =
   function
   | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
   | _ -> invalid_arg "concat_domain"
-let names_tbl: (Tokenf.domains,Setf.String.t) Hashtbl.t = Hashtbl.create 30
+let names_tbl: (Tokenf.domain,Setf.String.t) Hashtbl.t = Hashtbl.create 30
 let dump_names_tbl () =
   names_tbl |>
     (Hashtbl.iter
@@ -21,7 +21,7 @@ let dump_names_tbl () =
             (fun v  -> fprintf Format.std_formatter "\t%s\n" v) s))
 let resolve_name (n : Tokenf.name) =
   match n with
-  | { domains = (`Sub _ as x); name = v } ->
+  | { domain = (`Sub _ as x); name = v } ->
       (match Listf.find_opt
                (fun path  ->
                   match (Hashtblf.find_opt names_tbl) @@
@@ -31,7 +31,7 @@ let resolve_name (n : Tokenf.name) =
                   | Some set -> Setf.String.mem v set) (!paths)
        with
        | None  -> None
-       | Some r -> Some { n with domains = (concat_domain (r, x)) })
+       | Some r -> Some { n with domain = (concat_domain (r, x)) })
   | x -> Some x
 module ExpKey = Dyn_tag.Pack(struct type 'a t = unit  end)
 module ExpFun = Dyn_tag.Pack(struct type 'a t = 'a Tokenf.expand_fun  end)
@@ -54,16 +54,16 @@ let clear_map () = map := Mapf.String.empty
 let clear_default () = default := None
 let expander_name ~pos  (name : Tokenf.name) =
   match name with
-  | { domains = `Sub []; name = "" } ->
+  | { domain = `Sub []; name = "" } ->
       (try Some (Mapf.String.find pos (!map)) with | Not_found  -> !default)
-  | { domains = `Sub _;_} -> resolve_name name
-  | { domains = `Absolute _;_} -> Some name
+  | { domain = `Sub _;_} -> resolve_name name
+  | { domain = `Absolute _;_} -> Some name
 let expanders_table = ref QMap.empty
-let add (({ domains = domain; name = n } as name) : Tokenf.name)
-  (tag : 'a Dyn_tag.t) (f : 'a Tokenf.expand_fun) =
+let add (({ domain; name = n } as name) : Tokenf.name) (tag : 'a Dyn_tag.t)
+  (f : 'a Tokenf.expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s =
-    try Hashtbl.find names_tbl name.domains
+    try Hashtbl.find names_tbl name.domain
     with | Not_found  -> Setf.String.empty in
   Hashtbl.replace names_tbl domain (Setf.String.add n s);
   expanders_table := (QMap.add k v (!expanders_table))
@@ -174,7 +174,7 @@ let dump_directives () =
     (Hashtbl.iter
        (fun (n : Tokenf.name)  _  ->
           fprintf Format.std_formatter "%a.%s@." Tokenf.pp_print_domains
-            n.domains n.name))
+            n.domain n.name))
 let handle_quot (x : Tokenf.quot) =
   (let handler =
      try Hashtbl.find dir_table x.name

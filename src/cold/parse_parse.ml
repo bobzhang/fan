@@ -8176,7 +8176,7 @@ let _ =
          [{
             symbols = [Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))];
             annot =
-              "let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name\n               { domains = (`Sub []); name = (x.txt) }\n       with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n";
+              "let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name\n               { domain = (`Sub []); name = (x.txt) }\n       with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n";
             fn =
               (Gramf.mk_action
                  (fun (il : 'qualid)  (_loc : Locf.t)  ->
@@ -8186,7 +8186,7 @@ let _ =
                        | Some x ->
                            let old = !Ast_quotation.default in
                            (match Ast_quotation.resolve_name
-                                    { domains = (`Sub []); name = (x.txt) }
+                                    { domain = (`Sub []); name = (x.txt) }
                             with
                             | None  ->
                                 Locf.failf x.loc "lang `%s' not resolved"
@@ -8205,7 +8205,7 @@ let _ =
                ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
                Tokenf.pattern )];
            annot =
-             "let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name\n               { domains = (`Sub []); name = (x.txt) }\n       with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n";
+             "let x =\n  match (name : Tokenf.txt option ) with\n  | Some x ->\n      let old = !Ast_quotation.default in\n      (match Ast_quotation.resolve_name\n               { domain = (`Sub []); name = (x.txt) }\n       with\n       | None  -> Locf.failf x.loc \"lang `%s' not resolved\" x.txt\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n";
            fn =
              (Gramf.mk_action
                 (fun (name : Tokenf.txt)  (il : 'qualid)  (_loc : Locf.t)  ->
@@ -8215,7 +8215,7 @@ let _ =
                       | Some x ->
                           let old = !Ast_quotation.default in
                           (match Ast_quotation.resolve_name
-                                   { domains = (`Sub []); name = (x.txt) }
+                                   { domain = (`Sub []); name = (x.txt) }
                            with
                            | None  ->
                                Locf.failf x.loc "lang `%s' not resolved"
@@ -8812,8 +8812,8 @@ let _ =
          }]
      } : Gramf.olevel )
 let _ =
-  let domains = Ns.lang in
+  let domain = Ns.lang in
   Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domains; name = "extend" } ~entry:extend_body ();
+    ~name:{ domain; name = "extend" } ~entry:extend_body ();
   Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domains; name = "unsafe_extend" } ~entry:unsafe_extend_body ()
+    ~name:{ domain; name = "unsafe_extend" } ~entry:unsafe_extend_body ()

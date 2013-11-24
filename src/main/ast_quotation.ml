@@ -16,8 +16,8 @@ Format:
 (* name table                    *)        
 (*********************************)
         
-(* [only absolute] domains can be stored *)  
-let paths :  Tokenf.domains list ref  =
+(* [only absolute] domain can be stored *)  
+let paths :  Tokenf.domain list ref  =
   ref [ `Absolute ["Fan";"Lang"];
         `Absolute ["Fan";"Lang";"Meta"];
         `Absolute ["Fan";"Lang";"Filter"]]
@@ -29,7 +29,7 @@ let concat_domain = function
 
 
 (** [names_tbl] is used to manage the namespace and names *)
-let names_tbl : (Tokenf.domains,Setf.String.t) Hashtbl.t =
+let names_tbl : (Tokenf.domain,Setf.String.t) Hashtbl.t =
   Hashtbl.create 30 
 
 let dump_names_tbl () =
@@ -46,7 +46,7 @@ let dump_names_tbl () =
 (**  when no qualified path is given , it uses [Sub []] *)
 let resolve_name (n:Tokenf.name) =
   match n with
-  | {domains = (`Sub _ as x) ; name =  v }->
+  | {domain = (`Sub _ as x) ; name =  v }->
       begin 
         match Listf.find_opt
             (fun path  ->
@@ -57,7 +57,7 @@ let resolve_name (n:Tokenf.name) =
         with
         | None ->  None
         | Some r ->
-              Some { n with domains = concat_domain (r,x)}
+              Some { n with domain = concat_domain (r,x)}
       end
   | x -> Some x (* absolute *)
 
@@ -118,19 +118,19 @@ let clear_default () = default:= None
 (**   The output should be an [`Absolute name] *)
 let expander_name  ~pos (name:Tokenf.name) =
   match name with
-  | {domains = `Sub []; name = ""} ->
+  | {domain = `Sub []; name = ""} ->
       try Some (Mapf.String.find  pos !map)
       with Not_found -> !default
-  | {domains = `Sub _ ; _} -> resolve_name  name
-  | {domains = `Absolute _;_} -> Some name  
+  | {domain = `Sub _ ; _} -> resolve_name  name
+  | {domain = `Absolute _;_} -> Some name  
   
 let expanders_table =ref QMap.empty
 
-let add (({domains = domain; name = n } as name) : Tokenf.name)
+let add (({domain = domain; name = n } as name) : Tokenf.name)
     (tag : 'a Dyn_tag.t ) (f:  'a Tokenf.expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
-    try  Hashtbl.find names_tbl name.domains with
+    try  Hashtbl.find names_tbl name.domain with
       Not_found -> Setf.String.empty in
   begin
     Hashtbl.replace names_tbl domain (Setf.String.add  n s);
@@ -303,7 +303,7 @@ let dump_directives () =
     Hashtbl.iter
     (fun (n:Tokenf.name)  _ ->
       fprintf Format.std_formatter
-          "%a.%s@." Tokenf.pp_print_domains n.domains n.name)
+          "%a.%s@." Tokenf.pp_print_domains n.domain n.name)
   
 
     

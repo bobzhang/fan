@@ -156,5 +156,5 @@ let _ =
          }]
      } : Gramf.olevel )
 let _ =
-  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "stream" }
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "stream" }
     ~entry:stream_exp ()

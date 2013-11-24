@@ -353,5 +353,5 @@ let _ =
          }]
      } : Gramf.olevel )
 let () =
-  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "parser" }
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "parser" }
     ~entry:parser_exp ()

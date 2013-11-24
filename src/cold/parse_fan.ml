@@ -4387,14 +4387,14 @@ let apply () =
                  ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                  Tokenf.pattern )];
             annot =
-              "(x,\n  (match Ast_quotation.resolve_name { domains = (`Sub []); name = x } with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n";
+              "(x,\n  (match Ast_quotation.resolve_name { domain = (`Sub []); name = x } with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n";
             fn =
               (Gramf.mk_action
                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     ((x,
                        (match Ast_quotation.resolve_name
-                                { domains = (`Sub []); name = x }
+                                { domain = (`Sub []); name = x }
                         with
                         | None  ->
                             Locf.failf _loc "DDSL `%s' can not be resolved" x
@@ -7573,12 +7573,12 @@ let apply () =
                [Token
                   ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                   Tokenf.pattern )];
-             annot = "{ domains = (`Sub []); name = i }\n";
+             annot = "{ domain = (`Sub []); name = i }\n";
              fn =
                (Gramf.mk_action
                   (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                      let i = __fan_0.txt in
-                     ({ domains = (`Sub []); name = i } : 'dot_lstrings ) : 
+                     ({ domain = (`Sub []); name = i } : 'dot_lstrings ) : 
                   Tokenf.txt -> Locf.t -> 'dot_lstrings ))
            };
           {
@@ -7591,15 +7591,15 @@ let apply () =
                 Tokenf.pattern );
               Self];
             annot =
-              "match x with\n| { domains = `Sub xs;_} -> { x with domains = (`Sub (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
+              "match x with\n| { domain = `Sub xs;_} -> { x with domain = (`Sub (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
                  (fun (x : 'dot_lstrings)  _  (__fan_0 : Tokenf.txt) 
                     (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
                     (match x with
-                     | { domains = `Sub xs;_} ->
-                         { x with domains = (`Sub (i :: xs)) }
+                     | { domain = `Sub xs;_} ->
+                         { x with domain = (`Sub (i :: xs)) }
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
                       'dot_lstrings ) : 'dot_lstrings ->
                                           Tokenf.txt ->
@@ -7619,15 +7619,15 @@ let apply () =
                 Tokenf.pattern );
               Self];
             annot =
-              "match x with\n| { domains = `Sub xs;_} -> { x with domains = (`Absolute (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
+              "match x with\n| { domain = `Sub xs;_} -> { x with domain = (`Absolute (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
                  (fun (x : 'dot_lstrings)  _  (__fan_1 : Tokenf.txt)  _ 
                     (_loc : Locf.t)  ->
                     let i = __fan_1.txt in
                     (match x with
-                     | { domains = `Sub xs;_} ->
-                         { x with domains = (`Absolute (i :: xs)) }
+                     | { domain = `Sub xs;_} ->
+                         { x with domain = (`Absolute (i :: xs)) }
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
                       'dot_lstrings ) : 'dot_lstrings ->
                                           Tokenf.txt ->

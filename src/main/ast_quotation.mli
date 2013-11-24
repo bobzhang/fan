@@ -7,7 +7,7 @@ val dump_names_tbl : unit -> unit
 
 val resolve_name : Tokenf.name -> Tokenf.name option
 
-val paths : Tokenf.domains list ref
+val paths : Tokenf.domain list ref
     
 val current_loc_name : string option ref
 

@@ -54,5 +54,5 @@ let _ =
                                                   Locf.t -> 'hash_p ))
           }]
      } : Gramf.olevel );
-  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "hash_cmp" }
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "hash_cmp" }
     ~entry:hash_p ()

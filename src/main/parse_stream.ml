@@ -41,17 +41,15 @@ open Astf
      parser_case_list :
      ["|"; L0 parser_case SEP "|" as pcl %{ pcl}
      ]
-    
+     (* let e =
+        if x.name = Tokenf.empty_name then
+          let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+          Tokenf.quot_expand expander x
+        else Ast_quotation.expand x Dyn_tag.exp in
+      (sp,None, e) *)
+     
     parser_case :
-    [stream_pat as sp
-     (*  let e = *)
-     (*    if x.name = Tokenf.empty_name then *)
-     (*      let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in *)
-     (*      Tokenf.quot_expand expander x *)
-     (*    else Ast_quotation.expand x Dyn_tag.exp in *)
-     (*  (sp,None, e) *)
-     (* } *); "->"; exp as e %{   (sp, None, e)}
-    ] 
+    [stream_pat as sp; "->"; exp as e %{   (sp, None, e)}] 
     stream_pat :
     [ stream_pat_comp as spc %{ [(spc, None)]}
     | stream_pat_comp as spc; ";"; stream_pat_comp_err_list as sp %{ (spc, None) :: sp}
@@ -80,7 +78,7 @@ open Astf
         
 let () =
   begin
-    Ast_quotation.of_exp ~name:{domains =  Ns.lang; name = "parser" } ~entry:parser_exp ()
+    Ast_quotation.of_exp ~name:{domain =  Ns.lang; name = "parser" } ~entry:parser_exp ()
   end;;
 
 

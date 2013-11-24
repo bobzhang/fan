@@ -706,13 +706,13 @@ let _ =
                 ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
                 Tokenf.pattern )];
             annot =
-              "match Ast_quotation.resolve_name { domains = (`Sub []); name = s } with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n";
+              "match Ast_quotation.resolve_name { domain = (`Sub []); name = s } with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n";
             fn =
               (Gramf.mk_action
                  (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
                     let s = __fan_1.txt in
                     (match Ast_quotation.resolve_name
-                             { domains = (`Sub []); name = s }
+                             { domain = (`Sub []); name = s }
                      with
                      | None  ->
                          Locf.failf _loc "DDSL `%s' can not be resolved" s

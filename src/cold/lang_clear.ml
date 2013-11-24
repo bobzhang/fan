@@ -125,5 +125,5 @@ let _ =
      } : Gramf.olevel )
 let _ =
   let d = Ns.lang in
-  Ast_quotation.of_exp ~name:{ domains = d; name = "clear" }
+  Ast_quotation.of_exp ~name:{ domain = d; name = "clear" }
     ~entry:nonterminalsclear ()

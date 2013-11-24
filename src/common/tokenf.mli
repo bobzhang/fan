@@ -1,8 +1,8 @@
 
 (** domain is the namespace all begins with capital letters *)
-type domains = [ `Absolute of string list | `Sub of string list]
+type domain = [ `Absolute of string list | `Sub of string list]
 type name = {
-    domains :  domains ;
+    domain :  domain ;
     name : string
   }
 type loc = Locf.t
@@ -213,7 +213,7 @@ val to_string : t  -> string
 
 val print : t Formatf.t 
 
-val pp_print_domains : domains Formatf.t
+val pp_print_domains : domain Formatf.t
     
 val pp_print_ant : ant Formatf.t
     

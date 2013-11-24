@@ -354,7 +354,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
       | Some x ->
           let old = !Ast_quotation.default in
           begin 
-            match Ast_quotation.resolve_name {domains = `Sub []; name =  x.txt}
+            match Ast_quotation.resolve_name {domain = `Sub []; name =  x.txt}
             with
             | None -> Locf.failf x.loc "lang `%s' not resolved" x.txt 
             | Some x -> (Ast_quotation.default:= Some x; `name old)
@@ -460,13 +460,13 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   };;
 
 
-let domains = Ns.lang in
+let domain = Ns.lang in
 begin
   Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domains ; name = "extend"} ~entry:extend_body ();
+    ~name:{ domain ; name = "extend"} ~entry:extend_body ();
   Ast_quotation.of_exp
     ~lexer:Lex_gram.from_stream
-    ~name:{domains; name = "unsafe_extend"} ~entry:unsafe_extend_body ();
+    ~name:{domain; name = "unsafe_extend"} ~entry:unsafe_extend_body ();
 
 end;;
 

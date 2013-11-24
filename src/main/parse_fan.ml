@@ -498,7 +498,7 @@ let apply () = begin
              )}
        | Lid x %{
            (x,
-            match Ast_quotation.resolve_name {domains = `Sub []; name = x}
+            match Ast_quotation.resolve_name {domain = `Sub []; name = x}
             with 
             |None ->
                 Locf.failf _loc "DDSL `%s' can not be resolved" x
@@ -720,15 +720,15 @@ let apply () = begin
 
       (* parse [a.b.c] no antiquot *)
       dot_lstrings:
-      [ Lid i %{ {domains = `Sub[]; name = i}}
+      [ Lid i %{ {domain = `Sub[]; name = i}}
       | Uid i ; "." ; S  as x %{
         match x with
-        |{domains = `Sub xs; _ } -> {x  with domains = `Sub (i::xs)}
+        |{domain = `Sub xs; _ } -> {x  with domain = `Sub (i::xs)}
         | _ -> raise (Streamf.Error "impossible dot_lstrings")}
 
       | "."; Uid i; "."; S as x %{
           match x with
-          |{domains = `Sub xs; _} -> {x with domains = `Absolute (i::xs)}
+          |{domain = `Sub xs; _} -> {x with domain = `Absolute (i::xs)}
           | _ -> raise (Streamf.Error "impossible dot_lstrings")} ]
 
       (* parse [A.B.(] *)

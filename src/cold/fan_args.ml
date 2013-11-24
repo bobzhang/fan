@@ -114,7 +114,7 @@ let initial_spec_list: (string* Arg.spec* string) list =
     (String
        ((fun s  ->
            Ast_quotation.default :=
-             (Ast_quotation.resolve_name { domains = (`Sub []); name = s })))),
+             (Ast_quotation.resolve_name { domain = (`Sub []); name = s })))),
     " Set the default language");
   ("-printer",
     (String

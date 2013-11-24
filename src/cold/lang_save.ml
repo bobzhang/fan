@@ -85,5 +85,5 @@ let _ =
           }]
      } : Gramf.olevel )
 let _ =
-  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "save" }
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "save" }
     ~entry:save_quot ()
