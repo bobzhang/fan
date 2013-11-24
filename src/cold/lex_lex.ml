@@ -1,4 +1,3 @@
-let (!!) = Location_util.from_lexbuf
 let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf (lexbuf : Lexing.lexbuf) mem_size =

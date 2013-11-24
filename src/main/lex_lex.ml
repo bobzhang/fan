@@ -2,8 +2,6 @@
 
 
 (** get the location of current the lexeme *)
-let (!!)  = Location_util.from_lexbuf ;;
-
 let  rec token = %lex_fan{
   | @whitespace %{token lexbuf}
   | @ocaml_lid("as"|"let")

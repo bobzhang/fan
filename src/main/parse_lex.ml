@@ -134,15 +134,13 @@ end;;
     if Hashtbl.mem Predef_lex.named_regexps x then begin 
       Fan_warnings.emitf  xloc.loc_start
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
-       %stru{let _ = ()}
+       (* %stru{let _ = ()} *)
     end
     else begin
       Hashtbl.add Predef_lex.named_regexps x r;
-      %stru{let _ = () }
+      (* %stru{let _ = () } *)
     end}
-  | S; S as x %{x}]
-
-      };;  
+  | S; S as x %{x}]};;  
 
 
 
@@ -156,10 +154,13 @@ let () =
     (* Ast_quotation.of_exp ~lexer:Lex_lex.from_stream *)
     (*   ~name:(d,"lex_stream") ~entry:lex_stream (); *)
     
-    Ast_quotation.of_stru
+    (* Ast_quotation.of_stru *)
+    (*   ~lexer:Lex_lex.from_stream *)
+    (*   ~name:{domain; name = "regex"} *)
+    (*   ~entry:declare_regexp (); *)
+    Ast_quotation.register_unit_parser
       ~lexer:Lex_lex.from_stream
-      ~name:{domain; name = "regex"}
-      ~entry:declare_regexp ();
+      (Tokenf.name_of_string"regex", declare_regexp);
     (* Fdir.register (d,"regex")  *)
     Ast_quotation.add_quotation
       ~lexer:Lex_lex.from_stream

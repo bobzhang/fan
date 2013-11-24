@@ -82,8 +82,8 @@ end
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 
 let _ = begin 
-  add_quotation {domain; name =  "sigi'"} sigi_quot ~mexp:(Filters.me#sigi)
-    ~mpat:(Filters.mp#sigi) ~exp_filter ~pat_filter;
+  add_quotation {domain; name =  "sigi'"} sigi_quot ~mexp:Filters.me#sigi
+    ~mpat:Filters.mp#sigi ~exp_filter ~pat_filter;
   add_quotation {domain; name =  "stru'"} stru_quot ~mexp:(Filters.me#stru)
     ~mpat:(Filters.mp#stru) ~exp_filter ~pat_filter;
   add_quotation {domain; name =  "ctyp'"} ctyp_quot ~mexp:(Filters.me#ctyp)

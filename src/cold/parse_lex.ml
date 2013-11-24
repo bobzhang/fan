@@ -627,7 +627,7 @@ let _ =
                 Tokenf.pattern );
               Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
             annot =
-              "if Hashtbl.mem Predef_lex.named_regexps x\nthen\n  (Fan_warnings.emitf xloc.loc_start\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\nelse\n  (Hashtbl.add Predef_lex.named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : Astf.stru ))\n";
+              "if Hashtbl.mem Predef_lex.named_regexps x\nthen\n  Fan_warnings.emitf xloc.loc_start\n    \"fanlex (warning): multiple definition of named regexp '%s'\n\" x\nelse Hashtbl.add Predef_lex.named_regexps x r\n";
             fn =
               (Gramf.mk_action
                  (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
@@ -636,13 +636,10 @@ let _ =
                     let x = __fan_1.txt in
                     (if Hashtbl.mem Predef_lex.named_regexps x
                      then
-                       (Fan_warnings.emitf xloc.loc_start
-                          "fanlex (warning): multiple definition of named regexp '%s'\n"
-                          x;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru ))
-                     else
-                       (Hashtbl.add Predef_lex.named_regexps x r;
-                        (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )) : 
+                       Fan_warnings.emitf xloc.loc_start
+                         "fanlex (warning): multiple definition of named regexp '%s'\n"
+                         x
+                     else Hashtbl.add Predef_lex.named_regexps x r : 
                       'declare_regexp ) : 'regexp ->
                                             Tokenf.txt ->
                                               Tokenf.txt ->
@@ -666,8 +663,8 @@ let () =
     ~name:{ domain; name = "lex" } ~entry:lex ();
   Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
     ~name:{ domain; name = "lex_fan" } ~entry:lex_fan ();
-  Ast_quotation.of_stru ~lexer:Lex_lex.from_stream
-    ~name:{ domain; name = "regex" } ~entry:declare_regexp ();
+  Ast_quotation.register_unit_parser ~lexer:Lex_lex.from_stream
+    ((Tokenf.name_of_string "regex"), declare_regexp);
   Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream
     { domain; name = "re" } regexp ~mexp:meta_concrete_regexp
     ~mpat:meta_concrete_regexp

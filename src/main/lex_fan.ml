@@ -1,6 +1,6 @@
 (* source reference : lexer.mll from 4.02dev+trunk *)    
 
-%regex{ (** FIXME remove duplication later see lexing_util.cmo *)
+%%regex{ (** FIXME remove duplication later see lexing_util.cmo *)
 let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 let symbolchar = '*'|not_star_symbolchar

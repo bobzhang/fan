@@ -1,7 +1,7 @@
 
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
-%regex{
+%%regex{
 
 let locname = ident
 let quotation_prefix =
