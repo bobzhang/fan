@@ -661,14 +661,15 @@ let _ =
          }]
      } : Gramf.olevel )
 let () =
-  let d = Ns.lang in
-  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex") ~entry:lex
-    ();
-  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex_fan")
-    ~entry:lex_fan ();
-  Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")
-    ~entry:declare_regexp ();
-  Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream (d, "re") regexp
-    ~mexp:meta_concrete_regexp ~mpat:meta_concrete_regexp
+  let domains = Ns.lang in
+  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
+    ~name:{ domains; name = "lex" } ~entry:lex ();
+  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
+    ~name:{ domains; name = "lex_fan" } ~entry:lex_fan ();
+  Ast_quotation.of_stru ~lexer:Lex_lex.from_stream
+    ~name:{ domains; name = "regex" } ~entry:declare_regexp ();
+  Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream
+    { domains; name = "re" } regexp ~mexp:meta_concrete_regexp
+    ~mpat:meta_concrete_regexp
     ~exp_filter:(fun x  -> (x : Astf.ep  :>Astf.exp))
     ~pat_filter:(fun x  -> (x : Astf.ep  :>Astf.pat))

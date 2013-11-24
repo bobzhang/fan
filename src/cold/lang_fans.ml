@@ -899,4 +899,5 @@ let _ =
     ("-keep", (Arg.Set State.keep), "Keep the included type definitions");
   Options.add
     ("-loaded-plugins", (Arg.Unit Typehook.show_modules), "Show plugins");
-  Ast_quotation.of_exp ~name:(Ns.lang, "fans") ~lexer ~entry:fan_quots ()
+  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "fans" } ~lexer
+    ~entry:fan_quots ()

@@ -80,7 +80,7 @@ open Astf
         
 let () =
   begin
-    Ast_quotation.of_exp ~name:(Ns.lang,"parser" ) ~entry:parser_exp ()
+    Ast_quotation.of_exp ~name:{domains =  Ns.lang; name = "parser" } ~entry:parser_exp ()
   end;;
 
 

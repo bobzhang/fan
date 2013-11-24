@@ -36,7 +36,7 @@ let _ =
   let d = Ns.lang in 
   begin
     Ast_quotation.of_exp
-      ~name:(d,"clear") ~entry:nonterminalsclear ();
+      ~name:{domains = d; name = "clear"} ~entry:nonterminalsclear ();
   end
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_clear.cmo" *)

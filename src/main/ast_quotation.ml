@@ -31,6 +31,7 @@ let concat_domain = function
 (** [names_tbl] is used to manage the namespace and names *)
 let names_tbl : (Tokenf.domains,Setf.String.t) Hashtbl.t =
   Hashtbl.create 30 
+
 let dump_names_tbl () =
   names_tbl |>
   Hashtbl.iter
@@ -45,7 +46,7 @@ let dump_names_tbl () =
 (**  when no qualified path is given , it uses [Sub []] *)
 let resolve_name (n:Tokenf.name) =
   match n with
-  | ((`Sub _ as x) , v) ->
+  | {domains = (`Sub _ as x) ; name =  v }->
       begin 
         match Listf.find_opt
             (fun path  ->
@@ -56,7 +57,7 @@ let resolve_name (n:Tokenf.name) =
         with
         | None ->  None
         | Some r ->
-              Some (concat_domain (r,x),v)
+              Some { n with domains = concat_domain (r,x)}
       end
   | x -> Some x (* absolute *)
 
@@ -117,18 +118,19 @@ let clear_default () = default:= None
 (**   The output should be an [`Absolute name] *)
 let expander_name  ~pos (name:Tokenf.name) =
   match name with
-  | (`Sub [],"") ->
+  | {domains = `Sub []; name = ""} ->
       try Some (Mapf.String.find  pos !map)
       with Not_found -> !default
-  | (`Sub _ ,_) -> resolve_name  name
-  | (`Absolute _,_) -> Some name  
+  | {domains = `Sub _ ; _} -> resolve_name  name
+  | {domains = `Absolute _;_} -> Some name  
   
 let expanders_table =ref QMap.empty
 
-let add ((domain,n) as name) (tag : 'a Dyn_tag.t ) (f:  'a Tokenf.expand_fun) =
+let add (({domains = domain; name = n } as name) : Tokenf.name)
+    (tag : 'a Dyn_tag.t ) (f:  'a Tokenf.expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
-    try  Hashtbl.find names_tbl domain with
+    try  Hashtbl.find names_tbl name.domains with
       Not_found -> Setf.String.empty in
   begin
     Hashtbl.replace names_tbl domain (Setf.String.add  n s);
@@ -239,6 +241,8 @@ let of_exp ?lexer ~name  ~entry () =
     add name Dyn_tag.exp expand_fun;
     add name Dyn_tag.stru mk_fun
   end
+
+    
 let of_ep ?lexer ~name ~entry () =
   let (expand_fun : Astf.ep Tokenf.expand_fun)  = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
@@ -250,6 +254,7 @@ let of_ep ?lexer ~name ~entry () =
       (expand_fun :Astf.ep Tokenf.expand_fun :> Astf.exp Tokenf.expand_fun);
     add name Dyn_tag.stru mk_fun
   end
+    
 let of_pat_with_filter ?lexer ~name  ~entry  ~filter ()  =
   add name Dyn_tag.pat
     (fun loc  loc_name_opt  s  ->
@@ -291,6 +296,17 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
 let dir_table : (Tokenf.name , unit Tokenf.expand_fun) Hashtbl.t =
   Hashtbl.create 50
 
+
+let dump_directives () = 
+  dir_table
+  |>
+    Hashtbl.iter
+    (fun (n:Tokenf.name)  _ ->
+      fprintf Format.std_formatter
+          "%a.%s@." Tokenf.pp_print_domains n.domains n.name)
+  
+
+    
 let handle_quot (x:Tokenf.quot) : unit =
   let handler =
     try Hashtbl.find dir_table x.name

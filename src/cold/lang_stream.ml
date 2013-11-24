@@ -155,4 +155,6 @@ let _ =
                                                          'stream_exp_comp_list ))
          }]
      } : Gramf.olevel )
-let _ = Ast_quotation.of_exp ~name:(Ns.lang, "stream") ~entry:stream_exp ()
+let _ =
+  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "stream" }
+    ~entry:stream_exp ()

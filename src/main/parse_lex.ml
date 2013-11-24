@@ -147,23 +147,23 @@ end;;
 
 
 let () =
-  let d  =Ns.lang in
+  let domains  = Ns.lang in
   begin
     Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-      ~name:(d,"lex") ~entry:lex ();
+      ~name:{domains; name = "lex"} ~entry:lex ();
     Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-      ~name:(d,"lex_fan") ~entry:lex_fan ();
+      ~name:{domains; name = "lex_fan"} ~entry:lex_fan ();
     (* Ast_quotation.of_exp ~lexer:Lex_lex.from_stream *)
     (*   ~name:(d,"lex_stream") ~entry:lex_stream (); *)
     
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
-      ~name:(d,"regex")
+      ~name:{domains; name = "regex"}
       ~entry:declare_regexp ();
     (* Fdir.register (d,"regex")  *)
     Ast_quotation.add_quotation
       ~lexer:Lex_lex.from_stream
-      (d,"re") regexp
+      {domains; name = "re"} regexp
       ~mexp:meta_concrete_regexp
       ~mpat:meta_concrete_regexp
       ~exp_filter:(fun x -> (x : Astf.ep :>Astf.exp))

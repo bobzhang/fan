@@ -82,6 +82,8 @@ let initial_spec_list: (string* Arg.spec* string) list =
   ("-o", (String ((fun x  -> output_file := (Some x)))),
     "<file> Output on <file> instead of standard output.");
   ("-list", (Unit Ast_quotation.dump_names_tbl), "list all registered DDSLs");
+  ("-list_directive", (Unit Ast_quotation.dump_directives),
+    "list all registered directives");
   ("-unsafe", (Set Configf.unsafe),
     "Generate unsafe accesses to array and strings.");
   ("-where",
@@ -112,7 +114,7 @@ let initial_spec_list: (string* Arg.spec* string) list =
     (String
        ((fun s  ->
            Ast_quotation.default :=
-             (Ast_quotation.resolve_name ((`Sub []), s))))),
+             (Ast_quotation.resolve_name { domains = (`Sub []); name = s })))),
     " Set the default language");
   ("-printer",
     (String

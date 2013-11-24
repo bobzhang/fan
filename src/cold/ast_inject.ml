@@ -80,7 +80,7 @@ let _ =
      } : Gramf.olevel )
 let _ =
   let open Ast_quotation in
-    let d = Ns.inject in
-    of_exp ~name:(d, "exp") ~entry:inject_exp ();
-    of_stru ~name:(d, "stru") ~entry:inject_stru ();
-    of_clfield ~name:(d, "clfield") ~entry:inject_clfield ()
+    let domains = Ns.inject in
+    of_exp ~name:{ domains; name = "exp" } ~entry:inject_exp ();
+    of_stru ~name:{ domains; name = "stru" } ~entry:inject_stru ();
+    of_clfield ~name:{ domains; name = "clfield" } ~entry:inject_clfield ()

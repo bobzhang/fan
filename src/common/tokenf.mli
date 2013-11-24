@@ -1,7 +1,10 @@
 
 (** domain is the namespace all begins with capital letters *)
 type domains = [ `Absolute of string list | `Sub of string list]
-type name = domains * string
+type name = {
+    domains :  domains ;
+    name : string
+  }
 type loc = Locf.t
 
 

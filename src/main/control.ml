@@ -16,7 +16,7 @@ let rec token = %lex_fan{
   item:
   ["default"; Str s %{ (* FIXME*)
     begin 
-      match Ast_quotation.resolve_name  (`Sub[],s)
+      match Ast_quotation.resolve_name  {domains = `Sub[]; name = s}
       with
       | None ->
           Locf.failf _loc "DDSL `%s' can not be resolved" s

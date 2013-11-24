@@ -4387,13 +4387,15 @@ let apply () =
                  ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                  Tokenf.pattern )];
             annot =
-              "(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n";
+              "(x,\n  (match Ast_quotation.resolve_name { domains = (`Sub []); name = x } with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n";
             fn =
               (Gramf.mk_action
                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let x = __fan_0.txt in
                     ((x,
-                       (match Ast_quotation.resolve_name ((`Sub []), x) with
+                       (match Ast_quotation.resolve_name
+                                { domains = (`Sub []); name = x }
+                        with
                         | None  ->
                             Locf.failf _loc "DDSL `%s' can not be resolved" x
                         | Some x -> x)) : 'name_space ) : Tokenf.txt ->
@@ -7571,11 +7573,12 @@ let apply () =
                [Token
                   ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                   Tokenf.pattern )];
-             annot = "((`Sub []), i)\n";
+             annot = "{ domains = (`Sub []); name = i }\n";
              fn =
                (Gramf.mk_action
                   (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                     let i = __fan_0.txt in (((`Sub []), i) : 'dot_lstrings ) : 
+                     let i = __fan_0.txt in
+                     ({ domains = (`Sub []); name = i } : 'dot_lstrings ) : 
                   Tokenf.txt -> Locf.t -> 'dot_lstrings ))
            };
           {
@@ -7588,14 +7591,15 @@ let apply () =
                 Tokenf.pattern );
               Self];
             annot =
-              "match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
+              "match x with\n| { domains = `Sub xs;_} -> { x with domains = (`Sub (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
-                 (fun (xs : 'dot_lstrings)  _  (__fan_0 : Tokenf.txt) 
+                 (fun (x : 'dot_lstrings)  _  (__fan_0 : Tokenf.txt) 
                     (_loc : Locf.t)  ->
                     let i = __fan_0.txt in
-                    (match xs with
-                     | (`Sub xs,v) -> ((`Sub (i :: xs)), v)
+                    (match x with
+                     | { domains = `Sub xs;_} ->
+                         { x with domains = (`Sub (i :: xs)) }
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
                       'dot_lstrings ) : 'dot_lstrings ->
                                           Tokenf.txt ->
@@ -7615,14 +7619,15 @@ let apply () =
                 Tokenf.pattern );
               Self];
             annot =
-              "match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
+              "match x with\n| { domains = `Sub xs;_} -> { x with domains = (`Absolute (i :: xs)) }\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n";
             fn =
               (Gramf.mk_action
-                 (fun (xs : 'dot_lstrings)  _  (__fan_1 : Tokenf.txt)  _ 
+                 (fun (x : 'dot_lstrings)  _  (__fan_1 : Tokenf.txt)  _ 
                     (_loc : Locf.t)  ->
                     let i = __fan_1.txt in
-                    (match xs with
-                     | (`Sub xs,v) -> ((`Absolute (i :: xs)), v)
+                    (match x with
+                     | { domains = `Sub xs;_} ->
+                         { x with domains = (`Absolute (i :: xs)) }
                      | _ -> raise (Streamf.Error "impossible dot_lstrings") : 
                       'dot_lstrings ) : 'dot_lstrings ->
                                           Tokenf.txt ->

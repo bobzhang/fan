@@ -28,7 +28,7 @@ include_quot:
 let _ = begin
   Ast_quotation.of_stru
     ~lexer
-    ~name:(Ns.lang, "include") ~entry:include_quot ()
+    ~name:{domains = Ns.lang; name =  "include"} ~entry:include_quot ()
 end
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_include.cmo " *)

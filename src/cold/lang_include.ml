@@ -151,5 +151,5 @@ let _ =
           }]
      } : Gramf.olevel )
 let _ =
-  Ast_quotation.of_stru ~lexer ~name:(Ns.lang, "include") ~entry:include_quot
-    ()
+  Ast_quotation.of_stru ~lexer ~name:{ domains = Ns.lang; name = "include" }
+    ~entry:include_quot ()

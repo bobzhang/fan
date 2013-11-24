@@ -4,6 +4,7 @@
 open Astf
 
 val dump_names_tbl : unit -> unit
+
 val resolve_name : Tokenf.name -> Tokenf.name option
 
 val paths : Tokenf.domains list ref
@@ -47,7 +48,7 @@ val dump_file : string option  ref
 
 (** The raw quotation expander, register its type, laguage namespace and
     an expansion function *)
-val add : Tokenf.domains * string -> 'a Dyn_tag.t -> 'a Tokenf.expand_fun -> unit    
+val add : Tokenf.name -> 'a Dyn_tag.t -> 'a Tokenf.expand_fun -> unit    
 (** theoretically you can use [mexp] which lift it into any type you can
    but we made a restriction here.
    [exp_filter] and [pat_filter] default to an id 
@@ -68,28 +69,28 @@ val add_quotation:
 (*************************************************************)    
 val of_stru :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.stru Gramf.t ->
+  name:Tokenf.name -> entry:Astf.stru Gramf.t ->
     unit -> unit
 val of_pat :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.pat Gramf.t
+  name:Tokenf.name -> entry:Astf.pat Gramf.t
     -> unit -> unit
 val of_clfield :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.clfield Gramf.t
+  name:Tokenf.name -> entry:Astf.clfield Gramf.t
     -> unit -> unit
 val of_case :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.case Gramf.t
+  name:Tokenf.name -> entry:Astf.case Gramf.t
     -> unit -> unit 
 val of_exp :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.exp Gramf.t
+  name:Tokenf.name -> entry:Astf.exp Gramf.t
     -> unit -> unit
         
 val of_ep :
   ?lexer:(Location.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:Astf.ep Gramf.t ->
+  name:Tokenf.name -> entry:Astf.ep Gramf.t ->
     unit -> unit
 
 (*************************************************************)
@@ -97,27 +98,28 @@ val of_ep :
 (*************************************************************)        
 val of_pat_with_filter :
     ?lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
-      name:Tokenf.domains * string -> entry:'a Gramf.t -> filter:('a -> pat)
+      name:Tokenf.name -> entry:'a Gramf.t -> filter:('a -> pat)
         -> unit -> unit 
 val of_stru_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string ->
+  name:Tokenf.name ->
   entry:'a Gramf.t -> filter:('a -> Astf.stru)
     -> unit -> unit
 val of_clfield_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string ->
+  name:Tokenf.name ->
   entry:'a Gramf.t -> filter:('a -> Astf.clfield)
     -> unit -> unit 
 val of_case_with_filter :
   ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string ->
+  name:Tokenf.name -> 
   entry:'a Gramf.t -> filter:('a -> Astf.case)
     -> unit -> unit
 val of_exp_with_filter :
-  ?lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
-  name:Tokenf.domains * string -> entry:'a Gramf.t -> filter:('a -> exp)
-    -> unit -> unit
+  ?lexer:(loc -> char Streamf.t -> Tokenf.stream)
+  -> name:Tokenf.name
+    -> entry:'a Gramf.t -> filter:('a -> exp)
+      -> unit -> unit
               
 
 val register : Tokenf.name * unit Tokenf.expand_fun -> unit
@@ -126,3 +128,5 @@ val handle_quot : Tokenf.quot -> unit
 
 val register_unit_parser :
     ?lexer:Tokenf.stream Tokenf.lex -> Tokenf.name * unit Gramf.t -> unit
+
+val dump_directives : unit -> unit

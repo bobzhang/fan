@@ -4,7 +4,10 @@ type loc = Locf.t
 type domains =
     [ `Absolute of string list | `Sub of string list]
 
-type name = (domains* string)
+type name = {
+    domains : domains;
+    name : string
+  }
       
 let pp_print_domains : domains Formatf.t = 
   fun fmt  ->
@@ -14,9 +17,8 @@ let pp_print_domains : domains Formatf.t =
     | `Sub _a0 ->
         Format.fprintf fmt "%s" (String.concat "." _a0)
 
-let pp_print_name : name Formatf.t =
-  (fun fmt  (a0,a1)  ->
-      Format.fprintf fmt "%a.%a" pp_print_domains a0 Format.pp_print_string a1)
+let pp_print_name fmt (x:name) =
+  Format.fprintf fmt "%a.%a" pp_print_domains x.domains Format.pp_print_string x.name
       
 
 
@@ -305,22 +307,24 @@ let get_loc (x:t) =
 
 
 
-let empty_name : name = (`Sub [],"")
+let empty_name : name =
+  { domains = `Sub []; name = ""}
 
 let name_of_string s : name =
   match s.[0] with
   | '.' ->
     (match List.rev
         @@ List.filter Stringf.not_empty (Stringf.nsplit s "." )  with
-    | x::xs -> (`Absolute (List.rev xs),x)
+    | x::xs -> {domains = `Absolute (List.rev xs); name =  x}
     | _ -> assert false )
       
   |'A' .. 'Z' ->
       (match List.rev
           (List.filter Stringf.not_empty (Stringf.nsplit s ".")) with
-      | x::xs -> (`Sub (List.rev xs),x )
+      | x::xs ->
+          {domains = `Sub (List.rev xs) ; name = x }
       | _ -> assert false)
-  | _ -> (`Sub [],s)
+  | _ -> {domains = `Sub []; name = s}
 
 (** partial evaluation --
     pattern will be gottern first, while t is retrived later

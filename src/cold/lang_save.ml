@@ -84,4 +84,6 @@ let _ =
                                                        Locf.t -> 'save_quot ))
           }]
      } : Gramf.olevel )
-let _ = Ast_quotation.of_exp ~name:(Ns.lang, "save") ~entry:save_quot ()
+let _ =
+  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "save" }
+    ~entry:save_quot ()

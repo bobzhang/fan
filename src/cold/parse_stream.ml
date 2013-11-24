@@ -352,4 +352,6 @@ let _ =
                                                               'stream_pat_comp_err_list ))
          }]
      } : Gramf.olevel )
-let () = Ast_quotation.of_exp ~name:(Ns.lang, "parser") ~entry:parser_exp ()
+let () =
+  Ast_quotation.of_exp ~name:{ domains = Ns.lang; name = "parser" }
+    ~entry:parser_exp ()

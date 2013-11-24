@@ -474,6 +474,8 @@ let _ =
           }]
      } : Gramf.olevel )
 let _ =
-  let d = Ns.lang in
-  Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals ();
-  Ast_quotation.of_stru ~name:(d, "new") ~entry:newterminals ()
+  let domains = Ns.lang in
+  Ast_quotation.of_stru ~name:{ domains; name = "create" }
+    ~entry:nonterminals ();
+  Ast_quotation.of_stru ~name:{ domains; name = "new" } ~entry:newterminals
+    ()

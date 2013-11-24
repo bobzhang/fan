@@ -47,7 +47,7 @@ begin
     ("-loaded-plugins",
      (Arg.Unit Typehook.show_modules), "Show plugins");
   Ast_quotation.of_exp
-    ~name:(Ns.lang, "fans")
+    ~name:{domains = Ns.lang; name =  "fans"}
     ~lexer
     ~entry:fan_quots ();
 end;;

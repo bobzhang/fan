@@ -13,5 +13,5 @@ begin
          let i = Hashtbl.hash v  in
          %case{$int':i -> s = $str:v}) xs) in
    %exp{fun (s:string) -> (function | $p | _ -> false )} }]};
-  Ast_quotation.of_exp ~name:(Ns.lang,"hash_cmp") ~entry:hash_p ();
+  Ast_quotation.of_exp ~name:{domains = Ns.lang; name = "hash_cmp"} ~entry:hash_p ();
 end;;  

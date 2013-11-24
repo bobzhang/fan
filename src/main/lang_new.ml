@@ -80,12 +80,12 @@ newterminals :
                   %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls) }]
 }  
 let _ =
-  let d = Ns.lang in
+  let domains = Ns.lang in
   begin
     Ast_quotation.of_stru
-      ~name:(d,"create") ~entry:nonterminals ();
+      ~name:{domains; name = "create"} ~entry:nonterminals ();
     Ast_quotation.of_stru
-      ~name:(d,"new") ~entry:newterminals ();
+      ~name:{domains; name = "new"} ~entry:newterminals ();
   end
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_new.cmo" *)
