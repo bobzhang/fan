@@ -16,3 +16,6 @@ val find_in_path_uncap : path:string list -> string -> string
     (** Expand a -I option: if it starts with +, make it relative to the standard
         library directory *)
 val expand_directory : std:string -> string -> string
+
+
+val chop_extension_if : string -> string    

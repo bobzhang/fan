@@ -1,6 +1,15 @@
 
 include Filename
 
+
+let chop_extension_if name =
+  let rec search_dot i =
+    if i < 0 ||  (String.make 1 name.[i]) = Filename.dir_sep then
+      name
+    else if name.[i] = '.' then String.sub name 0 i
+    else search_dot (i - 1) in
+  search_dot (String.length name - 1)
+  
 let find_in_path ~path name =
   if not @@ Filename.is_implicit name then
     if Sys.file_exists name then Some name

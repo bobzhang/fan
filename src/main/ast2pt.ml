@@ -7,7 +7,7 @@
 
 open Util
 open Parsetree_util
-open! Astf (* FIXME later*)
+open Astf (* FIXME later*)
 open Ast_basic
 
 
@@ -43,13 +43,22 @@ let remove_underscores s =
 
 
 (** Forward declarations *)
-let dump_ident           = ref (fun _ -> failwith "Ast2pt.dump_ident not implemented")
-let dump_ctyp            = ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
-let dump_row_field       = ref (fun _ -> failwith "Ast2pt.dump_row_field not implemented")
-let dump_name_ctyp       = ref (fun _ -> failwith "Ast2pt.dump_name_ctyp not implemented")
-let dump_constr          = ref (fun _ -> failwith "Ast2pt.dump_constr not implemented")
-let dump_mtyp            = ref (fun _ -> failwith "Ast2pt.dump_mtyp not implemented")
-let dump_ctyp            = ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
+let dump_ident =
+  ref (fun _ -> failwithf "%s.dump_ident not implemented" __MODULE__ )
+let dump_ctyp = 
+  ref (fun _ -> failwithf "%s.dump_ctyp not implemented" __MODULE__)
+let dump_row_field       =
+  ref (fun _ -> failwithf "%s.dump_row_field not implemented" __MODULE__)
+
+let dump_name_ctyp =
+  ref (fun _ -> failwithf "%s.dump_name_ctyp not implemented" __MODULE__)
+let dump_constr          =
+  ref (fun _ -> failwithf "%s.dump_constr not implemented" __MODULE__)
+let dump_mtyp            =
+  ref (fun _ -> failwith "Ast2pt.dump_mtyp not implemented")
+
+let dump_ctyp =
+  ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
 let dump_or_ctyp         = ref (fun _ -> failwith "Ast2pt.dump_or_ctyp not implemented")
 let dump_pat             = ref (fun _ -> failwith "Ast2pt.dump_pat not implemented")
 let dump_type_parameters = ref (fun _ -> failwith "Ast2pt.dump_type_parameters not implemented")
@@ -78,13 +87,13 @@ let generate_type_code :
 
 let ant_error loc = error loc "antiquotation not expected here"
 
-let mkvirtual  (x:flag)  : Asttypes.virtual_flag =
+let mkvirtual  (x: Astf.flag)  : Asttypes.virtual_flag =
   match x with 
   | `Positive _ -> Virtual
   | `Negative _  -> Concrete
   | `Ant (_loc,_) -> ant_error _loc 
 
-let flag loc (x:flag) : Asttypes.override_flag =
+let flag loc (x: Astf.flag) : Asttypes.override_flag =
   match x with
   | `Positive _ -> Override
   | `Negative _  -> Fresh
@@ -158,7 +167,7 @@ let long_type_ident: Astf.ident -> Longident.t Location.loc =
 
 let long_class_ident = long_lident
 
-let long_uident_noloc  (i:ident) =
+let long_uident_noloc  (i: Astf.ident) =
   match ident_tag i with
   | (Ldot (i, s), `uident) -> ldot i s
   | (Lident s, `uident) -> lident s
@@ -248,7 +257,7 @@ let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
   | `PolyInf(_,t) ->
     mktyp _loc @@ Ptyp_variant (row_field t [], true, Some [])
   | `PolyInfSup(_,t,t') ->
-    let rec name_tags (x:tag_names) =
+    let rec name_tags (x: Astf.tag_names) =
       match x with 
       | `App(_,t1,t2) -> name_tags t1 @ name_tags t2
       | `TyVrn (_, `C (_,s))    -> [s]
@@ -256,7 +265,7 @@ let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
     mktyp _loc @@ Ptyp_variant (row_field t [], true, Some (name_tags t'))
   |  x -> Locf.failf _loc "ctyp: %s" @@ !dump_ctyp x
 
-and row_field (x:row_field) acc : Parsetree.row_field list =
+and row_field (x: Astf.row_field) acc : Parsetree.row_field list =
   match x with 
   |`TyVrn (_loc,`C(_,i)) -> Rtag (i, true, []) :: acc
   | `TyVrnOf(_loc,`C(_,i),t) ->
@@ -266,19 +275,18 @@ and row_field (x:row_field) acc : Parsetree.row_field list =
   | `Ctyp(_,t) -> Rinherit (ctyp t) :: acc
   | t -> Locf.failf (unsafe_loc_of t) "row_field: %s" (!dump_row_field t)
 
-and meth_list (fl:name_ctyp) acc : Parsetree.core_field_type list   =
+and meth_list (fl: Astf.name_ctyp) acc : Parsetree.core_field_type list   =
   match fl with
   |`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Lid(_,lab),t) ->
     mkfield _loc (Pfield (lab, (mkpolytype (ctyp t)))) :: acc
   | x -> Locf.failf (unsafe_loc_of x) "meth_list: %s" (!dump_name_ctyp x )
 
-and package_type_constraints
-    (wc:constr)
+and package_type_constraints (wc: Astf.constr)
     (acc: (Longident.t Asttypes.loc  * Parsetree.core_type) list )
   : (Longident.t Asttypes.loc   * Parsetree.core_type) list  =
   match wc with
-  | `TypeEq(_, (#ident' as id),ct) -> (ident id, ctyp ct) :: acc
+  | `TypeEq(_, (#Astf.ident' as id),ct) -> (ident id, ctyp ct) :: acc
   | `And(_,wc1,wc2) ->
     package_type_constraints wc1 @@ package_type_constraints wc2 acc
   | x ->
@@ -286,7 +294,7 @@ and package_type_constraints
         "unexpected `with constraint:%s' for a package type"
         (!dump_constr x) 
 
-and package_type (x : mtyp) :
+and package_type (x : Astf.mtyp) :
   (Longident.t Asttypes.loc *
     (Longident.t Asttypes.loc * Parsetree.core_type) list)  =
   match x with 
@@ -666,7 +674,13 @@ let rec exp (x : exp) : Parsetree.expression =
       
   | `Uid(_,s) ->
     mkexp _loc @@ Pexp_construct (lident_with_loc  s _loc, None, true)
-
+  | `Lid(_, "__FILE__")  ->
+      exp %exp{$str'{Locf.file_name _loc}}
+    (* TODO -- what's the case for lazy expansion
+       and %exp{__FILE__}
+     *)
+  | `Lid(_,"__MODULE__") ->
+      exp %exp{$str'{String.capitalize @@ Filenamef.chop_extension_if @@ Locf.file_name _loc}}
   | `Lid(_,("true"|"false" as s)) ->
       if s = "true" || s = "false" then 
         mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
