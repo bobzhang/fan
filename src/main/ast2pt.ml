@@ -199,8 +199,7 @@ let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
   let _loc = unsafe_loc_of x in
   match x with 
   |  (#Astf.ident' as i) ->
-    let li = long_type_ident (i:>Astf.ident) in
-    mktyp _loc @@ Ptyp_constr (li, [])
+    mktyp _loc @@ Ptyp_constr (long_type_ident (i:>Astf.ident), [])
   | `Alias(_,t1,`Lid(_,s)) -> 
     mktyp _loc @@ Ptyp_alias (ctyp t1, s)
   | `Any _ -> mktyp _loc Ptyp_any
@@ -212,8 +211,7 @@ let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
   | `Arrow (_, (`Label (_,  `Lid(_,lab), t1)), t2) ->
     mktyp _loc @@ Ptyp_arrow (lab, (ctyp t1), ctyp t2)
   | `Arrow (_, (`OptLabl (loc1, `Lid(_,lab), t1)), t2) ->
-    let t1 = `App (loc1, (predef_option loc1), t1) in
-    mktyp _loc @@ Ptyp_arrow ("?" ^ lab, ctyp t1, ctyp t2)
+    mktyp _loc @@ Ptyp_arrow ("?" ^ lab, ctyp (`App (loc1, predef_option loc1, t1) ), ctyp t2)
   | `Arrow (_loc, t1, t2) ->
       mktyp _loc @@ Ptyp_arrow ("", ctyp t1, ctyp t2)
   | `TyObjEnd(_,row) ->
@@ -681,6 +679,10 @@ let rec exp (x : exp) : Parsetree.expression =
      *)
   | `Lid(_,"__MODULE__") ->
       exp %exp{$str'{String.capitalize @@ Filenamef.chop_extension_if @@ Locf.file_name _loc}}
+  | %exp{ __PWD__ } ->
+      exp %exp{$str'{Filename.dirname (Locf.file_name _loc) }}
+  | %exp{ __LOCATION__ } ->
+      exp (Ast_gen.meta_here _loc _loc :> exp)
   | `Lid(_,("true"|"false" as s)) ->
       if s = "true" || s = "false" then 
         mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)

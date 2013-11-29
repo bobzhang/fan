@@ -1,0 +1,2 @@
+#!/bin/sh 
+camlp4o -I `ocamlfind query type_conv` -I `ocamlfind query sexplib` -I `ocamlfind query bin_prot` -I `ocamlfind query comparelib` -I `ocamlfind query fieldslib`  pa_type_conv.cma pa_sexp_conv.cma pa_bin_prot.cma pa_compare.cma "$@"
