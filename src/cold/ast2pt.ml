@@ -421,35 +421,31 @@ let rec deep_mkrangepat loc c1 c2 =
          ((mkghpat loc (Ppat_constant (Const_char c1))),
            (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
 let rec mkrangepat loc c1 c2 =
-  if c1 > c2
-  then mkrangepat loc c2 c1
-  else
-    if c1 = c2
-    then mkpat loc (Ppat_constant (Const_char c1))
-    else
-      mkpat loc
-        (Ppat_or
-           ((mkghpat loc (Ppat_constant (Const_char c1))),
-             (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
+  (if c1 > c2
+   then mkrangepat loc c2 c1
+   else
+     if c1 = c2
+     then Ppat_constant (Const_char c1)
+     else
+       Ppat_or
+         ((mkghpat loc (Ppat_constant (Const_char c1))),
+           (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)) : 
+  Parsetree.pattern_desc )
 let pat_literal _loc (x : literal) =
   (mkpat _loc (Ppat_constant (mk_constant _loc x)) : Parsetree.pattern )
 let exp_literal _loc (x : literal) =
   (mkexp _loc (Pexp_constant (mk_constant _loc x)) : Parsetree.expression )
-let rec pat (x : pat) =
-  (let _loc = unsafe_loc_of x in
-   match x with
-   | #literal as x -> pat_literal _loc x
+let rec pat_desc _loc (x : pat) =
+  (match x with
+   | #literal as x -> Ppat_constant (mk_constant _loc x)
    | `Lid (_,("true"|"false" as txt)) ->
-       (mkpat _loc) @@
-         (Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false))
-   | `Lid (_,s) -> (mkpat _loc) @@ (Ppat_var (with_loc s _loc))
+       Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false)
+   | `Lid (_,s) -> Ppat_var (with_loc s _loc)
    | `Uid _|`Dot _ as i ->
-       (mkpat _loc) @@
-         (Ppat_construct ((long_uident (i : vid  :>ident)), None, false))
-   | `Vrn (_,s) -> (mkpat _loc) @@ (Ppat_variant (s, None))
-   | `Alias (_,p1,`Lid (sloc,s)) ->
-       (mkpat _loc) @@ (Ppat_alias ((pat p1), (with_loc s sloc)))
-   | `Any _ -> mkpat _loc Ppat_any
+       Ppat_construct ((long_uident (i : vid  :>ident)), None, false)
+   | `Vrn (_,s) -> Ppat_variant (s, None)
+   | `Alias (_,p1,`Lid (sloc,s)) -> Ppat_alias ((pat p1), (with_loc s sloc))
+   | `Any _ -> Ppat_any
    | `App (_,p,r) as f ->
        let r =
          match r with
@@ -458,15 +454,12 @@ let rec pat (x : pat) =
                (Ppat_tuple ((List.map pat) @@ (list_of_com r [])))
          | _ -> pat r in
        (match (pat p).ppat_desc with
-        | Ppat_variant (s,None ) ->
-            (mkpat _loc) @@ (Ppat_variant (s, (Some r)))
-        | Ppat_construct (li,None ,_) ->
-            (mkpat _loc) @@ (Ppat_construct (li, (Some r), false))
+        | Ppat_variant (s,None ) -> Ppat_variant (s, (Some r))
+        | Ppat_construct (li,None ,_) -> Ppat_construct (li, (Some r), false)
         | _ -> (Locf.failf _loc "invalid pattern %s") @@ (! dump_pat f))
-   | `Array (_,p) ->
-       (mkpat _loc) @@ (Ppat_array (List.map pat (list_of_sem p [])))
-   | `ArrayEmpty _ -> (mkpat _loc) @@ (Ppat_array [])
-   | `Bar (_,p1,p2) -> (mkpat _loc) @@ (Ppat_or ((pat p1), (pat p2)))
+   | `Array (_,p) -> Ppat_array (List.map pat (list_of_sem p []))
+   | `ArrayEmpty _ -> Ppat_array []
+   | `Bar (_,p1,p2) -> Ppat_or ((pat p1), (pat p2))
    | `PaRng (_,`Chr (loc1,c1),`Chr (loc2,c2)) ->
        mkrangepat _loc (Escape.char_of_char_token loc1 c1)
          (Escape.char_of_char_token loc2 c2)
@@ -478,25 +471,22 @@ let rec pat (x : pat) =
          match p with
          | `RecBind (_loc,i,p) -> ((ident (i :>ident)), (pat p))
          | p -> error (unsafe_loc_of p) "invalid pattern" in
-       mkpat _loc
-         (Ppat_record
-            ((List.map mklabpat ps),
-              (if wildcards = [] then Closed else Open)))
+       Ppat_record
+         ((List.map mklabpat ps), (if wildcards = [] then Closed else Open))
    | `Par (_,`Com (_,p1,p2)) ->
-       mkpat _loc
-         (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
-   | `Constraint (_loc,p,t) ->
-       mkpat _loc (Ppat_constraint ((pat p), (ctyp t)))
-   | `ClassPath (_,i) -> (mkpat _loc) @@ (Ppat_type (long_type_ident i))
-   | `Lazy (_,p) -> (mkpat _loc) @@ (Ppat_lazy (pat p))
-   | `ModuleUnpack (_,`Uid (sloc,m)) ->
-       mkpat _loc (Ppat_unpack (with_loc m sloc))
+       Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 [])))
+   | `Constraint (_loc,p,t) -> Ppat_constraint ((pat p), (ctyp t))
+   | `ClassPath (_,i) -> Ppat_type (long_type_ident i)
+   | `Lazy (_,p) -> Ppat_lazy (pat p)
+   | `ModuleUnpack (_,`Uid (sloc,m)) -> Ppat_unpack (with_loc m sloc)
    | `ModuleConstraint (_,`Uid (sloc,m),ty) ->
-       mkpat _loc
-         (Ppat_constraint
-            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
+       Ppat_constraint
+         ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty))
    | p -> (Locf.failf _loc "invalid pattern %s") @@ (! dump_pat p) : 
-  Parsetree.pattern )
+  Parsetree.pattern_desc )
+and pat (x : pat) =
+  (let _loc = unsafe_loc_of x in
+   { ppat_desc = (pat_desc _loc x); ppat_loc = _loc } : Parsetree.pattern )
 let normalize_vid (x : vid) =
   let _loc = unsafe_loc_of x in
   match x with
@@ -521,7 +511,8 @@ let normalize_vid (x : vid) =
 let rec exp_desc _loc (x : exp) =
   (match x with
    | #literal as x -> Pexp_constant (mk_constant _loc x)
-   | `Uid (_,s) -> Pexp_construct ((lident_with_loc s _loc), None, true)
+   | `Uid (_,s) ->
+       Pexp_construct ({ loc = _loc; txt = (Lident s) }, None, true)
    | `Lid (_,"__FILE__") ->
        exp_desc _loc
          (`Str (_loc, (String.escaped (Locf.file_name _loc))) : Astf.exp )
@@ -545,7 +536,7 @@ let rec exp_desc _loc (x : exp) =
    | #vid as x ->
        let (b,id) = normalize_vid x in
        if b then Pexp_construct (id, None, false) else Pexp_ident id
-   | `Field (_,x,b) -> let (_,v) = normalize_vid b in Pexp_field ((exp x), v)
+   | `Field (_,x,b) -> Pexp_field ((exp x), (snd (normalize_vid b)))
    | `App _ as f ->
        let (f,al) = view_app [] f in
        let al = List.map label_exp al in
@@ -569,10 +560,8 @@ let rec exp_desc _loc (x : exp) =
    | `ArrayEmpty _ -> Pexp_array []
    | `Assert (_,`Lid (_,"false")) -> Pexp_assertfalse
    | `Assert (_,e) -> Pexp_assert (exp e)
-   | `Assign (_,(`Field (loc,_,_) as e),v) ->
-       (match (exp e).pexp_desc with
-        | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (exp v))
-        | _ -> error loc "bad record access")
+   | `Assign (_,`Field (_,x,b),v) ->
+       Pexp_setfield ((exp x), (snd (normalize_vid b)), (exp v))
    | `Assign (_,`ArrayDot (loc,e1,e2),v) ->
        Pexp_apply
          ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
@@ -586,14 +575,13 @@ let rec exp_desc _loc (x : exp) =
    | `Subtype (_,e,t2) -> Pexp_constraint ((exp e), None, (Some (ctyp t2)))
    | `Coercion (_,e,t1,t2) ->
        Pexp_constraint ((exp e), (Some (ctyp t1)), (Some (ctyp t2)))
-   | `For (_loc,`Lid (sloc,i),e1,e2,df,el) ->
+   | `For (_loc,`Lid (loc,txt),e1,e2,df,el) ->
        Pexp_for
-         ((with_loc i sloc), (exp e1), (exp e2), (mkdirection df),
+         ({ txt; loc }, (exp e1), (exp e2), (mkdirection df),
            (exp (`Seq (_loc, el))))
    | `Fun
-       (_loc,`Case
-               (_,(`LabelS _|`Label _|`OptLablS _|`OptLabl _|`OptLablExpr _
-                     as l),e))
+       (_,`Case
+            (_,(`LabelS _|`Label _|`OptLablS _|`OptLabl _|`OptLablExpr _ as l),e))
        ->
        let (lab,p,e1) =
          match l with
@@ -698,13 +686,8 @@ let rec exp_desc _loc (x : exp) =
          ((mkexp _loc (Pexp_ident (array_function _loc "String" "get"))),
            [("", (exp e1)); ("", (exp e2))])
    | `Try (_,e,a) -> Pexp_try ((exp e), (case a))
-   | `Par (_,e) ->
-       let l = list_of_com e [] in
-       (match l with
-        | []|_::[] ->
-            Locf.failf _loc "tuple should have at least two items"
-              (! dump_exp x)
-        | _ -> Pexp_tuple (List.map exp l))
+   | `Par (_,`Com (_,e1,e2)) ->
+       Pexp_tuple (List.map exp (list_of_com e1 (list_of_com e2 [])))
    | `Constraint (_,e,t) -> Pexp_constraint ((exp e), (Some (ctyp t)), None)
    | `Vrn (_,s) -> Pexp_variant (s, None)
    | `While (_,e1,el) -> Pexp_while ((exp e1), (exp (`Seq (_loc, el))))
