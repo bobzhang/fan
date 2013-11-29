@@ -446,6 +446,7 @@ let rec pat (x : pat) =
    | `Uid _|`Dot _ as i ->
        (mkpat _loc) @@
          (Ppat_construct ((long_uident (i : vid  :>ident)), None, false))
+   | `Vrn (_,s) -> (mkpat _loc) @@ (Ppat_variant (s, None))
    | `Alias (_,p1,`Lid (sloc,s)) ->
        (mkpat _loc) @@ (Ppat_alias ((pat p1), (with_loc s sloc)))
    | `Any _ -> mkpat _loc Ppat_any
@@ -466,15 +467,9 @@ let rec pat (x : pat) =
        (mkpat _loc) @@ (Ppat_array (List.map pat (list_of_sem p [])))
    | `ArrayEmpty _ -> (mkpat _loc) @@ (Ppat_array [])
    | `Bar (_,p1,p2) -> (mkpat _loc) @@ (Ppat_or ((pat p1), (pat p2)))
-   | `PaRng (_,p1,p2) ->
-       (match (p1, p2) with
-        | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
-            let c1 = Escape.char_of_char_token loc1 c1 in
-            let c2 = Escape.char_of_char_token loc2 c2 in
-            mkrangepat _loc c1 c2
-        | _ -> error _loc "range pattern allowed only for characters")
-   | `Label _|`LabelS _|`OptLablExpr _|`OptLabl _|`OptLablS _ ->
-       error _loc "labeled pattern not allowed here"
+   | `PaRng (_,`Chr (loc1,c1),`Chr (loc2,c2)) ->
+       mkrangepat _loc (Escape.char_of_char_token loc1 c1)
+         (Escape.char_of_char_token loc2 c2)
    | `Record (_,p) ->
        let ps = list_of_sem p [] in
        let (wildcards,ps) =
@@ -490,16 +485,14 @@ let rec pat (x : pat) =
    | `Par (_,`Com (_,p1,p2)) ->
        mkpat _loc
          (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
-   | `Par (_,_) -> error _loc "singleton tuple pattern"
    | `Constraint (_loc,p,t) ->
        mkpat _loc (Ppat_constraint ((pat p), (ctyp t)))
    | `ClassPath (_,i) -> (mkpat _loc) @@ (Ppat_type (long_type_ident i))
-   | `Vrn (_,s) -> (mkpat _loc) @@ (Ppat_variant (s, None))
    | `Lazy (_,p) -> (mkpat _loc) @@ (Ppat_lazy (pat p))
    | `ModuleUnpack (_,`Uid (sloc,m)) ->
        mkpat _loc (Ppat_unpack (with_loc m sloc))
    | `ModuleConstraint (_,`Uid (sloc,m),ty) ->
-       (mkpat _loc) @@
+       mkpat _loc
          (Ppat_constraint
             ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
    | p -> (Locf.failf _loc "invalid pattern %s") @@ (! dump_pat p) : 
@@ -528,9 +521,7 @@ let normalize_vid (x : vid) =
 let rec exp (x : exp) =
   (let _loc = unsafe_loc_of x in
    match x with
-   | `Field (loc,x,b) ->
-       let (_,v) = normalize_vid b in
-       (mkexp loc) @@ (Pexp_field ((exp x), v))
+   | #literal as x -> exp_literal _loc x
    | `Uid (_,s) ->
        (mkexp _loc) @@
          (Pexp_construct ((lident_with_loc s _loc), None, true))
@@ -552,17 +543,16 @@ let rec exp (x : exp) =
    | (`Lid (_loc,"__LOCATION__") : Astf.exp) ->
        exp (Ast_gen.meta_here _loc _loc :>exp)
    | `Lid (_,("true"|"false" as s)) ->
-       if (s = "true") || (s = "false")
-       then
-         (mkexp _loc) @@
-           (Pexp_construct ((lident_with_loc s _loc), None, true))
-       else (mkexp _loc) @@ (Pexp_ident (lident_with_loc s _loc))
+       (mkexp _loc) @@
+         (Pexp_construct ((lident_with_loc s _loc), None, true))
    | #vid as x ->
-       let loc = unsafe_loc_of x in
        let (b,id) = normalize_vid x in
        if b
-       then mkexp loc (Pexp_construct (id, None, false))
-       else mkexp loc (Pexp_ident id)
+       then mkexp _loc (Pexp_construct (id, None, false))
+       else mkexp _loc (Pexp_ident id)
+   | `Field (loc,x,b) ->
+       let (_,v) = normalize_vid b in
+       (mkexp loc) @@ (Pexp_field ((exp x), v))
    | `App _ as f ->
        let (f,al) = view_app [] f in
        let al = List.map label_exp al in
@@ -615,14 +605,13 @@ let rec exp (x : exp) =
    | `Subtype (_,e,t2) ->
        mkexp _loc (Pexp_constraint ((exp e), None, (Some (ctyp t2))))
    | `Coercion (_,e,t1,t2) ->
-       let t1 = Some (ctyp t1) in
-       mkexp _loc (Pexp_constraint ((exp e), t1, (Some (ctyp t2))))
+       mkexp _loc
+         (Pexp_constraint ((exp e), (Some (ctyp t1)), (Some (ctyp t2))))
    | `For (_loc,`Lid (sloc,i),e1,e2,df,el) ->
-       let e3 = `Seq (_loc, el) in
        (mkexp _loc) @@
          (Pexp_for
             ((with_loc i sloc), (exp e1), (exp e2), (mkdirection df),
-              (exp e3)))
+              (exp (`Seq (_loc, el)))))
    | `Fun
        (_loc,`Case
                (_,(`LabelS _|`Label _|`OptLablS _|`OptLabl _|`OptLablExpr _
@@ -663,7 +652,6 @@ let rec exp (x : exp) =
          (Pexp_ifthenelse ((exp e1), (exp e2), (Some (exp e3))))
    | `IfThen (_,e1,e2) ->
        (mkexp _loc) @@ (Pexp_ifthenelse ((exp e1), (exp e2), None))
-   | #literal as x -> exp_literal _loc x
    | `Any _ ->
        Locf.failf _loc "Any should not appear in the position of expression"
    | `Label _|`LabelS _ -> error _loc "labeled expression not allowed here"
@@ -753,8 +741,7 @@ let rec exp (x : exp) =
        mkexp _loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
    | `Vrn (_,s) -> (mkexp _loc) @@ (Pexp_variant (s, None))
    | `While (_,e1,el) ->
-       let e2 = `Seq (_loc, el) in
-       (mkexp _loc) @@ (Pexp_while ((exp e1), (exp e2)))
+       (mkexp _loc) @@ (Pexp_while ((exp e1), (exp (`Seq (_loc, el)))))
    | `LetOpen (_,f,i,e) ->
        mkexp _loc (Pexp_open ((flag _loc f), (long_uident i), (exp e)))
    | `Package_exp (_,`Constraint (_,me,pt)) ->
