@@ -862,49 +862,40 @@ and mtyp: Astf.mtyp -> Parsetree.module_type =
   | `With (loc,mt,wc) -> mkmty loc (Pmty_with ((mtyp mt), (mkwithc wc)))
   | `ModuleTypeOf (_loc,me) -> mkmty _loc (Pmty_typeof (mexp me))
   | t -> Locf.failf (unsafe_loc_of t) "mtyp: %s" (! dump_mtyp t)
-and sigi (s : sigi) (l : Parsetree.signature) =
+and sigi_item_desc _loc (s : sigi) =
   (match s with
-   | `Class (loc,cd) ->
-       (mksig loc
-          (Psig_class (List.map class_info_cltyp (list_of_and cd []))))
-       :: l
-   | `ClassType (loc,ctd) ->
-       (mksig loc
-          (Psig_class_type (List.map class_info_cltyp (list_of_and ctd []))))
-       :: l
-   | `Sem (_,sg1,sg2) -> sigi sg1 (sigi sg2 l)
-   | `Directive _|`DirectiveSimple _ -> l
-   | `Exception (_loc,`Uid (_,s)) ->
-       (mksig _loc (Psig_exception ((with_loc s _loc), []))) :: l
+   | `Class (_,cd) ->
+       Psig_class (List.map class_info_cltyp (list_of_and cd []))
+   | `ClassType (_,ctd) ->
+       Psig_class_type (List.map class_info_cltyp (list_of_and ctd []))
+   | `Exception (_loc,`Uid (_,s)) -> Psig_exception ((with_loc s _loc), [])
    | `Exception (_loc,`Of (_,`Uid (sloc,s),t)) ->
-       (mksig _loc
-          (Psig_exception
-             ((with_loc s sloc), (List.map ctyp (list_of_star t [])))))
-       :: l
+       Psig_exception
+         ({ loc = sloc; txt = s }, (List.map ctyp (list_of_star t [])))
    | `Exception (_,_) -> assert false
    | `External (loc,`Lid (sloc,n),t,sl) ->
-       (mksig loc
-          (Psig_value
-             ((with_loc n sloc), (mkvalue_desc loc t (list_of_app sl [])))))
-       :: l
-   | `Include (loc,mt) -> (mksig loc (Psig_include (mtyp mt))) :: l
-   | `Module (loc,`Uid (sloc,n),mt) ->
-       (mksig loc (Psig_module ((with_loc n sloc), (mtyp mt)))) :: l
-   | `RecModule (loc,mb) ->
-       (mksig loc (Psig_recmodule (module_sig_bind mb []))) :: l
-   | `ModuleTypeEnd (loc,`Uid (sloc,n)) ->
-       (mksig loc (Psig_modtype ((with_loc n sloc), Pmodtype_abstract))) :: l
-   | `ModuleType (loc,`Uid (sloc,n),mt) ->
-       (mksig loc
-          (Psig_modtype ((with_loc n sloc), (Pmodtype_manifest (mtyp mt)))))
-       :: l
-   | `Open (loc,g,id) ->
-       (mksig loc (Psig_open ((flag loc g), (long_uident id)))) :: l
-   | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl))) :: l
-   | `Val (loc,`Lid (sloc,n),t) ->
-       (mksig loc (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
-       :: l
-   | t -> Locf.failf (unsafe_loc_of t) "sigi: %s" (! dump_sigi t) : Parsetree.signature )
+       Psig_value
+         ({ loc = sloc; txt = n }, (mkvalue_desc loc t (list_of_app sl [])))
+   | `Include (_,mt) -> Psig_include (mtyp mt)
+   | `Module (_,`Uid (sloc,n),mt) ->
+       Psig_module ((with_loc n sloc), (mtyp mt))
+   | `RecModule (_,mb) -> Psig_recmodule (module_sig_bind mb [])
+   | `ModuleTypeEnd (_,`Uid (sloc,n)) ->
+       Psig_modtype ((with_loc n sloc), Pmodtype_abstract)
+   | `ModuleType (_,`Uid (sloc,n),mt) ->
+       Psig_modtype ((with_loc n sloc), (Pmodtype_manifest (mtyp mt)))
+   | `Open (_,g,id) -> Psig_open ((flag _loc g), (long_uident id))
+   | `Type (_,tdl) -> Psig_type (mktype_decl tdl)
+   | `Val (_,`Lid (sloc,n),t) ->
+       Psig_value ((with_loc n sloc), (mkvalue_desc _loc t []))
+   | t -> Locf.failf (unsafe_loc_of t) "sigi: %s" (! dump_sigi t) : Parsetree.signature_item_desc )
+and sigi (s : sigi) (l : Parsetree.signature) =
+  (match s with
+   | `Sem (_,sg1,sg2) -> sigi sg1 (sigi sg2 l)
+   | `Directive _|`DirectiveSimple _ -> l
+   | _ ->
+       let _loc = unsafe_loc_of s in (mksig _loc (sigi_item_desc _loc s)) ::
+         l : Parsetree.signature )
 and module_sig_bind (x : mbind)
   (acc : (string Asttypes.loc* Parsetree.module_type) list) =
   match x with
