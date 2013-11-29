@@ -43,43 +43,41 @@ let remove_underscores s =
 
 
 (** Forward declarations *)
-let dump_ident =
-  ref (fun _ -> failwithf "%s.dump_ident not implemented" __MODULE__ )
-let dump_ctyp = 
-  ref (fun _ -> failwithf "%s.dump_ctyp not implemented" __MODULE__)
-let dump_row_field       =
-  ref (fun _ -> failwithf "%s.dump_row_field not implemented" __MODULE__)
+let dump_ident =  %undef{}
 
-let dump_name_ctyp =
-  ref (fun _ -> failwithf "%s.dump_name_ctyp not implemented" __MODULE__)
-let dump_constr          =
-  ref (fun _ -> failwithf "%s.dump_constr not implemented" __MODULE__)
-let dump_mtyp            =
-  ref (fun _ -> failwith "Ast2pt.dump_mtyp not implemented")
+let dump_ctyp =  %undef{}
 
-let dump_ctyp =
-  ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
-let dump_or_ctyp         = ref (fun _ -> failwith "Ast2pt.dump_or_ctyp not implemented")
-let dump_pat             = ref (fun _ -> failwith "Ast2pt.dump_pat not implemented")
-let dump_type_parameters = ref (fun _ -> failwith "Ast2pt.dump_type_parameters not implemented")
-let dump_exp             = ref (fun _ -> failwith "Ast2pt.dump_exp not implemented")
-let dump_case            = ref (fun _ -> failwith "Ast2pt.dump_case not implemented")
-let dump_rec_exp         = ref (fun _ -> failwith "Ast2pt.dump_rec_exp not implemented")
-let dump_type_constr     = ref (fun _ -> failwith "Ast2pt.dump_type_constr not implemented")
-let dump_typedecl        = ref (fun _ -> failwith "Ast2pt.dump_typedecl not implemented")
-let dump_sigi            = ref (fun _ -> failwith "Ast2pt.dump_sigi not implemented")
-let dump_mbind           = ref (fun _ -> failwith "Ast2pt.dump_mbind not implemented")
-let dump_mexp            = ref (fun _ -> failwith "Ast2pt.dump_mexp not implemented")
-let dump_stru            = ref (fun _ -> failwith "Ast2pt.dump_stru not implemented")
-let dump_cltyp           = ref (fun _ -> failwith "Ast2pt.dump_cltyp not implemented")
-let dump_cldecl          = ref (fun _ -> failwith "Ast2pt.dump_cldecl not implemented")
-let dump_cltdecl         = ref (fun _ -> failwith "Ast2pt.dump_cltdecl not implemented")
-let dump_clsigi          = ref (fun _ -> failwith "Ast2pt.dump_clsigi not implemented")
-let dump_clexp           = ref (fun _ -> failwith "Ast2pt.dump_clexp not implemented")
-let dump_clfield         = ref (fun _ -> failwith "Ast2pt.dump_clfield not implemented")
+let dump_row_field = %undef{}
+
+let dump_name_ctyp = %undef{}
+
+let dump_constr = %undef{}
+let dump_mtyp = %undef{}
+let dump_ctyp = %undef{}
+
+let dump_or_ctyp = %undef{}
+let dump_pat = %undef{}
+let dump_type_parameters = %undef{}
+let dump_exp = %undef{}
+let dump_case = %undef{}
+let dump_rec_exp =  %undef{}
+let dump_type_constr = %undef{}
+let dump_typedecl = %undef{} 
+let dump_sigi = %undef{}  
+let dump_mbind =  %undef{}
+let dump_mexp = %undef{}
+let dump_stru =  %undef{}
+let dump_cltyp = %undef{}
+let dump_cldecl = %undef{}
+let dump_cltdecl = %undef{}
+let dump_clsigi = %undef{}
+let dump_clexp = %undef{}
+let dump_clfield = %undef{}
 
 
-
+(** the module path -- recorded during dumping  *)
+let module_path :  string list ref = ref []
+let current_top_bind : string option ref = ref None       
 (*****************************)
 (* Util functions            *)    
 (*****************************)
@@ -113,7 +111,7 @@ let mk_constant _loc (x:literal) : Asttypes.constant =
     
 let generate_type_code :
   (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
-  ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
+  %undef{}
 
 
 let ant_error loc = error loc "antiquotation not expected here"
@@ -242,10 +240,6 @@ let mkprivate (x:flag) : Asttypes.private_flag =
   | `Positive _ -> Private
   | `Negative _ -> Public
   | `Ant(_loc,_)-> ant_error _loc 
-
-
-
-
 
 
 
@@ -632,9 +626,20 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
     (* TODO -- what's the case for lazy expansion
        and %exp{__FILE__} *)
   | `Lid(_,"__MODULE__") ->
-      exp_desc _loc  %exp{$str'{String.capitalize @@ Filenamef.chop_extension_if @@ Locf.file_name _loc}}
+      let s =
+        let sl =
+          (_loc |> Locf.file_name |> Filename.basename |> Filenamef.chop_extension_if |>  String.capitalize)
+          :: List.rev !module_path in
+        String.concat "." sl in Pexp_constant (Const_string s)
+  | `Lid(_,"__BIND__") ->
+      let s =
+        match !current_top_bind with
+        | None -> Locf.failf _loc "No implicit binding context"
+        | Some s -> s in
+      Pexp_constant (Const_string s )
   | %exp{ __PWD__ } ->
-      exp_desc  _loc %exp{$str'{Filename.dirname (Locf.file_name _loc) }}
+      let s =  Filename.dirname (Locf.file_name _loc) in
+      Pexp_constant (Const_string s)
   | %exp{ __LOCATION__ } ->
       exp_desc _loc (Ast_gen.meta_here _loc _loc :> exp)
   | `Lid(_,("true"|"false" as s)) ->
@@ -824,8 +829,8 @@ and label_exp (x : exp) =
 
 and bind (x:bind) acc =
   match x with
-  | (`And (_loc,x,y) : Astf.bind) -> bind x (bind y acc)
-  | (`Bind (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint (_,e,`TyTypePol (_,vs,ty))) : Astf.bind) ->
+  | `And (_loc,x,y) -> bind x (bind y acc)
+  | `Bind (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint (_,e,`TyTypePol (_,vs,ty))) ->
     let rec id_to_string (x : ctyp) =
       match x with
       | `Lid (_,x) -> [x]
@@ -847,15 +852,57 @@ and bind (x:bind) acc =
     let pat =
       mkpat
         (Ppat_constraint
-           ((mkpat (Ppat_var (with_loc bind_name sloc))),
+           ((mkpat (Ppat_var {loc = sloc ; txt = bind_name})),
             (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
     let e = mk_newtypes vars in (pat, e) :: acc
-  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Astf.bind) ->
-    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )),
-     (exp e))
-    :: acc
-  | (`Bind (_loc,p,e) : Astf.bind) -> (pat p, exp e) :: acc
+  | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
+    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc
+  | `Bind (_loc,p,e)  -> (pat p, exp e) :: acc
   | _ -> assert false
+
+
+(** same as [bind] except it is called by [let v = 3] instead of [let v  = 3 in .... ]
+ *)
+and top_bind (x:bind) acc =
+  match x with
+  | `And (_loc,x,y) -> top_bind x (top_bind y acc)
+  | `Bind(_loc,`Lid(sloc,bind_name), e ) ->
+      Ref.protect current_top_bind (Some bind_name) (fun _ -> 
+      begin match e with
+      | `Constraint(_,e,`TyTypePol(_,vs,ty)) ->
+          let rec id_to_string (x : ctyp) =
+            match x with
+            | `Lid (_,x) -> [x]
+            | `App (_loc,x,y) -> id_to_string x @ id_to_string y
+            | x ->
+                Locf.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in
+          let vars = id_to_string vs in
+          let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
+          let ty' = varify_constructors vars (ctyp ty) in
+          let mkexp = mkexp _loc in
+          let mkpat = mkpat _loc in
+          let e = mkexp (Pexp_constraint ((exp e), (Some (ctyp ty)), None)) in
+          let rec mk_newtypes x =
+            match x with
+            | newtype::[] -> mkexp (Pexp_newtype (newtype, e))
+            | newtype::newtypes ->
+                mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes)))
+            | [] -> assert false in
+          let pat =
+            mkpat
+              (Ppat_constraint
+                 ((mkpat (Ppat_var {loc = sloc ; txt = bind_name})),
+                  (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
+          let e = mk_newtypes vars in (pat, e) :: acc
+      |  _ ->
+          (mkpat sloc (Ppat_var {loc = sloc;txt = bind_name}) , exp e) :: acc 
+      end)
+  | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
+    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc
+  | `Bind (_,p,e)  -> (pat p, exp e) :: acc
+  | _ -> assert false
+        
+(** transoform [case], used by [exp] transformation *)        
 and case (x:case) = 
   let cases = list_of_bar x [] in
   Listf.filter_map 
@@ -868,7 +915,7 @@ and case (x:case) =
            (pat p, mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))
        | x -> Locf.failf _loc "case %s" @@ !dump_case x)
     cases
-
+(** utility, used by [exp] transoformation *)
 and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
@@ -876,20 +923,16 @@ and mklabexp (x:rec_exp)  =
       | (`RecBind (_loc,i,e) : Astf.rec_exp) -> Some (ident (i : vid :>ident), exp e)
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
-
+(** used by [sigi] and [stru] transoformation *)
 and mktype_decl (x:typedecl)  =
   let type_decl tl cl loc (x:type_info) =
     match x with
     |`TyMan(_,t1,p,t2) ->
-      mktype loc tl cl
-        ~type_kind:(type_kind t2) ~priv:(mkprivate p) ~manifest:(Some (ctyp t1))
+      mktype loc tl cl ~type_kind:(type_kind t2) ~priv:(mkprivate p) ~manifest:(Some (ctyp t1))
     | `TyRepr (_,p1,repr) ->
-      mktype loc tl cl
-        ~type_kind:(type_kind repr)
-        ~priv:(mkprivate p1) ~manifest:None
+      mktype loc tl cl ~type_kind:(type_kind repr) ~priv:(mkprivate p1) ~manifest:None
     | `TyEq (_loc,p1,t1) ->
-      mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(mkprivate p1)
-        ~manifest:(Some (ctyp t1 ))
+      mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(mkprivate p1) ~manifest:(Some (ctyp t1 ))
     | `Ant (_loc,_) -> ant_error _loc  in
   let tys = list_of_and x [] in
   List.map
@@ -927,6 +970,8 @@ and mktype_decl (x:typedecl)  =
 
       | (t:typedecl) ->
         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
+
+(** utility , used by [mtyp] transoformation *)    
 and  mkwithc (wc:constr)  =
   let mkwithtyp (pwith_type: Parsetree.type_declaration -> Parsetree.with_constraint)
       loc priv id_tpl ct =
@@ -951,6 +996,7 @@ and  mkwithc (wc:constr)  =
     | `ModuleSubst(_loc,i1,i2) ->
         Some (long_uident i1, Pwith_modsubst (long_uident i2))
     | t -> Locf.failf (unsafe_loc_of t) "bad with constraint (antiquotation) : %s" (!dump_constr t)) constrs 
+
 and mtyp_desc loc (x:Astf.mtyp) : Parsetree.module_type_desc =
   match x with 
   | #ident' as i  -> Pmty_ident (long_uident i)
@@ -961,8 +1007,10 @@ and mtyp_desc loc (x:Astf.mtyp) : Parsetree.module_type_desc =
   | `With(_,mt,wc) -> Pmty_with (mtyp mt,mkwithc wc )
   | `ModuleTypeOf(_,me) -> Pmty_typeof (mexp me)
   | t -> Locf.failf loc  "mtyp: %s" (!dump_mtyp t)
+
 and mtyp  (x:Astf.mtyp) : Parsetree.module_type =
   let loc = unsafe_loc_of x in mkmty loc (mtyp_desc loc x)
+
 and sigi_item_desc _loc (s:sigi)  : Parsetree.signature_item_desc =
   match s with 
   | `Class (_,cd) ->  Psig_class (List.map class_info_cltyp (list_of_and cd []))
@@ -987,11 +1035,13 @@ and sigi_item_desc _loc (s:sigi)  : Parsetree.signature_item_desc =
       Psig_value (with_loc n sloc,mkvalue_desc _loc t [])
   | t -> Locf.failf (unsafe_loc_of t) "sigi: %s" (!dump_sigi t)
 (* and module_sig_bind (x:mbind)  *)
+
 and sigi (s:sigi) (l :Parsetree.signature) : Parsetree.signature =
   match s with
   | `Sem(_,sg1,sg2) -> sigi sg1 (sigi sg2 l)
   | `Directive _ | `DirectiveSimple _  -> l
   | _ -> let _loc = unsafe_loc_of s in mksig _loc (sigi_item_desc _loc s ) :: l
+
 and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
   match s with 
   | `Class (_,cd) ->
@@ -1013,7 +1063,8 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
       Pstr_primitive
          ({loc=sloc;txt=n}, mkvalue_desc _loc t (list_of_app sl [] ))
   | `Include (_,me) -> Pstr_include (mexp me)
-  | `Module (_,`Uid(sloc,n),me) -> Pstr_module (with_loc n sloc,mexp me)
+  | `Module (_,`Uid(sloc,n),me) -> (* change the [module_path] and restore it later *)
+      Ref.protect module_path (n :: !module_path ) (fun _ -> (Parsetree.Pstr_module ({loc = sloc; txt = n},mexp me)))
   | `RecModule (_,mb) ->
       Pstr_recmodule (module_str_bind mb [])
   | `ModuleType (_,`Uid(sloc,n),mt) ->
@@ -1022,10 +1073,9 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
       Pstr_open (flag _loc g ,long_uident id)
   | `Type (_,tdl) -> Pstr_type (mktype_decl tdl )
   | `Value (_,rf,bi) ->
-    Pstr_value (mkrf rf,bind bi [])
+    Pstr_value (mkrf rf, top_bind bi [])
   | x-> Locf.failf _loc "stru : %s" (!dump_stru x)
 and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
-
   match s with
   (* ad-hoc removing the empty statement, a more elegant way is in need*)
   | (`StExp (_, (`Uid (_, "()")))) -> l

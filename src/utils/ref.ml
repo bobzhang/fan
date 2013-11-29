@@ -1,5 +1,5 @@
 
-(* treat [r]'s state as [v] in [body] *)
+
 let protect r v body =
   let old = !r in
   try begin 
@@ -9,7 +9,7 @@ let protect r v body =
      res)
   end with x -> (r := old; raise x)
       
-let safe r body =
+let save r body =
   let old = !r in
   Util.finally ~action:(fun () -> r:=old) () body 
     
