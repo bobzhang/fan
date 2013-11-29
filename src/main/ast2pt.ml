@@ -80,6 +80,37 @@ let dump_clfield         = ref (fun _ -> failwith "Ast2pt.dump_clfield not imple
 
 
 
+(*****************************)
+(* Util functions            *)    
+(*****************************)
+let mk_constant _loc (x:literal) : Asttypes.constant =
+  match x with 
+  | `Chr (_,s) -> Const_char (Escape.char_of_char_token _loc s)
+  | `Int (_,s) ->
+      (try Const_int (int_of_string s)
+      with Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int" )
+  | `Int32 (_,s) ->
+      (try Const_int32 (Int32.of_string s)
+      with Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int32" )
+  | `Int64 (_,s) ->
+      (try Const_int64 (Int64.of_string s)
+      with
+        Failure _ ->
+          error _loc
+            "Integer literal exceeds the range of representable integers of type int64" )
+  | `Nativeint (_,s) ->
+      (try Const_nativeint (Nativeint.of_string s)
+      with
+        Failure _ ->
+          error _loc
+            "Integer literal exceeds the range of representable integers of type nativeint" )
+  | `Flo (_,s) -> Const_float (remove_underscores s)
+  | `Str (_,s) -> Const_string (Escape.string_of_string_token _loc s)
+    
 let generate_type_code :
   (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
   ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
@@ -195,6 +226,31 @@ let ctyp_long_id (t:Astf.ctyp) : (bool *   Longident.t Location.loc) =
 let predef_option loc : Astf.ctyp =
   `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"))
 
+
+let mktype loc tl cl ~type_kind ~priv ~manifest =
+  let (params, variance) = List.split tl in
+  {Parsetree.ptype_params = params;
+    ptype_cstrs = cl;
+    ptype_kind = type_kind;
+    ptype_private = priv;
+    ptype_manifest = manifest;
+    ptype_loc =  loc;
+    ptype_variance = variance} 
+
+let mkprivate (x:flag) : Asttypes.private_flag =
+  match x with 
+  | `Positive _ -> Private
+  | `Negative _ -> Public
+  | `Ant(_loc,_)-> ant_error _loc 
+
+
+
+
+
+
+
+
+(** [ctyp] Transformation *)
 let rec ctyp (x:Astf.ctyp) : Parsetree.core_type =
   let _loc = unsafe_loc_of x in
   match x with 
@@ -301,22 +357,9 @@ and package_type (x : Astf.mtyp) :
   | #ident' as i  -> (long_uident i, [])
   | mt -> Locf.failf (unsafe_loc_of mt) "unexpected package type: %s" @@ !dump_mtyp mt
 
-let mktype loc tl cl ~type_kind ~priv ~manifest =
-  let (params, variance) = List.split tl in
-  {Parsetree.ptype_params = params;
-    ptype_cstrs = cl;
-    ptype_kind = type_kind;
-    ptype_private = priv;
-    ptype_manifest = manifest;
-    ptype_loc =  loc;
-    ptype_variance = variance} 
-
-let mkprivate (x:flag) : Asttypes.private_flag =
-  match x with 
-  | `Positive _ -> Private
-  | `Negative _ -> Public
-  | `Ant(_loc,_)-> ant_error _loc 
-
+(*************************************)
+(***    Utils                        *)
+(*************************************)                                                                           
 let mktrecord (x: name_ctyp) :
   (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc)=
   match x with 
@@ -345,7 +388,7 @@ let mkvariant (x:or_ctyp) :
     (with_loc  s sloc, [], Some (ctyp t),  _loc)
   | t -> Locf.failf _loc "mkvariant %s " @@ !dump_or_ctyp t
 
-
+                                                                           
 
 let type_kind (x:type_repr) : Parsetree.type_kind  =
   match x with
@@ -466,108 +509,39 @@ let rec mkrangepat loc c1 c2 =
          ((mkghpat loc (Ppat_constant (Const_char c1))),
           (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2)))
 
-let  pat_literal _loc (x:literal) : Parsetree.pattern =
-  match x with 
-  | `Chr (_,s) ->
-    mkpat _loc @@ Ppat_constant (Const_char (Escape.char_of_char_token _loc s))
-  | `Int (_,s) ->
-    let i =
-      try int_of_string s
-      with Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int" in
-    mkpat _loc @@ Ppat_constant (Const_int i)
-  | `Int32 (_,s) ->
-    let i32 =
-      try Int32.of_string s
-      with Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int32" in
-    mkpat _loc  @@ Ppat_constant (Const_int32 i32)
-  | `Int64 (_,s) ->
-    let i64 =
-      try Int64.of_string s
-      with
-        Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int64" in
-    mkpat _loc  @@ Ppat_constant (Const_int64 i64)
-  | `Nativeint (_,s) ->
-    let nati =
-      try Nativeint.of_string s
-      with
-        Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type nativeint" in
-    mkpat _loc @@ Ppat_constant (Const_nativeint nati)
-  | `Flo (_,s) ->
-    mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
-  | `Str (_,s) ->
-    mkpat _loc @@
-      Ppat_constant
-        (Const_string (Escape.string_of_string_token _loc s))
 
+
+
+(*************************************)
+(* [exp] and [pat] Transformation    *)      
+(*************************************)
+        
+let  pat_literal _loc (x:literal) : Parsetree.pattern =
+  mkpat _loc (Ppat_constant (mk_constant _loc x))
 
 
 let exp_literal _loc (x:literal) : Parsetree.expression =
-  match x with
-  | `Chr (_,s) ->
-    mkexp _loc (Pexp_constant (Const_char (Escape.char_of_char_token _loc s)))
-  | `Int (_,s) ->
-    let i =
-      try int_of_string s with Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int"
-    in mkexp _loc (Pexp_constant (Const_int i))
-  | `Int32 (_, s) ->
-    let i32 =
-      try Int32.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int32"
-    in mkexp _loc (Pexp_constant (Const_int32 i32))
-  | `Int64 (_, s) ->
-    let i64 = try Int64.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int64"
-    in mkexp _loc (Pexp_constant (Const_int64 i64))
-  | `Flo (_,s) -> mkexp _loc (Pexp_constant (Const_float (remove_underscores s)))      
-  | `Nativeint (_,s) ->
-    let nati =
-      try Nativeint.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type nativeint"
-    in mkexp _loc (Pexp_constant (Const_nativeint nati))
-  | `Str (_,s) ->
-    mkexp _loc @@ Pexp_constant (Const_string (Escape.string_of_string_token _loc s))
-
-
+  mkexp _loc (Pexp_constant (mk_constant _loc x ))
 
 let rec pat (x : pat) : Parsetree.pattern =
   let _loc = unsafe_loc_of x in 
   match x with
   | #literal as x -> pat_literal _loc x 
   | `Lid (_,("true"|"false" as txt)) ->
-    mkpat _loc @@ Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) 
+    mkpat _loc @@ Ppat_construct ({ txt = Lident txt; loc = _loc }, None, false) 
   | `Lid (_,s) ->
     mkpat _loc @@ Ppat_var (with_loc s _loc)
   | `Uid _ |`Dot _ as i ->
     mkpat _loc @@ Ppat_construct ((long_uident (i : vid  :>ident)), None, false)
-  | `Alias (_,p1,x) ->
-    (match x with
-     | `Lid (sloc,s) ->
+  | `Alias (_,p1,`Lid(sloc,s)) ->
        mkpat _loc  @@ Ppat_alias (pat p1, with_loc s sloc)
-     | `Ant (_loc,_) -> error _loc "invalid antiquotations")
-  | `Ant _ -> error _loc "antiquotation not allowed here"
   | `Any _  -> mkpat _loc Ppat_any
   | `App(_,p, r) as f->
       let r =
         match r with
         | `Par (_,r) -> 
-            List.map pat @@ list_of_com r []
-        | _ -> [pat r] in
-      let r =
-        match r with
-        |[ v ] ->  v
-        | _ -> mkpat _loc (Ppat_tuple r) in
+            mkpat _loc @@ Ppat_tuple (List.map pat @@ list_of_com r [])
+        | _ -> pat r in
       begin
         match (pat p).ppat_desc  with
         | Ppat_variant (s,None) ->
