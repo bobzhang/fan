@@ -16,14 +16,14 @@ let test_empty_string _ =
     |> get_tokens
     |> %p{[`Str({txt="";_}:Tokenf.txt);`EOI _]}
     |> not then
-    %err{test_empty_string}
+    %err{}
 
 let test_escaped_string _ =
   if %str{"a\n"}
      |> get_tokens
      |> %p{[`Str ({txt = "a\n";_}:Tokenf.txt); `EOI _]}
      |> not then 
-    %err{test_escaped_string}
+    %err{}
 
     
 (* let test_comment_string _ = *)
@@ -40,7 +40,7 @@ let test_char _ =
    |> get_tokens
    |> %p{[`Chr ({txt="\n";_}:Tokenf.txt); `EOI _]}
    |> not then
-    %err{test_char}
+    %err{}
 
 
 (** maybe a bug. Quotation should be loyal to its
@@ -52,7 +52,7 @@ if %str{"hsoghsogho\n
    |> get_tokens
    |> %p{[`Str ({txt="hsoghsogho\n\n    hahahahah";_}:Tokenf.txt); `EOI _]}
    |> not then
-  %err{test_string}
+  %err{}
 
   
     
@@ -64,7 +64,7 @@ let test_quotation _ =
     %str{%lexer{abcdef}}
     |> get_tokens
     |> %p{ `Quot ({name=
-                  (`Sub[],"lexer");
+                  {domain = `Sub[];name="lexer"};
                   loc =
                   {Locf.loc_start =
                    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
@@ -79,7 +79,7 @@ let test_quotation _ =
                 }:Tokenf.quot) :: _ 
          }
     |> not then
-     %err{test_quotation}
+     %err{}
 
 (*  Flex_lib.list_of_string ~verbose:false  |> List.hd *)
  (*    === *)
@@ -115,7 +115,7 @@ let test_ant _ =
                  cxt = None; kind = "aa"; txt = "$aa:a"; shift = 4; retract = 0} :Tokenf.ant) ;
               `EOI  _]}
        |> not then
-      %err{test_ant}
+      %err{}
 
 let test_ant_quot _ =       
   Ref.protect Configf.antiquotations true @@ fun _ ->
@@ -135,7 +135,7 @@ let test_ant_quot _ =
               _} : Tokenf.ant) ;
           `EOI _]}
        |> not then
-      %err{test_ant_quot}
+      %err{}
 
     
 
@@ -157,7 +157,7 @@ let test_ant_paren _ =
              txt = "${(l:>FAst.pat)}"; shift = 2; retract = 1}:Tokenf.ant) ;
          `EOI _]}
       |> not then 
-      %err{test_ant_paren}
+      %err{}
     
 
 let test_ant_str _ =
@@ -175,7 +175,7 @@ let test_ant_str _ =
                 cxt = None; kind = ""; txt = "${\")\"}";
                 shift = 2; retract = 1}:Tokenf.ant); `EOI _ ]}
       |> not then
-      %err{test_ant_str}
+      %err{}
 
     
 
@@ -195,7 +195,7 @@ let test_ant_chr _ =
                  Tokenf.ant);
          `EOI _  ]}
       |> not then
-      %err{test_ant_chr}
+      %err{}
 
 
 
@@ -229,7 +229,7 @@ let test_lex_simple_quot _ =
    |> %p{
      `Quot
        ({
-        name = (`Sub [], "");
+        name = {domain = `Sub []; name= ""};
         loc =
         {Locf.loc_start =
          {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
@@ -239,7 +239,7 @@ let test_lex_simple_quot _ =
         meta = None; shift = 2; txt = "%{ (** gshoghso *) bhgo \"ghos\" }";
         retract = 1}:Tokenf.quot)}
    |> not then
-    %err{test_lex_simple_quot}
+    %err{}
       
 
 
@@ -255,7 +255,7 @@ let test_symb _ =
         `Key ({txt = ")";_}:Tokenf.txt);
         `EOI _ ]}
     |> not then
-    %err{test_symb}
+    %err{}
   
 
 
@@ -267,7 +267,7 @@ let test_symb_percent _ =
    |> get_tokens
    |> %p{[`Inf ({txt= "->%"; _} :Tokenf.op); `EOI _ ]}
    |> not then
-    %err{test_symb_percent}
+    %err{}
 
 
     
@@ -280,7 +280,7 @@ let test_symb_percent1 _ =
            `EOI _  ]}
     |> not
   then 
-    %err{test_symb_percent1}
+    %err{}
   
 let test_symb_percent2 _ =
   if
@@ -288,7 +288,7 @@ let test_symb_percent2 _ =
     |>  get_tokens
     |> %p{  [`Inf ({txt = "%%";level=3;_}:Tokenf.op); `EOI _ ]}
     |> not then
-    %err{test_symb_percent2}
+    %err{}
 
 
 let test_symb_percent3 _ =
@@ -297,7 +297,7 @@ let test_symb_percent3 _ =
     |> get_tokens
     |> %p{  [`Inf ({txt = "|%";_}:Tokenf.op); `EOI _ ]}
     |> not then
-    %err{test_symb_percent3}
+    %err{}
 
 
 let test_symb_percent4 _ =
@@ -306,7 +306,7 @@ let test_symb_percent4 _ =
     |> get_tokens
     |> %p{[`Lid ({txt="%";_}:Tokenf.txt); `EOI _ ]}
     |> not then
-    %err{test_symb_percent4}
+    %err{}
 
   
 
@@ -317,7 +317,7 @@ let test_symb_percent5 _ =
   |> %p{[`Key ({txt = "(";_}:Tokenf.txt);
          `Inf ({txt="%";level = 3; _}:Tokenf.op); `EOI _ ]}
   |> not then
-    %err{test_symb_percent5}
+    %err{}
 
   
 
@@ -329,7 +329,7 @@ let test_single_quot _ =
     |> get_tokens
     |> %p{
       [`Quot
-         ({name = (`Sub [], "");
+         ({name = {domain = `Sub [];name= ""};
           loc =
           {Locf.loc_start =
            {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
@@ -340,7 +340,7 @@ let test_single_quot _ =
            shift = 2; txt = "%{'$(a)}"; retract = 1}:Tokenf.quot);
        `EOI _ ]}
     |> not then
-    %err{test_single_quot}
+    %err{}
 
 
     
@@ -380,5 +380,5 @@ let suite =
 
     
 (* local variables: *)
-(* compile-command: "cd .. && pmake test" *)
+(* compile-command: "cd ../.. && pmake test" *)
 (* end: *)

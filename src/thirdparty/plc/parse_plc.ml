@@ -74,7 +74,7 @@ let () =
     Options.add ("-nogroup",
                   (Unit (fun () -> group_rs := Compile_plc.nogroup_rs)),
                   "Don't try to optimally group predicate rules" );
-    Ast_quotation.of_stru ~lexer:Lex_plc.from_stream ~name:(Ns.lang,"plc")  ~entry:prog ()
+    Ast_quotation.of_stru ~lexer:Lex_plc.from_stream ~name:{domain = Ns.lang;name="plc"}  ~entry:prog ()
   end 
 
 
