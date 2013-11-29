@@ -518,17 +518,15 @@ let normalize_vid (x : vid) =
   | `Uid (loc,i) -> (true, (mkli loc i []))
   | `Lid (loc,i) -> (false, (mkli loc i []))
   | `Ant _ -> assert false
-let rec exp (x : exp) =
-  (let _loc = unsafe_loc_of x in
-   match x with
-   | #literal as x -> exp_literal _loc x
-   | `Uid (_,s) ->
-       (mkexp _loc) @@
-         (Pexp_construct ((lident_with_loc s _loc), None, true))
+let rec exp_desc _loc (x : exp) =
+  (match x with
+   | #literal as x -> Pexp_constant (mk_constant _loc x)
+   | `Uid (_,s) -> Pexp_construct ((lident_with_loc s _loc), None, true)
    | `Lid (_,"__FILE__") ->
-       exp (`Str (_loc, (String.escaped (Locf.file_name _loc))) : Astf.exp )
+       exp_desc _loc
+         (`Str (_loc, (String.escaped (Locf.file_name _loc))) : Astf.exp )
    | `Lid (_,"__MODULE__") ->
-       exp
+       exp_desc _loc
          (`Str
             (_loc,
               (String.escaped
@@ -536,23 +534,18 @@ let rec exp (x : exp) =
                     (Filenamef.chop_extension_if @@ (Locf.file_name _loc))))) : 
          Astf.exp )
    | (`Lid (_loc,"__PWD__") : Astf.exp) ->
-       exp
+       exp_desc _loc
          (`Str
             (_loc, (String.escaped (Filename.dirname (Locf.file_name _loc)))) : 
          Astf.exp )
    | (`Lid (_loc,"__LOCATION__") : Astf.exp) ->
-       exp (Ast_gen.meta_here _loc _loc :>exp)
+       exp_desc _loc (Ast_gen.meta_here _loc _loc :>exp)
    | `Lid (_,("true"|"false" as s)) ->
-       (mkexp _loc) @@
-         (Pexp_construct ((lident_with_loc s _loc), None, true))
+       Pexp_construct ((lident_with_loc s _loc), None, true)
    | #vid as x ->
        let (b,id) = normalize_vid x in
-       if b
-       then mkexp _loc (Pexp_construct (id, None, false))
-       else mkexp _loc (Pexp_ident id)
-   | `Field (loc,x,b) ->
-       let (_,v) = normalize_vid b in
-       (mkexp loc) @@ (Pexp_field ((exp x), v))
+       if b then Pexp_construct (id, None, false) else Pexp_ident id
+   | `Field (_,x,b) -> let (_,v) = normalize_vid b in Pexp_field ((exp x), v)
    | `App _ as f ->
        let (f,al) = view_app [] f in
        let al = List.map label_exp al in
@@ -561,57 +554,42 @@ let rec exp (x : exp) =
             let al = List.map snd al in
             let a =
               match al with | a::[] -> a | _ -> mkexp _loc (Pexp_tuple al) in
-            mkexp _loc (Pexp_construct (li, (Some a), false))
+            Pexp_construct (li, (Some a), false)
         | Pexp_variant (s,None ) ->
             let al = List.map snd al in
             let a =
               match al with | a::[] -> a | _ -> mkexp _loc (Pexp_tuple al) in
-            mkexp _loc (Pexp_variant (s, (Some a)))
-        | _ -> (mkexp _loc) @@ (Pexp_apply ((exp f), al)))
+            Pexp_variant (s, (Some a))
+        | _ -> Pexp_apply ((exp f), al))
    | `ArrayDot (_,e1,e2) ->
-       mkexp _loc
-         (Pexp_apply
-            (((mkexp _loc) @@
-                (Pexp_ident (array_function _loc "Array" "get"))),
-              [("", (exp e1)); ("", (exp e2))]))
-   | `Array (loc,e) ->
-       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
-   | `ArrayEmpty _ -> mkexp _loc (Pexp_array [])
-   | `Assert (_,`Lid (_,"false")) -> mkexp _loc Pexp_assertfalse
-   | `Assert (_,e) -> mkexp _loc (Pexp_assert (exp e))
-   | `Assign (_,e,v) ->
-       let (e :Parsetree.expression_desc)=
-         match (e : exp ) with
-         | `Field (loc,x,`Lid (_,"contents")) ->
-             Pexp_apply
-               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
-                 [("", (exp x)); ("", (exp v))])
-         | `Field (loc,_,_) ->
-             (match (exp e).pexp_desc with
-              | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (exp v))
-              | _ -> error loc "bad record access")
-         | `ArrayDot (loc,e1,e2) ->
-             Pexp_apply
-               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
-                 [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
-         | `Lid (lloc,lab) -> Pexp_setinstvar ((with_loc lab lloc), (exp v))
-         | `StringDot (loc,e1,e2) ->
-             Pexp_apply
-               ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
-                 [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
-         | x ->
-             Locf.failf _loc "bad left part of assignment:%s" (! dump_exp x) in
-       mkexp _loc e
-   | `Subtype (_,e,t2) ->
-       mkexp _loc (Pexp_constraint ((exp e), None, (Some (ctyp t2))))
+       Pexp_apply
+         (((mkexp _loc) @@ (Pexp_ident (array_function _loc "Array" "get"))),
+           [("", (exp e1)); ("", (exp e2))])
+   | `Array (_,e) -> Pexp_array (List.map exp (list_of_sem e []))
+   | `ArrayEmpty _ -> Pexp_array []
+   | `Assert (_,`Lid (_,"false")) -> Pexp_assertfalse
+   | `Assert (_,e) -> Pexp_assert (exp e)
+   | `Assign (_,(`Field (loc,_,_) as e),v) ->
+       (match (exp e).pexp_desc with
+        | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (exp v))
+        | _ -> error loc "bad record access")
+   | `Assign (_,`ArrayDot (loc,e1,e2),v) ->
+       Pexp_apply
+         ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
+           [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
+   | `Assign (_,`Lid (lloc,lab),v) ->
+       Pexp_setinstvar ((with_loc lab lloc), (exp v))
+   | `Assign (_,`StringDot (loc,e1,e2),v) ->
+       Pexp_apply
+         ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
+           [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
+   | `Subtype (_,e,t2) -> Pexp_constraint ((exp e), None, (Some (ctyp t2)))
    | `Coercion (_,e,t1,t2) ->
-       mkexp _loc
-         (Pexp_constraint ((exp e), (Some (ctyp t1)), (Some (ctyp t2))))
+       Pexp_constraint ((exp e), (Some (ctyp t1)), (Some (ctyp t2)))
    | `For (_loc,`Lid (sloc,i),e1,e2,df,el) ->
-       (mkexp _loc) @@
-         (Pexp_for
-            ((with_loc i sloc), (exp e1), (exp e2), (mkdirection df),
-              (exp (`Seq (_loc, el)))))
+       Pexp_for
+         ((with_loc i sloc), (exp e1), (exp e2), (mkdirection df),
+           (exp (`Seq (_loc, el))))
    | `Fun
        (_loc,`Case
                (_,(`LabelS _|`Label _|`OptLablS _|`OptLabl _|`OptLablExpr _
@@ -627,7 +605,7 @@ let rec exp (x : exp) =
          | `OptLablExpr (_,`Lid (_,lab),po,e1) ->
              (("?" ^ (paolab lab po)), (pat po), (Some (exp e1)))
          | _ -> assert false in
-       (mkexp _loc) @@ (Pexp_function (lab, e1, [(p, (exp e))]))
+       Pexp_function (lab, e1, [(p, (exp e))])
    | `Fun
        (_,`CaseWhen
             (_,(`LabelS _|`Label _|`OptLablS _|`OptLablExpr _|`OptLabl _ as l),w,e))
@@ -642,22 +620,18 @@ let rec exp (x : exp) =
          | `OptLablExpr (_,`Lid (_,lab),po,e1) ->
              (("?" ^ (paolab lab po)), (pat po), (Some (exp e1)))
          | _ -> assert false in
-       (mkexp _loc) @@
-         (Pexp_function
-            (lab, e1,
-              [(p, (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e)))))]))
-   | `Fun (_,a) -> (mkexp _loc) @@ (Pexp_function ("", None, (case a)))
+       Pexp_function
+         (lab, e1,
+           [(p, (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e)))))])
+   | `Fun (_,a) -> Pexp_function ("", None, (case a))
    | `IfThenElse (_,e1,e2,e3) ->
-       (mkexp _loc) @@
-         (Pexp_ifthenelse ((exp e1), (exp e2), (Some (exp e3))))
-   | `IfThen (_,e1,e2) ->
-       (mkexp _loc) @@ (Pexp_ifthenelse ((exp e1), (exp e2), None))
+       Pexp_ifthenelse ((exp e1), (exp e2), (Some (exp e3)))
+   | `IfThen (_,e1,e2) -> Pexp_ifthenelse ((exp e1), (exp e2), None)
    | `Any _ ->
        Locf.failf _loc "Any should not appear in the position of expression"
    | `Label _|`LabelS _ -> error _loc "labeled expression not allowed here"
-   | `Lazy (_loc,e) -> (mkexp _loc) @@ (Pexp_lazy (exp e))
-   | `LetIn (_,rf,bi,e) ->
-       (mkexp _loc) @@ (Pexp_let ((mkrf rf), (bind bi []), (exp e)))
+   | `Lazy (_loc,e) -> Pexp_lazy (exp e)
+   | `LetIn (_,rf,bi,e) -> Pexp_let ((mkrf rf), (bind bi []), (exp e))
    | `LetTryInWith (_,rf,bi,e,cas) ->
        let cas =
          let rec f (x : case) =
@@ -673,7 +647,7 @@ let rec exp (x : exp) =
             | `Bar (_loc,a1,a2) -> `Bar (_loc, (f a1), (f a2))
             | `Ant (_loc,_) -> ant_error _loc : case ) in
          f cas in
-       exp
+       exp_desc _loc
          (`App
             (_loc,
               (`Try
@@ -683,26 +657,20 @@ let rec exp (x : exp) =
                         (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))),
                    cas)), (`Uid (_loc, "()"))) : Astf.exp )
    | `LetModule (_,`Uid (sloc,i),me,e) ->
-       (mkexp _loc) @@
-         (Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e)))
-   | `Match (_,e,a) -> (mkexp _loc) @@ (Pexp_match ((exp e), (case a)))
-   | `New (_,id) -> (mkexp _loc) @@ (Pexp_new (long_type_ident id))
+       Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e))
+   | `Match (_,e,a) -> Pexp_match ((exp e), (case a))
+   | `New (_,id) -> Pexp_new (long_type_ident id)
    | `ObjEnd _ ->
-       (mkexp _loc) @@
-         (Pexp_object { pcstr_pat = (pat (`Any _loc)); pcstr_fields = [] })
+       Pexp_object { pcstr_pat = (pat (`Any _loc)); pcstr_fields = [] }
    | `Obj (_,cfl) ->
        let p = `Any _loc in
        let cil = clfield cfl [] in
-       (mkexp _loc) @@
-         (Pexp_object { pcstr_pat = (pat p); pcstr_fields = cil })
+       Pexp_object { pcstr_pat = (pat p); pcstr_fields = cil }
    | `ObjPatEnd (_,p) ->
-       (mkexp _loc) @@
-         (Pexp_object { pcstr_pat = (pat p); pcstr_fields = [] })
+       Pexp_object { pcstr_pat = (pat p); pcstr_fields = [] }
    | `ObjPat (_,p,cfl) ->
-       let cil = clfield cfl [] in
-       (mkexp _loc) @@
-         (Pexp_object { pcstr_pat = (pat p); pcstr_fields = cil })
-   | `OvrInstEmpty _ -> (mkexp _loc) @@ (Pexp_override [])
+       Pexp_object { pcstr_pat = (pat p); pcstr_fields = (clfield cfl []) }
+   | `OvrInstEmpty _ -> Pexp_override []
    | `OvrInst (_,iel) ->
        let rec mkideexp (x : rec_exp) acc =
          match x with
@@ -710,49 +678,48 @@ let rec exp (x : exp) =
          | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (exp e)) ::
              acc
          | _ -> assert false in
-       (mkexp _loc) @@ (Pexp_override (mkideexp iel []))
-   | `Record (_,lel) -> (mkexp _loc) @@ (Pexp_record ((mklabexp lel), None))
+       Pexp_override (mkideexp iel [])
+   | `Record (_,lel) -> Pexp_record ((mklabexp lel), None)
    | `RecordWith (_loc,lel,eo) ->
-       (mkexp _loc) @@ (Pexp_record ((mklabexp lel), (Some (exp eo))))
+       Pexp_record ((mklabexp lel), (Some (exp eo)))
    | `Seq (_,e) ->
        let rec loop =
          function
-         | [] -> exp (`Uid (_loc, "()") : Astf.exp )
-         | e::[] -> exp e
+         | [] -> (_loc, (exp_desc _loc (`Uid (_loc, "()") : Astf.exp )))
+         | e::[] -> (_loc, (exp_desc _loc e))
          | e::el ->
-             let _loc = Locf.merge (unsafe_loc_of e) _loc in
-             mkexp _loc (Pexp_sequence ((exp e), (loop el))) in
-       loop (list_of_sem e [])
-   | `Send (_,e,`Lid (_,s)) -> mkexp _loc (Pexp_send ((exp e), s))
+             let (loc,v) = loop el in
+             ((Locf.merge (unsafe_loc_of e) loc),
+               (Pexp_sequence ((exp e), (mkexp loc v)))) in
+       snd (loop (list_of_sem e []))
+   | `Send (_,e,`Lid (_,s)) -> Pexp_send ((exp e), s)
    | `StringDot (_,e1,e2) ->
-       mkexp _loc
-         (Pexp_apply
-            ((mkexp _loc (Pexp_ident (array_function _loc "String" "get"))),
-              [("", (exp e1)); ("", (exp e2))]))
-   | `Try (_,e,a) -> (mkexp _loc) @@ (Pexp_try ((exp e), (case a)))
+       Pexp_apply
+         ((mkexp _loc (Pexp_ident (array_function _loc "String" "get"))),
+           [("", (exp e1)); ("", (exp e2))])
+   | `Try (_,e,a) -> Pexp_try ((exp e), (case a))
    | `Par (_,e) ->
        let l = list_of_com e [] in
        (match l with
         | []|_::[] ->
             Locf.failf _loc "tuple should have at least two items"
               (! dump_exp x)
-        | _ -> mkexp _loc (Pexp_tuple (List.map exp l)))
-   | `Constraint (_,e,t) ->
-       mkexp _loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
-   | `Vrn (_,s) -> (mkexp _loc) @@ (Pexp_variant (s, None))
-   | `While (_,e1,el) ->
-       (mkexp _loc) @@ (Pexp_while ((exp e1), (exp (`Seq (_loc, el)))))
+        | _ -> Pexp_tuple (List.map exp l))
+   | `Constraint (_,e,t) -> Pexp_constraint ((exp e), (Some (ctyp t)), None)
+   | `Vrn (_,s) -> Pexp_variant (s, None)
+   | `While (_,e1,el) -> Pexp_while ((exp e1), (exp (`Seq (_loc, el))))
    | `LetOpen (_,f,i,e) ->
-       mkexp _loc (Pexp_open ((flag _loc f), (long_uident i), (exp e)))
+       Pexp_open ((flag _loc f), (long_uident i), (exp e))
    | `Package_exp (_,`Constraint (_,me,pt)) ->
-       (mkexp _loc) @@
-         (Pexp_constraint
-            ((mkexp _loc (Pexp_pack (mexp me))),
-              (Some (mktyp _loc (Ptyp_package (package_type pt)))), None))
-   | `Package_exp (_,me) -> (mkexp _loc) @@ (Pexp_pack (mexp me))
-   | `LocalTypeFun (_,`Lid (_,i),e) ->
-       (mkexp _loc) @@ (Pexp_newtype (i, (exp e)))
-   | x -> (Locf.failf _loc "exp:%s") @@ (! dump_exp x) : Parsetree.expression )
+       Pexp_constraint
+         ((mkexp _loc (Pexp_pack (mexp me))),
+           (Some (mktyp _loc (Ptyp_package (package_type pt)))), None)
+   | `Package_exp (_,me) -> Pexp_pack (mexp me)
+   | `LocalTypeFun (_,`Lid (_,i),e) -> Pexp_newtype (i, (exp e))
+   | x -> (Locf.failf _loc "Panic: invalid exp:%s") @@ (! dump_exp x) : 
+  Parsetree.expression_desc )
+and exp (x : exp) =
+  (let _loc = unsafe_loc_of x in mkexp _loc (exp_desc _loc x) : Parsetree.expression )
 and label_exp (x : exp) =
   match x with
   | `Label (_,`Lid (_,lab),eo) -> (lab, (exp eo))
