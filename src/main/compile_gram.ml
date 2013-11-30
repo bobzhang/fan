@@ -249,8 +249,7 @@ let make_action (_loc:loc)
   ]}
   [pos] is something like
   {[(Some `LA)]} it has type [position option] *)
-    
-let make_extend safe  (e:Gram_def.entry) :exp =  with exp
+let make_single_extend_statement (e : Gram_def.entry)  : exp =
   let _loc = e.name.loc in
   let gmid = (gm():vid:>ident) in
   let ent =
@@ -267,25 +266,29 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
     (* the [rhs] was already computed, the [lhs] was left *)
     let rl =
       level.rules 
-      |> List.map
-          (fun (r:Gram_def.rule) ->
-          let sl =
-            r.prod
-            |> List.map (fun (s:Gram_def.osymbol) -> s.text) in
-          (sl,
-           make_action _loc r e.name.tvar, (* compose the right side *)
-           r.action)) in
+  |> List.map
+      (fun (r:Gram_def.rule) ->
+        let sl =
+          r.prod
+  |> List.map (fun (s:Gram_def.osymbol) -> s.text) in
+        (sl,
+         make_action _loc r e.name.tvar, (* compose the right side *)
+         r.action)) in
     let prod = make_exp_rules  rl e.name.tvar in
     (* generated code of type [olevel] *)
     %exp{
     ({label = $pos; lassoc = $ass; productions = $prod } :
        $id{(gm() : vid :> ident)}.olevel)} in
   let l = e.level in
-      let f =
-        if safe then
-          %exp{$id{gm()}.extend_single}
-        else %exp{$id{gm()}.unsafe_extend_single} in
-        %exp{$f ({entry = $ent ; olevel = ${apply l} } : _ Gramf.single_extend_statement)}
+  %exp{({entry = $ent ; olevel = ${apply l} } : _ Gramf.single_extend_statement)}
+
+let make_extend safe  (e:Gram_def.entry) :exp =
+  let _loc = e.name.loc in
+  let f =
+    if safe then
+      %exp{$id{gm()}.extend_single}
+    else %exp{$id{gm()}.unsafe_extend_single} in
+  %exp{$f ${make_single_extend_statement e}}
 
       
 (** [gl] is the name  list option
@@ -296,31 +299,16 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
    ]}
 
    This function generate some local entries *)               
-let combine _loc (gram: vid option ) locals  extends  =
-  let entry_mk =
-    match gram with
-    | Some g ->
-        let g = (g:vid :> exp) in
-        %exp{ $id{gm()}.mk_dynamic $g }
-    | None -> %exp{ $id{gm()}.mk} in
+let make_localbinds _loc locals   =
   let local_bind_of_name (x:Gram_def.name) =
     match (x:Gram_def.name) with 
     | {id = `Lid (_,i) ; tvar = x; loc = _loc} ->
         %bind{ $lid:i =
-               (grammar_entry_create $str:i : '$lid:x $id{(gm():vid :> ident)}.t )}
+               (Gramf.mk $str:i : '$lid:x $id{(gm():vid :> ident)}.t )}
     | _  -> failwithf "internal error in the Grammar extension %s"
           (Objs.dump_vid x.id)   in
-  match locals with
-  | [] -> extends
-  | ll ->
-      let locals =
-        ll |> List.map local_bind_of_name |> and_of_list in
-      (** eta-expansion to avoid specialized types here  *)
-      %exp{
-      let grammar_entry_create x = $entry_mk  x in
-      let $locals in
-      $extends }    
-    
+  List.map local_bind_of_name locals
+
 (** entrance *)        
 let make  _loc (x:Gram_def.entries) = 
   let extends =
@@ -333,10 +321,14 @@ let make  _loc (x:Gram_def.entries) =
      x.items
      |> Listf.filter_map
          (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) in
-  combine _loc x.gram locals extends
+  Ast_gen.binds (make_localbinds _loc locals) extends
 
 
-
+(* let make_protects _loc (x:Gram_def.entries) action = *)
+(*   let (locals,globals) = *)
+(*     x.items *)
+(*     |> List.partition (fun (x:Gram_def.entry) -> x.local) in *)
+  
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/compile_gram.cmo " *)

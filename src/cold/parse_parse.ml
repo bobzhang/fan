@@ -42,11 +42,10 @@ let unsafe_extend_body = Gramf.mk "unsafe_extend_body"
 let simple: matrix Gramf.t = Gramf.mk "simple"
 let single_symbol: Gram_def.osymbol Gramf.t = Gramf.mk "single_symbol"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let a_int: 'a_int Gramf.t = grammar_entry_create "a_int"
-  and or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
+  let a_int: 'a_int Gramf.t = Gramf.mk "a_int"
+  and or_strs: 'or_strs Gramf.t = Gramf.mk "or_strs"
   and single_symbol_as: 'single_symbol_as Gramf.t =
-    grammar_entry_create "single_symbol_as" in
+    Gramf.mk "single_symbol_as" in
   Gramf.extend_single
     ({
        entry = (a_int : 'a_int Gramf.t );
@@ -8618,8 +8617,7 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let opt_action: 'opt_action Gramf.t = grammar_entry_create "opt_action" in
+  let opt_action: 'opt_action Gramf.t = Gramf.mk "opt_action" in
   Gramf.extend_single
     ({
        entry = (extend_header : 'extend_header Gramf.t );

@@ -108,9 +108,9 @@ val delete_rule :  'a t -> symbol list -> unit
 
 val extend_single : 'a single_extend_statement -> unit
 
-val protect : 'a t -> olevel -> ('a t -> 'a) -> 'a
-    
-(* val unsafe_extend_single : 'a t -> olevel -> unit     *)
+val protects :
+    'a single_extend_statement list -> (unit -> 'b) -> unit
+
 
 
 

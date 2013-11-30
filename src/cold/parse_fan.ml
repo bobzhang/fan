@@ -124,9 +124,7 @@ let _ =
   make_infix exp transform 3;
   make_infix exp transform 4
 let make_case exp pat =
-  let grammar_entry_create x = Gramf.mk x in
-  let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t =
-    grammar_entry_create "pat_as_pat_opt" in
+  let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t = Gramf.mk "pat_as_pat_opt" in
   Gramf.extend_single
     ({
        entry = (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t );
@@ -542,8 +540,7 @@ let make_quot tag ?(i= 10)  nt =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let make_pat exp =
-  let grammar_entry_create x = Gramf.mk x in
-  let pat_constr: 'pat_constr Gramf.t = grammar_entry_create "pat_constr" in
+  let pat_constr: 'pat_constr Gramf.t = Gramf.mk "pat_constr" in
   Gramf.extend_single
     ({
        entry = (pat_quot : 'pat_quot Gramf.t );
@@ -4956,9 +4953,8 @@ let apply () =
                }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement ));
-  (let grammar_entry_create x = Gramf.mk x in
-   let name_space: 'name_space Gramf.t = grammar_entry_create "name_space"
-   and fun_def_pat: 'fun_def_pat Gramf.t = grammar_entry_create "fun_def_pat" in
+  (let name_space: 'name_space Gramf.t = Gramf.mk "name_space"
+   and fun_def_pat: 'fun_def_pat Gramf.t = Gramf.mk "fun_def_pat" in
    Gramf.extend_single
      ({
         entry = (exp_quot : 'exp_quot Gramf.t );
@@ -10926,8 +10922,7 @@ let apply () =
                 }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement ));
-  (let grammar_entry_create x = Gramf.mk x in
-   let quots: 'quots Gramf.t = grammar_entry_create "quots" in
+  (let quots: 'quots Gramf.t = Gramf.mk "quots" in
    Gramf.extend_single
      ({
         entry = (quots : 'quots Gramf.t );

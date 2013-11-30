@@ -77,25 +77,53 @@ let extend_single {entry; olevel= (lb  : Gdefs.olevel)} =
    entry.start <-Gparser.start_parser_of_entry entry;
    entry.continue <- Gparser.continue_parser_of_entry entry)
 
-let protect (entry:Gdefs.entry) lb action =
-  let old = entry.levels in
-  try 
-    let olevel = Ginsert.scan_olevel entry lb in
-    let elev = Ginsert.insert_olevel entry lb.label olevel in
-    (entry.levels <-  elev;
-     entry.start <-Gparser.start_parser_of_entry entry;
-     entry.continue <- Gparser.continue_parser_of_entry entry);
-    action entry
+(* let protect (entry:Gdefs.entry) lb action = *)
+(*   let old = entry.levels in *)
+(*   try  *)
+(*     let olevel = Ginsert.scan_olevel entry lb in *)
+(*     let elev = Ginsert.insert_olevel entry lb.label olevel in *)
+(*     (entry.levels <-  elev; *)
+(*      entry.start <-Gparser.start_parser_of_entry entry; *)
+(*      entry.continue <- Gparser.continue_parser_of_entry entry); *)
+(*     action entry *)
+(*   with *)
+(*     x -> *)
+(*       begin *)
+(*         entry.levels <- old; *)
+(*         entry.start <- Gparser.start_parser_of_entry entry; *)
+(*         entry.continue <- Gparser.continue_parser_of_entry entry; *)
+(*         raise x *)
+(*       end *)
+
+
+let protects  (es : 'a single_extend_statement list ) action =
+  let olds =
+    List.map (fun (x:'a single_extend_statement) -> x.entry.levels) es in
+  try begin 
+    List.iter (fun e -> extend_single e ) es;
+    action ();
+    List.iter2
+      (fun e t ->
+        begin
+          e.entry.levels <- t;
+          e.entry.start <- Gparser.start_parser_of_entry e.entry;
+          e.entry.continue <- Gparser.continue_parser_of_entry e.entry;
+        end) es olds ;
+  end
   with
     x ->
       begin
-        entry.levels <- old;
-        entry.start <- Gparser.start_parser_of_entry entry;
-        entry.continue <- Gparser.continue_parser_of_entry entry;
-        raise x
+        List.iter2
+          (fun e t ->
+            begin
+              e.entry.levels <- t;
+              e.entry.start <- Gparser.start_parser_of_entry e.entry;
+              e.entry.continue <- Gparser.continue_parser_of_entry e.entry;
+            end) es olds;
+        raise x 
       end
-(* let protects (entries:Gdefs.entry) lb action = *)
-(*   let olds = List.map (fun ) *)
+  
+  
 let copy (e:Gdefs.entry) : Gdefs.entry =
   let result =
     {e with start =  (fun _ -> assert false );

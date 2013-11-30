@@ -415,9 +415,7 @@ let _ =
 let () = of_exp ~name:{ domain; name = "p" } ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let a: 'a Gramf.t = grammar_entry_create "a"
-  and n: 'n Gramf.t = grammar_entry_create "n" in
+  let a: 'a Gramf.t = Gramf.mk "a" and n: 'n Gramf.t = Gramf.mk "n" in
   Gramf.extend_single
     ({
        entry = (a : 'a Gramf.t );

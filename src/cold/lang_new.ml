@@ -6,9 +6,8 @@ let newterminals = Gramf.mk "newterminals"
 let t_qualid = Gramf.mk "t_qualid"
 let qualuid = Gramf.mk "qualuid"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let type_entry: 'type_entry Gramf.t = grammar_entry_create "type_entry"
-  and ty: 'ty Gramf.t = grammar_entry_create "ty" in
+  let type_entry: 'type_entry Gramf.t = Gramf.mk "type_entry"
+  and ty: 'ty Gramf.t = Gramf.mk "ty" in
   Gramf.extend_single
     ({
        entry = (type_entry : 'type_entry Gramf.t );

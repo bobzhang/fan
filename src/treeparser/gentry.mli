@@ -44,9 +44,8 @@ type 'a single_extend_statement = {
   }
 val extend_single :  'a single_extend_statement  -> unit
 
-
-val protect :
-    'a t -> Gdefs.olevel -> ('a t -> 'a) -> 'a
+val protects :
+    'a single_extend_statement list -> (unit -> 'b) -> unit
 
 (* val unsafe_extend_single : *)
 (*   'a t -> Gdefs.olevel  -> unit *)

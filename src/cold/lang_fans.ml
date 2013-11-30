@@ -680,10 +680,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
 let fan_quot = Gramf.mk "fan_quot"
 let fan_quots = Gramf.mk "fan_quots"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let id: 'id Gramf.t = grammar_entry_create "id"
-  and fan_quot_semi: 'fan_quot_semi Gramf.t =
-    grammar_entry_create "fan_quot_semi" in
+  let id: 'id Gramf.t = Gramf.mk "id"
+  and fan_quot_semi: 'fan_quot_semi Gramf.t = Gramf.mk "fan_quot_semi" in
   Gramf.extend_single
     ({
        entry = (fan_quot : 'fan_quot Gramf.t );
