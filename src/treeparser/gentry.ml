@@ -65,13 +65,12 @@ let parse_tokens_eoi entry stream =
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
-(* type 'a single_extend_statement = { *)
-(*     entry : 'a t ; *)
-(*     olevel : olevel *)
-(*   } *)
+type 'a single_extend_statement = {
+    entry : 'a t ;
+    olevel : Gdefs.olevel
+  }
       
-let extend_single entry
-    (lb  : Gdefs.olevel) =
+let extend_single {entry; olevel= (lb  : Gdefs.olevel)} =
   let olevel = Ginsert.scan_olevel entry lb in
   let elev = Ginsert.insert_olevel entry lb.label olevel in
   (entry.levels <-  elev;

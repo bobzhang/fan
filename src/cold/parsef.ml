@@ -1,25 +1,30 @@
 open Astf
 let ep = Gramf.mk "ep"
 let _ =
-  Gramf.extend_single (ep : 'ep Gramf.t )
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                 Tokenf.pattern )];
-            annot = "(`Lid (_loc, x) : Astf.ep )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in
-                    ((`Lid (_loc, x) : Astf.ep ) : 'ep ) : Tokenf.txt ->
-                                                             Locf.t -> 'ep ))
-          }]
-     } : Gramf.olevel )
+       entry = (ep : 'ep Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+                       } : Tokenf.pattern )];
+                 annot = "(`Lid (_loc, x) : Astf.ep )\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let x = __fan_0.txt in
+                         ((`Lid (_loc, x) : Astf.ep ) : 'ep ) : Tokenf.txt ->
+                                                                  Locf.t ->
+                                                                    'ep ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement )
 let exp loc str = Gramlib.parse_string_eoi Syntaxf.exp ~loc str
 let pat loc str = Gramlib.parse_string_eoi Syntaxf.pat ~loc str
 let ep loc str = (Gramlib.parse_string_eoi ep ~loc str : ep )

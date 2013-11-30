@@ -117,37 +117,44 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
 let lexer = Lexing_util.adapt_to_stream token
 let include_quot = Gramf.mk "include_quot"
 let _ =
-  Gramf.extend_single (include_quot : 'include_quot Gramf.t )
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-                 Tokenf.pattern )];
-            annot =
-              "let (keep,cf) = let open State in (keep, current_filters) in\nlet keep__001_ = !keep and cf__002_ = !cf in\ntry\n  let res__003_ = State.reset (); Gramlib.parse_include_file Syntaxf.strus s in\n  let _ = keep := keep__001_; cf := cf__002_ in res__003_\nwith | e__004_ -> ((keep := keep__001_; cf := cf__002_); raise e__004_)\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let s = __fan_0.txt in
-                    (let (keep,cf) =
-                       let open State in (keep, current_filters) in
-                     let keep__001_ = !keep and cf__002_ = !cf in
-                     try
-                       let res__003_ =
-                         State.reset ();
-                         Gramlib.parse_include_file Syntaxf.strus s in
-                       let _ = keep := keep__001_; cf := cf__002_ in
-                       res__003_
-                     with
-                     | e__004_ ->
-                         ((keep := keep__001_; cf := cf__002_); raise e__004_) : 
-                      'include_quot ) : Tokenf.txt -> Locf.t -> 'include_quot ))
-          }]
-     } : Gramf.olevel )
+       entry = (include_quot : 'include_quot Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Str; word = Any; tag_name = "Str" }
+                       } : Tokenf.pattern )];
+                 annot =
+                   "let (keep,cf) = let open State in (keep, current_filters) in\nlet keep__001_ = !keep and cf__002_ = !cf in\ntry\n  let res__003_ = State.reset (); Gramlib.parse_include_file Syntaxf.strus s in\n  let _ = keep := keep__001_; cf := cf__002_ in res__003_\nwith | e__004_ -> ((keep := keep__001_; cf := cf__002_); raise e__004_)\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let s = __fan_0.txt in
+                         (let (keep,cf) =
+                            let open State in (keep, current_filters) in
+                          let keep__001_ = !keep and cf__002_ = !cf in
+                          try
+                            let res__003_ =
+                              State.reset ();
+                              Gramlib.parse_include_file Syntaxf.strus s in
+                            let _ = keep := keep__001_; cf := cf__002_ in
+                            res__003_
+                          with
+                          | e__004_ ->
+                              ((keep := keep__001_; cf := cf__002_);
+                               raise e__004_) : 'include_quot ) : Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'include_quot ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement )
 let _ =
   Ast_quotation.of_stru ~lexer ~name:{ domain = Ns.lang; name = "include" }
     ~entry:include_quot ()

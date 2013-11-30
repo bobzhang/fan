@@ -6,30 +6,36 @@ let add name =
   then (add_to_loaded_modules name; Dyn_load.load (name ^ Dyn_load.libext))
 let () =
   let open Control in
-    Gramf.extend_single (item : 'item Gramf.t )
+    Gramf.extend_single
       ({
-         label = None;
-         lassoc = true;
-         productions =
-           [{
-              symbols =
-                [Token
-                   ({
-                      descr =
-                        { tag = `Key; word = (A "require"); tag_name = "Key"
-                        }
-                    } : Tokenf.pattern );
-                Token
-                  ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-                  Tokenf.pattern )];
-              annot = "add s\n";
-              fn =
-                (Gramf.mk_action
-                   (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
-                      let s = __fan_1.txt in (add s : 'item ) : Tokenf.txt ->
-                                                                  Tokenf.txt
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'item ))
-            }]
-       } : Gramf.olevel )
+         entry = (item : 'item Gramf.t );
+         olevel =
+           ({
+              label = None;
+              lassoc = true;
+              productions =
+                [{
+                   symbols =
+                     [Token
+                        ({
+                           descr =
+                             {
+                               tag = `Key;
+                               word = (A "require");
+                               tag_name = "Key"
+                             }
+                         } : Tokenf.pattern );
+                     Token
+                       ({
+                          descr =
+                            { tag = `Str; word = Any; tag_name = "Str" }
+                        } : Tokenf.pattern )];
+                   annot = "add s\n";
+                   fn =
+                     (Gramf.mk_action
+                        (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                           let s = __fan_1.txt in (add s : 'item ) : 
+                        Tokenf.txt -> Tokenf.txt -> Locf.t -> 'item ))
+                 }]
+            } : Gramf.olevel )
+       } : _ Gramf.single_extend_statement )

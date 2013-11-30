@@ -285,7 +285,7 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
         if safe then
           %exp{$id{gm()}.extend_single}
         else %exp{$id{gm()}.unsafe_extend_single} in
-        %exp{$f $ent ${apply l}}
+        %exp{$f ({entry = $ent ; olevel = ${apply l} } : _ Gramf.single_extend_statement)}
 
       
 (** [gl] is the name  list option

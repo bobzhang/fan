@@ -312,7 +312,21 @@ let make_extend safe (e : Gram_def.entry) =
      else
        (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
        Astf.exp ) in
-   (`App (_loc, (`App (_loc, f, ent)), (apply l)) : Astf.exp ) : exp )
+   (`App
+      (_loc, f,
+        (`Constraint
+           (_loc,
+             (`Record
+                (_loc,
+                  (`Sem
+                     (_loc, (`RecBind (_loc, (`Lid (_loc, "entry")), ent)),
+                       (`RecBind (_loc, (`Lid (_loc, "olevel")), (apply l))))))),
+             (`App
+                (_loc,
+                  (`Dot
+                     (_loc, (`Uid (_loc, "Gramf")),
+                       (`Lid (_loc, "single_extend_statement")))),
+                  (`Any _loc)))))) : Astf.exp ) : exp )
 let combine _loc (gram : vid option) locals extends =
   let entry_mk =
     match gram with
