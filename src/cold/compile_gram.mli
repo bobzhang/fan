@@ -14,7 +14,7 @@ val gm : unit -> vid
 val mk_prule :
     prod:osymbol list decorate list -> action:action -> rule    
 
-val gen_lid : unit -> string
+
     
 
 (** translate [styp] into [ctyp], given the assumption that the entry output [tvar] type *)

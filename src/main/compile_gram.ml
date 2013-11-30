@@ -132,15 +132,6 @@ let mk_prule ~prod ~action =
       env = List.rev !env }:Gram_def.rule)
 
 
-
-let gen_lid ()=
-  let gensym  = let i = ref 0 in fun () -> (incr i; i) in
-  prefix^string_of_int !(gensym ())
-  
-
-
-      
-
 let rec make_exp (tvar : string) (x:Gram_def.text) =
   let rec aux tvar (x:Gram_def.text) =
     match x with

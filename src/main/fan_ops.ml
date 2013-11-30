@@ -83,7 +83,7 @@ let meta_option mf_a _loc  = function
 let meta_arrow (type t)
     (_mf_a: Locf.t -> 'a -> t)
     (_mf_b: Locf.t -> 'b ->t)
-    (_loc: Locf.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented"
+    (_loc: Locf.t)  (_x:'a -> 'b) = invalid_argf "%s not implemented" __BIND__
     
 
 (* +-----------------------------------------------------------------+

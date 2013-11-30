@@ -40,7 +40,7 @@ let meta_option mf_a _loc =
   | Some x -> (`App ((`Uid "Some"), (mf_a _loc x)) : Astfn.exp )
 let meta_arrow (type t) (_mf_a : Locf.t -> 'a -> t)
   (_mf_b : Locf.t -> 'b -> t) (_loc : Locf.t) (_x : 'a -> 'b) =
-  invalid_arg "meta_arrow not implemented"
+  invalid_argf "%s not implemented" "meta_arrow"
 let rec is_module_longident (x : ident) =
   match x with
   | `Dot (_,_,i) -> is_module_longident i

@@ -128,26 +128,24 @@ let _ =
                  ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
                  Tokenf.pattern )];
             annot =
-              "let (keep,cf) = let open State in (keep, current_filters) in\nlet fan_keep__0 = !keep and fan_cf__1 = !cf in\ntry\n  let fan_res__2 = State.reset (); Gramlib.parse_include_file Syntaxf.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n";
+              "let (keep,cf) = let open State in (keep, current_filters) in\nlet keep__001_ = !keep and cf__002_ = !cf in\ntry\n  let res__003_ = State.reset (); Gramlib.parse_include_file Syntaxf.strus s in\n  let _ = keep := keep__001_; cf := cf__002_ in res__003_\nwith | e__004_ -> ((keep := keep__001_; cf := cf__002_); raise e__004_)\n";
             fn =
               (Gramf.mk_action
                  (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                     let s = __fan_0.txt in
                     (let (keep,cf) =
                        let open State in (keep, current_filters) in
-                     let fan_keep__0 = !keep and fan_cf__1 = !cf in
+                     let keep__001_ = !keep and cf__002_ = !cf in
                      try
-                       let fan_res__2 =
+                       let res__003_ =
                          State.reset ();
                          Gramlib.parse_include_file Syntaxf.strus s in
-                       let _ = keep := fan_keep__0; cf := fan_cf__1 in
-                       fan_res__2
+                       let _ = keep := keep__001_; cf := cf__002_ in
+                       res__003_
                      with
-                     | fan_e__3 ->
-                         ((keep := fan_keep__0; cf := fan_cf__1);
-                          raise fan_e__3) : 'include_quot ) : Tokenf.txt ->
-                                                                Locf.t ->
-                                                                  'include_quot ))
+                     | e__004_ ->
+                         ((keep := keep__001_; cf := cf__002_); raise e__004_) : 
+                      'include_quot ) : Tokenf.txt -> Locf.t -> 'include_quot ))
           }]
      } : Gramf.olevel )
 let _ =

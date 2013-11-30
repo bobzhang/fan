@@ -167,7 +167,9 @@ FAN_FILES = \
     lang_clear\
     free_vars \
     lang_hash_cmp \
-    lang_not_implement
+    lang_not_implement \
+    gensym \
+    lang_fresh
     # lang_pos \
     # loc_meta
     # parse_grammar2
