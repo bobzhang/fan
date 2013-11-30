@@ -40,11 +40,7 @@ let repr x = x
  *)
 let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   try 
-    let p = if !trace_parser then Format.fprintf else Format.ifprintf in
-    (p Format.err_formatter "@[<4>%s@ " entry.name ;
-    let res = entry.start 0 ts in
-    let () = p Format.err_formatter "@]@." in
-    res)
+    entry.start 0 ts 
   with
   | Streamf.NotConsumed ->
       Locf.raise (Token_stream.cur_loc ts) (Streamf.Error ("illegal begin of " ^ entry.name))
@@ -54,14 +50,11 @@ let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
 
 let eoi_action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   try 
-    let p = if !trace_parser then Format.fprintf else Format.ifprintf in
-    (p Format.err_formatter "@[<4>%s@ " entry.name ;
     let res = entry.start 0 ts in
-    let () = p Format.err_formatter "@]@." in
     match Streamf.peek ts with
     | Some (`EOI _) -> res
     | Some x  -> Locf.failf (Tokenf.get_loc x)  "EOI expected"
-    | None -> res)
+    | None -> res
   with
   | Streamf.NotConsumed ->
       Locf.raise (Token_stream.cur_loc ts) (Streamf.Error ("illegal begin of " ^ entry.name))
