@@ -107,7 +107,7 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
 
 
 val adapt_to_stream : (Lexing.lexbuf -> 'a) -> Locf.t -> char Streamf.t -> 'a Streamf.t
-val adapt_to_string : (Lexing.lexbuf -> 'a) -> Locf.t -> string -> 'a Streamf.t
+val adapt_to_string : (Lexing.lexbuf -> 'a)  -> string -> 'a Streamf.t
 val adapt_to_buf : ('a -> 'b) -> 'a -> 'b Streamf.t    
 
 

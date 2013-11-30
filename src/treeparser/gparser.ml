@@ -38,7 +38,8 @@ let level_number (entry:Gdefs.entry) (lab:int) =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gdefs.entry)
-    (lev,lassoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
+    (lev,lassoc) (q: Gaction.t ArgContainer.t ) (x:Gdefs.tree) :
+    (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
@@ -143,7 +144,7 @@ and parser_of_terminals
       with M.X -> None 
 
 (* functional and re-entrant *)
-and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
+and parser_of_symbol (entry : Gdefs.entry) (s:Gdefs.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =
   let rec aux (s:Gdefs.symbol) = 
     match s with 
@@ -162,7 +163,7 @@ and parser_of_symbol (entry:Gdefs.entry) (s:Gdefs.symbol)
     | Try s -> let ps = aux s in Gcomb.tryp ps
     | Peek s -> let ps = aux s in Gcomb.peek ps
     | Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
-    | Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
+    | Nterm e -> fun strm -> e.start 0 strm  
     | Self -> fun strm -> entry.start 0 strm 
     | Token (x:Tokenf.pattern) ->
         let p = Tokenf.match_token x in 

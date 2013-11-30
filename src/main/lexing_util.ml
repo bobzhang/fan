@@ -289,12 +289,13 @@ let adapt_to_stream token =
 
 
 let adapt_to_string token =
-  fun {Locf.loc_start;_} str ->
-  let lb = Lexing.from_string str in begin 
-    lb.lex_abs_pos <- loc_start.pos_cnum;
-    lb.lex_curr_p <- loc_start;
-    let next _ = Some (token lb) in 
-    Streamf.from next 
+  fun  str ->
+    let loc = Locf.string_loc  in
+    let lb = Lexing.from_string str in begin 
+      lb.lex_abs_pos <- loc.loc_start.pos_cnum;
+      lb.lex_curr_p <- loc.loc_start;
+      let next _ = Some (token lb) in 
+      Streamf.from next 
   end
 
 let adapt_to_buf token =
@@ -315,8 +316,7 @@ let rec strict_clean : Tokenf.stream -> Tokenf.stream = %parser{
 
 let debug_of_string  token  str =
   let from_string = adapt_to_string token in
-  let loc = Locf.string_loc  in
-  let stream = from_string loc str  in
+  let stream = from_string  str  in
   stream
   |> clean
   |> Streamf.iter
@@ -335,8 +335,7 @@ let debug_of_file  token file =
 let list_of_string token ?(verbose=true) str =
   let from_string = adapt_to_string token in
   let result = ref [] in
-  let loc = Locf.string_loc  in
-  let stream = from_string loc str  in
+  let stream = from_string  str  in
   begin 
     stream
     |> clean

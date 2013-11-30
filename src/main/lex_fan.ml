@@ -94,9 +94,9 @@ let  rec token   = %lex_fan{
    | @default}
 
     
-let from_lexbuf  = Lexing_util.adapt_to_buf token
-let from_stream = Lexing_util.adapt_to_stream token
-let from_string = Lexing_util.adapt_to_string token     
+let (from_lexbuf,from_stream,from_string)  =
+  Lexing_util.((adapt_to_buf token,adapt_to_stream token, adapt_to_string token))
+
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lex_fan.cmo" *)
 (* end: *)
