@@ -8,24 +8,24 @@ open Lexgen
 (** FIXME *)
 let _loc = Locf.ghost
 
-let auto_binds =
+let auto_binds = (* with [lexbuf] in the context *)
   [ %bind{
-  __ocaml_lex_init_lexbuf (lexbuf:Lexing.lexbuf) mem_size =
-    let pos = lexbuf.Lexing.lex_curr_pos in
+  __ocaml_lex_init_lexbuf  mem_size =
+    let pos = lexbuf.lex_curr_pos in
     (lexbuf.lex_mem <- Array.create mem_size (-1) ;
      lexbuf.lex_start_pos <- pos ;
      lexbuf.lex_last_pos <- pos ;
      lexbuf.lex_last_action <- (-1))
   };
    %bind{
-   __ocaml_lex_next_char (lexbuf:Lexing.lexbuf) =
+   __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
       begin
         if lexbuf.lex_eof_reached then
           256
         else begin
           lexbuf.refill_buff lexbuf ;
-          __ocaml_lex_next_char lexbuf
+          __ocaml_lex_next_char ()
         end
       end else begin
         let i = lexbuf.lex_curr_pos in
@@ -90,7 +90,10 @@ let output_memory_actions (mvs:memory_action list) : exp list =
           let u = output_mem_access tgt in
           %exp{ $u <- $curr_pos }) mvs
     
+let lex_state i =
+   "__ocaml_lex_state"^string_of_int i
 
+    
 (* length at least  one*)    
 let output_action (mems:memory_action list) (r:automata_move) : exp list  =
    output_memory_actions mems @
@@ -98,9 +101,7 @@ let output_action (mems:memory_action list) (r:automata_move) : exp list  =
   | Backtrack ->
       [ %exp{$curr_pos <- $last_pos };
         last_action]
-  | Goto n ->
-      let state = "__ocaml_lex_state"^string_of_int n in
-        [%exp{ $lid:state lexbuf }])
+  | Goto n -> [%exp{$lid{lex_state n} ()}])
 let output_clause
     (pats:int list)
     (mems:memory_action list)
@@ -145,7 +146,7 @@ let output_moves (moves: (automata_move * memory_action list) array) : case list
   end
     
 
-    
+(* Generate transition code, i.e state transition  *)    
 let output_trans (i:int) (trans:automata)=
   let output_tag_actions (mvs:tag_action list) : exp list =
     List.map
@@ -157,33 +158,33 @@ let output_trans (i:int) (trans:automata)=
         | EraseTag(t) ->
             let u = output_mem_access t in 
             %exp{ $u <- -1 }) mvs in
-
   let e =
     match trans with
-  | Perform(n,mvs) ->
-      let es = output_tag_actions mvs in 
-      seq_sem (es @ [ %exp{ $int':n}]) 
-
-  | Shift(trans,move) ->
-      let moves = bar_of_list (output_moves move) in
-      seq_sem
+    | Perform(n,mvs) ->
+        let es = output_tag_actions mvs in 
+        seq_sem (es @ [ %exp{ $int':n}]) 
+    | Shift(trans,move) ->
+        let moves = bar_of_list (output_moves move) in
+        seq_sem
           (match trans with
           | Remember(n,mvs) ->
               let es = output_tag_actions mvs in
               (es@
                [ %exp{ $last_pos  <- $curr_pos };
                  %exp{ $last_action <- $int':n };
-                 %exp{ match __ocaml_lex_next_char lexbuf with | $moves }
-              ])
+                 %exp{ match __ocaml_lex_next_char () with | $moves }])
           | No_remember ->
-              [ %exp{ match __ocaml_lex_next_char lexbuf with | $moves }]) in
-  %bind{ $lid{"__ocaml_lex_state"^ string_of_int i} (lexbuf:Lexing.lexbuf) = $e  }
+              [ %exp{ match __ocaml_lex_next_char () with | $moves }]) in
+  %bind{ $lid{lex_state i} () = $e  }
       
 let output_args (args:string list) e =
   List.fold_right (fun a b -> %exp{ fun $lid:a -> $b }) args e
     
-let output_automata (transitions:automata array) : bind list = 
-  (Array.to_list (Array.mapi (fun i auto -> output_trans i auto) transitions))
+let output_automata (transitions:automata array) : bind list =
+  transitions
+  |> Array.mapi (fun i auto -> output_trans i auto)
+  |> Array.to_list
+
 
   
     
@@ -229,37 +230,36 @@ let output_entry
     auto_initial_state=(init_num,init_moves);
     auto_actions; },
      (transitions:automata array)) : Astf.exp  =
-  let actions = seq_sem
-      (%exp{ __ocaml_lex_init_lexbuf lexbuf $int':auto_mem_size } ::
-       output_memory_actions init_moves) in  
   let binds =
+    (* init_lexbuf,
+       next_char,
+       lex_state[i] *)
     and_of_list (auto_binds @ output_automata transitions) in 
-  let cases =
-    bar_of_list
-     (
-      (auto_actions
-        |> List.map
-            (function (num,env,act) ->
-              let n = string_of_int num in
-              match output_env env with
-              | [] -> %case{ $int:n -> $act }
-              | xs ->
-                  let bind = and_of_list xs in
-                  %case{ $int:n -> let $bind in $act }))
-      @ [ %case{ _ -> failwith   "lexing: empty token" }])  in
+  let actions = seq_sem
+      (%exp{ __ocaml_lex_init_lexbuf  $int':auto_mem_size } ::
+       output_memory_actions init_moves) in  
     %exp{
     function (lexbuf:Lexing.lexbuf) ->
       let rec $binds in
       begin
-      $actions;
-      let __ocaml_lex_result = $lid{"__ocaml_lex_state" ^string_of_int init_num}  lexbuf in
+      $actions; (* lex_init_buf .... *)
+      let __ocaml_lex_result = $lid{lex_state init_num}  () in
       begin
         lexbuf.lex_start_p <- lexbuf.lex_curr_p ;
         lexbuf.lex_curr_p <-
           { (lexbuf.lex_curr_p) with
             pos_cnum = lexbuf.lex_abs_pos + lexbuf.lex_curr_pos };
         match __ocaml_lex_result with
-        | $cases
+        | ${auto_actions
+            |> List.map
+                (function (num,env,act) ->
+                  let n = string_of_int num in
+                  match output_env env with
+                  | [] -> %case{ $int:n -> $act }
+                  | xs ->
+                      let bind = and_of_list xs in
+                      %case{ $int:n -> let $bind in $act }) |> bar_of_list}
+        | _ -> failwith   "lexing: empty token" 
       end
     end
   }
