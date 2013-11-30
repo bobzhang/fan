@@ -11,7 +11,7 @@ type action = Gaction.t
 
 
 (* FIXME duplicate some code from Entry *)
-let mk f = mk_dynamic (* gram *) f
+let mk f = mk_dynamic f
 
 
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =

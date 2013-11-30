@@ -3,12 +3,10 @@ type 'a t  =  Gdefs.entry
 let name (e:'a t) = e.name
 
 let map ~name (f : 'a -> 'b) (e:'a t) : 'b t =
-  (Obj.magic
-     {
+  (Obj.magic {
    e with
    start =  (fun lev str -> (Obj.magic (f (Obj.magic (e.start lev str ) : 'a) ) : Gaction.t));
-   name ;
- } : 'b t)
+   name ; } : 'b t)
     
 let print ppf e = Format.fprintf ppf "%a@\n" Gprint.text#entry e
 
@@ -36,8 +34,7 @@ let repr x = x
 
 
 
-(** driver of the parse, it would call [start]
- *)
+(** driver of the parse, it would call [start] *)
 let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   try 
     entry.start 0 ts 
@@ -70,6 +67,9 @@ let parse_origin_tokens entry stream =
 
 
 let extend_single = Ginsert.extend_single ;;
+
+let protect = Ginsert.protect
+    
 let copy = Ginsert.copy;;
 let unsafe_extend_single = Ginsert.unsafe_extend_single;;
 let entry_first = Gtools.entry_first

@@ -93,6 +93,11 @@ val insert_olevel : entry -> int option -> olevel -> level list
 
 val extend_single : entry ->  Gdefs.single_extend_statement -> unit    
 
+
+(** change the entry behavior temporarily *)
+val protect : entry -> Gdefs.single_extend_statement -> (entry -> 'a) -> 'a
+
+    
 (** see {extend_single} and {unsafe_extend} *)    
 val unsafe_extend_single : entry ->  Gdefs.single_extend_statement -> unit    
 

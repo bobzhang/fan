@@ -3,7 +3,7 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-type position = int
+
 
 type action = Gaction.t
 
@@ -53,10 +53,7 @@ type olevel  = {
     productions : production list
   }
       
-type extend_statment = {
-    pos : position option ;
-    olevels : olevel list
-  }
+
 type single_extend_statement = olevel
       
 type delete_statment = symbol list
@@ -107,6 +104,8 @@ val delete_rule :  'a t -> symbol list -> unit
 
 val extend_single : 'a t -> single_extend_statement -> unit
 
+val protect : 'a t -> single_extend_statement -> ('a t -> 'a) -> 'a
+    
 val unsafe_extend_single : 'a t -> single_extend_statement -> unit    
 
 
