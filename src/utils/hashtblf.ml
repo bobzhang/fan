@@ -20,6 +20,13 @@ let add_list tbl kvs =
   List.iter
     (fun (k,v) ->
       add tbl k v) kvs
+
+let of_list kvs =
+  let t = Hashtbl.create 0 in
+  begin
+    add_list t kvs ;
+    t ;
+  end
     
 let memoize f =
   let cache = create 101 in
