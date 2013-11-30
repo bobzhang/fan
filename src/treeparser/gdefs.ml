@@ -86,7 +86,8 @@ type olevel  = {
     productions : production list
   }      
 
-type single_extend_statement =  olevel
+(* type single_extend_statement = *)
+
       
 type delete_statment = symbol list 
 

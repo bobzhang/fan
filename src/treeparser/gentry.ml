@@ -65,13 +65,69 @@ let parse_tokens_eoi entry stream =
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
+(* type 'a single_extend_statement = { *)
+(*     entry : 'a t ; *)
+(*     olevel : olevel *)
+(*   } *)
+      
+let extend_single entry
+    (lb  : Gdefs.olevel) =
+  let olevel = Ginsert.scan_olevel entry lb in
+  let elev = Ginsert.insert_olevel entry lb.label olevel in
+  (entry.levels <-  elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
 
-let extend_single = Ginsert.extend_single ;;
+let protect (entry:Gdefs.entry) lb action =
+  let old = entry.levels in
+  try 
+    let olevel = Ginsert.scan_olevel entry lb in
+    let elev = Ginsert.insert_olevel entry lb.label olevel in
+    (entry.levels <-  elev;
+     entry.start <-Gparser.start_parser_of_entry entry;
+     entry.continue <- Gparser.continue_parser_of_entry entry);
+    action entry
+  with
+    x ->
+      begin
+        entry.levels <- old;
+        entry.start <- Gparser.start_parser_of_entry entry;
+        entry.continue <- Gparser.continue_parser_of_entry entry;
+        raise x
+      end
+(* let protects (entries:Gdefs.entry) lb action = *)
+(*   let olds = List.map (fun ) *)
+let copy (e:Gdefs.entry) : Gdefs.entry =
+  let result =
+    {e with start =  (fun _ -> assert false );
+     continue= fun _ -> assert false;
+   } in
+  (result.start <- Gparser.start_parser_of_entry result;
+   result.continue <- Gparser.continue_parser_of_entry result;
+   result)
 
-let protect = Ginsert.protect
+let refresh_level ~f (x:Gdefs.level)  =
+  Ginsert.level_of_olevel
+    {label = Some x.level;
+     lassoc =  x.lassoc;
+     productions = f x.productions 
+   }
+(* let unsafe_extend_single entry *)
+(*     (lb : Gdefs.olevel) *)
+(*     = *)
+(*   let olevel = Ginsert.unsafe_scan_olevel entry lb in *)
+(*   let elev = Ginsert.insert_olevel entry lb.label olevel in *)
+(*   (entry.levels <- elev; *)
+(*    entry.start <-Gparser.start_parser_of_entry entry; *)
+(*    entry.continue <- Gparser.continue_parser_of_entry entry) *)
+
     
-let copy = Ginsert.copy;;
-let unsafe_extend_single = Ginsert.unsafe_extend_single;;
+(* let extend_single = Ginsert.extend_single ;; *)
+
+(* let protect = Ginsert.protect *)
+    
+(* let copy = Ginsert.copy;; *)
+(* let unsafe_extend_single = Ginsert.unsafe_extend_single;; *)
 let entry_first = Gtools.entry_first
 let delete_rule = Gdelete.delete_rule
 let symb_failed = Gfailed.symb_failed

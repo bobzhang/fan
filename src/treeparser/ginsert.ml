@@ -216,60 +216,10 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol) symbols)}
     
-let unsafe_extend_single entry
-    (lb : Gdefs.single_extend_statement)
-    =
-  let olevel = unsafe_scan_olevel entry lb in
-  let elev = insert_olevel entry lb.label olevel in
-  (entry.levels <- elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
-
 
 (**
  *)    
-let extend_single entry
-    (lb  : Gdefs.single_extend_statement) =
-  let olevel = scan_olevel entry lb in
-  let elev = insert_olevel entry lb.label olevel in
-  (entry.levels <-  elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
 
-let protect (entry:Gdefs.entry) lb action =
-  let old = entry.levels in
-  try 
-    let olevel = scan_olevel entry lb in
-    let elev = insert_olevel entry lb.label olevel in
-    (entry.levels <-  elev;
-     entry.start <-Gparser.start_parser_of_entry entry;
-     entry.continue <- Gparser.continue_parser_of_entry entry);
-    action entry
-  with
-    x ->
-      begin
-        entry.levels <- old;
-        entry.start <- Gparser.start_parser_of_entry entry;
-        entry.continue <- Gparser.continue_parser_of_entry entry;
-        raise x
-      end
-(* let protects (entries:Gdefs.entry) lb action = *)
-(*   let olds = List.map (fun ) *)
-let copy (e:Gdefs.entry) : Gdefs.entry =
-  let result =
-    {e with start =  (fun _ -> assert false );
-     continue= fun _ -> assert false;
-   } in
-  (result.start <- Gparser.start_parser_of_entry result;
-   result.continue <- Gparser.continue_parser_of_entry result;
-   result)
-
-let refresh_level ~f (x:Gdefs.level)  =
-  level_of_olevel
-    {label = Some x.level;
-     lassoc =  x.lassoc;
-     productions = f x.productions 
-   }
 
 
 
