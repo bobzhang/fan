@@ -361,3 +361,27 @@ let make _loc (x : Gram_def.entries) =
          (fun (x : Gram_def.entry)  ->
             if x.local then Some (x.name) else None)) in
   Ast_gen.binds (make_localbinds _loc locals) extends
+let make_protects _loc (x : Gram_def.entries) action =
+  let (locals,globals) =
+    List.partition (fun (x : Gram_def.entry)  -> x.local) x.items in
+  let local_names = List.map (fun (x : Gram_def.entry)  -> x.name) locals in
+  let binds = make_localbinds _loc local_names in
+  let local_extends =
+    let el = List.map (make_extend x.safe) locals in
+    match el with | [] -> (`Uid (_loc, "()") : Astf.exp ) | _ -> seq_sem el in
+  let global_extends =
+    list_of_list (List.map make_single_extend_statement globals) in
+  Ast_gen.binds binds
+    (`Seq
+       (_loc,
+         (`Sem
+            (_loc, local_extends,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc,
+                        (`Dot
+                           (_loc, (`Uid (_loc, "Gramf")),
+                             (`Lid (_loc, "protects")))), global_extends)),
+                   (`Fun (_loc, (`Case (_loc, (`Any _loc), action))))))))) : 
+    Astf.exp )

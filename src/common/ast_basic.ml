@@ -53,6 +53,13 @@ let rec list_of_and x acc =
   |`And(_,x,y) -> list_of_and x (list_of_and y acc)
   | _ -> x::acc
 
+(* Inline [list_of_and] and [fold_right] *)              
+let rec fold_and_right f x acc  =
+  match x with
+  | `And(_,x,y) -> fold_and_right f x (fold_and_right f y acc)
+  | e -> f e acc
+
+        
 let rec list_of_com x acc =
   match x with
   |`Com(_,x,y) -> list_of_com x (list_of_com y acc)

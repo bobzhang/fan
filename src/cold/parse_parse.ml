@@ -2,6 +2,7 @@ let gm = Compile_gram.gm
 let module_name = Compile_gram.module_name
 let mk_prule = Compile_gram.mk_prule
 let make = Compile_gram.make
+let make_protects = Compile_gram.make_protects
 let is_irrefut_pat = Fan_ops.is_irrefut_pat
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
@@ -41,6 +42,7 @@ let extend_body = Gramf.mk "extend_body"
 let unsafe_extend_body = Gramf.mk "unsafe_extend_body"
 let simple: matrix Gramf.t = Gramf.mk "simple"
 let single_symbol: Gram_def.osymbol Gramf.t = Gramf.mk "single_symbol"
+let local_extend = Gramf.mk "local_extend"
 let _ =
   let a_int: 'a_int Gramf.t = Gramf.mk "a_int"
   and or_strs: 'or_strs Gramf.t = Gramf.mk "or_strs"
@@ -8748,6 +8750,44 @@ let _ =
      } : _ Gramf.single_extend_statement );
   Gramf.extend_single
     ({
+       entry = (local_extend : 'local_extend Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm
+                      (Gramf.obj (extend_header : 'extend_header Gramf.t ));
+                   List1 (Nterm (Gramf.obj (entry : 'entry Gramf.t )));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                      } : Tokenf.pattern )];
+                 annot =
+                   "let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet action = Tokenf.ant_expand Parsef.exp x in\nlet res = make_protects _loc { items; gram; safe = true } action in\nlet () = module_name := old in res\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_2 : Tokenf.ant)  (el : 'entry list) 
+                         (rest : 'extend_header)  (_loc : Locf.t)  ->
+                         let x = __fan_2 in
+                         (let (gram,old) = rest in
+                          let items = Listf.filter_map (fun x  -> x) el in
+                          let action = Tokenf.ant_expand Parsef.exp x in
+                          let res =
+                            make_protects _loc { items; gram; safe = true }
+                              action in
+                          let () = module_name := old in res : 'local_extend ) : 
+                      Tokenf.ant ->
+                        'entry list ->
+                          'extend_header -> Locf.t -> 'local_extend ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
        entry = (qualuid : 'qualuid Gramf.t );
        olevel =
          ({
@@ -9635,4 +9675,6 @@ let _ =
   Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
     ~name:{ domain; name = "extend" } ~entry:extend_body ();
   Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domain; name = "unsafe_extend" } ~entry:unsafe_extend_body ()
+    ~name:{ domain; name = "unsafe_extend" } ~entry:unsafe_extend_body ();
+  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
+    ~name:{ domain; name = "local_extend" } ~entry:local_extend ()

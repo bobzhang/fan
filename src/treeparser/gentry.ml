@@ -101,14 +101,16 @@ let protects  (es : 'a single_extend_statement list ) action =
     List.map (fun (x:'a single_extend_statement) -> x.entry.levels) es in
   try begin 
     List.iter (fun e -> extend_single e ) es;
-    action ();
-    List.iter2
-      (fun e t ->
+    let res = action () in
+    begin
+      List.iter2 (fun e t ->
         begin
           e.entry.levels <- t;
           e.entry.start <- Gparser.start_parser_of_entry e.entry;
           e.entry.continue <- Gparser.continue_parser_of_entry e.entry;
         end) es olds ;
+    res
+    end
   end
   with
     x ->

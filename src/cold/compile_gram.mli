@@ -147,4 +147,7 @@ val mk_prule :
 val make : loc -> entries -> exp 
 
 
+    
+val make_protects : loc -> entries -> exp -> exp    
+
 

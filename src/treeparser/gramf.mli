@@ -109,7 +109,7 @@ val delete_rule :  'a t -> symbol list -> unit
 val extend_single : 'a single_extend_statement -> unit
 
 val protects :
-    'a single_extend_statement list -> (unit -> 'b) -> unit
+    'a single_extend_statement list -> (unit -> 'b) -> 'b
 
 
 

@@ -11,7 +11,6 @@ Ast_gen:
   and_of_list
   seq_sem
   ;
-
 };;
 
 open Astf
@@ -323,6 +322,27 @@ let make  _loc (x:Gram_def.entries) =
          (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) in
   Ast_gen.binds (make_localbinds _loc locals) extends
 
+let make_protects _loc (x:Gram_def.entries) action =
+  let (locals,globals) =
+    List.partition (fun (x:Gram_def.entry) -> x.local) x.items in
+  let local_names  = (** FIXME the order matters here, check duplication later!!! *)
+    List.map (fun (x:Gram_def.entry) ->  x.name) locals in
+  let binds = make_localbinds _loc local_names in
+  let local_extends =
+    let el =  List.map (make_extend x.safe) locals  in
+    match el with
+    | [] -> %exp{()}
+    | _ -> seq_sem el in
+  let global_extends =
+    list_of_list (List.map make_single_extend_statement globals) in
+  Ast_gen.binds binds
+    %exp{
+  begin 
+    $local_extends;
+    Gramf.protects $global_extends
+      (fun _ ->
+        $action)
+  end}
 
 (* let make_protects _loc (x:Gram_def.entries) action = *)
 (*   let (locals,globals) = *)
