@@ -1315,19 +1315,19 @@ let phrase (x: stru) : Parsetree.toplevel_phrase =
 let pp = Format.fprintf
 
 let print_exp f  e =
-  pp f "@[%a@]@." AstPrint.expression (exp e)
+  pp f "@[%a@]@." Ast_print.expression (exp e)
 
 let to_string_exp = Formatf.to_string  print_exp
 
 
 let print_pat f e =
-  pp f "@[%a@]@." AstPrint.pattern (pat e)
+  pp f "@[%a@]@." Ast_print.pattern (pat e)
 
 let print_stru f e =
-  pp f "@[%a@]@." AstPrint.structure (stru e)
+  pp f "@[%a@]@." Ast_print.structure (stru e)
 
 let print_ctyp f e =
-  pp f "@[%a@]@." AstPrint.core_type (ctyp e)
+  pp f "@[%a@]@." Ast_print.core_type (ctyp e)
 
 
 

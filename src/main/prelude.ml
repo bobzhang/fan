@@ -76,7 +76,7 @@ let () =
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       begin 
-        Format.fprintf fmt "@[%a@]@." AstPrint.structure pt ;
+        Format.fprintf fmt "@[%a@]@." Ast_print.structure pt ;
         pp_print_flush fmt ()
       end in
   let print_interf ?input_file:(_) ?output_file ast =
@@ -88,7 +88,7 @@ let () =
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       begin 
-        Format.fprintf fmt "@[%a@]@." AstPrint.signature pt ;
+        Format.fprintf fmt "@[%a@]@." Ast_print.signature pt ;
         pp_print_flush fmt ()
       end in
   Hashtbl.add backends "o" {

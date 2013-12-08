@@ -36,14 +36,14 @@ let () =
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         Format.fprintf fmt "@[%a@]@." AstPrint.structure pt;
+         Format.fprintf fmt "@[%a@]@." Ast_print.structure pt;
          pp_print_flush fmt ()) in
   let print_interf ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         Format.fprintf fmt "@[%a@]@." AstPrint.signature pt;
+         Format.fprintf fmt "@[%a@]@." Ast_print.signature pt;
          pp_print_flush fmt ()) in
   Hashtbl.add backends "o"
     {

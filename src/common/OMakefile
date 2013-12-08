@@ -8,7 +8,8 @@ $(LocalFiles): oconfig.mlp
 
 FILES = \
     oconfig \
-    astPrint ast_basic\
+    ast_print \
+    ast_basic\
     id_set\
     configf\
     locf \
@@ -20,7 +21,8 @@ FILES = \
     location_util \
     parsetree_util\
     escape \
-    translate_lex fan_util \
+    translate_lex\
+    fan_util \
     fan_warnings\
     token_stream
     

@@ -102,7 +102,8 @@ let gen_strip =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
-           |`Dot (`Uid "Tokenf",`Lid "ant") -> res
+           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
+           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
@@ -115,7 +116,8 @@ let gen_strip =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
-           |`Dot (`Uid "Tokenf",`Lid "ant") -> res
+           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
@@ -140,7 +142,8 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
-           |`Dot (`Uid "Tokenf",`Lid "ant") -> res
+           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
@@ -153,7 +156,8 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
-           |`Dot (`Uid "Tokenf",`Lid "ant") -> res
+           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
@@ -199,7 +203,8 @@ let gen_meta =
     ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
 let _ =
-  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
+  Typehook.register
+    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
     ("MetaObj", (some gen_meta))
 let extract info =
   (info |>
