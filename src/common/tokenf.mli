@@ -216,6 +216,7 @@ val print : t Formatf.t
 val pp_print_domains : domain Formatf.t
     
 val pp_print_ant : ant Formatf.t
+val pp_print_quot : quot Formatf.t
     
 val get_string : t -> string
 val get_tag : t -> tag 

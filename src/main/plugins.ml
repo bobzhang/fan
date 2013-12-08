@@ -141,8 +141,8 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | `Dot (`Uid  "Tokenf", `Lid "ant") ->
-        (* | %ctyp-{Tokenf.ant} -> *) (** BOOTSTRAPING, associated with module [Tokenf] *)
+        | %ctyp-{Tokenf.quot}
+        | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [Tokenf] *)
              res
         | _ ->
             let pat0 = (x.ep0:>pat) in
@@ -154,7 +154,7 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | `Dot(`Uid "Tokenf",`Lid "ant") ->  res (* BOOTSTRAPING *)
+        | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res (* BOOTSTRAPING *)
         | _ ->
             let pat0 = (x.ep0 :> pat) in  
             %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in 
@@ -184,7 +184,7 @@ let gen_fill =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc"|"ant")
-        | `Dot(`Uid"Tokenf",`Lid"ant") -> res
+        | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} -> res
         | _ ->
             let pat0 = (x.ep0:>pat) in
             %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in
@@ -195,7 +195,7 @@ let gen_fill =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc"|"ant")
-        | `Dot(`Uid "Tokenf",`Lid "ant") ->  res
+        | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res
         | _ ->
             let pat0 = (x.ep0 :> pat) in
             %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in 
@@ -267,7 +267,7 @@ let gen_meta =
 
 
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc";"ant"]))
+    ~filter:(fun s -> not (List.mem s ["loc";"ant";"quot"]))
     ("MetaObj", some gen_meta);;
   
 
