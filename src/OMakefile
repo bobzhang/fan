@@ -137,6 +137,7 @@ FAN_LEX_LIB_FILES = \
     
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
+    ast_basic \
     ast2pt \
     ast_gen ant antN ast_loc  ast_inject  astn_util \
     ast_filters ast_macros\

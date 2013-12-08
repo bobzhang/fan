@@ -9,7 +9,6 @@ $(LocalFiles): oconfig.mlp
 FILES = \
     oconfig \
     ast_print \
-    ast_basic\
     id_set\
     configf\
     locf \

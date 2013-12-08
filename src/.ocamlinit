@@ -55,7 +55,7 @@ let normal () = begin
 end;;
 
 let print_tree f x  = pp f "@[%a@]@." Gprint.dump#tree x ;; 
-let p_type_declaration  =  AstPrint.default#type_declaration;;
+let p_type_declaration  =  Ast_print.default#type_declaration;;
 
 let env = !Toploop.toplevel_env;;
 module O = Obj;;
