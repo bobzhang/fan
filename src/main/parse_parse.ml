@@ -4,6 +4,7 @@ Compile_gram:
   module_name
   mk_prule
   make
+  make_protects
   ;
 Fan_ops:
   is_irrefut_pat
@@ -53,7 +54,8 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
    extend_body
    unsafe_extend_body
   (simple : matrix Gramf.t)
-  (single_symbol : Gram_def.osymbol Gramf.t)        
+  (single_symbol : Gram_def.osymbol Gramf.t)
+  local_extend
 };;
 
 
@@ -330,7 +332,16 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   [@extend %{fun f -> f true}]
   unsafe_extend_body :
   [@extend %{fun f -> f false}]
-      
+
+  local_extend : (* only safe now*)
+  [ extend_header as rest; L1 entry as el; Ant("",x) %{
+    let (gram,old) = rest in
+    let items = Listf.filter_map (fun x -> x) el in
+    let action = Tokenf.ant_expand Parsef.exp x in 
+    let res = make_protects _loc {items; gram; safe = true} action in
+    let () = module_name := old in 
+    res 
+  }]          
   (* parse qualified [X.X] *)
   qualuid:
   [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
@@ -467,6 +478,9 @@ begin
   Ast_quotation.of_exp
     ~lexer:Lex_gram.from_stream
     ~name:{domain; name = "unsafe_extend"} ~entry:unsafe_extend_body ();
+  Ast_quotation.of_exp
+    ~lexer:Lex_gram.from_stream
+    ~name:{domain; name = "local_extend"} ~entry:local_extend ();
 
 end;;
 

@@ -38,12 +38,17 @@ val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a
 (* val unsafe_extend : *)
 (*     'a t -> position  option * olevel list -> unit *)
 
+type 'a single_extend_statement = {
+    entry : 'a t ;
+    olevel : Gdefs.olevel
+  }
+val extend_single :  'a single_extend_statement  -> unit
 
-val extend_single :
-  'a t -> Gdefs.single_extend_statement  -> unit
+val protects :
+    'a single_extend_statement list -> (unit -> 'b) -> 'b
 
-val unsafe_extend_single :
-  'a t -> Gdefs.single_extend_statement  -> unit
+(* val unsafe_extend_single : *)
+(*   'a t -> Gdefs.olevel  -> unit *)
       
 val delete_rule : 'a t -> symbol list -> unit
 

@@ -1,25 +1,11 @@
 
 
-    (* [ `NA|`RA|`LA] *)
-      
-type position = int 
-
-
-
-
 (* the [location] and the parsed value *)
 type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
-    
-(* type gram = { *)
-(*     annot : string; *)
-(*     gfilter         : Tokenf.filter_plugin; *)
-(*   } *)
-
 
 
     
 type entry = {
-    (* gram     : gram; *)
     name     : string;
     mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;
@@ -100,11 +86,8 @@ type olevel  = {
     productions : production list
   }      
 
-type extend_statment = {
-    pos : position option ;
-    olevels : olevel list
-  }
-type single_extend_statement =  olevel
+(* type single_extend_statement = *)
+
       
 type delete_statment = symbol list 
 

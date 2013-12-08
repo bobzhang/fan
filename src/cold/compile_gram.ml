@@ -267,7 +267,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
        (`App
           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
             (`Constraint (_loc, txt, ty))) : Astf.exp ) : exp )
-let make_extend safe (e : Gram_def.entry) =
+let make_single_extend_statement (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let gmid = (gm () : vid  :>ident) in
    let ent: Astf.exp =
@@ -306,21 +306,29 @@ let make_extend safe (e : Gram_def.entry) =
           (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "olevel"))))) : 
        Astf.exp ) in
    let l = e.level in
+   (`Constraint
+      (_loc,
+        (`Record
+           (_loc,
+             (`Sem
+                (_loc, (`RecBind (_loc, (`Lid (_loc, "entry")), ent)),
+                  (`RecBind (_loc, (`Lid (_loc, "olevel")), (apply l))))))),
+        (`App
+           (_loc,
+             (`Dot
+                (_loc, (`Uid (_loc, "Gramf")),
+                  (`Lid (_loc, "single_extend_statement")))), (`Any _loc)))) : 
+     Astf.exp ) : exp )
+let make_extend safe (e : Gram_def.entry) =
+  (let _loc = (e.name).loc in
    let f =
      if safe
      then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single"))) : Astf.exp )
      else
        (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
        Astf.exp ) in
-   (`App (_loc, (`App (_loc, f, ent)), (apply l)) : Astf.exp ) : exp )
-let combine _loc (gram : vid option) locals extends =
-  let entry_mk =
-    match gram with
-    | Some g ->
-        let g = (g : vid  :>exp) in
-        (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))), g) : 
-          Astf.exp )
-    | None  -> (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) : Astf.exp ) in
+   (`App (_loc, f, (make_single_extend_statement e)) : Astf.exp ) : exp )
+let make_localbinds _loc locals =
   let local_bind_of_name (x : Gram_def.name) =
     match (x : Gram_def.name ) with
     | { id = `Lid (_,i); tvar = x; loc = _loc } ->
@@ -329,7 +337,9 @@ let combine _loc (gram : vid option) locals extends =
              (`Constraint
                 (_loc,
                   (`App
-                     (_loc, (`Lid (_loc, "grammar_entry_create")),
+                     (_loc,
+                       (`Dot
+                          (_loc, (`Uid (_loc, "Gramf")), (`Lid (_loc, "mk")))),
                        (`Str (_loc, i)))),
                   (`App
                      (_loc,
@@ -340,20 +350,7 @@ let combine _loc (gram : vid option) locals extends =
     | _ ->
         failwithf "internal error in the Grammar extension %s"
           (Objs.dump_vid x.id) in
-  match locals with
-  | [] -> extends
-  | ll ->
-      let locals = (ll |> (List.map local_bind_of_name)) |> and_of_list in
-      (`LetIn
-         (_loc, (`Negative _loc),
-           (`Bind
-              (_loc, (`Lid (_loc, "grammar_entry_create")),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Lid (_loc, "x")),
-                          (`App (_loc, entry_mk, (`Lid (_loc, "x")))))))))),
-           (`LetIn (_loc, (`Negative _loc), locals, extends))) : Astf.exp )
+  List.map local_bind_of_name locals
 let make _loc (x : Gram_def.entries) =
   let extends =
     let el = x.items |> (List.map (make_extend x.safe)) in
@@ -363,4 +360,28 @@ let make _loc (x : Gram_def.entries) =
       (Listf.filter_map
          (fun (x : Gram_def.entry)  ->
             if x.local then Some (x.name) else None)) in
-  combine _loc x.gram locals extends
+  Ast_gen.binds (make_localbinds _loc locals) extends
+let make_protects _loc (x : Gram_def.entries) action =
+  let (locals,globals) =
+    List.partition (fun (x : Gram_def.entry)  -> x.local) x.items in
+  let local_names = List.map (fun (x : Gram_def.entry)  -> x.name) locals in
+  let binds = make_localbinds _loc local_names in
+  let local_extends =
+    let el = List.map (make_extend x.safe) locals in
+    match el with | [] -> (`Uid (_loc, "()") : Astf.exp ) | _ -> seq_sem el in
+  let global_extends =
+    list_of_list (List.map make_single_extend_statement globals) in
+  Ast_gen.binds binds
+    (`Seq
+       (_loc,
+         (`Sem
+            (_loc, local_extends,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc,
+                        (`Dot
+                           (_loc, (`Uid (_loc, "Gramf")),
+                             (`Lid (_loc, "protects")))), global_extends)),
+                   (`Fun (_loc, (`Case (_loc, (`Any _loc), action))))))))) : 
+    Astf.exp )

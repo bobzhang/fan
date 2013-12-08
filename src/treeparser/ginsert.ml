@@ -168,10 +168,13 @@ let insert_olevel (entry:Gdefs.entry) position olevel =
 (* let insert_olevels_in_levels (entry:Gdefs.entry) position olevels = *)
             
 
-(* This function will be executed in the runtime *)            
+(* This function will be executed in the runtime
+   normalize nonterminals to [Self] if possible 
+ *)            
 let rec scan_olevels entry (levels: Gdefs.olevel list ) =
   List.map  (scan_olevel entry) levels
-and scan_olevel entry (lb:Gdefs.olevel) (* (x,y,prods) *) =
+
+and scan_olevel entry (lb:Gdefs.olevel) =
   {lb with productions = List.map (scan_product entry) lb.productions}
 
 and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gdefs.production  = 
@@ -190,7 +193,7 @@ and scan_product (entry:Gdefs.entry) ({symbols;_} as x  : Gdefs.production) : Gd
        (*     @@ Listf.reduce_left (^) diff in *)
        (* let () = check_gram entry symbol in *)
        match symbol with
-       |Nterm e when e == entry -> (Self:Gdefs.symbol)
+       |Nterm e when e == entry -> (Self:Gdefs.symbol) (* necessary?*)
        | _ -> symbol
      ) symbols)}
 
@@ -213,40 +216,10 @@ and unsafe_scan_product (entry:Gdefs.entry) ({symbols;_} as x : Gdefs.production
        |Nterm e when e == entry -> (Self:Gdefs.symbol)
        | _ -> symbol) symbols)}
     
-let unsafe_extend_single entry
-    (lb : Gdefs.single_extend_statement)
-    =
-  let olevel = unsafe_scan_olevel entry lb in
-  let elev = insert_olevel entry lb.label olevel in
-  (entry.levels <- elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
 
+(**
+ *)    
 
-    
-let extend_single entry
-    (lb  : Gdefs.single_extend_statement) =
-  let olevel = scan_olevel entry lb in
-  let elev = insert_olevel entry lb.label olevel in
-  (entry.levels <-  elev;
-   entry.start <-Gparser.start_parser_of_entry entry;
-   entry.continue <- Gparser.continue_parser_of_entry entry)
-
-let copy (e:Gdefs.entry) : Gdefs.entry =
-  let result =
-    {e with start =  (fun _ -> assert false );
-     continue= fun _ -> assert false;
-   } in
-  (result.start <- Gparser.start_parser_of_entry result;
-   result.continue <- Gparser.continue_parser_of_entry result;
-   result)
-
-let refresh_level ~f (x:Gdefs.level)  =
-  level_of_olevel
-    {label = Some x.level;
-     lassoc =  x.lassoc;
-     productions = f x.productions 
-   }
 
 
 

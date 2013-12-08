@@ -91,17 +91,22 @@ val insert_olevel : entry -> int option -> olevel -> level list
 (** see {extend}, it would promote the keywords automatically *)    
 (* val unsafe_extend : entry -> position option * olevel list -> unit     *)
 
-val extend_single : entry ->  Gdefs.single_extend_statement -> unit    
+(* val extend_single : 'a entry ->  Gdefs.single_extend_statement -> unit     *)
 
+
+(** change the entry behavior temporarily *)
+(* val protect : entry -> Gdefs.single_extend_statement -> (entry -> 'a) -> 'a *)
+
+    
 (** see {extend_single} and {unsafe_extend} *)    
-val unsafe_extend_single : entry ->  Gdefs.single_extend_statement -> unit    
+(* val unsafe_extend_single : entry ->  Gdefs.single_extend_statement -> unit     *)
 
 
 
     
 (** duplciate a grammar which the user can freely mutate without
     worring about the side effect  *)
-val copy : entry -> entry
+(* val copy : entry -> entry *)
 
 (** [FIXME] the annotation seems to be inconsistent *)    
 (* val eoi_entry : entry -> entry *)

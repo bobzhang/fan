@@ -690,176 +690,197 @@ let item = Gramf.mk "item"
 let dot_namespace = Gramf.mk "dot_namespace"
 let items = Gramf.mk "items"
 let _ =
-  Gramf.extend_single (item : 'item Gramf.t )
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "default"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Token
-                ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-                Tokenf.pattern )];
-            annot =
-              "match Ast_quotation.resolve_name { domain = (`Sub []); name = s } with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
-                    let s = __fan_1.txt in
-                    (match Ast_quotation.resolve_name
-                             { domain = (`Sub []); name = s }
-                     with
-                     | None  ->
-                         Locf.failf _loc "DDSL `%s' can not be resolved" s
-                     | Some x -> Ast_quotation.set_default x : 'item ) : 
-                 Tokenf.txt -> Tokenf.txt -> Locf.t -> 'item ))
-          };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "import"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))];
-           annot =
-             "Ast_quotation.paths := ((`Absolute xs) :: (!Ast_quotation.paths))\n";
-           fn =
-             (Gramf.mk_action
-                (fun (xs : 'dot_namespace)  _  (_loc : Locf.t)  ->
-                   (Ast_quotation.paths := ((`Absolute xs) ::
-                      (!Ast_quotation.paths)) : 'item ) : 'dot_namespace ->
-                                                            Tokenf.txt ->
-                                                              Locf.t -> 'item ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "filter"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
-               Tokenf.pattern )];
-           annot = "Ast_filters.use_implem_filter s\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
-                   let s = __fan_1.txt in
-                   (Ast_filters.use_implem_filter s : 'item ) : Tokenf.txt ->
-                                                                  Tokenf.txt
+       entry = (item : 'item Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           {
+                             tag = `Key;
+                             word = (A "default");
+                             tag_name = "Key"
+                           }
+                       } : Tokenf.pattern );
+                   Token
+                     ({ descr = { tag = `Str; word = Any; tag_name = "Str" }
+                      } : Tokenf.pattern )];
+                 annot =
+                   "match Ast_quotation.resolve_name { domain = (`Sub []); name = s } with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                         let s = __fan_1.txt in
+                         (match Ast_quotation.resolve_name
+                                  { domain = (`Sub []); name = s }
+                          with
+                          | None  ->
+                              Locf.failf _loc "DDSL `%s' can not be resolved"
+                                s
+                          | Some x -> Ast_quotation.set_default x : 'item ) : 
+                      Tokenf.txt -> Tokenf.txt -> Locf.t -> 'item ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "import"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern );
+                  Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))];
+                annot =
+                  "Ast_quotation.paths := ((`Absolute xs) :: (!Ast_quotation.paths))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (xs : 'dot_namespace)  _  (_loc : Locf.t)  ->
+                        (Ast_quotation.paths := ((`Absolute xs) ::
+                           (!Ast_quotation.paths)) : 'item ) : 'dot_namespace
+                                                                 ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'item ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "filter"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern );
+                  Token
+                    ({ descr = { tag = `Str; word = Any; tag_name = "Str" } } : 
+                    Tokenf.pattern )];
+                annot = "Ast_filters.use_implem_filter s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (Ast_filters.use_implem_filter s : 'item ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'item ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          {
+                            tag = `Key;
+                            word = (A "lang_clear");
+                            tag_name = "Key"
+                          }
+                      } : Tokenf.pattern )];
+                annot =
+                  "Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  ->
+                        (Ast_quotation.clear_map ();
+                         Ast_quotation.clear_default () : 'item ) : Tokenf.txt
                                                                     ->
                                                                     Locf.t ->
                                                                     'item ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "lang_clear"); tag_name = "Key"
-                     }
-                 } : Tokenf.pattern )];
-           annot =
-             "Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  (_loc : Locf.t)  ->
-                   (Ast_quotation.clear_map ();
-                    Ast_quotation.clear_default () : 'item ) : Tokenf.txt ->
-                                                                 Locf.t ->
-                                                                   'item ))
-         }]
-     } : Gramf.olevel );
-  Gramf.extend_single (dot_namespace : 'dot_namespace Gramf.t )
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
-                 Tokenf.pattern );
-              Token
-                ({ descr = { tag = `Key; word = (A "."); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              Self];
-            annot = "i :: xs\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (xs : 'dot_namespace)  _  (__fan_0 : Tokenf.txt) 
-                    (_loc : Locf.t)  ->
-                    let i = __fan_0.txt in (i :: xs : 'dot_namespace ) : 
-                 'dot_namespace ->
-                   Tokenf.txt -> Tokenf.txt -> Locf.t -> 'dot_namespace ))
-          };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
-                Tokenf.pattern )];
-           annot = "[i]\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let i = __fan_0.txt in ([i] : 'dot_namespace ) : Tokenf.txt
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'dot_namespace ))
-         }]
-     } : Gramf.olevel );
-  Gramf.extend_single (items : 'items Gramf.t )
+       entry = (dot_namespace : 'dot_namespace Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" }
+                       } : Tokenf.pattern );
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "."); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot = "i :: xs\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (xs : 'dot_namespace)  _  (__fan_0 : Tokenf.txt) 
+                         (_loc : Locf.t)  ->
+                         let i = __fan_0.txt in (i :: xs : 'dot_namespace ) : 
+                      'dot_namespace ->
+                        Tokenf.txt -> Tokenf.txt -> Locf.t -> 'dot_namespace ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" }
+                      } : Tokenf.pattern )];
+                annot = "[i]\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let i = __fan_0.txt in ([i] : 'dot_namespace ) : 
+                     Tokenf.txt -> Locf.t -> 'dot_namespace ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Nterm (Gramf.obj (item : 'item Gramf.t ));
-              Token
-                ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
-                Tokenf.pattern )];
-            annot = "()\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  _  (_loc : Locf.t)  -> (() : 'items ) : Tokenf.txt
-                                                                   ->
-                                                                   'item ->
-                                                                    Locf.t ->
-                                                                    'items ))
-          };
-         {
-           symbols =
-             [Nterm (Gramf.obj (item : 'item Gramf.t ));
-             Token
-               ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
-               Tokenf.pattern );
-             Self];
-           annot = "()\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  _  _  (_loc : Locf.t)  -> (() : 'items ) : 'items ->
-                                                                    Tokenf.txt
-                                                                    ->
-                                                                    'item ->
-                                                                    Locf.t ->
-                                                                    'items ))
-         };
-         {
-           symbols = [];
-           annot = "()\n";
-           fn =
-             (Gramf.mk_action
-                (fun (_loc : Locf.t)  -> (() : 'items ) : Locf.t -> 'items ))
-         }]
-     } : Gramf.olevel )
+       entry = (items : 'items Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm (Gramf.obj (item : 'item Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";"); tag_name = "Key" }
+                      } : Tokenf.pattern )];
+                 annot = "()\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  _  (_loc : Locf.t)  -> (() : 'items ) : 
+                      Tokenf.txt -> 'item -> Locf.t -> 'items ))
+               };
+              {
+                symbols =
+                  [Nterm (Gramf.obj (item : 'item Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ";"); tag_name = "Key" }
+                     } : Tokenf.pattern );
+                  Self];
+                annot = "()\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  _  (_loc : Locf.t)  -> (() : 'items ) : 
+                     'items -> Tokenf.txt -> 'item -> Locf.t -> 'items ))
+              };
+              {
+                symbols = [];
+                annot = "()\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (_loc : Locf.t)  -> (() : 'items ) : Locf.t ->
+                                                                 'items ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement )
 let lexer = Lexing_util.adapt_to_stream token
 let () =
   Ast_quotation.register_unit_parser ~lexer

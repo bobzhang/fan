@@ -11,73 +11,90 @@ let inject_exp = Gramf.mk "inject_exp"
 let inject_stru = Gramf.mk "inject_stru"
 let inject_clfield = Gramf.mk "inject_clfield"
 let _ =
-  Gramf.extend_single (inject_exp : 'inject_exp Gramf.t )
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                 Tokenf.pattern )];
-            annot =
-              "try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in
-                    (try Hashtbl.find inject_exp_tbl x
-                     with
-                     | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_exp ) : Tokenf.txt -> Locf.t -> 'inject_exp ))
-          }]
-     } : Gramf.olevel );
-  Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
+       entry = (inject_exp : 'inject_exp Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+                       } : Tokenf.pattern )];
+                 annot =
+                   "try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let x = __fan_0.txt in
+                         (try Hashtbl.find inject_exp_tbl x
+                          with
+                          | Not_found  ->
+                              failwithf "inject.exp %s not found" x : 
+                           'inject_exp ) : Tokenf.txt ->
+                                             Locf.t -> 'inject_exp ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                 Tokenf.pattern )];
-            annot =
-              "try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in
-                    (try Hashtbl.find inject_stru_tbl x
-                     with
-                     | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_stru ) : Tokenf.txt -> Locf.t -> 'inject_stru ))
-          }]
-     } : Gramf.olevel );
-  Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
+       entry = (inject_stru : 'inject_stru Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+                       } : Tokenf.pattern )];
+                 annot =
+                   "try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let x = __fan_0.txt in
+                         (try Hashtbl.find inject_stru_tbl x
+                          with
+                          | Not_found  ->
+                              failwithf "inject.exp %s not found" x : 
+                           'inject_stru ) : Tokenf.txt ->
+                                              Locf.t -> 'inject_stru ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                 Tokenf.pattern )];
-            annot =
-              "try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in
-                    (try Hashtbl.find inject_clfield_tbl x
-                     with
-                     | Not_found  -> failwithf "inject.exp %s not found" x : 
-                      'inject_clfield ) : Tokenf.txt ->
-                                            Locf.t -> 'inject_clfield ))
-          }]
-     } : Gramf.olevel )
+       entry = (inject_clfield : 'inject_clfield Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+                       } : Tokenf.pattern )];
+                 annot =
+                   "try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let x = __fan_0.txt in
+                         (try Hashtbl.find inject_clfield_tbl x
+                          with
+                          | Not_found  ->
+                              failwithf "inject.exp %s not found" x : 
+                           'inject_clfield ) : Tokenf.txt ->
+                                                 Locf.t -> 'inject_clfield ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement )
 let _ =
   let open Ast_quotation in
     let domain = Ns.inject in

@@ -16,7 +16,8 @@ let map f = function
          *)
 
 
-let bind f = function
+let bind  x f =
+  match x with 
   | None -> None
   | Some v -> f v
         (*$T bind

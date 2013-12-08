@@ -169,7 +169,8 @@ FAN_FILES = \
     lang_hash_cmp \
     lang_not_implement \
     gensym \
-    lang_fresh
+    lang_fresh \
+    lang_monad
     # lang_pos \
     # loc_meta
     # parse_grammar2

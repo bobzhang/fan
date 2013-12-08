@@ -3,7 +3,7 @@ open Tokenf
   
 type 'a t = 'a Gentry.t
 
-type position = int
+
 
 type action = Gaction.t
 
@@ -53,11 +53,12 @@ type olevel  = {
     productions : production list
   }
       
-type extend_statment = {
-    pos : position option ;
-    olevels : olevel list
+
+(* type single_extend_statement = olevel *)
+type 'a single_extend_statement = {
+    entry : 'a t ;
+    olevel : olevel
   }
-type single_extend_statement = olevel
       
 type delete_statment = symbol list
 
@@ -105,9 +106,11 @@ val wrap_stream_parser : ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
 val delete_rule :  'a t -> symbol list -> unit
 
-val extend_single : 'a t -> single_extend_statement -> unit
+val extend_single : 'a single_extend_statement -> unit
 
-val unsafe_extend_single : 'a t -> single_extend_statement -> unit    
+val protects :
+    'a single_extend_statement list -> (unit -> 'b) -> 'b
+
 
 
 

@@ -680,219 +680,259 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
 let fan_quot = Gramf.mk "fan_quot"
 let fan_quots = Gramf.mk "fan_quots"
 let _ =
-  let grammar_entry_create x = Gramf.mk x in
-  let id: 'id Gramf.t = grammar_entry_create "id"
-  and fan_quot_semi: 'fan_quot_semi Gramf.t =
-    grammar_entry_create "fan_quot_semi" in
-  Gramf.extend_single (fan_quot : 'fan_quot Gramf.t )
+  let id: 'id Gramf.t = Gramf.mk "id"
+  and fan_quot_semi: 'fan_quot_semi Gramf.t = Gramf.mk "fan_quot_semi" in
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({
-                    descr =
-                      { tag = `Key; word = (A "derive"); tag_name = "Key" }
-                  } : Tokenf.pattern );
-              Token
-                ({ descr = { tag = `Key; word = (A "("); tag_name = "Key" } } : 
-                Tokenf.pattern );
-              List1 (Nterm (Gramf.obj (id : 'id Gramf.t )));
-              Token
-                ({ descr = { tag = `Key; word = (A ")"); tag_name = "Key" } } : 
-                Tokenf.pattern )];
-            annot = "List.iter Typehook.plugin_add plugins\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  (plugins : 'id list)  _  _  (_loc : Locf.t)  ->
-                    (List.iter Typehook.plugin_add plugins : 'fan_quot ) : 
-                 Tokenf.txt ->
-                   'id list ->
-                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'fan_quot ))
-          };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "unload"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             List1sep
-               ((Nterm (Gramf.obj (id : 'id Gramf.t ))),
-                 (Token
+       entry = (fan_quot : 'fan_quot Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           {
+                             tag = `Key;
+                             word = (A "derive");
+                             tag_name = "Key"
+                           }
+                       } : Tokenf.pattern );
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "("); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   List1 (Nterm (Gramf.obj (id : 'id Gramf.t )));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ")"); tag_name = "Key" }
+                      } : Tokenf.pattern )];
+                 annot = "List.iter Typehook.plugin_add plugins\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  (plugins : 'id list)  _  _  (_loc : Locf.t)  ->
+                         (List.iter Typehook.plugin_add plugins : 'fan_quot ) : 
+                      Tokenf.txt ->
+                        'id list ->
+                          Tokenf.txt -> Tokenf.txt -> Locf.t -> 'fan_quot ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "unload"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern );
+                  List1sep
+                    ((Nterm (Gramf.obj (id : 'id Gramf.t ))),
+                      (Token
+                         ({
+                            descr =
+                              { tag = `Key; word = (A ","); tag_name = "Key"
+                              }
+                          } : Tokenf.pattern )))];
+                annot = "List.iter Typehook.plugin_remove plugins\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
+                        (List.iter Typehook.plugin_remove plugins : 'fan_quot ) : 
+                     'id list -> Tokenf.txt -> Locf.t -> 'fan_quot ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "clear"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "State.reset_current_filters ()\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  ->
+                        (State.reset_current_filters () : 'fan_quot ) : 
+                     Tokenf.txt -> Locf.t -> 'fan_quot ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "keep"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
                     ({
                        descr =
-                         { tag = `Key; word = (A ","); tag_name = "Key" }
-                     } : Tokenf.pattern )))];
-           annot = "List.iter Typehook.plugin_remove plugins\n";
-           fn =
-             (Gramf.mk_action
-                (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
-                   (List.iter Typehook.plugin_remove plugins : 'fan_quot ) : 
-                'id list -> Tokenf.txt -> Locf.t -> 'fan_quot ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "clear"); tag_name = "Key" }
-                 } : Tokenf.pattern )];
-           annot = "State.reset_current_filters ()\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  (_loc : Locf.t)  ->
-                   (State.reset_current_filters () : 'fan_quot ) : Tokenf.txt
+                         { tag = `Key; word = (A "on"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "State.keep := true\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  ->
+                        (State.keep := true : 'fan_quot ) : Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'fan_quot ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "keep"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "off"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "State.keep := false\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  ->
+                        (State.keep := false : 'fan_quot ) : Tokenf.txt ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'fan_quot ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          {
+                            tag = `Key;
+                            word = (A "show_code");
+                            tag_name = "Key"
+                          }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "on"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "Typehook.show_code := true\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  ->
+                        (Typehook.show_code := true : 'fan_quot ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
                                                                     ->
                                                                     Locf.t ->
                                                                     'fan_quot ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "keep"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
-               Tokenf.pattern )];
-           annot = "State.keep := true\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  _  (_loc : Locf.t)  ->
-                   (State.keep := true : 'fan_quot ) : Tokenf.txt ->
-                                                         Tokenf.txt ->
-                                                           Locf.t ->
-                                                             'fan_quot ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "keep"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" }
-                } : Tokenf.pattern )];
-           annot = "State.keep := false\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  _  (_loc : Locf.t)  ->
-                   (State.keep := false : 'fan_quot ) : Tokenf.txt ->
-                                                          Tokenf.txt ->
-                                                            Locf.t ->
-                                                              'fan_quot ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "show_code"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Key; word = (A "on"); tag_name = "Key" } } : 
-               Tokenf.pattern )];
-           annot = "Typehook.show_code := true\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  _  (_loc : Locf.t)  ->
-                   (Typehook.show_code := true : 'fan_quot ) : Tokenf.txt ->
-                                                                 Tokenf.txt
-                                                                   ->
-                                                                   Locf.t ->
-                                                                    'fan_quot ))
-         };
-         {
-           symbols =
-             [Token
-                ({
-                   descr =
-                     { tag = `Key; word = (A "show_code"); tag_name = "Key" }
-                 } : Tokenf.pattern );
-             Token
-               ({ descr = { tag = `Key; word = (A "off"); tag_name = "Key" }
-                } : Tokenf.pattern )];
-           annot = "Typehook.show_code := false\n";
-           fn =
-             (Gramf.mk_action
-                (fun _  _  (_loc : Locf.t)  ->
-                   (Typehook.show_code := false : 'fan_quot ) : Tokenf.txt ->
-                                                                  Tokenf.txt
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'fan_quot ))
-         }]
-     } : Gramf.olevel );
-  Gramf.extend_single (id : 'id Gramf.t )
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          {
+                            tag = `Key;
+                            word = (A "show_code");
+                            tag_name = "Key"
+                          }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "off"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "Typehook.show_code := false\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  ->
+                        (Typehook.show_code := false : 'fan_quot ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'fan_quot ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Token
-                 ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
-                 Tokenf.pattern )];
-            annot = "x\n";
-            fn =
-              (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                    let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
-                                                          Locf.t -> 'id ))
-          };
-         {
-           symbols =
-             [Token
-                ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" } } : 
-                Tokenf.pattern )];
-           annot = "x\n";
-           fn =
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
-                   let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
-                                                         Locf.t -> 'id ))
-         }]
-     } : Gramf.olevel );
-  Gramf.extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
+       entry = (id : 'id Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
+                       } : Tokenf.pattern )];
+                 annot = "x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                         let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
+                                                               Locf.t -> 'id ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Uid; word = Any; tag_name = "Uid" }
+                      } : Tokenf.pattern )];
+                annot = "x\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let x = __fan_0.txt in (x : 'id ) : Tokenf.txt ->
+                                                              Locf.t -> 'id ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t ));
-              Token
-                ({ descr = { tag = `Key; word = (A ";"); tag_name = "Key" } } : 
-                Tokenf.pattern )];
-            annot = "";
-            fn =
-              (Gramf.mk_action
-                 (fun _  _  (_loc : Locf.t)  -> (() : 'fan_quot_semi ) : 
-                 Tokenf.txt -> 'fan_quot -> Locf.t -> 'fan_quot_semi ))
-          }]
-     } : Gramf.olevel );
-  Gramf.extend_single (fan_quots : 'fan_quots Gramf.t )
+       entry = (fan_quot_semi : 'fan_quot_semi Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";"); tag_name = "Key" }
+                      } : Tokenf.pattern )];
+                 annot = "";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  _  (_loc : Locf.t)  -> (() : 'fan_quot_semi ) : 
+                      Tokenf.txt -> 'fan_quot -> Locf.t -> 'fan_quot_semi ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
     ({
-       label = None;
-       lassoc = true;
-       productions =
-         [{
-            symbols =
-              [List1
-                 (Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))];
-            annot = "(`Uid (_loc, \"()\") : Astf.exp )\n";
-            fn =
-              (Gramf.mk_action
-                 (fun _  (_loc : Locf.t)  ->
-                    ((`Uid (_loc, "()") : Astf.exp ) : 'fan_quots ) : 
-                 'fan_quot_semi list -> Locf.t -> 'fan_quots ))
-          }]
-     } : Gramf.olevel )
+       entry = (fan_quots : 'fan_quots Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [List1
+                      (Nterm
+                         (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))];
+                 annot = "(`Uid (_loc, \"()\") : Astf.exp )\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  (_loc : Locf.t)  ->
+                         ((`Uid (_loc, "()") : Astf.exp ) : 'fan_quots ) : 
+                      'fan_quot_semi list -> Locf.t -> 'fan_quots ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement )
 let lexer = Lexing_util.adapt_to_stream token
 let _ =
   Options.add
