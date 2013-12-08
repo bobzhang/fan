@@ -1,5 +1,3 @@
-
-
 (** The configuration for Fan *)
 
   
@@ -27,7 +25,7 @@ val bug_main_address : string
 
 val fan_debug : bool ref
 
-val conversion_table : (string, string) Hashtbl.t
+
 
 val gram_warning_verbose : bool ref
 
@@ -47,8 +45,3 @@ val fan_standard_library : string
 
 (** [$FAN_LIB_DIR] if set, otherwise +fanplugin*)    
 val fan_plugins_library : string    
-
-
-
-
-    

@@ -84,6 +84,7 @@ ulex/
 
 ############### possible generated files ########################
 common/oconfig.ml
+common/configf.ml
 *.opt
 fan
 fan_hot

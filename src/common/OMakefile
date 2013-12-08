@@ -2,15 +2,19 @@
 
 OCAMLINCLUDES += +compiler-libs
 OCAMLINCLUDES += $(UTILS_INCLUDES)
-LocalFiles=oconfig.ml
-$(LocalFiles): oconfig.mlp
-	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" $< > $@
+LocalFiles=configf.ml
+$(LocalFiles): configf.mlp
+	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" \
+            -e "s|%%AST_IMPL_MAGIC%%|$(OCAML_AST_IMPL_MAGIC)|" \
+            -e "s|%%AST_INTF_MAGIC%%|$(OCAML_AST_INTF_MAGIC)|" \
+            -e "s|%%CMI_MAGIC%%|$(OCAML_CMI_MAGIC)|" \
+            -e "s|%%OCAML_VERSION%%|$(OCAML_VERSION)|" \
+        $< > $@
 
 FILES = \
-    oconfig \
+    configf \
     ast_print \
     id_set\
-    configf\
     locf \
     fcset\
     options\

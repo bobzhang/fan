@@ -61,12 +61,24 @@ public.USE_OCAMLFIND = false
     NATIVE_ENABLED = $(OCAMLOPT_EXISTS)
     NATIVEPLUGIN_ENABLED = false
     BYTE_ENABLED = $(OCAMLC_EXISTS)
+
     OCAMLLIB =
         if $(OCAMLC_EXISTS)
             ConfMsgChecking(for OCaml library location)
             value $(ConfMsgResult $(dir $"$(shell ocamlc -where)"))
         else
             value $(EMPTY)
+
+    OCAML_AST_IMPL_MAGIC =
+        value $(nth 1, $(shell ocamlc -config | grep ast_impl_magic_number:))
+
+    OCAML_AST_INTF_MAGIC =
+        value $(nth 1, $(shell ocamlc -config | grep ast_intf_magic_number:))
+
+    OCAML_CMI_MAGIC =
+        value $(nth 1, $(shell ocamlc -config | grep cmi_magic_number:))
+    OCAML_VERSION  =
+        value $(nth 1, $(shell ocamlc -config | grep version:))
     ConfMsgChecking(if ocamldep understands -modules)
     OCAMLDEP_MODULES_AVAILABLE = $(ConfMsgYesNo $(shell-success-null ocamldep -modules))
 
