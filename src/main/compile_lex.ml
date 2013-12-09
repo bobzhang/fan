@@ -32,30 +32,13 @@ let auto_binds =
       end}]
 
 
-let output_mem_access (i:int) = %exp{lexbuf.lex_mem.($int':i)}
-
-let (
-
-     (* last_action, *)
-     start_pos
-    )  =
-  ( 
-
-    (* %exp{lexbuf.lex_last_action }, *)
-    %exp{ lexbuf.lex_start_pos }
-   )
-    
-    
 let output_memory_actions (mvs:Lexgen.memory_action list) : exp list =
   List.map
     (fun x ->
       match x with
       | Lexgen.Copy(tgt,src) ->
-          (* let u = output_mem_access tgt in *)
-          (* let v = output_mem_access src in  *)
           %exp{ lexbuf.lex_mem.($int':tgt) <- lexbuf.lex_mem.($int':src) }
       | Set tgt ->
-          (* let u = output_mem_access tgt in *)
           %exp{ lexbuf.lex_mem.($int':tgt) <- lexbuf.lex_curr_pos }) mvs
     
 let lex_state i =
@@ -121,12 +104,9 @@ let output_trans (i:int) (trans:Lexgen.automata)=
     List.map
       (function
         | Lexgen.SetTag(t,m) ->
-            let u = output_mem_access t in
-            let v = output_mem_access m in 
-            %exp{ $u <- $v }
+            %exp{ lexbuf.lex_mem.($int':t) <- lexbuf.lex_mem.($int':m) }
         | EraseTag(t) ->
-            let u = output_mem_access t in 
-            %exp{ $u <- -1 }) mvs in
+            %exp{ lexbuf.lex_mem.($int':t) <- -1 }) mvs in
   let e =
     match trans with
     | Perform(n,mvs) ->
@@ -167,11 +147,11 @@ let output_env (env: Automata_def.t_env) : bind list =
   let output_tag_access (x : (Automata_def.tag_base * int ))=
     match x with 
     | (Automata_def.Mem i,d) ->
-        %exp{ (${output_mem_access i} + $int':d) }
+        %exp{ ( lexbuf.lex_mem.($int':i) + $int':d) }
     | (Start,d) ->
-        %exp{ ($start_pos+ $int':d) }
+        %exp{ (lexbuf.lex_start_pos + $int':d) }
     | (End,d) ->
-        %exp{ (lexbuf.lex_curr_pos + $int':d) } in
+        %exp{ (lexbuf.lex_curr_pos  + $int':d) } in
   List.map
     (fun (((loc,_) as id),v) ->
       let (id : pat) = `Lid id  in

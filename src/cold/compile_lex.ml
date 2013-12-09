@@ -151,13 +151,6 @@ let auto_binds =
                                                               "lex_buffer")))),
                                                     (`Lid (_loc, "i"))))))))))))))))))))) : 
   Astf.bind )]
-let output_mem_access (i : int) =
-  (`ArrayDot
-     (_loc,
-       (`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_mem")))),
-       (`Int (_loc, (string_of_int i)))) : Astf.exp )
-let start_pos: Astf.exp =
-  `Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_start_pos")))
 let output_memory_actions (mvs : Lexgen.memory_action list) =
   (List.map
      (fun x  ->
@@ -246,12 +239,30 @@ let output_trans (i : int) (trans : Lexgen.automata) =
     (List.map
        (function
         | Lexgen.SetTag (t,m) ->
-            let u = output_mem_access t in
-            let v = output_mem_access m in (`Assign (_loc, u, v) : Astf.exp )
+            (`Assign
+               (_loc,
+                 (`ArrayDot
+                    (_loc,
+                      (`Field
+                         (_loc, (`Lid (_loc, "lexbuf")),
+                           (`Lid (_loc, "lex_mem")))),
+                      (`Int (_loc, (string_of_int t))))),
+                 (`ArrayDot
+                    (_loc,
+                      (`Field
+                         (_loc, (`Lid (_loc, "lexbuf")),
+                           (`Lid (_loc, "lex_mem")))),
+                      (`Int (_loc, (string_of_int m)))))) : Astf.exp )
         | EraseTag t ->
-            let u = output_mem_access t in
-            (`Assign (_loc, u, (`Int (_loc, "-1"))) : Astf.exp )) mvs : 
-    exp list ) in
+            (`Assign
+               (_loc,
+                 (`ArrayDot
+                    (_loc,
+                      (`Field
+                         (_loc, (`Lid (_loc, "lexbuf")),
+                           (`Lid (_loc, "lex_mem")))),
+                      (`Int (_loc, (string_of_int t))))),
+                 (`Int (_loc, "-1"))) : Astf.exp )) mvs : exp list ) in
   let e =
     match trans with
     | Perform (n,mvs) ->
@@ -310,11 +321,24 @@ let output_env (env : Automata_def.t_env) =
      match x with
      | (Automata_def.Mem i,d) ->
          (`App
-            (_loc, (`App (_loc, (`Lid (_loc, "+")), (output_mem_access i))),
+            (_loc,
+              (`App
+                 (_loc, (`Lid (_loc, "+")),
+                   (`ArrayDot
+                      (_loc,
+                        (`Field
+                           (_loc, (`Lid (_loc, "lexbuf")),
+                             (`Lid (_loc, "lex_mem")))),
+                        (`Int (_loc, (string_of_int i))))))),
               (`Int (_loc, (string_of_int d)))) : Astf.exp )
      | (Start ,d) ->
          (`App
-            (_loc, (`App (_loc, (`Lid (_loc, "+")), start_pos)),
+            (_loc,
+              (`App
+                 (_loc, (`Lid (_loc, "+")),
+                   (`Field
+                      (_loc, (`Lid (_loc, "lexbuf")),
+                        (`Lid (_loc, "lex_start_pos")))))),
               (`Int (_loc, (string_of_int d)))) : Astf.exp )
      | (End ,d) ->
          (`App
