@@ -510,8 +510,8 @@ let output_entry _loc
                                                                     "^")),
                                                                     (`Lid
                                                                     (_loc,
-                                                                    "__PWD__")))),
+                                                                    "__BIND__")))),
                                                                     (`Str
                                                                     (_loc,
-                                                                    "lexing: empty token"))))))))))))))))))))))))))))))))) : 
+                                                                    " lexing: empty token"))))))))))))))))))))))))))))))))) : 
      Astf.exp ) : Astf.exp )

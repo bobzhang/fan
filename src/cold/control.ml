@@ -682,7 +682,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let c = Lexing.sub_lexeme_char lexbuf (lexbuf.lex_start_pos + 0) in
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
-      | _ -> failwith ("Control" ^ ("." ^ ("." ^ "lexing: empty token")))))
+      | _ ->
+          failwith ("Control" ^ ("." ^ ("token" ^ " lexing: empty token")))))
 let item = Gramf.mk "item"
 let dot_namespace = Gramf.mk "dot_namespace"
 let items = Gramf.mk "items"

@@ -147,7 +147,9 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
         (err Unterminated_comment) @@
           (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p)
     | 4 -> with_store c lexbuf lex_comment
-    | _ -> failwith ("Lexing_util" ^ ("." ^ ("." ^ "lexing: empty token")))))
+    | _ ->
+        failwith
+          ("Lexing_util" ^ ("." ^ ("lex_comment" ^ " lexing: empty token")))))
 let rec lex_string c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf mem_size =
     let pos = lexbuf.lex_curr_pos in
@@ -268,7 +270,9 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
         (err Unterminated_string) @@
           (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p)
     | 6 -> with_store c lexbuf lex_string
-    | _ -> failwith ("Lexing_util" ^ ("." ^ ("." ^ "lexing: empty token")))))
+    | _ ->
+        failwith
+          ("Lexing_util" ^ ("." ^ ("lex_string" ^ " lexing: empty token")))))
 let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf mem_size =
     let pos = lexbuf.lex_curr_pos in
@@ -1498,7 +1502,9 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
           (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p)
     | 7 -> with_store c lexbuf lex_quotation
     | 8 -> with_store c lexbuf lex_quotation
-    | _ -> failwith ("Lexing_util" ^ ("." ^ ("." ^ "lexing: empty token")))))
+    | _ ->
+        failwith
+          ("Lexing_util" ^ ("." ^ ("lex_quotation" ^ " lexing: empty token")))))
 let adapt_to_stream token (loc : Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;

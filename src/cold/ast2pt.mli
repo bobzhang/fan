@@ -104,9 +104,8 @@ val exp : exp -> Parsetree.expression
 
 val label_exp : exp -> Asttypes.label * Parsetree.expression
 
-val bind :
+val top_bind :
   bind ->
-  (Parsetree.pattern * Parsetree.expression) list ->
   (Parsetree.pattern * Parsetree.expression) list
       
 val case :

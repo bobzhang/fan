@@ -231,7 +231,7 @@ let output_entry _loc
                   | xs ->
                       let bind = and_of_list xs in
                       %case{ $int:n -> let $bind in $act }) |> bar_of_list}
-        | _ -> failwith   (__MODULE__ ^ "." ^ __PWD__ ^ "lexing: empty token" )
+        | _ -> failwith   (__MODULE__ ^ "." ^ __BIND__ ^ " lexing: empty token" )
       end
     end
   }

@@ -111,7 +111,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ ->
-          failwith ("Lang_include" ^ ("." ^ ("." ^ "lexing: empty token")))))
+          failwith
+            ("Lang_include" ^ ("." ^ ("token" ^ " lexing: empty token")))))
 let lexer = Lexing_util.adapt_to_stream token
 let include_quot = Gramf.mk "include_quot"
 let _ =

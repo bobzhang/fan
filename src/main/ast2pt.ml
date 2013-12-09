@@ -740,7 +740,7 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `IfThenElse (_, e1, e2, e3) -> Pexp_ifthenelse (exp e1,exp e2,Some (exp e3))
   | `IfThen (_,e1,e2) -> Pexp_ifthenelse (exp e1,exp e2, None)
   | `Lazy (_loc,e) -> Pexp_lazy (exp e)
-  | `LetIn (_,rf,bi,e) -> Pexp_let (mkrf rf,bind bi [], exp e)
+  | `LetIn (_,rf,bi,e) -> Pexp_let (mkrf rf, top_bind bi , exp e)
   | `LetTryInWith(_,rf,bi,e,cas) ->
     let cas =
       let rec f (x:case)  : case=
@@ -828,45 +828,46 @@ and label_exp (x : exp) =
   | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, exp (`Lid(loc,lab)))
   | e -> ("", exp e) 
 
-and bind (x:bind) acc =
-  match x with
-  | `And (_loc,x,y) -> bind x (bind y acc)
-  | `Bind (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint (_,e,`TyTypePol (_,vs,ty))) ->
-    let rec id_to_string (x : ctyp) =
-      match x with
-      | `Lid (_,x) -> [x]
-      | `App (_loc,x,y) -> id_to_string x @ id_to_string y
-      | x ->
-        Locf.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in
-    let vars = id_to_string vs in
-    let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
-    let ty' = varify_constructors vars (ctyp ty) in
-    let mkexp = mkexp _loc in
-    let mkpat = mkpat _loc in
-    let e = mkexp (Pexp_constraint ((exp e), (Some (ctyp ty)), None)) in
-    let rec mk_newtypes x =
-      match x with
-      | newtype::[] -> mkexp (Pexp_newtype (newtype, e))
-      | newtype::newtypes ->
-        mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes)))
-      | [] -> assert false in
-    let pat =
-      mkpat
-        (Ppat_constraint
-           ((mkpat (Ppat_var {loc = sloc ; txt = bind_name})),
-            (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
-    let e = mk_newtypes vars in (pat, e) :: acc
-  | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
-    ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc
-  | `Bind (_loc,p,e)  -> (pat p, exp e) :: acc
-  | _ -> assert false
+(* and bind (x:bind) acc = *)
+(*   match x with *)
+(*   | `And (_loc,x,y) -> bind x (bind y acc) *)
+(*   | `Bind (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint (_,e,`TyTypePol (_,vs,ty))) -> *)
+(*     let rec id_to_string (x : ctyp) = *)
+(*       match x with *)
+(*       | `Lid (_,x) -> [x] *)
+(*       | `App (_loc,x,y) -> id_to_string x @ id_to_string y *)
+(*       | x -> *)
+(*         Locf.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in *)
+(*     let vars = id_to_string vs in *)
+(*     let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in *)
+(*     let ty' = varify_constructors vars (ctyp ty) in *)
+(*     let mkexp = mkexp _loc in *)
+(*     let mkpat = mkpat _loc in *)
+(*     let e = mkexp (Pexp_constraint ((exp e), (Some (ctyp ty)), None)) in *)
+(*     let rec mk_newtypes x = *)
+(*       match x with *)
+(*       | newtype::[] -> mkexp (Pexp_newtype (newtype, e)) *)
+(*       | newtype::newtypes -> *)
+(*         mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes))) *)
+(*       | [] -> assert false in *)
+(*     let pat = *)
+(*       mkpat *)
+(*         (Ppat_constraint *)
+(*            ((mkpat (Ppat_var {loc = sloc ; txt = bind_name})), *)
+(*             (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in *)
+(*     let e = mk_newtypes vars in (pat, e) :: acc *)
+(*   | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) -> *)
+(*     ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc *)
+(*   | `Bind (_loc,p,e)  -> (pat p, exp e) :: acc *)
+(*   | _ -> assert false *)
 
 
 (** same as [bind] except it is called by [let v = 3] instead of [let v  = 3 in .... ]
  *)
-and top_bind (x:bind) acc =
+and top_bind (x:bind)  =
+  let  rec aux (x:bind) acc =
   match x with
-  | `And (_loc,x,y) -> top_bind x (top_bind y acc)
+  | `And (_loc,x,y) -> aux x (aux y acc)
   | `Bind(_loc,`Lid(sloc,bind_name), e ) ->
       Ref.protect current_top_bind (bind_name :: !current_top_bind) (fun _ -> 
       begin match e with
@@ -901,8 +902,8 @@ and top_bind (x:bind) acc =
   | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
     ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc
   | `Bind (_,p,e)  -> (pat p, exp e) :: acc
-  | _ -> assert false
-        
+  | _ -> assert false in
+  aux x []
 (** transoform [case], used by [exp] transformation *)        
 and case (x:case) = 
   let cases = list_of_bar x [] in
@@ -1075,7 +1076,7 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
       Pstr_open (flag _loc g ,long_uident id)
   | `Type (_,tdl) -> Pstr_type (mktype_decl tdl )
   | `Value (_,rf,bi) ->
-    Pstr_value (mkrf rf, top_bind bi [])
+    Pstr_value (mkrf rf, top_bind bi)
   | x-> Locf.failf _loc "stru : %s" (!dump_stru x)
 and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
   match s with
@@ -1235,7 +1236,7 @@ and clexp_desc loc (x:Astf.clexp) : Parsetree.class_expr_desc =
   | `CeFun (_,p,ce) ->
       Pcl_fun ("", None, pat p, clexp ce)
   | `LetIn (_, rf, bi, ce) ->
-      Pcl_let (mkrf rf, bind bi [], clexp ce)
+      Pcl_let (mkrf rf, top_bind bi, clexp ce)
   | `ObjEnd _ ->
       Pcl_structure{pcstr_pat= mkpat loc Ppat_any; pcstr_fields=[]}
   | `Obj(_,cfl) ->
