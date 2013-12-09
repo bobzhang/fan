@@ -45,30 +45,32 @@ let lex_state i =
    "__ocaml_lex_state"^string_of_int i
 
     
-(* length at least  one*)    
-let output_action (mems:Lexgen.memory_action list) (r:Lexgen.automata_move) : exp list  =
-   output_memory_actions mems @
-  (match r with
-  | Backtrack ->
-      [ %exp{lexbuf.lex_curr_pos <- lexbuf.lex_last_pos };
-        %exp{lexbuf.lex_last_action}]
-  | Goto n -> [%exp{$lid{lex_state n} ()}])
 
-let output_clause
-    (pats:int list)
-    (mems:Lexgen.memory_action list)
-    (r:Lexgen.automata_move) =
-  let pat = bar_of_list (List.map (fun x -> %pat{$int':x}) pats) in
-  let action = seq_sem (output_action mems r) in 
-  %case{ $pat -> $action }
 
-let output_default_clause mems r =
-  let action = seq_sem (output_action mems r) in
-  %case{ _ -> $action }
-
-(* output at least one case *)    
+(** output at least one case
+   Called when the automata is shift
+ *)    
 let output_moves (moves: (Lexgen.automata_move * Lexgen.memory_action list) array) : case list =
-  let t = Hashtbl.create 17 in
+  (* length at least  one*)    
+  let output_action (mems:Lexgen.memory_action list) (r:Lexgen.automata_move) : exp list  =
+    output_memory_actions mems @
+    (match r with
+    | Backtrack ->
+        [ %exp{lexbuf.lex_curr_pos <- lexbuf.lex_last_pos };
+          %exp{lexbuf.lex_last_action}]
+    | Goto n -> [%exp{$lid{lex_state n} ()}]) in
+  let output_clause ?pats
+      (mems:Lexgen.memory_action list)
+      (r:Lexgen.automata_move) =
+    let pat =
+      match pats with
+      | Some pats ->
+          bar_of_list (List.map (fun x -> %pat{$int':x}) pats)
+      | None -> %pat{_} in
+    let action = seq_sem (output_action mems r) in 
+    %case{ $pat -> $action } in
+  let (t:(Lexgen.automata_move, (Lexgen.memory_action list * int list)) Hashtbl.t) =
+    Hashtbl.create 17 in
   let add_move i (m,mems) =
     let (mems,r) = try Hashtbl.find t m with Not_found -> (mems,[]) in
     Hashtbl.replace t m (mems,(i::r)) in
@@ -92,9 +94,9 @@ let output_moves (moves: (Lexgen.automata_move * Lexgen.memory_action list) arra
      (Hashtbl.fold 
         (fun m (mems,pats) acc ->
           if m <> !most_frequent then
-            output_clause (List.rev pats) mems m  :: acc
+            output_clause ~pats:(List.rev pats) mems m  :: acc
           else acc
-        ) t []) @ [output_default_clause !most_mems !most_frequent])
+        ) t []) @ [output_clause  !most_mems !most_frequent])
   end
     
 
@@ -110,8 +112,7 @@ let output_trans (i:int) (trans:Lexgen.automata)=
   let e =
     match trans with
     | Perform(n,mvs) ->
-        let es = output_tag_actions mvs in 
-        seq_sem (es @ [ %exp{ $int':n}]) 
+        seq_sem (output_tag_actions mvs @ [ %exp{ $int':n}]) 
     | Shift(trans,move) ->
         let moves = bar_of_list (output_moves move) in
         seq_sem
@@ -135,7 +136,11 @@ let output_automata (transitions:Lexgen.automata array) : bind list =
 
 
   
-    
+let offset e i =
+  if i = 0 then
+    e
+  else %exp{ $e + $int':i}
+      
 let output_env (env: Automata_def.t_env) : bind list =
   let env =
     List.sort
@@ -145,12 +150,15 @@ let output_env (env: Automata_def.t_env) : bind list =
             if Locf.strictly_before p1 p2 then -1 else 1) env in
   let output_tag_access (x : (Automata_def.tag_base * int ))=
     match x with 
-    | (Automata_def.Mem i,d) ->
-        %exp{ ( lexbuf.lex_mem.($int':i) + $int':d) }
+    | (Mem i,d) ->
+        offset %exp{lexbuf.lex_mem.($int':i)} d 
+        (* %exp{ ( lexbuf.lex_mem.($int':i) + $int':d) } *)
     | (Start,d) ->
-        %exp{ (lexbuf.lex_start_pos + $int':d) }
+        offset %exp{lexbuf.lex_start_pos} d 
+        (* %exp{ (lexbuf.lex_start_pos + $int':d) } *)
     | (End,d) ->
-        %exp{ (lexbuf.lex_curr_pos  + $int':d) } in
+        offset %exp{lexbuf.lex_curr_pos} d
+        (* %exp{ (lexbuf.lex_curr_pos  + $int':d) } *) in
   List.map
     (fun (((loc,_) as id),v) ->
       let (id : pat) = `Lid id  in

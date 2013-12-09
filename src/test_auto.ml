@@ -1,33 +1,34 @@
 
 
-let (u,v) = Lexgen.make_single_dfa
+let (u,v) =
+  Lexgen.make_single_dfa
     {shortest=false;
      clauses =
      [
-      (%re{"a"},"action0");
-      (%re{"b"},"action1");
-      (%re{"c"},"action2");
-      (%re{"d"},"action3");
-
+      (%re{(int_literal as n)? 'n'}, "action");
      ]};;
 
 (* let s = match v with [| Lexgen.Shift (No_remember, s); b|] -> s;; *)
 
+(* %lex{
+| (int_literal as n)? 'n' %{3}
+} *)
 
+(*
 %lex{
 | "a" %{"action0"}
 | "b" %{"action1"}
 | "c" %{"action2"}
 | "d" %{"action3"}
-}
+} *)
 
-
+(*
 %lex{
 | "e"("a" as s) "b" as v %{s}
 | "b" %{"action1"}
 | "c" %{"action2"}
 | "d" %{"action3"}
-}
+} *)
   
 (* val u : string Lexgen.automata_entry = *)
 (*   {Lexgen.auto_mem_size = 0; auto_initial_state = (0, []); *)

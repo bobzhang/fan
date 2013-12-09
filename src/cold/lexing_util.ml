@@ -255,8 +255,7 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
     | 0 -> pop_loc c
     | 1 ->
         let space =
-          Lexing.sub_lexeme lexbuf (((lexbuf.lex_mem).(0)) + 0)
-            (lexbuf.lex_curr_pos + 0) in
+          Lexing.sub_lexeme lexbuf ((lexbuf.lex_mem).(0)) lexbuf.lex_curr_pos in
         (update_loc lexbuf ~retract:(String.length space);
          lex_string c lexbuf)
     | 2 -> with_store c lexbuf lex_string

@@ -585,8 +585,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | 0 -> ((); token lexbuf)
       | 1 -> (Lexing_util.update_loc lexbuf; token lexbuf)
       | 2 ->
-          let x =
-            Lexing.sub_lexeme_char_opt lexbuf (((lexbuf.lex_mem).(0)) + 0) in
+          let x = Lexing.sub_lexeme_char_opt lexbuf ((lexbuf.lex_mem).(0)) in
           ((let c = Lexing_util.new_cxt () in
             if x <> None
             then
@@ -597,8 +596,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
            token lexbuf)
       | 3 ->
           let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.lex_start_pos + 0)
-              (lexbuf.lex_curr_pos + 0) in
+            Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos lexbuf.lex_curr_pos in
           let v = Hashtbl.hash txt in
           if
             ((function
@@ -634,8 +632,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
               }
       | 4 ->
           let txt =
-            Lexing.sub_lexeme lexbuf (lexbuf.lex_start_pos + 0)
-              (lexbuf.lex_curr_pos + 0) in
+            Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos lexbuf.lex_curr_pos in
           `Uid
             {
               loc =
@@ -670,7 +667,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
            (let loc = Lexing_util.from_lexbuf lexbuf in
             (`EOI { loc; txt = "" } : Tokenf.t )))
       | 7 ->
-          let c = Lexing.sub_lexeme_char lexbuf (lexbuf.lex_start_pos + 0) in
+          let c = Lexing.sub_lexeme_char lexbuf lexbuf.lex_start_pos in
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ ->

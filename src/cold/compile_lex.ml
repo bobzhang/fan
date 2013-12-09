@@ -184,38 +184,41 @@ let output_memory_actions (mvs : Lexgen.memory_action list) =
                       (`Lid (_loc, "lex_curr_pos"))))) : Astf.exp )) mvs : 
   exp list )
 let lex_state i = "__ocaml_lex_state" ^ (string_of_int i)
-let output_action (mems : Lexgen.memory_action list)
-  (r : Lexgen.automata_move) =
-  ((output_memory_actions mems) @
-     (match r with
-      | Backtrack  ->
-          [(`Assign
-              (_loc,
-                (`Field
-                   (_loc, (`Lid (_loc, "lexbuf")),
-                     (`Lid (_loc, "lex_curr_pos")))),
-                (`Field
-                   (_loc, (`Lid (_loc, "lexbuf")),
-                     (`Lid (_loc, "lex_last_pos"))))) : Astf.exp );
-          (`Field
-             (_loc, (`Lid (_loc, "lexbuf")),
-               (`Lid (_loc, "lex_last_action"))) : Astf.exp )]
-      | Goto n ->
-          [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Uid (_loc, "()"))) : 
-          Astf.exp )]) : exp list )
-let output_clause (pats : int list) (mems : Lexgen.memory_action list)
-  (r : Lexgen.automata_move) =
-  let pat =
-    bar_of_list
-      (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats) in
-  let action = seq_sem (output_action mems r) in
-  (`Case (_loc, pat, action) : Astf.case )
-let output_default_clause mems r =
-  let action = seq_sem (output_action mems r) in
-  (`Case (_loc, (`Any _loc), action) : Astf.case )
 let output_moves
   (moves : (Lexgen.automata_move* Lexgen.memory_action list) array) =
-  (let t = Hashtbl.create 17 in
+  (let output_action (mems : Lexgen.memory_action list)
+     (r : Lexgen.automata_move) =
+     ((output_memory_actions mems) @
+        (match r with
+         | Backtrack  ->
+             [(`Assign
+                 (_loc,
+                   (`Field
+                      (_loc, (`Lid (_loc, "lexbuf")),
+                        (`Lid (_loc, "lex_curr_pos")))),
+                   (`Field
+                      (_loc, (`Lid (_loc, "lexbuf")),
+                        (`Lid (_loc, "lex_last_pos"))))) : Astf.exp );
+             (`Field
+                (_loc, (`Lid (_loc, "lexbuf")),
+                  (`Lid (_loc, "lex_last_action"))) : Astf.exp )]
+         | Goto n ->
+             [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Uid (_loc, "()"))) : 
+             Astf.exp )]) : exp list ) in
+   let output_clause ?pats  (mems : Lexgen.memory_action list)
+     (r : Lexgen.automata_move) =
+     let pat =
+       match pats with
+       | Some pats ->
+           bar_of_list
+             (List.map
+                (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats)
+       | None  -> (`Any _loc : Astf.pat ) in
+     let action = seq_sem (output_action mems r) in
+     (`Case (_loc, pat, action) : Astf.case ) in
+   let (t
+     :(Lexgen.automata_move,(Lexgen.memory_action list* int list)) Hashtbl.t)=
+     Hashtbl.create 17 in
    let add_move i (m,mems) =
      let (mems,r) = try Hashtbl.find t m with | Not_found  -> (mems, []) in
      Hashtbl.replace t m (mems, (i :: r)) in
@@ -231,9 +234,9 @@ let output_moves
     (Hashtbl.fold
        (fun m  (mems,pats)  acc  ->
           if m <> (!most_frequent)
-          then (output_clause (List.rev pats) mems m) :: acc
+          then (output_clause ~pats:(List.rev pats) mems m) :: acc
           else acc) t [])
-      @ [output_default_clause (!most_mems) (!most_frequent)]) : case list )
+      @ [output_clause (!most_mems) (!most_frequent)]) : case list )
 let output_trans (i : int) (trans : Lexgen.automata) =
   let output_tag_actions (mvs : Lexgen.tag_action list) =
     (List.map
@@ -266,8 +269,9 @@ let output_trans (i : int) (trans : Lexgen.automata) =
   let e =
     match trans with
     | Perform (n,mvs) ->
-        let es = output_tag_actions mvs in
-        seq_sem (es @ [(`Int (_loc, (string_of_int n)) : Astf.exp )])
+        seq_sem
+          ((output_tag_actions mvs) @
+             [(`Int (_loc, (string_of_int n)) : Astf.exp )])
     | Shift (trans,move) ->
         let moves = bar_of_list (output_moves move) in
         seq_sem
@@ -309,6 +313,13 @@ let output_args (args : string list) e =
 let output_automata (transitions : Lexgen.automata array) =
   ((transitions |> (Array.mapi (fun i  auto  -> output_trans i auto))) |>
      Array.to_list : bind list )
+let offset e i =
+  if i = 0
+  then e
+  else
+    (`App
+       (_loc, (`App (_loc, (`Lid (_loc, "+")), e)),
+         (`Int (_loc, (string_of_int i)))) : Astf.exp )
 let output_env (env : Automata_def.t_env) =
   (let env =
      List.sort
@@ -318,36 +329,23 @@ let output_env (env : Automata_def.t_env) =
               if Locf.strictly_before p1 p2 then (-1) else 1) env in
    let output_tag_access (x : (Automata_def.tag_base* int)) =
      match x with
-     | (Automata_def.Mem i,d) ->
-         (`App
-            (_loc,
-              (`App
-                 (_loc, (`Lid (_loc, "+")),
-                   (`ArrayDot
-                      (_loc,
-                        (`Field
-                           (_loc, (`Lid (_loc, "lexbuf")),
-                             (`Lid (_loc, "lex_mem")))),
-                        (`Int (_loc, (string_of_int i))))))),
-              (`Int (_loc, (string_of_int d)))) : Astf.exp )
+     | (Mem i,d) ->
+         offset
+           (`ArrayDot
+              (_loc,
+                (`Field
+                   (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_mem")))),
+                (`Int (_loc, (string_of_int i)))) : Astf.exp ) d
      | (Start ,d) ->
-         (`App
-            (_loc,
-              (`App
-                 (_loc, (`Lid (_loc, "+")),
-                   (`Field
-                      (_loc, (`Lid (_loc, "lexbuf")),
-                        (`Lid (_loc, "lex_start_pos")))))),
-              (`Int (_loc, (string_of_int d)))) : Astf.exp )
+         offset
+           (`Field
+              (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_start_pos"))) : 
+           Astf.exp ) d
      | (End ,d) ->
-         (`App
-            (_loc,
-              (`App
-                 (_loc, (`Lid (_loc, "+")),
-                   (`Field
-                      (_loc, (`Lid (_loc, "lexbuf")),
-                        (`Lid (_loc, "lex_curr_pos")))))),
-              (`Int (_loc, (string_of_int d)))) : Astf.exp ) in
+         offset
+           (`Field
+              (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_curr_pos"))) : 
+           Astf.exp ) d in
    List.map
      (fun (((loc,_) as id),v)  ->
         let (id :pat)= `Lid id in
