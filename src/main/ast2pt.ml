@@ -77,7 +77,7 @@ let dump_clfield = %undef{}
 
 (** the module path -- recorded during dumping  *)
 let module_path :  string list ref = ref []
-let current_top_bind : string option ref = ref None       
+let current_top_bind : string list ref = ref []
 (*****************************)
 (* Util functions            *)    
 (*****************************)
@@ -633,9 +633,10 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
         String.concat "." sl in Pexp_constant (Const_string s)
   | `Lid(_,"__BIND__") ->
       let s =
-        match !current_top_bind with
-        | None -> Locf.failf _loc "No implicit binding context"
-        | Some s -> s in
+
+          String.concat "." (List.rev !current_top_bind) in
+        (* | None -> Locf.failf _loc "No implicit binding context" *)
+        (* | Some s -> s in *)
       Pexp_constant (Const_string s )
   | %exp{ __PWD__ } ->
       let s =  Filename.dirname (Locf.file_name _loc) in
@@ -867,7 +868,7 @@ and top_bind (x:bind) acc =
   match x with
   | `And (_loc,x,y) -> top_bind x (top_bind y acc)
   | `Bind(_loc,`Lid(sloc,bind_name), e ) ->
-      Ref.protect current_top_bind (Some bind_name) (fun _ -> 
+      Ref.protect current_top_bind (bind_name :: !current_top_bind) (fun _ -> 
       begin match e with
       | `Constraint(_,e,`TyTypePol(_,vs,ty)) ->
           let rec id_to_string (x : ctyp) =
@@ -1064,7 +1065,8 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
          ({loc=sloc;txt=n}, mkvalue_desc _loc t (list_of_app sl [] ))
   | `Include (_,me) -> Pstr_include (mexp me)
   | `Module (_,`Uid(sloc,n),me) -> (* change the [module_path] and restore it later *)
-      Ref.protect module_path (n :: !module_path ) (fun _ -> (Parsetree.Pstr_module ({loc = sloc; txt = n},mexp me)))
+      Ref.protect module_path (n :: !module_path )
+        (fun _ -> (Parsetree.Pstr_module ({loc = sloc; txt = n},mexp me)))
   | `RecModule (_,mb) ->
       Pstr_recmodule (module_str_bind mb [])
   | `ModuleType (_,`Uid(sloc,n),mt) ->
