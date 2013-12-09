@@ -56,8 +56,8 @@ let lex = Gramf.mk "lex"
 let declare_regexp = Gramf.mk "declare_regexp"
 let lex_fan = Gramf.mk "lex_fan"
 let case = Gramf.mk "case"
-let make_automata shortest l =
-  Compile_lex.output_entry @@
+let make_automata loc shortest l =
+  Compile_lex.output_entry loc
     (Lexgen.make_single_dfa { shortest; clauses = (Listf.concat l) })
 let make_lex nt a b =
   Gramf.extend_single
@@ -111,11 +111,11 @@ let make_lex nt a b =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let _ =
-  make_lex lex (fun l  _  _  -> make_automata false l)
-    (fun l  _  _  -> make_automata true l);
+  make_lex lex (fun l  _  loc  -> make_automata loc false l)
+    (fun l  _  loc  -> make_automata loc true l);
   make_lex lex_fan
     (fun l  _  _loc  ->
-       let e = make_automata false l in
+       let e = make_automata _loc false l in
        (`Constraint
           (_loc, e,
             (`Arrow
@@ -125,7 +125,7 @@ let _ =
                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
          Astf.exp ))
     (fun l  _  _loc  ->
-       let e = make_automata true l in
+       let e = make_automata _loc true l in
        (`Constraint
           (_loc, e,
             (`Arrow

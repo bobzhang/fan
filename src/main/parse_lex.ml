@@ -41,24 +41,24 @@ exception UnboundCase;;
    since we do unsafe_extend on top of Gramf...
  *)
 
-let make_automata shortest l =
-  Compile_lex.output_entry @@
-  Lexgen.make_single_dfa {shortest;clauses=Listf.concat l};;
+let make_automata loc shortest l =
+  Compile_lex.output_entry loc
+    (Lexgen.make_single_dfa {shortest;clauses=Listf.concat l})
 
 let make_lex nt a b = %extend{
   nt:
-  [  "|" ; L0 case SEP "|"  ${a}
-  | "<"  ; L0 case SEP "|"  ${b}]};;
+  [  "|" ; L0 case SEP "|"  ${a }
+  | "<"  ; L0 case SEP "|"  ${b }]};;
 
 
 let _ = begin
   make_lex lex
-    (fun l _ _ -> make_automata false l)
-    (fun l _ _ -> make_automata true l);
+    (fun l _ loc -> make_automata loc false l)
+    (fun l _ loc -> make_automata loc true  l);
   make_lex lex_fan
-    (fun l _ _loc -> let e = make_automata false l in
+    (fun l _ _loc -> let e = make_automata _loc false l in
     %exp{ ($e : Lexing.lexbuf -> Tokenf.t)})
-    (fun l _ _loc -> let e = make_automata true l in
+    (fun l _ _loc -> let e = make_automata _loc true l in
     %exp{ ($e : Lexing.lexbuf -> Tokenf.t)});
 end;;
     
@@ -126,8 +126,7 @@ end;;
     let c2 = Char.code @@ Escape.char c2 in
     Fcset.interval c1 c2}
   | Chr c1   %{ Fcset.singleton (Char.code @@ Escape.char c1)}
-  | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }
-  ]
+  | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }]
 
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{

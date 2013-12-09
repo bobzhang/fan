@@ -8,7 +8,8 @@ open Lexgen
 (** FIXME *)
 let _loc = Locf.ghost
 
-let auto_binds = (* with [lexbuf] in the context *)
+(** spliced in the inital lexer with [lexbuf] captured*)    
+let auto_binds = 
   [ %bind{
   __ocaml_lex_init_lexbuf  mem_size =
     let pos = lexbuf.lex_curr_pos in
@@ -29,13 +30,9 @@ let auto_binds = (* with [lexbuf] in the context *)
         end
       end else begin
         let i = lexbuf.lex_curr_pos in
-        let c = lexbuf.lex_buffer.[i] in
         (lexbuf.lex_curr_pos <- i+1 ;
-        Char.code c)
+        Char.code lexbuf.lex_buffer.[i])
       end}]
-
-let output_pats (pats:int list) =
-  bar_of_list (List.map (fun x -> %pat{$int':x}) pats)
 
 
 let output_mem_access (i:int) = %exp{lexbuf.lex_mem.($int':i)}
@@ -76,13 +73,14 @@ let output_action (mems:memory_action list) (r:automata_move) : exp list  =
       [ %exp{$curr_pos <- $last_pos };
         last_action]
   | Goto n -> [%exp{$lid{lex_state n} ()}])
+
 let output_clause
     (pats:int list)
     (mems:memory_action list)
     (r:automata_move) =
-  let pat = output_pats pats in
+  let pat = bar_of_list (List.map (fun x -> %pat{$int':x}) pats) in
   let action = seq_sem (output_action mems r) in 
-  %case{ $pat:pat -> $action }
+  %case{ $pat -> $action }
 
 let output_default_clause mems r =
   let action = seq_sem (output_action mems r) in
@@ -199,7 +197,7 @@ let output_env (env:t_env) : bind list =
           %bind@loc{ $id = $sub lexbuf $nstart }
     ) env
      
-let output_entry
+let output_entry _loc
     ({auto_mem_size;
     auto_initial_state=(init_num,init_moves);
     auto_actions; },
@@ -233,7 +231,7 @@ let output_entry
                   | xs ->
                       let bind = and_of_list xs in
                       %case{ $int:n -> let $bind in $act }) |> bar_of_list}
-        | _ -> failwith   "lexing: empty token" 
+        | _ -> failwith   (__MODULE__ ^ "." ^ __PWD__ ^ "lexing: empty token" )
       end
     end
   }

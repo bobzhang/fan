@@ -14,8 +14,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
          else (lexbuf.refill_buff lexbuf; __ocaml_lex_next_char ()))
       else
         (let i = lexbuf.lex_curr_pos in
-         let c = (lexbuf.lex_buffer).[i] in
-         lexbuf.lex_curr_pos <- i + 1; Char.code c)
+         lexbuf.lex_curr_pos <- i + 1; Char.code ((lexbuf.lex_buffer).[i]))
     and __ocaml_lex_state0 () =
       match __ocaml_lex_next_char () with
       | 37 ->
@@ -3090,5 +3089,5 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           let c = Lexing.sub_lexeme_char lexbuf (lexbuf.lex_start_pos + 0) in
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
-      | _ -> failwith "lexing: empty token"))
+      | _ -> failwith ("Lex_gram" ^ ("." ^ ("." ^ "lexing: empty token")))))
 let from_stream = Lexing_util.adapt_to_stream token

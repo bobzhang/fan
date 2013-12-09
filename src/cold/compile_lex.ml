@@ -118,23 +118,31 @@ let auto_binds =
                                      (`Field
                                         (_loc, (`Lid (_loc, "lexbuf")),
                                           (`Lid (_loc, "lex_curr_pos")))))),
-                                (`LetIn
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, "c")),
-                                          (`StringDot
+                                (`Seq
+                                   (_loc,
+                                     (`Sem
+                                        (_loc,
+                                          (`Assign
                                              (_loc,
                                                (`Field
                                                   (_loc,
                                                     (`Lid (_loc, "lexbuf")),
                                                     (`Lid
-                                                       (_loc, "lex_buffer")))),
-                                               (`Lid (_loc, "i")))))),
-                                     (`Seq
-                                        (_loc,
-                                          (`Sem
+                                                       (_loc, "lex_curr_pos")))),
+                                               (`App
+                                                  (_loc,
+                                                    (`App
+                                                       (_loc,
+                                                         (`Lid (_loc, "+")),
+                                                         (`Lid (_loc, "i")))),
+                                                    (`Int (_loc, "1")))))),
+                                          (`App
                                              (_loc,
-                                               (`Assign
+                                               (`Dot
+                                                  (_loc,
+                                                    (`Uid (_loc, "Char")),
+                                                    (`Lid (_loc, "code")))),
+                                               (`StringDot
                                                   (_loc,
                                                     (`Field
                                                        (_loc,
@@ -142,27 +150,9 @@ let auto_binds =
                                                             (_loc, "lexbuf")),
                                                          (`Lid
                                                             (_loc,
-                                                              "lex_curr_pos")))),
-                                                    (`App
-                                                       (_loc,
-                                                         (`App
-                                                            (_loc,
-                                                              (`Lid
-                                                                 (_loc, "+")),
-                                                              (`Lid
-                                                                 (_loc, "i")))),
-                                                         (`Int (_loc, "1")))))),
-                                               (`App
-                                                  (_loc,
-                                                    (`Dot
-                                                       (_loc,
-                                                         (`Uid (_loc, "Char")),
-                                                         (`Lid (_loc, "code")))),
-                                                    (`Lid (_loc, "c"))))))))))))))))))))) : 
+                                                              "lex_buffer")))),
+                                                    (`Lid (_loc, "i"))))))))))))))))))))) : 
   Astf.bind )]
-let output_pats (pats : int list) =
-  bar_of_list
-    (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats)
 let output_mem_access (i : int) =
   (`ArrayDot
      (_loc,
@@ -199,7 +189,9 @@ let output_action (mems : memory_action list) (r : automata_move) =
           Astf.exp )]) : exp list )
 let output_clause (pats : int list) (mems : memory_action list)
   (r : automata_move) =
-  let pat = output_pats pats in
+  let pat =
+    bar_of_list
+      (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats) in
   let action = seq_sem (output_action mems r) in
   (`Case (_loc, pat, action) : Astf.case )
 let output_default_clause mems r =
@@ -333,7 +325,7 @@ let output_env (env : t_env) =
                  (`App
                     (loc, (`App (loc, sub, (`Lid (loc, "lexbuf")))), nstart))) : 
               Astf.bind )) env : bind list )
-let output_entry
+let output_entry _loc
   ({ auto_mem_size; auto_initial_state = (init_num,init_moves); auto_actions
      },(transitions : automata array))
   =
@@ -489,7 +481,37 @@ let output_entry
                                                                     (_loc,
                                                                     "failwith")),
                                                                     (
-                                                                    `Str
+                                                                    `App
                                                                     (_loc,
-                                                                    "lexing: empty token"))))))))))))))))))))))))))) : 
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "^")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "__MODULE__")))),
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "^")),
+                                                                    (`Str
+                                                                    (_loc,
+                                                                    ".")))),
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`App
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "^")),
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "__PWD__")))),
+                                                                    (`Str
+                                                                    (_loc,
+                                                                    "lexing: empty token"))))))))))))))))))))))))))))))))) : 
      Astf.exp ) : Astf.exp )
