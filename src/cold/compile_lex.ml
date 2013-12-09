@@ -166,28 +166,16 @@ let output_pats (pats : int list) =
 let output_mem_access (i : int) =
   (`ArrayDot
      (_loc,
-       (`Field
-          (_loc, (`Lid (_loc, "lexbuf")),
-            (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_mem")))))),
+       (`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_mem")))),
        (`Int (_loc, (string_of_int i)))) : Astf.exp )
 let (curr_pos,last_pos,last_action,start_pos) =
-  ((`Field
-      (_loc, (`Lid (_loc, "lexbuf")),
-        (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_curr_pos"))))) : 
+  ((`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_curr_pos"))) : 
     Astf.exp ),
-    (`Field
-       (_loc, (`Lid (_loc, "lexbuf")),
-         (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_pos"))))) : 
+    (`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_last_pos"))) : 
     Astf.exp ),
-    (`Field
-       (_loc, (`Lid (_loc, "lexbuf")),
-         (`Dot
-            (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_action"))))) : 
+    (`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_last_action"))) : 
     Astf.exp ),
-    (`Field
-       (_loc, (`Lid (_loc, "lexbuf")),
-         (`Dot
-            (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_start_pos"))))) : 
+    (`Field (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_start_pos"))) : 
     Astf.exp ))
 let output_memory_actions (mvs : memory_action list) =
   (List.map

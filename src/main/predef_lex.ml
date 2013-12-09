@@ -24,6 +24,7 @@ let _ =
 
     "eof" +> Eof;
     "_"   +> Characters Fcset.all_chars ;
+    
     "hexa_char" +> %re{['0'-'9' 'A'-'F' 'a'-'f']};
     "ident" +> %re{(lowercase|uppercase) identchar*};
     "ocaml_escaped_char" +>

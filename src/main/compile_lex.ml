@@ -32,49 +32,23 @@ let auto_binds = (* with [lexbuf] in the context *)
         let c = lexbuf.lex_buffer.[i] in
         (lexbuf.lex_curr_pos <- i+1 ;
         Char.code c)
-      end
- }
- ]
-(* let auto_defs = {:stru| *)
-(*   let __ocaml_lex_init_lexbuf lexbuf mem_size = *)
-(*     let pos = lexbuf.Lexing.lex_curr_pos in *)
-(*     (lexbuf.Lexing.lex_mem <- Array.create mem_size (-1) ; *)
-(*      lexbuf.Lexing.lex_start_pos <- pos ; *)
-(*      lexbuf.Lexing.lex_last_pos <- pos ; *)
-(*      lexbuf.Lexing.lex_last_action <- (-1)) *)
-
-(*   let rec __ocaml_lex_next_char lexbuf = *)
-(*     if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len then *)
-(*       begin *)
-(*         if lexbuf.Lexing.lex_eof_reached then *)
-(*           256 *)
-(*         else begin *)
-(*           lexbuf.Lexing.refill_buff lexbuf ; *)
-(*           __ocaml_lex_next_char lexbuf *)
-(*         end *)
-(*       end else begin *)
-(*         let i = lexbuf.Lexing.lex_curr_pos in *)
-(*         let c = lexbuf.Lexing.lex_buffer.[i] in *)
-(*         lexbuf.Lexing.lex_curr_pos <- i+1 ; *)
-(*         Char.code c *)
-(*       end *)
-(* |} *)
+      end}]
 
 let output_pats (pats:int list) =
   bar_of_list (List.map (fun x -> %pat{$int':x}) pats)
 
 
-let output_mem_access (i:int) = %exp{lexbuf.Lexing.lex_mem.($int':i)}
+let output_mem_access (i:int) = %exp{lexbuf.lex_mem.($int':i)}
 
 let (curr_pos,
      last_pos,
      last_action,
      start_pos
     )  =
-  ( %exp{lexbuf.Lexing.lex_curr_pos },
-    %exp{lexbuf.Lexing.lex_last_pos },
-    %exp{lexbuf.Lexing.lex_last_action },
-    %exp{ lexbuf.Lexing.lex_start_pos }
+  ( %exp{lexbuf.lex_curr_pos },
+    %exp{lexbuf.lex_last_pos },
+    %exp{lexbuf.lex_last_action },
+    %exp{ lexbuf.lex_start_pos }
    )
     
     
