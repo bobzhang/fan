@@ -6,30 +6,7 @@ open Ast_gen
 let _loc = Locf.ghost
 
 (** spliced in the inital lexer with [lexbuf] captured*)    
-let auto_binds = 
-  [ %bind{
-  __ocaml_lex_init_lexbuf  mem_size =
-    let pos = lexbuf.lex_curr_pos in
-    (lexbuf.lex_mem <- Array.create mem_size (-1) ;
-     lexbuf.lex_start_pos <- pos ;
-     lexbuf.lex_last_pos <- pos ;
-     lexbuf.lex_last_action <- (-1))
-  };
-   %bind{
-   __ocaml_lex_next_char () =
-    if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
-      begin
-        if lexbuf.lex_eof_reached then
-          256
-        else begin
-          lexbuf.refill_buff lexbuf ;
-          __ocaml_lex_next_char ()
-        end
-      end else begin
-        let i = lexbuf.lex_curr_pos in
-        (lexbuf.lex_curr_pos <- i+1 ;
-        Char.code lexbuf.lex_buffer.[i])
-      end}]
+
 
 
 let output_memory_actions (mvs:Lexgen.memory_action list) : exp list =
@@ -142,63 +119,82 @@ let offset e i =
   else %exp{ $e + $int':i}
       
 let output_env (env: Automata_def.t_env) : bind list =
-  let env =
+  let output_tag_access ((x : Automata_def.tag_base),d )=
+    offset
+      (match x with 
+      | Mem i ->  %exp{lexbuf.lex_mem.($int':i)}
+      | Start ->  %exp{lexbuf.lex_start_pos}
+      | End   ->  %exp{lexbuf.lex_curr_pos}) d in
+  env
+  |>
     List.sort
       (function x y ->
         match (x,y) with
         | (((p1,_),_), ((p2,_),_)) ->
-            if Locf.strictly_before p1 p2 then -1 else 1) env in
-  let output_tag_access (x : (Automata_def.tag_base * int ))=
-    match x with 
-    | (Mem i,d) ->
-        offset %exp{lexbuf.lex_mem.($int':i)} d 
-        (* %exp{ ( lexbuf.lex_mem.($int':i) + $int':d) } *)
-    | (Start,d) ->
-        offset %exp{lexbuf.lex_start_pos} d 
-        (* %exp{ (lexbuf.lex_start_pos + $int':d) } *)
-    | (End,d) ->
-        offset %exp{lexbuf.lex_curr_pos} d
-        (* %exp{ (lexbuf.lex_curr_pos  + $int':d) } *) in
-  List.map
-    (fun (((loc,_) as id),v) ->
-      let (id : pat) = `Lid id  in
-      match (v:Automata_def.ident_info) with
-      | Ident_string (o,nstart,nend) ->
-          let sub =
-            if o then %exp{Lexing.sub_lexeme_opt}
-            else %exp{Lexing.sub_lexeme} in
-          let nstart = output_tag_access nstart in
-          let nend = output_tag_access nend in
-          %bind{ $id = $sub lexbuf  $nstart $nend}
-      | Ident_char (o,nstart) ->
-          (* break the invariant ....
-             "Lexing.sub_lexeme_char_opt" can not be an lident...
-             it can only be an ident
-           *)
-          let sub =
-            if o then %exp{ Lexing.sub_lexeme_char_opt}
-            else  %exp{Lexing.sub_lexeme_char} in
-          let nstart = output_tag_access nstart in
-          %bind@loc{ $id = $sub lexbuf $nstart }
-    ) env
-     
+            if Locf.strictly_before p1 p2 then -1 else 1)
+  |>
+    List.map
+      (fun (((loc,_) as id),v) ->
+        let (id : pat) = `Lid id  in
+        match (v:Automata_def.ident_info) with
+        | Ident_string (o,nstart,nend) ->
+            let sub =
+              if o then %exp{Lexing.sub_lexeme_opt}
+              else %exp{Lexing.sub_lexeme} in
+            let nstart = output_tag_access nstart in
+            let nend = output_tag_access nend in
+            %bind{ $id = $sub lexbuf  $nstart $nend}
+        | Ident_char (o,nstart) ->
+            (* break the invariant ....
+               "Lexing.sub_lexeme_char_opt" can not be an lident...
+               it can only be an ident
+             *)
+            let sub =
+              if o then %exp{ Lexing.sub_lexeme_char_opt}
+              else  %exp{Lexing.sub_lexeme_char} in
+            let nstart = output_tag_access nstart in
+            %bind@loc{ $id = $sub lexbuf $nstart })
+      
 let output_entry _loc
     ({Lexgen.auto_mem_size;
-    auto_initial_state=(init_num,init_moves);
-    auto_actions; },
+      auto_initial_state=(init_num,init_moves);
+      auto_actions; },
      (transitions:Lexgen.automata array)) : Astf.exp  =
+  let auto_binds = 
+    [ %bind{
+      __ocaml_lex_next_char () =
+      if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
+        begin
+          if lexbuf.lex_eof_reached then
+            256
+          else begin
+            lexbuf.refill_buff lexbuf ;
+            __ocaml_lex_next_char ()
+          end
+        end else begin
+          let i = lexbuf.lex_curr_pos in
+          (lexbuf.lex_curr_pos <- i+1 ;
+           Char.code lexbuf.lex_buffer.[i])
+        end}] in
   let binds =
     (* init_lexbuf,
        next_char,
        lex_state[i] *)
     and_of_list (auto_binds @ output_automata transitions) in 
   let actions = seq_sem
-      (%exp{ __ocaml_lex_init_lexbuf  $int':auto_mem_size } ::
-       output_memory_actions init_moves) in  
-    %exp{
-    function (lexbuf:Lexing.lexbuf) ->
-      let rec $binds in
-      begin
+      (%exp{
+       let pos = lexbuf.lex_curr_pos in
+       (lexbuf.lex_start_pos <- pos;
+        lexbuf.lex_last_pos <- pos;
+        lexbuf.lex_last_action <- (-1))} :: 
+       (if auto_mem_size > 0 then
+         %exp{lexbuf.lex_mem <- Array.create $int':auto_mem_size (-1)} ::
+         output_memory_actions init_moves
+        else  output_memory_actions init_moves)) in  
+  %exp{
+  function (lexbuf:Lexing.lexbuf) ->
+    let rec $binds in
+    begin
       $actions; (* lex_init_buf .... *)
       let __ocaml_lex_result = $lid{lex_state init_num}  () in
       begin
@@ -210,16 +206,13 @@ let output_entry _loc
         | ${auto_actions
             |> List.map
                 (function (num,env,act) ->
-                  let n = string_of_int num in
-                  match output_env env with
-                  | [] -> %case{ $int:n -> $act }
-                  | xs ->
-                      let bind = and_of_list xs in
-                      %case{ $int:n -> let $bind in $act }) |> bar_of_list}
+                  let e = Ast_gen.binds (output_env env) act in
+                  %case{$int':num -> $e })
+            |> bar_of_list}
         | _ -> failwith   (__MODULE__ ^ "." ^ __BIND__ ^ " lexing: empty token" )
       end
     end
-  }
+}
 
 
     

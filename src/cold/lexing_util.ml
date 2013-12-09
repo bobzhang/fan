@@ -79,13 +79,7 @@ let warn error (loc : Locf.t) =
   (Fan_warnings.emitf loc.loc_start "Warning: %s") @@
     (lex_error_to_string error)
 let rec lex_comment c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf mem_size =
-    let pos = lexbuf.lex_curr_pos in
-    lexbuf.lex_mem <- Array.create mem_size (-1);
-    lexbuf.lex_start_pos <- pos;
-    lexbuf.lex_last_pos <- pos;
-    lexbuf.lex_last_action <- (-1)
-  and __ocaml_lex_next_char () =
+  let rec __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
       (if lexbuf.lex_eof_reached
@@ -128,7 +122,10 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
          (lexbuf.lex_curr_pos <- lexbuf.lex_last_pos; lexbuf.lex_last_action))
   and __ocaml_lex_state7 () = 0
   and __ocaml_lex_state8 () = 1 in
-  __ocaml_lex_init_lexbuf 0;
+  (let pos = lexbuf.lex_curr_pos in
+   lexbuf.lex_start_pos <- pos;
+   lexbuf.lex_last_pos <- pos;
+   lexbuf.lex_last_action <- (-1));
   (let __ocaml_lex_result = __ocaml_lex_state0 () in
    lexbuf.lex_start_p <- lexbuf.lex_curr_p;
    lexbuf.lex_curr_p <-
@@ -151,13 +148,7 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
         failwith
           ("Lexing_util" ^ ("." ^ ("lex_comment" ^ " lexing: empty token")))))
 let rec lex_string c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf mem_size =
-    let pos = lexbuf.lex_curr_pos in
-    lexbuf.lex_mem <- Array.create mem_size (-1);
-    lexbuf.lex_start_pos <- pos;
-    lexbuf.lex_last_pos <- pos;
-    lexbuf.lex_last_action <- (-1)
-  and __ocaml_lex_next_char () =
+  let rec __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
       (if lexbuf.lex_eof_reached
@@ -243,7 +234,11 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
         __ocaml_lex_state10 ()
     | _ ->
         (lexbuf.lex_curr_pos <- lexbuf.lex_last_pos; lexbuf.lex_last_action) in
-  __ocaml_lex_init_lexbuf 2;
+  ((let pos = lexbuf.lex_curr_pos in
+    lexbuf.lex_start_pos <- pos;
+    lexbuf.lex_last_pos <- pos;
+    lexbuf.lex_last_action <- (-1));
+   lexbuf.lex_mem <- Array.create 2 (-1));
   (let __ocaml_lex_result = __ocaml_lex_state0 () in
    lexbuf.lex_start_p <- lexbuf.lex_curr_p;
    lexbuf.lex_curr_p <-
@@ -273,13 +268,7 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
         failwith
           ("Lexing_util" ^ ("." ^ ("lex_string" ^ " lexing: empty token")))))
 let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
-  let rec __ocaml_lex_init_lexbuf mem_size =
-    let pos = lexbuf.lex_curr_pos in
-    lexbuf.lex_mem <- Array.create mem_size (-1);
-    lexbuf.lex_start_pos <- pos;
-    lexbuf.lex_last_pos <- pos;
-    lexbuf.lex_last_action <- (-1)
-  and __ocaml_lex_next_char () =
+  let rec __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
     then
       (if lexbuf.lex_eof_reached
@@ -1468,7 +1457,10 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
         __ocaml_lex_state20 ()
     | _ ->
         (lexbuf.lex_curr_pos <- lexbuf.lex_last_pos; lexbuf.lex_last_action) in
-  __ocaml_lex_init_lexbuf 0;
+  (let pos = lexbuf.lex_curr_pos in
+   lexbuf.lex_start_pos <- pos;
+   lexbuf.lex_last_pos <- pos;
+   lexbuf.lex_last_action <- (-1));
   (let __ocaml_lex_result = __ocaml_lex_state0 () in
    lexbuf.lex_start_p <- lexbuf.lex_curr_p;
    lexbuf.lex_curr_p <-

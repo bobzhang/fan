@@ -1,13 +1,7 @@
 let (!!) = Lexing_util.from_lexbuf
 let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
-    let rec __ocaml_lex_init_lexbuf mem_size =
-      let pos = lexbuf.lex_curr_pos in
-      lexbuf.lex_mem <- Array.create mem_size (-1);
-      lexbuf.lex_start_pos <- pos;
-      lexbuf.lex_last_pos <- pos;
-      lexbuf.lex_last_action <- (-1)
-    and __ocaml_lex_next_char () =
+    let rec __ocaml_lex_next_char () =
       if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
       then
         (if lexbuf.lex_eof_reached
@@ -5563,7 +5557,12 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
        | _ ->
            (lexbuf.lex_curr_pos <- lexbuf.lex_last_pos;
             lexbuf.lex_last_action)) in
-    (__ocaml_lex_init_lexbuf 26; (lexbuf.lex_mem).(5) <- lexbuf.lex_curr_pos);
+    ((let pos = lexbuf.lex_curr_pos in
+      lexbuf.lex_start_pos <- pos;
+      lexbuf.lex_last_pos <- pos;
+      lexbuf.lex_last_action <- (-1));
+     lexbuf.lex_mem <- Array.create 26 (-1);
+     (lexbuf.lex_mem).(5) <- lexbuf.lex_curr_pos);
     (let __ocaml_lex_result = __ocaml_lex_state0 () in
      lexbuf.lex_start_p <- lexbuf.lex_curr_p;
      lexbuf.lex_curr_p <-
