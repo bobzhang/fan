@@ -271,8 +271,7 @@ let create_mem_map tags gen =
 
 let create_init_state pos =
   let gen = create_new_addr_gen () in
-  let st =
-    TransSet.fold
+  TransSet.fold
       (fun (t,tags) st ->
         match t with
         | ToAction n ->
@@ -288,15 +287,16 @@ let create_init_state pos =
             | Not_found ->
                 {st with others =
                   MemMap.add n (0,create_mem_map tags gen) st.others})
-      pos dfa_state_empty in
-  st
+      pos dfa_state_empty
 
 
-let get_map t st = match t with
-| ToAction _ -> let (_,(_,m)) = st.final in m
-| OnChars n  ->
-    let (_,m) = MemMap.find n st.others in
-    m
+
+let get_map t st =
+  match t with
+  | ToAction _ -> let (_,(_,m)) = st.final in m
+  | OnChars n  ->
+      let (_,m) = MemMap.find n st.others in
+      m
 
 let dest = function | Copy (d,_) | Set d  -> d
 and orig = function | Copy (_,o) -> o | Set _ -> -1
@@ -589,18 +589,15 @@ let make_single_dfa (lexdef :'a entry) :
         match entry with  (le,shortest) ->
           let tags = extract_tags le.lex_actions in
           (reset_state_partial le.lex_mem_tags ;
-           let pos_set = firstpos le.lex_regexp in
-     (* prerr_string "trans={" ; dtransset pos_set ; prerr_endline "}" ; *)
-           let init_state = create_init_state pos_set in
-           let init_num = get_state init_state in
+           (* prerr_string "trans={" ; dtransset pos_set ; prerr_endline "}" ; *)
+           let init_num = get_state (create_init_state (firstpos le.lex_regexp)) in
            (r_states :=
              map_on_all_states
                (translate_state shortest tags chars follow) !r_states ;
             {auto_mem_size =
              (if !temp_pending then !next_mem_cell+1 else !next_mem_cell) ;
              auto_initial_state = init_num ;
-             auto_actions = le.lex_actions }))
-      in
+             auto_actions = le.lex_actions })) in
       let states = !r_states in
 (*
   prerr_endline "** states **" ;
@@ -613,7 +610,7 @@ let make_single_dfa (lexdef :'a entry) :
  *)
       let actions = Array.create !next_state_num (Perform (0,[])) in
       (List.iter (fun (act, i) -> actions.(i) <- act) states;
-      (* Useless state reset, so as to restrict GC roots *)
+       (* Useless state reset, so as to restrict GC roots *)
        reset_state  () ;
        reset_state_partial  0 ;
        (initial_states, actions))

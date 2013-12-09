@@ -153,9 +153,9 @@ let auto_binds =
   Astf.bind )]
 let output_memory_actions (mvs : Lexgen.memory_action list) =
   (List.map
-     (fun x  ->
+     (fun (x : Lexgen.memory_action)  ->
         match x with
-        | Lexgen.Copy (tgt,src) ->
+        | Copy (tgt,src) ->
             (`Assign
                (_loc,
                  (`ArrayDot
@@ -273,8 +273,7 @@ let output_trans (i : int) (trans : Lexgen.automata) =
         seq_sem
           (match trans with
            | Remember (n,mvs) ->
-               let es = output_tag_actions mvs in
-               es @
+               (output_tag_actions mvs) @
                  [(`Assign
                      (_loc,
                        (`Field

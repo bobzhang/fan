@@ -34,9 +34,9 @@ let auto_binds =
 
 let output_memory_actions (mvs:Lexgen.memory_action list) : exp list =
   List.map
-    (fun x ->
+    (fun (x:Lexgen.memory_action) ->
       match x with
-      | Lexgen.Copy(tgt,src) ->
+      | Copy(tgt,src) ->
           %exp{ lexbuf.lex_mem.($int':tgt) <- lexbuf.lex_mem.($int':src) }
       | Set tgt ->
           %exp{ lexbuf.lex_mem.($int':tgt) <- lexbuf.lex_curr_pos }) mvs
@@ -117,11 +117,10 @@ let output_trans (i:int) (trans:Lexgen.automata)=
         seq_sem
           (match trans with
           | Remember(n,mvs) ->
-              let es = output_tag_actions mvs in
-              (es@
-               [ %exp{ lexbuf.lex_last_pos  <- lexbuf.lex_curr_pos };
-                 %exp{ lexbuf.lex_last_action <- $int':n };
-                 %exp{ match __ocaml_lex_next_char () with | $moves }])
+              output_tag_actions mvs @
+              [ %exp{ lexbuf.lex_last_pos  <- lexbuf.lex_curr_pos };
+                %exp{ lexbuf.lex_last_action <- $int':n };
+                %exp{ match __ocaml_lex_next_char () with | $moves }]
           | No_remember ->
               [ %exp{ match __ocaml_lex_next_char () with | $moves }]) in
   %bind{ $lid{lex_state i} () = $e  }

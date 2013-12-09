@@ -10,20 +10,22 @@ Translate_lex:
 let meta_cset _loc (x:Fcset.t)=
   Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
     
-(** FIXME derive later *)    
-let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp )  =
-  match x with
-  | Epsilon -> %ep{ Epsilon}
-  | Eof -> %ep{Eof}
-  | Characters a -> %ep{Characters ${meta_cset _loc a}}
-  | Sequence (a0,a1) ->
-      %ep{Sequence ${meta_concrete_regexp _loc a0} ${meta_concrete_regexp _loc a1}}
-  | Alternative(a0,a1) ->
-      %ep{Alternative ${meta_concrete_regexp _loc a0} ${meta_concrete_regexp _loc a1}}
-  | Repetition a -> %ep{Repetition ${meta_concrete_regexp _loc a}}
-  | Bind (a,(loc,s)) ->
-  %ep{Bind (${meta_concrete_regexp _loc  a},
-  (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))}
+(** FIXME derive later *)
+let  meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp ) = 
+  let rec aux _loc (x : Translate_lex.concrete_regexp )  =
+    match x with
+    | Epsilon -> %ep{ Epsilon}
+    | Eof -> %ep{Eof}
+    | Characters a -> %ep{Characters ${meta_cset _loc a}}
+    | Sequence (a0,a1) ->
+        %ep{Sequence ${aux _loc a0} ${aux _loc a1}}
+    | Alternative(a0,a1) ->
+        %ep{Alternative ${aux _loc a0} ${aux _loc a1}}
+    | Repetition a -> %ep{Repetition ${aux _loc a}}
+    | Bind (a,(loc,s)) ->
+        %ep{Bind (${aux _loc  a},
+                  (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))} in
+  %ep{ (${aux _loc x} : Translate_lex.concrete_regexp) }
 
 
 exception UnboundRegexp;;

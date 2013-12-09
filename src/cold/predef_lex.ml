@@ -13,10 +13,14 @@ let _ =
   "newline" +>
     (Alternative
        ((Alternative ((Characters [(10, 10)]), (Characters [(13, 13)]))),
-         (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)])))));
-  "ocaml_blank" +> (Characters [(9, 9); (12, 12); (32, 32)]);
-  "lowercase" +> (Characters [(95, 95); (97, 122); (223, 246); (248, 255)]);
-  "uppercase" +> (Characters [(65, 90); (192, 214); (216, 222)]);
+         (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)])))) : 
+    Translate_lex.concrete_regexp );
+  "ocaml_blank" +>
+    (Characters [(9, 9); (12, 12); (32, 32)] : Translate_lex.concrete_regexp );
+  "lowercase" +>
+    (Characters [(95, 95); (97, 122); (223, 246); (248, 255)] : Translate_lex.concrete_regexp );
+  "uppercase" +>
+    (Characters [(65, 90); (192, 214); (216, 222)] : Translate_lex.concrete_regexp );
   "identchar" +>
     (Characters
        [(39, 39);
@@ -26,10 +30,11 @@ let _ =
        (97, 122);
        (192, 214);
        (216, 246);
-       (248, 255)]);
+       (248, 255)] : Translate_lex.concrete_regexp );
   "eof" +> Eof;
   "_" +> (Characters Fcset.all_chars);
-  "hexa_char" +> (Characters [(48, 57); (65, 70); (97, 102)]);
+  "hexa_char" +>
+    (Characters [(48, 57); (65, 70); (97, 102)] : Translate_lex.concrete_regexp );
   "ident" +>
     (Sequence
        ((Alternative
@@ -44,7 +49,7 @@ let _ =
                (97, 122);
                (192, 214);
                (216, 246);
-               (248, 255)]))));
+               (248, 255)]))) : Translate_lex.concrete_regexp );
   "ocaml_escaped_char" +>
     (Sequence
        ((Characters [(92, 92)]),
@@ -67,7 +72,8 @@ let _ =
                  ((Sequence
                      ((Characters [(120, 120)]),
                        (Characters [(48, 57); (65, 70); (97, 102)]))),
-                   (Characters [(48, 57); (65, 70); (97, 102)])))))));
+                   (Characters [(48, 57); (65, 70); (97, 102)])))))) : 
+    Translate_lex.concrete_regexp );
   "ocaml_char" +>
     (Alternative
        ((Characters [(0, 9); (11, 12); (14, 91); (93, 255)]),
@@ -93,7 +99,8 @@ let _ =
                       ((Sequence
                           ((Characters [(120, 120)]),
                             (Characters [(48, 57); (65, 70); (97, 102)]))),
-                        (Characters [(48, 57); (65, 70); (97, 102)])))))))));
+                        (Characters [(48, 57); (65, 70); (97, 102)])))))))) : 
+    Translate_lex.concrete_regexp );
   "ocaml_lid" +>
     (Sequence
        ((Characters [(95, 95); (97, 122); (223, 246); (248, 255)]),
@@ -106,7 +113,7 @@ let _ =
                (97, 122);
                (192, 214);
                (216, 246);
-               (248, 255)]))));
+               (248, 255)]))) : Translate_lex.concrete_regexp );
   "ocaml_uid" +>
     (Sequence
        ((Characters [(65, 90); (192, 214); (216, 222)]),
@@ -119,32 +126,33 @@ let _ =
                (97, 122);
                (192, 214);
                (216, 246);
-               (248, 255)]))));
+               (248, 255)]))) : Translate_lex.concrete_regexp );
   "decimal_literal" +>
     (Sequence
        ((Characters [(48, 57)]),
-         (Repetition (Characters [(48, 57); (95, 95)]))));
+         (Repetition (Characters [(48, 57); (95, 95)]))) : Translate_lex.concrete_regexp );
   "hex_literal" +>
     (Sequence
        ((Sequence
            ((Sequence
                ((Characters [(48, 48)]), (Characters [(88, 88); (120, 120)]))),
              (Characters [(48, 57); (65, 70); (97, 102)]))),
-         (Repetition (Characters [(48, 57); (65, 70); (95, 95); (97, 102)]))));
+         (Repetition (Characters [(48, 57); (65, 70); (95, 95); (97, 102)]))) : 
+    Translate_lex.concrete_regexp );
   "oct_literal" +>
     (Sequence
        ((Sequence
            ((Sequence
                ((Characters [(48, 48)]), (Characters [(79, 79); (111, 111)]))),
              (Characters [(48, 55)]))),
-         (Repetition (Characters [(48, 55); (95, 95)]))));
+         (Repetition (Characters [(48, 55); (95, 95)]))) : Translate_lex.concrete_regexp );
   "bin_literal" +>
     (Sequence
        ((Sequence
            ((Sequence
                ((Characters [(48, 48)]), (Characters [(66, 66); (98, 98)]))),
              (Characters [(48, 49)]))),
-         (Repetition (Characters [(48, 49); (95, 95)]))));
+         (Repetition (Characters [(48, 49); (95, 95)]))) : Translate_lex.concrete_regexp );
   "int_literal" +>
     (Alternative
        ((Alternative
@@ -174,7 +182,7 @@ let _ =
                     ((Characters [(48, 48)]),
                       (Characters [(66, 66); (98, 98)]))),
                   (Characters [(48, 49)]))),
-              (Repetition (Characters [(48, 49); (95, 95)]))))));
+              (Repetition (Characters [(48, 49); (95, 95)]))))) : Translate_lex.concrete_regexp );
   "float_literal" +>
     (Sequence
        ((Sequence
@@ -195,7 +203,8 @@ let _ =
                            (Alternative
                               (Epsilon, (Characters [(43, 43); (45, 45)]))))),
                        (Characters [(48, 57)]))),
-                   (Repetition (Characters [(48, 57); (95, 95)]))))))));
+                   (Repetition (Characters [(48, 57); (95, 95)]))))))) : 
+    Translate_lex.concrete_regexp );
   "quotation_name" +>
     (Sequence
        ((Sequence
@@ -226,7 +235,8 @@ let _ =
                         (97, 122);
                         (192, 214);
                         (216, 246);
-                        (248, 255)]), (Characters [(45, 45)]))))))));
+                        (248, 255)]), (Characters [(45, 45)]))))))) : 
+    Translate_lex.concrete_regexp );
   "identchars" +>
     (Sequence
        ((Repetition
@@ -247,7 +257,7 @@ let _ =
             (97, 122);
             (192, 214);
             (216, 246);
-            (248, 255)])))
+            (248, 255)])) : Translate_lex.concrete_regexp )
 let append_quot (y : Tokenf.quot option) (e : Astf.exp) =
   match y with
   | None  -> e
@@ -287,7 +297,7 @@ let _ =
                           pos_cnum = 2229
                         };
                       loc_ghost = false
-                    } : Locf.t ), "txt"))),
+                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
               ((let default: Astf.exp =
                   `App
                     (_loc, (`Vrn (_loc, "Uid")),
@@ -457,7 +467,7 @@ let _ =
                          pos_cnum = 3219
                        };
                      loc_ghost = false
-                   } : Locf.t ), "txt"))),
+                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
              ((let default: Astf.exp =
                  `App
                    (_loc, (`Vrn (_loc, "Lid")),
@@ -737,7 +747,7 @@ let _ =
                          pos_cnum = 5013
                        };
                      loc_ghost = false
-                   } : Locf.t ), "txt"))),
+                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
              (`App
                 (_loc, (`Vrn (_loc, "Int")),
                   (`Record
@@ -836,7 +846,7 @@ let _ =
                          pos_cnum = 5190
                        };
                      loc_ghost = false
-                   } : Locf.t ), "txt"))),
+                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -994,7 +1004,7 @@ let _ =
                                 };
                               loc_ghost = false
                             } : Locf.t ), "txt"))))),
-                 (Characters [(39, 39)]))),
+                 (Characters [(39, 39)])) : Translate_lex.concrete_regexp ),
              (`Seq
                 (_loc,
                   (`Sem
@@ -1164,7 +1174,8 @@ let _ =
                                  pos_cnum = 6047
                                };
                              loc_ghost = false
-                           } : Locf.t ), "txt"))))), (Characters [(39, 39)]))),
+                           } : Locf.t ), "txt"))))), (Characters [(39, 39)])) : 
+            Translate_lex.concrete_regexp ),
             (`Constraint
                (_loc,
                  (`App
@@ -1235,7 +1246,7 @@ let _ =
                              pos_cnum = 6258
                            };
                          loc_ghost = false
-                       } : Locf.t ), "c"))))),
+                       } : Locf.t ), "c")))) : Translate_lex.concrete_regexp ),
             (`App
                (_loc,
                  (`App
@@ -1318,7 +1329,7 @@ let _ =
                          pos_cnum = 6549
                        };
                      loc_ghost = false
-                   } : Locf.t ), "txt"))),
+                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
              (`Constraint
                 (_loc,
                   (`App
@@ -1395,7 +1406,7 @@ let _ =
                                    pos_cnum = 6841
                                  };
                                loc_ghost = false
-                             } : Locf.t ), "x"))))))),
+                             } : Locf.t ), "x")))))) : Translate_lex.concrete_regexp ),
              (append_quot q
                 (`LetIn
                    (_loc, (`Negative _loc),
@@ -1493,12 +1504,13 @@ let _ =
       ((fun { quot_opt = q; loc = _loc;_}  ->
           [((Sequence
                ((Repetition (Characters [(9, 9); (12, 12); (32, 32)])),
-                 (Characters [(9, 9); (12, 12); (32, 32)]))),
+                 (Characters [(9, 9); (12, 12); (32, 32)])) : Translate_lex.concrete_regexp ),
              (append_quot q (`Uid (_loc, "()") : Astf.exp )));
           ((Alternative
               ((Alternative
                   ((Characters [(10, 10)]), (Characters [(13, 13)]))),
-                (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)]))))),
+                (Sequence ((Characters [(13, 13)]), (Characters [(10, 10)])))) : 
+            Translate_lex.concrete_regexp ),
             (append_quot q
                (`App
                   (_loc,
@@ -1508,7 +1520,7 @@ let _ =
                     (`Lid (_loc, "lexbuf"))) : Astf.exp )))])));
     ("ocaml_string",
       ((fun { loc = _loc;_}  ->
-          [((Characters [(34, 34)]),
+          [((Characters [(34, 34)] : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -1617,7 +1629,7 @@ let _ =
                          pos_cnum = 7990
                        };
                      loc_ghost = false
-                   } : Locf.t ), "c"))),
+                   } : Locf.t ), "c")) : Translate_lex.concrete_regexp ),
              (`App
                 (_loc,
                   (`App
@@ -1638,7 +1650,7 @@ let _ =
                        (`Lid (_loc, "lexbuf"))))) : Astf.exp ))])));
     ("ocaml_eof",
       ((fun { loc = _loc;_}  ->
-          [(Eof,
+          [((Eof : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -1727,7 +1739,8 @@ let _ =
              Astf.exp ))])));
     ("ocaml_simple_quotation",
       ((fun { loc = _loc;_}  ->
-          [((Sequence ((Characters [(37, 37)]), (Characters [(123, 123)]))),
+          [((Sequence ((Characters [(37, 37)]), (Characters [(123, 123)])) : 
+             Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -2011,7 +2024,7 @@ let _ =
                          pos_cnum = 9081
                        };
                      loc_ghost = false
-                   } : Locf.t ), "shift"))),
+                   } : Locf.t ), "shift")) : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -2404,7 +2417,7 @@ let _ =
                          pos_cnum = 9897
                        };
                      loc_ghost = false
-                   } : Locf.t ), "shift"))),
+                   } : Locf.t ), "shift")) : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -2820,7 +2833,8 @@ let _ =
                     ((Alternative
                         ((Characters [(10, 10)]), (Characters [(13, 13)]))),
                       (Sequence
-                         ((Characters [(13, 13)]), (Characters [(10, 10)]))))))),
+                         ((Characters [(13, 13)]), (Characters [(10, 10)])))))) : 
+             Translate_lex.concrete_regexp ),
              (append_quot q
                 (`Seq
                    (_loc,
@@ -2946,7 +2960,7 @@ let _ =
                          pos_cnum = 11459
                        };
                      loc_ghost = false
-                   } : Locf.t ), "txt"))),
+                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
              (`LetIn
                 (_loc, (`Negative _loc),
                   (`Bind
@@ -3112,7 +3126,7 @@ let _ =
                         pos_cnum = 11807
                       };
                     loc_ghost = false
-                  } : Locf.t ), "txt"))),
+                  } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
             (`LetIn
                (_loc, (`Negative _loc),
                  (`Bind
@@ -3324,7 +3338,7 @@ let _ =
                              pos_cnum = 12365
                            };
                          loc_ghost = false
-                       } : Locf.t ), "c"))))),
+                       } : Locf.t ), "c")))) : Translate_lex.concrete_regexp ),
             (`App
                (_loc,
                  (`App

@@ -9,44 +9,42 @@ let meta_cset _loc (x : Fcset.t) =
             (`Com
                (_loc, (`Int (_loc, (string_of_int a))),
                  (`Int (_loc, (string_of_int b)))))) : Astf.ep )) _loc x
-let rec meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
-  match x with
-  | Epsilon  -> (`Uid (_loc, "Epsilon") : Astf.ep )
-  | Eof  -> (`Uid (_loc, "Eof") : Astf.ep )
-  | Characters a ->
-      (`App (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a)) : 
-      Astf.ep )
-  | Sequence (a0,a1) ->
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Uid (_loc, "Sequence")),
-                (meta_concrete_regexp _loc a0))),
-           (meta_concrete_regexp _loc a1)) : Astf.ep )
-  | Alternative (a0,a1) ->
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Uid (_loc, "Alternative")),
-                (meta_concrete_regexp _loc a0))),
-           (meta_concrete_regexp _loc a1)) : Astf.ep )
-  | Repetition a ->
-      (`App
-         (_loc, (`Uid (_loc, "Repetition")), (meta_concrete_regexp _loc a)) : 
-      Astf.ep )
-  | Bind (a,(loc,s)) ->
-      (`App
-         (_loc, (`Uid (_loc, "Bind")),
-           (`Par
-              (_loc,
-                (`Com
-                   (_loc, (meta_concrete_regexp _loc a),
-                     (`Par
-                        (_loc,
-                          (`Com
-                             (_loc, (Ast_gen.meta_here _loc loc),
-                               (`Str (loc, (String.escaped s)) : Astf.ep )))))))))) : 
-      Astf.ep )
+let meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
+  let rec aux _loc (x : Translate_lex.concrete_regexp) =
+    match x with
+    | Epsilon  -> (`Uid (_loc, "Epsilon") : Astf.ep )
+    | Eof  -> (`Uid (_loc, "Eof") : Astf.ep )
+    | Characters a ->
+        (`App (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a)) : 
+        Astf.ep )
+    | Sequence (a0,a1) ->
+        (`App
+           (_loc, (`App (_loc, (`Uid (_loc, "Sequence")), (aux _loc a0))),
+             (aux _loc a1)) : Astf.ep )
+    | Alternative (a0,a1) ->
+        (`App
+           (_loc, (`App (_loc, (`Uid (_loc, "Alternative")), (aux _loc a0))),
+             (aux _loc a1)) : Astf.ep )
+    | Repetition a ->
+        (`App (_loc, (`Uid (_loc, "Repetition")), (aux _loc a)) : Astf.ep )
+    | Bind (a,(loc,s)) ->
+        (`App
+           (_loc, (`Uid (_loc, "Bind")),
+             (`Par
+                (_loc,
+                  (`Com
+                     (_loc, (aux _loc a),
+                       (`Par
+                          (_loc,
+                            (`Com
+                               (_loc, (Ast_gen.meta_here _loc loc),
+                                 (`Str (loc, (String.escaped s)) : Astf.ep )))))))))) : 
+        Astf.ep ) in
+  (`Constraint
+     (_loc, (aux _loc x),
+       (`Dot
+          (_loc, (`Uid (_loc, "Translate_lex")),
+            (`Lid (_loc, "concrete_regexp"))))) : Astf.ep )
 exception UnboundRegexp
 exception UnboundCase
 let regexp = Gramf.mk "regexp"
