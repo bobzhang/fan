@@ -7,8 +7,6 @@ let _loc = Locf.ghost
 
 (** spliced in the inital lexer with [lexbuf] captured*)    
 
-
-
 let output_memory_actions (mvs:Lexgen.memory_action list) : exp list =
   List.map
     (fun (x:Lexgen.memory_action) ->
@@ -25,8 +23,7 @@ let lex_state i =
 
 
 (** output at least one case
-   Called when the automata is shift
- *)    
+   Called when the automata is shift. generate state transition case analysis *)    
 let output_moves (moves: (Lexgen.automata_move * Lexgen.memory_action list) array) : case list =
   (* length at least  one*)    
   let output_action (mems:Lexgen.memory_action list) (r:Lexgen.automata_move) : exp list  =
@@ -160,37 +157,34 @@ let output_entry _loc
       auto_initial_state=(init_num,init_moves);
       auto_actions; },
      (transitions:Lexgen.automata array)) : Astf.exp  =
-  let auto_binds = 
-    [ %bind{
-      __ocaml_lex_next_char () =
-      if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
-        begin
-          if lexbuf.lex_eof_reached then
-            256
-          else begin
-            lexbuf.refill_buff lexbuf ;
-            __ocaml_lex_next_char ()
-          end
-        end else begin
-          let i = lexbuf.lex_curr_pos in
-          (lexbuf.lex_curr_pos <- i+1 ;
-           Char.code lexbuf.lex_buffer.[i])
-        end}] in
   let binds =
-    (* init_lexbuf,
-       next_char,
-       lex_state[i] *)
-    and_of_list (auto_binds @ output_automata transitions) in 
+    and_of_list
+      (%bind{
+       __ocaml_lex_next_char () =
+       if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len then
+         begin
+           if lexbuf.lex_eof_reached then
+             256
+           else begin
+             lexbuf.refill_buff lexbuf ;
+             __ocaml_lex_next_char ()
+           end
+         end else begin
+           let i = lexbuf.lex_curr_pos in
+           (lexbuf.lex_curr_pos <- i+1 ;
+            Char.code lexbuf.lex_buffer.[i])
+         end} :: output_automata transitions) in 
   let actions = seq_sem
       (%exp{
        let pos = lexbuf.lex_curr_pos in
        (lexbuf.lex_start_pos <- pos;
         lexbuf.lex_last_pos <- pos;
         lexbuf.lex_last_action <- (-1))} :: 
-       (if auto_mem_size > 0 then
-         %exp{lexbuf.lex_mem <- Array.create $int':auto_mem_size (-1)} ::
-         output_memory_actions init_moves
-        else  output_memory_actions init_moves)) in  
+       (let init = output_memory_actions init_moves in
+         if auto_mem_size > 0 then
+           %exp{lexbuf.lex_mem <- Array.create $int':auto_mem_size (-1)} ::
+           init
+         else init)) in  
   %exp{
   function (lexbuf:Lexing.lexbuf) ->
     let rec $binds in

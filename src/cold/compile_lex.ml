@@ -244,103 +244,105 @@ let output_entry _loc
                                                                   Lexgen.automata
                                                                     array))
   =
-  (let auto_binds =
-     [(`Bind
-         (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-           (`Fun
-              (_loc,
-                (`Case
-                   (_loc, (`Uid (_loc, "()")),
-                     (`IfThenElse
-                        (_loc,
-                          (`App
-                             (_loc,
-                               (`App
-                                  (_loc, (`Lid (_loc, ">=")),
-                                    (`Field
-                                       (_loc, (`Lid (_loc, "lexbuf")),
-                                         (`Lid (_loc, "lex_curr_pos")))))),
-                               (`Field
-                                  (_loc, (`Lid (_loc, "lexbuf")),
-                                    (`Lid (_loc, "lex_buffer_len")))))),
-                          (`Seq
-                             (_loc,
-                               (`IfThenElse
-                                  (_loc,
-                                    (`Field
-                                       (_loc, (`Lid (_loc, "lexbuf")),
-                                         (`Lid (_loc, "lex_eof_reached")))),
-                                    (`Int (_loc, "256")),
-                                    (`Seq
-                                       (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`App
-                                                 (_loc,
-                                                   (`Field
-                                                      (_loc,
-                                                        (`Lid
-                                                           (_loc, "lexbuf")),
-                                                        (`Lid
-                                                           (_loc,
-                                                             "refill_buff")))),
-                                                   (`Lid (_loc, "lexbuf")))),
-                                              (`App
-                                                 (_loc,
-                                                   (`Lid
-                                                      (_loc,
-                                                        "__ocaml_lex_next_char")),
-                                                   (`Uid (_loc, "()")))))))))))),
-                          (`Seq
-                             (_loc,
-                               (`LetIn
-                                  (_loc, (`Negative _loc),
-                                    (`Bind
-                                       (_loc, (`Lid (_loc, "i")),
-                                         (`Field
-                                            (_loc, (`Lid (_loc, "lexbuf")),
-                                              (`Lid (_loc, "lex_curr_pos")))))),
-                                    (`Seq
-                                       (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`Assign
-                                                 (_loc,
-                                                   (`Field
-                                                      (_loc,
-                                                        (`Lid
-                                                           (_loc, "lexbuf")),
-                                                        (`Lid
-                                                           (_loc,
-                                                             "lex_curr_pos")))),
-                                                   (`App
-                                                      (_loc,
-                                                        (`App
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc, "+")),
-                                                             (`Lid
-                                                                (_loc, "i")))),
-                                                        (`Int (_loc, "1")))))),
-                                              (`App
-                                                 (_loc,
-                                                   (`Dot
-                                                      (_loc,
-                                                        (`Uid (_loc, "Char")),
-                                                        (`Lid (_loc, "code")))),
-                                                   (`StringDot
-                                                      (_loc,
-                                                        (`Field
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc,
-                                                                  "lexbuf")),
-                                                             (`Lid
-                                                                (_loc,
-                                                                  "lex_buffer")))),
-                                                        (`Lid (_loc, "i"))))))))))))))))))))) : 
-     Astf.bind )] in
-   let binds = and_of_list (auto_binds @ (output_automata transitions)) in
+  (let binds =
+     and_of_list
+       ((`Bind
+           (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
+             (`Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Uid (_loc, "()")),
+                       (`IfThenElse
+                          (_loc,
+                            (`App
+                               (_loc,
+                                 (`App
+                                    (_loc, (`Lid (_loc, ">=")),
+                                      (`Field
+                                         (_loc, (`Lid (_loc, "lexbuf")),
+                                           (`Lid (_loc, "lex_curr_pos")))))),
+                                 (`Field
+                                    (_loc, (`Lid (_loc, "lexbuf")),
+                                      (`Lid (_loc, "lex_buffer_len")))))),
+                            (`Seq
+                               (_loc,
+                                 (`IfThenElse
+                                    (_loc,
+                                      (`Field
+                                         (_loc, (`Lid (_loc, "lexbuf")),
+                                           (`Lid (_loc, "lex_eof_reached")))),
+                                      (`Int (_loc, "256")),
+                                      (`Seq
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`App
+                                                   (_loc,
+                                                     (`Field
+                                                        (_loc,
+                                                          (`Lid
+                                                             (_loc, "lexbuf")),
+                                                          (`Lid
+                                                             (_loc,
+                                                               "refill_buff")))),
+                                                     (`Lid (_loc, "lexbuf")))),
+                                                (`App
+                                                   (_loc,
+                                                     (`Lid
+                                                        (_loc,
+                                                          "__ocaml_lex_next_char")),
+                                                     (`Uid (_loc, "()")))))))))))),
+                            (`Seq
+                               (_loc,
+                                 (`LetIn
+                                    (_loc, (`Negative _loc),
+                                      (`Bind
+                                         (_loc, (`Lid (_loc, "i")),
+                                           (`Field
+                                              (_loc, (`Lid (_loc, "lexbuf")),
+                                                (`Lid (_loc, "lex_curr_pos")))))),
+                                      (`Seq
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`Assign
+                                                   (_loc,
+                                                     (`Field
+                                                        (_loc,
+                                                          (`Lid
+                                                             (_loc, "lexbuf")),
+                                                          (`Lid
+                                                             (_loc,
+                                                               "lex_curr_pos")))),
+                                                     (`App
+                                                        (_loc,
+                                                          (`App
+                                                             (_loc,
+                                                               (`Lid
+                                                                  (_loc, "+")),
+                                                               (`Lid
+                                                                  (_loc, "i")))),
+                                                          (`Int (_loc, "1")))))),
+                                                (`App
+                                                   (_loc,
+                                                     (`Dot
+                                                        (_loc,
+                                                          (`Uid
+                                                             (_loc, "Char")),
+                                                          (`Lid
+                                                             (_loc, "code")))),
+                                                     (`StringDot
+                                                        (_loc,
+                                                          (`Field
+                                                             (_loc,
+                                                               (`Lid
+                                                                  (_loc,
+                                                                    "lexbuf")),
+                                                               (`Lid
+                                                                  (_loc,
+                                                                    "lex_buffer")))),
+                                                          (`Lid (_loc, "i"))))))))))))))))))))) : 
+       Astf.bind ) :: (output_automata transitions)) in
    let actions =
      seq_sem
        ((`LetIn
@@ -374,7 +376,8 @@ let output_entry _loc
                                     (_loc, (`Lid (_loc, "lexbuf")),
                                       (`Lid (_loc, "lex_last_action")))),
                                  (`Int (_loc, "-1"))))))))))) : Astf.exp ) ::
-       (if auto_mem_size > 0
+       (let init = output_memory_actions init_moves in
+        if auto_mem_size > 0
         then
           (`Assign
              (_loc,
@@ -389,8 +392,8 @@ let output_entry _loc
                               (`Lid (_loc, "create")))),
                          (`Int (_loc, (string_of_int auto_mem_size))))),
                     (`Int (_loc, "-1"))))) : Astf.exp )
-          :: (output_memory_actions init_moves)
-        else output_memory_actions init_moves)) in
+          :: init
+        else init)) in
    (`Fun
       (_loc,
         (`Case
