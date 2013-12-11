@@ -171,7 +171,11 @@ let rec cross (xs: 'a list list) : 'a list list  =
   | [] -> [[]]
   | xs::xss -> 
       concat_map (fun y -> map (fun x -> x :: y) xs ) (cross xss )
-      
+
+let bind (xs : 'a list)  (f: 'a -> 'b list) : 'b list =
+  concat_map f xs 
+
+
 
 (* local variables: *)
 (* compile-command: "pmake listf.cmo" *)

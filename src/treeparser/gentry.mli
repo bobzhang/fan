@@ -24,6 +24,9 @@ val obj : 'a t -> entry
 val repr : entry -> 'a t
 
 
+val get_levels :  'a t -> Gdefs.level list
+    
+val fresh_with_levels : 'a t -> Gdefs.level list -> unit
 (**  The main entrance to consume the parser,
      it call [action_parse] internally, which would call [entry.start 0 ],
      the filter of the gram is not applied  *)  

@@ -14,7 +14,16 @@ let dump ppf e = Format.fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
+let get_levels (x:'a t)=  x.levels
 
+let fresh_with_levels (x:'a t) levels =
+  begin 
+    x.levels <- levels;
+    x.start <- Gparser.start_parser_of_entry x ;
+    x.continue <- Gparser.continue_parser_of_entry x
+  end
+
+    
 let mk_dynamic  n : 'a t ={
   name = n;
   start = Gtools.empty_entry n;
@@ -124,7 +133,7 @@ let protects  (es : 'a single_extend_statement list ) action =
             end) es olds;
         raise x 
       end
-  
+
   
 let copy (e:Gdefs.entry) : Gdefs.entry =
   let result =

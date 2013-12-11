@@ -86,6 +86,11 @@ val obj: 'a t -> entry
 val repr: entry -> 'a t
     
 
+(** exported for [local_extend] DDSL *)
+val get_levels :  'a t -> Gdefs.level list
+    
+val fresh_with_levels : 'a t -> Gdefs.level list -> unit
+
 
 (** create a standalone gram
     {[

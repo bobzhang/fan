@@ -323,26 +323,52 @@ let make  _loc (x:Gram_def.entries) =
   Ast_gen.binds (make_localbinds _loc locals) extends
 
 let make_protects _loc (x:Gram_def.entries) action =
-  let (locals,globals) =
+  let (_(* locals *),globals) =
     List.partition (fun (x:Gram_def.entry) -> x.local) x.items in
-  let local_names  = (** FIXME the order matters here, check duplication later!!! *)
-    List.map (fun (x:Gram_def.entry) ->  x.name) locals in
-  let binds = make_localbinds _loc local_names in
-  let local_extends =
-    let el =  List.map (make_extend x.safe) locals  in
-    match el with
-    | [] -> %exp{()}
-    | _ -> seq_sem el in
-  let global_extends =
-    list_of_list (List.map make_single_extend_statement globals) in
-  Ast_gen.binds binds
-    %exp{
-  begin 
-    $local_extends;
-    Gramf.protects $global_extends
-      (fun _ ->
-        $action)
-  end}
+  (* let local_names  = (\** FIXME the order matters here, check duplication later!!! *\) *)
+  (*   List.map (fun (x:Gram_def.entry) ->  x.name) locals in *)
+  (* let binds = make_localbinds _loc local_names in *)
+  (* let local_extends = *)
+  (*   let el =  List.map (make_extend x.safe) locals  in *)
+  (*   match el with *)
+  (*   | [] -> %exp{()} *)
+  (*   | _ -> seq_sem el in *)
+  (* let global_extends = *)
+  (*   list_of_list (List.map make_single_extend_statement globals) in *)
+  let binds = List.map
+      (fun (x:Gram_def.entry) ->
+        (%fresh{tmp_entry}, %exp{${(x.name.id :> exp)}})) globals in
+  let save_binds =
+    List.map (fun (tmp, e) ->  %bind{  $lid:tmp = Gramf.get_levels $e }) binds in
+  let pop_actions =
+    seq_sem @@
+    Listf.map (fun (tmp, e) -> %exp{Gramf.fresh_with_levels $e $lid:tmp } ) binds  in
+  let e = make _loc x in
+  Ast_gen.binds save_binds %exp{
+  try begin
+    $e;
+    let result  = $action in
+    begin 
+      $pop_actions;
+      result 
+    end
+  end
+  with
+    x ->
+      begin
+        $pop_actions;
+        raise x;
+      end
+      }
+  (* let save = List.map  *)
+  (* Ast_gen.binds binds *)
+  (*   %exp{ *)
+  (* begin  *)
+  (*   $local_extends; *)
+  (*   Gramf.protects $global_extends *)
+  (*     (fun _ -> *)
+  (*       $action) *)
+  (* end} *)
 
 (* let make_protects _loc (x:Gram_def.entries) action = *)
 (*   let (locals,globals) = *)

@@ -1,7 +1,7 @@
-open Astf
+(* open Astf *)
 open Compile_stream
 
-val parser_ipat : pat Gramf.t
+(* val parser_ipat : pat Gramf.t *)
 
 
 (* val stream_begin : string option Gramf.t *)
