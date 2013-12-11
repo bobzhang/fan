@@ -3,7 +3,6 @@ let cstream = Compile_stream.cstream
 let exp = Syntaxf.exp
 let a_lident = Syntaxf.a_lident
 let pat = Syntaxf.pat
-open Astf
 let parser_ipat = Gramf.mk "parser_ipat"
 let parser_exp = Gramf.mk "parser_exp"
 let stream_pat_comp = Gramf.mk "stream_pat_comp"
@@ -61,44 +60,6 @@ let _ =
                                (fun _  -> cparser _loc pcl)
                          | None  -> cparser _loc pcl : 'parser_exp ) : 
                      'parser_case_list -> Tokenf.txt -> Locf.t -> 'parser_exp ))
-              }]
-          } : Gramf.olevel )
-     } : _ Gramf.single_extend_statement );
-  Gramf.extend_single
-    ({
-       entry = (parser_ipat : 'parser_ipat Gramf.t );
-       olevel =
-         ({
-            label = None;
-            lassoc = true;
-            productions =
-              [{
-                 symbols =
-                   [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
-                 annot = "(i : alident  :>pat)\n";
-                 fn =
-                   (Gramf.mk_action
-                      (fun (i : 'a_lident)  (_loc : Locf.t)  ->
-                         ((i : alident  :>pat) : 'parser_ipat ) : 'a_lident
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'parser_ipat ))
-               };
-              {
-                symbols =
-                  [Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A "_"); tag_name = "Key" }
-                      } : Tokenf.pattern )];
-                annot = "(`Any _loc : Astf.pat )\n";
-                fn =
-                  (Gramf.mk_action
-                     (fun _  (_loc : Locf.t)  ->
-                        ((`Any _loc : Astf.pat ) : 'parser_ipat ) : Tokenf.txt
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'parser_ipat ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );

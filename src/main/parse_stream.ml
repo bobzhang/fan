@@ -10,7 +10,7 @@ Syntaxf:
   ;
 };;
 
-open Astf
+
 
 
 %create{ 
@@ -33,10 +33,6 @@ open Astf
               Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc  pcl)
           | None -> cparser _loc  pcl}
         ]
-     parser_ipat :
-     [ a_lident as i %{ (i: alident:> pat)}
-     | "_" %{ %pat{ _ }}
-     ]         
 
      parser_case_list :
      ["|"; L0 parser_case SEP "|" as pcl %{ pcl}
