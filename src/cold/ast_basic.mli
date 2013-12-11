@@ -26,8 +26,12 @@ val list_of :
          'a list -> 'a list
       
 val list_of_and : ([> `And of 'b * 'a * 'a ] as 'a) -> 'a list -> 'a list
+
 val fold_and_right :
     (([> `And of 'b * 'a * 'a ] as 'a) -> 'c -> 'c) -> 'a -> 'c -> 'c
+
+val fold_bar_right :
+    (([> `Bar of 'b * 'a * 'a ] as 'a) -> 'c -> 'c) -> 'a -> 'c -> 'c
         
 val list_of_com : ([> `Com of 'b * 'a * 'a ] as 'a) -> 'a list -> 'a list
 val list_of_star : ([> `Sta of 'b * 'a * 'a ] as 'a) -> 'a list -> 'a list

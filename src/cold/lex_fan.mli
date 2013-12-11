@@ -2,7 +2,17 @@
 (** Fan's lexer using [lex] DDSL *)  
 
 
+
+(** The [low_keys] is exported so the user could tweak the original language
+    with some new keys
+    see [make_token]
+ *)
+val low_keys : string list 
+
+val make_token : string list -> Lexing.lexbuf -> Tokenf.t
+    
 val token :  Lexing.lexbuf ->   Tokenf.t
+
 
 
 

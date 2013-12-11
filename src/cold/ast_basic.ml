@@ -33,6 +33,10 @@ let rec list_of_bar x acc =
   match x with
   | `Bar (_,x,y) -> list_of_bar x (list_of_bar y acc)
   | _ -> x :: acc
+let rec fold_bar_right f x acc =
+  match x with
+  | `Bar (_,x,y) -> fold_bar_right f x (fold_bar_right f y acc)
+  | e -> f e acc
 let rec list_of_sem x acc =
   match x with
   | `Sem (_,x,y) -> list_of_sem x (list_of_sem y acc)
