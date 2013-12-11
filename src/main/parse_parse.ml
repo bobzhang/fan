@@ -470,20 +470,24 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
 
   };;
 
-
-let domain = Ns.lang in
+let lexer = Lex_gram.from_stream in
 begin
-  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domain ; name = "extend"} ~entry:extend_body ();
-  Ast_quotation.of_exp
-    ~lexer:Lex_gram.from_stream
-    ~name:{domain; name = "unsafe_extend"} ~entry:unsafe_extend_body ();
-  Ast_quotation.of_exp
-    ~lexer:Lex_gram.from_stream
-    ~name:{domain; name = "local_extend"} ~entry:local_extend ();
-
-end;;
-
+  %register{
+  position:exp;
+  lexer:lexer;
+  name:extend;
+  entry:extend_body};
+  %register{
+  position:exp;
+  lexer:lexer;
+  name:unsafe_extend;
+  entry:unsafe_extend_body};
+  %register{
+  position:exp;
+  lexer:lexer;
+  name:local_extend;
+  entry:local_extend}
+end
 
 (*
   Ast_quotation.add_quotation

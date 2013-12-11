@@ -37,9 +37,11 @@ Ast_gen:
           raise $lid:exc
         end} } ]};;
 
-let _ = begin
-  Ast_quotation.of_exp ~name:{domain = Ns.lang; name =  "save"} ~entry:save_quot ();
-end
+%register{
+position:exp;
+name: save;
+entry: save_quot
+};;
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_save.cmo" *)

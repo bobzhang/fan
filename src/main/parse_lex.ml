@@ -146,19 +146,21 @@ end;;
 
 
 let () =
+  let lexer = Lex_lex.from_stream in
   let domain  = Ns.lang in
   begin
-    Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-      ~name:{domain; name = "lex"} ~entry:lex ();
-    Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-      ~name:{domain; name = "lex_fan"} ~entry:lex_fan ();
-    (* Ast_quotation.of_exp ~lexer:Lex_lex.from_stream *)
-    (*   ~name:(d,"lex_stream") ~entry:lex_stream (); *)
-    
-    (* Ast_quotation.of_stru *)
-    (*   ~lexer:Lex_lex.from_stream *)
-    (*   ~name:{domain; name = "regex"} *)
-    (*   ~entry:declare_regexp (); *)
+    %register{
+    position:exp;
+    lexer:lexer;
+    entry:lex;
+    name:lex
+    };
+    %register{
+    position:exp;
+    lexer:lexer;
+    entry:lex_fan;
+    name:lex_fan
+    };
     Ast_quotation.register_unit_parser
       ~lexer:Lex_lex.from_stream
       (Tokenf.name_of_string"regex", declare_regexp);

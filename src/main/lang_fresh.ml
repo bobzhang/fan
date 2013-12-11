@@ -12,13 +12,12 @@ fresh:
     }
   | %exp{Gensym.fresh ()}]        
 };;
-let () =
-  let d = Ns.lang in
-  begin 
-    Ast_quotation.of_exp
-      ~name:{domain = d; name = "fresh"}
-      ~entry:fresh ()
-  end
+
+%register{
+name:fresh;
+entry:fresh;
+position:exp
+};;
 
 
 (* local variables: *)

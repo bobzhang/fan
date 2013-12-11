@@ -171,7 +171,8 @@ FAN_FILES = \
     lang_not_implement \
     gensym \
     lang_fresh \
-    lang_monad
+    lang_monad \
+    lang_register
     # lang_pos \
     # loc_meta
     # parse_grammar2

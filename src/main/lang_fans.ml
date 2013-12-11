@@ -46,10 +46,13 @@ begin
   Options.add
     ("-loaded-plugins",
      (Arg.Unit Typehook.show_modules), "Show plugins");
-  Ast_quotation.of_exp
-    ~name:{domain = Ns.lang; name =  "fans"}
-    ~lexer
-    ~entry:fan_quots ();
+  %register{
+    name: fans;
+    lexer:lexer ;
+    entry:fan_quots;
+    position:exp
+  }
+
 end;;
 
 (* local variables: *)

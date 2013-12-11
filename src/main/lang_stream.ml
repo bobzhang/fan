@@ -34,11 +34,15 @@ stream_exp stream_exp_comp stream_exp_comp_list
     | stream_exp_comp as se %{ [se]}
     ] 
 
-}  
+};;  
 
-let _ = begin
-  Ast_quotation.of_exp ~name:{domain = Ns.lang; name = "stream"} ~entry:stream_exp ()
-end
+%register{
+position:exp;
+entry:stream_exp;
+name:stream
+}
+
+  
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_stream.cmo" *)
 (* end: *)

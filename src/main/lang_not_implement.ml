@@ -8,6 +8,7 @@ let () =
   let d = Ns.lang in
   let f  = fun (loc:Locf.t) _meta _content ->
     %exp@loc{ ref (fun _ -> Util.failwithf "%s.%s not implemented " __MODULE__ __BIND__)} in
+  
   begin 
     Ast_quotation.add {domain = d; name = "undef"} Dyn_tag.exp f;
   end

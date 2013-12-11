@@ -75,6 +75,6 @@ let _ =
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
-let () =
-  let d = Ns.lang in
-  Ast_quotation.of_exp ~name:{ domain = d; name = "fresh" } ~entry:fresh ()
+let _ =
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "fresh" }
+    ~entry:fresh ()

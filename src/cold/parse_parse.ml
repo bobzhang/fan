@@ -9671,10 +9671,10 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let _ =
-  let domain = Ns.lang in
-  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domain; name = "extend" } ~entry:extend_body ();
-  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domain; name = "unsafe_extend" } ~entry:unsafe_extend_body ();
-  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
-    ~name:{ domain; name = "local_extend" } ~entry:local_extend ()
+  let lexer = Lex_gram.from_stream in
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "extend" }
+    ~entry:extend_body ~lexer ();
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "unsafe_extend" }
+    ~entry:unsafe_extend_body ~lexer ();
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "local_extend" }
+    ~entry:local_extend ~lexer ()

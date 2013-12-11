@@ -784,11 +784,12 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let () =
+  let lexer = Lex_lex.from_stream in
   let domain = Ns.lang in
-  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-    ~name:{ domain; name = "lex" } ~entry:lex ();
-  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-    ~name:{ domain; name = "lex_fan" } ~entry:lex_fan ();
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "lex" } ~entry:lex
+    ~lexer ();
+  Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "lex_fan" }
+    ~entry:lex_fan ~lexer ();
   Ast_quotation.register_unit_parser ~lexer:Lex_lex.from_stream
     ((Tokenf.name_of_string "regex"), declare_regexp);
   Ast_quotation.add_quotation ~lexer:Lex_lex.from_stream

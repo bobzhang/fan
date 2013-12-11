@@ -25,11 +25,14 @@ include_quot:
  ]
 };;
 
-let _ = begin
-  Ast_quotation.of_stru
-    ~lexer
-    ~name:{domain = Ns.lang; name =  "include"} ~entry:include_quot ()
-end
+%register{
+  position: stru;
+  lexer: lexer;
+  name: include;
+  entry: include_quot
+};;
+
+
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lang_include.cmo " *)
 (* end: *)
