@@ -1,0 +1,15 @@
+
+USE_OCAMLFIND = true
+
+OCAMLPACKS[] =
+    utop 
+    compiler-libs
+
+FILES[] =
+    utop_plugin
+
+OCamlLibrary(libtop, $(FILES))
+
+ftop:libtop.cma
+    ocamlfind ocamlmktop -o ftop -thread -linkpkg -package utop
+    

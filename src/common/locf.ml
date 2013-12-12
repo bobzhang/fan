@@ -187,8 +187,10 @@ let name = ref "_loc"
 (* error reporting for string parsing *)
 let error_report (loc,s) = begin
   prerr_endline (to_string loc);
-  let (start_bol,stop_bol,
-       start_off, stop_off) =
+  let (start_bol,
+       stop_bol,
+       start_off,
+       stop_off) =
     (loc.loc_start.pos_bol,
      loc.loc_end.pos_bol,
      loc.loc_start.pos_cnum,

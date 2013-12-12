@@ -87,6 +87,7 @@ common/oconfig.ml
 common/configf.ml
 *.opt
 fan
+src/ftop
 fan_hot
 dummy.ml
 fan.run

@@ -425,6 +425,9 @@ hottop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma main
     
 coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
 
+ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+    
 .DEFAULT: fan coldtop    
 clean:
     rm -rf $(OCAMLBIN_EXT)
