@@ -26,32 +26,55 @@ let get_fan_error_message exn =
 
   
 
-let revise_parser str _bol =
+let revise_parser str _eos_is_error =
   let eof = ref false in
   let lexbuf = UTop.lexbuf_of_string eof  str in
   try
     let stream = Lex_fan.from_lexbuf lexbuf in
-    (* let token_stream = Gramf.filter not_filtered_token_stream in *)
     match Streamf.peek stream with
     | Some (`EOI _) -> (Streamf.junk stream;raise End_of_file)
     | _ -> UTop.Value (Mktop.toplevel_phrase stream) 
   with
-  | End_of_file | Sys.Break | (Locf.Exc_located (_, (End_of_file | Sys.Break))) as x
+  | End_of_file | Sys.Break | (Locf.Exc_located (_, (End_of_file | Sys.Break))) 
       ->
-        raise x
+        raise UTop.Need_more
   |(Locf.Exc_located(_loc,y)) ->
         (UTop.Error ([(0,0)],Printexc.to_string y))
-  
+
+
+        
+(* let parse_use_file str _eos_is_error = *)
+  (* let eof = ref false in *)
+  (* let lexbuf = UTop.lexbuf_of_string eof  str in *)
+  (* try *)
+  (*   let stream = Lex_fan.from_lexbuf lexbuf in *)
+  (*   match Streamf.peek stream with *)
+  (*   | Some (`EOI _) -> (Streamf.junk stream;raise End_of_file) *)
+  (*   | _ -> UTop.Value (Mktop.use_file stream)  *)
+  (* with *)
+  (* | End_of_file | Sys.Break | (Locf.Exc_located (_, (End_of_file | Sys.Break)))  *)
+  (*     -> *)
+  (*       raise UTop.Need_more *)
+  (* |(Locf.Exc_located(_loc,y)) -> *)
+  (*       (UTop.Error ([(0,0)],Printexc.to_string y)) *)
+  (* assert false *)
+
+(* let parse_use_file str _eos_is_error =  *)
+(*   Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location str  *)
+
 
 let normal () = begin
   UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;
-  Toploop.parse_use_file := Parse.use_file;
+  UTop.parse_use_file := UTop.parse_use_file_default;
 end;;
 
 
 let fan () = begin
   UTop.parse_toplevel_phrase := revise_parser;
-  (* Toploop.parse_use_file := wrap use_file; *) (* FIXME added later*)
+  Toploop.parse_use_file :=
+    Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location;
+
+  (* UTop.parse_use_file := parse_use_file; (\* FIXME added later*\) *)
 end;;
 
 

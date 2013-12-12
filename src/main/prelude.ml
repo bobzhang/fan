@@ -173,11 +173,7 @@ let () =
 (********************************)
 
 
-let parse_implem loc cs =
-  (* let l =simple_wrap loc cs  @@  *)(Gramlib.parse Syntaxf.implem loc cs)   (* in *)
-  (* match l with *)
-  (* | [] -> None *)
-  (* | l -> Some (Ast_gen.sem_of_list l) *)
+let parse_implem loc cs = Gramlib.parse Syntaxf.implem loc cs
 
 
 let parse_interf loc cs =
@@ -238,9 +234,6 @@ let toplevel_phrase token_stream =
   
 
 
-
-let use_file token_stream =
-  let s  = Gramf.parse_origin_tokens Syntaxf.implem token_stream in
   (* let loop () = *)
   (*     let (pl, stopped_at_directive) = *)
   (*       Gramf.parse_origin_tokens Syntaxf.implem token_stream in *)
@@ -257,6 +250,8 @@ let use_file token_stream =
   (*         Gramf.parse_origin_tokens Syntaxf.implem  token_stream in   *)
   (*       if stopped_at_directive <> None then pl @ loop () else pl in loop () in *)
   (* FIXME semantics imprecise, the filter will always be applied *)
+let use_file token_stream =
+  let s  = Gramf.parse_origin_tokens Syntaxf.implem token_stream in
   match s with
   | None -> []
   | Some s -> 
