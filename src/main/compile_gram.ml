@@ -24,7 +24,7 @@ let prefix = "__fan_"
 let ghost = Locf.ghost
 
 let module_name =
-  ref %exp'@ghost{Gramf} (* BOOTSTRAPING*)  
+  ref %exp'@ghost{Gramf} (* BOOTSTRAPING -- *)  
 
 let gm () =
   match !Configf.compilation_unit with

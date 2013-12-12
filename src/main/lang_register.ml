@@ -1,7 +1,4 @@
 
-
-
-
 %create{register}  ;;
 (* todo more error checking *)
 let compile _loc pairs =
@@ -55,20 +52,24 @@ let  rec token = %lex_fan{
   | @ocaml_comment %{token lexbuf}
   | @ocaml_eof
   | @default};;
-    
-%extend{
+let make_register register compile =     
+  %extend{
   register:
   [L1 pair SEP ";" as pairs %{ compile _loc pairs }]
   (* FIXME here ? ";" does not fix the trailing problem *)    
   pair@Local:
   [ Lid@xloc x; ":"; Lid@yloc y %{((x,xloc),(y,yloc))} ]
-};;
+  };;
 
 let from_stream = Lexing_util.adapt_to_stream token ;;
 
-%register{
-  position: exp;
-  name:register;
-  entry:register;
-  lexer:from_stream
-};;
+let () =
+  begin
+    make_register register compile;
+    %register{
+    position: exp;
+    name:register;
+    entry:register;
+    lexer:from_stream
+  }
+  end;;

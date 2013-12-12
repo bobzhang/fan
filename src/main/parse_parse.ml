@@ -56,7 +56,54 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   (simple : matrix Gramf.t)
   (single_symbol : Gram_def.osymbol Gramf.t)
   local_extend
+  (register : Astf.exp Gramf.t)
 };;
+
+(*
+let local_register _loc pairs =
+  let tbl = Hashtbl.create 30 in
+  let () =
+    List.iter (fun ((k,kloc),(v,vloc)) ->
+      Hashtbl.add tbl k (kloc,v,vloc)) pairs in
+  let
+    try (_,entry,loc) = Hashtbl.find tbl "entry" in
+  let e = %exp@loc{$lid:entry} in
+  let
+    try (_,name,loc) = Hashtbl.find tbl "name" in
+  let n = %exp@loc{$str:name} in
+  let 
+    try (_,pos,loc) = Hashtblf.find tbl "position" in
+  
+  let p = %ident'@loc{$lid{"of_" ^ pos} } in
+  let lexer = Hashtblf.find_opt tbl "lexer" in
+  begin
+    match lexer with
+    | None -> %exp{
+        Ast_quotation.$p
+          ~name:{domain = Ns.lang; name = $n }
+          ~entry:$e
+          ()
+      }
+    | Some (_,l,loc) ->
+        let l = %exp@loc{~lexer:$lid:l} in
+        %exp{
+        Ast_quotation.$p
+          ~name:{domain = Ns.lang; name = $n }
+          ~entry:$e
+          $l                  
+          ()
+      }
+  end
+    with
+      Not_found ->
+        Locf.failf _loc "`position' attribute is required"
+    with Not_found ->
+      Locf.failf _loc "`name attribute is required" 
+    with Not_found
+      ->  Locf.failf _loc "`entry' attribute is required"  in
+
+;;
+*)
 
 
 %extend{
@@ -341,7 +388,21 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
     let res = make_protects _loc {items; gram; safe = true} action in
     let () = module_name := old in 
     res 
-  }]          
+  }
+  (* | Quot prefix ;  extend_header as rest; L1 entry as el; Ant("",x); Quot postfix %{ *)
+
+  (*   let (gram,old) = rest in *)
+  (*   let items = Listf.filter_map (fun x -> x) el in *)
+  (*   let action = Tokenf.ant_expand Parsef.exp x in  *)
+  (*   let res = *)
+  (*     let a = make_protects _loc {items; gram; safe = true} action in *)
+  (*     let prefix = Parsef.expand_stru prefix in *)
+  (*     a *)
+  (*   in *)
+  (*   let () = module_name := old in  *)
+  (*   res  *)
+  (* } *)
+  ]          
   (* parse qualified [X.X] *)
   qualuid:
   [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
@@ -403,8 +464,7 @@ type matrix =  Gram_def.osymbol  list Gram_def.decorate list;;
   | Ant("",x) %{Tokenf.ant_expand Parsef.exp x}]
 
   level :
-  [ ?assoc as assoc; rule_list as rules
-       %{{assoc;rules}} ]
+  [ ?assoc as assoc; rule_list as rules %{{assoc;rules}} ]
 
   assoc :
   [ ("RA"|"false")  %exp{false}

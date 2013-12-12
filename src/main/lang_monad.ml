@@ -35,22 +35,27 @@ let f (loc:Locf.t) meta content =
   %local_extend{
     exp: 10 RA
     ["let"; "!" ; bind as bi ; "in"; exp as x %{
-     let try f = Hashtbl.find specializer module_name in
-     f {bind = bi; exp = x}
-     with
-     Not_found  -> 
-     Ast_basic.fold_and_right
-       (fun bind acc ->
-         match bind with
-         | %bind{ $p = $e } ->
-             %exp{$uid:module_name.bind $e (fun $p -> $acc)}
-         | _ -> assert false
-       ) bi x }
+     let
+       try f = Hashtbl.find specializer module_name in
+        f {bind = bi; exp = x}
+       with
+         Not_found  -> 
+           Ast_basic.fold_and_right
+             (fun bind acc ->
+               match bind with
+               | %bind{ $p = $e } ->
+                   %exp{$uid:module_name.bind $e (fun $p -> $acc)}
+               | _ -> assert false) bi x }
    ]
     ${Gramlib.parse_string_eoi exp ~loc content}}
 
 (*
-%local_extend{
+
+%local_extend[
+  meta:meta;
+  module:gramf;
+  rewrite:(hello)
+  ]{
   %{
   let module_name =
     match annotation with

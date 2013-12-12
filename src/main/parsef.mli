@@ -18,3 +18,4 @@ val pat_filter_n : ep -> pat
 
 
 val expand_exp : Tokenf.quot -> exp
+val expand_stru : Tokenf.quot -> stru
