@@ -68,7 +68,7 @@ begin
     (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun () -> normal ()));
-  Ast_parsers.use_parsers ["revise"]
+  Ast_parsers.use_parsers ["fan"]
 end;;
 
 begin

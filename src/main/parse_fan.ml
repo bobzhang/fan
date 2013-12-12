@@ -1221,7 +1221,7 @@ let fill_parsers =
         
 let () = 
 Ast_parsers.register_parser
-    ("revise", fill_parsers);;
+    ("fan", fill_parsers);;
 
 
 

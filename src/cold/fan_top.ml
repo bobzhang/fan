@@ -18,7 +18,7 @@ let _ =
   Fan_warnings.current :=
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
-  Ast_parsers.use_parsers ["revise"]
+  Ast_parsers.use_parsers ["fan"]
 let _ =
   Topdirs.dir_install_printer Format.std_formatter
     (Longident.Ldot ((Longident.Lident "Gramf"), "dump"));

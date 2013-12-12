@@ -5,7 +5,7 @@
 let _ =
   begin
     Options.adds Fan_args.initial_spec_list;
-    Ast_parsers.use_parsers [ "revise"];
+    Ast_parsers.use_parsers [ "fan"];
     try
       Arg.parse_dynamic
         Options.init_spec_list

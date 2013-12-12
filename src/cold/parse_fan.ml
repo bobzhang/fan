@@ -16757,4 +16757,4 @@ let fill_parsers =
   let applied = ref false in
   fun ()  ->
     if not (!applied) then (applied := true; apply (); apply_ctyp ())
-let () = Ast_parsers.register_parser ("revise", fill_parsers)
+let () = Ast_parsers.register_parser ("fan", fill_parsers)
