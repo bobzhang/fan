@@ -1,7 +1,9 @@
 
 
 
-  
+
+
+
 let _ =
   begin
     Options.adds Fan_args.initial_spec_list;
@@ -16,3 +18,7 @@ let _ =
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/fan.cmo" *)
+(* end: *)
