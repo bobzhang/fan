@@ -284,7 +284,7 @@ let make_single_extend_statement (e : Gram_def.entry) =
      let ass =
        match level.assoc with
        | Some ass -> ass
-       | None  -> (`Lid (_loc, "true") : Astf.exp ) in
+       | None  -> (`Bool (_loc, true) : Astf.exp ) in
      let rl =
        level.rules |>
          (List.map

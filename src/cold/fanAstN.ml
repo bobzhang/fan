@@ -18,8 +18,8 @@ class primitive =
     method ant (_loc : loc) (x : ant) = (x :>Astf.ep)
     method bool _loc x =
       match x with
-      | true  -> (`Lid (_loc, "true") : Astf.ep )
-      | false  -> (`Lid (_loc, "false") : Astf.ep )
+      | true  -> (`Bool (_loc, true) : Astf.ep )
+      | false  -> (`Bool (_loc, false) : Astf.ep )
   end
 let fill_literal: Locf.t -> Astfn.literal -> Astf.literal =
   fun loc  ->

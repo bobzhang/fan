@@ -66,4 +66,4 @@ let meta_here location =
                                (`Int (string_of_int e)))),
                            (`Int (string_of_int f)))),
                        (`Int (string_of_int g)))),
-                   (if h then `Lid "true" else `Lid "false")))))))
+                   (if h then `Bool true else `Bool false)))))))

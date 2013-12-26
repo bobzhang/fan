@@ -933,6 +933,34 @@ let make_pat exp =
                   [Token
                      ({
                         descr =
+                          { tag = `Key; word = (A "true"); tag_name = "Key" }
+                      } : Tokenf.pattern )];
+                annot = "`Bool (_loc, true)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  -> (`Bool (_loc, true) : 'pat ) : 
+                     Tokenf.txt -> Locf.t -> 'pat ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "false"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "`Bool (_loc, false)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  ->
+                        (`Bool (_loc, false) : 'pat ) : Tokenf.txt ->
+                                                          Locf.t -> 'pat ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
                           { tag = `Key; word = (A "-"); tag_name = "Key" }
                       } : Tokenf.pattern );
                   Token
@@ -6900,6 +6928,36 @@ let apply () =
                       (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                          let s = __fan_0.txt in (`Str (_loc, s) : 'exp ) : 
                       Tokenf.txt -> Locf.t -> 'exp ))
+               };
+               {
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "true"); tag_name = "Key"
+                           }
+                       } : Tokenf.pattern )];
+                 annot = "`Bool (_loc, true)\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  (_loc : Locf.t)  ->
+                         (`Bool (_loc, true) : 'exp ) : Tokenf.txt ->
+                                                          Locf.t -> 'exp ))
+               };
+               {
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "false"); tag_name = "Key"
+                           }
+                       } : Tokenf.pattern )];
+                 annot = "`Bool (_loc, false)\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun _  (_loc : Locf.t)  ->
+                         (`Bool (_loc, false) : 'exp ) : Tokenf.txt ->
+                                                           Locf.t -> 'exp ))
                };
                {
                  symbols =

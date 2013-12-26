@@ -46,6 +46,8 @@ let low_keys =
   "open";
   "module";
   "let";
+  "true";
+  "false";
   "_"]
 let make_token low_keys =
   let tbl = Hashset.of_list low_keys in

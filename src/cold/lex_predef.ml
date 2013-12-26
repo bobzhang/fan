@@ -340,8 +340,7 @@ let _ =
                                                          (`Lid
                                                             (_loc,
                                                               "loc_ghost")),
-                                                         (`Lid
-                                                            (_loc, "false")))))))))))),
+                                                         (`Bool (_loc, false)))))))))))),
                                 (`RecBind
                                    (_loc, (`Lid (_loc, "txt")),
                                      (`Lid (_loc, "txt"))))))))) in
@@ -382,7 +381,7 @@ let _ =
                                            (_loc, cases,
                                              (`Case
                                                 (_loc, (`Any _loc),
-                                                  (`Lid (_loc, "false")))))))),
+                                                  (`Bool (_loc, false)))))))),
                                    (`Lid (_loc, "v")))),
                               (`App
                                  (_loc, (`Vrn (_loc, "Key")),
@@ -429,9 +428,9 @@ let _ =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "loc_ghost")),
-                                                                    (`Lid
+                                                                    (`Bool
                                                                     (_loc,
-                                                                    "false")))))))))))),
+                                                                    false)))))))))))),
                                              (`RecBind
                                                 (_loc, (`Lid (_loc, "txt")),
                                                   (`Lid (_loc, "txt")))))))))),
@@ -510,7 +509,7 @@ let _ =
                                                         (`Lid
                                                            (_loc,
                                                              "loc_ghost")),
-                                                        (`Lid (_loc, "false")))))))))))),
+                                                        (`Bool (_loc, false)))))))))))),
                                (`RecBind
                                   (_loc, (`Lid (_loc, "txt")),
                                     (`Lid (_loc, "txt"))))))))) in
@@ -551,7 +550,7 @@ let _ =
                                           (_loc, cases,
                                             (`Case
                                                (_loc, (`Any _loc),
-                                                 (`Lid (_loc, "false")))))))),
+                                                 (`Bool (_loc, false)))))))),
                                   (`Lid (_loc, "v")))),
                              (`App
                                 (_loc, (`Vrn (_loc, "Key")),
@@ -598,9 +597,9 @@ let _ =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "loc_ghost")),
-                                                                    (`Lid
+                                                                    (`Bool
                                                                     (_loc,
-                                                                    "false")))))))))))),
+                                                                    false)))))))))))),
                                             (`RecBind
                                                (_loc, (`Lid (_loc, "txt")),
                                                  (`Lid (_loc, "txt")))))))))),
@@ -684,9 +683,9 @@ let _ =
                                                                    (`Lid
                                                                     (_loc,
                                                                     "loc_ghost")),
-                                                                   (`Lid
+                                                                   (`Bool
                                                                     (_loc,
-                                                                    "false")))))))))))),
+                                                                    false)))))))))))),
                                           (`RecBind
                                              (_loc, (`Lid (_loc, "txt")),
                                                (`Lid (_loc, "txt")))))))))),
@@ -874,7 +873,7 @@ let _ =
                                                 (`Lid (_loc, "lex_curr_p")))))),
                                       (`RecBind
                                          (_loc, (`Lid (_loc, "loc_ghost")),
-                                           (`Lid (_loc, "false")))))))))))),
+                                           (`Bool (_loc, false)))))))))))),
                   (`Match
                      (_loc, (`Lid (_loc, "s")),
                        (`Bar
@@ -1113,9 +1112,9 @@ let _ =
                                                                     (_loc,
                                                                     "loc_ghost")),
                                                                     (
-                                                                    `Lid
+                                                                    `Bool
                                                                     (_loc,
-                                                                    "false")))))))))))),
+                                                                    false)))))))))))),
                                            (`RecBind
                                               (_loc, (`Lid (_loc, "txt")),
                                                 (`Lid (_loc, "txt")))))))))),
@@ -1219,8 +1218,7 @@ let _ =
                                                          (`Lid
                                                             (_loc,
                                                               "loc_ghost")),
-                                                         (`Lid
-                                                            (_loc, "false")))))))))))),
+                                                         (`Bool (_loc, false)))))))))))),
                                 (`RecBind
                                    (_loc, (`Lid (_loc, "txt")),
                                      (`Lid (_loc, "txt")))))))))),
@@ -1285,7 +1283,7 @@ let _ =
                                                (`Lid (_loc, "lex_curr_p")))))),
                                      (`RecBind
                                         (_loc, (`Lid (_loc, "loc_ghost")),
-                                          (`Lid (_loc, "false")))))))))),
+                                          (`Bool (_loc, false)))))))))),
                       (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))))) : 
             Astf.exp ))])));
     ("ocaml_float_literal",
@@ -1375,8 +1373,8 @@ let _ =
                                                           (`Lid
                                                              (_loc,
                                                                "loc_ghost")),
-                                                          (`Lid
-                                                             (_loc, "false")))))))))))),
+                                                          (`Bool
+                                                             (_loc, false)))))))))))),
                                  (`RecBind
                                     (_loc, (`Lid (_loc, "txt")),
                                       (`Lid (_loc, "txt")))))))))),
@@ -2861,7 +2859,7 @@ let _ =
                                          (`Lid (_loc, "num")))))))),
                           (`Label
                              (_loc, (`Lid (_loc, "absolute")),
-                               (`Lid (_loc, "true"))))))) : Astf.exp )))])));
+                               (`Bool (_loc, true))))))) : Astf.exp )))])));
     ("ocaml_ant",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -3221,9 +3219,9 @@ let _ =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "loc_ghost")),
-                                                                    (`Lid
+                                                                    (`Bool
                                                                     (_loc,
-                                                                    "false")))))))))))),
+                                                                    false)))))))))))),
                                                     (`Sem
                                                        (_loc,
                                                          (`RecBind

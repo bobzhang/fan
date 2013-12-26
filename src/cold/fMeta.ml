@@ -21,8 +21,8 @@ class primitive =
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with
-       | true  -> (`Lid (_loc, "true") : Astf.ep )
-       | false  -> (`Lid (_loc, "false") : Astf.ep ) : ep )
+       | true  -> (`Bool (_loc, true) : Astf.ep )
+       | false  -> (`Bool (_loc, false) : Astf.ep ) : ep )
   end
 class meta =
   object (self : 'self_type)

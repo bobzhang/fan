@@ -376,7 +376,7 @@ let _ =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : Astf.exp )\n";
+                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Bool (_loc, true)))),\n          (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
@@ -385,10 +385,10 @@ let _ =
                                (`Bar
                                   (_loc,
                                     (`CaseWhen
-                                       (_loc, p, e, (`Lid (_loc, "true")))),
+                                       (_loc, p, e, (`Bool (_loc, true)))),
                                     (`Case
                                        (_loc, (`Any _loc),
-                                         (`Lid (_loc, "false"))))))) : 
+                                         (`Bool (_loc, false))))))) : 
                          Astf.exp ) : 'p ) : 'exp ->
                                                Tokenf.txt ->
                                                  'pat -> Locf.t -> 'p ))
@@ -396,7 +396,7 @@ let _ =
               {
                 symbols = [Nterm (Gramf.obj (pat : 'pat Gramf.t ))];
                 annot =
-                  "`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n";
+                  "`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Bool (_loc, true)))),\n         (`Case (_loc, (`Any _loc), (`Bool (_loc, false)))))))\n";
                 fn =
                   (Gramf.mk_action
                      (fun (p : 'pat)  (_loc : Locf.t)  ->
@@ -404,11 +404,11 @@ let _ =
                            (_loc,
                              (`Bar
                                 (_loc,
-                                  (`Case (_loc, p, (`Lid (_loc, "true")))),
+                                  (`Case (_loc, p, (`Bool (_loc, true)))),
                                   (`Case
                                      (_loc, (`Any _loc),
-                                       (`Lid (_loc, "false"))))))) : 
-                        'p ) : 'pat -> Locf.t -> 'p ))
+                                       (`Bool (_loc, false))))))) : 'p ) : 
+                     'pat -> Locf.t -> 'p ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )

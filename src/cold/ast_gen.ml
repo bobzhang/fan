@@ -126,5 +126,5 @@ let meta_here _loc (location : Locf.t) =
                                                          (string_of_int g))))))))))))))),
                       (`RecBind
                          (_loc, (`Lid (_loc, "loc_ghost")),
-                           (`Lid (_loc, (if h then "true" else "false"))))))))))),
+                           (`Bool (_loc, h)))))))))),
        (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))) : Astf.ep )

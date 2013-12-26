@@ -9275,11 +9275,11 @@ let _ =
                          descr =
                            { tag = `Key; word = (A "RA"); tag_name = "Key" }
                        } : Tokenf.pattern )];
-                 annot = "(`Lid (_loc, \"false\") : Astf.exp )\n";
+                 annot = "(`Bool (_loc, false) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (_loc : Locf.t)  ->
-                         ((`Lid (_loc, "false") : Astf.exp ) : 'assoc ) : 
+                         ((`Bool (_loc, false) : Astf.exp ) : 'assoc ) : 
                       Tokenf.txt -> Locf.t -> 'assoc ))
                };
               {
@@ -9290,11 +9290,11 @@ let _ =
                           { tag = `Key; word = (A "false"); tag_name = "Key"
                           }
                       } : Tokenf.pattern )];
-                annot = "(`Lid (_loc, \"false\") : Astf.exp )\n";
+                annot = "(`Bool (_loc, false) : Astf.exp )\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (_loc : Locf.t)  ->
-                        ((`Lid (_loc, "false") : Astf.exp ) : 'assoc ) : 
+                        ((`Bool (_loc, false) : Astf.exp ) : 'assoc ) : 
                      Tokenf.txt -> Locf.t -> 'assoc ))
               };
               {
@@ -9304,11 +9304,11 @@ let _ =
                         descr =
                           { tag = `Key; word = (A "true"); tag_name = "Key" }
                       } : Tokenf.pattern )];
-                annot = "(`Lid (_loc, \"true\") : Astf.exp )\n";
+                annot = "(`Bool (_loc, true) : Astf.exp )\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (_loc : Locf.t)  ->
-                        ((`Lid (_loc, "true") : Astf.exp ) : 'assoc ) : 
+                        ((`Bool (_loc, true) : Astf.exp ) : 'assoc ) : 
                      Tokenf.txt -> Locf.t -> 'assoc ))
               };
               {

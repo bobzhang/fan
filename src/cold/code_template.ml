@@ -66,7 +66,7 @@ let base1_types =
                                    (_loc,
                                      (`Case
                                         (_loc, (`Any _loc),
-                                          (`Lid (_loc, "true")))))))))),
+                                          (`Bool (_loc, true)))))))))),
                       (`Arrow
                          (_loc, (`Lid (_loc, "unit")),
                            (`Arrow

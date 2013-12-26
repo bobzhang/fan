@@ -100,14 +100,8 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
            | ("bool'",_) ->
                (`App
-                  (_loc, (`Vrn (_loc, "Lid")),
-                    (`Par
-                       (_loc,
-                         (`Com
-                            (_loc, (mloc _loc),
-                              (`IfThenElse
-                                 (_loc, e, (`Str (_loc, "true")),
-                                   (`Str (_loc, "false"))))))))) : Astf.exp )
+                  (_loc, (`Vrn (_loc, "Bool")),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

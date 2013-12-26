@@ -33,7 +33,7 @@ let low_keys =
    "while" ; "rec" ;
    "object" ; "or" ;
    "match" ; "open";
-   "module";"let";
+   "module";"let";"true";"false";
    "_"]
 
 let make_token low_keys =

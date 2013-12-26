@@ -6,7 +6,7 @@ open Util
 open Sigs_util
 let mk_variant _cons =
   (function
-   | [] -> (`Lid "true" : Astfn.exp )
+   | [] -> (`Bool true : Astfn.exp )
    | ls ->
        Listf.reduce_left_with
          ~compose:(fun x  y  ->
@@ -21,10 +21,10 @@ let mk_record: Ctyp.record_col list -> exp =
       (mk_variant "")
 let (gen_eq,gen_eqobj) =
   ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
-      ~default:(`Lid "false" : Astfn.exp ) ()),
+      ~default:(`Bool false : Astfn.exp ) ()),
     (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
        ~class_name:"eq" ~mk_variant ~arity:2
-       ~default:(`Lid "false" : Astfn.exp ) ()))
+       ~default:(`Bool false : Astfn.exp ) ()))
 let some f x = Some (f x)
 let _ =
   List.iter Typehook.register
