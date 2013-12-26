@@ -16,10 +16,7 @@ class primitive =
     method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : Astf.ep )
     method unit _loc (_ : unit) = (`Uid (_loc, "()") : Astf.ep )
     method ant (_loc : loc) (x : ant) = (x :>Astf.ep)
-    method bool _loc x =
-      match x with
-      | true  -> (`Bool (_loc, true) : Astf.ep )
-      | false  -> (`Bool (_loc, false) : Astf.ep )
+    method bool _loc x = (`Bool (_loc, x) : Astf.ep )
   end
 let fill_literal: Locf.t -> Astfn.literal -> Astf.literal =
   fun loc  ->

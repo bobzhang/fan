@@ -6,7 +6,7 @@ open Util
 open Sigs_util
 let mk_variant _cons =
   (function
-   | [] -> (`Bool true : Astfn.exp )
+   | [] -> `Bool true
    | ls ->
        Listf.reduce_left_with
          ~compose:(fun x  y  ->

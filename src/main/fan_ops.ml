@@ -53,7 +53,8 @@ let meta_string _loc i = %exp-{$str':i}
   
 let meta_char _loc i = %exp-{$chr':i}
 let meta_unit _loc _ =  %exp-{()}
-let meta_bool _loc =  function | true -> %exp-{true} | false -> %exp-{false} 
+let meta_bool _loc b = `Bool b  (* BOOTSTRAPING *)
+
 
 let meta_ref mf_a _loc i =
   %exp-{ {contents= ${mf_a _loc !i} } }

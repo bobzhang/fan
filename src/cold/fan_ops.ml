@@ -18,10 +18,7 @@ let meta_float _loc i = (`Flo (string_of_float i) : Astfn.exp )
 let meta_string _loc i = (`Str (String.escaped i) : Astfn.exp )
 let meta_char _loc i = (`Chr (Char.escaped i) : Astfn.exp )
 let meta_unit _loc _ = (`Uid "()" : Astfn.exp )
-let meta_bool _loc =
-  function
-  | true  -> (`Bool true : Astfn.exp )
-  | false  -> (`Bool false : Astfn.exp )
+let meta_bool _loc b = `Bool b
 let meta_ref mf_a _loc i =
   (`Record (`RecBind ((`Lid "contents"), (mf_a _loc (!i)))) : Astfn.exp )
 let mklist loc =

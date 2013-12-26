@@ -18,7 +18,7 @@ open Sigs_util
 
 let mk_variant _cons : Ctyp.ty_info list   -> exp  =
   function 
-  | [] -> %exp-{true}
+  | [] -> `Bool true (* %exp-{true} *)
   | ls -> Listf.reduce_left_with
         ~compose:(fun x y -> %exp-{ $x && $y}  )
         ~project:(fun (x:Ctyp.ty_info) -> x.info_exp) ls

@@ -566,8 +566,6 @@ let exp_literal _loc (x:literal) : Parsetree.expression =
 let rec pat_desc _loc (x:pat) : Parsetree.pattern_desc =
   match x with
   | #literal as x -> mk_constant_pat _loc x 
-  | `Lid (_,("true"|"false" as txt)) ->
-      Ppat_construct ({ txt = Lident txt; loc = _loc }, None, false) 
   | `Lid (_,s) ->
       Ppat_var (with_loc s _loc)
   | `Uid _ |`Dot _ as i ->
@@ -679,18 +677,13 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
         String.concat "." sl in Pexp_constant (Const_string s)
   | `Lid(_,"__BIND__") ->
       let s =
-
           String.concat "." (List.rev !current_top_bind) in
-        (* | None -> Locf.failf _loc "No implicit binding context" *)
-        (* | Some s -> s in *)
       Pexp_constant (Const_string s )
   | %exp{ __PWD__ } ->
       let s =  Filename.dirname (Locf.file_name _loc) in
       Pexp_constant (Const_string s)
   | %exp{ __LOCATION__ } ->
       exp_desc _loc (Ast_gen.meta_here _loc _loc :> exp)
-  | `Lid(_,("true"|"false" as s)) ->
-        Pexp_construct (lident_with_loc s _loc,None, true)
   | #vid as x ->
       let (b,id) = normalize_vid x  in
       if b then Pexp_construct (id,None,false)
@@ -727,7 +720,8 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `Array (_,e) -> 
       Pexp_array (List.map exp (list_of_sem e [])) (* be more precise*)
   | `ArrayEmpty _ ->Pexp_array []
-  | `Assert(_,`Lid(_,"false")) -> Pexp_assertfalse
+  | `Assert(_,`Bool(_,false)) -> Pexp_assertfalse
+  (* | `Assert(_,`Lid(_,"false")) -> Pexp_assertfalse *)
   | `Assert(_,e) -> Pexp_assert (exp e)
 
    (* u.x <- b *)
@@ -1333,9 +1327,10 @@ let directive (x:exp) : Parsetree.directive_argument =
   match x with 
   |`Str(_,s) -> Pdir_string s
   |`Int(_,i) -> Pdir_int (int_of_string i)
-  |`Lid(_loc,("true"|"false" as x)) ->
-    if x ="true" then Pdir_bool true
-    else Pdir_bool false
+  | `Bool(_,x) ->  Pdir_bool x 
+  (* |`Lid(_loc,("true"|"false" as x)) -> *)
+  (*   if x ="true" then Pdir_bool true *)
+  (*   else Pdir_bool false *)
   | e ->
     let ident_of_exp : Astf.exp -> Astf.ident =
       let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in

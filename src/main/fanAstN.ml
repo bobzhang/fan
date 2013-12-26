@@ -21,10 +21,7 @@ class primitive =  object
   (* method loc _loc (_l:loc) : ep= `Lid (_loc, !Locf.name) *)
   method ant (_loc:loc) (x:ant)  = (x:> Astf.ep)
   (* FIXME bool antiquot *)
-  method bool _loc x  =
-    match x with
-    |true -> %ep{true}
-    | false -> %ep{ false } 
+  method bool _loc x  = (`Bool (_loc,x) : Astf.ep)
 end;;
 
 %ocaml{ %include{ "astfn.ml" };; };;

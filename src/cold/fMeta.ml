@@ -19,10 +19,7 @@ class primitive =
     method loc _loc (_l : loc) =
       (let n = !Locf.name in (`Lid (_loc, n) : Astf.ep ) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
-    method bool _loc x =
-      (match x with
-       | true  -> (`Bool (_loc, true) : Astf.ep )
-       | false  -> (`Bool (_loc, false) : Astf.ep ) : ep )
+    method bool _loc x = (`Bool (_loc, x) : ep )
   end
 class meta =
   object (self : 'self_type)
