@@ -71,7 +71,7 @@ let eoi_action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
 let parse_tokens_eoi entry stream =         
   Gaction.get (eoi_action_parse entry stream)
     
-let parse_origin_tokens entry stream =
+let parse_tokens entry stream =
   Gaction.get (action_parse entry stream)
 
 type 'a single_extend_statement = {

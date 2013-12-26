@@ -219,7 +219,7 @@ let view_variant (t : row_field) =
       | `TyVrnOf (`C cons,t) -> `variant (cons, [t])
       | `TyVrn `C cons -> `variant (cons, [])
       | `Ctyp (#ident' as i) -> `abbrev i
-      | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)) lst : 
+      | u -> failwithf "%s %s" "view_variant" (ObjsN.dump_row_field u)) lst : 
   vbranch list )
 let conversion_table: (string,string) Hashtbl.t = Hashtbl.create 50
 let transform: full_id_transform -> vid -> exp =

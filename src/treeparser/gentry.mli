@@ -30,7 +30,7 @@ val fresh_with_levels : 'a t -> Gdefs.level list -> unit
 (**  The main entrance to consume the parser,
      it call [action_parse] internally, which would call [entry.start 0 ],
      the filter of the gram is not applied  *)  
-val parse_origin_tokens : 'a t -> Tokenf.stream -> 'a
+val parse_tokens : 'a t -> Tokenf.stream -> 'a
 
 
 val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a

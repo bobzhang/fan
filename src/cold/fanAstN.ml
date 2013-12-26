@@ -35,7 +35,7 @@ let fill_flag: Locf.t -> Astfn.flag -> Astf.flag =
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
-    | #ant as _a0 -> ((* fill_ant loc *) _a0 :>Astf.flag)
+    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.flag)
 let fill_position_flag: Locf.t -> Astfn.position_flag -> Astf.position_flag =
   fun loc  ->
     function

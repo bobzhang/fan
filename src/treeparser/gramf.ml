@@ -14,8 +14,8 @@ type action = Gaction.t
 let mk f = mk_dynamic f
 
 
-let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry tokens
+let debug_token_stream (entry:'a t ) tokens : 'a =
+  parse_tokens entry tokens
   
     
 let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =

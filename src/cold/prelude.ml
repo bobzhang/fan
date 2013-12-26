@@ -154,10 +154,10 @@ let wrap parse_fun ~print_location  lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  let stru = Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream in
+  let stru = Gramf.parse_tokens Syntaxf.top_phrase token_stream in
   let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
 let use_file token_stream =
-  let s = Gramf.parse_origin_tokens Syntaxf.implem token_stream in
+  let s = Gramf.parse_tokens Syntaxf.implem token_stream in
   match s with
   | None  -> []
   | Some s ->

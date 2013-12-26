@@ -48,5 +48,5 @@ end;;
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/fanTop.cmo" *)
+(* compile-command: "cd .. && pmake hot_annot/fan_top.cmo" *)
 (* end: *)

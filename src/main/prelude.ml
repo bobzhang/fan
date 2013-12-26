@@ -226,7 +226,7 @@ let wrap parse_fun ~print_location lb =
 
 
 let toplevel_phrase token_stream =
-  let stru = Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream in 
+  let stru = Gramf.parse_tokens Syntaxf.top_phrase token_stream in 
   let stru =
     (* Syntaxf.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
     Ast_filters.apply_implem_filters stru in
@@ -251,7 +251,7 @@ let toplevel_phrase token_stream =
   (*       if stopped_at_directive <> None then pl @ loop () else pl in loop () in *)
   (* FIXME semantics imprecise, the filter will always be applied *)
 let use_file token_stream =
-  let s  = Gramf.parse_origin_tokens Syntaxf.implem token_stream in
+  let s  = Gramf.parse_tokens Syntaxf.implem token_stream in
   match s with
   | None -> []
   | Some s -> 

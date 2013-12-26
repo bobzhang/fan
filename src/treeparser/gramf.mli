@@ -71,7 +71,7 @@ val dump: 'a t Formatf.t
 
 val trace_parser: bool ref
 
-val parse_origin_tokens:  'a t -> stream -> 'a
+val parse_tokens:  'a t -> stream -> 'a
       
 val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a
     
@@ -104,7 +104,7 @@ val fresh_with_levels : 'a t -> Gdefs.level list -> unit
 val mk: string -> 'a t
 
       
-val debug_origin_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
+val debug_token_stream : 'a t -> Tokenf.t Streamf.t -> 'a
 
 val wrap_stream_parser : ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
     
