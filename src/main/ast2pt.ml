@@ -81,33 +81,79 @@ let current_top_bind : string list ref = ref []
 (*****************************)
 (* Util functions            *)    
 (*****************************)
-let mk_constant _loc (x:literal) : Asttypes.constant =
+let mk_constant_exp _loc (x:literal) : Parsetree.expression_desc =
   match x with 
-  | `Chr (_,s) -> Const_char (Escape.char_of_char_token _loc s)
+  | `Chr (_,s) -> Pexp_constant (Const_char (Escape.char_of_char_token _loc s))
   | `Int (_,s) ->
+      Pexp_constant
       (try Const_int (int_of_string s)
       with Failure _ ->
         error _loc
           "Integer literal exceeds the range of representable integers of type int" )
   | `Int32 (_,s) ->
-      (try Const_int32 (Int32.of_string s)
-      with Failure _ ->
-        error _loc
+      Pexp_constant
+        (try Const_int32 (Int32.of_string s)
+        with Failure _ ->
+          error _loc
           "Integer literal exceeds the range of representable integers of type int32" )
   | `Int64 (_,s) ->
-      (try Const_int64 (Int64.of_string s)
-      with
-        Failure _ ->
-          error _loc
-            "Integer literal exceeds the range of representable integers of type int64" )
+      Pexp_constant
+        (try Const_int64 (Int64.of_string s)
+        with
+          Failure _ ->
+            error _loc
+              "Integer literal exceeds the range of representable integers of type int64" )
   | `Nativeint (_,s) ->
-      (try Const_nativeint (Nativeint.of_string s)
-      with
-        Failure _ ->
+      Pexp_constant
+        (try Const_nativeint (Nativeint.of_string s)
+        with
+          Failure _ ->
+            error _loc
+              "Integer literal exceeds the range of representable integers of type nativeint" )
+  | `Flo (_,s) -> Pexp_constant (Const_float (remove_underscores s))
+  | `Str (_,s) -> Pexp_constant (Const_string (Escape.string_of_string_token _loc s))
+  | `Bool(_,b) ->
+      if b then Pexp_construct ({txt=Lident"true";loc=_loc},None,false)
+      else Pexp_construct ({txt=Lident"false";loc=_loc},None,false)
+
+let mk_constant_pat _loc (x:literal) : Parsetree.pattern_desc =
+  match x with 
+  | `Chr (_,s) -> Ppat_constant (Const_char (Escape.char_of_char_token _loc s))
+  | `Int (_,s) ->
+      Ppat_constant
+      (try Const_int (int_of_string s)
+      with Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int" )
+  | `Int32 (_,s) ->
+      Ppat_constant
+        (try Const_int32 (Int32.of_string s)
+        with Failure _ ->
           error _loc
-            "Integer literal exceeds the range of representable integers of type nativeint" )
-  | `Flo (_,s) -> Const_float (remove_underscores s)
-  | `Str (_,s) -> Const_string (Escape.string_of_string_token _loc s)
+            "Integer literal exceeds the range of representable integers of type int32" )
+  | `Int64 (_,s) ->
+      Ppat_constant
+        (try Const_int64 (Int64.of_string s)
+        with
+          Failure _ ->
+            error _loc
+              "Integer literal exceeds the range of representable integers of type int64" )
+  | `Nativeint (_,s) ->
+      Ppat_constant
+        (try Const_nativeint (Nativeint.of_string s)
+        with
+          Failure _ ->
+            error _loc
+              "Integer literal exceeds the range of representable integers of type nativeint" )
+  | `Flo (_,s) -> Ppat_constant (Const_float (remove_underscores s))
+  | `Str (_,s) -> Ppat_constant (Const_string (Escape.string_of_string_token _loc s))
+  | `Bool (_,b) ->
+      if b then Ppat_construct ({txt=Lident"true";loc=_loc},None,false)
+      else Ppat_construct ({txt=Lident"false";loc=_loc},None,false)
+
+
+    
+                                     
     
 let generate_type_code :
   (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
@@ -511,15 +557,15 @@ let rec mkrangepat loc c1 c2 : Parsetree.pattern_desc =
 (*************************************)
         
 let  pat_literal _loc (x:literal) : Parsetree.pattern =
-  mkpat _loc (Ppat_constant (mk_constant _loc x))
+  mkpat _loc (mk_constant_pat _loc x)
 
 
 let exp_literal _loc (x:literal) : Parsetree.expression =
-  mkexp _loc (Pexp_constant (mk_constant _loc x ))
+  mkexp _loc (mk_constant_exp _loc x )
     
 let rec pat_desc _loc (x:pat) : Parsetree.pattern_desc =
   match x with
-  | #literal as x -> Ppat_constant (mk_constant _loc x )
+  | #literal as x -> mk_constant_pat _loc x 
   | `Lid (_,("true"|"false" as txt)) ->
       Ppat_construct ({ txt = Lident txt; loc = _loc }, None, false) 
   | `Lid (_,s) ->
@@ -619,7 +665,7 @@ let normalize_vid (x:vid) =
                                                    
 let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   match x with
-  | #literal as x ->  Pexp_constant (mk_constant _loc x)
+  | #literal as x ->  mk_constant_exp _loc x 
   | `Uid(_,s) -> Pexp_construct ({loc = _loc; txt = Lident s}, None, true)
   | `Lid(_, "__FILE__")  ->
       exp_desc _loc  %exp{$str'{Locf.file_name _loc}}

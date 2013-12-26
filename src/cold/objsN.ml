@@ -19,6 +19,7 @@ let pp_print_literal: Format.formatter -> literal -> unit =
     | `Nativeint _a0 ->
         Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" pp_print_string _a0
     | `Str _a0 -> Format.fprintf fmt "@[<1>(`Str@ %a)@]" pp_print_string _a0
+    | `Bool _a0 -> Format.fprintf fmt "@[<1>(`Bool@ %a)@]" pp_print_bool _a0
 let pp_print_flag: Format.formatter -> flag -> unit =
   fun fmt  ->
     function
@@ -886,6 +887,7 @@ class print =
         | `Nativeint _a0 ->
             Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" self#string _a0
         | `Str _a0 -> Format.fprintf fmt "@[<1>(`Str@ %a)@]" self#string _a0
+        | `Bool _a0 -> Format.fprintf fmt "@[<1>(`Bool@ %a)@]" self#bool _a0
     method flag : 'fmt -> flag -> unit=
       fun fmt  ->
         function
@@ -1748,6 +1750,7 @@ class map =
       | `Flo _a0 -> let _a0 = self#string _a0 in `Flo _a0
       | `Nativeint _a0 -> let _a0 = self#string _a0 in `Nativeint _a0
       | `Str _a0 -> let _a0 = self#string _a0 in `Str _a0
+      | `Bool _a0 -> let _a0 = self#bool _a0 in `Bool _a0
     method flag : flag -> flag=
       function
       | `Positive -> `Positive
@@ -2531,6 +2534,7 @@ class fold =
       | `Flo _a0 -> self#string _a0
       | `Nativeint _a0 -> self#string _a0
       | `Str _a0 -> self#string _a0
+      | `Bool _a0 -> self#bool _a0
     method flag : flag -> 'self_type=
       function
       | `Positive -> self

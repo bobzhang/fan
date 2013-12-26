@@ -1,7 +1,15 @@
 
 open Astf
 
-
+let stringnize _loc e = [
+  ("nativeint'",%exp{Nativeint.to_string $e});
+  ("int'", %exp{string_of_int});
+  ("int32'",%exp{Int32.to_string});
+  ("int64'",%exp{Int63.to_string});
+  ("chr'",%exp{Char.escaped});
+  ("str'",%exp{String.escaped});
+  ("flo'",%exp{string_of_float});
+ ]
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
   method! pat (x:pat)= 
@@ -46,7 +54,8 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           let e = %{ string_of_float $e } in
           %{ `Flo  $e }
       | ("bool'",_) ->
-          %{ `Lid (if $e then "true" else "false" ) } 
+          %exp{ `Lid (if $e then "true" else "false" ) }
+
       | _ -> super#exp e)
     | e -> super#exp e
   end

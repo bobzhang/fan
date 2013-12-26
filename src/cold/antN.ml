@@ -1,4 +1,24 @@
 open Astf
+let stringnize _loc e =
+  [("nativeint'",
+     (`App
+        (_loc,
+          (`Dot
+             (_loc, (`Uid (_loc, "Nativeint")), (`Lid (_loc, "to_string")))),
+          e) : Astf.exp ));
+  ("int'", (`Lid (_loc, "string_of_int") : Astf.exp ));
+  ("int32'",
+    (`Dot (_loc, (`Uid (_loc, "Int32")), (`Lid (_loc, "to_string"))) : 
+    Astf.exp ));
+  ("int64'",
+    (`Dot (_loc, (`Uid (_loc, "Int63")), (`Lid (_loc, "to_string"))) : 
+    Astf.exp ));
+  ("chr'",
+    (`Dot (_loc, (`Uid (_loc, "Char")), (`Lid (_loc, "escaped"))) : Astf.exp ));
+  ("str'",
+    (`Dot (_loc, (`Uid (_loc, "String")), (`Lid (_loc, "escaped"))) : 
+    Astf.exp ));
+  ("flo'", (`Lid (_loc, "string_of_float") : Astf.exp ))]
 let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super

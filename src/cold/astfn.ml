@@ -2,7 +2,7 @@ type loc = Locf.t
 type ant = [ `Ant of (loc* Tokenf.ant)] 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
-  | `Flo of string | `Nativeint of string | `Str of string] 
+  | `Flo of string | `Nativeint of string | `Str of string | `Bool of bool] 
 type flag = [ `Positive | `Negative | ant] 
 type position_flag = [ `Positive | `Negative | `Normal | ant] 
 type strings = [ `App of (strings* strings) | `Str of string | ant] 

@@ -79,6 +79,12 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#loc _loc _a0), (self#string _loc _a1))))))
+        | `Bool (_a0,_a1) ->
+            `App
+              (_loc, (`Vrn (_loc, "Bool")),
+                (`Par
+                   (_loc,
+                     (`Com (_loc, (self#loc _loc _a0), (self#bool _loc _a1))))))
     method flag : 'loc -> flag -> Astf.ep=
       fun _loc  ->
         function

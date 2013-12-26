@@ -101,7 +101,7 @@ let gen_strip =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
+         | `Lid ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc")
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
          | _ ->
@@ -115,7 +115,7 @@ let gen_strip =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
+         | `Lid ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc")
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
@@ -141,7 +141,8 @@ let gen_fill =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
+         | `Lid
+             ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc"|"ant")
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
@@ -155,7 +156,8 @@ let gen_fill =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
+         | `Lid
+             ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc"|"ant")
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->

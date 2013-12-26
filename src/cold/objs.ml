@@ -31,6 +31,9 @@ let pp_print_literal: Format.formatter -> literal -> unit =
     | `Str (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
           pp_print_string _a1
+    | `Bool (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Bool@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_bool _a1
 let pp_print_flag: Format.formatter -> flag -> unit =
   fun fmt  ->
     function
@@ -1041,6 +1044,9 @@ class print =
         | `Str (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" self#loc _a0
               self#string _a1
+        | `Bool (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Bool@ %a@ %a)@]" self#loc _a0
+              self#bool _a1
     method flag : 'fmt -> flag -> unit=
       fun fmt  ->
         function
@@ -2051,6 +2057,9 @@ class map =
       | `Str (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Str (_a0, _a1)
+      | `Bool (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#bool _a1 in `Bool (_a0, _a1)
     method flag : flag -> flag=
       function
       | `Positive _a0 -> let _a0 = self#loc _a0 in `Positive _a0
@@ -3166,6 +3175,7 @@ class fold =
       | `Flo (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Nativeint (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Str (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
+      | `Bool (_a0,_a1) -> let self = self#loc _a0 in self#bool _a1
     method flag : flag -> 'self_type=
       function
       | `Positive _a0 -> self#loc _a0
@@ -3926,6 +3936,7 @@ let strip_literal: Astf.literal -> Astfn.literal =
   | `Flo (_a0,_a1) -> `Flo _a1
   | `Nativeint (_a0,_a1) -> `Nativeint _a1
   | `Str (_a0,_a1) -> `Str _a1
+  | `Bool (_a0,_a1) -> `Bool _a1
 let strip_flag: Astf.flag -> Astfn.flag =
   function
   | `Positive _a0 -> `Positive

@@ -62,6 +62,7 @@ let ident_of_ctyp: ctyp -> ident =
 let rec is_irrefut_pat (x : pat) =
   match x with
   | `Lid _ -> true
+  | `Bool _ -> false
   | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Uid (_loc,"()") : Astf.pat) -> true
   | (`Any _loc : Astf.pat) -> true
   | `Dot (_,_,y) -> is_irrefut_pat (y : vid  :>pat)

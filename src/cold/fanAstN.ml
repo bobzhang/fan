@@ -31,6 +31,7 @@ let fill_literal: Locf.t -> Astfn.literal -> Astf.literal =
     | `Flo _a0 -> `Flo (loc, _a0)
     | `Nativeint _a0 -> `Nativeint (loc, _a0)
     | `Str _a0 -> `Str (loc, _a0)
+    | `Bool _a0 -> `Bool (loc, _a0)
 let fill_flag: Locf.t -> Astfn.flag -> Astf.flag =
   fun loc  ->
     function
@@ -897,6 +898,8 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Nativeint")), (self#string _loc _a0))
         | `Str _a0 ->
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
+        | `Bool _a0 ->
+            `App (_loc, (`Vrn (_loc, "Bool")), (self#bool _loc _a0))
     method flag : 'loc -> flag -> Astf.ep=
       fun _loc  ->
         function

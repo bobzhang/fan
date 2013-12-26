@@ -65,7 +65,9 @@ type literal =
   | `Int64 of (loc * string)
   | `Flo of (loc * string)
   | `Nativeint of (loc * string)
-  | `Str of (loc * string)]   
+  | `Str of (loc * string)
+  | `Bool of (loc * bool) (* True or false*)
+  ]   
 
 
 

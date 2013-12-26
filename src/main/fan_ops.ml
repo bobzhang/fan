@@ -215,7 +215,8 @@ let ident_of_ctyp : ctyp -> ident =
 
 let rec is_irrefut_pat (x: pat) = with pat
     match x with
-    | `Lid _ ->  true 
+    | `Lid _ ->  true
+    | `Bool _ -> false
     | `ArrayEmpty (_loc)
     | `LabelS (_loc,_)
     | %{ () } -> true
@@ -387,3 +388,7 @@ let mkumin loc prefix arg = with exp
   
 
   
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/fan_ops.cmo" *)
+(* end: *)
