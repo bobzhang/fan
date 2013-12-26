@@ -15,3 +15,5 @@ let _ = begin
 end;;
 
 #use "init_preference.ml";;
+
+let _ = print_endline "Welcome to Fan! ";;
