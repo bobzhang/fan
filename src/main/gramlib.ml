@@ -7,7 +7,7 @@
 let parse ?(lexer= Lex_fan.from_stream) (entry:'a Gramf.t) loc
     (cs:char Streamf.t) =
   cs
-   |>  lexer loc
+   |> lexer loc
    |> Gramf.parse_tokens_eoi entry
 
 

@@ -70,7 +70,7 @@ end;;
       [(r,Parsef.expand_exp x  )]}
     | "@"; Lid@xloc x; ?Quot y %{
         let res =
-          try Hashtbl.find Predef_lex.named_cases x
+          try Hashtbl.find Lex_predef.named_cases x
           with Not_found ->  begin
             Fan_warnings.emitf xloc.loc_start
               "Reference to unbound case name %s" x;
@@ -80,7 +80,7 @@ end;;
     | "@"; Lid@xloc x ; "("; L1 Str SEP "|" as l; ")"; ? Quot y %{
        (* FIXME ? Quote -- better error message do you mean Quot -- possible ? *)
       let res =
-          try Hashtbl.find Predef_lex.named_cases x
+          try Hashtbl.find Lex_predef.named_cases x
           with Not_found ->  begin
             Fan_warnings.emitf xloc.loc_start
               "Reference to unbound case name %s" x;
@@ -107,7 +107,7 @@ end;;
   | S as r1;"+" %{ Sequence (Repetition (remove_as r1), r1)}
   | "("; S as r1; ")" %{ r1}
   | Lid@xloc x %{
-         try Hashtbl.find Predef_lex.named_regexps x
+         try Hashtbl.find Lex_predef.named_regexps x
          with Not_found ->
          begin 
            Fan_warnings.emitf xloc.loc_start
@@ -132,13 +132,13 @@ end;;
 
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{
-    if Hashtbl.mem Predef_lex.named_regexps x then begin 
+    if Hashtbl.mem Lex_predef.named_regexps x then begin 
       Fan_warnings.emitf  xloc.loc_start
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
        (* %stru{let _ = ()} *)
     end
     else begin
-      Hashtbl.add Predef_lex.named_regexps x r;
+      Hashtbl.add Lex_predef.named_regexps x r;
       (* %stru{let _ = () } *)
     end}
   | S; S as x %{x}]};;  

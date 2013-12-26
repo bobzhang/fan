@@ -173,7 +173,7 @@ let _ =
                     ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" } } : 
                     Tokenf.pattern )];
                 annot =
-                  "let res =\n  try Hashtbl.find Predef_lex.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = None; quot_opt = y; loc = xloc }\n";
+                  "let res =\n  try Hashtbl.find Lex_predef.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = None; quot_opt = y; loc = xloc }\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
@@ -181,7 +181,7 @@ let _ =
                         let x = __fan_1.txt in
                         let y = None in
                         (let res =
-                           try Hashtbl.find Predef_lex.named_cases x
+                           try Hashtbl.find Lex_predef.named_cases x
                            with
                            | Not_found  ->
                                (Fan_warnings.emitf xloc.loc_start
@@ -205,7 +205,7 @@ let _ =
                     ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" }
                      } : Tokenf.pattern )];
                 annot =
-                  "let res =\n  try Hashtbl.find Predef_lex.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = None; quot_opt = y; loc = xloc }\n";
+                  "let res =\n  try Hashtbl.find Lex_predef.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = None; quot_opt = y; loc = xloc }\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_2 : Tokenf.quot)  (__fan_1 : Tokenf.txt)  _ 
@@ -215,7 +215,7 @@ let _ =
                         let y = __fan_2 in
                         let y = Some y in
                         (let res =
-                           try Hashtbl.find Predef_lex.named_cases x
+                           try Hashtbl.find Lex_predef.named_cases x
                            with
                            | Not_found  ->
                                (Fan_warnings.emitf xloc.loc_start
@@ -259,7 +259,7 @@ let _ =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
                 annot =
-                  "let res =\n  try Hashtbl.find Predef_lex.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = (Some l); quot_opt = y; loc = xloc }\n";
+                  "let res =\n  try Hashtbl.find Lex_predef.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = (Some l); quot_opt = y; loc = xloc }\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (l : Tokenf.txt list)  _  (__fan_1 : Tokenf.txt)
@@ -268,7 +268,7 @@ let _ =
                         let x = __fan_1.txt in
                         let y = None in
                         (let res =
-                           try Hashtbl.find Predef_lex.named_cases x
+                           try Hashtbl.find Lex_predef.named_cases x
                            with
                            | Not_found  ->
                                (Fan_warnings.emitf xloc.loc_start
@@ -319,7 +319,7 @@ let _ =
                     ({ descr = { tag = `Quot; word = Any; tag_name = "Quot" }
                      } : Tokenf.pattern )];
                 annot =
-                  "let res =\n  try Hashtbl.find Predef_lex.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = (Some l); quot_opt = y; loc = xloc }\n";
+                  "let res =\n  try Hashtbl.find Lex_predef.named_cases x\n  with\n  | Not_found  ->\n      (Fan_warnings.emitf xloc.loc_start \"Reference to unbound case name %s\"\n         x;\n       raise UnboundCase) in\nres { tokens_opt = (Some l); quot_opt = y; loc = xloc }\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_5 : Tokenf.quot)  _  (l : Tokenf.txt list) 
@@ -329,7 +329,7 @@ let _ =
                         let y = __fan_5 in
                         let y = Some y in
                         (let res =
-                           try Hashtbl.find Predef_lex.named_cases x
+                           try Hashtbl.find Lex_predef.named_cases x
                            with
                            | Not_found  ->
                                (Fan_warnings.emitf xloc.loc_start
@@ -598,13 +598,13 @@ let _ =
                      ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
                       } : Tokenf.pattern )];
                 annot =
-                  "try Hashtbl.find Predef_lex.named_regexps x\nwith\n| Not_found  ->\n    (Fan_warnings.emitf xloc.loc_start\n       \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n";
+                  "try Hashtbl.find Lex_predef.named_regexps x\nwith\n| Not_found  ->\n    (Fan_warnings.emitf xloc.loc_start\n       \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                         let xloc = __fan_0.loc in
                         let x = __fan_0.txt in
-                        (try Hashtbl.find Predef_lex.named_regexps x
+                        (try Hashtbl.find Lex_predef.named_regexps x
                          with
                          | Not_found  ->
                              (Fan_warnings.emitf xloc.loc_start
@@ -750,19 +750,19 @@ let _ =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))];
                  annot =
-                   "if Hashtbl.mem Predef_lex.named_regexps x\nthen\n  Fan_warnings.emitf xloc.loc_start\n    \"fanlex (warning): multiple definition of named regexp '%s'\n\" x\nelse Hashtbl.add Predef_lex.named_regexps x r\n";
+                   "if Hashtbl.mem Lex_predef.named_regexps x\nthen\n  Fan_warnings.emitf xloc.loc_start\n    \"fanlex (warning): multiple definition of named regexp '%s'\n\" x\nelse Hashtbl.add Lex_predef.named_regexps x r\n";
                  fn =
                    (Gramf.mk_action
                       (fun (r : 'regexp)  _  (__fan_1 : Tokenf.txt)  _ 
                          (_loc : Locf.t)  ->
                          let xloc = __fan_1.loc in
                          let x = __fan_1.txt in
-                         (if Hashtbl.mem Predef_lex.named_regexps x
+                         (if Hashtbl.mem Lex_predef.named_regexps x
                           then
                             Fan_warnings.emitf xloc.loc_start
                               "fanlex (warning): multiple definition of named regexp '%s'\n"
                               x
-                          else Hashtbl.add Predef_lex.named_regexps x r : 
+                          else Hashtbl.add Lex_predef.named_regexps x r : 
                            'declare_regexp ) : 'regexp ->
                                                  Tokenf.txt ->
                                                    Tokenf.txt ->
