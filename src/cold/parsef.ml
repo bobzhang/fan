@@ -27,6 +27,7 @@ let _ =
      } : _ Gramf.single_extend_statement )
 let exp loc str = Gramlib.parse_string_eoi Syntaxf.exp ~loc str
 let pat loc str = Gramlib.parse_string_eoi Syntaxf.pat ~loc str
+let stru loc str = Gramlib.parse_string_eoi Syntaxf.stru ~loc str
 let ep loc str = (Gramlib.parse_string_eoi ep ~loc str : ep )
 let ident loc str = Gramlib.parse_string_eoi Syntaxf.ident ~loc str
 let anti_filter = Ant.antiquot_expander ~parse_exp:exp ~parse_pat:pat
@@ -39,3 +40,7 @@ let expand_exp (x : Tokenf.quot) =
   if x.name = Tokenf.empty_name
   then let expander loc _ s = exp loc s in Tokenf.quot_expand expander x
   else Ast_quotation.expand x Dyn_tag.exp
+let expand_stru (x : Tokenf.quot) =
+  if x.name = Tokenf.empty_name
+  then let expander loc _ s = stru loc s in Tokenf.quot_expand expander x
+  else Ast_quotation.expand x Dyn_tag.stru

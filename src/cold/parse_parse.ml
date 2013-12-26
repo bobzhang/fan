@@ -43,6 +43,7 @@ let unsafe_extend_body = Gramf.mk "unsafe_extend_body"
 let simple: matrix Gramf.t = Gramf.mk "simple"
 let single_symbol: Gram_def.osymbol Gramf.t = Gramf.mk "single_symbol"
 let local_extend = Gramf.mk "local_extend"
+let register: Astf.exp Gramf.t = Gramf.mk "register"
 let _ =
   let a_int: 'a_int Gramf.t = Gramf.mk "a_int"
   and or_strs: 'or_strs Gramf.t = Gramf.mk "or_strs"

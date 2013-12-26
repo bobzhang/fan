@@ -488,7 +488,7 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | _ ->
           failwith
             ("Lang_register" ^ ("." ^ ("token" ^ " lexing: empty token")))))
-let _ =
+let make_register register compile =
   let pair: 'pair Gramf.t = Gramf.mk "pair" in
   Gramf.extend_single
     ({
@@ -561,6 +561,7 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let from_stream = Lexing_util.adapt_to_stream token
-let _ =
+let () =
+  make_register register compile;
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "register" }
     ~entry:register ~lexer:from_stream ()
