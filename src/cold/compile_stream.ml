@@ -336,7 +336,7 @@ let not_computing x =
   aux x
 let slazy _loc e =
   match e with
-  | (`App (_loc,f,`Uid (_,"()")) : Astf.exp) ->
+  | (`App (_loc,f,`Unit _) : Astf.exp) ->
       (match f with
        | (`Lid (_loc,_) : Astf.exp) -> f
        | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : Astf.exp ))

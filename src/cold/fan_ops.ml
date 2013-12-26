@@ -17,7 +17,7 @@ let meta_nativeint _loc i = (`Nativeint (Nativeint.to_string i) : Astfn.exp )
 let meta_float _loc i = (`Flo (string_of_float i) : Astfn.exp )
 let meta_string _loc i = (`Str (String.escaped i) : Astfn.exp )
 let meta_char _loc i = (`Chr (Char.escaped i) : Astfn.exp )
-let meta_unit _loc _ = (`Uid "()" : Astfn.exp )
+let meta_unit _loc _ = `Unit
 let meta_bool _loc b = `Bool b
 let meta_ref mf_a _loc i =
   (`Record (`RecBind ((`Lid "contents"), (mf_a _loc (!i)))) : Astfn.exp )
@@ -60,8 +60,8 @@ let rec is_irrefut_pat (x : pat) =
   match x with
   | `Lid _ -> true
   | `Bool _ -> false
-  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Uid (_loc,"()") : Astf.pat) -> true
-  | (`Any _loc : Astf.pat) -> true
+  | `Unit _ -> true
+  | `ArrayEmpty _loc|`LabelS (_loc,_)|`Any _loc -> true
   | `Dot (_,_,y) -> is_irrefut_pat (y : vid  :>pat)
   | (`Alias (_loc,x,_) : Astf.pat) -> is_irrefut_pat x
   | (`Record (_loc,p) : Astf.pat) ->

@@ -142,7 +142,8 @@ FAN_FILES = \
     ast_gen ant antN ast_loc  ast_inject  astn_util \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
-    fid code_template comment_filter compile_lex compile_stream ctyp \
+    fid \
+    comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
     expN astfn control control_require fMeta \
     gram_def  \
@@ -428,7 +429,7 @@ coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma col
 ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     
-.DEFAULT: fan coldtop    
+.DEFAULT: fan coldtop ftop    
 clean:
     rm -rf $(OCAMLBIN_EXT)
     rm -rf fan fan0 fan1

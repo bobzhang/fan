@@ -82,7 +82,7 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = IdN.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  (`StExp (`Uid "()") : Astfn.stru ))
+                  (`StExp `Unit : Astfn.stru ))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =

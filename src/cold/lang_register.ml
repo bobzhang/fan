@@ -50,7 +50,7 @@ let compile _loc pairs =
                                                         (`Lid (_loc, "name")),
                                                         n)))))))))),
                                (`Label (_loc, (`Lid (_loc, "entry")), e)))),
-                          (`Uid (_loc, "()"))) : Astf.exp )
+                          (`Unit _loc)) : Astf.exp )
                  | Some (_,l,loc) ->
                      let l: Astf.exp =
                        `Label (loc, (`Lid (loc, "lexer")), (`Lid (loc, l))) in
@@ -92,7 +92,7 @@ let compile _loc pairs =
                                                                   "name")),
                                                              n)))))))))),
                                     (`Label (_loc, (`Lid (_loc, "entry")), e)))),
-                               l)), (`Uid (_loc, "()"))) : Astf.exp )
+                               l)), (`Unit _loc)) : Astf.exp )
              with
              | Not_found  ->
                  (fun ()  ->

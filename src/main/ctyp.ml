@@ -377,6 +377,7 @@ let view_sum (t:or_ctyp) =
   ]
   ]}
  *)    
+
 let view_variant (t:row_field) : vbranch list  =
   let lst = Ast_basic.N.list_of_bar t [] in 
   List.map (
@@ -388,16 +389,12 @@ let view_variant (t:row_field) : vbranch list  =
         `variant (cons, Ast_basic.N.list_of_star t [])
     | (* %{ `$cons of $t } *)
       (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
-      `TyVrnOf(`C cons,t)
-      -> `variant (cons, [t])
+      `TyVrnOf(`C cons,t) -> `variant (cons, [t])
     | (* %{ `$cons } *)
-      `TyVrn (`C cons)
-      ->
+      `TyVrn (`C cons) ->
         `variant (cons, [])
-    | `Ctyp ((#ident' as i)) -> 
-        (* |  `Id (_loc,i) -> *) `abbrev i  
-          (* | %{$lid:x} -> `abbrev x  *)
-    | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)  ) lst 
+    | `Ctyp ((#ident' as i)) -> `abbrev i  
+    | u -> failwithf "%s %s" __BIND__ (ObjsN.dump_row_field u)  ) lst 
 
 let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 (*************************************************************************)

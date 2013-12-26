@@ -189,7 +189,7 @@ let exp_of_variant ?cons_transform
       (fun  acc x ->
         match x with
         | `variant (cons,args) -> f ("`"^cons,args)::acc
-        | `abbrev (lid) ->  simple lid :: acc  )  [] ls in
+        | `abbrev lid ->  simple lid :: acc  )  [] ls in
   let t =
     if List.length res >= 2 && arity >= 2 then
       match default info with | Some x-> x::res | None -> res 

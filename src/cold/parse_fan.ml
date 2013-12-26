@@ -1192,13 +1192,11 @@ let make_pat exp =
                        descr =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
-                annot = "`Uid (_loc, \"()\")\n";
+                annot = "`Unit _loc\n";
                 fn =
                   (Gramf.mk_action
-                     (fun _  _  (_loc : Locf.t)  ->
-                        (`Uid (_loc, "()") : 'pat ) : Tokenf.txt ->
-                                                        Tokenf.txt ->
-                                                          Locf.t -> 'pat ))
+                     (fun _  _  (_loc : Locf.t)  -> (`Unit _loc : 'pat ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'pat ))
               };
               {
                 symbols =
@@ -1947,13 +1945,11 @@ let make_pat exp =
                        descr =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
-                annot = "`Uid (_loc, \"()\")\n";
+                annot = "`Unit _loc\n";
                 fn =
                   (Gramf.mk_action
-                     (fun _  _  (_loc : Locf.t)  ->
-                        (`Uid (_loc, "()") : 'ipat ) : Tokenf.txt ->
-                                                         Tokenf.txt ->
-                                                           Locf.t -> 'ipat ))
+                     (fun _  _  (_loc : Locf.t)  -> (`Unit _loc : 'ipat ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ipat ))
               };
               {
                 symbols =
@@ -7256,11 +7252,10 @@ let apply () =
                         descr =
                           { tag = `Key; word = (A ")"); tag_name = "Key" }
                       } : Tokenf.pattern )];
-                 annot = "(`Uid (_loc, \"()\") : Astf.exp )\n";
+                 annot = "`Unit _loc\n";
                  fn =
                    (Gramf.mk_action
-                      (fun _  _  (_loc : Locf.t)  ->
-                         ((`Uid (_loc, "()") : Astf.exp ) : 'exp ) : 
+                      (fun _  _  (_loc : Locf.t)  -> (`Unit _loc : 'exp ) : 
                       Tokenf.txt -> Tokenf.txt -> Locf.t -> 'exp ))
                };
                {
@@ -7492,16 +7487,16 @@ let apply () =
                           { tag = `Key; word = (A "end"); tag_name = "Key" }
                       } : Tokenf.pattern )];
                  annot =
-                   "match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : Astf.exp )\n";
+                   "match seq with | Some seq -> `Seq (_loc, seq) | None  -> `Unit _loc\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  _  (_loc : Locf.t)  ->
                          let seq = None in
                          (match seq with
                           | Some seq -> `Seq (_loc, seq)
-                          | None  -> (`Uid (_loc, "()") : Astf.exp ) : 
-                           'exp ) : Tokenf.txt ->
-                                      Tokenf.txt -> Locf.t -> 'exp ))
+                          | None  -> `Unit _loc : 'exp ) : Tokenf.txt ->
+                                                             Tokenf.txt ->
+                                                               Locf.t -> 'exp ))
                };
                {
                  symbols =
@@ -7518,17 +7513,18 @@ let apply () =
                           { tag = `Key; word = (A "end"); tag_name = "Key" }
                       } : Tokenf.pattern )];
                  annot =
-                   "match seq with\n| Some seq -> `Seq (_loc, seq)\n| None  -> (`Uid (_loc, \"()\") : Astf.exp )\n";
+                   "match seq with | Some seq -> `Seq (_loc, seq) | None  -> `Unit _loc\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (seq : 'sequence)  _  (_loc : Locf.t)  ->
                          let seq = Some seq in
                          (match seq with
                           | Some seq -> `Seq (_loc, seq)
-                          | None  -> (`Uid (_loc, "()") : Astf.exp ) : 
-                           'exp ) : Tokenf.txt ->
-                                      'sequence ->
-                                        Tokenf.txt -> Locf.t -> 'exp ))
+                          | None  -> `Unit _loc : 'exp ) : Tokenf.txt ->
+                                                             'sequence ->
+                                                               Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'exp ))
                };
                {
                  symbols =

@@ -140,7 +140,7 @@ let gen_strip =
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
-        | `Lid("int" |"char"| "string" | "int32"| "nativeint" |"bool"|"loc")
+        | `Lid("int" |"char"| "string" | "int32"| "unit" | "nativeint" |"bool"|"loc")
         | %ctyp-{Tokenf.quot}
         | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [Tokenf] *)
              res
@@ -153,7 +153,7 @@ let gen_strip =
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
-        | `Lid("int"|"char" | "string" | "int32"| "nativeint" |"bool"|"loc")
+        | `Lid("int"|"char" | "string" | "int32" | "unit"| "nativeint" |"bool"|"loc")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res (* BOOTSTRAPING *)
         | _ ->
             let pat0 = (x.ep0 :> pat) in  
@@ -183,7 +183,7 @@ let gen_fill =
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
-        | `Lid("int" |"char"| "string" | "int32"| "nativeint"|"bool" |"loc"|"ant")
+        | `Lid("int" |"char"| "string" | "int32" |"unit"| "nativeint"|"bool" |"loc"|"ant")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} -> res
         | _ ->
             let pat0 = (x.ep0:>pat) in
@@ -194,7 +194,7 @@ let gen_fill =
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
-        | `Lid("int"|"char" | "string" | "int32"| "nativeint" |"bool"|"loc"|"ant")
+        | `Lid("int"|"char" | "string" | "int32" | "unit" | "nativeint" |"bool"|"loc"|"ant")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res
         | _ ->
             let pat0 = (x.ep0 :> pat) in

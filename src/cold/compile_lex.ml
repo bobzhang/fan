@@ -53,7 +53,7 @@ let output_moves
                 (_loc, (`Lid (_loc, "lexbuf")),
                   (`Lid (_loc, "lex_last_action"))) : Astf.exp )]
          | Goto n ->
-             [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Uid (_loc, "()"))) : 
+             [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Unit _loc)) : 
              Astf.exp )]) : exp list ) in
    let output_clause ?pats  (mems : Lexgen.memory_action list)
      (r : Lexgen.automata_move) =
@@ -146,16 +146,16 @@ let output_trans (i : int) (trans : Lexgen.automata) =
                     (_loc,
                       (`App
                          (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                           (`Uid (_loc, "()")))), moves) : Astf.exp )]
+                           (`Unit _loc))), moves) : Astf.exp )]
            | No_remember  ->
                [(`Match
                    (_loc,
                      (`App
                         (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                          (`Uid (_loc, "()")))), moves) : Astf.exp )]) in
+                          (`Unit _loc))), moves) : Astf.exp )]) in
   (`Bind
      (_loc, (`Lid (_loc, (lex_state i))),
-       (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : Astf.bind )
+       (`Fun (_loc, (`Case (_loc, (`Unit _loc), e))))) : Astf.bind )
 let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
@@ -251,7 +251,7 @@ let output_entry _loc
              (`Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Uid (_loc, "()")),
+                     (_loc, (`Unit _loc),
                        (`IfThenElse
                           (_loc,
                             (`App
@@ -291,7 +291,7 @@ let output_entry _loc
                                                      (`Lid
                                                         (_loc,
                                                           "__ocaml_lex_next_char")),
-                                                     (`Uid (_loc, "()")))))))))))),
+                                                     (`Unit _loc))))))))))),
                             (`Seq
                                (_loc,
                                  (`LetIn
@@ -416,7 +416,7 @@ let output_entry _loc
                                       (`App
                                          (_loc,
                                            (`Lid (_loc, (lex_state init_num))),
-                                           (`Uid (_loc, "()")))))),
+                                           (`Unit _loc))))),
                                  (`Seq
                                     (_loc,
                                       (`Sem

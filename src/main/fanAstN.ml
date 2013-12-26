@@ -5,7 +5,12 @@ open Astfn
     specifiied *)
 let fill_ant _loc x = x;;
 
-%fans{keep off; derive (  Fill MetaObj(* OEq OPrint *)(* MetaExpr *));};;
+
+%fans{keep off;
+      derive
+        (
+         Fill MetaObj
+(* OEq OPrint *)(* MetaExpr *));};;
 
 
 class primitive =  object
@@ -16,7 +21,7 @@ class primitive =  object
   method float _loc (i:float) = %ep{$flo':i}
   method string _loc (i:string) = %ep{$str':i}
   method char _loc (i:char) = %ep{$chr':i}
-  method unit _loc (_:unit) = %ep{()}
+  method unit _loc (_:unit) = (`Unit _loc : Astf.ep) 
   (*default use [meta_loc] for expession*)   
   (* method loc _loc (_l:loc) : ep= `Lid (_loc, !Locf.name) *)
   method ant (_loc:loc) (x:ant)  = (x:> Astf.ep)

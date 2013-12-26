@@ -52,7 +52,7 @@ let meta_float _loc i = %exp-{$flo':i}
 let meta_string _loc i = %exp-{$str':i}
   
 let meta_char _loc i = %exp-{$chr':i}
-let meta_unit _loc _ =  %exp-{()}
+let meta_unit _loc _ =  `Unit 
 let meta_bool _loc b = `Bool b  (* BOOTSTRAPING *)
 
 
@@ -218,10 +218,10 @@ let rec is_irrefut_pat (x: pat) = with pat
     match x with
     | `Lid _ ->  true
     | `Bool _ -> false
+    | `Unit _ -> true
     | `ArrayEmpty (_loc)
     | `LabelS (_loc,_)
-    | %{ () } -> true
-    | %{ _ } -> true
+    | `Any _loc (* %{ _ } *) -> true
     | `Dot(_,_,y) -> is_irrefut_pat (y:vid:>pat) 
     | %{ ($x as $_) } -> is_irrefut_pat x
     | %{ { $p } } ->

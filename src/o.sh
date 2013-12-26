@@ -1,1 +1,1 @@
-ocaml -w -40
+ledit ocaml -w -40

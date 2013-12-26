@@ -115,6 +115,8 @@ let mk_constant_exp _loc (x:literal) : Parsetree.expression_desc =
   | `Bool(_,b) ->
       if b then Pexp_construct ({txt=Lident"true";loc=_loc},None,false)
       else Pexp_construct ({txt=Lident"false";loc=_loc},None,false)
+  | `Unit _ ->
+      Pexp_construct ({txt = Lident"()";loc=_loc},None,false)
 
 let mk_constant_pat _loc (x:literal) : Parsetree.pattern_desc =
   match x with 
@@ -150,7 +152,8 @@ let mk_constant_pat _loc (x:literal) : Parsetree.pattern_desc =
   | `Bool (_,b) ->
       if b then Ppat_construct ({txt=Lident"true";loc=_loc},None,false)
       else Ppat_construct ({txt=Lident"false";loc=_loc},None,false)
-
+  | `Unit _ ->
+      Ppat_construct ({txt=Lident"()";loc=_loc},None,false)
 
     
                                      
@@ -721,7 +724,6 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
       Pexp_array (List.map exp (list_of_sem e [])) (* be more precise*)
   | `ArrayEmpty _ ->Pexp_array []
   | `Assert(_,`Bool(_,false)) -> Pexp_assertfalse
-  (* | `Assert(_,`Lid(_,"false")) -> Pexp_assertfalse *)
   | `Assert(_,e) -> Pexp_assert (exp e)
 
    (* u.x <- b *)
@@ -786,25 +788,16 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
       let rec f (x:case)  : case=
         match x with
         | `Case (_loc,p,e)  ->
-          `Case (_loc, p, `Fun (_loc, (`Case (_loc, `Uid (_loc, "()"), e))))
+          `Case (_loc, p, `Fun (_loc, (`Case (_loc, `Unit _loc, e))))
         | `CaseWhen (_loc,p,c,e) ->
           `CaseWhen
             (_loc, p, c,
-              (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))
+              (`Fun (_loc, (`Case (_loc, `Unit _loc, e)))))
         | `Bar (_loc,a1,a2) -> `Bar (_loc, f a1, f a2)
         | `Ant (_loc,_) -> ant_error _loc in
       f cas in
     exp_desc _loc 
-      (`App
-         (_loc,
-          (`Try
-             (_loc,
-              (`LetIn
-                 (_loc, rf, bi,
-                  (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))),
-              cas)), (`Uid (_loc, "()"))) : Astf.exp )
-  (* {:exp| *)
-  (*  (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |} *)
+      %exp{(try let $rec:rf $bi in fun () -> $e with | $cas  ) () }
 
   | `LetModule (_,`Uid(sloc,i),me,e) -> Pexp_letmodule (with_loc i sloc,mexp me,exp e)
   | `Match (_,e,a) -> Pexp_match (exp e,case a )
@@ -828,7 +821,7 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
       Pexp_record (mklabexp lel,Some (exp eo))
   | `Seq (_,e) ->
     let rec loop = function
-      | [] -> (_loc,exp_desc _loc  (`Uid (_loc, "()") : Astf.exp ))
+      | [] -> (_loc,exp_desc _loc  (`Unit _loc : Astf.exp ))
       | [e] -> (_loc,exp_desc _loc e)
       | e :: el ->
           let (loc,v) = loop el in
@@ -868,42 +861,7 @@ and label_exp (x : exp) =
   | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, exp (`Lid(loc,lab)))
   | e -> ("", exp e) 
 
-(* and bind (x:bind) acc = *)
-(*   match x with *)
-(*   | `And (_loc,x,y) -> bind x (bind y acc) *)
-(*   | `Bind (_loc,(`Lid (sloc,bind_name) : Astf.pat),`Constraint (_,e,`TyTypePol (_,vs,ty))) -> *)
-(*     let rec id_to_string (x : ctyp) = *)
-(*       match x with *)
-(*       | `Lid (_,x) -> [x] *)
-(*       | `App (_loc,x,y) -> id_to_string x @ id_to_string y *)
-(*       | x -> *)
-(*         Locf.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in *)
-(*     let vars = id_to_string vs in *)
-(*     let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in *)
-(*     let ty' = varify_constructors vars (ctyp ty) in *)
-(*     let mkexp = mkexp _loc in *)
-(*     let mkpat = mkpat _loc in *)
-(*     let e = mkexp (Pexp_constraint ((exp e), (Some (ctyp ty)), None)) in *)
-(*     let rec mk_newtypes x = *)
-(*       match x with *)
-(*       | newtype::[] -> mkexp (Pexp_newtype (newtype, e)) *)
-(*       | newtype::newtypes -> *)
-(*         mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes))) *)
-(*       | [] -> assert false in *)
-(*     let pat = *)
-(*       mkpat *)
-(*         (Ppat_constraint *)
-(*            ((mkpat (Ppat_var {loc = sloc ; txt = bind_name})), *)
-(*             (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in *)
-(*     let e = mk_newtypes vars in (pat, e) :: acc *)
-(*   | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) -> *)
-(*     ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Astf.pat )), exp e) :: acc *)
-(*   | `Bind (_loc,p,e)  -> (pat p, exp e) :: acc *)
-(*   | _ -> assert false *)
 
-
-(** same as [bind] except it is called by [let v = 3] instead of [let v  = 3 in .... ]
- *)
 and top_bind (x:bind)  =
   let  rec aux (x:bind) acc =
   match x with
@@ -1121,7 +1079,7 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
 and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
   match s with
   (* ad-hoc removing the empty statement, a more elegant way is in need*)
-  | (`StExp (_, (`Uid (_, "()")))) -> l
+  | (`StExp (_, `Unit _)) -> l
   | `Sem(_,st1,st2) ->  stru st1 (stru st2 l)        
   | `Directive _ | `DirectiveSimple _  -> l
   | `TypeWith(_loc,tdl, ns) ->

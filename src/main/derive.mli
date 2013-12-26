@@ -1,5 +1,6 @@
 
-(** Fan's deriving *)
+(** Fan's deriving mechanism
+ *)
 open Astfn
 open Ctyp
 open Sigs_util

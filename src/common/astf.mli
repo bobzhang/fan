@@ -67,6 +67,7 @@ type literal =
   | `Nativeint of (loc * string)
   | `Str of (loc * string)
   | `Bool of (loc * bool) (* True or false*)
+  | `Unit of loc 
   ]   
 
 

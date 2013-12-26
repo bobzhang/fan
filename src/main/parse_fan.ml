@@ -178,7 +178,7 @@ let make_pat exp =
        | "[|"; "|]" %{ `ArrayEmpty(_loc)}
        | "[|"; sem_pat as pl; "|]" %{ `Array(_loc,pl)}
        | "{"; label_pat_list as pl; "}" %{ `Record(_loc,pl)}
-       | "("; ")" %{ `Uid (_loc, "()")}
+       | "("; ")" %{`Unit _loc}
        | "("; "module"; a_uident as m; ")" %{ `ModuleUnpack(_loc,m)}
        | "("; "module"; a_uident as m; ":"; mtyp as pt; ")" %{
             `ModuleConstraint(_loc,m, `Package(_loc,pt))}
@@ -199,7 +199,7 @@ let make_pat exp =
        ipat:
         [ "{"; label_pat_list as pl; "}" %pat{ { $pl }}
         | Ant (""|"pat"|"par" ,s) %{ mk_ant  ~c:"pat"  s}
-        | "("; ")" %{ `Uid(_loc,"()")}
+        | "("; ")" %{`Unit _loc}
         | "("; "module"; a_uident as m; ?[":";  mtyp as pt]; ")" %{
           match pt with
           | None -> `ModuleUnpack(_loc,m)
@@ -605,7 +605,7 @@ let apply () = begin
             `RecordWith (_loc, el, e)}
         | "{<"; ">}" %{ `OvrInstEmpty(_loc)}
         | "{<"; field_exp_list as fel; ">}" %{ `OvrInst(_loc,fel) }
-        | "("; ")"  %exp{ () }
+        | "("; ")"  %{`Unit _loc }
         | "("; S as e; ":"; ctyp as t; ")" %{ `Constraint (_loc, e, t)}
         | "("; S as e; ","; comma_exp as el; ")" %{`Par (_loc, `Com (_loc, e, el))}
         | "("; S as e; ";"; sequence as seq; ")"  %{`Seq(_loc,`Sem(_loc,e,seq))}
@@ -614,7 +614,9 @@ let apply () = begin
         | "("; S as e; ":>"; ctyp as t; ")" %{ `Subtype(_loc,e,t)}
         | "("; S as e; ")"  %{ e}
         | "begin"; ? sequence as seq; "end" %{
-          match seq with | Some seq -> `Seq(_loc,seq) | None -> %exp{()}}
+          match seq with
+          | Some seq -> `Seq(_loc,seq)
+          | None -> `Unit _loc }
         | "("; "module"; mexp as me; ")" %{`Package_exp (_loc, me)}
         | "("; "module"; mexp as me; ":"; mtyp as pt; ")" %{
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] 

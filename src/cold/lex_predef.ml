@@ -1414,8 +1414,7 @@ let _ =
                              (_loc,
                                (`Dot
                                   (_loc, (`Uid (_loc, "Lexing_util")),
-                                    (`Lid (_loc, "new_cxt")))),
-                               (`Uid (_loc, "()")))))),
+                                    (`Lid (_loc, "new_cxt")))), (`Unit _loc))))),
                      (`Seq
                         (_loc,
                           (`Sem
@@ -1503,7 +1502,7 @@ let _ =
           [((Sequence
                ((Repetition (Characters [(9, 9); (12, 12); (32, 32)])),
                  (Characters [(9, 9); (12, 12); (32, 32)])) : Translate_lex.concrete_regexp ),
-             (append_quot q (`Uid (_loc, "()") : Astf.exp )));
+             (append_quot q (`Unit _loc : Astf.exp )));
           ((Alternative
               ((Alternative
                   ((Characters [(10, 10)]), (Characters [(13, 13)]))),
@@ -1527,8 +1526,7 @@ let _ =
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "Lexing_util")),
-                                 (`Lid (_loc, "new_cxt")))),
-                            (`Uid (_loc, "()")))))),
+                                 (`Lid (_loc, "new_cxt")))), (`Unit _loc))))),
                   (`LetIn
                      (_loc, (`Negative _loc),
                        (`Bind
@@ -1755,7 +1753,7 @@ let _ =
                                  (`Dot
                                     (_loc, (`Uid (_loc, "Lexing_util")),
                                       (`Lid (_loc, "new_cxt")))),
-                                 (`Uid (_loc, "()")))))),
+                                 (`Unit _loc))))),
                        (`Seq
                           (_loc,
                             (`Sem
@@ -2031,8 +2029,7 @@ let _ =
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "Lexing_util")),
-                                 (`Lid (_loc, "new_cxt")))),
-                            (`Uid (_loc, "()")))))),
+                                 (`Lid (_loc, "new_cxt")))), (`Unit _loc))))),
                   (`LetIn
                      (_loc, (`Negative _loc),
                        (`Bind
@@ -2424,8 +2421,7 @@ let _ =
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "Lexing_util")),
-                                 (`Lid (_loc, "new_cxt")))),
-                            (`Uid (_loc, "()")))))),
+                                 (`Lid (_loc, "new_cxt")))), (`Unit _loc))))),
                   (`LetIn
                      (_loc, (`Negative _loc),
                        (`Bind
@@ -3141,7 +3137,7 @@ let _ =
                                 (`Dot
                                    (_loc, (`Uid (_loc, "Lexing_util")),
                                      (`Lid (_loc, "new_cxt")))),
-                                (`Uid (_loc, "()")))))),
+                                (`Unit _loc))))),
                       (`Seq
                          (_loc,
                            (`Sem

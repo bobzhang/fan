@@ -106,6 +106,7 @@ let loc_of =
   | `Of (_loc,_,_) -> _loc
   | `OvrInst (_loc,_) -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
+  | `Unit _loc -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
   | `ModuleConstraint (_loc,_,_) -> _loc

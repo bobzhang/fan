@@ -98,7 +98,7 @@ let seq_binds bs (e:Astf.exp) =
 let lid _loc n = `Lid(_loc,n)
     
 let uid _loc n = `Uid(_loc,n)
-let unit _loc = `Uid(_loc,"()")
+let unit _loc = `Unit _loc
 
 
 (** generate patterns or expressions *)    

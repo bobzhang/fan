@@ -215,7 +215,7 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
             let ty: Astf.ctyp =
               `Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, "unit"))) in
             let exp: Astf.exp =
-              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Uid (_loc, "()"))))) in
+              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Unit _loc)))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
                  exp, ty) : Astf.clfield ))) in

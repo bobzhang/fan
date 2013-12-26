@@ -35,7 +35,7 @@ let seq_binds bs (e : Astf.exp) =
        (`LetIn (_loc, (`Negative _loc), b, e) : Astf.exp )) bs e
 let lid _loc n = `Lid (_loc, n)
 let uid _loc n = `Uid (_loc, n)
-let unit _loc = `Uid (_loc, "()")
+let unit _loc = `Unit _loc
 let ep_of_cons _loc n ps =
   match ps with
   | [] -> uid _loc n

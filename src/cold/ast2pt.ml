@@ -142,7 +142,9 @@ let mk_constant_exp _loc (x : literal) =
        then
          Pexp_construct ({ txt = (Lident "true"); loc = _loc }, None, false)
        else
-         Pexp_construct ({ txt = (Lident "false"); loc = _loc }, None, false) : 
+         Pexp_construct ({ txt = (Lident "false"); loc = _loc }, None, false)
+   | `Unit _ ->
+       Pexp_construct ({ txt = (Lident "()"); loc = _loc }, None, false) : 
   Parsetree.expression_desc )
 let mk_constant_pat _loc (x : literal) =
   (match x with
@@ -184,7 +186,9 @@ let mk_constant_pat _loc (x : literal) =
        then
          Ppat_construct ({ txt = (Lident "true"); loc = _loc }, None, false)
        else
-         Ppat_construct ({ txt = (Lident "false"); loc = _loc }, None, false) : 
+         Ppat_construct ({ txt = (Lident "false"); loc = _loc }, None, false)
+   | `Unit _ ->
+       Ppat_construct ({ txt = (Lident "()"); loc = _loc }, None, false) : 
   Parsetree.pattern_desc )
 let generate_type_code:
   (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
@@ -723,12 +727,11 @@ let rec exp_desc _loc (x : exp) =
            (match x with
             | `Case (_loc,p,e) ->
                 `Case
-                  (_loc, p,
-                    (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))
+                  (_loc, p, (`Fun (_loc, (`Case (_loc, (`Unit _loc), e)))))
             | `CaseWhen (_loc,p,c,e) ->
                 `CaseWhen
                   (_loc, p, c,
-                    (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))
+                    (`Fun (_loc, (`Case (_loc, (`Unit _loc), e)))))
             | `Bar (_loc,a1,a2) -> `Bar (_loc, (f a1), (f a2))
             | `Ant (_loc,_) -> ant_error _loc : case ) in
          f cas in
@@ -739,8 +742,8 @@ let rec exp_desc _loc (x : exp) =
                  (_loc,
                    (`LetIn
                       (_loc, rf, bi,
-                        (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))),
-                   cas)), (`Uid (_loc, "()"))) : Astf.exp )
+                        (`Fun (_loc, (`Case (_loc, (`Unit _loc), e)))))),
+                   cas)), (`Unit _loc)) : Astf.exp )
    | `LetModule (_,`Uid (sloc,i),me,e) ->
        Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e))
    | `Match (_,e,a) -> Pexp_match ((exp e), (case a))
@@ -770,7 +773,7 @@ let rec exp_desc _loc (x : exp) =
    | `Seq (_,e) ->
        let rec loop =
          function
-         | [] -> (_loc, (exp_desc _loc (`Uid (_loc, "()") : Astf.exp )))
+         | [] -> (_loc, (exp_desc _loc (`Unit _loc : Astf.exp )))
          | e::[] -> (_loc, (exp_desc _loc e))
          | e::el ->
              let (loc,v) = loop el in
@@ -1029,7 +1032,7 @@ and stru_item_desc _loc (s : stru) =
    | x -> Locf.failf _loc "stru : %s" (! dump_stru x) : Parsetree.structure_item_desc )
 and stru (s : stru) (l : Parsetree.structure) =
   (match s with
-   | `StExp (_,`Uid (_,"()")) -> l
+   | `StExp (_,`Unit _) -> l
    | `Sem (_,st1,st2) -> stru st1 (stru st2 l)
    | `Directive _|`DirectiveSimple _ -> l
    | `TypeWith (_loc,tdl,ns) -> stru (! generate_type_code _loc tdl ns) l

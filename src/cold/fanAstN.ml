@@ -14,7 +14,7 @@ class primitive =
     method string _loc (i : string) =
       (`Str (_loc, (String.escaped i)) : Astf.ep )
     method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : Astf.ep )
-    method unit _loc (_ : unit) = (`Uid (_loc, "()") : Astf.ep )
+    method unit _loc (_ : unit) = (`Unit _loc : Astf.ep )
     method ant (_loc : loc) (x : ant) = (x :>Astf.ep)
     method bool _loc x = (`Bool (_loc, x) : Astf.ep )
   end
@@ -29,12 +29,13 @@ let fill_literal: Locf.t -> Astfn.literal -> Astf.literal =
     | `Nativeint _a0 -> `Nativeint (loc, _a0)
     | `Str _a0 -> `Str (loc, _a0)
     | `Bool _a0 -> `Bool (loc, _a0)
+    | `Unit -> `Unit loc
 let fill_flag: Locf.t -> Astfn.flag -> Astf.flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
-    | #ant as _a0 -> (fill_ant loc _a0 :>Astf.flag)
+    | #ant as _a0 -> ((* fill_ant loc *) _a0 :>Astf.flag)
 let fill_position_flag: Locf.t -> Astfn.position_flag -> Astf.position_flag =
   fun loc  ->
     function
@@ -897,6 +898,7 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
         | `Bool _a0 ->
             `App (_loc, (`Vrn (_loc, "Bool")), (self#bool _loc _a0))
+        | `Unit -> `Vrn (_loc, "Unit")
     method flag : 'loc -> flag -> Astf.ep=
       fun _loc  ->
         function

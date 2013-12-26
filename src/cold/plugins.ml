@@ -101,7 +101,8 @@ let gen_strip =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc")
+         | `Lid
+             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc")
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
          | _ ->
@@ -115,7 +116,8 @@ let gen_strip =
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
-         | `Lid ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc")
+         | `Lid
+             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc")
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
@@ -142,8 +144,8 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid
-             ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc"|"ant")
-           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc"
+              |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
@@ -157,8 +159,8 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid
-             ("int"|"char"|"string"|"int32"|"nativeint"|"bool"|"loc"|"ant")
-           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc"
+              |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in

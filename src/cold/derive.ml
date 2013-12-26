@@ -250,7 +250,7 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
      (match ty with
       | `Mutual named_types ->
           (match named_types with
-           | [] -> (`StExp (`Uid "()") : Astfn.stru )
+           | [] -> (`StExp `Unit : Astfn.stru )
            | xs ->
                (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
                 (let bind =
@@ -266,7 +266,7 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
      stru ) in
    let item =
      match lst with
-     | [] -> (`StExp (`Uid "()") : Astfn.stru )
+     | [] -> (`StExp `Unit : Astfn.stru )
      | _ -> sem_of_list (List.map fs lst) in
    match module_name with
    | None  -> item

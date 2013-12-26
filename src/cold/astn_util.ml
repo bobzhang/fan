@@ -27,7 +27,7 @@ let binds bs (e : exp) =
       (`LetIn (`Negative, binds, e) : Astfn.exp )
 let lid n = `Lid n
 let uid n = `Uid n
-let unit: ep = `Uid "()"
+let unit: ep = `Unit
 let ep_of_cons n ps = appl_of_list ((uid n) :: ps)
 let tuple_com_unit =
   function | [] -> unit | p::[] -> p | y -> `Par (com_of_list y)

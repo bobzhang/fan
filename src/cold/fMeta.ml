@@ -15,7 +15,7 @@ class primitive =
       ((`Str (_loc, (String.escaped i)) : Astf.ep ) : ep )
     method char _loc (i : char) =
       ((`Chr (_loc, (Char.escaped i)) : Astf.ep ) : ep )
-    method unit _loc (_ : unit) = ((`Uid (_loc, "()") : Astf.ep ) : ep )
+    method unit _loc (_ : unit) = ((`Unit _loc : ep ) : ep )
     method loc _loc (_l : loc) =
       (let n = !Locf.name in (`Lid (_loc, n) : Astf.ep ) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
@@ -82,6 +82,8 @@ class meta =
                 (`Par
                    (_loc,
                      (`Com (_loc, (self#loc _loc _a0), (self#bool _loc _a1))))))
+        | `Unit _a0 ->
+            `App (_loc, (`Vrn (_loc, "Unit")), (self#loc _loc _a0))
     method flag : 'loc -> flag -> Astf.ep=
       fun _loc  ->
         function

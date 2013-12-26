@@ -216,7 +216,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
             (`Constraint (_loc, e, ty))) : Astf.exp )
    | E v ->
        let e =
-         let act = Option.default (`Uid (_loc, "()") : Astf.exp ) v in
+         let act = Option.default (`Unit _loc : Astf.exp ) v in
          let make_env env =
            env |>
              (List.map
@@ -354,7 +354,7 @@ let make_localbinds _loc locals =
 let make _loc (x : Gram_def.entries) =
   let extends =
     let el = x.items |> (List.map (make_extend x.safe)) in
-    match el with | [] -> (`Uid (_loc, "()") : Astf.exp ) | _ -> seq_sem el in
+    match el with | [] -> (`Unit _loc : Astf.exp ) | _ -> seq_sem el in
   let locals =
     x.items |>
       (Listf.filter_map

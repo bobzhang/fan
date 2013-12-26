@@ -85,7 +85,7 @@ let traversal () =
                  (!State.current_filters)
                  (if !State.keep
                   then res
-                  else (`StExp (sloc, (`Uid (sloc, "()"))) : Astf.stru )) in
+                  else (`StExp (sloc, (`Unit sloc)) : Astf.stru )) in
              self#out_module; (`Struct (sloc, result) : Astf.mexp )))
        | x -> super#mexp x
      method! stru =
@@ -99,7 +99,7 @@ let traversal () =
              self#out_and_types;
              if !State.keep
              then x
-             else (`StExp (_loc, (`Uid (_loc, "()"))) : Astf.stru )))
+             else (`StExp (_loc, (`Unit _loc)) : Astf.stru )))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->
