@@ -54,8 +54,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           let e = %{ string_of_float $e } in
           %{ `Flo  $e }
       | ("bool'",_) ->
-          %exp{ `Lid (if $e then "true" else "false" ) }
-
+          %exp{`Bool $e }
       | _ -> super#exp e)
     | e -> super#exp e
   end

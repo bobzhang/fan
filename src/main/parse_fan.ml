@@ -25,9 +25,11 @@ open! Syntaxf
        | Int32 s %{ `Int32(_loc,s)}
        | Int64 s %{ `Int64(_loc,s)}
        | Nativeint s %{ `Nativeint (_loc, s)}
-       | Flo s %{  `Flo (_loc, s)}
-       | Chr s %{ `Chr (_loc, s)}
-       | Str s %{ `Str (_loc, s)}]};;
+       | Flo s  %{  `Flo (_loc, s)}
+       | Chr s  %{ `Chr (_loc, s)}
+       | Str s  %{ `Str (_loc, s)}
+       | "true" %{`Bool (_loc,true)}
+       | "false" %{`Bool (_loc,false)} ]};;
 
 let make_infix ?(left=true)  exp f i =
   %extend{

@@ -93,11 +93,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                  `App (_loc, (`Lid (_loc, "string_of_float")), e) in
                (`App (_loc, (`Vrn (_loc, "Flo")), e) : Astf.exp )
            | ("bool'",_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Lid")),
-                    (`IfThenElse
-                       (_loc, e, (`Str (_loc, "true")),
-                         (`Str (_loc, "false"))))) : Astf.exp )
+               (`App (_loc, (`Vrn (_loc, "Bool")), e) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

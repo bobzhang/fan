@@ -59,7 +59,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           let e = %{ string_of_float $e } in
           %{ `Flo (${mloc _loc}, $e) }
       | ("bool'",_) ->
-            %{ `Lid (${mloc _loc}, (if $e then "true" else "false" )) }
+          %exp{`Bool (${mloc _loc}, $e) }
       | _ -> super#exp e)
     | e -> super#exp e
   end
