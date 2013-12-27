@@ -33,6 +33,7 @@ val fresh_with_levels : 'a t -> Gdefs.level list -> unit
 val parse_tokens : 'a t -> Tokenf.stream -> 'a
 
 
+(** except EOI in the end  *)    
 val parse_tokens_eoi : 'a t  -> Tokenf.stream -> 'a
 (** mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future *)    

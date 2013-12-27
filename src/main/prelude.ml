@@ -251,7 +251,7 @@ let toplevel_phrase token_stream =
   (*       if stopped_at_directive <> None then pl @ loop () else pl in loop () in *)
   (* FIXME semantics imprecise, the filter will always be applied *)
 let use_file token_stream =
-  let s  = Gramf.parse_tokens Syntaxf.implem token_stream in
+  let s  = Gramf.parse_tokens_eoi Syntaxf.implem token_stream in
   match s with
   | None -> []
   | Some s -> 
