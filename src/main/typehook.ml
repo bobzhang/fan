@@ -75,7 +75,7 @@ end
 let make_filter (s,code) =
   let f =  function
     | %stru{ $lid:s'} when s =s' ->
-        FanAstN.fill_stru _loc code
+        Fill.stru _loc code
     | e -> e   in
   ("filter_"^s, (Objs.map_stru f )#stru)
 
@@ -93,7 +93,7 @@ let iterate_code sloc mtyps =
          Ast_filters.use_implem_filter name ;
          acc)
     |(None,Some code) ->
-        let code = FanAstN.fill_stru sloc code in
+        let code = Fill.stru sloc code in
         (%stru@sloc{ $acc;; $code };)
     |(_,None) -> acc);;
  

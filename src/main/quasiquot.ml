@@ -8,7 +8,7 @@ Parsef:
   exp_filter_n
   pat_filter_n
   ;
-FanAstN:
+Metafn:
   m
   ;
 Ast_gen:

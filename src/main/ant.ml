@@ -48,7 +48,7 @@ let expander ~parse_pat ~parse_exp = object
       | (("nativeint'" | "int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"|"bool'" as x),_) ->
           let v =
             match List.assoc x stringnize with
-            | Some x -> let  x = FanAstN.fill_exp _loc x in %exp{$x $e}
+            | Some x -> let  x = Fill.exp _loc x in %exp{$x $e}
             | None -> e in
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s (${mloc _loc}, $v)}            
@@ -84,7 +84,7 @@ let expandern ~parse_pat ~parse_exp = object
       | (("nativeint'" | "int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"|"bool'" as x),_) ->
           let v =
             match List.assoc x stringnize with
-            | Some x -> let  x = FanAstN.fill_exp _loc x in %exp{$x $e}
+            | Some x -> let  x = Fill.exp _loc x in %exp{$x $e}
             | None -> e in
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s $v}

@@ -43,7 +43,7 @@ let make_filter (s,code) =
   let f =
     function
     | (`StExp (_loc,`Lid (_,s')) : Astf.stru) when s = s' ->
-        FanAstN.fill_stru _loc code
+        Fill.stru _loc code
     | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
 let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
@@ -59,8 +59,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
        Ast_filters.use_implem_filter name;
        acc)
   | (None ,Some code) ->
-      let code = FanAstN.fill_stru sloc code in
-      (`Sem (sloc, acc, code) : Astf.stru )
+      let code = Fill.stru sloc code in (`Sem (sloc, acc, code) : Astf.stru )
   | (_,None ) -> acc
 let traversal () =
   (object (self : 'self_type)

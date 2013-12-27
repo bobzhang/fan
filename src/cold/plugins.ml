@@ -163,8 +163,7 @@ let gen_fill =
              (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
                Astfn.exp )) params result in
   let mk_record _cols = assert false in
-  gen_stru ~id:(`Pre "fill_") ~mk_tuple ~mk_record ~mk_variant ~names:
-    ["loc"]
+  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant ~names:["loc"]
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Locf"), (`Lid "t"))),

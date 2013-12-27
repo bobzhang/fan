@@ -211,7 +211,7 @@ let gen_fill =
             %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in 
   let mk_record _cols = assert false in
   gen_stru
-    ~id:(`Pre "fill_") ~mk_tuple
+    ~id:(`Pre "") ~mk_tuple
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->

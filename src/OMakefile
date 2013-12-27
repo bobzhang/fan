@@ -147,9 +147,10 @@ FAN_FILES = \
     derive dyn_load epN \
     expN astfn control control_require \
     metaf \
+    metafn \
     gram_def  \
     compile_gram \
-    sigs_util  fanAstN  \
+    sigs_util  \
     gfold gramlib\
     idN  ns \
     fan_args mktop objs objsN \
@@ -175,7 +176,8 @@ FAN_FILES = \
     lang_fresh \
     lang_monad \
     lang_register\
-    quasiquot
+    quasiquot\
+    fill
     # lang_pos \
     # loc_meta
     # parse_grammar2

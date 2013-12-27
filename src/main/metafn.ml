@@ -1,15 +1,10 @@
 
 open Astfn
 
-(** this is caused by #ant problem, which requires [fill_ant] to be
-    specifiied *)
-let fill_ant _loc x = x;;
-
 
 %fans{keep off;
       derive
-        (
-         Fill MetaObj
+        (MetaObj
 (* OEq OPrint *)(* MetaExpr *));};;
 
 
@@ -25,10 +20,10 @@ class primitive =  object
   (*default use [meta_loc] for expession*)   
   (* method loc _loc (_l:loc) : ep= `Lid (_loc, !Locf.name) *)
   method ant (_loc:loc) (x:ant)  = (x:> Astf.ep)
-  (* FIXME bool antiquot *)
   method bool _loc x  = (`Bool (_loc,x) : Astf.ep)
 end;;
 
+(* FIXME -- nested include the error message is confusing *)
 %ocaml{ %include{ "astfn.ml" };; };;
 
 let m = new meta

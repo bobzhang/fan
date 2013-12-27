@@ -3,7 +3,7 @@ let exp_filter = Parsef.exp_filter
 let pat_filter = Parsef.pat_filter
 let exp_filter_n = Parsef.exp_filter_n
 let pat_filter_n = Parsef.pat_filter_n
-let m = FanAstN.m
+let m = Metafn.m
 let loc_of = Ast_gen.loc_of
 open Syntaxf
 let efilter str e =

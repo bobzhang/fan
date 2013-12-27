@@ -50,7 +50,7 @@ let expander ~parse_pat  ~parse_exp  =
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
-                     let x = FanAstN.fill_exp _loc x in
+                     let x = Fill.exp _loc x in
                      (`App (_loc, x, e) : Astf.exp )
                  | None  -> e in
                let s =
@@ -92,7 +92,7 @@ let expandern ~parse_pat  ~parse_exp  =
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
-                     let x = FanAstN.fill_exp _loc x in
+                     let x = Fill.exp _loc x in
                      (`App (_loc, x, e) : Astf.exp )
                  | None  -> e in
                let s =
