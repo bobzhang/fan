@@ -494,7 +494,7 @@ Typehook.register
 
 
 (********************************************)
-(* Type wrapper                              *)
+(* Type wrapper                             *)
 (********************************************)
 
 (* remove the loc field *)

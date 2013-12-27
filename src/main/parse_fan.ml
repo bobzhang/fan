@@ -235,7 +235,7 @@ let make_pat exp =
        | label_pat as p1; ?";"            %{ p1}
        ] 
        label_pat:
-       [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
+       [ Ant (""|"pat",s) %{ mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.pat)  s}
        | label_longident as i; ?["="; pat as p] %{
          let p = match p with
          | None ->   `Lid(_loc,Fan_ops.to_lid i)
@@ -818,14 +818,14 @@ let apply () = begin
       | Ant ("rec" ,s) %{ mk_ant ~c:"flag"  s}
       |  %{`Negative _loc}]
       a_lident:
-      [ Ant(""|"lid" ,s) %{ mk_ant  ~c:"a_lident"  s}
+      [ Ant(""|"lid" ,s) %{ mk_ant s}
       | Lid s  %{ `Lid (_loc, s)} ]
       a_uident:
-      [ Ant(""|"uid" ,s) %{ mk_ant  ~c:"a_uident"  s}
+      [ Ant(""|"uid" ,s) %{ mk_ant    s}
       | Uid s  %{ `Uid (_loc, s)} ]
       string_list:
-      [ Ant("",s) %{ mk_ant  ~c:"str_list" s}
-      | Ant("",s) ; S as xs %{ `App(_loc,mk_ant ~c:"" s, xs)}
+      [ Ant("",s) %{ mk_ant  s}
+      | Ant("",s) ; S as xs %{ `App(_loc,mk_ant  s, xs)}
       | Str  x %{ `Str(_loc,x)}
       | Str x; S as xs %{ `App(_loc,`Str(_loc,x),xs)}]
       rec_flag_quot:  [ opt_rec as x %{x} ]

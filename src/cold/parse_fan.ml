@@ -2892,12 +2892,13 @@ let make_pat exp =
                          descr =
                            { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"pat\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat ) : 
-                      Tokenf.ant -> Locf.t -> 'label_pat ))
+                         let s = __fan_0 in
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s : 
+                           'label_pat ) : Tokenf.ant -> Locf.t -> 'label_pat ))
                };
               {
                 symbols =
@@ -2907,12 +2908,13 @@ let make_pat exp =
                           { tag = `Ant; word = (Kind "pat"); tag_name = "Ant"
                           }
                       } : Tokenf.pattern )];
-                annot = "mk_ant ~c:\"pat\" s\n";
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                        let s = __fan_0 in (mk_ant ~c:"pat" s : 'label_pat ) : 
-                     Tokenf.ant -> Locf.t -> 'label_pat ))
+                        let s = __fan_0 in
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s : 
+                          'label_pat ) : Tokenf.ant -> Locf.t -> 'label_pat ))
               };
               {
                 symbols =
@@ -10653,15 +10655,12 @@ let apply () =
                             { tag = `Ant; word = (Kind ""); tag_name = "Ant"
                             }
                         } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"a_lident\" s\n";
+                  annot = "mk_ant s\n";
                   fn =
                     (Gramf.mk_action
                        (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                          let s = __fan_0 in
-                          (mk_ant ~c:"a_lident" s : 'a_lident ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'a_lident ))
+                          let s = __fan_0 in (mk_ant s : 'a_lident ) : 
+                       Tokenf.ant -> Locf.t -> 'a_lident ))
                 };
                {
                  symbols =
@@ -10674,15 +10673,12 @@ let apply () =
                              tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"a_lident\" s\n";
+                 annot = "mk_ant s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in
-                         (mk_ant ~c:"a_lident" s : 'a_lident ) : Tokenf.ant
-                                                                   ->
-                                                                   Locf.t ->
-                                                                    'a_lident ))
+                         let s = __fan_0 in (mk_ant s : 'a_lident ) : 
+                      Tokenf.ant -> Locf.t -> 'a_lident ))
                };
                {
                  symbols =
@@ -10714,15 +10710,12 @@ let apply () =
                             { tag = `Ant; word = (Kind ""); tag_name = "Ant"
                             }
                         } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"a_uident\" s\n";
+                  annot = "mk_ant s\n";
                   fn =
                     (Gramf.mk_action
                        (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                          let s = __fan_0 in
-                          (mk_ant ~c:"a_uident" s : 'a_uident ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'a_uident ))
+                          let s = __fan_0 in (mk_ant s : 'a_uident ) : 
+                       Tokenf.ant -> Locf.t -> 'a_uident ))
                 };
                {
                  symbols =
@@ -10735,15 +10728,12 @@ let apply () =
                              tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"a_uident\" s\n";
+                 annot = "mk_ant s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in
-                         (mk_ant ~c:"a_uident" s : 'a_uident ) : Tokenf.ant
-                                                                   ->
-                                                                   Locf.t ->
-                                                                    'a_uident ))
+                         let s = __fan_0 in (mk_ant s : 'a_uident ) : 
+                      Tokenf.ant -> Locf.t -> 'a_uident ))
                };
                {
                  symbols =
@@ -10775,12 +10765,11 @@ let apply () =
                             { tag = `Ant; word = (Kind ""); tag_name = "Ant"
                             }
                         } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"str_list\" s\n";
+                  annot = "mk_ant s\n";
                   fn =
                     (Gramf.mk_action
                        (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                          let s = __fan_0 in
-                          (mk_ant ~c:"str_list" s : 'string_list ) : 
+                          let s = __fan_0 in (mk_ant s : 'string_list ) : 
                        Tokenf.ant -> Locf.t -> 'string_list ))
                 };
                {
@@ -10791,13 +10780,13 @@ let apply () =
                            { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                        } : Tokenf.pattern );
                    Self];
-                 annot = "`App (_loc, (mk_ant ~c:\"\" s), xs)\n";
+                 annot = "`App (_loc, (mk_ant s), xs)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (xs : 'string_list)  (__fan_0 : Tokenf.ant) 
                          (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (`App (_loc, (mk_ant ~c:"" s), xs) : 'string_list ) : 
+                         (`App (_loc, (mk_ant s), xs) : 'string_list ) : 
                       'string_list -> Tokenf.ant -> Locf.t -> 'string_list ))
                };
                {

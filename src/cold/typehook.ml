@@ -39,6 +39,13 @@ class type traversal
       (Sigs_util.and_types -> Sigs_util.and_types) -> unit
     method update_cur_mtyps : (Sigs_util.mtyps -> Sigs_util.mtyps) -> unit
   end
+let make_filter (s,code) =
+  let f =
+    function
+    | (`StExp (_loc,`Lid (_,s')) : Astf.stru) when s = s' ->
+        FanAstN.fill_stru _loc code
+    | e -> e in
+  (("filter_" ^ s), ((Objs.map_stru f)#stru))
 let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
   let mtyps =
     match x.filter with
@@ -47,7 +54,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
   let code = x.transform mtyps in
   match ((x.position), code) with
   | (Some x,Some code) ->
-      let (name,f) = Filters.make_filter (x, code) in
+      let (name,f) = make_filter (x, code) in
       (Ast_filters.register_stru_filter (name, f);
        Ast_filters.use_implem_filter name;
        acc)
