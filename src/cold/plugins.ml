@@ -6,7 +6,7 @@ open Util
 open Sigs_util
 let mk_variant _cons =
   (function
-   | [] -> `Bool true
+   | [] -> (`Bool true : Astfn.exp )
    | ls ->
        Listf.reduce_left_with
          ~compose:(fun x  y  ->
@@ -26,9 +26,6 @@ let (gen_eq,gen_eqobj) =
        ~class_name:"eq" ~mk_variant ~arity:2
        ~default:(`Bool false : Astfn.exp ) ()))
 let some f x = Some (f x)
-let _ =
-  List.iter Typehook.register
-    [("Eq", (some gen_eq)); ("OEq", (some gen_eqobj))]
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
@@ -106,9 +103,8 @@ let gen_strip =
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
          | _ ->
-             let pat0 = (x.ep0 :>pat) in
-             (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               Astfn.exp )) params' result in
+             (`LetIn (`Negative, (`Bind ((x.ep0 :>pat), (x.info_exp))), res) : 
+             Astfn.exp )) params' result in
   let mk_tuple params =
     let result =
       ((params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com :>
@@ -121,9 +117,8 @@ let gen_strip =
            |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
-             let pat0 = (x.ep0 :>pat) in
-             (`LetIn (`Negative, (`Bind (pat0, (x.info_exp))), res) : 
-               Astfn.exp )) params result in
+             (`LetIn (`Negative, (`Bind ((x.ep0 :>pat), (x.info_exp))), res) : 
+             Astfn.exp )) params result in
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun x  ->
@@ -132,7 +127,8 @@ let gen_strip =
                     (`Dot ((`Uid "Astfn"), (`Lid x)))) : Astfn.ctyp ),
                 (`Dot ((`Uid "Astfn"), (`Lid x)) : Astfn.ctyp ))) ()
 let _ =
-  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
+  Typehook.register
+    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
     ("Strip", (some gen_strip))
 let gen_fill =
   let mk_variant cons params =
@@ -177,7 +173,8 @@ let gen_fill =
                          (`Dot ((`Uid "Astf"), (`Lid x)))))) : Astfn.ctyp ),
                 (`Dot ((`Uid "Astf"), (`Lid x)) : Astfn.ctyp ))) ()
 let _ =
-  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
+  Typehook.register
+    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
     ("Fill", (some gen_fill))
 let mk_variant cons params =
   let len = List.length params in
@@ -189,7 +186,7 @@ let mk_variant cons params =
      let a = ExpN.mee_of_str cons in
      match params with
      | [] -> a
-     | _ -> let r = ExpN.mk_tuple_ee params in ExpN.mee_app a r)
+     | _ -> (ExpN.mee_app a) @@ (ExpN.mk_tuple_ee params))
 let mk_record cols =
   (cols |>
      (List.map
@@ -211,9 +208,9 @@ let _ =
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
     ("MetaObj", (some gen_meta))
 let extract info =
-  (info |>
-     (List.map (fun (x : Ctyp.ty_info)  -> [x.name_exp; (x.id_ep :>exp)])))
-    |> List.concat
+  info |>
+    (Listf.concat_map
+       (fun (x : Ctyp.ty_info)  -> [x.name_exp; (x.id_ep :>exp)]))
 let mkfmt pre sep post fields =
   let s = pre ^ ((String.concat sep fields) ^ post) in
   (`App
@@ -265,13 +262,12 @@ let mk_variant_iter _cons params =
        seq_sem lst : exp )
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =
-  let lst =
-    cols |>
-      (List.map
-         (fun (x : Ctyp.record_col)  ->
-            let id_exp = ((x.info).id_ep :>exp) in
-            (`App (((x.info).name_exp), id_exp) : Astfn.exp ))) in
-  seq_sem lst
+  (cols |>
+     (List.map
+        (fun (x : Ctyp.record_col)  ->
+           let id_exp = ((x.info).id_ep :>exp) in
+           (`App (((x.info).name_exp), id_exp) : Astfn.exp ))))
+    |> seq_sem
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter
@@ -338,7 +334,8 @@ let generate (mtyps : mtyps) =
           | `Single (x,_) -> [x]) mtyps in
    let typedecl =
      let x =
-       bar_of_list @@ (List.map (fun x  -> uid @@ (String.capitalize x)) tys) in
+       (tys |> (List.map (fun x  -> uid @@ (String.capitalize x)))) |>
+         bar_of_list in
      (`Type
         (`TyDcl
            ((`Lid "t"), (`Some (`Quote (`Normal, (`Lid "a")))),
@@ -390,7 +387,7 @@ let generate (mtyps : mtyps) =
    sem_of_list (typedecl :: to_string :: of_string :: tags) : stru )
 let _ =
   Typehook.register
-    ~filter:(fun s  -> not @@ (List.mem s ["loc"; "ant"; "nil"]))
+    ~filter:(fun s  -> not @@ (List.mem s ["loc"; "ant"; "quot"]))
     ("DynAst", (some generate))
 let generate (mtyps : mtyps) =
   (let aux (f : string) =
@@ -436,7 +433,7 @@ let generate (mtyps : mtyps) =
      Astfn.stru ) (stru_from_ty ~f:aux mtyps) : stru )
 let _ =
   Typehook.register
-    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
+    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
     ("PrintWrapper", (some generate))
 let generate (mtyps : mtyps) =
   (let f (name,ty) =
