@@ -1,4 +1,14 @@
 open Astf
+let stringnize =
+  [("nativeint'",
+     (Some (`Dot ((`Uid "Nativeint"), (`Lid "to_string")) : Astfn.exp )));
+  ("int'", (Some (`Lid "string_of_int" : Astfn.exp )));
+  ("int32'", (Some (`Dot ((`Uid "Int32"), (`Lid "to_string")) : Astfn.exp )));
+  ("int64'", (Some (`Dot ((`Uid "Int64"), (`Lid "to_string")) : Astfn.exp )));
+  ("chr'", (Some (`Dot ((`Uid "Char"), (`Lid "escaped")) : Astfn.exp )));
+  ("str'", (Some (`Dot ((`Uid "String"), (`Lid "escaped")) : Astfn.exp )));
+  ("flo'", (Some (`Lid "string_of_float" : Astfn.exp )));
+  ("bool'", None)]
 let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super
@@ -36,85 +46,23 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                (`App
                   (_loc, (`Vrn (_loc, (String.capitalize x))),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("nativeint'",_) ->
-               let e: Astf.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Nativeint")),
-                          (`Lid (_loc, "to_string")))), e) in
+           | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
+               |"bool'" as x),_) ->
+               let v =
+                 match List.assoc x stringnize with
+                 | Some x ->
+                     let x = FanAstN.fill_exp _loc x in
+                     (`App (_loc, x, e) : Astf.exp )
+                 | None  -> e in
+               let s =
+                 (String.sub x 0 ((String.length x) - 1)) |>
+                   String.capitalize in
                (`App
-                  (_loc, (`Vrn (_loc, "Nativeint")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("int'",_) ->
-               let e: Astf.exp =
-                 `App (_loc, (`Lid (_loc, "string_of_int")), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Int")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("int32'",_) ->
-               let e: Astf.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Int32")),
-                          (`Lid (_loc, "to_string")))), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Int32")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("int64'",_) ->
-               let e: Astf.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Int64")),
-                          (`Lid (_loc, "to_string")))), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Int64")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("chr'",_) ->
-               let e: Astf.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Char")),
-                          (`Lid (_loc, "escaped")))), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Chr")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("str'",_) ->
-               let e: Astf.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "String")),
-                          (`Lid (_loc, "escaped")))), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Str")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("flo'",_) ->
-               let e: Astf.exp =
-                 `App (_loc, (`Lid (_loc, "string_of_float")), e) in
-               (`App
-                  (_loc, (`Vrn (_loc, "Flo")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
-           | ("bool'",_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Bool")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+                  (_loc, (`Vrn (_loc, s)),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), v))))) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end
-let stringnize =
-  [("nativeint'",
-     (Some (`Dot ((`Uid "Nativeint"), (`Lid "to_string")) : Astfn.exp )));
-  ("int'", (Some (`Lid "string_of_int" : Astfn.exp )));
-  ("int32'", (Some (`Dot ((`Uid "Int32"), (`Lid "to_string")) : Astfn.exp )));
-  ("int64'", (Some (`Dot ((`Uid "Int64"), (`Lid "to_string")) : Astfn.exp )));
-  ("chr'", (Some (`Dot ((`Uid "Char"), (`Lid "escaped")) : Astfn.exp )));
-  ("str'", (Some (`Dot ((`Uid "String"), (`Lid "escaped")) : Astfn.exp )));
-  ("flo'", (Some (`Lid "string_of_float" : Astfn.exp )));
-  ("bool'", None)]
 let expandern ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super

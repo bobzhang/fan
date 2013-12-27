@@ -1,4 +1,14 @@
 open Astf
+let stringnize  = [
+  ("nativeint'",Some %exp-{Nativeint.to_string});
+  ("int'", Some %exp-{string_of_int });
+  ("int32'",Some %exp-{Int32.to_string});
+  ("int64'",Some %exp-{Int64.to_string});
+  ("chr'",Some %exp-{Char.escaped});
+  ("str'",Some %exp-{String.escaped});
+  ("flo'",Some %exp-{string_of_float});
+  ("bool'",None)
+ ]
 
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super
@@ -36,45 +46,18 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), Some ("exp" |"pat")) ->
            %{$vrn{String.capitalize x} (${mloc _loc},$e) }
-      | ("nativeint'",_) ->
-          let e = %{ Nativeint.to_string $e } in
-          %{ `Nativeint (${mloc _loc}, $e) }
-      | ("int'",_) ->
-          let e = %{string_of_int $e } in
-          %{ `Int (${mloc _loc}, $e) }
-      | ("int32'",_) ->
-          let e = %{Int32.to_string $e } in
-          %{ `Int32 (${mloc _loc}, $e) }
-      | ("int64'",_) ->
-
-          let e = %{Int64.to_string $e } in
-          %{ `Int64 (${mloc _loc}, $e) }
-      | ("chr'",_) ->
-          let e = %{Char.escaped $e} in
-          %{ `Chr (${mloc _loc}, $e) }
-      | ("str'",_) ->
-          let e = %{String.escaped $e } in
-          %{ `Str (${mloc _loc}, $e) }
-      | ("flo'",_) ->
-          let e = %{ string_of_float $e } in
-          %{ `Flo (${mloc _loc}, $e) }
-      | ("bool'",_) ->
-          %exp{`Bool (${mloc _loc}, $e) }
+      | (("nativeint'" | "int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"|"bool'" as x),_) ->
+          let v =
+            match List.assoc x stringnize with
+            | Some x -> let  x = FanAstN.fill_exp _loc x in %exp{$x $e}
+            | None -> e in
+          let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
+          %exp{$vrn:s (${mloc _loc}, $v)}            
       | _ -> super#exp e)
     | e -> super#exp e
   end
 
 
-let stringnize  = [
-  ("nativeint'",Some %exp-{Nativeint.to_string});
-  ("int'", Some %exp-{string_of_int });
-  ("int32'",Some %exp-{Int32.to_string});
-  ("int64'",Some %exp-{Int64.to_string});
-  ("chr'",Some %exp-{Char.escaped});
-  ("str'",Some %exp-{String.escaped});
-  ("flo'",Some %exp-{string_of_float});
-  ("bool'",None)
- ]
 
     
 let expandern ~parse_pat ~parse_exp = object
