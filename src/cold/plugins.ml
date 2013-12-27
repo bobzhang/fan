@@ -350,7 +350,7 @@ let generate (mtyps : mtyps) =
             (fun x  ->
                let u = String.capitalize x in
                (`Case ((`Uid u), (`Str x)) : Astfn.case )) tys) in
-     (`Value (`Negative, (`Bind ((`Lid "of_string"), (`Fun case)))) : 
+     (`Value (`Negative, (`Bind ((`Lid "to_string"), (`Fun case)))) : 
        Astfn.stru ) in
    let tags =
      List.map

@@ -52,7 +52,7 @@ type 'a t =
   | Clfield
   | Ep
   | Rec_bind 
-let of_string =
+let to_string =
   function
   | Literal  -> "literal"
   | Flag  -> "flag"
@@ -171,5 +171,5 @@ module Pack(X:sig type 'a t   end) =
         then (Obj.obj obj : 'a X.t )
         else raise Pack_error
     let print_tag: Format.formatter -> pack -> unit =
-      fun f  (tag,_)  -> Format.pp_print_string f (of_string tag)
+      fun f  (tag,_)  -> Format.pp_print_string f (to_string tag)
   end

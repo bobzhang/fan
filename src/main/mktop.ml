@@ -36,12 +36,17 @@ include Prelude
 
 
 let efilter str e =
-    let e = Parsef.exp_filter e in let _loc = loc_of e in
+    let e = exp_filter e in
+    let _loc = loc_of e in
     %exp{($e : Astf.$lid:str)} (* BOOTSTRAPPING, assocaited with module [Astf] *)
-let pfilter str e =
-  let p = Parsef.pat_filter e in let _loc = loc_of p in
-  %pat{($p : Astf.$lid:str)} (* BOOTSTRAPPING, associat with module [Astf] *);;
+      
 
+let pfilter str e =
+  let p = pat_filter e in
+  let _loc = loc_of p in
+  %pat{($p : Astf.$lid:str)} (* BOOTSTRAPPING, associated with module [Astf] *);;
+
+let ff (x:Astfn.ep) = %stru-{let f (${((x:>Astfn.ep) :> Astfn.pat)}, y) = x }
 
 let domain = Ns.lang
 

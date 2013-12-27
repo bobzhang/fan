@@ -143,7 +143,7 @@ let add (({domain = domain; name = n } as name) : Tokenf.name)
   is passed by the parser function at parsing time
  *)
 let expand (x:Tokenf.quot) (tag:'a Dyn_tag.t) : 'a =
-  let pos_tag = Dyn_tag.of_string tag in
+  let pos_tag = Dyn_tag.to_string tag in
   let name = x.name in
   (* resolve name when expansion*)
   (* The table is indexed by [quotation name] and [tag] *)

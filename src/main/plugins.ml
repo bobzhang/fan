@@ -438,7 +438,7 @@ let generate (mtyps:mtyps) : stru =
            (fun x ->
              let u = String.capitalize x in
              %case-{ $uid:u -> $str:x }) tys) in 
-    %stru-{ let of_string = function | $case  } in
+    %stru-{ let to_string = function | $case  } (* BOOTSTRAPING [Dyn_tag.to_string]*)in
  let tags  =
    List.map
      (fun x->

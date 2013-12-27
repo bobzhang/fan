@@ -14,17 +14,26 @@ let pat_filter_n = Parsef.pat_filter_n
 open! Syntaxf
 include Prelude
 let efilter str e =
-  let e = Parsef.exp_filter e in
+  let e = exp_filter e in
   let _loc = loc_of e in
   (`Constraint
      (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
     Astf.exp )
 let pfilter str e =
-  let p = Parsef.pat_filter e in
+  let p = pat_filter e in
   let _loc = loc_of p in
   (`Constraint
      (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
     Astf.pat )
+let ff (x : Astfn.ep) =
+  (`Value
+     (`Negative,
+       (`Bind
+          ((`Lid "f"),
+            (`Fun
+               (`Case
+                  ((`Par (`Com (((x :>Astfn.ep) :>Astfn.pat), (`Lid "y")))),
+                    (`Lid "x"))))))) : Astfn.stru )
 let domain = Ns.lang
 let _ =
   of_stru_with_filter ~name:{ domain; name = "ocaml" } ~entry:strus

@@ -19,7 +19,7 @@ open Astf
    ]}
    The decoration rule is simple, please read the code for the decoration rules
  *)  
-val antiquot_expander : parse_pat:(loc -> string -> pat) ->
+val expander : parse_pat:(loc -> string -> pat) ->
   parse_exp:(loc -> string -> exp) ->  Objs.map
 
 

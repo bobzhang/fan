@@ -1,4 +1,3 @@
-open Astf
 let stringnize =
   [("nativeint'",
      (Some (`Dot ((`Uid "Nativeint"), (`Lid "to_string")) : Astfn.exp )));
@@ -9,10 +8,10 @@ let stringnize =
   ("str'", (Some (`Dot ((`Uid "String"), (`Lid "escaped")) : Astfn.exp )));
   ("flo'", (Some (`Lid "string_of_float" : Astfn.exp )));
   ("bool'", None)]
-let antiquot_expander ~parse_pat  ~parse_exp  =
+let expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super
-    method! pat (x : pat) =
+    method! pat (x : Astf.pat) =
       match x with
       | `Ant (_loc,x) ->
           let meta_loc_pat _loc _ = (`Any _loc : Astf.pat ) in
@@ -28,12 +27,12 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
-    method! exp (x : exp) =
+    method! exp (x : Astf.exp) =
       match x with
       | `Ant (_loc,x) ->
           let meta_loc_exp _loc loc =
             match !Ast_quotation.current_loc_name with
-            | Some "here" -> (Ast_gen.meta_here _loc loc :>exp)
+            | Some "here" -> (Ast_gen.meta_here _loc loc :>Astf.exp)
             | x ->
                 let x = Option.default (!Locf.name) x in
                 (`Lid (_loc, x) : Astf.exp ) in
@@ -66,7 +65,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
 let expandern ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super
-    method! pat (x : pat) =
+    method! pat (x : Astf.pat) =
       match x with
       | `Ant (_loc,x) ->
           let e = Tokenf.ant_expand parse_pat x in
@@ -78,7 +77,7 @@ let expandern ~parse_pat  ~parse_exp  =
                (`App (_loc, (`Vrn (_loc, x)), e) : Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
-    method! exp (x : exp) =
+    method! exp (x : Astf.exp) =
       match x with
       | `Ant (_loc,x) ->
           let e = Tokenf.ant_expand parse_exp x in
