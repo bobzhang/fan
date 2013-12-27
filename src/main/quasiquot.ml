@@ -86,7 +86,9 @@ let expander ant_annot = object
             super#exp e
       | _ -> super#exp e)
     | e -> super#exp e
+   
   end
+
     
 let expandern   = object
   inherit Objs.map as super;
@@ -178,6 +180,9 @@ let _ = begin
     ~mpat:(mp#pat) ~exp_filter ~pat_filter;
   add_quotation {domain; name =  "exp'"} exp_quot ~mexp:(me#exp)
     ~mpat:(mp#exp) ~exp_filter ~pat_filter;
+  add_quotation {domain; name =  "ep'"} ep ~mexp:me#ep
+    ~mpat:mp#ep ~exp_filter ~pat_filter;
+
   add_quotation {domain; name =  "mtyp'"} mtyp_quot ~mexp:(me#mtyp)
     ~mpat:(mp#mtyp) ~exp_filter ~pat_filter;
   add_quotation {domain; name =  "mexp'"} mexp_quot ~mexp:(me#mexp)
@@ -249,8 +254,8 @@ let _ = begin
   add_quotation {domain; name =  "pat"} pat_quot ~mexp:(me#pat)
     ~mpat:(mp#pat) ~exp_filter:(efilter "pat")
     ~pat_filter:(pfilter "pat");
-  add_quotation {domain; name =  "ep"} exp_quot ~mexp:(me#exp)
-    ~mpat:(mp#exp) ~exp_filter:(efilter "ep")
+  add_quotation {domain; name =  "ep"} ep ~mexp:(me#ep) (* FIXME *)
+    ~mpat:(mp#ep) ~exp_filter:(efilter "ep")
     ~pat_filter:(pfilter "ep");
   add_quotation {domain; name =  "exp"} exp_quot ~mexp:(me#exp)
     ~mpat:(mp#exp) ~exp_filter:(efilter "exp")
@@ -335,9 +340,13 @@ begin
   add_quotation {domain; name =  "pat-"} pat_quot ~mexp:(fun loc p -> m#pat loc (Objs.strip_pat p))
     ~mpat:(fun loc p -> m#pat loc (Objs.strip_pat p)) ~exp_filter:(efilter "pat")
     ~pat_filter:(pfilter "pat");
-  add_quotation {domain; name =  "ep-"} exp_quot ~mexp:(fun loc p -> m#exp loc (Objs.strip_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_exp p)) ~exp_filter:(efilter "ep")
+
+  add_quotation {domain; name =  "ep-"} ep
+    ~mexp:(fun loc p -> m#ep loc (Objs.strip_ep p))
+    ~mpat:(fun loc p -> m#ep loc (Objs.strip_ep p))
+    ~exp_filter:(efilter "ep")
     ~pat_filter:(pfilter "ep");
+  
   add_quotation {domain; name =  "exp-"} exp_quot
     ~mexp:(fun loc p -> m#exp loc (Objs.strip_exp p))
     ~mpat:(fun loc p -> m#exp loc (Objs.strip_exp p))
@@ -404,8 +413,11 @@ begin
   add_quotation {domain; name =  "pat-'"} pat_quot ~mexp:(fun loc p -> m#pat loc (Objs.strip_pat p))
     ~mpat:(fun loc p -> m#pat loc (Objs.strip_pat p)) ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "ep-'"} exp_quot ~mexp:(fun loc p -> m#exp loc (Objs.strip_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_exp p)) ~exp_filter
+  
+  add_quotation {domain; name =  "ep-'"} ep
+    ~mexp:(fun loc p -> m#ep loc (Objs.strip_ep p))
+    ~mpat:(fun loc p -> m#ep loc (Objs.strip_ep p))
+    ~exp_filter
     ~pat_filter;
   add_quotation {domain; name =  "exp-'"} exp_quot
     ~mexp:(fun loc p -> m#exp loc (Objs.strip_exp p))

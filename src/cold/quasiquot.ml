@@ -1,19 +1,129 @@
 let add_quotation = Ast_quotation.add_quotation
-let exp_filter = Parsef.exp_filter
-let pat_filter = Parsef.pat_filter
-let exp_filter_n = Parsef.exp_filter_n
-let pat_filter_n = Parsef.pat_filter_n
-let m = Metafn.m
 let loc_of = Ast_gen.loc_of
+let stringnize =
+  [("nativeint'",
+     (Some (`Dot ((`Uid "Nativeint"), (`Lid "to_string")) : Astfn.exp )));
+  ("int'", (Some (`Lid "string_of_int" : Astfn.exp )));
+  ("int32'", (Some (`Dot ((`Uid "Int32"), (`Lid "to_string")) : Astfn.exp )));
+  ("int64'", (Some (`Dot ((`Uid "Int64"), (`Lid "to_string")) : Astfn.exp )));
+  ("chr'", (Some (`Dot ((`Uid "Char"), (`Lid "escaped")) : Astfn.exp )));
+  ("str'", (Some (`Dot ((`Uid "String"), (`Lid "escaped")) : Astfn.exp )));
+  ("flo'", (Some (`Lid "string_of_float" : Astfn.exp )));
+  ("bool'", None)]
+let expander ant_annot =
+  object 
+    inherit  Objs.map as super
+    method! pat (x : Astf.pat) =
+      match x with
+      | `Ant (_loc,x) ->
+          let meta_loc_pat _loc _ = (`Any _loc : Astf.pat ) in
+          let mloc _loc = meta_loc_pat _loc _loc in
+          let e = Tokenf.ant_expand Parsef.pat x in
+          (match ((x.kind), (x.cxt)) with
+           | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
+               let x = String.capitalize x in
+               (`App
+                  (_loc, (`Vrn (_loc, x)),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.pat )
+           | _ -> super#pat e)
+      | e -> super#pat e
+    method! exp (x : Astf.exp) =
+      match x with
+      | `Ant (_loc,x) ->
+          let meta_loc_exp _loc loc =
+            match !Ast_quotation.current_loc_name with
+            | Some "here" -> (Ast_gen.meta_here _loc loc :>Astf.exp)
+            | x ->
+                let x = Option.default (!Locf.name) x in
+                (`Lid (_loc, x) : Astf.exp ) in
+          let mloc _loc = meta_loc_exp _loc _loc in
+          let e = Tokenf.ant_expand Parsef.exp x in
+          (match ((x.kind), (x.cxt)) with
+           | (("uid"|"lid"|"flo"|"int"|"int32"|"int64"|"nativeint"|"chr"
+               |"str"|"par"|"seq" as x),ty) ->
+               (`App
+                  (_loc, (`Vrn (_loc, (String.capitalize x))),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+           | (("vrn" as x),Some ("exp"|"pat")) ->
+               (`App
+                  (_loc, (`Vrn (_loc, (String.capitalize x))),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+           | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
+               |"bool'" as x),_) ->
+               let v =
+                 match List.assoc x stringnize with
+                 | Some x ->
+                     let x = Fill.exp _loc x in
+                     (`App (_loc, x, e) : Astf.exp )
+                 | None  -> e in
+               let s =
+                 (String.sub x 0 ((String.length x) - 1)) |>
+                   String.capitalize in
+               (`App
+                  (_loc, (`Vrn (_loc, s)),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), v))))) : Astf.exp )
+           | ("",ty) -> super#exp e
+           | _ -> super#exp e)
+      | e -> super#exp e
+  end
+let expandern =
+  object 
+    inherit  Objs.map as super
+    method! pat (x : Astf.pat) =
+      match x with
+      | `Ant (_loc,x) ->
+          let e = Tokenf.ant_expand Parsef.pat x in
+          (match ((x.kind), (x.cxt)) with
+           | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
+               let x = String.capitalize x in
+               (`App (_loc, (`Vrn (_loc, x)), e) : Astf.pat )
+           | _ -> super#pat e)
+      | e -> super#pat e
+    method! exp (x : Astf.exp) =
+      match x with
+      | `Ant (_loc,x) ->
+          let e = Tokenf.ant_expand Parsef.exp x in
+          (match ((x.kind), (x.cxt)) with
+           | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
+               (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
+               Astf.exp )
+           | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
+               |"bool'" as x),_) ->
+               let v =
+                 match List.assoc x stringnize with
+                 | Some x ->
+                     let x = Fill.exp _loc x in
+                     (`App (_loc, x, e) : Astf.exp )
+                 | None  -> e in
+               let s =
+                 (String.sub x 0 ((String.length x) - 1)) |>
+                   String.capitalize in
+               (`App (_loc, (`Vrn (_loc, s)), v) : Astf.exp )
+           | _ -> super#exp e)
+      | e -> super#exp e
+  end
 open Syntaxf
-let efilter str e =
-  let e = exp_filter e in
+open Astf
+let v = expander false
+let u = expander true
+let exp_filter (x : ep) = v#exp (x :>exp)
+let pat_filter (x : ep) = v#pat (x :>pat)
+let exp_filter_n (x : ep) = expandern#exp (x :>exp)
+let pat_filter_n (x : ep) = expandern#pat (x :>pat)
+let efilter str (e : ep) =
+  let e = u#exp (e :>exp) in
   let _loc = loc_of e in
   (`Constraint
      (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
     Astf.exp )
-let pfilter str e =
-  let p = pat_filter e in
+let pfilter str (e : ep) =
+  let p = u#pat (e :>pat) in
   let _loc = loc_of p in
   (`Constraint
      (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
@@ -29,6 +139,7 @@ let me =
       | Some x -> `Lid (_loc, x)
   end
 let mp = object  inherit  Metaf.meta method! loc _loc _ = `Any _loc end
+let m = new Metafn.meta
 let _ =
   add_quotation { domain; name = "sigi'" } sigi_quot ~mexp:(me#sigi)
     ~mpat:(mp#sigi) ~exp_filter ~pat_filter;
@@ -40,6 +151,8 @@ let _ =
     ~mpat:(mp#pat) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "exp'" } exp_quot ~mexp:(me#exp)
     ~mpat:(mp#exp) ~exp_filter ~pat_filter;
+  add_quotation { domain; name = "ep'" } ep ~mexp:(me#ep) ~mpat:(mp#ep)
+    ~exp_filter ~pat_filter;
   add_quotation { domain; name = "mtyp'" } mtyp_quot ~mexp:(me#mtyp)
     ~mpat:(mp#mtyp) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "mexp'" } mexp_quot ~mexp:(me#mexp)
@@ -91,8 +204,8 @@ let _ =
     ~mpat:(mp#ctyp) ~exp_filter:(efilter "ctyp") ~pat_filter:(pfilter "ctyp");
   add_quotation { domain; name = "pat" } pat_quot ~mexp:(me#pat)
     ~mpat:(mp#pat) ~exp_filter:(efilter "pat") ~pat_filter:(pfilter "pat");
-  add_quotation { domain; name = "ep" } exp_quot ~mexp:(me#exp)
-    ~mpat:(mp#exp) ~exp_filter:(efilter "ep") ~pat_filter:(pfilter "ep");
+  add_quotation { domain; name = "ep" } ep ~mexp:(me#ep) ~mpat:(mp#ep)
+    ~exp_filter:(efilter "ep") ~pat_filter:(pfilter "ep");
   add_quotation { domain; name = "exp" } exp_quot ~mexp:(me#exp)
     ~mpat:(mp#exp) ~exp_filter:(efilter "exp") ~pat_filter:(pfilter "exp");
   add_quotation { domain; name = "mtyp" } mtyp_quot ~mexp:(me#mtyp)
@@ -162,9 +275,9 @@ let _ =
     ~mexp:(fun loc  p  -> m#pat loc (Objs.strip_pat p))
     ~mpat:(fun loc  p  -> m#pat loc (Objs.strip_pat p))
     ~exp_filter:(efilter "pat") ~pat_filter:(pfilter "pat");
-  add_quotation { domain; name = "ep-" } exp_quot
-    ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_exp p))
-    ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_exp p))
+  add_quotation { domain; name = "ep-" } ep
+    ~mexp:(fun loc  p  -> m#ep loc (Objs.strip_ep p))
+    ~mpat:(fun loc  p  -> m#ep loc (Objs.strip_ep p))
     ~exp_filter:(efilter "ep") ~pat_filter:(pfilter "ep");
   add_quotation { domain; name = "exp-" } exp_quot
     ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_exp p))
@@ -245,10 +358,9 @@ let _ =
     ~mexp:(fun loc  p  -> m#pat loc (Objs.strip_pat p))
     ~mpat:(fun loc  p  -> m#pat loc (Objs.strip_pat p)) ~exp_filter
     ~pat_filter;
-  add_quotation { domain; name = "ep-'" } exp_quot
-    ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_exp p))
-    ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_exp p)) ~exp_filter
-    ~pat_filter;
+  add_quotation { domain; name = "ep-'" } ep
+    ~mexp:(fun loc  p  -> m#ep loc (Objs.strip_ep p))
+    ~mpat:(fun loc  p  -> m#ep loc (Objs.strip_ep p)) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "exp-'" } exp_quot
     ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_exp p))
     ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_exp p)) ~exp_filter

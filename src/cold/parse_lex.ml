@@ -19,12 +19,14 @@ let meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
         Astf.ep )
     | Sequence (a0,a1) ->
         (`App
-           (_loc, (`App (_loc, (`Uid (_loc, "Sequence")), (aux _loc a0))),
-             (aux _loc a1)) : Astf.ep )
+           (_loc, (`Uid (_loc, "Sequence")),
+             (`Par (_loc, (`Com (_loc, (aux _loc a0), (aux _loc a1)))))) : 
+        Astf.ep )
     | Alternative (a0,a1) ->
         (`App
-           (_loc, (`App (_loc, (`Uid (_loc, "Alternative")), (aux _loc a0))),
-             (aux _loc a1)) : Astf.ep )
+           (_loc, (`Uid (_loc, "Alternative")),
+             (`Par (_loc, (`Com (_loc, (aux _loc a0), (aux _loc a1)))))) : 
+        Astf.ep )
     | Repetition a ->
         (`App (_loc, (`Uid (_loc, "Repetition")), (aux _loc a)) : Astf.ep )
     | Bind (a,(loc,s)) ->

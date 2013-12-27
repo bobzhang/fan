@@ -1625,4 +1625,3 @@ class meta =
         | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
   end
-let m = new meta

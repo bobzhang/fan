@@ -540,7 +540,8 @@ let make_quot tag ?(i= 10)  nt =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let make_pat exp =
-  let pat_constr: 'pat_constr Gramf.t = Gramf.mk "pat_constr" in
+  let pat_constr: 'pat_constr Gramf.t = Gramf.mk "pat_constr"
+  and ep_constr: 'ep_constr Gramf.t = Gramf.mk "ep_constr" in
   Gramf.extend_single
     ({
        entry = (pat_quot : 'pat_quot Gramf.t );
@@ -682,6 +683,679 @@ let make_pat exp =
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                         let s = __fan_0 in (mk_ant ~c:"pat" s : 'pat_constr ) : 
                      Tokenf.ant -> Locf.t -> 'pat_constr ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (ep_constr : 'ep_constr Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm
+                      (Gramf.obj
+                         (module_longident : 'module_longident Gramf.t ))];
+                 annot = "(i : vid  :>ep)\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (i : 'module_longident)  (_loc : Locf.t)  ->
+                         ((i : vid  :>ep) : 'ep_constr ) : 'module_longident
+                                                             ->
+                                                             Locf.t ->
+                                                               'ep_constr ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "`"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Nterm (Gramf.obj (luident : 'luident Gramf.t ))];
+                annot = "(`Vrn (_loc, s) : ep )\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (s : 'luident)  _  (_loc : Locf.t)  ->
+                        ((`Vrn (_loc, s) : ep ) : 'ep_constr ) : 'luident ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep_constr ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                      } : Tokenf.pattern )];
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s : 
+                          'ep_constr ) : Tokenf.ant -> Locf.t -> 'ep_constr ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind "ep"); tag_name = "Ant"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s : 
+                          'ep_constr ) : Tokenf.ant -> Locf.t -> 'ep_constr ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind "vrn"); tag_name = "Ant"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ep) s : 
+                          'ep_constr ) : Tokenf.ant -> Locf.t -> 'ep_constr ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (ep : 'ep Gramf.t );
+       olevel =
+         ({
+            label = (Some 30);
+            lassoc = false;
+            productions =
+              [{
+                 symbols =
+                   [Self;
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "::"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot =
+                   "`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p1, p2)))))\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (p2 : 'ep)  _  (p1 : 'ep)  (_loc : Locf.t)  ->
+                         (`App
+                            (_loc, (`Uid (_loc, "::")),
+                              (`Par (_loc, (`Com (_loc, p1, p2))))) : 
+                         'ep ) : 'ep -> Tokenf.txt -> 'ep -> Locf.t -> 'ep ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (ep : 'ep Gramf.t );
+       olevel =
+         ({
+            label = (Some 40);
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm (Gramf.obj (ep_constr : 'ep_constr Gramf.t ));
+                   Self];
+                 annot = "(`App (_loc, p1, p2) : Astf.ep )\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (p2 : 'ep)  (p1 : 'ep_constr)  (_loc : Locf.t)  ->
+                         ((`App (_loc, p1, p2) : Astf.ep ) : 'ep ) : 
+                      'ep -> 'ep_constr -> Locf.t -> 'ep ))
+               };
+              {
+                symbols =
+                  [Nterm (Gramf.obj (ep_constr : 'ep_constr Gramf.t ))];
+                annot = "p1\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (p1 : 'ep_constr)  (_loc : Locf.t)  -> (p1 : 'ep ) : 
+                     'ep_constr -> Locf.t -> 'ep ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (sem_ep_for_list : 'sem_ep_for_list Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Nterm (Gramf.obj (ep : 'ep Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot =
+                   "`App (_loc, (`Uid (_loc, \"::\")), (`Par (_loc, (`Com (_loc, p, pl)))))\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (pl : 'sem_ep_for_list)  _  (p : 'ep) 
+                         (_loc : Locf.t)  ->
+                         (`App
+                            (_loc, (`Uid (_loc, "::")),
+                              (`Par (_loc, (`Com (_loc, p, pl))))) : 
+                         'sem_ep_for_list ) : 'sem_ep_for_list ->
+                                                Tokenf.txt ->
+                                                  'ep ->
+                                                    Locf.t ->
+                                                      'sem_ep_for_list ))
+               };
+              {
+                symbols = [Nterm (Gramf.obj (ep : 'ep Gramf.t ))];
+                annot =
+                  "`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (p : 'ep)  (_loc : Locf.t)  ->
+                        (`App
+                           (_loc, (`Uid (_loc, "::")),
+                             (`Par
+                                (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                        'sem_ep_for_list ) : 'ep ->
+                                               Locf.t -> 'sem_ep_for_list ))
+              };
+              {
+                symbols =
+                  [Nterm (Gramf.obj (ep : 'ep Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ";"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot =
+                  "`App\n  (_loc, (`Uid (_loc, \"::\")),\n    (`Par (_loc, (`Com (_loc, p, (`Uid (_loc, \"[]\")))))))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (p : 'ep)  (_loc : Locf.t)  ->
+                        (`App
+                           (_loc, (`Uid (_loc, "::")),
+                             (`Par
+                                (_loc, (`Com (_loc, p, (`Uid (_loc, "[]"))))))) : 
+                        'sem_ep_for_list ) : Tokenf.txt ->
+                                               'ep ->
+                                                 Locf.t -> 'sem_ep_for_list ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (ep : 'ep Gramf.t );
+       olevel =
+         ({
+            label = (Some 50);
+            lassoc = true;
+            productions =
+              [{
+                 symbols = [Nterm (Gramf.obj (vid : 'vid Gramf.t ))];
+                 annot = "(i : vid  :>ep)\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (i : 'vid)  (_loc : Locf.t)  ->
+                         ((i : vid  :>ep) : 'ep ) : 'vid -> Locf.t -> 'ep ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Int; word = Any; tag_name = "Int" }
+                      } : Tokenf.pattern )];
+                annot = "`Int (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Int (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Int32; word = Any; tag_name = "Int32" }
+                      } : Tokenf.pattern )];
+                annot = "`Int32 (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Int32 (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Int64; word = Any; tag_name = "Int64" }
+                      } : Tokenf.pattern )];
+                annot = "`Int64 (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Int64 (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          {
+                            tag = `Nativeint;
+                            word = Any;
+                            tag_name = "Nativeint"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "`Nativeint (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Nativeint (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Flo; word = Any; tag_name = "Flo" }
+                      } : Tokenf.pattern )];
+                annot = "`Flo (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Flo (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" }
+                      } : Tokenf.pattern )];
+                annot = "`Chr (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Chr (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({ descr = { tag = `Str; word = Any; tag_name = "Str" }
+                      } : Tokenf.pattern )];
+                annot = "`Str (_loc, s)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
+                        let s = __fan_0.txt in (`Str (_loc, s) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "true"); tag_name = "Key" }
+                      } : Tokenf.pattern )];
+                annot = "`Bool (_loc, true)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  -> (`Bool (_loc, true) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "false"); tag_name = "Key"
+                          }
+                      } : Tokenf.pattern )];
+                annot = "`Bool (_loc, false)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (_loc : Locf.t)  -> (`Bool (_loc, false) : 'ep ) : 
+                     Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "-"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({ descr = { tag = `Int; word = Any; tag_name = "Int" } } : 
+                    Tokenf.pattern )];
+                annot = "`Int (_loc, (Stringf.neg s))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (`Int (_loc, (Stringf.neg s)) : 'ep ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "-"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Int32; word = Any; tag_name = "Int32" }
+                     } : Tokenf.pattern )];
+                annot = "`Int32 (_loc, (Stringf.neg s))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (`Int32 (_loc, (Stringf.neg s)) : 'ep ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "-"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Int64; word = Any; tag_name = "Int64" }
+                     } : Tokenf.pattern )];
+                annot = "`Int64 (_loc, (Stringf.neg s))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (`Int64 (_loc, (Stringf.neg s)) : 'ep ) : Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "-"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         {
+                           tag = `Nativeint;
+                           word = Any;
+                           tag_name = "Nativeint"
+                         }
+                     } : Tokenf.pattern )];
+                annot = "`Nativeint (_loc, (Stringf.neg s))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (`Nativeint (_loc, (Stringf.neg s)) : 'ep ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "-"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({ descr = { tag = `Flo; word = Any; tag_name = "Flo" } } : 
+                    Tokenf.pattern )];
+                annot = "`Flo (_loc, (Stringf.neg s))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_1 : Tokenf.txt)  _  (_loc : Locf.t)  ->
+                        let s = __fan_1.txt in
+                        (`Flo (_loc, (Stringf.neg s)) : 'ep ) : Tokenf.txt ->
+                                                                  Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "["); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "]"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Uid (_loc, \"[]\")\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  ->
+                        (`Uid (_loc, "[]") : 'ep ) : Tokenf.txt ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "["); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Nterm
+                    (Gramf.obj (sem_ep_for_list : 'sem_ep_for_list Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "]"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (s : 'sem_ep_for_list)  _  (_loc : Locf.t)  ->
+                        (s : 'ep ) : Tokenf.txt ->
+                                       'sem_ep_for_list ->
+                                         Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "[|"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "|]"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`ArrayEmpty _loc\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  -> (`ArrayEmpty _loc : 'ep ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "[|"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Nterm (Gramf.obj (sem_ep : 'sem_ep Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "|]"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Array (_loc, pl)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (pl : 'sem_ep)  _  (_loc : Locf.t)  ->
+                        (`Array (_loc, pl) : 'ep ) : Tokenf.txt ->
+                                                       'sem_ep ->
+                                                         Tokenf.txt ->
+                                                           Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "{"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Nterm (Gramf.obj (label_ep_list : 'label_ep_list Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "}"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Record (_loc, pl)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (pl : 'label_ep_list)  _  (_loc : Locf.t)  ->
+                        (`Record (_loc, pl) : 'ep ) : Tokenf.txt ->
+                                                        'label_ep_list ->
+                                                          Tokenf.txt ->
+                                                            Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "("); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ")"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Unit _loc\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  _  (_loc : Locf.t)  -> (`Unit _loc : 'ep ) : 
+                     Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "("); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Self;
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ")"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "p\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (p : 'ep)  _  (_loc : Locf.t)  -> (p : 'ep ) : 
+                     Tokenf.txt -> 'ep -> Tokenf.txt -> Locf.t -> 'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "("); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Self;
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ":"); tag_name = "Key" }
+                     } : Tokenf.pattern );
+                  Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ")"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Constraint (_loc, p, t)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (t : 'ctyp)  _  (p : 'ep)  _  (_loc : Locf.t) 
+                        -> (`Constraint (_loc, p, t) : 'ep ) : Tokenf.txt ->
+                                                                 'ctyp ->
+                                                                   Tokenf.txt
+                                                                    ->
+                                                                    'ep ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'ep ))
+              };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A "("); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                  Self;
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ","); tag_name = "Key" }
+                     } : Tokenf.pattern );
+                  Nterm (Gramf.obj (comma_ep : 'comma_ep Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A ")"); tag_name = "Key" }
+                     } : Tokenf.pattern )];
+                annot = "`Par (_loc, (`Com (_loc, p, pl)))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun _  (pl : 'comma_ep)  _  (p : 'ep)  _ 
+                        (_loc : Locf.t)  ->
+                        (`Par (_loc, (`Com (_loc, p, pl))) : 'ep ) : 
+                     Tokenf.txt ->
+                       'comma_ep ->
+                         Tokenf.txt -> 'ep -> Tokenf.txt -> Locf.t -> 'ep ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );
@@ -2879,6 +3553,172 @@ let make_pat exp =
      } : _ Gramf.single_extend_statement );
   Gramf.extend_single
     ({
+       entry = (label_exp : 'label_exp Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           {
+                             tag = `Ant;
+                             word = (Kind "rec_exp");
+                             tag_name = "Ant"
+                           }
+                       } : Tokenf.pattern )];
+                 annot = "mk_ant ~c:\"rec_exp\" s\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                         let s = __fan_0 in
+                         (mk_ant ~c:"rec_exp" s : 'label_exp ) : Tokenf.ant
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'label_exp ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                      } : Tokenf.pattern )];
+                annot = "mk_ant ~c:\"rec_exp\" s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        (mk_ant ~c:"rec_exp" s : 'label_exp ) : Tokenf.ant ->
+                                                                  Locf.t ->
+                                                                    'label_exp ))
+              };
+              {
+                symbols =
+                  [Nterm
+                     (Gramf.obj (label_longident : 'label_longident Gramf.t ));
+                  Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))];
+                annot = "(`RecBind (_loc, i, e) : Astf.rec_exp )\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (e : 'fun_bind)  (i : 'label_longident) 
+                        (_loc : Locf.t)  ->
+                        ((`RecBind (_loc, i, e) : Astf.rec_exp ) : 'label_exp ) : 
+                     'fun_bind -> 'label_longident -> Locf.t -> 'label_exp ))
+              };
+              {
+                symbols =
+                  [Nterm
+                     (Gramf.obj (label_longident : 'label_longident Gramf.t ))];
+                annot =
+                  "`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (i : 'label_longident)  (_loc : Locf.t)  ->
+                        (`RecBind
+                           (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i)))) : 
+                        'label_exp ) : 'label_longident ->
+                                         Locf.t -> 'label_exp ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (label_ep : 'label_ep Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           {
+                             tag = `Ant;
+                             word = (Kind "rec_exp");
+                             tag_name = "Ant"
+                           }
+                       } : Tokenf.pattern )];
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_bind) s\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                         let s = __fan_0 in
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_bind) s : 
+                           'label_ep ) : Tokenf.ant -> Locf.t -> 'label_ep ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
+                      } : Tokenf.pattern )];
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_bind) s\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_bind) s : 
+                          'label_ep ) : Tokenf.ant -> Locf.t -> 'label_ep ))
+              };
+              {
+                symbols =
+                  [Nterm
+                     (Gramf.obj (label_longident : 'label_longident Gramf.t ))];
+                annot =
+                  "let p = match p with | None  -> `Lid (_loc, (Fan_ops.to_lid i)) | Some p -> p in\n`RecBind (_loc, i, p)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (i : 'label_longident)  (_loc : Locf.t)  ->
+                        let p = None in
+                        (let p =
+                           match p with
+                           | None  -> `Lid (_loc, (Fan_ops.to_lid i))
+                           | Some p -> p in
+                         `RecBind (_loc, i, p) : 'label_ep ) : 'label_longident
+                                                                 ->
+                                                                 Locf.t ->
+                                                                   'label_ep ))
+              };
+              {
+                symbols =
+                  [Nterm
+                     (Gramf.obj (label_longident : 'label_longident Gramf.t ));
+                  Token
+                    ({
+                       descr =
+                         { tag = `Key; word = (A "="); tag_name = "Key" }
+                     } : Tokenf.pattern );
+                  Nterm (Gramf.obj (ep : 'ep Gramf.t ))];
+                annot =
+                  "let p = match p with | None  -> `Lid (_loc, (Fan_ops.to_lid i)) | Some p -> p in\n`RecBind (_loc, i, p)\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (p : 'ep)  _  (i : 'label_longident) 
+                        (_loc : Locf.t)  ->
+                        let p = Some p in
+                        (let p =
+                           match p with
+                           | None  -> `Lid (_loc, (Fan_ops.to_lid i))
+                           | Some p -> p in
+                         `RecBind (_loc, i, p) : 'label_ep ) : 'ep ->
+                                                                 Tokenf.txt
+                                                                   ->
+                                                                   'label_longident
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'label_ep ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
        entry = (label_pat : 'label_pat Gramf.t );
        olevel =
          ({
@@ -2892,12 +3732,12 @@ let make_pat exp =
                          descr =
                            { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_pat) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s : 
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_pat) s : 
                            'label_pat ) : Tokenf.ant -> Locf.t -> 'label_pat ))
                };
               {
@@ -2908,12 +3748,12 @@ let make_pat exp =
                           { tag = `Ant; word = (Kind "pat"); tag_name = "Ant"
                           }
                       } : Tokenf.pattern )];
-                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s\n";
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_pat) s\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                         let s = __fan_0 in
-                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s : 
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.rec_pat) s : 
                           'label_pat ) : Tokenf.ant -> Locf.t -> 'label_pat ))
               };
               {
@@ -2970,10 +3810,13 @@ let () =
   make_semi field_exp field_exp_list;
   make_semi exp sem_exp;
   make_semi label_exp label_exp_list;
+  make_semi label_ep label_ep_list;
   make_semi pat sem_pat;
+  make_semi ep sem_ep;
   make_semi clfield clfield_quot;
   make_semi clsigi clsigi_quot;
   make_comma pat comma_pat;
+  make_comma ep comma_ep;
   make_comma ipat comma_ipat;
   make_comma exp comma_exp;
   make_case exp pat;
@@ -2996,14 +3839,27 @@ let () =
     "nativeint'";
     "flo'";
     "chr'";
+    "str'"];
+  make_ants ~c:(Dyn_tag.to_string Dyn_tag.ep) ~i:50 ep
+    ["";
+    "pat";
+    "par";
+    "int";
+    "int32";
+    "int64";
+    "vrn";
+    "flo";
+    "chr";
+    "nativeint";
+    "str";
+    "int'";
+    "int32'";
+    "int64'";
+    "nativeint'";
+    "flo'";
+    "chr'";
     "str'";
-    "`int";
-    "`int32";
-    "`int64";
-    "`nativeint";
-    "`flo";
-    "`chr";
-    "`str"];
+    "bool'"];
   make_quot Dyn_tag.exp ~i:170 exp;
   make_ants ~c:"exp" ~i:170 exp
     ["exp";
@@ -3025,15 +3881,7 @@ let () =
     "int'";
     "int32'";
     "flo'";
-    "str'";
-    "`chr";
-    "`int64";
-    "`nativeint";
-    "`bool";
-    "`int";
-    "`int32";
-    "`flo";
-    "`str"];
+    "str'"];
   make_ants ~c:"mexp" ~i:30 mexp [""; "mexp"];
   make_quot Dyn_tag.mexp ~i:30 mexp;
   make_quot Dyn_tag.mbind mbind;
@@ -8114,83 +8962,6 @@ let apply () =
       } : _ Gramf.single_extend_statement );
    Gramf.extend_single
      ({
-        entry = (label_exp : 'label_exp Gramf.t );
-        olevel =
-          ({
-             label = None;
-             lassoc = true;
-             productions =
-               [{
-                  symbols =
-                    [Token
-                       ({
-                          descr =
-                            {
-                              tag = `Ant;
-                              word = (Kind "rec_exp");
-                              tag_name = "Ant"
-                            }
-                        } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"rec_exp\" s\n";
-                  fn =
-                    (Gramf.mk_action
-                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                          let s = __fan_0 in
-                          (mk_ant ~c:"rec_exp" s : 'label_exp ) : Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'label_exp ))
-                };
-               {
-                 symbols =
-                   [Token
-                      ({
-                         descr =
-                           { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
-                       } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"rec_exp\" s\n";
-                 fn =
-                   (Gramf.mk_action
-                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in
-                         (mk_ant ~c:"rec_exp" s : 'label_exp ) : Tokenf.ant
-                                                                   ->
-                                                                   Locf.t ->
-                                                                    'label_exp ))
-               };
-               {
-                 symbols =
-                   [Nterm
-                      (Gramf.obj
-                         (label_longident : 'label_longident Gramf.t ));
-                   Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))];
-                 annot = "(`RecBind (_loc, i, e) : Astf.rec_exp )\n";
-                 fn =
-                   (Gramf.mk_action
-                      (fun (e : 'fun_bind)  (i : 'label_longident) 
-                         (_loc : Locf.t)  ->
-                         ((`RecBind (_loc, i, e) : Astf.rec_exp ) : 'label_exp ) : 
-                      'fun_bind -> 'label_longident -> Locf.t -> 'label_exp ))
-               };
-               {
-                 symbols =
-                   [Nterm
-                      (Gramf.obj
-                         (label_longident : 'label_longident Gramf.t ))];
-                 annot =
-                   "`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n";
-                 fn =
-                   (Gramf.mk_action
-                      (fun (i : 'label_longident)  (_loc : Locf.t)  ->
-                         (`RecBind
-                            (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i)))) : 
-                         'label_exp ) : 'label_longident ->
-                                          Locf.t -> 'label_exp ))
-               }]
-           } : Gramf.olevel )
-      } : _ Gramf.single_extend_statement );
-   Gramf.extend_single
-     ({
         entry = (field_exp : 'field_exp Gramf.t );
         olevel =
           ({
@@ -8865,12 +9636,13 @@ let apply () =
                             { tag = `Ant; word = (Kind ""); tag_name = "Ant"
                             }
                         } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"ident\" s\n";
+                  annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                   fn =
                     (Gramf.mk_action
                        (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                          let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
-                       Tokenf.ant -> Locf.t -> 'vid ))
+                          let s = __fan_0 in
+                          (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                            'vid ) : Tokenf.ant -> Locf.t -> 'vid ))
                 };
                {
                  symbols =
@@ -8880,12 +9652,13 @@ let apply () =
                            { tag = `Ant; word = (Kind "id"); tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"ident\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
-                      Tokenf.ant -> Locf.t -> 'vid ))
+                         let s = __fan_0 in
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                           'vid ) : Tokenf.ant -> Locf.t -> 'vid ))
                };
                {
                  symbols =
@@ -8898,12 +9671,13 @@ let apply () =
                              tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"ident\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
-                      Tokenf.ant -> Locf.t -> 'vid ))
+                         let s = __fan_0 in
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                           'vid ) : Tokenf.ant -> Locf.t -> 'vid ))
                };
                {
                  symbols =
@@ -8916,12 +9690,13 @@ let apply () =
                              tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"ident\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
-                         let s = __fan_0 in (mk_ant ~c:"ident" s : 'vid ) : 
-                      Tokenf.ant -> Locf.t -> 'vid ))
+                         let s = __fan_0 in
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                           'vid ) : Tokenf.ant -> Locf.t -> 'vid ))
                };
                {
                  symbols =

@@ -18,9 +18,9 @@ let  meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp ) =
     | Eof -> %ep{Eof}
     | Characters a -> %ep{Characters ${meta_cset _loc a}}
     | Sequence (a0,a1) ->
-        %ep{Sequence ${aux _loc a0} ${aux _loc a1}}
+        %ep{Sequence (${aux _loc a0}, ${aux _loc a1})}
     | Alternative(a0,a1) ->
-        %ep{Alternative ${aux _loc a0} ${aux _loc a1}}
+        %ep{Alternative (${aux _loc a0}, ${aux _loc a1})}
     | Repetition a -> %ep{Repetition ${aux _loc a}}
     | Bind (a,(loc,s)) ->
         %ep{Bind (${aux _loc  a},

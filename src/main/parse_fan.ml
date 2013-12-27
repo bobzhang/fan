@@ -155,10 +155,49 @@ let make_pat exp =
        [module_longident as i %{(i :vid :> pat)}
        |"`"; luident as s  %{ (`Vrn(_loc,s) :pat)}
        |Ant (""|"pat"|"vrn" , s) %{ mk_ant  ~c:"pat" s}]
+                     
+       ep_constr@Local:
+       [module_longident as i %{(i :vid :> ep)}
+       |"`"; luident as s  %{ (`Vrn(_loc,s) :ep)}
+       |Ant (""|"ep"|"vrn" , s) %{ mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.ep) s}]
+
+       ep: 30 RA
+       [ S as p1; "::"; S as p2 %{
+          `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}]
+       ep: 40
+       [ ep_constr as p1; S as p2 %ep{$p1 $p2}
+       | ep_constr as p1 %{ p1}
+       ]
+       sem_ep_for_list:
+       [ ep as p; ";"; S as pl %{`App(_loc, `Uid(_loc,"::"), `Par(_loc,`Com(_loc,p,pl)))}
+       | ep as p; ? ";"%{`App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p,`Uid(_loc,"[]"))))}
+       ]
+
+
+       ep: 50
+       [vid as i %{ (i : vid :> ep)}
+       | @primitve
+       | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
+       | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
+       | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
+       | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
+       | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
+       | "["; "]" %{ `Uid (_loc, "[]")}
+       | "["; sem_ep_for_list as s; "]" %{ s}
+       | "[|"; "|]" %{ `ArrayEmpty(_loc)}
+       | "[|"; sem_ep as pl; "|]" %{ `Array(_loc,pl)}
+       | "{"; label_ep_list as pl; "}" %{ `Record(_loc,pl)}
+       | "("; ")" %{`Unit _loc}
+       | "("; S as p; ")" %{ p}
+       | "("; S as p; ":"; ctyp as t; ")" %{ `Constraint(_loc,p,t)}
+       | "("; S as p; ","; comma_ep as pl; ")" %{ `Par(_loc,`Com(_loc,p,pl))}
+      ]
+              
        pat: 10 
        [ S as p1; "|"; S as p2 %{ `Bar(_loc,p1,p2)} ]
        pat: 20 
        [ S as p1; ".."; S as p2 %{ `PaRng(_loc,p1,p2)} ]
+
        pat: 30 RA
        [ S as p1; "::"; S as p2 %{
           `App(_loc,`Uid(_loc,"::"),`Par(_loc,`Com(_loc,p1,p2)))}]
@@ -233,7 +272,24 @@ let make_pat exp =
        [ label_pat as p1; ";"; S as p2 %{ `Sem(_loc,p1,p2)}
        | label_pat as p1; ";"; "_"; ? ";"  %{ `Sem(_loc,p1,`Any _loc)}
        | label_pat as p1; ?";"            %{ p1}
-       ] 
+       ]
+
+
+       label_exp:
+       [ Ant ("rec_exp" |"" ,s) %{mk_ant  ~c:"rec_exp"  s}
+       | label_longident as i; fun_bind as e
+            %rec_exp{ $id:i = $e }
+       | label_longident as i %{  (*FIXME*)
+         `RecBind (_loc, i, `Lid (_loc, Fan_ops.to_lid i))}]
+
+       label_ep:
+       [ Ant ("rec_exp" |"" ,s) %{mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.rec_bind)  s}
+       | label_longident as i; ?["="; ep as p] %{
+         let p = match p with
+         | None ->   `Lid(_loc,Fan_ops.to_lid i)
+         | Some p -> p in `RecBind(_loc,i,p)}
+                  
+       ]                     
        label_pat:
        [ Ant (""|"pat",s) %{ mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.rec_pat)  s}
        | label_longident as i; ?["="; pat as p] %{
@@ -248,10 +304,13 @@ let () =
     make_semi  field_exp field_exp_list;
     make_semi  exp sem_exp;
     make_semi  label_exp label_exp_list;
+    make_semi  label_ep label_ep_list ;
     make_semi  pat sem_pat ;
+    make_semi  ep sem_ep;
     make_semi  clfield clfield_quot;
     make_semi  clsigi clsigi_quot;
     make_comma pat comma_pat;
+    make_comma ep comma_ep;
     make_comma ipat comma_ipat;
     make_comma exp comma_exp;
     make_case exp pat ;
@@ -262,9 +321,13 @@ let () =
        "int32" ;"int64" ;"vrn" ;"flo" ;
        "chr" ;"nativeint" ;"str" ;"int'" ;
        "int32'" ;"int64'" ;"nativeint'" ;
-       "flo'" ;"chr'" ;"str'" ;"`int" ;
-       "`int32" ;"`int64" ;"`nativeint" ;
-       "`flo" ;"`chr" ;"`str"];
+       "flo'" ;"chr'" ;"str'" ];
+    make_ants ~c:(Dyn_tag.to_string Dyn_tag.ep) ~i:50 ep
+      ["" ;"pat" ;"par" ;"int" ;
+       "int32" ;"int64" ;"vrn" ;"flo" ;
+       "chr" ;"nativeint" ;"str" ;"int'" ;
+       "int32'" ;"int64'" ;"nativeint'" ;
+       "flo'" ;"chr'" ;"str'" ; "bool'"];
 
     make_quot Dyn_tag.exp ~i:170 exp;
     make_ants ~c:"exp" ~i:170 exp
@@ -273,9 +336,7 @@ let () =
        "flo" ;"nativeint" ; "vrn" ;
        "chr'" ;"int64'" ;"nativeint'" ;
        "bool'" ;"int'" ;"int32'" ;
-       "flo'" ;"str'" ;"`chr" ;
-       "`int64" ;"`nativeint" ;
-       "`bool" ;"`int" ;"`int32" ;"`flo" ;"`str"];
+       "flo'" ;"str'" ];
 
     
     make_ants ~c:"mexp" ~i:30 mexp
@@ -666,12 +727,7 @@ let apply () = begin
       %extend{
         rec_exp_quot:
         [ label_exp_list as x %{x}  ]
-        label_exp:
-        [ Ant ("rec_exp" |"" ,s) %{mk_ant  ~c:"rec_exp"  s}
-        | label_longident as i; fun_bind as e
-            %rec_exp{ $id:i = $e }
-        | label_longident as i %{  (*FIXME*)
-            `RecBind (_loc, i, `Lid (_loc, Fan_ops.to_lid i))}]
+        
         field_exp :
         [ Ant (""|"bi",s) %{ mk_ant  ~c:"rec_exp" s}
         | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]};
