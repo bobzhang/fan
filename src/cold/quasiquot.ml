@@ -21,14 +21,14 @@ let pfilter str e =
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 let me =
   object 
-    inherit  FMeta.meta
+    inherit  Metaf.meta
     method! loc _loc loc =
       match !Ast_quotation.current_loc_name with
       | None  -> `Lid (_loc, (!Locf.name))
       | Some "here" -> Ast_gen.meta_here _loc loc
       | Some x -> `Lid (_loc, x)
   end
-let mp = object  inherit  FMeta.meta method! loc _loc _ = `Any _loc end
+let mp = object  inherit  Metaf.meta method! loc _loc _ = `Any _loc end
 let _ =
   add_quotation { domain; name = "sigi'" } sigi_quot ~mexp:(me#sigi)
     ~mpat:(mp#sigi) ~exp_filter ~pat_filter;
