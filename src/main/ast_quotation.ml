@@ -246,8 +246,7 @@ let of_exp ?lexer ~name  ~entry () =
 let of_ep ?lexer ~name ~entry () =
   let (expand_fun : Astf.ep Tokenf.expand_fun)  = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    %stru@loc{$exp{(expand_fun loc loc_name_opt s :> Astf.exp)}}
-    (* (`StExp (loc, (expand_fun loc loc_name_opt s :> Astf.exp)) : Astf.stru ) *) in
+    %stru@loc{$exp{(expand_fun loc loc_name_opt s)}}in
   begin
     add name Dyn_tag.pat
       (make_parser ?lexer  entry : Astf.ep Tokenf.expand_fun :> Astf.pat Tokenf.expand_fun);

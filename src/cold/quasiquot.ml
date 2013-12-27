@@ -76,7 +76,7 @@ let expander ant_annot =
                        (_loc,
                          (`Com (_loc, (mloc _loc :>Astf.exp), (v :>Astf.exp)))))) : 
                  Astf.exp )
-           | ("",ty) ->
+           | (_,ty) ->
                let e =
                  match (ty, ant_annot) with
                  | (Some ty,true ) ->
@@ -86,11 +86,10 @@ let expander ant_annot =
                              (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, ty))))) : 
                      Astf.exp )
                  | _ -> e in
-               super#exp e
-           | _ -> super#exp e)
+               super#exp e)
       | e -> super#exp e
   end
-let expandern =
+let expandern ant_annot =
   object 
     inherit  Objs.map as super
     method! pat (x : Astf.pat) =
@@ -128,7 +127,7 @@ let expandern =
                  (String.sub x 0 ((String.length x) - 1)) |>
                    String.capitalize in
                (`App (_loc, (`Vrn (_loc, s)), (v :>Astf.exp)) : Astf.exp )
-           | _ -> super#exp e)
+           | (_,ty) -> super#exp e)
       | e -> super#exp e
   end
 open Syntaxf
@@ -137,8 +136,6 @@ let v = expander false
 let u = expander true
 let exp_filter (x : ep) = v#exp (x :>exp)
 let pat_filter (x : ep) = v#pat (x :>pat)
-let exp_filter_n (x : ep) = expandern#exp (x :>exp)
-let pat_filter_n (x : ep) = expandern#pat (x :>pat)
 let efilter str (e : ep) =
   let e = u#exp (e :>exp) in
   let _loc = loc_of e in
@@ -269,14 +266,18 @@ let _ =
   add_quotation { domain; name = "row_field" } row_field ~mexp:(me#row_field)
     ~mpat:(mp#row_field) ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field")
-let efilter str e =
-  let e = exp_filter_n e in
+let v = expandern false
+let u = expandern true
+let exp_filter_n (x : ep) = v#exp (x :>exp)
+let pat_filter_n (x : ep) = v#pat (x :>pat)
+let efilter str (e : ep) =
+  let e = u#exp (e :>exp) in
   let _loc = loc_of e in
   (`Constraint
      (_loc, (e :>Astf.exp),
        (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : Astf.exp )
-let pfilter str e =
-  let p = pat_filter_n e in
+let pfilter str (e : ep) =
+  let p = u#pat (e :>pat) in
   let _loc = loc_of p in
   (`Constraint
      (_loc, (p :>Astf.pat),

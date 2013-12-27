@@ -138,13 +138,14 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
     | Nterm (_loc,n,lev) ->
         let obj: Astf.exp =
           `App
-            (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
+            (_loc, (`Dot (_loc, (gm () :>Astf.vid), (`Lid (_loc, "obj")))),
               (`Constraint
-                 (_loc, ((n.id :>exp) :>Astf.exp),
+                 (_loc, (n.id :>Astf.exp),
                    (`App
                       (_loc,
                         (`Dot
-                           (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
+                           (_loc, ((gm () : vid  :>ident) :>Astf.ident),
+                             (`Lid (_loc, "t")))),
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))))))) in
         (match lev with
@@ -232,7 +233,8 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                 (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) : 
            Astf.ctyp ) x.prod in
        (`App
-          (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
+          (_loc,
+            (`Dot (_loc, (gm () :>Astf.vid), (`Lid (_loc, "mk_action")))),
             (`Constraint (_loc, (e :>Astf.exp), (ty :>Astf.ctyp)))) : 
          Astf.exp )
    | E v ->
@@ -299,7 +301,8 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                     (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) : 
                 Astf.ctyp ), e) x.prod) in
        (`App
-          (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
+          (_loc,
+            (`Dot (_loc, (gm () :>Astf.vid), (`Lid (_loc, "mk_action")))),
             (`Constraint (_loc, (txt :>Astf.exp), (ty :>Astf.ctyp)))) : 
          Astf.exp ) : exp )
 let make_single_extend_statement (e : Gram_def.entry) =
@@ -307,9 +310,9 @@ let make_single_extend_statement (e : Gram_def.entry) =
    let gmid = (gm () : vid  :>ident) in
    let ent: Astf.exp =
      `Constraint
-       (_loc, (((e.name).id :>exp) :>Astf.exp),
+       (_loc, ((e.name).id :>Astf.exp),
          (`App
-            (_loc, (`Dot (_loc, gmid, (`Lid (_loc, "t")))),
+            (_loc, (`Dot (_loc, (gmid :>Astf.ident), (`Lid (_loc, "t")))),
               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, ((e.name).tvar)))))))) in
    let pos =
      match e.pos with
@@ -344,8 +347,9 @@ let make_single_extend_statement (e : Gram_def.entry) =
                          (`RecBind
                             (_loc, (`Lid (_loc, "productions")),
                               (prod :>Astf.exp))))))))),
-          (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "olevel"))))) : 
-       Astf.exp ) in
+          (`Dot
+             (_loc, ((gm () : vid  :>ident) :>Astf.ident),
+               (`Lid (_loc, "olevel"))))) : Astf.exp ) in
    let l = e.level in
    (`Constraint
       (_loc,
@@ -366,9 +370,12 @@ let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let f =
      if safe
-     then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single"))) : Astf.exp )
+     then
+       (`Dot (_loc, (gm () :>Astf.vid), (`Lid (_loc, "extend_single"))) : 
+       Astf.exp )
      else
-       (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
+       (`Dot
+          (_loc, (gm () :>Astf.vid), (`Lid (_loc, "unsafe_extend_single"))) : 
        Astf.exp ) in
    (`App (_loc, (f :>Astf.exp), (make_single_extend_statement e :>Astf.exp)) : 
      Astf.exp ) : exp )
@@ -388,7 +395,8 @@ let make_localbinds _loc locals =
                   (`App
                      (_loc,
                        (`Dot
-                          (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
+                          (_loc, ((gm () : vid  :>ident) :>Astf.ident),
+                            (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
         Astf.bind )
     | _ ->
@@ -412,7 +420,7 @@ let make_protects _loc (x : Gram_def.entries) action =
     List.map
       (fun (x : Gram_def.entry)  ->
          ((Gensym.fresh ~prefix:"tmp_entry" ()),
-           ((((x.name).id :>exp) :>Astf.exp) : Astf.exp ))) globals in
+           (((x.name).id :>Astf.exp) : Astf.exp ))) globals in
   let save_binds =
     List.map
       (fun (tmp,e)  ->

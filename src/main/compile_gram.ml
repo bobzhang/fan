@@ -145,8 +145,9 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
     | Nterm (_loc, n, lev) ->
         let obj =
+          (* [$id] -- type annotation needed *)
           %exp{ ($id{gm()}.obj
-                   (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
+                   (${n.id} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
         | Some lab -> %exp{ Snterml ($obj,$int':lab)}
         | None ->
@@ -252,7 +253,7 @@ let make_single_extend_statement (e : Gram_def.entry)  : exp =
   let _loc = e.name.loc in
   let gmid = (gm():vid:>ident) in
   let ent =
-    %exp{(${(e.name.id :> exp)}:'$lid{e.name.tvar} $id:gmid.t)  }   in
+    %exp{(${e.name.id}:'$lid{e.name.tvar} $id:gmid.t)  }   in
   let pos = (* hastype Gramf.position option *)
     match e.pos with
     | Some pos -> %exp{Some $pos} 
@@ -337,7 +338,7 @@ let make_protects _loc (x:Gram_def.entries) action =
   (*   list_of_list (List.map make_single_extend_statement globals) in *)
   let binds = List.map
       (fun (x:Gram_def.entry) ->
-        (%fresh{tmp_entry}, %exp{${(x.name.id :> exp)}})) globals in
+        (%fresh{tmp_entry}, %exp{${x.name.id}})) globals in
   let save_binds =
     List.map (fun (tmp, e) ->  %bind{  $lid:tmp = Gramf.get_levels $e }) binds in
   let pop_actions =

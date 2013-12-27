@@ -111,7 +111,8 @@ let f (loc : Locf.t) meta content =
      Gramf.fresh_with_levels exp tmp_entry__001_; result)
   with | x -> (Gramf.fresh_with_levels exp tmp_entry__001_; raise x)
 let f2 (_loc : Locf.t) _meta content =
-  let res = f _loc _meta content in (`StExp (_loc, res) : Astf.stru )
+  let res = f _loc _meta content in
+  (`StExp (_loc, (res :>Astf.exp)) : Astf.stru )
 let () =
   let d = Ns.lang in
   Ast_quotation.add { domain = d; name = "cexp" } Dyn_tag.exp f;

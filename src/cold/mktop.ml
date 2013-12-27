@@ -47,7 +47,7 @@ let _ =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, (e :>Astf.exp), (`Bool (_loc, true)))),\n          (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))) : Astf.exp )\n";
+                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc,\n          (`CaseWhen\n             (_loc, (p :>Astf.pat), (e :>Astf.exp), (`Bool (_loc, true)))),\n          (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
@@ -56,7 +56,7 @@ let _ =
                                (`Bar
                                   (_loc,
                                     (`CaseWhen
-                                       (_loc, p, (e :>Astf.exp),
+                                       (_loc, (p :>Astf.pat), (e :>Astf.exp),
                                          (`Bool (_loc, true)))),
                                     (`Case
                                        (_loc, (`Any _loc),

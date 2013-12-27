@@ -741,7 +741,7 @@ let rec exp_desc _loc (x : exp) =
               (`Try
                  (_loc,
                    (`LetIn
-                      (_loc, rf, (bi :>Astf.bind),
+                      (_loc, (rf :>Astf.flag), (bi :>Astf.bind),
                         (`Fun
                            (_loc,
                              (`Case (_loc, (`Unit _loc), (e :>Astf.exp))))))),

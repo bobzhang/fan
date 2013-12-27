@@ -215,7 +215,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
            |(`Field (_loc,_,_) : Astf.exp) -> e
          | (`LetIn (_loc,rf,bi,e) : Astf.exp) ->
              (`LetIn
-                (_loc, rf, (subst_bind v bi :>Astf.bind),
+                (_loc, (rf :>Astf.flag), (subst_bind v bi :>Astf.bind),
                   (subst v e :>Astf.exp)) : Astf.exp )
          | (`App (_loc,e1,e2) : Astf.exp) ->
              (`App (_loc, (subst v e1 :>Astf.exp), (subst v e2 :>Astf.exp)) : 
@@ -319,10 +319,12 @@ let stream_patterns_term _loc (ekont : unit -> exp) tspel =
           | Some w ->
               (`Bar
                  (_loc,
-                   (`CaseWhen (_loc, p, (w :>Astf.exp), (e :>Astf.exp))),
+                   (`CaseWhen
+                      (_loc, (p :>Astf.pat), (w :>Astf.exp), (e :>Astf.exp))),
                    acc) : Astf.case )
           | None  ->
-              (`Bar (_loc, (`Case (_loc, p, (e :>Astf.exp))), acc) : 
+              (`Bar
+                 (_loc, (`Case (_loc, (p :>Astf.pat), (e :>Astf.exp))), acc) : 
               Astf.case )) tspel
        (`Case (_loc, (`Any _loc), (ekont () :>Astf.exp)) : Astf.case ) in
    (`Match

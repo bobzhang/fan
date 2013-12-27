@@ -767,7 +767,7 @@ let apply () = begin
       vid: (* duplicate ident  FIXME *)
       [ Ant (""|"id" |"uid" |"lid",s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid)  s}
       | Ant (""|"id"|"uid",s); "."; S as i %{
-           `Dot (_loc, mk_ant  ~c:"ident" s, i)}
+           `Dot (_loc, mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.vid) s, i)}
       | Lid i %{ `Lid(_loc,i)}
       | Uid i %{ `Uid(_loc,i)}
       | Uid s ; "." ; S as j %{  `Dot (_loc, `Uid (_loc, s), j)}]
@@ -1194,7 +1194,7 @@ let apply_ctyp () = begin
       ctyp: 60 
       [ "'"; a_lident as i %{  `Quote (_loc, `Normal _loc,  i)}
       | "_" %{ `Any _loc}
-      | Ant (""|"typ"|"par"|"id" ,s) %{ mk_ant ~c:"ctyp"  s}
+      | Ant (""|"typ"|"par"|"id" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
       | Ant ("id" ,s); "."; S as t %{
         let try id = ident_of_ctyp t  in
         (`Dot(_loc,mk_ant ~c:"ident"  s,id) :ctyp)

@@ -77,20 +77,20 @@ let expander ant_annot = object
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s (${mloc _loc}, $v)}
             
-      | ("", ty) -> 
+      | (_, ty) -> 
           let e =
             match (ty, ant_annot) with
             | (Some ty, true) ->
                  %exp{ ($e:> Astf.$lid:ty)}
             | _ -> e  in
             super#exp e
-      | _ -> super#exp e)
+      (* | _ -> super#exp e *))
     | e -> super#exp e
    
   end
 
     
-let expandern   = object
+let expandern ant_annot  = object
   inherit Objs.map as super;
   method! pat (x:Astf.pat)= 
     match x with 
@@ -119,7 +119,15 @@ let expandern   = object
             | None -> e in
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s $v}
-      | _ -> super#exp e)
+      | (_, ty) -> 
+          (* let e = *)
+          (*   match (ty, ant_annot) with *)
+          (*   | (Some ty, true) -> *)
+          (*        %exp{ ($e:> Astfn.$lid:ty)} *)
+          (*   | _ -> e  in *)
+            super#exp e
+            
+      (* | _ -> super#exp e *))
     | e -> super#exp e
   end
     
@@ -137,9 +145,6 @@ let pat_filter (x:ep) = v#pat  (x:>pat)
 
 
 
-let exp_filter_n (x:ep) = expandern#exp (x:>exp)
-let pat_filter_n (x:ep) = expandern#pat (x:>pat)
-
 let efilter str (e:ep) =
     let e = u#exp (e:>exp) in
     let _loc = loc_of e in
@@ -150,7 +155,8 @@ let pfilter str (e:ep) =
   let p = u#pat (e:>pat) in
   let _loc = loc_of p in
   %pat{($p : Astf.$lid:str)} (* BOOTSTRAPPING, associated with module [Astf] *);;
-  
+
+
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 
 let me = object
@@ -170,12 +176,24 @@ end
 let m = new Metafn.meta    
 
 let _ = begin 
-  add_quotation {domain; name =  "sigi'"} sigi_quot ~mexp:me#sigi
-    ~mpat:mp#sigi ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "stru'"} stru_quot ~mexp:(me#stru)
-    ~mpat:(mp#stru) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "ctyp'"} ctyp_quot ~mexp:(me#ctyp)
-    ~mpat:(mp#ctyp) ~exp_filter ~pat_filter;
+  add_quotation {domain; name =  "sigi'"} sigi_quot
+    ~mexp:me#sigi
+    ~mpat:mp#sigi
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "stru'"} stru_quot
+    ~mexp:(me#stru)
+    ~mpat:(mp#stru)
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "ctyp'"} ctyp_quot
+    ~mexp:(me#ctyp)
+    ~mpat:(mp#ctyp)
+    ~exp_filter
+    ~pat_filter;
+  
   add_quotation {domain; name =  "pat'"} pat_quot ~mexp:(me#pat)
     ~mpat:(mp#pat) ~exp_filter ~pat_filter;
   add_quotation {domain; name =  "exp'"} exp_quot ~mexp:(me#exp)
@@ -315,30 +333,48 @@ end
 (*************************************************************************)
 (** begin quotation for Astf without locations *)
 
+let v = expandern false
+let u = expandern true
+    
+let exp_filter_n (x:ep) =
+  v#exp   (x:>exp)
+let pat_filter_n (x:ep) =
+  v#pat (x:>pat)
 
-let efilter str e =
-    let e = exp_filter_n e in
+let efilter str (e:ep) =
+    let e = u#exp (e:>exp) in
     let _loc = loc_of e in
     %exp{($e : Astfn.$lid:str)} (* BOOTSTRAPPING, associated with module [Astfn] *)
-let pfilter str e =
-  let p = pat_filter_n e in
+
+let pfilter str (e:ep) =
+  let p = u#pat (e:>pat) in
   let _loc = loc_of p in
   %pat{($p : Astfn.$lid:str)};; (* BOOTSTRAPPING, associated with module [Astfn] *)
 
 
 begin
-    add_quotation {domain; name =  "sigi-"} sigi_quot ~mexp:(fun loc p -> m#sigi loc (Objs.strip_sigi p))
+  add_quotation {domain; name =  "sigi-"} sigi_quot
+    ~mexp:(fun loc p -> m#sigi loc (Objs.strip_sigi p))
     ~mpat:(fun loc p -> m#sigi loc (Objs.strip_sigi p))
-     ~exp_filter:(efilter "sigi")
+    ~exp_filter:(efilter "sigi")
     ~pat_filter:(pfilter "sigi");
-  add_quotation {domain; name =  "stru-"} stru_quot ~mexp:(fun loc p -> m#stru loc (Objs.strip_stru p))
-    ~mpat:(fun loc p -> m#stru loc (Objs.strip_stru p)) ~exp_filter:(efilter "stru")
+
+  add_quotation {domain; name =  "stru-"} stru_quot
+    ~mexp:(fun loc p -> m#stru loc (Objs.strip_stru p))
+    ~mpat:(fun loc p -> m#stru loc (Objs.strip_stru p))
+    ~exp_filter:(efilter "stru")
     ~pat_filter:(pfilter "stru");
-  add_quotation {domain; name =  "ctyp-"} ctyp_quot ~mexp:(fun loc p -> m#ctyp loc (Objs.strip_ctyp p))
-    ~mpat:(fun loc p -> m#ctyp loc (Objs.strip_ctyp p)) ~exp_filter:(efilter "ctyp")
+  
+  add_quotation {domain; name =  "ctyp-"} ctyp_quot
+    ~mexp:(fun loc p -> m#ctyp loc (Objs.strip_ctyp p))
+    ~mpat:(fun loc p -> m#ctyp loc (Objs.strip_ctyp p))
+    ~exp_filter:(efilter "ctyp")
     ~pat_filter:(pfilter "ctyp");
-  add_quotation {domain; name =  "pat-"} pat_quot ~mexp:(fun loc p -> m#pat loc (Objs.strip_pat p))
-    ~mpat:(fun loc p -> m#pat loc (Objs.strip_pat p)) ~exp_filter:(efilter "pat")
+  
+  add_quotation {domain; name =  "pat-"} pat_quot
+    ~mexp:(fun loc p -> m#pat loc (Objs.strip_pat p))
+    ~mpat:(fun loc p -> m#pat loc (Objs.strip_pat p))
+    ~exp_filter:(efilter "pat")
     ~pat_filter:(pfilter "pat");
 
   add_quotation {domain; name =  "ep-"} ep
@@ -352,6 +388,7 @@ begin
     ~mpat:(fun loc p -> m#exp loc (Objs.strip_exp p))
     ~exp_filter:(efilter "exp")
     ~pat_filter:(pfilter "exp");
+
   add_quotation {domain; name =  "mtyp-"} mtyp_quot
     ~mexp:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p))
     ~mpat:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p))
