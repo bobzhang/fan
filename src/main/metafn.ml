@@ -26,7 +26,7 @@ end;;
 (* FIXME -- nested include the error message is confusing *)
 %ocaml{ %include{ "astfn.ml" };; };;
 
-let m = new meta
+
 
     
 

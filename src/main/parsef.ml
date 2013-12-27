@@ -29,17 +29,6 @@ let ep  loc str : ep =
 let ident  loc str =
   Gramlib.parse_string_eoi Syntaxf.ident(* antiquot_ident *) ~loc str
 
-let anti_filter =
-  Ant.expander  ~parse_exp:exp  ~parse_pat:pat
-
-let exp_filter (x:ep) = (anti_filter#exp (x:>exp))
-
-let pat_filter (x:ep) = (anti_filter#pat (x:>pat))
-
-let anti_filter_n = Ant.expandern  ~parse_exp:exp  ~parse_pat:pat
-
-let exp_filter_n (x:ep) = anti_filter_n#exp (x:>exp)
-let pat_filter_n (x:ep) = anti_filter_n#pat (x:>pat)
 
 let expand_exp  (x:Tokenf.quot)  =
   if x.name = Tokenf.empty_name then

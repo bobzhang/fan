@@ -235,7 +235,7 @@ let make_pat exp =
        | label_pat as p1; ?";"            %{ p1}
        ] 
        label_pat:
-       [ Ant (""|"pat",s) %{ mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.pat)  s}
+       [ Ant (""|"pat",s) %{ mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.rec_pat)  s}
        | label_longident as i; ?["="; pat as p] %{
          let p = match p with
          | None ->   `Lid(_loc,Fan_ops.to_lid i)
@@ -709,7 +709,7 @@ let apply () = begin
       | Uid s ; "." ; S as j %{  `Dot (_loc, `Uid (_loc, s), j)}]
       
       vid: (* duplicate ident  FIXME *)
-      [ Ant (""|"id" |"uid" |"lid",s) %{ mk_ant ~c:"ident"  s}
+      [ Ant (""|"id" |"uid" |"lid",s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid)  s}
       | Ant (""|"id"|"uid",s); "."; S as i %{
            `Dot (_loc, mk_ant  ~c:"ident" s, i)}
       | Lid i %{ `Lid(_loc,i)}
