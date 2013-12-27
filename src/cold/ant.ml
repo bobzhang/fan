@@ -24,7 +24,10 @@ let expander ~parse_pat  ~parse_exp  =
                let x = String.capitalize x in
                (`App
                   (_loc, (`Vrn (_loc, x)),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.pat )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.pat), (e :>Astf.pat)))))) : 
+                 Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : Astf.exp) =
@@ -32,7 +35,8 @@ let expander ~parse_pat  ~parse_exp  =
       | `Ant (_loc,x) ->
           let meta_loc_exp _loc loc =
             match !Ast_quotation.current_loc_name with
-            | Some "here" -> (Ast_gen.meta_here _loc loc :>Astf.exp)
+            | Some "here" ->
+                ((Ast_gen.meta_here _loc loc :>Astf.exp) : Astf.exp )
             | x ->
                 let x = Option.default (!Locf.name) x in
                 (`Lid (_loc, x) : Astf.exp ) in
@@ -44,21 +48,27 @@ let expander ~parse_pat  ~parse_exp  =
              |(("vrn" as x),Some ("exp"|"pat")) ->
                (`App
                   (_loc, (`Vrn (_loc, (String.capitalize x))),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.exp), (e :>Astf.exp)))))) : 
+               Astf.exp )
            | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
                |"bool'" as x),_) ->
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
                      let x = Fill.exp _loc x in
-                     (`App (_loc, x, e) : Astf.exp )
+                     (`App (_loc, (x :>Astf.exp), (e :>Astf.exp)) : Astf.exp )
                  | None  -> e in
                let s =
                  (String.sub x 0 ((String.length x) - 1)) |>
                    String.capitalize in
                (`App
                   (_loc, (`Vrn (_loc, s)),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), v))))) : Astf.exp )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.exp), (v :>Astf.exp)))))) : 
+                 Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end
@@ -74,7 +84,7 @@ let expandern ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
-               (`App (_loc, (`Vrn (_loc, x)), e) : Astf.pat )
+               (`App (_loc, (`Vrn (_loc, x)), (e :>Astf.pat)) : Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : Astf.exp) =
@@ -85,20 +95,21 @@ let expandern ~parse_pat  ~parse_exp  =
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
-               (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
-               Astf.exp )
+               (`App
+                  (_loc, (`Vrn (_loc, (String.capitalize x))),
+                    (e :>Astf.exp)) : Astf.exp )
            | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
                |"bool'" as x),_) ->
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
                      let x = Fill.exp _loc x in
-                     (`App (_loc, x, e) : Astf.exp )
+                     (`App (_loc, (x :>Astf.exp), (e :>Astf.exp)) : Astf.exp )
                  | None  -> e in
                let s =
                  (String.sub x 0 ((String.length x) - 1)) |>
                    String.capitalize in
-               (`App (_loc, (`Vrn (_loc, s)), v) : Astf.exp )
+               (`App (_loc, (`Vrn (_loc, s)), (v :>Astf.exp)) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

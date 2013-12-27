@@ -15,7 +15,7 @@ let fibm y =
       (`Int (_loc, (string_of_int (fib @@ (int_of_string x)))) : Astf.exp )
   | x ->
       let _loc = loc_of x in
-      (`App (_loc, (`Lid (_loc, "fib")), x) : Astf.exp )
+      (`App (_loc, (`Lid (_loc, "fib")), (x :>Astf.exp)) : Astf.exp )
 let _ = register_macro ("FIB", fibm)
 let macro_expander =
   object (self)
@@ -29,7 +29,7 @@ let macro_expander =
             with
             | Not_found  ->
                 (fun ()  ->
-                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : Astf.exp ))))
-            ()
+                   (`App (_loc, (`Uid (_loc, a)), (self#exp y :>Astf.exp)) : 
+                   Astf.exp )))) ()
       | e -> super#exp e
   end

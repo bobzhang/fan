@@ -65,7 +65,7 @@ let output_moves
                 (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats)
        | None  -> (`Any _loc : Astf.pat ) in
      let action = seq_sem (output_action mems r) in
-     (`Case (_loc, pat, action) : Astf.case ) in
+     (`Case (_loc, pat, (action :>Astf.exp)) : Astf.case ) in
    let (t
      :(Lexgen.automata_move,(Lexgen.memory_action list* int list)) Hashtbl.t)=
      Hashtbl.create 17 in
@@ -155,11 +155,13 @@ let output_trans (i : int) (trans : Lexgen.automata) =
                           (`Unit _loc))), moves) : Astf.exp )]) in
   (`Bind
      (_loc, (`Lid (_loc, (lex_state i))),
-       (`Fun (_loc, (`Case (_loc, (`Unit _loc), e))))) : Astf.bind )
+       (`Fun (_loc, (`Case (_loc, (`Unit _loc), (e :>Astf.exp)))))) : 
+    Astf.bind )
 let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
-       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), b))) : Astf.exp )) args e
+       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), (b :>Astf.exp)))) : 
+       Astf.exp )) args e
 let output_automata (transitions : Lexgen.automata array) =
   ((transitions |> (Array.mapi (fun i  auto  -> output_trans i auto))) |>
      Array.to_list : bind list )
@@ -168,7 +170,7 @@ let offset e i =
   then e
   else
     (`App
-       (_loc, (`App (_loc, (`Lid (_loc, "+")), e)),
+       (_loc, (`App (_loc, (`Lid (_loc, "+")), (e :>Astf.exp))),
          (`Int (_loc, (string_of_int i)))) : Astf.exp )
 let output_env (env : Automata_def.t_env) =
   (let output_tag_access ((x : Automata_def.tag_base),d) =
@@ -213,13 +215,16 @@ let output_env (env : Automata_def.t_env) =
                let nstart = output_tag_access nstart in
                let nend = output_tag_access nend in
                (`Bind
-                  (_loc, id,
+                  (_loc, (id :>Astf.pat),
                     (`App
                        (_loc,
                          (`App
                             (_loc,
-                              (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                              nstart)), nend))) : Astf.bind )
+                              (`App
+                                 (_loc, (sub :>Astf.exp),
+                                   (`Lid (_loc, "lexbuf")))),
+                              (nstart :>Astf.exp))), (nend :>Astf.exp)))) : 
+                 Astf.bind )
            | Ident_char (o,nstart) ->
                let sub =
                  if o
@@ -233,10 +238,12 @@ let output_env (env : Automata_def.t_env) =
                         (`Lid (_loc, "sub_lexeme_char"))) : Astf.exp ) in
                let nstart = output_tag_access nstart in
                (`Bind
-                  (loc, id,
+                  (loc, (id :>Astf.pat),
                     (`App
-                       (loc, (`App (loc, sub, (`Lid (loc, "lexbuf")))),
-                         nstart))) : Astf.bind ))) : bind list )
+                       (loc,
+                         (`App
+                            (loc, (sub :>Astf.exp), (`Lid (loc, "lexbuf")))),
+                         (nstart :>Astf.exp)))) : Astf.bind ))) : bind list )
 let output_entry _loc
   ({ Lexgen.auto_mem_size = auto_mem_size;
      auto_initial_state = (init_num,init_moves); auto_actions },(transitions
@@ -403,11 +410,11 @@ let output_entry _loc
                   (`Dot
                      (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))))),
              (`LetIn
-                (_loc, (`Positive _loc), binds,
+                (_loc, (`Positive _loc), (binds :>Astf.bind),
                   (`Seq
                      (_loc,
                        (`Sem
-                          (_loc, actions,
+                          (_loc, (actions :>Astf.exp),
                             (`LetIn
                                (_loc, (`Negative _loc),
                                  (`Bind
@@ -506,7 +513,8 @@ let output_entry _loc
                                                                     (_loc,
                                                                     (string_of_int
                                                                     num))),
-                                                                    e) : 
+                                                                    (e :>
+                                                                    Astf.exp)) : 
                                                                     Astf.case ))))
                                                              |> bar_of_list),
                                                           (`Case

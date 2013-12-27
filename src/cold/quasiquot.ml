@@ -26,7 +26,10 @@ let expander ant_annot =
                let x = String.capitalize x in
                (`App
                   (_loc, (`Vrn (_loc, x)),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.pat )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.pat), (e :>Astf.pat)))))) : 
+                 Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : Astf.exp) =
@@ -42,29 +45,48 @@ let expander ant_annot =
           let e = Tokenf.ant_expand Parsef.exp x in
           (match ((x.kind), (x.cxt)) with
            | (("uid"|"lid"|"flo"|"int"|"int32"|"int64"|"nativeint"|"chr"
-               |"str"|"par"|"seq" as x),ty) ->
+               |"str"|"par"|"seq" as x),_) ->
                (`App
                   (_loc, (`Vrn (_loc, (String.capitalize x))),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.exp), (e :>Astf.exp)))))) : 
+               Astf.exp )
            | (("vrn" as x),Some ("exp"|"pat")) ->
                (`App
                   (_loc, (`Vrn (_loc, (String.capitalize x))),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Astf.exp )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.exp), (e :>Astf.exp)))))) : 
+               Astf.exp )
            | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
                |"bool'" as x),_) ->
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
                      let x = Fill.exp _loc x in
-                     (`App (_loc, x, e) : Astf.exp )
+                     (`App (_loc, (x :>Astf.exp), (e :>Astf.exp)) : Astf.exp )
                  | None  -> e in
                let s =
                  (String.sub x 0 ((String.length x) - 1)) |>
                    String.capitalize in
                (`App
                   (_loc, (`Vrn (_loc, s)),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), v))))) : Astf.exp )
-           | ("",ty) -> super#exp e
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (mloc _loc :>Astf.exp), (v :>Astf.exp)))))) : 
+                 Astf.exp )
+           | ("",ty) ->
+               let e =
+                 match (ty, ant_annot) with
+                 | (Some ty,true ) ->
+                     (`Subtype
+                        (_loc, (e :>Astf.exp),
+                          (`Dot
+                             (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, ty))))) : 
+                     Astf.exp )
+                 | _ -> e in
+               super#exp e
            | _ -> super#exp e)
       | e -> super#exp e
   end
@@ -80,7 +102,7 @@ let expandern =
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
-               (`App (_loc, (`Vrn (_loc, x)), e) : Astf.pat )
+               (`App (_loc, (`Vrn (_loc, x)), (e :>Astf.pat)) : Astf.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : Astf.exp) =
@@ -91,20 +113,21 @@ let expandern =
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
                |"nativeint"|"chr"|"str" as x),_)
              |(("vrn" as x),Some ("exp"|"pat")) ->
-               (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
-               Astf.exp )
+               (`App
+                  (_loc, (`Vrn (_loc, (String.capitalize x))),
+                    (e :>Astf.exp)) : Astf.exp )
            | (("nativeint'"|"int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"
                |"bool'" as x),_) ->
                let v =
                  match List.assoc x stringnize with
                  | Some x ->
                      let x = Fill.exp _loc x in
-                     (`App (_loc, x, e) : Astf.exp )
+                     (`App (_loc, (x :>Astf.exp), (e :>Astf.exp)) : Astf.exp )
                  | None  -> e in
                let s =
                  (String.sub x 0 ((String.length x) - 1)) |>
                    String.capitalize in
-               (`App (_loc, (`Vrn (_loc, s)), v) : Astf.exp )
+               (`App (_loc, (`Vrn (_loc, s)), (v :>Astf.exp)) : Astf.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end
@@ -120,14 +143,14 @@ let efilter str (e : ep) =
   let e = u#exp (e :>exp) in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
-    Astf.exp )
+     (_loc, (e :>Astf.exp),
+       (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : Astf.exp )
 let pfilter str (e : ep) =
   let p = u#pat (e :>pat) in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : 
-    Astf.pat )
+     (_loc, (p :>Astf.pat),
+       (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) : Astf.pat )
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 let me =
   object 
@@ -250,14 +273,14 @@ let efilter str e =
   let e = exp_filter_n e in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : 
-    Astf.exp )
+     (_loc, (e :>Astf.exp),
+       (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : Astf.exp )
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : 
-    Astf.pat )
+     (_loc, (p :>Astf.pat),
+       (`Dot (_loc, (`Uid (_loc, "Astfn")), (`Lid (_loc, str))))) : Astf.pat )
 let _ =
   add_quotation { domain; name = "sigi-" } sigi_quot
     ~mexp:(fun loc  p  -> m#sigi loc (Objs.strip_sigi p))

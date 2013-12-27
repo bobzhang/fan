@@ -27,7 +27,7 @@ let compile _loc pairs =
                                   (_loc,
                                     (`Dot
                                        (_loc, (`Uid (_loc, "Ast_quotation")),
-                                         p)),
+                                         (p :>Astf.vid))),
                                     (`Label
                                        (_loc, (`Lid (_loc, "name")),
                                          (`Record
@@ -48,9 +48,11 @@ let compile _loc pairs =
                                                    (`RecBind
                                                       (_loc,
                                                         (`Lid (_loc, "name")),
-                                                        n)))))))))),
-                               (`Label (_loc, (`Lid (_loc, "entry")), e)))),
-                          (`Unit _loc)) : Astf.exp )
+                                                        (n :>Astf.exp))))))))))),
+                               (`Label
+                                  (_loc, (`Lid (_loc, "entry")),
+                                    (e :>Astf.exp))))), (`Unit _loc)) : 
+                     Astf.exp )
                  | Some (_,l,loc) ->
                      let l: Astf.exp =
                        `Label (loc, (`Lid (loc, "lexer")), (`Lid (loc, l))) in
@@ -65,7 +67,7 @@ let compile _loc pairs =
                                          (`Dot
                                             (_loc,
                                               (`Uid (_loc, "Ast_quotation")),
-                                              p)),
+                                              (p :>Astf.vid))),
                                          (`Label
                                             (_loc, (`Lid (_loc, "name")),
                                               (`Record
@@ -90,9 +92,11 @@ let compile _loc pairs =
                                                              (`Lid
                                                                 (_loc,
                                                                   "name")),
-                                                             n)))))))))),
-                                    (`Label (_loc, (`Lid (_loc, "entry")), e)))),
-                               l)), (`Unit _loc)) : Astf.exp )
+                                                             (n :>Astf.exp))))))))))),
+                                    (`Label
+                                       (_loc, (`Lid (_loc, "entry")),
+                                         (e :>Astf.exp))))), (l :>Astf.exp))),
+                          (`Unit _loc)) : Astf.exp )
              with
              | Not_found  ->
                  (fun ()  ->

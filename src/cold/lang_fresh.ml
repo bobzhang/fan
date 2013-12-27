@@ -40,7 +40,7 @@ let _ =
                           { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                       } : Tokenf.pattern )];
                 annot =
-                  "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label\n             (_loc, (`Lid (_loc, \"prefix\")),\n               (Tokenf.ant_expand Parsef.exp x))))), (`Unit _loc)) : \nAstf.exp )\n";
+                  "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label\n             (_loc, (`Lid (_loc, \"prefix\")),\n               (Tokenf.ant_expand Parsef.exp x :>Astf.exp))))), (`Unit _loc)) : \nAstf.exp )\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -54,9 +54,10 @@ let _ =
                                         (`Lid (_loc, "fresh")))),
                                    (`Label
                                       (_loc, (`Lid (_loc, "prefix")),
-                                        (Tokenf.ant_expand Parsef.exp x))))),
-                              (`Unit _loc)) : Astf.exp ) : 'fresh ) : 
-                     Tokenf.ant -> Locf.t -> 'fresh ))
+                                        (Tokenf.ant_expand Parsef.exp x :>
+                                        Astf.exp))))), (`Unit _loc)) : 
+                          Astf.exp ) : 'fresh ) : Tokenf.ant ->
+                                                    Locf.t -> 'fresh ))
               };
               {
                 symbols = [];

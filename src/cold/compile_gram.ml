@@ -108,19 +108,29 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (match ts with
          | None  ->
              if min
-             then (`App (_loc, (`Uid (_loc, "List1")), txt) : Astf.exp )
-             else (`App (_loc, (`Uid (_loc, "List0")), txt) : Astf.exp )
+             then
+               (`App (_loc, (`Uid (_loc, "List1")), (txt :>Astf.exp)) : 
+               Astf.exp )
+             else
+               (`App (_loc, (`Uid (_loc, "List0")), (txt :>Astf.exp)) : 
+               Astf.exp )
          | Some s ->
              let x = aux tvar s.text in
              if min
              then
                (`App
                   (_loc, (`Uid (_loc, "List1sep")),
-                    (`Par (_loc, (`Com (_loc, txt, x))))) : Astf.exp )
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (txt :>Astf.exp), (x :>Astf.exp)))))) : 
+               Astf.exp )
              else
                (`App
                   (_loc, (`Uid (_loc, "List0sep")),
-                    (`Par (_loc, (`Com (_loc, txt, x))))) : Astf.exp ))
+                    (`Par
+                       (_loc,
+                         (`Com (_loc, (txt :>Astf.exp), (x :>Astf.exp)))))) : 
+               Astf.exp ))
     | Self _loc -> (`Uid (_loc, "Self") : Astf.exp )
     | Keyword (_loc,kwd) ->
         (`App (_loc, (`Vrn (_loc, "Keyword")), (`Str (_loc, kwd))) : 
@@ -130,7 +140,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
           `App
             (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
               (`Constraint
-                 (_loc, (n.id :>exp),
+                 (_loc, ((n.id :>exp) :>Astf.exp),
                    (`App
                       (_loc,
                         (`Dot
@@ -143,18 +153,23 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
                 (_loc, (`Uid (_loc, "Snterml")),
                   (`Par
                      (_loc,
-                       (`Com (_loc, obj, (`Int (_loc, (string_of_int lab)))))))) : 
+                       (`Com
+                          (_loc, (obj :>Astf.exp),
+                            (`Int (_loc, (string_of_int lab)))))))) : 
              Astf.exp )
          | None  ->
              if n.tvar = tvar
              then (`Uid (_loc, "Self") : Astf.exp )
-             else (`App (_loc, (`Uid (_loc, "Nterm")), obj) : Astf.exp ))
+             else
+               (`App (_loc, (`Uid (_loc, "Nterm")), (obj :>Astf.exp)) : 
+               Astf.exp ))
     | Try (_loc,t) ->
-        (`App (_loc, (`Uid (_loc, "Try")), (aux "" t)) : Astf.exp )
+        (`App (_loc, (`Uid (_loc, "Try")), (aux "" t :>Astf.exp)) : Astf.exp )
     | Peek (_loc,t) ->
-        (`App (_loc, (`Uid (_loc, "Peek")), (aux "" t)) : Astf.exp )
+        (`App (_loc, (`Uid (_loc, "Peek")), (aux "" t :>Astf.exp)) : 
+        Astf.exp )
     | Token (_loc,meta) ->
-        (`App (_loc, (`Uid (_loc, "Token")), meta) : Astf.exp ) in
+        (`App (_loc, (`Uid (_loc, "Token")), (meta :>Astf.exp)) : Astf.exp ) in
   aux tvar x
 and make_exp_rules (rl : (Gram_def.text list* exp* Gram_def.action) list)
   (tvar : string) =
@@ -171,13 +186,16 @@ and make_exp_rules (rl : (Gram_def.text list* exp* Gram_def.action) list)
            (`Record
               (_loc,
                 (`Sem
-                   (_loc, (`RecBind (_loc, (`Lid (_loc, "symbols")), sl)),
+                   (_loc,
+                     (`RecBind
+                        (_loc, (`Lid (_loc, "symbols")), (sl :>Astf.exp))),
                      (`Sem
                         (_loc,
                           (`RecBind
                              (_loc, (`Lid (_loc, "annot")),
                                (`Str (_loc, action_string)))),
-                          (`RecBind (_loc, (`Lid (_loc, "fn")), action))))))) : 
+                          (`RecBind
+                             (_loc, (`Lid (_loc, "fn")), (action :>Astf.exp)))))))) : 
              Astf.exp ))))
     |> list_of_list
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
@@ -187,7 +205,9 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
         match (v : Gram_def.styp ) with
         | #vid' as x -> (x : vid'  :>ctyp)
         | `Quote _ as x -> x
-        | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : Astf.ctyp )
+        | `App (_loc,t1,t2) ->
+            (`App (_loc, (aux t1 :>Astf.ctyp), (aux t2 :>Astf.ctyp)) : 
+            Astf.ctyp )
         | `Self _loc ->
             if tvar = ""
             then
@@ -205,7 +225,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
          List.fold_left
            (fun ty  (s : Gram_def.osymbol)  ->
               let t = make_ctyp s.styp rtvar in
-              (`Arrow (_loc, t, ty) : Astf.ctyp ))
+              (`Arrow (_loc, (t :>Astf.ctyp), (ty :>Astf.ctyp)) : Astf.ctyp ))
            (`Arrow
               (_loc,
                 (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))),
@@ -213,7 +233,8 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
            Astf.ctyp ) x.prod in
        (`App
           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
-            (`Constraint (_loc, e, ty))) : Astf.exp )
+            (`Constraint (_loc, (e :>Astf.exp), (ty :>Astf.ctyp)))) : 
+         Astf.exp )
    | E v ->
        let e =
          let act = Option.default (`Unit _loc : Astf.exp ) v in
@@ -221,11 +242,13 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
            env |>
              (List.map
                 (fun ((loc,id),e)  ->
-                   (`Bind (_loc, (`Lid (loc, id) : Astf.pat ), e) : Astf.bind ))) in
+                   (`Bind
+                      (_loc, ((`Lid (loc, id) : Astf.pat ) :>Astf.pat),
+                        (e :>Astf.exp)) : Astf.bind ))) in
          let binds = make_env x.env in
          let e1: Astf.exp =
            `Constraint
-             (_loc, act,
+             (_loc, (act :>Astf.exp),
                (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
          let e1 = Ast_gen.seq_binds binds e1 in
          (`Fun
@@ -233,10 +256,10 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
               (`Case
                  (_loc,
                    (`Constraint
-                      (_loc, locid,
+                      (_loc, (locid :>Astf.pat),
                         (`Dot
                            (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
-                   e1))) : Astf.exp ) in
+                   (e1 :>Astf.exp)))) : Astf.exp ) in
        let (ty,txt) =
          snd @@
            (Listf.fold_lefti
@@ -245,20 +268,31 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                  | (Some (xloc,id),_) ->
                      let t = make_ctyp s.styp rtvar in
                      let p = (`Lid (xloc, id) : Astf.pat ) +: t in
-                     ((`Arrow (_loc, t, ty) : Astf.ctyp ),
-                       (`Fun (_loc, (`Case (_loc, p, txt))) : Astf.exp ))
+                     ((`Arrow (_loc, (t :>Astf.ctyp), (ty :>Astf.ctyp)) : 
+                       Astf.ctyp ),
+                       (`Fun
+                          (_loc,
+                            (`Case (_loc, (p :>Astf.pat), (txt :>Astf.exp)))) : 
+                       Astf.exp ))
                  | (None ,[]) ->
                      let t = make_ctyp s.styp rtvar in
-                     ((`Arrow (_loc, t, ty) : Astf.ctyp ),
-                       (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : 
+                     ((`Arrow (_loc, (t :>Astf.ctyp), (ty :>Astf.ctyp)) : 
+                       Astf.ctyp ),
+                       (`Fun
+                          (_loc,
+                            (`Case (_loc, (`Any _loc), (txt :>Astf.exp)))) : 
                        Astf.exp ))
                  | (None ,_) ->
                      let t = make_ctyp s.styp rtvar in
                      let p =
                        (`Lid (_loc, (prefix ^ (string_of_int i))) : Astf.pat )
                          +: t in
-                     ((`Arrow (_loc, t, ty) : Astf.ctyp ),
-                       (`Fun (_loc, (`Case (_loc, p, txt))) : Astf.exp )))
+                     ((`Arrow (_loc, (t :>Astf.ctyp), (ty :>Astf.ctyp)) : 
+                       Astf.ctyp ),
+                       (`Fun
+                          (_loc,
+                            (`Case (_loc, (p :>Astf.pat), (txt :>Astf.exp)))) : 
+                       Astf.exp )))
               ((`Arrow
                   (_loc,
                     (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))),
@@ -266,19 +300,21 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                 Astf.ctyp ), e) x.prod) in
        (`App
           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))),
-            (`Constraint (_loc, txt, ty))) : Astf.exp ) : exp )
+            (`Constraint (_loc, (txt :>Astf.exp), (ty :>Astf.ctyp)))) : 
+         Astf.exp ) : exp )
 let make_single_extend_statement (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let gmid = (gm () : vid  :>ident) in
    let ent: Astf.exp =
      `Constraint
-       (_loc, ((e.name).id :>exp),
+       (_loc, (((e.name).id :>exp) :>Astf.exp),
          (`App
             (_loc, (`Dot (_loc, gmid, (`Lid (_loc, "t")))),
               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, ((e.name).tvar)))))))) in
    let pos =
      match e.pos with
-     | Some pos -> (`App (_loc, (`Uid (_loc, "Some")), pos) : Astf.exp )
+     | Some pos ->
+         (`App (_loc, (`Uid (_loc, "Some")), (pos :>Astf.exp)) : Astf.exp )
      | None  -> (`Uid (_loc, "None") : Astf.exp ) in
    let apply (level : Gram_def.level) =
      let ass =
@@ -298,11 +334,16 @@ let make_single_extend_statement (e : Gram_def.entry) =
           (`Record
              (_loc,
                (`Sem
-                  (_loc, (`RecBind (_loc, (`Lid (_loc, "label")), pos)),
+                  (_loc,
+                    (`RecBind
+                       (_loc, (`Lid (_loc, "label")), (pos :>Astf.exp))),
                     (`Sem
                        (_loc,
-                         (`RecBind (_loc, (`Lid (_loc, "lassoc")), ass)),
-                         (`RecBind (_loc, (`Lid (_loc, "productions")), prod)))))))),
+                         (`RecBind
+                            (_loc, (`Lid (_loc, "lassoc")), (ass :>Astf.exp))),
+                         (`RecBind
+                            (_loc, (`Lid (_loc, "productions")),
+                              (prod :>Astf.exp))))))))),
           (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "olevel"))))) : 
        Astf.exp ) in
    let l = e.level in
@@ -311,8 +352,10 @@ let make_single_extend_statement (e : Gram_def.entry) =
         (`Record
            (_loc,
              (`Sem
-                (_loc, (`RecBind (_loc, (`Lid (_loc, "entry")), ent)),
-                  (`RecBind (_loc, (`Lid (_loc, "olevel")), (apply l))))))),
+                (_loc,
+                  (`RecBind (_loc, (`Lid (_loc, "entry")), (ent :>Astf.exp))),
+                  (`RecBind
+                     (_loc, (`Lid (_loc, "olevel")), (apply l :>Astf.exp))))))),
         (`App
            (_loc,
              (`Dot
@@ -327,7 +370,8 @@ let make_extend safe (e : Gram_def.entry) =
      else
        (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
        Astf.exp ) in
-   (`App (_loc, f, (make_single_extend_statement e)) : Astf.exp ) : exp )
+   (`App (_loc, (f :>Astf.exp), (make_single_extend_statement e :>Astf.exp)) : 
+     Astf.exp ) : exp )
 let make_localbinds _loc locals =
   let local_bind_of_name (x : Gram_def.name) =
     match (x : Gram_def.name ) with
@@ -368,7 +412,7 @@ let make_protects _loc (x : Gram_def.entries) action =
     List.map
       (fun (x : Gram_def.entry)  ->
          ((Gensym.fresh ~prefix:"tmp_entry" ()),
-           (((x.name).id :>exp) : Astf.exp ))) globals in
+           ((((x.name).id :>exp) :>Astf.exp) : Astf.exp ))) globals in
   let save_binds =
     List.map
       (fun (tmp,e)  ->
@@ -378,8 +422,8 @@ let make_protects _loc (x : Gram_def.entries) action =
                  (_loc,
                    (`Dot
                       (_loc, (`Uid (_loc, "Gramf")),
-                        (`Lid (_loc, "get_levels")))), e))) : Astf.bind ))
-      binds in
+                        (`Lid (_loc, "get_levels")))), (e :>Astf.exp)))) : 
+         Astf.bind )) binds in
   let pop_actions =
     seq_sem @@
       (Listf.map
@@ -390,8 +434,9 @@ let make_protects _loc (x : Gram_def.entries) action =
                     (_loc,
                       (`Dot
                          (_loc, (`Uid (_loc, "Gramf")),
-                           (`Lid (_loc, "fresh_with_levels")))), e)),
-                 (`Lid (_loc, tmp))) : Astf.exp )) binds) in
+                           (`Lid (_loc, "fresh_with_levels")))),
+                      (e :>Astf.exp))), (`Lid (_loc, tmp))) : Astf.exp ))
+         binds) in
   let e = make _loc x in
   Ast_gen.binds save_binds
     (`Try
@@ -399,20 +444,23 @@ let make_protects _loc (x : Gram_def.entries) action =
          (`Seq
             (_loc,
               (`Sem
-                 (_loc, e,
+                 (_loc, (e :>Astf.exp),
                    (`LetIn
                       (_loc, (`Negative _loc),
-                        (`Bind (_loc, (`Lid (_loc, "result")), action)),
+                        (`Bind
+                           (_loc, (`Lid (_loc, "result")),
+                             (action :>Astf.exp))),
                         (`Seq
                            (_loc,
                              (`Sem
-                                (_loc, pop_actions, (`Lid (_loc, "result")))))))))))),
+                                (_loc, (pop_actions :>Astf.exp),
+                                  (`Lid (_loc, "result")))))))))))),
          (`Case
             (_loc, (`Lid (_loc, "x")),
               (`Seq
                  (_loc,
                    (`Sem
-                      (_loc, pop_actions,
+                      (_loc, (pop_actions :>Astf.exp),
                         (`App
                            (_loc, (`Lid (_loc, "raise")), (`Lid (_loc, "x"))))))))))) : 
     Astf.exp )

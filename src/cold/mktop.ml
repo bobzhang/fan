@@ -12,7 +12,7 @@ let _ =
   of_stru_with_filter ~name:{ domain; name = "ocaml" } ~entry:strus
     ~filter:(fun s  ->
                let _loc = loc_of s in
-               let v: Astf.mexp = `Struct (_loc, s) in
+               let v: Astf.mexp = `Struct (_loc, (s :>Astf.stru)) in
                let mexp = (Typehook.traversal ())#mexp v in
                let code =
                  match mexp with
@@ -47,7 +47,7 @@ let _ =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Bool (_loc, true)))),\n          (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))) : Astf.exp )\n";
+                   "(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, (e :>Astf.exp), (`Bool (_loc, true)))),\n          (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
@@ -56,7 +56,8 @@ let _ =
                                (`Bar
                                   (_loc,
                                     (`CaseWhen
-                                       (_loc, p, e, (`Bool (_loc, true)))),
+                                       (_loc, p, (e :>Astf.exp),
+                                         (`Bool (_loc, true)))),
                                     (`Case
                                        (_loc, (`Any _loc),
                                          (`Bool (_loc, false))))))) : 
@@ -112,7 +113,7 @@ let _ =
                           { tag = `Key; word = (A ";"); tag_name = "Key" }
                       } : Tokenf.pattern )];
                  annot =
-                   "Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind (_loc, pl, (`Dot (_loc, (`Uid (_loc, m)), pr))))) : \n          Astf.stru )) ns)\n";
+                   "Ast_gen.sem_of_list\n  (List.map\n     (fun ((l : Tokenf.txt),r)  ->\n        let xloc = l.loc in\n        let pr = `Lid (xloc, (l.txt)) in\n        let pl =\n          match r with\n          | None  -> pr\n          | Some (y : Tokenf.txt) -> let yloc = y.loc in `Lid (yloc, (y.txt)) in\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (pl :>Astf.pat),\n                  (`Dot (_loc, (`Uid (_loc, m)), (pr :>Astf.vid)))))) : \n          Astf.stru )) ns)\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (ns : 'n list)  _  (__fan_0 : Tokenf.txt) 
@@ -132,9 +133,10 @@ let _ =
                                   (`Value
                                      (_loc, (`Negative _loc),
                                        (`Bind
-                                          (_loc, pl,
+                                          (_loc, (pl :>Astf.pat),
                                             (`Dot
-                                               (_loc, (`Uid (_loc, m)), pr))))) : 
+                                               (_loc, (`Uid (_loc, m)),
+                                                 (pr :>Astf.vid)))))) : 
                                     Astf.stru )) ns) : 'a ) : Tokenf.txt ->
                                                                 'n list ->
                                                                   Tokenf.txt

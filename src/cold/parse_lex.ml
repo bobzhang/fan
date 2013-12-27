@@ -15,35 +15,43 @@ let meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
     | Epsilon  -> (`Uid (_loc, "Epsilon") : Astf.ep )
     | Eof  -> (`Uid (_loc, "Eof") : Astf.ep )
     | Characters a ->
-        (`App (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a)) : 
+        (`App
+           (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a :>Astf.ep)) : 
         Astf.ep )
     | Sequence (a0,a1) ->
         (`App
            (_loc, (`Uid (_loc, "Sequence")),
-             (`Par (_loc, (`Com (_loc, (aux _loc a0), (aux _loc a1)))))) : 
+             (`Par
+                (_loc,
+                  (`Com
+                     (_loc, (aux _loc a0 :>Astf.ep), (aux _loc a1 :>Astf.ep)))))) : 
         Astf.ep )
     | Alternative (a0,a1) ->
         (`App
            (_loc, (`Uid (_loc, "Alternative")),
-             (`Par (_loc, (`Com (_loc, (aux _loc a0), (aux _loc a1)))))) : 
+             (`Par
+                (_loc,
+                  (`Com
+                     (_loc, (aux _loc a0 :>Astf.ep), (aux _loc a1 :>Astf.ep)))))) : 
         Astf.ep )
     | Repetition a ->
-        (`App (_loc, (`Uid (_loc, "Repetition")), (aux _loc a)) : Astf.ep )
+        (`App (_loc, (`Uid (_loc, "Repetition")), (aux _loc a :>Astf.ep)) : 
+        Astf.ep )
     | Bind (a,(loc,s)) ->
         (`App
            (_loc, (`Uid (_loc, "Bind")),
              (`Par
                 (_loc,
                   (`Com
-                     (_loc, (aux _loc a),
+                     (_loc, (aux _loc a :>Astf.ep),
                        (`Par
                           (_loc,
                             (`Com
-                               (_loc, (Ast_gen.meta_here _loc loc),
-                                 (`Str (loc, (String.escaped s)) : Astf.ep )))))))))) : 
-        Astf.ep ) in
+                               (_loc, (Ast_gen.meta_here _loc loc :>Astf.ep),
+                                 ((`Str (loc, (String.escaped s)) : Astf.ep ) :>
+                                 Astf.ep)))))))))) : Astf.ep ) in
   (`Constraint
-     (_loc, (aux _loc x),
+     (_loc, (aux _loc x :>Astf.ep),
        (`Dot
           (_loc, (`Uid (_loc, "Translate_lex")),
             (`Lid (_loc, "concrete_regexp"))))) : Astf.ep )
@@ -117,7 +125,7 @@ let _ =
     (fun l  _  _loc  ->
        let e = make_automata _loc false l in
        (`Constraint
-          (_loc, e,
+          (_loc, (e :>Astf.exp),
             (`Arrow
                (_loc,
                  (`Dot
@@ -127,7 +135,7 @@ let _ =
     (fun l  _  _loc  ->
        let e = make_automata _loc true l in
        (`Constraint
-          (_loc, e,
+          (_loc, (e :>Astf.exp),
             (`Arrow
                (_loc,
                  (`Dot

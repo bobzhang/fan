@@ -263,7 +263,8 @@ let append_quot (y : Tokenf.quot option) (e : Astf.exp) =
   | None  -> e
   | Some y ->
       let a = Parsef.expand_exp y in
-      let _loc = y.loc in (`Seq (_loc, (`Sem (_loc, e, a))) : Astf.exp )
+      let _loc = y.loc in
+      (`Seq (_loc, (`Sem (_loc, (e :>Astf.exp), (a :>Astf.exp)))) : Astf.exp )
 let _ =
   Hashtblf.add_list named_cases
     [("ocaml_uid",
@@ -434,7 +435,7 @@ let _ =
                                              (`RecBind
                                                 (_loc, (`Lid (_loc, "txt")),
                                                   (`Lid (_loc, "txt")))))))))),
-                              default))) : Astf.exp ))))])));
+                              (default :>Astf.exp)))) : Astf.exp ))))])));
     ("ocaml_lid",
       ((fun { tokens_opt = ls; loc = _loc;_}  ->
           [((Bind
@@ -603,7 +604,7 @@ let _ =
                                             (`RecBind
                                                (_loc, (`Lid (_loc, "txt")),
                                                  (`Lid (_loc, "txt")))))))))),
-                             default))) : Astf.exp ))))])));
+                             (default :>Astf.exp)))) : Astf.exp ))))])));
     ("kwd_symbol",
       ((fun { tokens_opt = ls; loc = _loc;_}  ->
           match ls with

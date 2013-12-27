@@ -29,7 +29,7 @@ let make_infix ?(left= true)  exp f i =
                       } : Tokenf.pattern );
                    Self];
                  annot =
-                   "let op: Astf.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : Astf.exp )\n";
+                   "let op: Astf.exp = `Lid (xloc, op) in\n(`App\n   (_loc, (`App (_loc, (op :>Astf.exp), (e1 :>Astf.exp))), (e2 :>Astf.exp)) : \n  Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e2 : 'exp)  (__fan_1 : Tokenf.op)  (e1 : 'exp) 
@@ -37,9 +37,11 @@ let make_infix ?(left= true)  exp f i =
                          let xloc = __fan_1.loc in
                          let op = __fan_1.txt in
                          (let op: Astf.exp = `Lid (xloc, op) in
-                          (`App (_loc, (`App (_loc, op, e1)), e2) : Astf.exp ) : 
-                           'exp ) : 'exp ->
-                                      Tokenf.op -> 'exp -> Locf.t -> 'exp ))
+                          (`App
+                             (_loc,
+                               (`App (_loc, (op :>Astf.exp), (e1 :>Astf.exp))),
+                               (e2 :>Astf.exp)) : Astf.exp ) : 'exp ) : 
+                      'exp -> Tokenf.op -> 'exp -> Locf.t -> 'exp ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
@@ -64,14 +66,18 @@ let make_key ?(left= true)  ?action  exp i op =
                           } : Tokenf.pattern );
                        Self];
                      annot =
-                       "let op: Astf.exp = `Lid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : Astf.exp )\n";
+                       "let op: Astf.exp = `Lid (xloc, op) in\n(`App\n   (_loc, (`App (_loc, (op :>Astf.exp), (e1 :>Astf.exp))), (e2 :>Astf.exp)) : \n  Astf.exp )\n";
                      fn =
                        (Gramf.mk_action
                           (fun (e2 : 'exp)  (__fan_1 : Tokenf.txt) 
                              (e1 : 'exp)  (_loc : Locf.t)  ->
                              let xloc = __fan_1.loc in
                              (let op: Astf.exp = `Lid (xloc, op) in
-                              (`App (_loc, (`App (_loc, op, e1)), e2) : 
+                              (`App
+                                 (_loc,
+                                   (`App
+                                      (_loc, (op :>Astf.exp),
+                                        (e1 :>Astf.exp))), (e2 :>Astf.exp)) : 
                                 Astf.exp ) : 'exp ) : 'exp ->
                                                         Tokenf.txt ->
                                                           'exp ->
@@ -112,7 +118,9 @@ let _ =
     ~action:(fun e2  _  e1  _loc  ->
                match Fan_ops.bigarray_set _loc e1 e2 with
                | Some e -> e
-               | None  -> (`Assign (_loc, e1, e2) : Astf.exp )) "<-";
+               | None  ->
+                   (`Assign (_loc, (e1 :>Astf.exp), (e2 :>Astf.exp)) : 
+                   Astf.exp )) "<-";
   List.iter (make_key exp 20 ~left:true) [":="];
   List.iter (make_key exp 30 ~left:false) ["or"; "||"];
   List.iter (make_key exp 40 ~left:false) ["&"; "&&"];
@@ -816,12 +824,14 @@ let make_pat exp =
                  symbols =
                    [Nterm (Gramf.obj (ep_constr : 'ep_constr Gramf.t ));
                    Self];
-                 annot = "(`App (_loc, p1, p2) : Astf.ep )\n";
+                 annot =
+                   "(`App (_loc, (p1 :>Astf.ep), (p2 :>Astf.ep)) : Astf.ep )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (p2 : 'ep)  (p1 : 'ep_constr)  (_loc : Locf.t)  ->
-                         ((`App (_loc, p1, p2) : Astf.ep ) : 'ep ) : 
-                      'ep -> 'ep_constr -> Locf.t -> 'ep ))
+                         ((`App (_loc, (p1 :>Astf.ep), (p2 :>Astf.ep)) : 
+                         Astf.ep ) : 'ep ) : 'ep ->
+                                               'ep_constr -> Locf.t -> 'ep ))
                };
               {
                 symbols =
@@ -1458,12 +1468,16 @@ let make_pat exp =
                  symbols =
                    [Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ));
                    Self];
-                 annot = "(`App (_loc, p1, p2) : Astf.pat )\n";
+                 annot =
+                   "(`App (_loc, (p1 :>Astf.pat), (p2 :>Astf.pat)) : Astf.pat )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (p2 : 'pat)  (p1 : 'pat_constr)  (_loc : Locf.t) 
-                         -> ((`App (_loc, p1, p2) : Astf.pat ) : 'pat ) : 
-                      'pat -> 'pat_constr -> Locf.t -> 'pat ))
+                         ->
+                         ((`App (_loc, (p1 :>Astf.pat), (p2 :>Astf.pat)) : 
+                         Astf.pat ) : 'pat ) : 'pat ->
+                                                 'pat_constr ->
+                                                   Locf.t -> 'pat ))
                };
               {
                 symbols =
@@ -2555,13 +2569,15 @@ let make_pat exp =
                         descr =
                           { tag = `Key; word = (A "}"); tag_name = "Key" }
                       } : Tokenf.pattern )];
-                 annot = "(`Record (_loc, pl) : Astf.pat )\n";
+                 annot =
+                   "(`Record (_loc, (pl :>Astf.rec_pat)) : Astf.pat )\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (pl : 'label_pat_list)  _  (_loc : Locf.t)  ->
-                         ((`Record (_loc, pl) : Astf.pat ) : 'ipat ) : 
-                      Tokenf.txt ->
-                        'label_pat_list -> Tokenf.txt -> Locf.t -> 'ipat ))
+                         ((`Record (_loc, (pl :>Astf.rec_pat)) : Astf.pat ) : 
+                         'ipat ) : Tokenf.txt ->
+                                     'label_pat_list ->
+                                       Tokenf.txt -> Locf.t -> 'ipat ))
                };
               {
                 symbols =
@@ -2783,15 +2799,19 @@ let make_pat exp =
                        descr =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
-                annot = "(`Constraint (_loc, p, t) : Astf.pat )\n";
+                annot =
+                  "(`Constraint (_loc, (p :>Astf.pat), (t :>Astf.ctyp)) : Astf.pat )\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : Locf.t) 
-                        -> ((`Constraint (_loc, p, t) : Astf.pat ) : 
-                        'ipat ) : Tokenf.txt ->
-                                    'ctyp ->
-                                      Tokenf.txt ->
-                                        'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
+                        ->
+                        ((`Constraint (_loc, (p :>Astf.pat), (t :>Astf.ctyp)) : 
+                        Astf.pat ) : 'ipat ) : Tokenf.txt ->
+                                                 'ctyp ->
+                                                   Tokenf.txt ->
+                                                     'pat ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'ipat ))
               };
               {
                 symbols =
@@ -2812,15 +2832,16 @@ let make_pat exp =
                        descr =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
-                annot = "(`Alias (_loc, p, s) : Astf.pat )\n";
+                annot = "(`Alias (_loc, (p :>Astf.pat), s) : Astf.pat )\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (s : 'a_lident)  _  (p : 'pat)  _ 
                         (_loc : Locf.t)  ->
-                        ((`Alias (_loc, p, s) : Astf.pat ) : 'ipat ) : 
-                     Tokenf.txt ->
-                       'a_lident ->
-                         Tokenf.txt -> 'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
+                        ((`Alias (_loc, (p :>Astf.pat), s) : Astf.pat ) : 
+                        'ipat ) : Tokenf.txt ->
+                                    'a_lident ->
+                                      Tokenf.txt ->
+                                        'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
               };
               {
                 symbols =
@@ -2841,16 +2862,21 @@ let make_pat exp =
                        descr =
                          { tag = `Key; word = (A ")"); tag_name = "Key" }
                      } : Tokenf.pattern )];
-                annot = "(`Par (_loc, (`Com (_loc, p, pl))) : Astf.pat )\n";
+                annot =
+                  "(`Par (_loc, (`Com (_loc, (p :>Astf.pat), (pl :>Astf.pat)))) : Astf.pat )\n";
                 fn =
                   (Gramf.mk_action
                      (fun _  (pl : 'comma_ipat)  _  (p : 'pat)  _ 
                         (_loc : Locf.t)  ->
-                        ((`Par (_loc, (`Com (_loc, p, pl))) : Astf.pat ) : 
-                        'ipat ) : Tokenf.txt ->
-                                    'comma_ipat ->
-                                      Tokenf.txt ->
-                                        'pat -> Tokenf.txt -> Locf.t -> 'ipat ))
+                        ((`Par
+                            (_loc,
+                              (`Com (_loc, (p :>Astf.pat), (pl :>Astf.pat)))) : 
+                        Astf.pat ) : 'ipat ) : Tokenf.txt ->
+                                                 'comma_ipat ->
+                                                   Tokenf.txt ->
+                                                     'pat ->
+                                                       Tokenf.txt ->
+                                                         Locf.t -> 'ipat ))
               };
               {
                 symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
@@ -2869,14 +2895,17 @@ let make_pat exp =
                           { tag = `Label; word = Any; tag_name = "Label" }
                       } : Tokenf.pattern );
                   Self];
-                annot = "(`Label (_loc, (`Lid (_loc, i)), p) : Astf.pat )\n";
+                annot =
+                  "(`Label (_loc, (`Lid (_loc, i)), (p :>Astf.pat)) : Astf.pat )\n";
                 fn =
                   (Gramf.mk_action
                      (fun (p : 'ipat)  (__fan_0 : Tokenf.txt) 
                         (_loc : Locf.t)  ->
                         let i = __fan_0.txt in
-                        ((`Label (_loc, (`Lid (_loc, i)), p) : Astf.pat ) : 
-                          'ipat ) : 'ipat -> Tokenf.txt -> Locf.t -> 'ipat ))
+                        ((`Label (_loc, (`Lid (_loc, i)), (p :>Astf.pat)) : 
+                          Astf.pat ) : 'ipat ) : 'ipat ->
+                                                   Tokenf.txt ->
+                                                     Locf.t -> 'ipat ))
               };
               {
                 symbols =
@@ -2892,14 +2921,16 @@ let make_pat exp =
                          { tag = `Key; word = (A ":"); tag_name = "Key" }
                      } : Tokenf.pattern );
                   Self];
-                annot = "(`Label (_loc, i, p) : Astf.pat )\n";
+                annot = "(`Label (_loc, i, (p :>Astf.pat)) : Astf.pat )\n";
                 fn =
                   (Gramf.mk_action
                      (fun (p : 'ipat)  _  (i : 'a_lident)  _  (_loc : Locf.t)
-                         -> ((`Label (_loc, i, p) : Astf.pat ) : 'ipat ) : 
-                     'ipat ->
-                       Tokenf.txt ->
-                         'a_lident -> Tokenf.txt -> Locf.t -> 'ipat ))
+                         ->
+                        ((`Label (_loc, i, (p :>Astf.pat)) : Astf.pat ) : 
+                        'ipat ) : 'ipat ->
+                                    Tokenf.txt ->
+                                      'a_lident ->
+                                        Tokenf.txt -> Locf.t -> 'ipat ))
               };
               {
                 symbols =
@@ -3601,13 +3632,16 @@ let make_pat exp =
                   [Nterm
                      (Gramf.obj (label_longident : 'label_longident Gramf.t ));
                   Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))];
-                annot = "(`RecBind (_loc, i, e) : Astf.rec_exp )\n";
+                annot =
+                  "(`RecBind (_loc, i, (e :>Astf.exp)) : Astf.rec_exp )\n";
                 fn =
                   (Gramf.mk_action
                      (fun (e : 'fun_bind)  (i : 'label_longident) 
                         (_loc : Locf.t)  ->
-                        ((`RecBind (_loc, i, e) : Astf.rec_exp ) : 'label_exp ) : 
-                     'fun_bind -> 'label_longident -> Locf.t -> 'label_exp ))
+                        ((`RecBind (_loc, i, (e :>Astf.exp)) : Astf.rec_exp ) : 
+                        'label_exp ) : 'fun_bind ->
+                                         'label_longident ->
+                                           Locf.t -> 'label_exp ))
               };
               {
                 symbols =
@@ -3861,7 +3895,7 @@ let () =
     "str'";
     "bool'"];
   make_quot Dyn_tag.exp ~i:170 exp;
-  make_ants ~c:"exp" ~i:170 exp
+  make_ants ~c:(Dyn_tag.to_string Dyn_tag.exp) ~i:170 exp
     ["exp";
     "";
     "par";
@@ -5940,20 +5974,27 @@ let apply () =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "let u: Astf.ctyp = `TyPol (_loc, t1, t2) in\n(`Constraint (_loc, e, u) : Astf.exp )\n";
+                   "let u: Astf.ctyp = `TyPol (_loc, (t1 :>Astf.ctyp), (t2 :>Astf.ctyp)) in\n(`Constraint (_loc, (e :>Astf.exp), (u :>Astf.ctyp)) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (t2 : 'ctyp)  _ 
                          (t1 : 'unquoted_typevars)  _  _  (_loc : Locf.t)  ->
-                         (let u: Astf.ctyp = `TyPol (_loc, t1, t2) in
-                          (`Constraint (_loc, e, u) : Astf.exp ) : 'cvalue_bind ) : 
-                      'exp ->
-                        Tokenf.txt ->
-                          'ctyp ->
-                            Tokenf.txt ->
-                              'unquoted_typevars ->
-                                Tokenf.txt ->
-                                  Tokenf.txt -> Locf.t -> 'cvalue_bind ))
+                         (let u: Astf.ctyp =
+                            `TyPol (_loc, (t1 :>Astf.ctyp), (t2 :>Astf.ctyp)) in
+                          (`Constraint
+                             (_loc, (e :>Astf.exp), (u :>Astf.ctyp)) : 
+                            Astf.exp ) : 'cvalue_bind ) : 'exp ->
+                                                            Tokenf.txt ->
+                                                              'ctyp ->
+                                                                Tokenf.txt ->
+                                                                  'unquoted_typevars
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Tokenf.txt
+                                                                    ->
+                                                                    Locf.t ->
+                                                                    'cvalue_bind ))
                };
                {
                  symbols =
@@ -5969,14 +6010,19 @@ let apply () =
                           { tag = `Key; word = (A "="); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
-                 annot = "(`Constraint (_loc, e, t) : Astf.exp )\n";
+                 annot =
+                   "(`Constraint (_loc, (e :>Astf.exp), (t :>Astf.ctyp)) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (t : 'ctyp)  _  (_loc : Locf.t)  ->
-                         ((`Constraint (_loc, e, t) : Astf.exp ) : 'cvalue_bind ) : 
-                      'exp ->
-                        Tokenf.txt ->
-                          'ctyp -> Tokenf.txt -> Locf.t -> 'cvalue_bind ))
+                         ((`Constraint
+                             (_loc, (e :>Astf.exp), (t :>Astf.ctyp)) : 
+                         Astf.exp ) : 'cvalue_bind ) : 'exp ->
+                                                         Tokenf.txt ->
+                                                           'ctyp ->
+                                                             Tokenf.txt ->
+                                                               Locf.t ->
+                                                                 'cvalue_bind ))
                };
                {
                  symbols =
@@ -5999,7 +6045,7 @@ let apply () =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "match t with\n| (`TyPol (_loc,_,_) : Astf.ctyp) ->\n    raise (Streamf.Error \"unexpected polytype here\")\n| _ -> (`Coercion (_loc, e, t, t2) : Astf.exp )\n";
+                   "match t with\n| (`TyPol (_loc,_,_) : Astf.ctyp) ->\n    raise (Streamf.Error \"unexpected polytype here\")\n| _ ->\n    (`Coercion (_loc, (e :>Astf.exp), (t :>Astf.ctyp), (t2 :>Astf.ctyp)) : \n    Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (t2 : 'ctyp)  _  (t : 'ctyp)  _ 
@@ -6008,14 +6054,15 @@ let apply () =
                           | (`TyPol (_loc,_,_) : Astf.ctyp) ->
                               raise
                                 (Streamf.Error "unexpected polytype here")
-                          | _ -> (`Coercion (_loc, e, t, t2) : Astf.exp ) : 
-                         'cvalue_bind ) : 'exp ->
-                                            Tokenf.txt ->
-                                              'ctyp ->
-                                                Tokenf.txt ->
-                                                  'ctyp ->
-                                                    Tokenf.txt ->
-                                                      Locf.t -> 'cvalue_bind ))
+                          | _ ->
+                              (`Coercion
+                                 (_loc, (e :>Astf.exp), (t :>Astf.ctyp),
+                                   (t2 :>Astf.ctyp)) : Astf.exp ) : 'cvalue_bind ) : 
+                      'exp ->
+                        Tokenf.txt ->
+                          'ctyp ->
+                            Tokenf.txt ->
+                              'ctyp -> Tokenf.txt -> Locf.t -> 'cvalue_bind ))
                };
                {
                  symbols =
@@ -6846,7 +6893,7 @@ let apply () =
                        } : Tokenf.pattern );
                     Self];
                   annot =
-                    "let op: Astf.exp = `Uid (xloc, op) in\n(`App (_loc, (`App (_loc, op, e1)), e2) : Astf.exp )\n";
+                    "let op: Astf.exp = `Uid (xloc, op) in\n(`App\n   (_loc, (`App (_loc, (op :>Astf.exp), (e1 :>Astf.exp))), (e2 :>Astf.exp)) : \n  Astf.exp )\n";
                   fn =
                     (Gramf.mk_action
                        (fun (e2 : 'exp)  (__fan_1 : Tokenf.txt)  (e1 : 'exp) 
@@ -6854,10 +6901,12 @@ let apply () =
                           let xloc = __fan_1.loc in
                           let op = __fan_1.txt in
                           (let op: Astf.exp = `Uid (xloc, op) in
-                           (`App (_loc, (`App (_loc, op, e1)), e2) : 
-                             Astf.exp ) : 'exp ) : 'exp ->
-                                                     Tokenf.txt ->
-                                                       'exp -> Locf.t -> 'exp ))
+                           (`App
+                              (_loc,
+                                (`App
+                                   (_loc, (op :>Astf.exp), (e1 :>Astf.exp))),
+                                (e2 :>Astf.exp)) : Astf.exp ) : 'exp ) : 
+                       'exp -> Tokenf.txt -> 'exp -> Locf.t -> 'exp ))
                 }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement );
@@ -7406,14 +7455,17 @@ let apply () =
                            { tag = `Label; word = Any; tag_name = "Label" }
                        } : Tokenf.pattern );
                    Self];
-                 annot = "(`Label (_loc, (`Lid (_loc, i)), e) : Astf.exp )\n";
+                 annot =
+                   "(`Label (_loc, (`Lid (_loc, i)), (e :>Astf.exp)) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  (__fan_0 : Tokenf.txt) 
                          (_loc : Locf.t)  ->
                          let i = __fan_0.txt in
-                         ((`Label (_loc, (`Lid (_loc, i)), e) : Astf.exp ) : 
-                           'exp ) : 'exp -> Tokenf.txt -> Locf.t -> 'exp ))
+                         ((`Label (_loc, (`Lid (_loc, i)), (e :>Astf.exp)) : 
+                           Astf.exp ) : 'exp ) : 'exp ->
+                                                   Tokenf.txt ->
+                                                     Locf.t -> 'exp ))
                };
                {
                  symbols =
@@ -8467,26 +8519,34 @@ let apply () =
                        } : Tokenf.pattern );
                     Self];
                   annot =
-                    "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), el) : Astf.exp )\n";
+                    "(`App\n   (_loc, (`App (_loc, (`Uid (_loc, \"::\")), (e :>Astf.exp))),\n     (el :>Astf.exp)) : Astf.exp )\n";
                   fn =
                     (Gramf.mk_action
                        (fun (el : 'sem_exp_for_list)  _  (e : 'exp) 
                           (_loc : Locf.t)  ->
                           ((`App
-                              (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
-                                el) : Astf.exp ) : 'sem_exp_for_list ) : 
-                       'sem_exp_for_list ->
-                         Tokenf.txt -> 'exp -> Locf.t -> 'sem_exp_for_list ))
+                              (_loc,
+                                (`App
+                                   (_loc, (`Uid (_loc, "::")),
+                                     (e :>Astf.exp))), (el :>Astf.exp)) : 
+                          Astf.exp ) : 'sem_exp_for_list ) : 'sem_exp_for_list
+                                                               ->
+                                                               Tokenf.txt ->
+                                                                 'exp ->
+                                                                   Locf.t ->
+                                                                    'sem_exp_for_list ))
                 };
                {
                  symbols = [Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nAstf.exp )\n";
+                   "(`App\n   (_loc, (`App (_loc, (`Uid (_loc, \"::\")), (e :>Astf.exp))),\n     (`Uid (_loc, \"[]\"))) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  (_loc : Locf.t)  ->
                          ((`App
-                             (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
+                             (_loc,
+                               (`App
+                                  (_loc, (`Uid (_loc, "::")), (e :>Astf.exp))),
                                (`Uid (_loc, "[]"))) : Astf.exp ) : 'sem_exp_for_list ) : 
                       'exp -> Locf.t -> 'sem_exp_for_list ))
                };
@@ -8499,12 +8559,14 @@ let apply () =
                           { tag = `Key; word = (A ";"); tag_name = "Key" }
                       } : Tokenf.pattern )];
                  annot =
-                   "(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (`Uid (_loc, \"[]\"))) : \nAstf.exp )\n";
+                   "(`App\n   (_loc, (`App (_loc, (`Uid (_loc, \"::\")), (e :>Astf.exp))),\n     (`Uid (_loc, \"[]\"))) : Astf.exp )\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (e : 'exp)  (_loc : Locf.t)  ->
                          ((`App
-                             (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
+                             (_loc,
+                               (`App
+                                  (_loc, (`Uid (_loc, "::")), (e :>Astf.exp))),
                                (`Uid (_loc, "[]"))) : Astf.exp ) : 'sem_exp_for_list ) : 
                       Tokenf.txt -> 'exp -> Locf.t -> 'sem_exp_for_list ))
                }]
@@ -8895,16 +8957,16 @@ let apply () =
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
                  annot =
-                   "(`Bind (_loc, (mk_ant ~c:\"pat\" s), e) : Astf.bind )\n";
+                   "(`Bind (_loc, (mk_ant ~c:\"pat\" s :>Astf.pat), (e :>Astf.exp)) : Astf.bind )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (e : 'exp)  _  (__fan_0 : Tokenf.ant) 
                          (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         ((`Bind (_loc, (mk_ant ~c:"pat" s), e) : Astf.bind ) : 
-                           'bind ) : 'exp ->
-                                       Tokenf.txt ->
-                                         Tokenf.ant -> Locf.t -> 'bind ))
+                         ((`Bind
+                             (_loc, (mk_ant ~c:"pat" s :>Astf.pat),
+                               (e :>Astf.exp)) : Astf.bind ) : 'bind ) : 
+                      'exp -> Tokenf.txt -> Tokenf.ant -> Locf.t -> 'bind ))
                };
                {
                  symbols =
@@ -9181,14 +9243,18 @@ let apply () =
                            { tag = `Key; word = (A "."); tag_name = "Key" }
                        } : Tokenf.pattern );
                     Self];
-                  annot = "(`Dot (_loc, i, j) : Astf.ident )\n";
+                  annot =
+                    "(`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : Astf.ident )\n";
                   fn =
                     (Gramf.mk_action
                        (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
                           (_loc : Locf.t)  ->
-                          ((`Dot (_loc, i, j) : Astf.ident ) : 'ident_quot ) : 
-                       'ident_quot ->
-                         Tokenf.txt -> 'ident_quot -> Locf.t -> 'ident_quot ))
+                          ((`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : 
+                          Astf.ident ) : 'ident_quot ) : 'ident_quot ->
+                                                           Tokenf.txt ->
+                                                             'ident_quot ->
+                                                               Locf.t ->
+                                                                 'ident_quot ))
                 }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement );
@@ -9386,17 +9452,19 @@ let apply () =
                           { tag = `Key; word = (A "."); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Self];
-                 annot = "(`Dot (_loc, (`Uid (_loc, s)), j) : Astf.ident )\n";
+                 annot =
+                   "(`Dot (_loc, (`Uid (_loc, s)), (j :>Astf.ident)) : Astf.ident )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (j : 'ident_quot)  _  (__fan_0 : Tokenf.txt) 
                          (_loc : Locf.t)  ->
                          let s = __fan_0.txt in
-                         ((`Dot (_loc, (`Uid (_loc, s)), j) : Astf.ident ) : 
-                           'ident_quot ) : 'ident_quot ->
-                                             Tokenf.txt ->
-                                               Tokenf.txt ->
-                                                 Locf.t -> 'ident_quot ))
+                         ((`Dot (_loc, (`Uid (_loc, s)), (j :>Astf.ident)) : 
+                           Astf.ident ) : 'ident_quot ) : 'ident_quot ->
+                                                            Tokenf.txt ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'ident_quot ))
                };
                {
                  symbols =
@@ -10182,19 +10250,19 @@ let apply () =
                           { tag = `Key; word = (A "."); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Self];
-                 annot = "(`Dot (_loc, (`Uid (_loc, i)), l) : Astf.ident )\n";
+                 annot =
+                   "(`Dot (_loc, (`Uid (_loc, i)), (l :>Astf.ident)) : Astf.ident )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (l : 'module_longident_dot_lparen)  _ 
                          (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                          let i = __fan_0.txt in
-                         ((`Dot (_loc, (`Uid (_loc, i)), l) : Astf.ident ) : 
-                           'module_longident_dot_lparen ) : 'module_longident_dot_lparen
-                                                              ->
-                                                              Tokenf.txt ->
-                                                                Tokenf.txt ->
-                                                                  Locf.t ->
-                                                                    'module_longident_dot_lparen ))
+                         ((`Dot (_loc, (`Uid (_loc, i)), (l :>Astf.ident)) : 
+                           Astf.ident ) : 'module_longident_dot_lparen ) : 
+                      'module_longident_dot_lparen ->
+                        Tokenf.txt ->
+                          Tokenf.txt ->
+                            Locf.t -> 'module_longident_dot_lparen ))
                };
                {
                  symbols =
@@ -10240,19 +10308,19 @@ let apply () =
                       } : Tokenf.pattern );
                    Self];
                  annot =
-                   "(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : Astf.ident )\n";
+                   "(`Dot (_loc, (mk_ant ~c:\"ident\" s :>Astf.ident), (l :>Astf.ident)) : \nAstf.ident )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (l : 'module_longident_dot_lparen)  _ 
                          (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : Astf.ident ) : 
-                           'module_longident_dot_lparen ) : 'module_longident_dot_lparen
-                                                              ->
-                                                              Tokenf.txt ->
-                                                                Tokenf.ant ->
-                                                                  Locf.t ->
-                                                                    'module_longident_dot_lparen ))
+                         ((`Dot
+                             (_loc, (mk_ant ~c:"ident" s :>Astf.ident),
+                               (l :>Astf.ident)) : Astf.ident ) : 'module_longident_dot_lparen ) : 
+                      'module_longident_dot_lparen ->
+                        Tokenf.txt ->
+                          Tokenf.ant ->
+                            Locf.t -> 'module_longident_dot_lparen ))
                };
                {
                  symbols =
@@ -10268,19 +10336,19 @@ let apply () =
                       } : Tokenf.pattern );
                    Self];
                  annot =
-                   "(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : Astf.ident )\n";
+                   "(`Dot (_loc, (mk_ant ~c:\"ident\" s :>Astf.ident), (l :>Astf.ident)) : \nAstf.ident )\n";
                  fn =
                    (Gramf.mk_action
                       (fun (l : 'module_longident_dot_lparen)  _ 
                          (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : Astf.ident ) : 
-                           'module_longident_dot_lparen ) : 'module_longident_dot_lparen
-                                                              ->
-                                                              Tokenf.txt ->
-                                                                Tokenf.ant ->
-                                                                  Locf.t ->
-                                                                    'module_longident_dot_lparen ))
+                         ((`Dot
+                             (_loc, (mk_ant ~c:"ident" s :>Astf.ident),
+                               (l :>Astf.ident)) : Astf.ident ) : 'module_longident_dot_lparen ) : 
+                      'module_longident_dot_lparen ->
+                        Tokenf.txt ->
+                          Tokenf.ant ->
+                            Locf.t -> 'module_longident_dot_lparen ))
                }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement );
@@ -10476,13 +10544,15 @@ let apply () =
                            { tag = `Key; word = (A "."); tag_name = "Key" }
                        } : Tokenf.pattern );
                     Self];
-                  annot = "(`Dot (_loc, i, j) : Astf.ident )\n";
+                  annot =
+                    "(`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : Astf.ident )\n";
                   fn =
                     (Gramf.mk_action
                        (fun (j : 'module_longident_with_app)  _ 
                           (i : 'module_longident_with_app)  (_loc : Locf.t) 
                           ->
-                          ((`Dot (_loc, i, j) : Astf.ident ) : 'module_longident_with_app ) : 
+                          ((`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : 
+                          Astf.ident ) : 'module_longident_with_app ) : 
                        'module_longident_with_app ->
                          Tokenf.txt ->
                            'module_longident_with_app ->
@@ -10629,15 +10699,20 @@ let apply () =
                            { tag = `Key; word = (A "."); tag_name = "Key" }
                        } : Tokenf.pattern );
                     Self];
-                  annot = "(`Dot (_loc, i, j) : Astf.ident )\n";
+                  annot =
+                    "(`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : Astf.ident )\n";
                   fn =
                     (Gramf.mk_action
                        (fun (j : 'type_longident)  _  (i : 'type_longident) 
                           (_loc : Locf.t)  ->
-                          ((`Dot (_loc, i, j) : Astf.ident ) : 'type_longident ) : 
-                       'type_longident ->
-                         Tokenf.txt ->
-                           'type_longident -> Locf.t -> 'type_longident ))
+                          ((`Dot (_loc, (i :>Astf.ident), (j :>Astf.ident)) : 
+                          Astf.ident ) : 'type_longident ) : 'type_longident
+                                                               ->
+                                                               Tokenf.txt ->
+                                                                 'type_longident
+                                                                   ->
+                                                                   Locf.t ->
+                                                                    'type_longident ))
                 }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement );
@@ -10792,13 +10867,14 @@ let apply () =
                             { tag = `Ant; word = (Kind ""); tag_name = "Ant"
                             }
                         } : Tokenf.pattern )];
-                  annot = "mk_ant ~c:\"ident\" s\n";
+                  annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                   fn =
                     (Gramf.mk_action
                        (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                           let s = __fan_0 in
-                          (mk_ant ~c:"ident" s : 'label_longident ) : 
-                       Tokenf.ant -> Locf.t -> 'label_longident ))
+                          (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                            'label_longident ) : Tokenf.ant ->
+                                                   Locf.t -> 'label_longident ))
                 };
                {
                  symbols =
@@ -10808,13 +10884,14 @@ let apply () =
                            { tag = `Ant; word = (Kind "id"); tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"ident\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (mk_ant ~c:"ident" s : 'label_longident ) : 
-                      Tokenf.ant -> Locf.t -> 'label_longident ))
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                           'label_longident ) : Tokenf.ant ->
+                                                  Locf.t -> 'label_longident ))
                };
                {
                  symbols =
@@ -10827,13 +10904,14 @@ let apply () =
                              tag_name = "Ant"
                            }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:\"ident\" s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (mk_ant ~c:"ident" s : 'label_longident ) : 
-                      Tokenf.ant -> Locf.t -> 'label_longident ))
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s : 
+                           'label_longident ) : Tokenf.ant ->
+                                                  Locf.t -> 'label_longident ))
                };
                {
                  symbols =
@@ -10885,16 +10963,21 @@ let apply () =
                           { tag = `Key; word = (A "."); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Self];
-                 annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
+                 annot =
+                   "`Dot (_loc, (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s), l)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.ant) 
                          (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident ) : 
-                      'label_longident ->
-                        Tokenf.txt ->
-                          Tokenf.ant -> Locf.t -> 'label_longident ))
+                         (`Dot
+                            (_loc,
+                              (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s),
+                              l) : 'label_longident ) : 'label_longident ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.ant ->
+                                                              Locf.t ->
+                                                                'label_longident ))
                };
                {
                  symbols =
@@ -10913,16 +10996,21 @@ let apply () =
                           { tag = `Key; word = (A "."); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Self];
-                 annot = "`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n";
+                 annot =
+                   "`Dot (_loc, (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s), l)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.ant) 
                          (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident ) : 
-                      'label_longident ->
-                        Tokenf.txt ->
-                          Tokenf.ant -> Locf.t -> 'label_longident ))
+                         (`Dot
+                            (_loc,
+                              (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s),
+                              l) : 'label_longident ) : 'label_longident ->
+                                                          Tokenf.txt ->
+                                                            Tokenf.ant ->
+                                                              Locf.t ->
+                                                                'label_longident ))
                }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement );

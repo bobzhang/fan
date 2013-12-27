@@ -27,12 +27,14 @@ let binds bs (e : Astf.exp) =
   | _ ->
       let binds = and_of_list bs in
       let _loc = binds <+> e in
-      (`LetIn (_loc, (`Negative _loc), binds, e) : Astf.exp )
+      (`LetIn (_loc, (`Negative _loc), (binds :>Astf.bind), (e :>Astf.exp)) : 
+        Astf.exp )
 let seq_binds bs (e : Astf.exp) =
   List.fold_right
     (fun b  e  ->
        let _loc = b <+> e in
-       (`LetIn (_loc, (`Negative _loc), b, e) : Astf.exp )) bs e
+       (`LetIn (_loc, (`Negative _loc), (b :>Astf.bind), (e :>Astf.exp)) : 
+         Astf.exp )) bs e
 let lid _loc n = `Lid (_loc, n)
 let uid _loc n = `Uid (_loc, n)
 let unit _loc = `Unit _loc

@@ -330,7 +330,7 @@ let () =
        "flo'" ;"chr'" ;"str'" ; "bool'"];
 
     make_quot Dyn_tag.exp ~i:170 exp;
-    make_ants ~c:"exp" ~i:170 exp
+    make_ants ~c:(Dyn_tag.to_string Dyn_tag.exp) ~i:170 exp
       ["exp" ;"" ;"par" ;"seq" ;"chr" ;
        "int" ;"int32" ;"str" ;"int64" ;
        "flo" ;"nativeint" ; "vrn" ;
@@ -828,11 +828,11 @@ let apply () = begin
       | "("; S as i; ")" %{ i} ] 
 
       label_longident:
-      [ Ant (""|"id"|"lid",s) %{ mk_ant ~c:"ident" s}
+      [ Ant (""|"id"|"lid",s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s}
       | Lid i %{ `Lid(_loc,i)}
       | Uid@iloc i; "."; S as l %{ `Dot(_loc,`Uid(iloc,i),l)}
       | Ant(""|"uid",s); "."; S as l %{
-        `Dot (_loc, mk_ant ~c:"ident" s, l)} ]
+        `Dot (_loc, mk_ant ~c:(Dyn_tag.to_string Dyn_tag.vid) s, l)} ]
       
       cltyp_longident: [ type_longident as x  %{x} ]
       val_longident:[ ident as x %{ x} ]

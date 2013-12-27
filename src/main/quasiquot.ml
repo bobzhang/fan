@@ -59,7 +59,7 @@ let expander ant_annot = object
       (match (x.kind,x.cxt) with
       |(("uid" | "lid" 
       |"flo" |"int" | "int32" | "int64" |"nativeint"
-      |"chr" |"str" | "par" | "seq" as x),ty) ->
+      |"chr" |"str" | "par" | "seq" as x),_) ->
           (* let e =  *)
           (*   match (ty, ant_annot) with *)
           (*   | (Some ty, true) -> *)
@@ -78,11 +78,11 @@ let expander ant_annot = object
           %exp{$vrn:s (${mloc _loc}, $v)}
             
       | ("", ty) -> 
-          (* let e =  *)
-          (*   match (ty, ant_annot) with *)
-          (*   | (Some ty, true) -> *)
-          (*        %exp{ ($e:> Astf.$lid:ty)} *)
-          (*   | _ -> e  in *)
+          let e =
+            match (ty, ant_annot) with
+            | (Some ty, true) ->
+                 %exp{ ($e:> Astf.$lid:ty)}
+            | _ -> e  in
             super#exp e
       | _ -> super#exp e)
     | e -> super#exp e
@@ -352,47 +352,88 @@ begin
     ~mpat:(fun loc p -> m#exp loc (Objs.strip_exp p))
     ~exp_filter:(efilter "exp")
     ~pat_filter:(pfilter "exp");
-  add_quotation {domain; name =  "mtyp-"} mtyp_quot ~mexp:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p))
-    ~mpat:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p)) ~exp_filter:(efilter "mtyp")
+  add_quotation {domain; name =  "mtyp-"} mtyp_quot
+    ~mexp:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p))
+    ~mpat:(fun loc p -> m#mtyp loc (Objs.strip_mtyp p))
+    ~exp_filter:(efilter "mtyp")
     ~pat_filter:(pfilter "mtyp");
-  add_quotation {domain; name =  "mexp-"} mexp_quot ~mexp:(fun loc p -> m#mexp loc (Objs.strip_mexp p))
-    ~mpat:(fun loc p -> m#mexp loc (Objs.strip_mexp p)) ~exp_filter:(efilter "mexp")
+  
+  add_quotation {domain; name =  "mexp-"} mexp_quot
+    ~mexp:(fun loc p -> m#mexp loc (Objs.strip_mexp p))
+    ~mpat:(fun loc p -> m#mexp loc (Objs.strip_mexp p))
+    ~exp_filter:(efilter "mexp")
     ~pat_filter:(pfilter "mexp");
-  add_quotation {domain; name =  "cltyp-"} cltyp_quot ~mexp:(fun loc p -> m#cltyp loc (Objs.strip_cltyp p))
-    ~mpat:(fun loc p -> m#cltyp loc (Objs.strip_cltyp p)) ~exp_filter:(efilter "cltyp")
+  
+  add_quotation {domain; name =  "cltyp-"} cltyp_quot
+    ~mexp:(fun loc p -> m#cltyp loc (Objs.strip_cltyp p))
+    ~mpat:(fun loc p -> m#cltyp loc (Objs.strip_cltyp p))
+    ~exp_filter:(efilter "cltyp")
     ~pat_filter:(pfilter "cltyp");
-  add_quotation {domain; name =  "clexp-"} clexp_quot ~mexp:(fun loc p -> m#clexp loc (Objs.strip_clexp p))
-    ~mpat:(fun loc p -> m#clexp loc (Objs.strip_clexp p)) ~exp_filter:(efilter "clexp")
+  
+  add_quotation {domain; name =  "clexp-"} clexp_quot
+    ~mexp:(fun loc p -> m#clexp loc (Objs.strip_clexp p))
+    ~mpat:(fun loc p -> m#clexp loc (Objs.strip_clexp p))
+    ~exp_filter:(efilter "clexp")
     ~pat_filter:(pfilter "clexp");
-  add_quotation {domain; name =  "clsigi-"} clsigi_quot ~mexp:(fun loc p -> m#clsigi loc (Objs.strip_clsigi p))
-    ~mpat:(fun loc p -> m#clsigi loc (Objs.strip_clsigi p)) ~exp_filter:(efilter "clsigi")
+  
+  add_quotation {domain; name =  "clsigi-"} clsigi_quot
+    ~mexp:(fun loc p -> m#clsigi loc (Objs.strip_clsigi p))
+    ~mpat:(fun loc p -> m#clsigi loc (Objs.strip_clsigi p))
+    ~exp_filter:(efilter "clsigi")
     ~pat_filter:(pfilter "clsigi");
-  add_quotation {domain; name =  "clfield-"} clfield_quot ~mexp:(fun loc p -> m#clfield loc (Objs.strip_clfield p))
-    ~mpat:(fun loc p -> m#clfield loc (Objs.strip_clfield p)) ~exp_filter:(efilter "clfield")
+
+  add_quotation {domain; name =  "clfield-"} clfield_quot
+    ~mexp:(fun loc p -> m#clfield loc (Objs.strip_clfield p))
+    ~mpat:(fun loc p -> m#clfield loc (Objs.strip_clfield p))
+    ~exp_filter:(efilter "clfield")
     ~pat_filter:(pfilter "clfield");
-  add_quotation {domain; name =  "constr-"} constr_quot ~mexp:(fun loc p -> m#constr loc (Objs.strip_constr p))
-    ~mpat:(fun loc p -> m#constr loc (Objs.strip_constr p)) ~exp_filter:(efilter "constr")
+  
+  add_quotation {domain; name =  "constr-"} constr_quot
+    ~mexp:(fun loc p -> m#constr loc (Objs.strip_constr p))
+    ~mpat:(fun loc p -> m#constr loc (Objs.strip_constr p))
+    ~exp_filter:(efilter "constr")
     ~pat_filter:(pfilter "constr");
-  add_quotation {domain; name =  "bind-"} bind_quot ~mexp:(fun loc p -> m#bind loc (Objs.strip_bind p))
-    ~mpat:(fun loc p -> m#bind loc (Objs.strip_bind p)) ~exp_filter:(efilter "bind")
+
+  add_quotation {domain; name =  "bind-"} bind_quot
+    ~mexp:(fun loc p -> m#bind loc (Objs.strip_bind p))
+    ~mpat:(fun loc p -> m#bind loc (Objs.strip_bind p))
+    ~exp_filter:(efilter "bind")
     ~pat_filter:(pfilter "bind");
-  add_quotation {domain; name =  "rec_exp-"} rec_exp_quot ~mexp:(fun loc p -> m#rec_exp loc (Objs.strip_rec_exp p))
-    ~mpat:(fun loc p -> m#rec_exp loc (Objs.strip_rec_exp p)) ~exp_filter:(efilter "rec_exp")
+
+  add_quotation {domain; name =  "rec_exp-"} rec_exp_quot
+    ~mexp:(fun loc p -> m#rec_exp loc (Objs.strip_rec_exp p))
+    ~mpat:(fun loc p -> m#rec_exp loc (Objs.strip_rec_exp p))
+    ~exp_filter:(efilter "rec_exp")
     ~pat_filter:(pfilter "rec_exp");
-  add_quotation {domain; name =  "case-"} case_quot ~mexp:(fun loc p -> m#case loc (Objs.strip_case p))
-    ~mpat:(fun loc p -> m#case loc (Objs.strip_case p)) ~exp_filter:(efilter "case")
+
+  add_quotation {domain; name =  "case-"} case_quot
+    ~mexp:(fun loc p -> m#case loc (Objs.strip_case p))
+    ~mpat:(fun loc p -> m#case loc (Objs.strip_case p)) 
+    ~exp_filter:(efilter "case")
     ~pat_filter:(pfilter "case");
-  add_quotation {domain; name =  "mbind-"} mbind_quot ~mexp:(fun loc p -> m#mbind loc (Objs.strip_mbind p))
-    ~mpat:(fun loc p -> m#mbind loc (Objs.strip_mbind p)) ~exp_filter:(efilter "mbind")
+
+  add_quotation {domain; name =  "mbind-"} mbind_quot
+    ~mexp:(fun loc p -> m#mbind loc (Objs.strip_mbind p))
+    ~mpat:(fun loc p -> m#mbind loc (Objs.strip_mbind p))
+    ~exp_filter:(efilter "mbind")
     ~pat_filter:(pfilter "mbind");
-  add_quotation {domain; name =  "ident-"} ident_quot ~mexp:(fun loc p -> m#ident loc (Objs.strip_ident p))
-    ~mpat:(fun loc p -> m#ident loc (Objs.strip_ident p)) ~exp_filter:(efilter "ident")
+
+  add_quotation {domain; name =  "ident-"} ident_quot
+    ~mexp:(fun loc p -> m#ident loc (Objs.strip_ident p))
+    ~mpat:(fun loc p -> m#ident loc (Objs.strip_ident p))
+    ~exp_filter:(efilter "ident")
     ~pat_filter:(pfilter "ident");
+  
   add_quotation {domain; name =  "or_ctyp-"} constructor_declarations
-    ~mexp:(fun loc p -> m#or_ctyp loc (Objs.strip_or_ctyp p)) ~mpat:(fun loc p -> m#or_ctyp loc (Objs.strip_or_ctyp p))
-    ~exp_filter:(efilter "or_ctyp") ~pat_filter:(pfilter "or_ctyp");
-  add_quotation {domain; name =  "row_field-"} row_field ~mexp:(fun loc p -> m#row_field loc (Objs.strip_row_field p))
-    ~mpat:(fun loc p -> m#row_field loc (Objs.strip_row_field p)) ~exp_filter:(efilter "row_field")
+    ~mexp:(fun loc p -> m#or_ctyp loc (Objs.strip_or_ctyp p))
+    ~mpat:(fun loc p -> m#or_ctyp loc (Objs.strip_or_ctyp p))
+    ~exp_filter:(efilter "or_ctyp")
+    ~pat_filter:(pfilter "or_ctyp");
+  
+  add_quotation {domain; name =  "row_field-"}
+    row_field ~mexp:(fun loc p -> m#row_field loc (Objs.strip_row_field p))
+    ~mpat:(fun loc p -> m#row_field loc (Objs.strip_row_field p))
+    ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field");
 end;;
 

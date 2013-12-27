@@ -8,7 +8,9 @@ let list_of_list =
     | e1::el ->
         let v = loop el in
         let _loc = Locf.merge (loc_of e1) (loc_of v) in
-        (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), v) : Astf.exp ) in
+        (`App
+           (_loc, (`App (_loc, (`Uid (_loc, "::")), (e1 :>Astf.exp))),
+             (v :>Astf.exp)) : Astf.exp ) in
   loop
 let meta_int _loc i = (`Int (string_of_int i) : Astfn.exp )
 let meta_int32 _loc i = (`Int32 (Int32.to_string i) : Astfn.exp )
@@ -109,7 +111,7 @@ let bigarray_get loc arr arg =
                 (`Dot
                    (loc, (`Uid (loc, "Bigarray")),
                      (`Dot (loc, (`Uid (loc, "Array1")), (`Lid (loc, "get")))))),
-                arr)), c1) : Astf.exp )
+                (arr :>Astf.exp))), (c1 :>Astf.exp)) : Astf.exp )
   | c1::c2::[] ->
       (`App
          (loc,
@@ -121,8 +123,8 @@ let bigarray_get loc arr arg =
                         (loc, (`Uid (loc, "Bigarray")),
                           (`Dot
                              (loc, (`Uid (loc, "Array2")),
-                               (`Lid (loc, "get")))))), arr)), c1)), c2) : 
-      Astf.exp )
+                               (`Lid (loc, "get")))))), (arr :>Astf.exp))),
+                (c1 :>Astf.exp))), (c2 :>Astf.exp)) : Astf.exp )
   | c1::c2::c3::[] ->
       (`App
          (loc,
@@ -136,8 +138,9 @@ let bigarray_get loc arr arg =
                              (loc, (`Uid (loc, "Bigarray")),
                                (`Dot
                                   (loc, (`Uid (loc, "Array3")),
-                                    (`Lid (loc, "get")))))), arr)), c1)), c2)),
-           c3) : Astf.exp )
+                                    (`Lid (loc, "get")))))),
+                          (arr :>Astf.exp))), (c1 :>Astf.exp))),
+                (c2 :>Astf.exp))), (c3 :>Astf.exp)) : Astf.exp )
   | c1::c2::c3::coords ->
       (`App
          (loc,
@@ -147,12 +150,16 @@ let bigarray_get loc arr arg =
                    (loc, (`Uid (loc, "Bigarray")),
                      (`Dot
                         (loc, (`Uid (loc, "Genarray")), (`Lid (loc, "get")))))),
-                arr)),
+                (arr :>Astf.exp))),
            (`Array
               (loc,
                 (`Sem
-                   (loc, c1,
-                     (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords)))))))))) : 
+                   (loc, (c1 :>Astf.exp),
+                     (`Sem
+                        (loc, (c2 :>Astf.exp),
+                          (`Sem
+                             (loc, (c3 :>Astf.exp),
+                               (sem_of_list coords :>Astf.exp)))))))))) : 
       Astf.exp )
 let bigarray_set loc var newval =
   match var with
@@ -174,8 +181,8 @@ let bigarray_set loc var newval =
                           (loc, (`Uid (loc, "Bigarray")),
                             (`Dot
                                (loc, (`Uid (loc, "Array1")),
-                                 (`Lid (loc, "set")))))), arr)), c1)),
-             newval) : Astf.exp )
+                                 (`Lid (loc, "set")))))), (arr :>Astf.exp))),
+                  (c1 :>Astf.exp))), (newval :>Astf.exp)) : Astf.exp )
   | (`App
        (_loc,`App
                (_,`App
@@ -197,8 +204,9 @@ let bigarray_set loc var newval =
                                (loc, (`Uid (loc, "Bigarray")),
                                  (`Dot
                                     (loc, (`Uid (loc, "Array2")),
-                                      (`Lid (loc, "set")))))), arr)), c1)),
-                  c2)), newval) : Astf.exp )
+                                      (`Lid (loc, "set")))))),
+                            (arr :>Astf.exp))), (c1 :>Astf.exp))),
+                  (c2 :>Astf.exp))), (newval :>Astf.exp)) : Astf.exp )
   | (`App
        (_loc,`App
                (_,`App
@@ -225,8 +233,10 @@ let bigarray_set loc var newval =
                                          (loc, (`Uid (loc, "Bigarray")),
                                            (`Dot
                                               (loc, (`Uid (loc, "Array3")),
-                                                (`Lid (loc, "get")))))), arr)),
-                                 c1)), c2)), c3)))), newval) : Astf.exp )
+                                                (`Lid (loc, "get")))))),
+                                      (arr :>Astf.exp))), (c1 :>Astf.exp))),
+                            (c2 :>Astf.exp))), (c3 :>Astf.exp))))),
+             (newval :>Astf.exp)) : Astf.exp )
   | (`App
        (_loc,`App
                (_,`Dot
@@ -246,8 +256,9 @@ let bigarray_set loc var newval =
                           (loc, (`Uid (loc, "Bigarray")),
                             (`Dot
                                (loc, (`Uid (loc, "Genarray")),
-                                 (`Lid (loc, "set")))))), arr)),
-                  (`Array (loc, coords)))), newval) : Astf.exp )
+                                 (`Lid (loc, "set")))))), (arr :>Astf.exp))),
+                  (`Array (loc, (coords :>Astf.exp))))), (newval :>Astf.exp)) : 
+        Astf.exp )
   | _ -> None
 let mksequence ?loc  =
   function
@@ -276,4 +287,5 @@ let mkumin loc prefix arg =
   | (`Nativeint (_loc,n) : Astf.exp) ->
       (`Nativeint (loc, (Stringf.neg n)) : Astf.exp )
   | (`Flo (_loc,n) : Astf.exp) -> (`Flo (loc, (Stringf.neg n)) : Astf.exp )
-  | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : Astf.exp )
+  | _ ->
+      (`App (loc, (`Lid (loc, ("~" ^ prefix))), (arg :>Astf.exp)) : Astf.exp )

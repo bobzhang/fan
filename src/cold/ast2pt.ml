@@ -741,8 +741,10 @@ let rec exp_desc _loc (x : exp) =
               (`Try
                  (_loc,
                    (`LetIn
-                      (_loc, rf, bi,
-                        (`Fun (_loc, (`Case (_loc, (`Unit _loc), e)))))),
+                      (_loc, rf, (bi :>Astf.bind),
+                        (`Fun
+                           (_loc,
+                             (`Case (_loc, (`Unit _loc), (e :>Astf.exp))))))),
                    cas)), (`Unit _loc)) : Astf.exp )
    | `LetModule (_,`Uid (sloc,i),me,e) ->
        Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e))
