@@ -439,12 +439,21 @@ let generate (mtyps:mtyps) : stru =
              let u = String.capitalize x in
              %case-{ $uid:u -> $str:x }) tys) in 
     %stru-{ let to_string = function | $case  } (* BOOTSTRAPING [Dyn_tag.to_string]*)in
+ let  of_string =
+   let case =
+     tys
+     |> List.map
+         (fun x -> let u = String.capitalize x in
+         %case-{$str:x -> $uid:u })
+     |> bar_of_list in
+   %stru-{let of_string = function | $case  | _ -> failwith (__MODULE__ ^ "." ^ __BIND__  )}
+ in
  let tags  =
    List.map
      (fun x->
        let u = String.capitalize x in
        %stru-{let $lid:x :  $lid:x t = $uid:u }) tys  in
-       sem_of_list (typedecl::to_string::tags) ;;
+       sem_of_list (typedecl::to_string::of_string::tags) ;;
   
 Typehook.register
   ~filter:(fun s -> not @@ List.mem s ["loc";"ant";"nil"]) ("DynAst",some generate);;

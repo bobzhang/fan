@@ -352,6 +352,31 @@ let generate (mtyps : mtyps) =
                (`Case ((`Uid u), (`Str x)) : Astfn.case )) tys) in
      (`Value (`Negative, (`Bind ((`Lid "to_string"), (`Fun case)))) : 
        Astfn.stru ) in
+   let of_string =
+     let case =
+       (tys |>
+          (List.map
+             (fun x  ->
+                let u = String.capitalize x in
+                (`Case ((`Str x), (`Uid u)) : Astfn.case ))))
+         |> bar_of_list in
+     (`Value
+        (`Negative,
+          (`Bind
+             ((`Lid "of_string"),
+               (`Fun
+                  (`Bar
+                     (case,
+                       (`Case
+                          (`Any,
+                            (`App
+                               ((`Lid "failwith"),
+                                 (`App
+                                    ((`App ((`Lid "^"), (`Lid "__MODULE__"))),
+                                      (`App
+                                         ((`App ((`Lid "^"), (`Str "."))),
+                                           (`Lid "__BIND__"))))))))))))))) : 
+       Astfn.stru ) in
    let tags =
      List.map
        (fun x  ->
@@ -362,7 +387,7 @@ let generate (mtyps : mtyps) =
                   ((`Lid x),
                     (`Constraint ((`Uid u), (`App ((`Lid "t"), (`Lid x)))))))) : 
             Astfn.stru )) tys in
-   sem_of_list (typedecl :: to_string :: tags) : stru )
+   sem_of_list (typedecl :: to_string :: of_string :: tags) : stru )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not @@ (List.mem s ["loc"; "ant"; "nil"]))

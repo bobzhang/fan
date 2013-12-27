@@ -54,7 +54,8 @@
 
 
 type loc = Locf.t
-type ant = [ `Ant of (loc * Tokenf.ant)]
+
+type ant = [ `Ant of (loc (* * string *) * Tokenf.ant)] (* the second element is its tag *)
 
 
 
