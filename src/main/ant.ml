@@ -1,4 +1,4 @@
-open Astf
+
 let stringnize  = [
   ("nativeint'",Some %exp-{Nativeint.to_string});
   ("int'", Some %exp-{string_of_int });
@@ -7,12 +7,11 @@ let stringnize  = [
   ("chr'",Some %exp-{Char.escaped});
   ("str'",Some %exp-{String.escaped});
   ("flo'",Some %exp-{string_of_float});
-  ("bool'",None)
- ]
+  ("bool'",None) ]
 
-let antiquot_expander ~parse_pat ~parse_exp = object
+let expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super
-  method! pat (x:pat)= 
+  method! pat (x:Astf.pat)= 
     match x with 
     |`Ant(_loc, x) ->
       let meta_loc_pat _loc _ =  %pat{ _ } in
@@ -30,12 +29,12 @@ let antiquot_expander ~parse_pat ~parse_exp = object
         | _ -> super#pat e
       end
     | e -> super#pat e 
-  method! exp (x:exp) =  with exp
+  method! exp (x:Astf.exp) =  with exp
     match x with 
     |`Ant(_loc, x) ->
         let meta_loc_exp _loc loc =
           match !Ast_quotation.current_loc_name with
-          | Some "here" -> (Ast_gen.meta_here _loc loc :> exp)
+          | Some "here" -> (Ast_gen.meta_here _loc loc :> Astf.exp)
           | x ->
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in
@@ -62,7 +61,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
     
 let expandern ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
-  method! pat (x:pat)= 
+  method! pat (x:Astf.pat)= 
     match x with 
     |`Ant(_loc, x) ->
       let e = Tokenf.ant_expand parse_pat  x in
@@ -73,7 +72,7 @@ let expandern ~parse_pat ~parse_exp = object
           let x = String.capitalize x in %pat{$vrn:x $e }
       | _ -> super#pat e)
     | e -> super#pat e 
-  method! exp (x:exp) = with exp
+  method! exp (x:Astf.exp) = 
     match x with 
     |`Ant(_loc,x) ->
       let e = Tokenf.ant_expand parse_exp x  in
@@ -81,7 +80,7 @@ let expandern ~parse_pat ~parse_exp = object
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), Some ("exp" |"pat")) ->
-           %{$vrn{String.capitalize x} $e }
+           %exp{$vrn{String.capitalize x} $e }
       | (("nativeint'" | "int'"|"int32'"|"int64'"|"chr'"|"str'"|"flo'"|"bool'" as x),_) ->
           let v =
             match List.assoc x stringnize with

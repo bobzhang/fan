@@ -79,7 +79,8 @@ let make_case exp pat =
   | pat as p %{p} ]
   case:
   [ "|"; L1 case0 SEP "|" as l %{ bar_of_list l }
-  | pat as p; "->"; exp as e %{ `Case(_loc,p,e)}]
+  | pat as p; "->"; exp as e %{ `Case(_loc,p,e)}
+  ]
   case0:
   [ Ant ("case" | "", s) %{ mk_ant  s}
   | Ant ("",s) ;"when";exp as w;"->"; exp as e %{

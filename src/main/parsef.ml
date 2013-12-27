@@ -30,7 +30,7 @@ let ident  loc str =
   Gramlib.parse_string_eoi Syntaxf.ident(* antiquot_ident *) ~loc str
 
 let anti_filter =
-  Ant.antiquot_expander  ~parse_exp:exp  ~parse_pat:pat
+  Ant.expander  ~parse_exp:exp  ~parse_pat:pat
 
 let exp_filter (x:ep) = (anti_filter#exp (x:>exp))
 
