@@ -4882,7 +4882,7 @@ let wildcarder =
     inherit  map as super
     method! pat =
       function
-      | (`Lid (_loc,_) : Astf.pat) -> (`Any _loc : Astf.pat )
+      | (`Lid (_loc,_) : Astf.pat) -> (`Any _loc :>Astf.pat)
       | (`Alias (_loc,p,_) : Astf.pat) -> self#pat p
       | p -> super#pat p
   end

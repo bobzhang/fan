@@ -619,7 +619,7 @@ let rec exp_desc _loc (x : exp) =
        Pexp_construct ({ loc = _loc; txt = (Lident s) }, None, true)
    | `Lid (_,"__FILE__") ->
        exp_desc _loc
-         (`Str (_loc, (String.escaped (Locf.file_name _loc))) : Astf.exp )
+         (`Str (_loc, (String.escaped (Locf.file_name _loc))) :>Astf.exp)
    | `Lid (_,"__MODULE__") ->
        let s =
          let sl =
@@ -745,7 +745,7 @@ let rec exp_desc _loc (x : exp) =
                         (`Fun
                            (_loc,
                              (`Case (_loc, (`Unit _loc), (e :>Astf.exp))))))),
-                   cas)), (`Unit _loc)) : Astf.exp )
+                   cas)), (`Unit _loc)) :>Astf.exp)
    | `LetModule (_,`Uid (sloc,i),me,e) ->
        Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e))
    | `Match (_,e,a) -> Pexp_match ((exp e), (case a))

@@ -14,14 +14,14 @@ let _ =
                    [Token
                       ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
                        } : Tokenf.pattern )];
-                 annot = "(`Lid (_loc, x) : Astf.ep )\n";
+                 annot = "(`Lid (_loc, x) :>Astf.ep)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                          let x = __fan_0.txt in
-                         ((`Lid (_loc, x) : Astf.ep ) : 'ep ) : Tokenf.txt ->
-                                                                  Locf.t ->
-                                                                    'ep ))
+                         ((`Lid (_loc, x) :>Astf.ep) : 'ep ) : Tokenf.txt ->
+                                                                 Locf.t ->
+                                                                   'ep ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )

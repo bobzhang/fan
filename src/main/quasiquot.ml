@@ -1,6 +1,5 @@
 %import{
 Ast_quotation:
-  (* add *)
   add_quotation
   ;
 Ast_gen:
@@ -120,11 +119,11 @@ let expandern ant_annot  = object
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s $v}
       | (_, ty) -> 
-          (* let e = *)
-          (*   match (ty, ant_annot) with *)
-          (*   | (Some ty, true) -> *)
-          (*        %exp{ ($e:> Astfn.$lid:ty)} *)
-          (*   | _ -> e  in *)
+          let e =
+            match (ty, ant_annot) with
+            | (Some ty, true) ->
+                 %exp{ ($e:> Astfn.$lid:ty)}
+            | _ -> e  in
             super#exp e
             
       (* | _ -> super#exp e *))
@@ -148,7 +147,7 @@ let pat_filter (x:ep) = v#pat  (x:>pat)
 let efilter str (e:ep) =
     let e = u#exp (e:>exp) in
     let _loc = loc_of e in
-    %exp{($e : Astf.$lid:str)} (* BOOTSTRAPPING, assocaited with module [Astf] *)
+    %exp{($e :> Astf.$lid:str)} (* BOOTSTRAPPING, assocaited with module [Astf] *)
       
 
 let pfilter str (e:ep) =
@@ -344,7 +343,7 @@ let pat_filter_n (x:ep) =
 let efilter str (e:ep) =
     let e = u#exp (e:>exp) in
     let _loc = loc_of e in
-    %exp{($e : Astfn.$lid:str)} (* BOOTSTRAPPING, associated with module [Astfn] *)
+    %exp{($e :> Astfn.$lid:str)} (* BOOTSTRAPPING, associated with module [Astfn] *)
 
 let pfilter str (e:ep) =
   let p = u#pat (e:>pat) in

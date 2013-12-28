@@ -14,7 +14,7 @@ let _ =
                       ({ descr = { tag = `Lid; word = Any; tag_name = "Lid" }
                        } : Tokenf.pattern )];
                  annot =
-                   "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label (_loc, (`Lid (_loc, \"prefix\")), (`Str (_loc, x)))))),\n     (`Unit _loc)) : Astf.exp )\n";
+                   "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label (_loc, (`Lid (_loc, \"prefix\")), (`Str (_loc, x)))))),\n     (`Unit _loc)) :>Astf.exp)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
@@ -28,9 +28,9 @@ let _ =
                                          (`Lid (_loc, "fresh")))),
                                     (`Label
                                        (_loc, (`Lid (_loc, "prefix")),
-                                         (`Str (_loc, x)))))), (`Unit _loc)) : 
-                           Astf.exp ) : 'fresh ) : Tokenf.txt ->
-                                                     Locf.t -> 'fresh ))
+                                         (`Str (_loc, x)))))), (`Unit _loc)) :>
+                           Astf.exp) : 'fresh ) : Tokenf.txt ->
+                                                    Locf.t -> 'fresh ))
                };
               {
                 symbols =
@@ -40,7 +40,7 @@ let _ =
                           { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                       } : Tokenf.pattern )];
                 annot =
-                  "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label\n             (_loc, (`Lid (_loc, \"prefix\")),\n               (Tokenf.ant_expand Parsef.exp x :>Astf.exp))))), (`Unit _loc)) : \nAstf.exp )\n";
+                  "(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label\n             (_loc, (`Lid (_loc, \"prefix\")),\n               (Tokenf.ant_expand Parsef.exp x :>Astf.exp))))), (`Unit _loc)) :>\nAstf.exp)\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
@@ -55,14 +55,14 @@ let _ =
                                    (`Label
                                       (_loc, (`Lid (_loc, "prefix")),
                                         (Tokenf.ant_expand Parsef.exp x :>
-                                        Astf.exp))))), (`Unit _loc)) : 
-                          Astf.exp ) : 'fresh ) : Tokenf.ant ->
-                                                    Locf.t -> 'fresh ))
+                                        Astf.exp))))), (`Unit _loc)) :>
+                          Astf.exp) : 'fresh ) : Tokenf.ant ->
+                                                   Locf.t -> 'fresh ))
               };
               {
                 symbols = [];
                 annot =
-                  "(`App\n   (_loc, (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n     (`Unit _loc)) : Astf.exp )\n";
+                  "(`App\n   (_loc, (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n     (`Unit _loc)) :>Astf.exp)\n";
                 fn =
                   (Gramf.mk_action
                      (fun (_loc : Locf.t)  ->
@@ -70,8 +70,8 @@ let _ =
                             (_loc,
                               (`Dot
                                  (_loc, (`Uid (_loc, "Gensym")),
-                                   (`Lid (_loc, "fresh")))), (`Unit _loc)) : 
-                        Astf.exp ) : 'fresh ) : Locf.t -> 'fresh ))
+                                   (`Lid (_loc, "fresh")))), (`Unit _loc)) :>
+                        Astf.exp) : 'fresh ) : Locf.t -> 'fresh ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )

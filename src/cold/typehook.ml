@@ -60,7 +60,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
        acc)
   | (None ,Some code) ->
       let code = Fill.stru sloc code in
-      (`Sem (sloc, (acc :>Astf.stru), (code :>Astf.stru)) : Astf.stru )
+      (`Sem (sloc, (acc :>Astf.stru), (code :>Astf.stru)) :>Astf.stru)
   | (_,None ) -> acc
 let traversal () =
   (object (self : 'self_type)
@@ -92,9 +92,9 @@ let traversal () =
                  (!State.current_filters)
                  (if !State.keep
                   then res
-                  else (`StExp (sloc, (`Unit sloc)) : Astf.stru )) in
+                  else (`StExp (sloc, (`Unit sloc)) :>Astf.stru)) in
              self#out_module;
-             (`Struct (sloc, (result :>Astf.stru)) : Astf.mexp )))
+             (`Struct (sloc, (result :>Astf.stru)) :>Astf.mexp)))
        | x -> super#mexp x
      method! stru =
        function
@@ -107,7 +107,7 @@ let traversal () =
              self#out_and_types;
              if !State.keep
              then x
-             else (`StExp (_loc, (`Unit _loc)) : Astf.stru )))
+             else (`StExp (_loc, (`Unit _loc)) :>Astf.stru)))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->

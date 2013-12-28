@@ -2,22 +2,22 @@ open Astf
 class primitive =
   object 
     method int _loc (i : int) =
-      ((`Int (_loc, (string_of_int i)) : Astf.ep ) : ep )
+      ((`Int (_loc, (string_of_int i)) :>Astf.ep) : ep )
     method int32 _loc (i : int32) =
-      ((`Int32 (_loc, (Int32.to_string i)) : Astf.ep ) : ep )
+      ((`Int32 (_loc, (Int32.to_string i)) :>Astf.ep) : ep )
     method int64 _loc (i : int64) =
-      ((`Int64 (_loc, (Int64.to_string i)) : Astf.ep ) : ep )
+      ((`Int64 (_loc, (Int64.to_string i)) :>Astf.ep) : ep )
     method nativeint _loc (i : nativeint) =
-      ((`Nativeint (_loc, (Nativeint.to_string i)) : Astf.ep ) : ep )
+      ((`Nativeint (_loc, (Nativeint.to_string i)) :>Astf.ep) : ep )
     method float _loc (i : float) =
-      ((`Flo (_loc, (string_of_float i)) : Astf.ep ) : ep )
+      ((`Flo (_loc, (string_of_float i)) :>Astf.ep) : ep )
     method string _loc (i : string) =
-      ((`Str (_loc, (String.escaped i)) : Astf.ep ) : ep )
+      ((`Str (_loc, (String.escaped i)) :>Astf.ep) : ep )
     method char _loc (i : char) =
-      ((`Chr (_loc, (Char.escaped i)) : Astf.ep ) : ep )
+      ((`Chr (_loc, (Char.escaped i)) :>Astf.ep) : ep )
     method unit _loc (_ : unit) = ((`Unit _loc : ep ) : ep )
     method loc _loc (_l : loc) =
-      (let n = !Locf.name in (`Lid (_loc, n) : Astf.ep ) : ep )
+      (let n = !Locf.name in (`Lid (_loc, n) :>Astf.ep) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x = (`Bool (_loc, x) : ep )
   end

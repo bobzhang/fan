@@ -27,14 +27,14 @@ let binds bs (e : Astf.exp) =
   | _ ->
       let binds = and_of_list bs in
       let _loc = binds <+> e in
-      (`LetIn (_loc, (`Negative _loc), (binds :>Astf.bind), (e :>Astf.exp)) : 
-        Astf.exp )
+      (`LetIn (_loc, (`Negative _loc), (binds :>Astf.bind), (e :>Astf.exp)) :>
+        Astf.exp)
 let seq_binds bs (e : Astf.exp) =
   List.fold_right
     (fun b  e  ->
        let _loc = b <+> e in
-       (`LetIn (_loc, (`Negative _loc), (b :>Astf.bind), (e :>Astf.exp)) : 
-         Astf.exp )) bs e
+       (`LetIn (_loc, (`Negative _loc), (b :>Astf.bind), (e :>Astf.exp)) :>
+         Astf.exp)) bs e
 let lid _loc n = `Lid (_loc, n)
 let uid _loc n = `Uid (_loc, n)
 let unit _loc = `Unit _loc
@@ -129,4 +129,4 @@ let meta_here _loc (location : Locf.t) =
                       (`RecBind
                          (_loc, (`Lid (_loc, "loc_ghost")),
                            (`Bool (_loc, h)))))))))),
-       (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))) : Astf.ep )
+       (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))) :>Astf.ep)

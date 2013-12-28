@@ -18,5 +18,5 @@ let () =
                                        (`Lid (loc, "failwithf")))),
                                   (`Str (loc, "%s.%s not implemented ")))),
                              (`Lid (loc, "__MODULE__")))),
-                        (`Lid (loc, "__BIND__"))))))))) : Astf.exp ) in
+                        (`Lid (loc, "__BIND__"))))))))) :>Astf.exp) in
   Ast_quotation.add { domain = d; name = "undef" } Dyn_tag.exp f

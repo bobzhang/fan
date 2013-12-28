@@ -24,7 +24,7 @@ let binds bs (e : exp) =
   | [] -> e
   | _ ->
       let binds = and_of_list bs in
-      (`LetIn (`Negative, binds, e) : Astfn.exp )
+      (`LetIn (`Negative, (binds :>Astfn.bind), (e :>Astfn.exp)) :>Astfn.exp)
 let lid n = `Lid n
 let uid n = `Uid n
 let unit: ep = `Unit

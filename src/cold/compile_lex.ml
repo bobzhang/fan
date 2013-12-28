@@ -19,7 +19,7 @@ let output_memory_actions (mvs : Lexgen.memory_action list) =
                       (`Field
                          (_loc, (`Lid (_loc, "lexbuf")),
                            (`Lid (_loc, "lex_mem")))),
-                      (`Int (_loc, (string_of_int src)))))) : Astf.exp )
+                      (`Int (_loc, (string_of_int src)))))) :>Astf.exp)
         | Set tgt ->
             (`Assign
                (_loc,
@@ -31,7 +31,7 @@ let output_memory_actions (mvs : Lexgen.memory_action list) =
                       (`Int (_loc, (string_of_int tgt))))),
                  (`Field
                     (_loc, (`Lid (_loc, "lexbuf")),
-                      (`Lid (_loc, "lex_curr_pos"))))) : Astf.exp )) mvs : 
+                      (`Lid (_loc, "lex_curr_pos"))))) :>Astf.exp)) mvs : 
   exp list )
 let lex_state i = "__ocaml_lex_state" ^ (string_of_int i)
 let output_moves
@@ -48,13 +48,13 @@ let output_moves
                         (`Lid (_loc, "lex_curr_pos")))),
                    (`Field
                       (_loc, (`Lid (_loc, "lexbuf")),
-                        (`Lid (_loc, "lex_last_pos"))))) : Astf.exp );
+                        (`Lid (_loc, "lex_last_pos"))))) :>Astf.exp);
              (`Field
                 (_loc, (`Lid (_loc, "lexbuf")),
-                  (`Lid (_loc, "lex_last_action"))) : Astf.exp )]
+                  (`Lid (_loc, "lex_last_action"))) :>Astf.exp)]
          | Goto n ->
-             [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Unit _loc)) : 
-             Astf.exp )]) : exp list ) in
+             [(`App (_loc, (`Lid (_loc, (lex_state n))), (`Unit _loc)) :>
+             Astf.exp)]) : exp list ) in
    let output_clause ?pats  (mems : Lexgen.memory_action list)
      (r : Lexgen.automata_move) =
      let pat =
@@ -62,10 +62,10 @@ let output_moves
        | Some pats ->
            bar_of_list
              (List.map
-                (fun x  -> (`Int (_loc, (string_of_int x)) : Astf.pat )) pats)
-       | None  -> (`Any _loc : Astf.pat ) in
+                (fun x  -> (`Int (_loc, (string_of_int x)) :>Astf.pat)) pats)
+       | None  -> (`Any _loc :>Astf.pat) in
      let action = seq_sem (output_action mems r) in
-     (`Case (_loc, pat, (action :>Astf.exp)) : Astf.case ) in
+     (`Case (_loc, pat, (action :>Astf.exp)) :>Astf.case) in
    let (t
      :(Lexgen.automata_move,(Lexgen.memory_action list* int list)) Hashtbl.t)=
      Hashtbl.create 17 in
@@ -105,7 +105,7 @@ let output_trans (i : int) (trans : Lexgen.automata) =
                       (`Field
                          (_loc, (`Lid (_loc, "lexbuf")),
                            (`Lid (_loc, "lex_mem")))),
-                      (`Int (_loc, (string_of_int m)))))) : Astf.exp )
+                      (`Int (_loc, (string_of_int m)))))) :>Astf.exp)
         | EraseTag t ->
             (`Assign
                (_loc,
@@ -115,13 +115,13 @@ let output_trans (i : int) (trans : Lexgen.automata) =
                          (_loc, (`Lid (_loc, "lexbuf")),
                            (`Lid (_loc, "lex_mem")))),
                       (`Int (_loc, (string_of_int t))))),
-                 (`Int (_loc, "-1"))) : Astf.exp )) mvs : exp list ) in
+                 (`Int (_loc, "-1"))) :>Astf.exp)) mvs : exp list ) in
   let e =
     match trans with
     | Perform (n,mvs) ->
         seq_sem
           ((output_tag_actions mvs) @
-             [(`Int (_loc, (string_of_int n)) : Astf.exp )])
+             [(`Int (_loc, (string_of_int n)) :>Astf.exp)])
     | Shift (trans,move) ->
         let moves = bar_of_list (output_moves move) in
         seq_sem
@@ -135,33 +135,33 @@ let output_trans (i : int) (trans : Lexgen.automata) =
                             (`Lid (_loc, "lex_last_pos")))),
                        (`Field
                           (_loc, (`Lid (_loc, "lexbuf")),
-                            (`Lid (_loc, "lex_curr_pos"))))) : Astf.exp );
+                            (`Lid (_loc, "lex_curr_pos"))))) :>Astf.exp);
                  (`Assign
                     (_loc,
                       (`Field
                          (_loc, (`Lid (_loc, "lexbuf")),
                            (`Lid (_loc, "lex_last_action")))),
-                      (`Int (_loc, (string_of_int n)))) : Astf.exp );
+                      (`Int (_loc, (string_of_int n)))) :>Astf.exp);
                  (`Match
                     (_loc,
                       (`App
                          (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                           (`Unit _loc))), moves) : Astf.exp )]
+                           (`Unit _loc))), moves) :>Astf.exp)]
            | No_remember  ->
                [(`Match
                    (_loc,
                      (`App
                         (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
-                          (`Unit _loc))), moves) : Astf.exp )]) in
+                          (`Unit _loc))), moves) :>Astf.exp)]) in
   (`Bind
      (_loc, (`Lid (_loc, (lex_state i))),
-       (`Fun (_loc, (`Case (_loc, (`Unit _loc), (e :>Astf.exp)))))) : 
-    Astf.bind )
+       (`Fun (_loc, (`Case (_loc, (`Unit _loc), (e :>Astf.exp)))))) :>
+    Astf.bind)
 let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
-       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), (b :>Astf.exp)))) : 
-       Astf.exp )) args e
+       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), (b :>Astf.exp)))) :>
+       Astf.exp)) args e
 let output_automata (transitions : Lexgen.automata array) =
   ((transitions |> (Array.mapi (fun i  auto  -> output_trans i auto))) |>
      Array.to_list : bind list )
@@ -171,7 +171,7 @@ let offset e i =
   else
     (`App
        (_loc, (`App (_loc, (`Lid (_loc, "+")), (e :>Astf.exp))),
-         (`Int (_loc, (string_of_int i)))) : Astf.exp )
+         (`Int (_loc, (string_of_int i)))) :>Astf.exp)
 let output_env (env : Automata_def.t_env) =
   (let output_tag_access ((x : Automata_def.tag_base),d) =
      offset
@@ -181,15 +181,15 @@ let output_env (env : Automata_def.t_env) =
                (_loc,
                  (`Field
                     (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_mem")))),
-                 (`Int (_loc, (string_of_int i)))) : Astf.exp )
+                 (`Int (_loc, (string_of_int i)))) :>Astf.exp)
         | Start  ->
             (`Field
                (_loc, (`Lid (_loc, "lexbuf")),
-                 (`Lid (_loc, "lex_start_pos"))) : Astf.exp )
+                 (`Lid (_loc, "lex_start_pos"))) :>Astf.exp)
         | End  ->
             (`Field
-               (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_curr_pos"))) : 
-            Astf.exp )) d in
+               (_loc, (`Lid (_loc, "lexbuf")), (`Lid (_loc, "lex_curr_pos"))) :>
+            Astf.exp)) d in
    (env |>
       (List.sort
          (fun x  y  ->
@@ -207,11 +207,11 @@ let output_env (env : Automata_def.t_env) =
                  then
                    (`Dot
                       (_loc, (`Uid (_loc, "Lexing")),
-                        (`Lid (_loc, "sub_lexeme_opt"))) : Astf.exp )
+                        (`Lid (_loc, "sub_lexeme_opt"))) :>Astf.exp)
                  else
                    (`Dot
                       (_loc, (`Uid (_loc, "Lexing")),
-                        (`Lid (_loc, "sub_lexeme"))) : Astf.exp ) in
+                        (`Lid (_loc, "sub_lexeme"))) :>Astf.exp) in
                let nstart = output_tag_access nstart in
                let nend = output_tag_access nend in
                (`Bind
@@ -223,19 +223,19 @@ let output_env (env : Automata_def.t_env) =
                               (`App
                                  (_loc, (sub :>Astf.exp),
                                    (`Lid (_loc, "lexbuf")))),
-                              (nstart :>Astf.exp))), (nend :>Astf.exp)))) : 
-                 Astf.bind )
+                              (nstart :>Astf.exp))), (nend :>Astf.exp)))) :>
+                 Astf.bind)
            | Ident_char (o,nstart) ->
                let sub =
                  if o
                  then
                    (`Dot
                       (_loc, (`Uid (_loc, "Lexing")),
-                        (`Lid (_loc, "sub_lexeme_char_opt"))) : Astf.exp )
+                        (`Lid (_loc, "sub_lexeme_char_opt"))) :>Astf.exp)
                  else
                    (`Dot
                       (_loc, (`Uid (_loc, "Lexing")),
-                        (`Lid (_loc, "sub_lexeme_char"))) : Astf.exp ) in
+                        (`Lid (_loc, "sub_lexeme_char"))) :>Astf.exp) in
                let nstart = output_tag_access nstart in
                (`Bind
                   (loc, (id :>Astf.pat),
@@ -243,7 +243,7 @@ let output_env (env : Automata_def.t_env) =
                        (loc,
                          (`App
                             (loc, (sub :>Astf.exp), (`Lid (loc, "lexbuf")))),
-                         (nstart :>Astf.exp)))) : Astf.bind ))) : bind list )
+                         (nstart :>Astf.exp)))) :>Astf.bind))) : bind list )
 let output_entry _loc
   ({ Lexgen.auto_mem_size = auto_mem_size;
      auto_initial_state = (init_num,init_moves); auto_actions },(transitions
@@ -348,8 +348,8 @@ let output_entry _loc
                                                                (`Lid
                                                                   (_loc,
                                                                     "lex_buffer")))),
-                                                          (`Lid (_loc, "i"))))))))))))))))))))) : 
-       Astf.bind ) :: (output_automata transitions)) in
+                                                          (`Lid (_loc, "i"))))))))))))))))))))) :>
+       Astf.bind) :: (output_automata transitions)) in
    let actions =
      seq_sem
        ((`LetIn
@@ -382,7 +382,7 @@ let output_entry _loc
                                  (`Field
                                     (_loc, (`Lid (_loc, "lexbuf")),
                                       (`Lid (_loc, "lex_last_action")))),
-                                 (`Int (_loc, "-1"))))))))))) : Astf.exp ) ::
+                                 (`Int (_loc, "-1"))))))))))) :>Astf.exp) ::
        (let init = output_memory_actions init_moves in
         if auto_mem_size > 0
         then
@@ -398,7 +398,7 @@ let output_entry _loc
                             (_loc, (`Uid (_loc, "Array")),
                               (`Lid (_loc, "create")))),
                          (`Int (_loc, (string_of_int auto_mem_size))))),
-                    (`Int (_loc, "-1"))))) : Astf.exp )
+                    (`Int (_loc, "-1"))))) :>Astf.exp)
           :: init
         else init)) in
    (`Fun
@@ -514,8 +514,8 @@ let output_entry _loc
                                                                     (string_of_int
                                                                     num))),
                                                                     (e :>
-                                                                    Astf.exp)) : 
-                                                                    Astf.case ))))
+                                                                    Astf.exp)) :>
+                                                                    Astf.case))))
                                                              |> bar_of_list),
                                                           (`Case
                                                              (_loc,
@@ -559,5 +559,5 @@ let output_entry _loc
                                                                     "__BIND__")))),
                                                                     (`Str
                                                                     (_loc,
-                                                                    " lexing: empty token"))))))))))))))))))))))))))))))))) : 
-     Astf.exp ) : Astf.exp )
+                                                                    " lexing: empty token"))))))))))))))))))))))))))))))))) :>
+     Astf.exp) : Astf.exp )

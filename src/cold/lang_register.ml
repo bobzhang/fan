@@ -7,11 +7,11 @@ let compile _loc pairs =
   (try
      let (_,entry,loc) = Hashtbl.find tbl "entry" in
      fun ()  ->
-       let e: Astf.exp = `Lid (loc, entry) in
+       let e = (`Lid (loc, entry) :>Astf.exp) in
        (try
           let (_,name,loc) = Hashtbl.find tbl "name" in
           fun ()  ->
-            let n: Astf.exp = `Str (loc, name) in
+            let n = (`Str (loc, name) :>Astf.exp) in
             (try
                let (_,pos,loc) = Hashtblf.find tbl "position" in
                fun ()  ->
@@ -51,11 +51,12 @@ let compile _loc pairs =
                                                         (n :>Astf.exp))))))))))),
                                (`Label
                                   (_loc, (`Lid (_loc, "entry")),
-                                    (e :>Astf.exp))))), (`Unit _loc)) : 
-                     Astf.exp )
+                                    (e :>Astf.exp))))), (`Unit _loc)) :>
+                     Astf.exp)
                  | Some (_,l,loc) ->
-                     let l: Astf.exp =
-                       `Label (loc, (`Lid (loc, "lexer")), (`Lid (loc, l))) in
+                     let l =
+                       (`Label (loc, (`Lid (loc, "lexer")), (`Lid (loc, l))) :>
+                       Astf.exp) in
                      (`App
                         (_loc,
                           (`App
@@ -96,7 +97,7 @@ let compile _loc pairs =
                                     (`Label
                                        (_loc, (`Lid (_loc, "entry")),
                                          (e :>Astf.exp))))), (l :>Astf.exp))),
-                          (`Unit _loc)) : Astf.exp )
+                          (`Unit _loc)) :>Astf.exp)
              with
              | Not_found  ->
                  (fun ()  ->

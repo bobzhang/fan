@@ -917,11 +917,11 @@ let _ =
                    [List1
                       (Nterm
                          (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))];
-                 annot = "(`Unit _loc : Astf.exp )\n";
+                 annot = "(`Unit _loc :>Astf.exp)\n";
                  fn =
                    (Gramf.mk_action
                       (fun _  (_loc : Locf.t)  ->
-                         ((`Unit _loc : Astf.exp ) : 'fan_quots ) : 'fan_quot_semi
+                         ((`Unit _loc :>Astf.exp) : 'fan_quots ) : 'fan_quot_semi
                                                                     list ->
                                                                     Locf.t ->
                                                                     'fan_quots ))

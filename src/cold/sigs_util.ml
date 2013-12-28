@@ -50,8 +50,10 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
            (function
             | `Mutual tys ->
                 let v = and_of_list (List.map aux tys) in
-                (`Type v : Astfn.stru )
-            | `Single ty -> let v = aux ty in (`Type v : Astfn.stru )) x in
+                (`Type (v :>Astfn.typedecl) :>Astfn.stru)
+            | `Single ty ->
+                let v = aux ty in (`Type (v :>Astfn.typedecl) :>Astfn.stru))
+           x in
        Some (sem_of_list xs) : stru option )
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
@@ -82,7 +84,7 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = IdN.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  (`StExp `Unit : Astfn.stru ))
+                  (`StExp `Unit :>Astfn.stru))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
@@ -91,7 +93,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = IdN.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Lid dest : Astfn.ctyp ) :: lst))
+           appl_of_list ((`Lid dest :>Astfn.ctyp) :: lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

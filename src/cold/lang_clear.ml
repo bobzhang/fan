@@ -71,7 +71,7 @@ let _ =
                    [Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
                    List1 (Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))];
                  annot =
-                   "(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App\n            (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"clear\")))),\n              (x :>Astf.exp)) : Astf.exp ))))\n  |> seq_sem\n";
+                   "(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App\n            (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"clear\")))),\n              (x :>Astf.exp)) :>Astf.exp))))\n  |> seq_sem\n";
                  fn =
                    (Gramf.mk_action
                       (fun (ls : 'a_lident list)  (t : 'qualuid) 
@@ -86,7 +86,7 @@ let _ =
                                         (`Dot
                                            (_loc, (t :>Astf.vid),
                                              (`Lid (_loc, "clear")))),
-                                        (x :>Astf.exp)) : Astf.exp ))))
+                                        (x :>Astf.exp)) :>Astf.exp))))
                             |> seq_sem : 'nonterminalsclear ) : 'a_lident
                                                                   list ->
                                                                   'qualuid ->
