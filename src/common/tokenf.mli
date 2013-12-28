@@ -36,7 +36,7 @@ type ant = {
     retract : int;
   }
       
-      
+
 (** The [loc] is the initial location. The option string is the meta-data
     for example, the [location variable]. The string is the quotation contents. 
     expand fun accepts [location] and [location label] and string   

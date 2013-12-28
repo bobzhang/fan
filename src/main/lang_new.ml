@@ -5,7 +5,7 @@ Ast_gen:
 };;
 
 
-open Astf
+
 
 %create{qualid nonterminals newterminals t_qualid qualuid};;
 
@@ -47,7 +47,6 @@ nonterminals : (* when [ty] is nullable, it should take care of the following *)
       match t with
       |`Static t ->  %exp{ $id:t.mk }
       |`Dyn(x,t) ->
-          let x = (x : vid :> exp) in
           %exp{$id:t.mk_dynamic $x }  in   
     sem_of_list
       ( List.map
@@ -65,7 +64,7 @@ newterminals :
   [ "("; qualid as x; ":";t_qualid as t;")"; L1 type_entry as ls
     %{
       let mk  =
-        %exp{$id:t.mk_dynamic ${(x:vid:>exp)} }  in
+        %exp{$id:t.mk_dynamic ${x} }  in
       sem_of_list (* FIXME improve  -- to remove *)
         ( List.map
             (fun (_loc,x,descr,ty) ->

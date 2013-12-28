@@ -1,6 +1,9 @@
 open Astf
+
 type 'a t
-val of_string : 'a t -> string
+
+val to_string : 'a t -> string
+val of_string : string -> 'a t
 val literal : literal t
 val flag : flag t
 val position_flag : position_flag t

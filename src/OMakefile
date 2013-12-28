@@ -139,17 +139,20 @@ FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
     ast_basic \
     ast2pt \
-    ast_gen ant antN ast_loc  ast_inject  astn_util \
+    ast_gen \
+    ast_loc  ast_inject  astn_util \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid \
     comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
-    expN astfn control control_require fMeta \
+    expN astfn control control_require \
+    metaf \
+    metafn \
     gram_def  \
     compile_gram \
-    sigs_util  fanAstN  \
-    filters    gfold gramlib\
+    sigs_util  \
+    gfold gramlib\
     idN  ns \
     fan_args mktop objs objsN \
     parse_fan \
@@ -173,7 +176,9 @@ FAN_FILES = \
     gensym \
     lang_fresh \
     lang_monad \
-    lang_register
+    lang_register\
+    quasiquot\
+    fill
     # lang_pos \
     # loc_meta
     # parse_grammar2

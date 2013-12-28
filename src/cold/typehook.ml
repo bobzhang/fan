@@ -39,6 +39,13 @@ class type traversal
       (Sigs_util.and_types -> Sigs_util.and_types) -> unit
     method update_cur_mtyps : (Sigs_util.mtyps -> Sigs_util.mtyps) -> unit
   end
+let make_filter (s,code) =
+  let f =
+    function
+    | (`StExp (_loc,`Lid (_,s')) : Astf.stru) when s = s' ->
+        Fill.stru _loc code
+    | e -> e in
+  (("filter_" ^ s), ((Objs.map_stru f)#stru))
 let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
   let mtyps =
     match x.filter with
@@ -47,13 +54,13 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
   let code = x.transform mtyps in
   match ((x.position), code) with
   | (Some x,Some code) ->
-      let (name,f) = Filters.make_filter (x, code) in
+      let (name,f) = make_filter (x, code) in
       (Ast_filters.register_stru_filter (name, f);
        Ast_filters.use_implem_filter name;
        acc)
   | (None ,Some code) ->
-      let code = FanAstN.fill_stru sloc code in
-      (`Sem (sloc, acc, code) : Astf.stru )
+      let code = Fill.stru sloc code in
+      (`Sem (sloc, (acc :>Astf.stru), (code :>Astf.stru)) :>Astf.stru)
   | (_,None ) -> acc
 let traversal () =
   (object (self : 'self_type)
@@ -85,8 +92,9 @@ let traversal () =
                  (!State.current_filters)
                  (if !State.keep
                   then res
-                  else (`StExp (sloc, (`Unit sloc)) : Astf.stru )) in
-             self#out_module; (`Struct (sloc, result) : Astf.mexp )))
+                  else (`StExp (sloc, (`Unit sloc)) :>Astf.stru)) in
+             self#out_module;
+             (`Struct (sloc, (result :>Astf.stru)) :>Astf.mexp)))
        | x -> super#mexp x
      method! stru =
        function
@@ -99,7 +107,7 @@ let traversal () =
              self#out_and_types;
              if !State.keep
              then x
-             else (`StExp (_loc, (`Unit _loc)) : Astf.stru )))
+             else (`StExp (_loc, (`Unit _loc)) :>Astf.stru)))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->

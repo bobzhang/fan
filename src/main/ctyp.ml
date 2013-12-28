@@ -453,7 +453,9 @@ let right_transform = function
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
     Listf.init arity @@ fun i -> %pat-{ (#$id:name as $lid{ x ~off:i 0 }) }in
-  let exps = Listf.init arity @@ fun i -> %exp-{ $id{xid ~off:i 0} }  in
+  let exps =
+    Listf.init arity @@ fun i ->
+      %exp-{ $id{xid ~off:i 0} }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with

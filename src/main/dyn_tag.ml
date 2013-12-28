@@ -12,6 +12,7 @@ open Astf
 type dyn
 
 external dyn_tag : 'a t  ->  dyn t = "%identity"
+
 module Pack(X : sig type 'a t  end) = struct
 
   type pack = (dyn t  * Obj.t)
@@ -26,9 +27,9 @@ module Pack(X : sig type 'a t  end) = struct
         
   let print_tag : Format.formatter -> pack -> unit = fun
      f (tag, _) ->
-      Format.pp_print_string f (of_string tag)
+      Format.pp_print_string f (to_string tag)
 end
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake dyn_tag.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/dyn_tag.cmo" *)
 (* end: *)

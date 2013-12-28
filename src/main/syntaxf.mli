@@ -55,6 +55,7 @@ val comma_ctyp : type_parameters Gramf.t
 
 val vid: vid Gramf.t  
 val comma_exp : exp Gramf.t
+val comma_ep : ep Gramf.t
 val comma_ipat : pat Gramf.t
 val comma_pat : pat Gramf.t
 val comma_type_parameter : type_parameters Gramf.t
@@ -72,6 +73,9 @@ val eq_exp : (alident -> pat -> pat) Gramf.t
 val exp : exp Gramf.t
 
 val exp_quot : exp Gramf.t
+val ep_quot : ep Gramf.t 
+val ep : ep Gramf.t
+    
 val field_exp : rec_exp Gramf.t
 val field_exp_list : rec_exp Gramf.t
 val fun_bind : exp Gramf.t
@@ -90,7 +94,9 @@ val label_longident : vid Gramf.t
 
 val label_pat : rec_pat Gramf.t
 val label_pat_list : rec_pat Gramf.t
-    
+val label_ep : rec_bind Gramf.t
+val label_ep_list : rec_bind Gramf.t
+
 val meth_list : (name_ctyp * flag) Gramf.t 
 val meth_decl : name_ctyp Gramf.t
 val mbind : mbind Gramf.t
@@ -126,8 +132,10 @@ val pat : pat Gramf.t
 val pat_quot : pat Gramf.t
 val row_field : row_field Gramf.t
 val sem_exp : exp Gramf.t
-val sem_exp_for_list : exp Gramf.t 
+val sem_exp_for_list : exp Gramf.t
+val sem_ep_for_list : ep Gramf.t    
 val sem_pat : pat Gramf.t
+val sem_ep : ep Gramf.t     
 val sem_pat_for_list :  pat  Gramf.t
 val sequence : exp Gramf.t
 val sigi : sigi Gramf.t

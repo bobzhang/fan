@@ -68,7 +68,7 @@ let add (({ domain; name = n } as name) : Tokenf.name) (tag : 'a Dyn_tag.t)
   Hashtbl.replace names_tbl domain (Setf.String.add n s);
   expanders_table := (QMap.add k v (!expanders_table))
 let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
-  (let pos_tag = Dyn_tag.of_string tag in
+  (let pos_tag = Dyn_tag.to_string tag in
    let name = x.name in
    match expander_name ~pos:pos_tag name with
    | None  ->
@@ -138,7 +138,7 @@ let of_exp ?lexer  ~name  ~entry  () =
 let of_ep ?lexer  ~name  ~entry  () =
   let (expand_fun :Astf.ep Tokenf.expand_fun)= make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s :>Astf.exp)) : Astf.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s :>Astf.exp)) :>Astf.stru) in
   add name Dyn_tag.pat
     (make_parser ?lexer entry : Astf.ep Tokenf.expand_fun  :>Astf.pat
                                                                Tokenf.expand_fun);

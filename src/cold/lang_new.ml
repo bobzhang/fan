@@ -1,5 +1,4 @@
 let sem_of_list = Ast_gen.sem_of_list
-open Astf
 let qualid = Gramf.mk "qualid"
 let nonterminals = Gramf.mk "nonterminals"
 let newterminals = Gramf.mk "newterminals"
@@ -395,7 +394,7 @@ let _ =
                    List1
                      (Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))];
                  annot =
-                   "let mk =\n  match t with\n  | `Static t -> (`Dot (_loc, t, (`Lid (_loc, \"mk\"))) : Astf.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        Astf.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : Astf.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            Astf.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : Astf.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            Astf.stru )) ls)\n";
+                   "let mk =\n  match t with\n  | `Static t ->\n      (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk\"))) :>Astf.exp)\n  | `Dyn (x,t) ->\n      (`App\n         (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n           (x :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (ls : 'type_entry list)  (t : 'ty) 
@@ -403,16 +402,16 @@ let _ =
                          (let mk =
                             match t with
                             | `Static t ->
-                                (`Dot (_loc, t, (`Lid (_loc, "mk"))) : 
-                                Astf.exp )
+                                (`Dot
+                                   (_loc, (t :>Astf.vid),
+                                     (`Lid (_loc, "mk"))) :>Astf.exp)
                             | `Dyn (x,t) ->
-                                let x = (x : vid  :>exp) in
                                 (`App
                                    (_loc,
                                      (`Dot
-                                        (_loc, t,
-                                          (`Lid (_loc, "mk_dynamic")))), x) : 
-                                  Astf.exp ) in
+                                        (_loc, (t :>Astf.vid),
+                                          (`Lid (_loc, "mk_dynamic")))),
+                                     (x :>Astf.exp)) :>Astf.exp) in
                           sem_of_list
                             (List.map
                                (fun (_loc,x,descr,ty)  ->
@@ -423,9 +422,9 @@ let _ =
                                            (`Bind
                                               (_loc, (`Lid (_loc, x)),
                                                 (`App
-                                                   (_loc, mk,
-                                                     (`Str (_loc, d))))))) : 
-                                      Astf.stru )
+                                                   (_loc, (mk :>Astf.exp),
+                                                     (`Str (_loc, d))))))) :>
+                                      Astf.stru)
                                   | (Some d,Some typ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
@@ -434,18 +433,20 @@ let _ =
                                                 (`Constraint
                                                    (_loc,
                                                      (`App
-                                                        (_loc, mk,
+                                                        (_loc,
+                                                          (mk :>Astf.exp),
                                                           (`Str (_loc, d)))),
-                                                     typ))))) : Astf.stru )
+                                                     (typ :>Astf.ctyp)))))) :>
+                                      Astf.stru)
                                   | (None ,None ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
                                            (`Bind
                                               (_loc, (`Lid (_loc, x)),
                                                 (`App
-                                                   (_loc, mk,
-                                                     (`Str (_loc, x))))))) : 
-                                      Astf.stru )
+                                                   (_loc, (mk :>Astf.exp),
+                                                     (`Str (_loc, x))))))) :>
+                                      Astf.stru)
                                   | (None ,Some typ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
@@ -454,13 +455,12 @@ let _ =
                                                 (`Constraint
                                                    (_loc,
                                                      (`App
-                                                        (_loc, mk,
+                                                        (_loc,
+                                                          (mk :>Astf.exp),
                                                           (`Str (_loc, x)))),
-                                                     typ))))) : Astf.stru ))
-                               ls) : 'nonterminals ) : 'type_entry list ->
-                                                         'ty ->
-                                                           Locf.t ->
-                                                             'nonterminals ))
+                                                     (typ :>Astf.ctyp)))))) :>
+                                      Astf.stru)) ls) : 'nonterminals ) : 
+                      'type_entry list -> 'ty -> Locf.t -> 'nonterminals ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );
@@ -494,16 +494,18 @@ let _ =
                    List1
                      (Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))];
                  annot =
-                   "let mk: Astf.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : Astf.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            Astf.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : Astf.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            Astf.stru )) ls)\n";
+                   "let mk =\n  (`App\n     (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n       (x :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
                          (x : 'qualid)  _  (_loc : Locf.t)  ->
-                         (let mk: Astf.exp =
-                            `App
-                              (_loc,
-                                (`Dot (_loc, t, (`Lid (_loc, "mk_dynamic")))),
-                                (x : vid  :>exp)) in
+                         (let mk =
+                            (`App
+                               (_loc,
+                                 (`Dot
+                                    (_loc, (t :>Astf.vid),
+                                      (`Lid (_loc, "mk_dynamic")))),
+                                 (x :>Astf.exp)) :>Astf.exp) in
                           sem_of_list
                             (List.map
                                (fun (_loc,x,descr,ty)  ->
@@ -514,9 +516,9 @@ let _ =
                                            (`Bind
                                               (_loc, (`Lid (_loc, x)),
                                                 (`App
-                                                   (_loc, mk,
-                                                     (`Str (_loc, d))))))) : 
-                                      Astf.stru )
+                                                   (_loc, (mk :>Astf.exp),
+                                                     (`Str (_loc, d))))))) :>
+                                      Astf.stru)
                                   | (Some d,Some typ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
@@ -525,18 +527,20 @@ let _ =
                                                 (`Constraint
                                                    (_loc,
                                                      (`App
-                                                        (_loc, mk,
+                                                        (_loc,
+                                                          (mk :>Astf.exp),
                                                           (`Str (_loc, d)))),
-                                                     typ))))) : Astf.stru )
+                                                     (typ :>Astf.ctyp)))))) :>
+                                      Astf.stru)
                                   | (None ,None ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
                                            (`Bind
                                               (_loc, (`Lid (_loc, x)),
                                                 (`App
-                                                   (_loc, mk,
-                                                     (`Str (_loc, x))))))) : 
-                                      Astf.stru )
+                                                   (_loc, (mk :>Astf.exp),
+                                                     (`Str (_loc, x))))))) :>
+                                      Astf.stru)
                                   | (None ,Some typ) ->
                                       (`Value
                                          (_loc, (`Negative _loc),
@@ -545,18 +549,17 @@ let _ =
                                                 (`Constraint
                                                    (_loc,
                                                      (`App
-                                                        (_loc, mk,
+                                                        (_loc,
+                                                          (mk :>Astf.exp),
                                                           (`Str (_loc, x)))),
-                                                     typ))))) : Astf.stru ))
-                               ls) : 'newterminals ) : 'type_entry list ->
-                                                         Tokenf.txt ->
-                                                           't_qualid ->
-                                                             Tokenf.txt ->
-                                                               'qualid ->
-                                                                 Tokenf.txt
-                                                                   ->
-                                                                   Locf.t ->
-                                                                    'newterminals ))
+                                                     (typ :>Astf.ctyp)))))) :>
+                                      Astf.stru)) ls) : 'newterminals ) : 
+                      'type_entry list ->
+                        Tokenf.txt ->
+                          't_qualid ->
+                            Tokenf.txt ->
+                              'qualid ->
+                                Tokenf.txt -> Locf.t -> 'newterminals ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )

@@ -14,7 +14,12 @@
   class_longident  class_name_and_param clsigi class_signature
   clfield class_structure cltyp cltyp_declaration
   cltyp_longident 
-  cltyp_plus com_ctyp comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
+  cltyp_plus com_ctyp
+  comma_ctyp comma_exp
+  comma_ipat
+  comma_pat
+  comma_ep
+  comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
   ctyp cvalue_bind flag direction_flag_quot
   eq_exp exp
@@ -30,10 +35,24 @@
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
   override_flag_quot
   pat
-  row_field  sem_exp  sem_exp_for_list  sem_pat  sem_pat_for_list  semi  sequence
+  row_field
+  sem_exp
+  sem_exp_for_list
+  sem_pat
+  sem_pat_for_list
+  sem_ep_for_list
+  sem_ep
+  label_ep_list
+  label_ep
+  semi
+  sequence
   sigi  sigis  star_ctyp  stru  strus  top_phrase
   type_declaration  type_ident_and_parameters  type_longident  type_longident_and_parameters
-  type_parameter  type_parameters  typevars  val_longident  constr  exp_quot  pat_quot
+  type_parameter  type_parameters  typevars  val_longident  constr
+  exp_quot
+  pat_quot
+  ep_quot
+  ep 
   ctyp_quot  stru_quot  sigi_quot  clfield_quot  clsigi_quot  mexp_quot
   mtyp_quot  cltyp_quot  clexp_quot  constr_quot  bind_quot  rec_exp_quot
   module_declaration type_info type_repr

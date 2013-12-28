@@ -263,7 +263,8 @@ let append_quot (y : Tokenf.quot option) (e : Astf.exp) =
   | None  -> e
   | Some y ->
       let a = Parsef.expand_exp y in
-      let _loc = y.loc in (`Seq (_loc, (`Sem (_loc, e, a))) : Astf.exp )
+      let _loc = y.loc in
+      (`Seq (_loc, (`Sem (_loc, (e :>Astf.exp), (a :>Astf.exp)))) :>Astf.exp)
 let _ =
   Hashtblf.add_list named_cases
     [("ocaml_uid",
@@ -298,52 +299,55 @@ let _ =
                         };
                       loc_ghost = false
                     } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
-              ((let default: Astf.exp =
-                  `App
-                    (_loc, (`Vrn (_loc, "Uid")),
-                      (`Record
-                         (_loc,
-                           (`Sem
-                              (_loc,
-                                (`RecBind
-                                   (_loc, (`Lid (_loc, "loc")),
-                                     (`Record
-                                        (_loc,
-                                          (`Sem
-                                             (_loc,
-                                               (`RecBind
-                                                  (_loc,
-                                                    (`Lid (_loc, "loc_start")),
-                                                    (`Field
-                                                       (_loc,
-                                                         (`Lid
-                                                            (_loc, "lexbuf")),
-                                                         (`Lid
-                                                            (_loc,
-                                                              "lex_start_p")))))),
-                                               (`Sem
-                                                  (_loc,
-                                                    (`RecBind
-                                                       (_loc,
-                                                         (`Lid
-                                                            (_loc, "loc_end")),
-                                                         (`Field
-                                                            (_loc,
-                                                              (`Lid
-                                                                 (_loc,
-                                                                   "lexbuf")),
-                                                              (`Lid
-                                                                 (_loc,
-                                                                   "lex_curr_p")))))),
-                                                    (`RecBind
-                                                       (_loc,
-                                                         (`Lid
-                                                            (_loc,
-                                                              "loc_ghost")),
-                                                         (`Bool (_loc, false)))))))))))),
-                                (`RecBind
-                                   (_loc, (`Lid (_loc, "txt")),
-                                     (`Lid (_loc, "txt"))))))))) in
+              ((let default =
+                  (`App
+                     (_loc, (`Vrn (_loc, "Uid")),
+                       (`Record
+                          (_loc,
+                            (`Sem
+                               (_loc,
+                                 (`RecBind
+                                    (_loc, (`Lid (_loc, "loc")),
+                                      (`Record
+                                         (_loc,
+                                           (`Sem
+                                              (_loc,
+                                                (`RecBind
+                                                   (_loc,
+                                                     (`Lid
+                                                        (_loc, "loc_start")),
+                                                     (`Field
+                                                        (_loc,
+                                                          (`Lid
+                                                             (_loc, "lexbuf")),
+                                                          (`Lid
+                                                             (_loc,
+                                                               "lex_start_p")))))),
+                                                (`Sem
+                                                   (_loc,
+                                                     (`RecBind
+                                                        (_loc,
+                                                          (`Lid
+                                                             (_loc,
+                                                               "loc_end")),
+                                                          (`Field
+                                                             (_loc,
+                                                               (`Lid
+                                                                  (_loc,
+                                                                    "lexbuf")),
+                                                               (`Lid
+                                                                  (_loc,
+                                                                    "lex_curr_p")))))),
+                                                     (`RecBind
+                                                        (_loc,
+                                                          (`Lid
+                                                             (_loc,
+                                                               "loc_ghost")),
+                                                          (`Bool
+                                                             (_loc, false)))))))))))),
+                                 (`RecBind
+                                    (_loc, (`Lid (_loc, "txt")),
+                                      (`Lid (_loc, "txt"))))))))) :>Astf.exp) in
                 match ls with
                 | None  -> default
                 | Some x ->
@@ -360,7 +364,7 @@ let _ =
                                         (`App
                                            (_loc, (`Lid (_loc, "=")),
                                              (`Lid (_loc, "txt")))),
-                                        (`Str (_loc, v))))) : Astf.case )) x) in
+                                        (`Str (_loc, v))))) :>Astf.case)) x) in
                     (`LetIn
                        (_loc, (`Negative _loc),
                          (`Bind
@@ -434,7 +438,7 @@ let _ =
                                              (`RecBind
                                                 (_loc, (`Lid (_loc, "txt")),
                                                   (`Lid (_loc, "txt")))))))))),
-                              default))) : Astf.exp ))))])));
+                              (default :>Astf.exp)))) :>Astf.exp))))])));
     ("ocaml_lid",
       ((fun { tokens_opt = ls; loc = _loc;_}  ->
           [((Bind
@@ -467,52 +471,52 @@ let _ =
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
-             ((let default: Astf.exp =
-                 `App
-                   (_loc, (`Vrn (_loc, "Lid")),
-                     (`Record
-                        (_loc,
-                          (`Sem
-                             (_loc,
-                               (`RecBind
-                                  (_loc, (`Lid (_loc, "loc")),
-                                    (`Record
-                                       (_loc,
-                                         (`Sem
-                                            (_loc,
-                                              (`RecBind
-                                                 (_loc,
-                                                   (`Lid (_loc, "loc_start")),
-                                                   (`Field
-                                                      (_loc,
-                                                        (`Lid
-                                                           (_loc, "lexbuf")),
-                                                        (`Lid
-                                                           (_loc,
-                                                             "lex_start_p")))))),
-                                              (`Sem
-                                                 (_loc,
-                                                   (`RecBind
-                                                      (_loc,
-                                                        (`Lid
-                                                           (_loc, "loc_end")),
-                                                        (`Field
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc,
-                                                                  "lexbuf")),
-                                                             (`Lid
-                                                                (_loc,
-                                                                  "lex_curr_p")))))),
-                                                   (`RecBind
-                                                      (_loc,
-                                                        (`Lid
-                                                           (_loc,
-                                                             "loc_ghost")),
-                                                        (`Bool (_loc, false)))))))))))),
-                               (`RecBind
-                                  (_loc, (`Lid (_loc, "txt")),
-                                    (`Lid (_loc, "txt"))))))))) in
+             ((let default =
+                 (`App
+                    (_loc, (`Vrn (_loc, "Lid")),
+                      (`Record
+                         (_loc,
+                           (`Sem
+                              (_loc,
+                                (`RecBind
+                                   (_loc, (`Lid (_loc, "loc")),
+                                     (`Record
+                                        (_loc,
+                                          (`Sem
+                                             (_loc,
+                                               (`RecBind
+                                                  (_loc,
+                                                    (`Lid (_loc, "loc_start")),
+                                                    (`Field
+                                                       (_loc,
+                                                         (`Lid
+                                                            (_loc, "lexbuf")),
+                                                         (`Lid
+                                                            (_loc,
+                                                              "lex_start_p")))))),
+                                               (`Sem
+                                                  (_loc,
+                                                    (`RecBind
+                                                       (_loc,
+                                                         (`Lid
+                                                            (_loc, "loc_end")),
+                                                         (`Field
+                                                            (_loc,
+                                                              (`Lid
+                                                                 (_loc,
+                                                                   "lexbuf")),
+                                                              (`Lid
+                                                                 (_loc,
+                                                                   "lex_curr_p")))))),
+                                                    (`RecBind
+                                                       (_loc,
+                                                         (`Lid
+                                                            (_loc,
+                                                              "loc_ghost")),
+                                                         (`Bool (_loc, false)))))))))))),
+                                (`RecBind
+                                   (_loc, (`Lid (_loc, "txt")),
+                                     (`Lid (_loc, "txt"))))))))) :>Astf.exp) in
                match ls with
                | None  -> default
                | Some x ->
@@ -529,7 +533,7 @@ let _ =
                                        (`App
                                           (_loc, (`Lid (_loc, "=")),
                                             (`Lid (_loc, "txt")))),
-                                       (`Str (_loc, v))))) : Astf.case )) x) in
+                                       (`Str (_loc, v))))) :>Astf.case)) x) in
                    (`LetIn
                       (_loc, (`Negative _loc),
                         (`Bind
@@ -603,7 +607,7 @@ let _ =
                                             (`RecBind
                                                (_loc, (`Lid (_loc, "txt")),
                                                  (`Lid (_loc, "txt")))))))))),
-                             default))) : Astf.exp ))))])));
+                             (default :>Astf.exp)))) :>Astf.exp))))])));
     ("kwd_symbol",
       ((fun { tokens_opt = ls; loc = _loc;_}  ->
           match ls with
@@ -691,7 +695,7 @@ let _ =
                                                (`Lid (_loc, "txt")))))))))),
                            (`Dot
                               (_loc, (`Uid (_loc, "Tokenf")),
-                                (`Lid (_loc, "t"))))))) : Astf.exp ))]
+                                (`Lid (_loc, "t"))))))) :>Astf.exp))]
           | None  -> Locf.failf _loc "no following strings after kwd_symbol")));
     ("ocaml_int",
       ((fun { loc = _loc;_}  ->
@@ -763,7 +767,7 @@ let _ =
                                       (`Lid (_loc, "lexbuf")))))),
                             (`RecBind
                                (_loc, (`Lid (_loc, "txt")),
-                                 (`Lid (_loc, "txt"))))))))) : Astf.exp ))])));
+                                 (`Lid (_loc, "txt"))))))))) :>Astf.exp))])));
     ("ocaml_num_literal",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -971,8 +975,8 @@ let _ =
                                                                     "txt")),
                                                                (`Lid
                                                                   (_loc,
-                                                                    "txt"))))))))))))))))))))) : 
-             Astf.exp ))])));
+                                                                    "txt"))))))))))))))))))))) :>
+             Astf.exp))])));
     ("ocaml_char",
       ((fun { loc = _loc;_}  ->
           [((Sequence
@@ -1120,7 +1124,7 @@ let _ =
                                                 (`Lid (_loc, "txt")))))))))),
                             (`Dot
                                (_loc, (`Uid (_loc, "Tokenf")),
-                                 (`Lid (_loc, "t"))))))))) : Astf.exp ));
+                                 (`Lid (_loc, "t"))))))))) :>Astf.exp));
           ((Sequence
               ((Sequence
                   ((Characters [(39, 39)]),
@@ -1222,8 +1226,8 @@ let _ =
                                 (`RecBind
                                    (_loc, (`Lid (_loc, "txt")),
                                      (`Lid (_loc, "txt")))))))))),
-                 (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) : 
-            Astf.exp ));
+                 (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) :>
+            Astf.exp));
           ((Sequence
               ((Sequence ((Characters [(39, 39)]), (Characters [(92, 92)]))),
                 (Bind
@@ -1284,8 +1288,8 @@ let _ =
                                      (`RecBind
                                         (_loc, (`Lid (_loc, "loc_ghost")),
                                           (`Bool (_loc, false)))))))))),
-                      (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))))) : 
-            Astf.exp ))])));
+                      (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t"))))))) :>
+            Astf.exp))])));
     ("ocaml_float_literal",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -1378,8 +1382,8 @@ let _ =
                                  (`RecBind
                                     (_loc, (`Lid (_loc, "txt")),
                                       (`Lid (_loc, "txt")))))))))),
-                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) : 
-             Astf.exp ))])));
+                  (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))) :>
+             Astf.exp))])));
     ("ocaml_comment",
       ((fun { quot_opt = q; loc = _loc;_}  ->
           [((Sequence
@@ -1495,14 +1499,14 @@ let _ =
                                                         (`Lid
                                                            (_loc,
                                                              "buff_contents")))),
-                                                   (`Lid (_loc, "c"))))))))))))))) : 
-                Astf.exp )))])));
+                                                   (`Lid (_loc, "c"))))))))))))))) :>
+                Astf.exp)))])));
     ("whitespace",
       ((fun { quot_opt = q; loc = _loc;_}  ->
           [((Sequence
                ((Repetition (Characters [(9, 9); (12, 12); (32, 32)])),
                  (Characters [(9, 9); (12, 12); (32, 32)])) : Translate_lex.concrete_regexp ),
-             (append_quot q (`Unit _loc : Astf.exp )));
+             (append_quot q (`Unit _loc :>Astf.exp)));
           ((Alternative
               ((Alternative
                   ((Characters [(10, 10)]), (Characters [(13, 13)]))),
@@ -1514,7 +1518,7 @@ let _ =
                     (`Dot
                        (_loc, (`Uid (_loc, "Lexing_util")),
                          (`Lid (_loc, "update_loc")))),
-                    (`Lid (_loc, "lexbuf"))) : Astf.exp )))])));
+                    (`Lid (_loc, "lexbuf"))) :>Astf.exp)))])));
     ("ocaml_string",
       ((fun { loc = _loc;_}  ->
           [((Characters [(34, 34)] : Translate_lex.concrete_regexp ),
@@ -1603,8 +1607,8 @@ let _ =
                                                                (`Lid
                                                                   (_loc,
                                                                     "buff_contents")))),
-                                                          (`Lid (_loc, "c"))))))))))))))))))) : 
-             Astf.exp ))])));
+                                                          (`Lid (_loc, "c"))))))))))))))))))) :>
+             Astf.exp))])));
     ("default",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -1643,7 +1647,7 @@ let _ =
                        (`Dot
                           (_loc, (`Uid (_loc, "Lexing_util")),
                             (`Lid (_loc, "from_lexbuf")))),
-                       (`Lid (_loc, "lexbuf"))))) : Astf.exp ))])));
+                       (`Lid (_loc, "lexbuf"))))) :>Astf.exp))])));
     ("ocaml_eof",
       ((fun { loc = _loc;_}  ->
           [((Eof : Translate_lex.concrete_regexp ),
@@ -1731,8 +1735,8 @@ let _ =
                                                           (`Str (_loc, "")))))))))),
                                       (`Dot
                                          (_loc, (`Uid (_loc, "Tokenf")),
-                                           (`Lid (_loc, "t"))))))))))))) : 
-             Astf.exp ))])));
+                                           (`Lid (_loc, "t"))))))))))))) :>
+             Astf.exp))])));
     ("ocaml_simple_quotation",
       ((fun { loc = _loc;_}  ->
           [((Sequence ((Characters [(37, 37)]), (Characters [(123, 123)])) : 
@@ -1889,8 +1893,8 @@ let _ =
                                                                     "lexbuf")),
                                                                     (`Lid
                                                                     (_loc,
-                                                                    "lex_curr_p"))))))))))))))))))))))))))))))) : 
-             Astf.exp ))])));
+                                                                    "lex_curr_p"))))))))))))))))))))))))))))))) :>
+             Astf.exp))])));
     ("ocaml_quotation",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -2259,8 +2263,8 @@ let _ =
                                                                     "retract")),
                                                                     (`Lid
                                                                     (_loc,
-                                                                    "retract"))))))))))))))))))))))))))))))))) : 
-             Astf.exp ))])));
+                                                                    "retract"))))))))))))))))))))))))))))))))) :>
+             Astf.exp))])));
     ("ocaml_double_quotation",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -2755,8 +2759,8 @@ let _ =
                                                                     (
                                                                     `Lid
                                                                     (_loc,
-                                                                    "t"))))))))))))))))))))))) : 
-             Astf.exp ))])));
+                                                                    "t"))))))))))))))))))))))) :>
+             Astf.exp))])));
     ("line_directive",
       ((fun { quot_opt = q; loc = _loc;_}  ->
           [((Sequence
@@ -2855,7 +2859,7 @@ let _ =
                                          (`Lid (_loc, "num")))))))),
                           (`Label
                              (_loc, (`Lid (_loc, "absolute")),
-                               (`Bool (_loc, true))))))) : Astf.exp )))])));
+                               (`Bool (_loc, true))))))) :>Astf.exp)))])));
     ("ocaml_ant",
       ((fun { loc = _loc;_}  ->
           [((Bind
@@ -3061,8 +3065,8 @@ let _ =
                                                                   (_loc,
                                                                     "None")))))))))))))))))),
                        (`Dot
-                          (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
-             Astf.exp ));
+                          (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) :>
+             Astf.exp));
           ((Bind
               ((Sequence
                   ((Sequence
@@ -3310,8 +3314,8 @@ let _ =
                                                                     "cxt")),
                                                                     (`Uid
                                                                     (_loc,
-                                                                    "None"))))))))))))))))))))))))))) : 
-            Astf.exp ));
+                                                                    "None"))))))))))))))))))))))))))) :>
+            Astf.exp));
           ((Sequence
               ((Characters [(36, 36)]),
                 (Bind
@@ -3350,4 +3354,4 @@ let _ =
                       (`Dot
                          (_loc, (`Uid (_loc, "Lexing_util")),
                            (`Lid (_loc, "from_lexbuf")))),
-                      (`Lid (_loc, "lexbuf"))))) : Astf.exp ))])))]
+                      (`Lid (_loc, "lexbuf"))))) :>Astf.exp))])))]

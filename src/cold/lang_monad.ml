@@ -15,16 +15,18 @@ let _ =
                 (`Match
                    (_loc,
                      (`Constraint
-                        (_loc, e,
+                        (_loc, (e :>Astf.exp),
                           (`App (_loc, (`Lid (_loc, "option")), (`Any _loc))))),
                      (`Bar
                         (_loc,
                           (`Case
-                             (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
-                               acc)),
+                             (_loc,
+                               (`App
+                                  (_loc, (`Uid (_loc, "Some")),
+                                    (p :>Astf.pat))), (acc :>Astf.exp))),
                           (`Case
                              (_loc, (`Uid (_loc, "None")),
-                               (`Uid (_loc, "None"))))))) : Astf.exp )
+                               (`Uid (_loc, "None"))))))) :>Astf.exp)
             | _ -> assert false) t.bind t.exp)
 let f (loc : Locf.t) meta content =
   let module_name =
@@ -62,7 +64,7 @@ let f (loc : Locf.t) meta content =
                         } : Tokenf.pattern );
                      Self];
                    annot =
-                     "(try\n   let f = Hashtbl.find specializer module_name in\n   fun ()  -> f { bind = bi; exp = x }\n with\n | Not_found  ->\n     (fun ()  ->\n        Ast_basic.fold_and_right\n          (fun bind  acc  ->\n             match bind with\n             | (`Bind (_loc,p,e) : Astf.bind) ->\n                 (`App\n                    (_loc,\n                      (`App\n                         (_loc,\n                           (`Dot\n                              (_loc, (`Uid (_loc, module_name)),\n                                (`Lid (_loc, \"bind\")))), e)),\n                      (`Fun (_loc, (`Case (_loc, p, acc))))) : Astf.exp )\n             | _ -> assert false) bi x)) ()\n";
+                     "(try\n   let f = Hashtbl.find specializer module_name in\n   fun ()  -> f { bind = bi; exp = x }\n with\n | Not_found  ->\n     (fun ()  ->\n        Ast_basic.fold_and_right\n          (fun bind  acc  ->\n             match bind with\n             | (`Bind (_loc,p,e) : Astf.bind) ->\n                 (`App\n                    (_loc,\n                      (`App\n                         (_loc,\n                           (`Dot\n                              (_loc, (`Uid (_loc, module_name)),\n                                (`Lid (_loc, \"bind\")))), (e :>Astf.exp))),\n                      (`Fun\n                         (_loc,\n                           (`Case (_loc, (p :>Astf.pat), (acc :>Astf.exp)))))) :>\n                 Astf.exp)\n             | _ -> assert false) bi x)) ()\n";
                    fn =
                      (Gramf.mk_action
                         (fun (x : 'exp)  _  (bi : 'bind)  _  _ 
@@ -88,11 +90,14 @@ let f (loc : Locf.t) meta content =
                                                                  module_name)),
                                                             (`Lid
                                                                (_loc, "bind")))),
-                                                       e)),
+                                                       (e :>Astf.exp))),
                                                   (`Fun
                                                      (_loc,
-                                                       (`Case (_loc, p, acc))))) : 
-                                             Astf.exp )
+                                                       (`Case
+                                                          (_loc,
+                                                            (p :>Astf.pat),
+                                                            (acc :>Astf.exp)))))) :>
+                                             Astf.exp)
                                          | _ -> assert false) bi x)) () : 
                            'exp ) : 'exp ->
                                       Tokenf.txt ->
@@ -106,7 +111,8 @@ let f (loc : Locf.t) meta content =
      Gramf.fresh_with_levels exp tmp_entry__001_; result)
   with | x -> (Gramf.fresh_with_levels exp tmp_entry__001_; raise x)
 let f2 (_loc : Locf.t) _meta content =
-  let res = f _loc _meta content in (`StExp (_loc, res) : Astf.stru )
+  let res = f _loc _meta content in
+  (`StExp (_loc, (res :>Astf.exp)) :>Astf.stru)
 let () =
   let d = Ns.lang in
   Ast_quotation.add { domain = d; name = "cexp" } Dyn_tag.exp f;

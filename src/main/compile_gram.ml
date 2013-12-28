@@ -26,7 +26,7 @@ let ghost = Locf.ghost
 let module_name =
   ref %exp'@ghost{Gramf} (* BOOTSTRAPING -- *)  
 
-let gm () =
+let gm () : vid  =
   match !Configf.compilation_unit with
   |Some "Gramf" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
@@ -145,8 +145,9 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
     | Nterm (_loc, n, lev) ->
         let obj =
+          (* [$id] -- type annotation needed *)
           %exp{ ($id{gm()}.obj
-                   (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
+                   (${n.id} : '$lid{n.tvar} $id{(gm():vid)}.t ))} in 
         (match lev with
         | Some lab -> %exp{ Snterml ($obj,$int':lab)}
         | None ->
@@ -158,8 +159,8 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
   aux  tvar x
 
 
-and make_exp_rules 
-    (rl : (Gram_def.text list  * exp * Gram_def.action ) list) (tvar:string) =
+and make_exp_rules (rl : (Gram_def.text list  * exp * Gram_def.action ) list)
+    (tvar:string) =
   rl
   |> List.map (fun (sl,action, (raw:Gram_def.action)) ->
       let action_string =
@@ -250,9 +251,9 @@ let make_action (_loc:loc)
   {[(Some `LA)]} it has type [position option] *)
 let make_single_extend_statement (e : Gram_def.entry)  : exp =
   let _loc = e.name.loc in
-  let gmid = (gm():vid:>ident) in
+  let gmid = (gm():vid:>ident) in (* FIXME *)
   let ent =
-    %exp{(${(e.name.id :> exp)}:'$lid{e.name.tvar} $id:gmid.t)  }   in
+    %exp{(${e.name.id}:'$lid{e.name.tvar} $id:gmid.t)  }   in
   let pos = (* hastype Gramf.position option *)
     match e.pos with
     | Some pos -> %exp{Some $pos} 
@@ -277,7 +278,7 @@ let make_single_extend_statement (e : Gram_def.entry)  : exp =
     (* generated code of type [olevel] *)
     %exp{
     ({label = $pos; lassoc = $ass; productions = $prod } :
-       $id{(gm() : vid :> ident)}.olevel)} in
+       $id{(gm():vid)}.olevel)} in
   let l = e.level in
   %exp{({entry = $ent ; olevel = ${apply l} } : _ Gramf.single_extend_statement)}
 
@@ -302,8 +303,8 @@ let make_localbinds _loc locals   =
   let local_bind_of_name (x:Gram_def.name) =
     match (x:Gram_def.name) with 
     | {id = `Lid (_,i) ; tvar = x; loc = _loc} ->
-        %bind{ $lid:i =
-               (Gramf.mk $str:i : '$lid:x $id{(gm():vid :> ident)}.t )}
+        %bind{ $lid:i = (* FIXME -- not type annotations*)
+               (Gramf.mk $str:i : '$lid:x $id{(gm():vid)}.t )}
     | _  -> failwithf "internal error in the Grammar extension %s"
           (Objs.dump_vid x.id)   in
   List.map local_bind_of_name locals
@@ -337,7 +338,7 @@ let make_protects _loc (x:Gram_def.entries) action =
   (*   list_of_list (List.map make_single_extend_statement globals) in *)
   let binds = List.map
       (fun (x:Gram_def.entry) ->
-        (%fresh{tmp_entry}, %exp{${(x.name.id :> exp)}})) globals in
+        (%fresh{tmp_entry}, %exp{${x.name.id}})) globals in
   let save_binds =
     List.map (fun (tmp, e) ->  %bind{  $lid:tmp = Gramf.get_levels $e }) binds in
   let pop_actions =

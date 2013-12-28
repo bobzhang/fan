@@ -64,5 +64,5 @@ let mk_tuple ~arity  ~number  =
         Int.fold_left ~start:1 ~until:(n - 1)
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
-      (`Par e : Astfn.ep )
+      (`Par e :>Astfn.ep)
   | _ -> invalid_arg "mk_tuple arity < 1 "

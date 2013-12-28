@@ -52,7 +52,7 @@ type 'a t =
   | Clfield
   | Ep
   | Rec_bind 
-let of_string =
+let to_string =
   function
   | Literal  -> "literal"
   | Flag  -> "flag"
@@ -106,6 +106,61 @@ let of_string =
   | Clfield  -> "clfield"
   | Ep  -> "ep"
   | Rec_bind  -> "rec_bind"
+let of_string =
+  function
+  | "literal" -> Literal
+  | "flag" -> Flag
+  | "position_flag" -> Position_flag
+  | "strings" -> Strings
+  | "lident" -> Lident
+  | "alident" -> Alident
+  | "auident" -> Auident
+  | "aident" -> Aident
+  | "astring" -> Astring
+  | "uident" -> Uident
+  | "ident" -> Ident
+  | "ident'" -> Ident'
+  | "vid" -> Vid
+  | "vid'" -> Vid'
+  | "dupath" -> Dupath
+  | "dlpath" -> Dlpath
+  | "any" -> Any
+  | "ctyp" -> Ctyp
+  | "type_parameters" -> Type_parameters
+  | "row_field" -> Row_field
+  | "tag_names" -> Tag_names
+  | "typedecl" -> Typedecl
+  | "type_constr" -> Type_constr
+  | "opt_type_constr" -> Opt_type_constr
+  | "decl_param" -> Decl_param
+  | "decl_params" -> Decl_params
+  | "opt_decl_params" -> Opt_decl_params
+  | "type_info" -> Type_info
+  | "type_repr" -> Type_repr
+  | "name_ctyp" -> Name_ctyp
+  | "or_ctyp" -> Or_ctyp
+  | "of_ctyp" -> Of_ctyp
+  | "pat" -> Pat
+  | "rec_pat" -> Rec_pat
+  | "exp" -> Exp
+  | "rec_exp" -> Rec_exp
+  | "mtyp" -> Mtyp
+  | "sigi" -> Sigi
+  | "mbind" -> Mbind
+  | "constr" -> Constr
+  | "bind" -> Bind
+  | "case" -> Case
+  | "mexp" -> Mexp
+  | "stru" -> Stru
+  | "cltdecl" -> Cltdecl
+  | "cltyp" -> Cltyp
+  | "clsigi" -> Clsigi
+  | "cldecl" -> Cldecl
+  | "clexp" -> Clexp
+  | "clfield" -> Clfield
+  | "ep" -> Ep
+  | "rec_bind" -> Rec_bind
+  | _ -> failwith ("Astf" ^ ("." ^ "of_string"))
 let literal: literal t = Literal
 let flag: flag t = Flag
 let position_flag: position_flag t = Position_flag
@@ -171,5 +226,5 @@ module Pack(X:sig type 'a t   end) =
         then (Obj.obj obj : 'a X.t )
         else raise Pack_error
     let print_tag: Format.formatter -> pack -> unit =
-      fun f  (tag,_)  -> Format.pp_print_string f (of_string tag)
+      fun f  (tag,_)  -> Format.pp_print_string f (to_string tag)
   end
