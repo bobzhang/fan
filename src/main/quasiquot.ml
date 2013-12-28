@@ -24,10 +24,12 @@ let expander ant_annot = object
     |`Ant(_loc, x) ->
       let meta_loc_pat _loc _ =  %pat{ _ } in
       let mloc _loc = meta_loc_pat  _loc _loc in
-      let e =
-        (* let v = *)
-          Tokenf.ant_expand Parsef.pat x   in
-        (* if ant_annot then %pat{ ( $v :> Astf.pat)}in *)
+      (*
+        (x:int:>int) is an invalid pattern --
+        we can not put rigid type annotations here,
+        so for the pat, we simply ignore it, which does
+        not hurt the user experience too much. *)
+      let e = Tokenf.ant_expand Parsef.pat x   in
       begin 
         match (x.kind,x.cxt) with
         | (("uid" | "lid" | "par" | "seq"
@@ -49,21 +51,11 @@ let expander ant_annot = object
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in
       let mloc _loc = meta_loc_exp _loc _loc  in (* FIXME Simplify*)
-      let e =
-        (* let v = *)
-          Tokenf.ant_expand Parsef.exp x in
-        (* if ant_annot then *)
-        (*   %exp{ ($v :> Astf.exp )} *)
-        (* else  v  in *)
+      let e = Tokenf.ant_expand Parsef.exp x in
       (match (x.kind,x.cxt) with
       |(("uid" | "lid" 
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" | "par" | "seq" as x),_) ->
-          (* let e =  *)
-          (*   match (ty, ant_annot) with *)
-          (*   | (Some ty, true) -> *)
-          (*       %exp{ ($e:> Astf.$lid:ty)} *)
-          (*   | _ -> e  in *)
           %{$vrn{String.capitalize x} (${mloc _loc},$e) }
       | (("vrn" as x), Some ("exp" |"pat")) ->
 
@@ -75,15 +67,13 @@ let expander ant_annot = object
             | None -> e in
           let s = String.sub x 0 (String.length x - 1) |> String.capitalize in
           %exp{$vrn:s (${mloc _loc}, $v)}
-            
       | (_, ty) -> 
           let e =
             match (ty, ant_annot) with
             | (Some ty, true) ->
                  %exp{ ($e:> Astf.$lid:ty)}
             | _ -> e  in
-            super#exp e
-      (* | _ -> super#exp e *))
+            super#exp e)
     | e -> super#exp e
    
   end
@@ -124,9 +114,7 @@ let expandern ant_annot  = object
             | (Some ty, true) ->
                  %exp{ ($e:> Astfn.$lid:ty)}
             | _ -> e  in
-            super#exp e
-            
-      (* | _ -> super#exp e *))
+            super#exp e)
     | e -> super#exp e
   end
     

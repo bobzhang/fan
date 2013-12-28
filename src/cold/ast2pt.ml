@@ -19,87 +19,120 @@ let remove_underscores s =
   Buffer.contents buf
 let dump_ident =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_ident")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_ident")
 let dump_ctyp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
 let dump_row_field =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_row_field")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_row_field")
 let dump_name_ctyp =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_name_ctyp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_name_ctyp")
 let dump_constr =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_constr")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_constr")
 let dump_mtyp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_mtyp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mtyp")
 let dump_ctyp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
 let dump_or_ctyp =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_or_ctyp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_or_ctyp")
 let dump_pat =
-  ref (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_pat")
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_pat")
 let dump_type_parameters =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt"
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
          "dump_type_parameters")
 let dump_exp =
-  ref (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_exp")
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_exp")
 let dump_case =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_case")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_case")
 let dump_rec_exp =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_rec_exp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_rec_exp")
 let dump_type_constr =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_type_constr")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_type_constr")
 let dump_typedecl =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_typedecl")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_typedecl")
 let dump_sigi =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_sigi")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_sigi")
 let dump_mbind =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_mbind")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_mbind")
 let dump_mexp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_mexp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mexp")
 let dump_stru =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_stru")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_stru")
 let dump_cltyp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_cltyp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cltyp")
 let dump_cldecl =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_cldecl")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cldecl")
 let dump_cltdecl =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_cltdecl")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cltdecl")
 let dump_clsigi =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_clsigi")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clsigi")
 let dump_clexp =
   ref
-    (fun _  -> Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_clexp")
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clexp")
 let dump_clfield =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "dump_clfield")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clfield")
 let module_path: string list ref = ref []
 let current_top_bind: string list ref = ref []
 let mk_constant_exp _loc (x : literal) =
@@ -194,7 +227,8 @@ let generate_type_code:
   (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
   ref
     (fun _  ->
-       Util.failwithf "%s.%s not implemented " "Ast2pt" "generate_type_code")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "generate_type_code")
 let ant_error loc = error loc "antiquotation not expected here"
 let mkvirtual (x : Astf.flag) =
   (match x with

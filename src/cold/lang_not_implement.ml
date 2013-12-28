@@ -13,9 +13,12 @@ let () =
                            (loc,
                              (`App
                                 (loc,
-                                  (`Dot
-                                     (loc, (`Uid (loc, "Util")),
-                                       (`Lid (loc, "failwithf")))),
+                                  (`App
+                                     (loc,
+                                       (`Dot
+                                          (loc, (`Uid (loc, "Format")),
+                                            (`Lid (loc, "ksprintf")))),
+                                       (`Lid (loc, "failwith")))),
                                   (`Str (loc, "%s.%s not implemented ")))),
                              (`Lid (loc, "__MODULE__")))),
                         (`Lid (loc, "__BIND__"))))))))) :>Astf.exp) in
