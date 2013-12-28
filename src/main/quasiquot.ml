@@ -44,7 +44,7 @@ let expander ant_annot = object
     |`Ant(_loc, x) ->
         let meta_loc_exp _loc loc =
           match !Ast_quotation.current_loc_name with
-          | Some "here" -> (Ast_gen.meta_here _loc loc :> Astf.exp)
+          | Some "here" -> %exp{ ${Ast_gen.meta_here _loc loc}}
           | x ->
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in

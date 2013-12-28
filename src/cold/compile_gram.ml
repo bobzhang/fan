@@ -11,9 +11,9 @@ let prefix = "__fan_"
 let ghost = Locf.ghost
 let module_name = ref (`Uid (ghost, "Gramf"))
 let gm () =
-  match !Configf.compilation_unit with
-  | Some "Gramf" -> `Uid (ghost, "")
-  | Some _|None  -> !module_name
+  (match !Configf.compilation_unit with
+   | Some "Gramf" -> `Uid (ghost, "")
+   | Some _|None  -> !module_name : vid )
 let add ?(check= true)  ((loc,id),v) env =
   if check && (List.exists (fun ((_,i),_)  -> i = id) (!env))
   then Locf.failf loc "This variable %s is bound several times" id
@@ -144,7 +144,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
                     (`App
                        (_loc,
                          (`Dot
-                            (_loc, ((gm () : vid  :>ident) :>Astf.ident),
+                            (_loc, ((gm () : vid ) :>Astf.ident),
                               (`Lid (_loc, "t")))),
                          (`Quote
                             (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))))))) :>
@@ -351,8 +351,8 @@ let make_single_extend_statement (e : Gram_def.entry) =
                             (_loc, (`Lid (_loc, "productions")),
                               (prod :>Astf.exp))))))))),
           (`Dot
-             (_loc, ((gm () : vid  :>ident) :>Astf.ident),
-               (`Lid (_loc, "olevel"))))) :>Astf.exp) in
+             (_loc, ((gm () : vid ) :>Astf.ident), (`Lid (_loc, "olevel"))))) :>
+       Astf.exp) in
    let l = e.level in
    (`Constraint
       (_loc,
@@ -398,7 +398,7 @@ let make_localbinds _loc locals =
                   (`App
                      (_loc,
                        (`Dot
-                          (_loc, ((gm () : vid  :>ident) :>Astf.ident),
+                          (_loc, ((gm () : vid ) :>Astf.ident),
                             (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) :>
         Astf.bind)

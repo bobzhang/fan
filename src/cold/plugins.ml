@@ -61,7 +61,7 @@ let (gen_map,gen_map2) =
       (fun (x : Ctyp.ty_info)  res  ->
          (`LetIn
             (`Negative,
-              (`Bind (((x.ep0 :>pat) :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+              (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) params (result :>exp) in
   let mk_tuple params =
     let result =
@@ -70,7 +70,7 @@ let (gen_map,gen_map2) =
       (fun (x : Ctyp.ty_info)  res  ->
          (`LetIn
             (`Negative,
-              (`Bind (((x.ep0 :>pat) :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+              (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) params (result :>exp) in
   let mk_record cols =
     let result =
@@ -82,9 +82,8 @@ let (gen_map,gen_map2) =
         |> ExpN.mk_record in
     List.fold_right
       (fun ({ info = { info_exp = exp; ep0;_};_} : Ctyp.record_col)  res  ->
-         let pat0 = (ep0 :>pat) in
          (`LetIn
-            (`Negative, (`Bind ((pat0 :>Astfn.pat), (exp :>Astfn.exp))),
+            (`Negative, (`Bind ((ep0 :>Astfn.pat), (exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) cols result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" ~mk_variant ()),
@@ -113,8 +112,7 @@ let gen_strip =
          | _ ->
              (`LetIn
                 (`Negative,
-                  (`Bind
-                     (((x.ep0 :>pat) :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
                   (res :>Astfn.exp)) :>Astfn.exp)) params' result in
   let mk_tuple params =
     let result =
@@ -130,8 +128,7 @@ let gen_strip =
          | _ ->
              (`LetIn
                 (`Negative,
-                  (`Bind
-                     (((x.ep0 :>pat) :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
                   (res :>Astfn.exp)) :>Astfn.exp)) params result in
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
@@ -158,10 +155,9 @@ let gen_fill =
               |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
-             let pat0 = (x.ep0 :>pat) in
              (`LetIn
                 (`Negative,
-                  (`Bind ((pat0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
                   (res :>Astfn.exp)) :>Astfn.exp)) params result in
   let mk_tuple params =
     let result =
@@ -175,10 +171,9 @@ let gen_fill =
               |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
            |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
          | _ ->
-             let pat0 = (x.ep0 :>pat) in
              (`LetIn
                 (`Negative,
-                  (`Bind ((pat0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
                   (res :>Astfn.exp)) :>Astfn.exp)) params result in
   let mk_record _cols = assert false in
   gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant ~names:["loc"]
@@ -275,18 +270,17 @@ let mk_variant_iter _cons params =
          params |>
            (List.map
               (fun (x : Ctyp.ty_info)  ->
-                 (`App
-                    ((x.name_exp :>Astfn.exp),
-                      ((x.id_ep : ep  :>exp) :>Astfn.exp)) :>Astfn.exp))) in
+                 (`App ((x.name_exp :>Astfn.exp), (x.id_ep :>Astfn.exp)) :>
+                 Astfn.exp))) in
        seq_sem lst : exp )
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =
   (cols |>
      (List.map
         (fun (x : Ctyp.record_col)  ->
-           let id_exp = ((x.info).id_ep :>exp) in
-           (`App (((x.info).name_exp :>Astfn.exp), (id_exp :>Astfn.exp)) :>
-             Astfn.exp))))
+           (`App
+              (((x.info).name_exp :>Astfn.exp), ((x.info).id_ep :>Astfn.exp)) :>
+           Astfn.exp))))
     |> seq_sem
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]

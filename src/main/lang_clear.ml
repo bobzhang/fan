@@ -23,7 +23,6 @@ nonterminalsclear :
   [ qualuid as t; L1 a_lident as ls %{
     ls
     |> List.map (fun (x:alident) ->
-      let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
       %exp{ $id:t.clear $x })
     |> seq_sem} ]

@@ -1,5 +1,4 @@
 let sem_of_list = Ast_gen.sem_of_list
-open Astf
 let qualid = Gramf.mk "qualid"
 let nonterminals = Gramf.mk "nonterminals"
 let newterminals = Gramf.mk "newterminals"
@@ -395,7 +394,7 @@ let _ =
                    List1
                      (Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))];
                  annot =
-                   "let mk =\n  match t with\n  | `Static t ->\n      (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk\"))) :>Astf.exp)\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      (`App\n         (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n           (x :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
+                   "let mk =\n  match t with\n  | `Static t ->\n      (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk\"))) :>Astf.exp)\n  | `Dyn (x,t) ->\n      (`App\n         (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n           (x :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (ls : 'type_entry list)  (t : 'ty) 
@@ -407,7 +406,6 @@ let _ =
                                    (_loc, (t :>Astf.vid),
                                      (`Lid (_loc, "mk"))) :>Astf.exp)
                             | `Dyn (x,t) ->
-                                let x = (x : vid  :>exp) in
                                 (`App
                                    (_loc,
                                      (`Dot
@@ -496,7 +494,7 @@ let _ =
                    List1
                      (Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))];
                  annot =
-                   "let mk =\n  (`App\n     (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n       ((x : vid  :>exp) :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
+                   "let mk =\n  (`App\n     (_loc, (`Dot (_loc, (t :>Astf.vid), (`Lid (_loc, \"mk_dynamic\")))),\n       (x :>Astf.exp)) :>Astf.exp) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d))))))) :>\n            Astf.stru)\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, d)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x))))))) :>\n            Astf.stru)\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc,\n                           (`App (_loc, (mk :>Astf.exp), (`Str (_loc, x)))),\n                           (typ :>Astf.ctyp)))))) :>Astf.stru)) ls)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
@@ -507,7 +505,7 @@ let _ =
                                  (`Dot
                                     (_loc, (t :>Astf.vid),
                                       (`Lid (_loc, "mk_dynamic")))),
-                                 ((x : vid  :>exp) :>Astf.exp)) :>Astf.exp) in
+                                 (x :>Astf.exp)) :>Astf.exp) in
                           sem_of_list
                             (List.map
                                (fun (_loc,x,descr,ty)  ->

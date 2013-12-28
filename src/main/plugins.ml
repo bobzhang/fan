@@ -97,13 +97,13 @@ let (gen_map,gen_map2) =
          (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0)) ) in 
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
-              %exp-{let $pat{ (x.ep0:>pat)} = ${x.info_exp} in $res })  params (result:>exp) in
+              %exp-{let $pat{x.ep0} = ${x.info_exp} in $res })  params (result:>exp) in
   let mk_tuple params =
     let result = 
       params |> List.map (fun (x:Ctyp.ty_info) ->x.ep0) |> tuple_com in
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
-        %exp-{ let $pat{(x.ep0:>pat)} = ${x.info_exp} in $res }) params (result:>exp) in 
+        %exp-{ let $pat{x.ep0} = ${x.info_exp} in $res }) params (result:>exp) in 
   let mk_record cols =
     (* (->label,info.exp0) *)
     let result = 
@@ -116,8 +116,7 @@ let (gen_map,gen_map2) =
     |> ExpN.mk_record   in
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
-        let pat0 = (ep0 :> pat) in 
-        %exp-{let $pat:pat0 = $exp in $res }) cols result in
+        %exp-{let $pat{ep0} = $exp in $res }) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
      ~mk_variant  (),
@@ -153,7 +152,7 @@ let gen_strip =
         | %ctyp-{Tokenf.quot}(** BOOTSTRAPING, associated with module [Tokenf] *)
         | %ctyp-{Tokenf.ant} -> res
         | _ ->
-            %exp-{let $pat{(x.ep0:>pat)} = ${x.info_exp} in $res }) params' result in
+            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result in
   let mk_tuple params =
     let result = 
       (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) |> tuple_com  :> exp) in
@@ -163,7 +162,7 @@ let gen_strip =
         | `Lid("int"|"char" | "string" | "int32" | "unit"| "nativeint" |"bool"|"loc")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res (* BOOTSTRAPING *)
         | _ ->
-            %exp-{let $pat{(x.ep0 :> pat)} = ${x.info_exp} in $res }) params result
+            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result
   in 
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
@@ -196,8 +195,7 @@ let gen_fill =
         | `Lid("int" |"char"| "string" | "int32" |"unit"| "nativeint"|"bool" |"loc"|"ant")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} -> res
         | _ ->
-            let pat0 = (x.ep0:>pat) in
-            %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in
+            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result in
   let mk_tuple params =
     let result = 
       (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) |> tuple_com :> exp) in
@@ -207,8 +205,7 @@ let gen_fill =
         | `Lid("int"|"char" | "string" | "int32" | "unit" | "nativeint" |"bool"|"loc"|"ant")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res
         | _ ->
-            let pat0 = (x.ep0 :> pat) in
-            %exp-{let $pat:pat0 = ${x.info_exp} in $res }) params result in 
+            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result in 
   let mk_record _cols = assert false in
   gen_stru
     ~id:(`Pre "") ~mk_tuple
@@ -333,7 +330,7 @@ let mk_variant_iter _cons params :exp =
   | _ -> 
       let lst = params
         |> List.map (fun (x:Ctyp.ty_info) -> 
-            %exp-{ ${x.name_exp} ${(x.id_ep : ep :> exp)} }) in
+            %exp-{ ${x.name_exp} ${x.id_ep} }) in
         seq_sem lst 
 
 let mk_tuple_iter params : exp =
@@ -343,8 +340,7 @@ let mk_record_iter cols =
   cols
   |> List.map
     (fun (x:Ctyp.record_col) ->
-      let id_exp = (x.info.id_ep :> exp) in
-      %exp-{ ${x.info.name_exp} $id_exp })
+      %exp-{ ${x.info.name_exp} ${x.info.id_ep} })
   |> seq_sem
 
 

@@ -1088,45 +1088,45 @@ ctyp_quot:
 |ctyp as x %{x} ]
   unquoted_typevars:
   [ S as t1; S as t2 %{ `App(_loc,t1,t2)(* %{ $t1 $t2 } *) (* FIXME order matters ?*)}
-| Ant (""|"typ" ,s) %{  mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
+  | Ant (""|"typ" ,s) %{  mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
 
-| a_lident as i %{ (i:>ctyp)} ]
+  | a_lident as i %{ (i:>ctyp)} ]
   type_parameter:
   [ Ant (""|"typ" ,s) %{ mk_ant s}
-| "'"; a_lident as i %{ `Quote(_loc,`Normal _loc, i)}
-| ("+"|"-" as p); "'"; a_lident as i %{
+  | "'"; a_lident as i %{ `Quote(_loc,`Normal _loc, i)}
+  | ("+"|"-" as p); "'"; a_lident as i %{
     (* FIXME support ?("+"|"-" as p) in the future*)
     `Quote (_loc, if p = "+" then `Positive _loc else `Negative _loc,  i)
   }
-| ("+"|"-" as p); "_" %{ `QuoteAny (_loc, if p = "+" then `Positive _loc else `Negative _loc)}
-| "_" %{  `Any _loc}]
+  | ("+"|"-" as p); "_" %{ `QuoteAny (_loc, if p = "+" then `Positive _loc else `Negative _loc)}
+  | "_" %{  `Any _loc}]
   type_longident_and_parameters:
   [ "("; type_parameters as tpl; ")";type_longident as i %{ tpl (i:>ctyp) }
-| type_parameter as tpl ; type_longident as i %{ `App(_loc, (i:>ctyp),(tpl:>ctyp))}
-| type_longident as i %{ (i:>ctyp)}
-| Ant ("" ,s) %{mk_ant s ~c:(Dyn_tag.to_string Dyn_tag.ctyp)}]
+  | type_parameter as tpl ; type_longident as i %{ `App(_loc, (i:>ctyp),(tpl:>ctyp))}
+  | type_longident as i %{ (i:>ctyp)}
+  | Ant ("" ,s) %{mk_ant s ~c:(Dyn_tag.to_string Dyn_tag.ctyp)}]
   type_parameters:
   [ type_parameter as t1; S as t2 %{ fun acc -> t2 (`App(_loc,acc, (t1:>ctyp)))}
-| type_parameter as t %{ fun acc -> `App(_loc,acc, (t:>ctyp))}
-|  %{fun t -> t}  ]
+  | type_parameter as t %{ fun acc -> `App(_loc,acc, (t:>ctyp))}
+  |  %{fun t -> t}  ]
   meth_list:
   [ meth_decl as m; ";"; S as rest   %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
-| meth_decl as m; ?";"; opt_dot_dot as v %{ (m, v)}]
+  | meth_decl as m; ?";"; opt_dot_dot as v %{ (m, v)}]
   meth_decl:
   [ a_lident as lab; ":"; ctyp as t  %{`TyCol(_loc,lab,t)}]
   opt_meth_list:
   [ meth_list as rest  %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
-| opt_dot_dot as v     %{ `TyObjEnd(_loc,v)} ]
+  | opt_dot_dot as v     %{ `TyObjEnd(_loc,v)} ]
   row_field:
   [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.row_field)  s}
-| Ant("vrn" , s) %{ `TyVrn(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.astring)  s)} (* FIXME*)
-| Ant("vrn" , s) ; "of"; ctyp as t %{
-  `TyVrnOf(_loc,mk_ant
+  | Ant("vrn" , s) %{ `TyVrn(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.astring)  s)} (* FIXME*)
+  | Ant("vrn" , s) ; "of"; ctyp as t %{
+    `TyVrnOf(_loc,mk_ant
              ~c:(Dyn_tag.to_string Dyn_tag.astring)  s,t)}
-| S as t1; "|"; S as t2 %{ `Bar(_loc,t1,t2)}
-| "`"; astr as i %{  `TyVrn(_loc,i)}
-| "`"; astr as i; "of";ctyp as t %{ `TyVrnOf(_loc,i,t)}
-| ctyp as t %{ `Ctyp(_loc,t)}
+  | S as t1; "|"; S as t2 %{ `Bar(_loc,t1,t2)}
+  | "`"; astr as i %{  `TyVrn(_loc,i)}
+  | "`"; astr as i; "of";ctyp as t %{ `TyVrnOf(_loc,i,t)}
+  | ctyp as t %{ `Ctyp(_loc,t)}
     (* | "`"; astr as i; "of"; "&"; amp_ctyp as t -> *)
     (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
     (* %{ `$i of & $t } *)]
@@ -1166,18 +1166,18 @@ ctyp_quot:
 
   type_repr:
   [ "|"; constructor_declarations as t %{ `Sum(_loc,t)}
-| "{"; label_declaration_list as t; "}" %{ `Record (_loc, t)}]
+  | "{"; label_declaration_list as t; "}" %{ `Record (_loc, t)}]
   type_ident_and_parameters:
   [ "(";  L1 type_parameter SEP "," as tpl; ")"; a_lident as i %{
     (i, `Some(_loc, com_of_list (tpl :>  decl_params list)))}
-|  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
-|  a_lident as i %{ (i, `None _loc)}]
+  |  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
+  |  a_lident as i %{ (i, `None _loc)}]
   constrain:
   [ "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1, t2)} ]
   typevars:
   [ S as t1; S as t2 %{ `App(_loc,t1,t2)}
-| Ant (""|"typ" ,s) %{  mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
-| "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
+  | Ant (""|"typ" ,s) %{  mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
+  | "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
   ctyp: 10 
   [ S as t1; "as"; "'"; a_lident as i %{`Alias(_loc,t1,i)}]
   ctyp: 20  
