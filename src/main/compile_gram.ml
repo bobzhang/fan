@@ -166,7 +166,7 @@ and make_exp_rules (rl : (Gram_def.text list  * exp * Gram_def.action ) list)
       let action_string =
         match raw with
         | E None -> ""
-        | E (Some e) ->  Ast2pt.to_string_exp e
+        | E (Some e) ->  Dump.exp_to_string e
         | Ant _ -> "" (* FIXME antiquot *) in
       let sl =
         sl

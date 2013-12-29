@@ -40,7 +40,7 @@ let _ = begin (* FIXME make the printer more restict later *)
       | %mexp{ struct $s end } -> s
       | _ -> failwith "can not find items back " in
     (if !Typehook.show_code then
-      (try Ast2pt.print_stru Format.std_formatter code
+      (try Dump.pp_stru Format.std_formatter code
       with
       | _ ->
           Util.prerr_endlinef 

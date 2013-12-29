@@ -180,7 +180,8 @@ FAN_FILES = \
     lang_monad \
     lang_register\
     quasiquot\
-    fill
+    fill\
+    dump
     # lang_pos \
     # loc_meta
     # parse_grammar2

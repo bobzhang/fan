@@ -2,7 +2,7 @@
 (** Dumping Fan's abstract syntax into OCaml's parsetree *)
   
 open Astf
-open Format
+
   
 val mkvirtual : flag -> Asttypes.virtual_flag
 val mkdirection : flag -> Asttypes.direction_flag
@@ -169,16 +169,6 @@ val directive : exp -> Parsetree.directive_argument
    some  [directives] are passed to parsetree if not handled *)    
 val phrase               : stru -> Parsetree.toplevel_phrase
     
-val pp                   : formatter -> ('a, formatter, unit) format -> 'a
-
-val print_exp            : formatter -> exp -> unit
-val to_string_exp        : exp -> string
-    
-val print_pat            : formatter -> pat -> unit
-
-val print_stru           : formatter -> stru -> unit
-
-val print_ctyp           : formatter -> ctyp -> unit
 
 (** Filled by [typehook] module *)  
 val generate_type_code   : (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref
