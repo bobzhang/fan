@@ -104,8 +104,7 @@ let () =
          match ast with
          | None  -> ()
          | Some xs ->
-             Format.fprintf fmt "@[%a@]@." ObjsN.dump#sigi
-               (Objs.strip_sigi xs)) in
+             Format.fprintf fmt "@[%a@]@." ObjsN.dump#sigi (Strip.sigi xs)) in
   let ast_of_implem ?input_file:_  ?output_file  ast =
     (with_open_out_file output_file) @@
       (fun oc  ->
@@ -113,8 +112,7 @@ let () =
          match ast with
          | None  -> ()
          | Some xs ->
-             Format.fprintf fmt "@[%a@]@." ObjsN.dump#stru
-               (Objs.strip_stru xs)) in
+             Format.fprintf fmt "@[%a@]@." ObjsN.dump#stru (Strip.stru xs)) in
   Hashtbl.add backends "dfanl"
     {
       descr = "Compiles to Fan's original representation without location";

@@ -144,7 +144,7 @@ FAN_FILES = \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid \
-    comment_filter compile_lex compile_stream ctyp \
+    compile_lex compile_stream ctyp \
     derive dyn_load epN \
     expN astfn control control_require \
     metaf \
@@ -154,7 +154,9 @@ FAN_FILES = \
     sigs_util  \
     gfold gramlib\
     idN  ns \
-    fan_args mktop objs objsN \
+    fan_args mktop \
+    strip\
+    objs objsN \
     parse_fan \
     parse_parse \
     parse_stream \

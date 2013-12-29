@@ -165,7 +165,7 @@ let gen_strip =
             %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result
   in 
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
+  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun  x ->
       (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
       (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}))

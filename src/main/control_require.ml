@@ -20,7 +20,6 @@ let add name =
 let () =
   let open Control in
   %extend{
-  (* (g:Gramf.t) *)
     item:
     [ "require"; Str s %{ add s} ]}
 

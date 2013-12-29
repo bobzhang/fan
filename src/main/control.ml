@@ -23,28 +23,25 @@ let rec token = %lex_fan{
       | Some x -> 
           Ast_quotation.set_default x
     end}
-  |"import"; dot_namespace as xs %{Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths}
+  |"import"; dot_namespace as xs
+     %{Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths}
   | "filter"; Str s %{Ast_filters.use_implem_filter s}
   | "lang_clear" %{(Ast_quotation.clear_map(); Ast_quotation.clear_default())}
   ]
   dot_namespace:
   [ Uid i; "."; S as xs %{ i::xs}
-  | Uid i %{ [i]}
-  ]
+  | Uid i %{ [i]}  ]
   items:
   [item; ";" %{ ()}
   |item; ";"; S %{ ()}
-  | %{ ()}
-  ]
+  | %{ ()}]
 };;
 
 let lexer = Lexing_util.adapt_to_stream token 
 let () =
   Ast_quotation.register_unit_parser ~lexer
     (Tokenf.name_of_string "control", items)
-    (* (Tokenf.name_of_string "control", *)
-    (*  (fun loc _ c -> *)
-    (*    Gramlib.parse_string ~loc  items ~lexer c )) *);;
+
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/control.cmo " *)

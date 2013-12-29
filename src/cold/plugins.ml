@@ -131,7 +131,7 @@ let gen_strip =
                   (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
                   (res :>Astfn.exp)) :>Astfn.exp)) params result in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
+  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Astf"), (`Lid x))),

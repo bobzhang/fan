@@ -189,14 +189,13 @@ let mkrf (x: Astf.flag) : Asttypes.rec_flag =
   | `Negative _  -> Nonrecursive
   | `Ant(_loc,_) -> ant_error _loc
 
-
 let ident_tag (i : Astf.ident) :
     (Longident.t * [> `app | `lident | `uident ]) =
-  let rec self (i:Astf.ident) acc =
+  let rec self (i:Astf.ident) acc : (Longident.t * _) option=
     let _loc = unsafe_loc_of i in
     match i with
     | `Dot (_,`Lid (_,"*predef*"),`Lid (_,"option")) ->
-      Some (ldot (lident "*predef*") "option", `lident)
+      Some (Ldot ((Lident "*predef*"), "option"), `lident)
     | `Dot (_,i1,i2)  -> self i2 (self i1 acc)
     | `Apply (_,i1,i2) ->
         begin 
@@ -210,9 +209,9 @@ let ident_tag (i : Astf.ident) :
         begin 
           match (acc, s) with
           | (None ,"") -> None
-          | (None ,s) -> Some (lident s, `uident)
+          | (None ,s) -> Some (Lident s, `uident)
           | (Some (_,(`uident|`app)),"") -> acc
-          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
+          | (Some (x,(`uident|`app)),s) -> Some ((Ldot (x, s)), `uident)
           | _ ->
               Locf.failf _loc "invalid long identifier %s" @@ !dump_ident i
         end
@@ -220,7 +219,7 @@ let ident_tag (i : Astf.ident) :
       let x =
         match acc with
         | None  -> lident s
-        | Some (acc,(`uident|`app)) -> ldot acc s
+        | Some (acc,(`uident|`app)) -> Ldot (acc, s)
         | _ ->
           Locf.failf _loc "invalid long identifier %s" @@ !dump_ident i in
       Some (x, `lident)

@@ -252,36 +252,37 @@ let mkrf (x : Astf.flag) =
    | `Ant (_loc,_) -> ant_error _loc : Asttypes.rec_flag )
 let ident_tag (i : Astf.ident) =
   (let rec self (i : Astf.ident) acc =
-     let _loc = unsafe_loc_of i in
-     match i with
-     | `Dot (_,`Lid (_,"*predef*"),`Lid (_,"option")) ->
-         Some ((ldot (lident "*predef*") "option"), `lident)
-     | `Dot (_,i1,i2) -> self i2 (self i1 acc)
-     | `Apply (_,i1,i2) ->
-         (match ((self i1 None), (self i2 None), acc) with
-          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
-          | _ ->
-              (Locf.failf _loc "invalid long identifer %s") @@
-                (! dump_ident i))
-     | `Uid (_,s) ->
-         (match (acc, s) with
-          | (None ,"") -> None
-          | (None ,s) -> Some ((lident s), `uident)
-          | (Some (_,(`uident|`app)),"") -> acc
-          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
-          | _ ->
-              (Locf.failf _loc "invalid long identifier %s") @@
-                (! dump_ident i))
-     | `Lid (_,s) ->
-         let x =
-           match acc with
-           | None  -> lident s
-           | Some (acc,(`uident|`app)) -> ldot acc s
+     (let _loc = unsafe_loc_of i in
+      match i with
+      | `Dot (_,`Lid (_,"*predef*"),`Lid (_,"option")) ->
+          Some ((Ldot ((Lident "*predef*"), "option")), `lident)
+      | `Dot (_,i1,i2) -> self i2 (self i1 acc)
+      | `Apply (_,i1,i2) ->
+          (match ((self i1 None), (self i2 None), acc) with
+           | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
+           | _ ->
+               (Locf.failf _loc "invalid long identifer %s") @@
+                 (! dump_ident i))
+      | `Uid (_,s) ->
+          (match (acc, s) with
+           | (None ,"") -> None
+           | (None ,s) -> Some ((Lident s), `uident)
+           | (Some (_,(`uident|`app)),"") -> acc
+           | (Some (x,(`uident|`app)),s) -> Some ((Ldot (x, s)), `uident)
            | _ ->
                (Locf.failf _loc "invalid long identifier %s") @@
-                 (! dump_ident i) in
-         Some (x, `lident)
-     | `Ant (_,_) -> error _loc "invalid long identifier" in
+                 (! dump_ident i))
+      | `Lid (_,s) ->
+          let x =
+            match acc with
+            | None  -> lident s
+            | Some (acc,(`uident|`app)) -> Ldot (acc, s)
+            | _ ->
+                (Locf.failf _loc "invalid long identifier %s") @@
+                  (! dump_ident i) in
+          Some (x, `lident)
+      | `Ant (_,_) -> error _loc "invalid long identifier" : (Longident.t* _)
+                                                               option ) in
    match self i None with
    | Some x -> x
    | None  -> error (unsafe_loc_of i) "invalid long identifier " : (Longident.t*

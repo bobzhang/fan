@@ -1,11 +1,15 @@
 
 
 
-
+%import{
+Fid:
+  xid
+;
+};;
 
 open Astfn 
 open Astn_util
-open Fid
+
 
 let of_str (s:string) : ep =
   let len = String.length s in 
@@ -13,10 +17,16 @@ let of_str (s:string) : ep =
     invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
-    | '`'-> %exp-'{  $vrn{ String.sub s 1 (len - 1)} }
-    | x when Charf.is_uppercase x -> %exp-'{$uid:s}
-    | _ -> %exp-'{ $lid:s } 
+    | '`'-> %ep-{  $vrn{ String.sub s 1 (len - 1)} }
+    | x when Charf.is_uppercase x -> %ep-{$uid:s}
+    | _ -> %ep-{ $lid:s } 
 
+let of_vstr_number name i : ep=
+  let items = Listf.init i xid  in
+  if items = [] then %exp-'{$vrn:name}
+  else
+    let item = tuple_com items  in
+    %exp-'{ $vrn:name $item }
 
 
 
@@ -69,12 +79,6 @@ let tuple_of_number ast n : ep =
   if n > 1 then %exp-'{ $par:res } (* FIXME why %exp-'{ $par:x } cause an ghost location error*)
   else res
 
-let of_vstr_number name i : ep=
-  let items = Listf.init i xid  in
-  if items = [] then %exp-'{$vrn:name}
-  else
-    let item = tuple_com items  in
-    %exp-'{ $vrn:name $item }
       
     
 (*

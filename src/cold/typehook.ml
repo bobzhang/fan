@@ -111,7 +111,7 @@ let traversal () =
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->
-           let item = `Single (name, (Objs.strip_typedecl t)) in
+           let item = `Single (name, (Strip.typedecl t)) in
            let () =
              if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in
@@ -129,7 +129,7 @@ let traversal () =
            (if self#is_in_and_types
             then
               self#update_cur_and_types
-                (fun lst  -> (name, (Objs.strip_typedecl t)) :: lst);
+                (fun lst  -> (name, (Strip.typedecl t)) :: lst);
             t)
        | t -> super#typedecl t
    end : traversal )

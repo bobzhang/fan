@@ -28,13 +28,13 @@ val seq_sem : ([> `Sem of 'a * 'a ] as 'a) list -> [> `Seq of 'a ]
 
 val binds : bind list -> exp -> exp
 
-val lid : 'a -> [> `Lid of 'a ]
+val lid : string -> [> `Lid of string ]
 
-val uid : 'a -> [> `Uid of 'a ]
+val uid : string -> [> `Uid of string ]
 
 val unit : ep
 
-val ep_of_cons : 'a -> ([> `App of 'b * 'b | `Uid of 'a ] as 'b) list -> 'b
+
 
 val tuple_com_unit : ep list -> ep
 
@@ -42,5 +42,18 @@ val tuple_com : ([> `Com of 'a * 'a | `Par of 'a ] as 'a) list -> 'a
 
 val tuple_sta : ([> `Par of 'a | `Sta of 'a * 'a ] as 'a) list -> 'a
 
-val ( +> ) : ([> `App of 'a * 'a | `Lid of 'b ] as 'a) -> 'b list -> 'a
+
+
+
+(**
+   Function application
+   {[
+   %exp-{f} +> ["x";"y"] ) = %exp-{f x y} ;;
+   - : bool = true 
+   ]}
+   
+ *)
+    
   
+val (+>) :
+    ([> `App of 'a * 'a | `Lid of string ] as 'a) -> string list -> 'a

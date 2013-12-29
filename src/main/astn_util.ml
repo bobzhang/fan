@@ -36,8 +36,8 @@ let appl_of_list xs = Ast_basic.of_listl app xs
   
 
 
-(*************************************************************************)
-(*************************************************************************)
+(****************************)
+(****************************)
   
 let seq_sem ls = seq (sem_of_list ls)
 
@@ -49,13 +49,11 @@ let binds bs (e:exp) =
       %exp-{let $binds in $e } 
 
 
-let lid  n = `Lid n
+let lid  (n:string) = `Lid n
     
-let uid  n = `Uid n
+let uid  (n:string) = `Uid n
 let unit : ep = `Unit
 
-let ep_of_cons n ps =
-  appl_of_list (uid  n :: ps)
 
 let tuple_com_unit  = function
   | [] -> unit 
@@ -66,13 +64,13 @@ let tuple_com_unit  = function
   
 let tuple_com y=
   match y with 
-  |[] -> failwith "tuple_com empty"
+  |[] -> %invalid_arg{}
   |[x] -> x
   | _ -> `Par (com_of_list y) 
     
 let tuple_sta y =
   match y with
-  | [] -> failwith "tuple_sta empty"
+  | [] -> %invalid_arg{}
   | [x] -> x
   | _ ->
       `Par  (sta_of_list y)
@@ -80,34 +78,11 @@ let tuple_sta y =
 
 
 
-(*
-   For all strings, we don't do parsing at all. So keep your strings
-   input as simple as possible
-   
-   {[
-   ( %{blabla} +> ["x0";"x1";"x2"] ) |> eprint;
-   blabla x0 x1 x2
-   ]}
- *)
-let (+>) f names  =
+
+let (+>) f (names:string list)  =
   appl_of_list (f:: (List.map lid  names))
          
-let meta_here  location  =
-  let {Locf.loc_start = {
-       pos_fname = a;
-       pos_lnum = b;
-       pos_bol = c;
-       pos_cnum = d;};
-       loc_end = {
-       pos_lnum = e;
-       pos_bol = f;
-       pos_cnum = g;
-       _}; loc_ghost=h;} = location in
-  %exp-'{ Locf.of_tuple
-            ($str':a, $int':b, $int':c, $int':d,
-             $int':e, $int':f, $int':g,
-             ${if h then %exp-'{ true } else %exp-'{ false } }) }
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot  && pmake lib " *)
+(* compile-command: "cd ..  && pmake main_annot/lib " *)
 (* end: *)

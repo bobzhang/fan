@@ -1,15 +1,20 @@
+let xid = Fid.xid
 open Astfn
 open Astn_util
-open Fid
 let of_str (s : string) =
   (let len = String.length s in
    if len = 0
    then invalid_arg "[exp|pat]_of_str len=0"
    else
      (match s.[0] with
-      | '`' -> `Vrn (String.sub s 1 (len - 1))
-      | x when Charf.is_uppercase x -> `Uid s
-      | _ -> `Lid s) : ep )
+      | '`' -> (`Vrn (String.sub s 1 (len - 1)) :>Astfn.ep)
+      | x when Charf.is_uppercase x -> (`Uid s :>Astfn.ep)
+      | _ -> (`Lid s :>Astfn.ep)) : ep )
+let of_vstr_number name i =
+  (let items = Listf.init i xid in
+   if items = []
+   then `Vrn name
+   else (let item = tuple_com items in `App ((`Vrn name), item)) : ep )
 let gen_tuple_first ~number  ~off  =
   match number with
   | 1 -> xid ~off 0
@@ -33,11 +38,6 @@ let tuple_of_number ast n =
      Int.fold_left ~start:1 ~until:(n - 1) ~acc:ast
        (fun acc  _  -> com acc ast) in
    if n > 1 then `Par res else res : ep )
-let of_vstr_number name i =
-  (let items = Listf.init i xid in
-   if items = []
-   then `Vrn name
-   else (let item = tuple_com items in `App ((`Vrn name), item)) : ep )
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     Listf.init arity (fun i  -> Listf.init n (fun j  -> xid ~off:i j)) in

@@ -1,10 +1,10 @@
 open StdFan
 open Astf
-let strip_ant ant = ant ;;
+(* let strip_ant ant = ant ;; *)
 %fans{
 keep off;
 derive((* Map2 Fold2 OIter   OEq *)
-  Print OPrint Map Fold Strip  MapWrapper PrintWrapper);
+  Print OPrint Map Fold   MapWrapper PrintWrapper);
 };;
 
 

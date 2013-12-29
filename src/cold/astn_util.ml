@@ -25,45 +25,19 @@ let binds bs (e : exp) =
   | _ ->
       let binds = and_of_list bs in
       (`LetIn (`Negative, (binds :>Astfn.bind), (e :>Astfn.exp)) :>Astfn.exp)
-let lid n = `Lid n
-let uid n = `Uid n
+let lid (n : string) = `Lid n
+let uid (n : string) = `Uid n
 let unit: ep = `Unit
-let ep_of_cons n ps = appl_of_list ((uid n) :: ps)
 let tuple_com_unit =
   function | [] -> unit | p::[] -> p | y -> `Par (com_of_list y)
 let tuple_com y =
   match y with
-  | [] -> failwith "tuple_com empty"
+  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "tuple_com"))
   | x::[] -> x
   | _ -> `Par (com_of_list y)
 let tuple_sta y =
   match y with
-  | [] -> failwith "tuple_sta empty"
+  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "tuple_sta"))
   | x::[] -> x
   | _ -> `Par (sta_of_list y)
-let (+>) f names = appl_of_list (f :: (List.map lid names))
-let meta_here location =
-  let {
-        Locf.loc_start =
-          { pos_fname = a; pos_lnum = b; pos_bol = c; pos_cnum = d };
-        loc_end = { pos_lnum = e; pos_bol = f; pos_cnum = g;_}; loc_ghost = h
-        }
-    = location in
-  `App
-    ((`Dot ((`Uid "Locf"), (`Lid "of_tuple"))),
-      (`Par
-         (`Com
-            ((`Str (String.escaped a)),
-              (`Com
-                 ((`Com
-                     ((`Com
-                         ((`Com
-                             ((`Com
-                                 ((`Com
-                                     ((`Int (string_of_int b)),
-                                       (`Int (string_of_int c)))),
-                                   (`Int (string_of_int d)))),
-                               (`Int (string_of_int e)))),
-                           (`Int (string_of_int f)))),
-                       (`Int (string_of_int g)))),
-                   (if h then `Bool true else `Bool false)))))))
+let (+>) f (names : string list) = appl_of_list (f :: (List.map lid names))
