@@ -169,7 +169,7 @@ let () =
 }
 
 (********************************)
-(* prepare for parsing wrapper *)
+(* prepare for parsing wrapper  *)
 (********************************)
 
 
@@ -251,13 +251,14 @@ let toplevel_phrase token_stream =
   (*       if stopped_at_directive <> None then pl @ loop () else pl in loop () in *)
   (* FIXME semantics imprecise, the filter will always be applied *)
 let use_file token_stream =
-  let s  = Gramf.parse_tokens_eoi Syntaxf.implem token_stream in
-  match s with
-  | None -> []
-  | Some s -> 
-      List.map
-        (fun x -> Ast2pt.phrase (Ast_filters.apply_implem_filters x) )
-        (Ast_basic.list_of_sem s []) (* (pl0 @ pl) *)
+  let s  = Gramf.parse_tokens_eoi Syntaxf.use_file token_stream in
+  (* match s with *)
+  (* | None -> [] *)
+  (* | Some s ->  *)
+  List.map
+    (fun x -> Ast2pt.phrase (Ast_filters.apply_implem_filters x) )
+    s 
+        (* (Ast_basic.list_of_sem s []) *) (* (pl0 @ pl) *)
 
         
 

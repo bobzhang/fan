@@ -21,5 +21,5 @@ let _ =
   Ast_parsers.use_parsers ["fan"]
 let _ =
   Topdirs.dir_install_printer Format.std_formatter
-    (Longident.Ldot ((Longident.Lident "Gramf"), "dump"));
+    (Longident.parse "Gramf.dump");
   fan ()

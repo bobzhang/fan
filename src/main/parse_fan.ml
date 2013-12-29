@@ -900,19 +900,23 @@ let apply () = begin
 };
   with stru
     %extend{
-    (** ml file  entrance *)
+
       quots@Local:
       [ DirQuotation x ; ";;" %{Ast_quotation.handle_quot x}
-      | S ; S %{()}]           
+      | S ; S %{()}]
+      (** ml file  entrance *)               
       implem:
       [ ? quots; ?strus as x   %{x}]
-      (* | stru as si; ";;"; S as rest %{ *)
-      (*  (\* si::rest *\) *)
-      (*  let (sil, stopped) = rest in (si :: sil, stopped)} *)
-      (* | stru as si;  S as rest *)
-      (*    %{let (sil, stopped) = rest in (si :: sil, stopped)} *)
-      (*    (\* FIXME merge with the above in the future*\)             *)
-      (* |  %{ ([], None)} ] *)
+
+      (** entrance for [#use] in toplevel *)
+      use_file:
+      [ stru as si; ? ";;"; S as rest %{ si :: rest}
+      | "#"; a_lident as n; exp as dp; ";;"; S as rest
+          %{ `Directive(_loc,n,dp) :: rest }
+      | "#"; a_lident as n; ";;"; S as rest
+          %{  `DirectiveSimple(_loc,n) :: rest}
+      | %{[]}]          
+
       (** entrance for toplevel *)
       top_phrase:
       [ "#"; a_lident as n; exp as dp; ";;" %{ `Directive(_loc,n,dp)}
@@ -921,9 +925,7 @@ let apply () = begin
       (* used by [struct .... end]
          constains at least one element *)
       strus: (* FIXME dump seems to be incorrect *)
-      [ Ant (""|"stri" ,s) ;?";;"
-          %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.stru) s
-           }
+      [ Ant (""|"stri" ,s) ;?";;" %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.stru) s}
       | Ant (""|"stri" ,s); ?";;"; S as st
           %{ `Sem (_loc, mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.stru) s, st)}
       | stru as st; ? ";;" %{ st}

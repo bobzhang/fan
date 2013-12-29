@@ -37,8 +37,7 @@ end;;
 
 begin
   Topdirs.dir_install_printer
-    Format.std_formatter
-    (Longident.Ldot ((Longident.Lident "Gramf"),"dump"));
+    Format.std_formatter (Longident.parse "Gramf.dump") ;
   fan ()
 end;;
 
@@ -48,5 +47,5 @@ end;;
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/fan_top.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/fan_top.cmo" *)
 (* end: *)

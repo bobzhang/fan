@@ -12061,6 +12061,102 @@ let apply () =
       } : _ Gramf.single_extend_statement );
    Gramf.extend_single
      ({
+        entry = (use_file : 'use_file Gramf.t );
+        olevel =
+          ({
+             label = None;
+             lassoc = true;
+             productions =
+               [{
+                  symbols = [Nterm (Gramf.obj (stru : 'stru Gramf.t )); Self];
+                  annot = "si :: rest\n";
+                  fn =
+                    (Gramf.mk_action
+                       (fun (rest : 'use_file)  (si : 'stru)  (_loc : Locf.t)
+                           -> (si :: rest : 'use_file ) : 'use_file ->
+                                                            'stru ->
+                                                              Locf.t ->
+                                                                'use_file ))
+                };
+               {
+                 symbols =
+                   [Nterm (Gramf.obj (stru : 'stru Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";;"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot = "si :: rest\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (rest : 'use_file)  _  (si : 'stru) 
+                         (_loc : Locf.t)  -> (si :: rest : 'use_file ) : 
+                      'use_file -> Tokenf.txt -> 'stru -> Locf.t -> 'use_file ))
+               };
+               {
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "#"); tag_name = "Key" }
+                       } : Tokenf.pattern );
+                   Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+                   Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";;"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot = "(`Directive (_loc, n, dp)) :: rest\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (rest : 'use_file)  _  (dp : 'exp) 
+                         (n : 'a_lident)  _  (_loc : Locf.t)  ->
+                         ((`Directive (_loc, n, dp)) :: rest : 'use_file ) : 
+                      'use_file ->
+                        Tokenf.txt ->
+                          'exp ->
+                            'a_lident -> Tokenf.txt -> Locf.t -> 'use_file ))
+               };
+               {
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "#"); tag_name = "Key" }
+                       } : Tokenf.pattern );
+                   Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ";;"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Self];
+                 annot = "(`DirectiveSimple (_loc, n)) :: rest\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (rest : 'use_file)  _  (n : 'a_lident)  _ 
+                         (_loc : Locf.t)  -> ((`DirectiveSimple (_loc, n)) ::
+                         rest : 'use_file ) : 'use_file ->
+                                                Tokenf.txt ->
+                                                  'a_lident ->
+                                                    Tokenf.txt ->
+                                                      Locf.t -> 'use_file ))
+               };
+               {
+                 symbols = [];
+                 annot = "[]\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (_loc : Locf.t)  -> ([] : 'use_file ) : Locf.t ->
+                                                                    'use_file ))
+               }]
+           } : Gramf.olevel )
+      } : _ Gramf.single_extend_statement );
+   Gramf.extend_single
+     ({
         entry = (top_phrase : 'top_phrase Gramf.t );
         olevel =
           ({

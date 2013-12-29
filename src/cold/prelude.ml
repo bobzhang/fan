@@ -157,9 +157,5 @@ let toplevel_phrase token_stream =
   let stru = Gramf.parse_tokens Syntaxf.top_phrase token_stream in
   let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
 let use_file token_stream =
-  let s = Gramf.parse_tokens_eoi Syntaxf.implem token_stream in
-  match s with
-  | None  -> []
-  | Some s ->
-      List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))
-        (Ast_basic.list_of_sem s [])
+  let s = Gramf.parse_tokens_eoi Syntaxf.use_file token_stream in
+  List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x)) s

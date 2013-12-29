@@ -25,7 +25,13 @@
   eq_exp exp
   
   field_exp field_exp_list fun_bind
-  fun_def ident implem interf ipat ipat_tcon pat_tcon
+  fun_def ident
+  implem
+  interf
+  use_file
+  ipat 
+  ipat_tcon
+  pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
   label_pat_list label_pat label_longident
    meth_list meth_decl mbind
