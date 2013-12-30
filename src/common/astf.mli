@@ -219,11 +219,11 @@ and tag_names =
   [ ant
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
-and typedecl =
+and decl =
     (* %stru{ type  ('a, 'b, 'c) t = t } *)
   [ `TyDcl of (loc * alident * opt_decl_params * type_info * opt_type_constr)
   | `TyAbstr of (loc * alident * opt_decl_params * opt_type_constr ) 
-  | `And of (loc * typedecl * typedecl)
+  | `And of (loc * decl * decl)
   | ant ]
 
 (* original syntax
@@ -393,7 +393,7 @@ and sigi =
 
   | `External of (loc * alident  * ctyp * strings) (* external s : t = s ... s *)
 
-  | `Type of (loc * typedecl)
+  | `Type of (loc * decl)
 
   | `Exception of (loc * of_ctyp) 
 
@@ -489,8 +489,8 @@ and stru =
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   (* | `Open of (loc * ident) (\* open i *\) *)
   | `Open of (loc * flag * ident) (* open i | open! i*)
-  | `Type of (loc * typedecl) (* type t *)
-  | `TypeWith of (loc * typedecl * strings)
+  | `Type of (loc * decl) (* type t *)
+  | `TypeWith of (loc * decl * strings)
   | `Value of (loc * flag * bind) (* value (rec)? bi *)
   | ant  ]
 

@@ -4,9 +4,9 @@ open Astfn
 
 open StdFan (* for [pp_print_list] [pp_print_string] *)
 
-let pp_print_typedecl = ObjsN.pp_print_typedecl;;  
+let pp_print_decl = ObjsN.pp_print_decl;;  
 
-type named_type = (string* typedecl) 
+type named_type = (string* decl) 
 and and_types = named_type list
 and types =
     [ `Mutual of and_types
@@ -35,7 +35,7 @@ let apply_filter f (m:mtyps) : mtyps =
   Listf.filter_map  f m 
 
       
-let stru_from_mtyps  ~f:(aux:named_type -> typedecl)
+let stru_from_mtyps  ~f:(aux:named_type -> decl)
     (x:mtyps) : stru option =
   match x with
   | [] -> None
@@ -45,10 +45,12 @@ let stru_from_mtyps  ~f:(aux:named_type -> typedecl)
            (function
              |`Mutual tys ->
                  let v = (and_of_list (List.map aux tys)) in
-                 %stru-{ type $v }
+                 (`Type (v :>Astfn.decl) :>Astfn.stru)
+                 (* %stru-{ type $v } *)
              |`Single ty ->
                  let v = aux ty in
-                 %stru-{ type $v} ) x ) in
+                 (`Type (v :>Astfn.decl) :>Astfn.stru)
+                 (* %stru-{ type $v} *) ) x ) in
       Some (sem_of_list xs )
 
 let stru_from_ty  ~f:(f:string -> stru) (x:mtyps) : stru  =     
@@ -158,9 +160,9 @@ let transform_mtyps  (lst:mtyps)=
       |`Mutual ls ->
           `Mutual (List.map
                      (fun (s,ty) ->
-                       (s, obj#typedecl ty)) ls)
+                       (s, obj#decl ty)) ls)
       |`Single (s,ty) ->
-          `Single (s, obj#typedecl ty)) lst in
+          `Single (s, obj#decl ty)) lst in
   let new_types = obj#type_transformers in
   (new_types,item1)
 

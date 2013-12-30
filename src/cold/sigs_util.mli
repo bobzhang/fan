@@ -3,7 +3,7 @@
   
 open Astfn
   
-type named_type = (string* typedecl)
+type named_type = (string* decl)
 and and_types = named_type list
 and types =
     [ `Mutual of and_types
@@ -19,7 +19,7 @@ type plugin = {
     filter: (string->bool) option ;
 }
       
-val stru_from_mtyps : f:(named_type -> typedecl) -> mtyps ->stru option
+val stru_from_mtyps : f:(named_type -> decl) -> mtyps ->stru option
 
 val stru_from_ty : f:(string -> stru) -> mtyps -> stru
 

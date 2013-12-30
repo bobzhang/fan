@@ -95,14 +95,14 @@ let (<+) (names: string list ) (ty:ctyp) =
     
 
 
-let name_length_of_tydcl (x:typedecl) : (string * int) =
+let name_length_of_tydcl (x:decl) : (string * int) =
   match x with 
   | `TyDcl ( `Lid name, tyvars, _, _) ->
       (name, match tyvars with
       | `None  -> 0
       | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
   | tydcl ->
-      failwith (__BIND__ ^ ObjsN.dump_typedecl tydcl)
+      failwith (__BIND__ ^ ObjsN.dump_decl tydcl)
 
 
 (**
@@ -141,7 +141,7 @@ let of_name_len ~off (name,len) =
   list 'all_c0 'all_c1
   ]}
  *)  
-let gen_ty_of_tydcl ~off (tydcl:typedecl) =
+let gen_ty_of_tydcl ~off (tydcl:decl) =
   tydcl |> name_length_of_tydcl |>of_name_len ~off 
     
 (*
@@ -258,7 +258,7 @@ let is_recursive ty_dcl =
       end in
       (obj#type_info ctyp)#is_recursive
   | `And _  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (ObjsN.dump_typedecl ty_dcl)
+  | _ -> failwithf "is_recursive not type declartion: %s" (ObjsN.dump_decl ty_dcl)
 
 (*
   {:stru|
@@ -289,12 +289,12 @@ let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   | #ident'  as i  -> Some (i, [])
   | _ -> None 
 
-let is_abstract (x:typedecl)=
+let is_abstract (x:decl)=
   match x with
   | `TyAbstr _ -> true
   | _ -> false
 
-let abstract_list (x:typedecl)=
+let abstract_list (x:decl)=
   match x with 
   | `TyAbstr ( _, lst,  _) ->
       begin match lst with

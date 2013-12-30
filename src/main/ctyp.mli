@@ -85,11 +85,11 @@ val ( <+ ) : string list -> ctyp -> ctyp
     match {:stru< type 'a list  = [A of int | B of 'a] |} with
     %stru{ type $x } -> name_length_of_tydcl x 
     ("list",1)  ]} *)
-val name_length_of_tydcl : typedecl -> string * int
+val name_length_of_tydcl : decl -> string * int
 
 
 
-val gen_ty_of_tydcl : off:int -> typedecl -> ctyp
+val gen_ty_of_tydcl : off:int -> decl -> ctyp
 
 (** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
     ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
@@ -163,10 +163,10 @@ val mk_method_type_of_name :
 
         
 val mk_obj : string -> string -> clfield -> stru
-val is_recursive : typedecl -> bool
-val is_abstract : typedecl -> bool
+val is_recursive : decl -> bool
+val is_abstract : decl -> bool
 
-val abstract_list : typedecl -> int option
+val abstract_list : decl -> int option
     
 val qualified_app_list : ctyp -> (ident * ctyp list) option
 
@@ -177,7 +177,7 @@ val reduce_data_ctors:
       'a -> compose:('e -> 'a  -> 'a) -> (string -> ctyp list -> 'e) -> 'a    
 
 (* @raise Invalid_argument *)        
-(* val of_stru: stru -> typedecl *)
+(* val of_stru: stru -> decl *)
 
 val view_sum: or_ctyp -> branch list
 val view_variant: row_field -> vbranch list    

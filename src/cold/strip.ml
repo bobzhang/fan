@@ -154,7 +154,7 @@ and tag_names: Astf.tag_names -> Astfn.tag_names =
   | `App (_a0,_a1,_a2) ->
       let _a1 = tag_names _a1 in let _a2 = tag_names _a2 in `App (_a1, _a2)
   | `TyVrn (_a0,_a1) -> let _a1 = astring _a1 in `TyVrn _a1
-and typedecl: Astf.typedecl -> Astfn.typedecl =
+and decl: Astf.decl -> Astfn.decl =
   function
   | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = alident _a1 in
@@ -166,8 +166,8 @@ and typedecl: Astf.typedecl -> Astfn.typedecl =
       let _a2 = opt_decl_params _a2 in
       let _a3 = opt_type_constr _a3 in `TyAbstr (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = typedecl _a1 in let _a2 = typedecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.typedecl)
+      let _a1 = decl _a1 in let _a2 = decl _a2 in `And (_a1, _a2)
+  | #ant as _a0 -> (ant _a0 :>Astfn.decl)
 and type_constr: Astf.type_constr -> Astfn.type_constr =
   function
   | `And (_a0,_a1,_a2) ->
@@ -404,7 +404,7 @@ and sigi: Astf.sigi -> Astfn.sigi =
       let _a1 = alident _a1 in
       let _a2 = ctyp _a2 in
       let _a3 = strings _a3 in `External (_a1, _a2, _a3)
-  | `Type (_a0,_a1) -> let _a1 = typedecl _a1 in `Type _a1
+  | `Type (_a0,_a1) -> let _a1 = decl _a1 in `Type _a1
   | `Exception (_a0,_a1) -> let _a1 = of_ctyp _a1 in `Exception _a1
   | `Class (_a0,_a1) -> let _a1 = cltdecl _a1 in `Class _a1
   | `ClassType (_a0,_a1) -> let _a1 = cltdecl _a1 in `ClassType _a1
@@ -504,9 +504,9 @@ and stru: Astf.stru -> Astfn.stru =
       let _a1 = auident _a1 in let _a2 = mtyp _a2 in `ModuleType (_a1, _a2)
   | `Open (_a0,_a1,_a2) ->
       let _a1 = flag _a1 in let _a2 = ident _a2 in `Open (_a1, _a2)
-  | `Type (_a0,_a1) -> let _a1 = typedecl _a1 in `Type _a1
+  | `Type (_a0,_a1) -> let _a1 = decl _a1 in `Type _a1
   | `TypeWith (_a0,_a1,_a2) ->
-      let _a1 = typedecl _a1 in let _a2 = strings _a2 in `TypeWith (_a1, _a2)
+      let _a1 = decl _a1 in let _a2 = strings _a2 in `TypeWith (_a1, _a2)
   | `Value (_a0,_a1,_a2) ->
       let _a1 = flag _a1 in let _a2 = bind _a2 in `Value (_a1, _a2)
   | #ant as _a0 -> (ant _a0 :>Astfn.stru)

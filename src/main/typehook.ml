@@ -141,10 +141,10 @@ let traversal () : traversal  = object (self:'self_type)
        self#out_and_types;
        (if !State.keep then x else %{ let _ = () } (* FIXME *) ))
     end
-    | `TypeWith(_loc,typedecl,_) ->
-        self#stru (`Type(_loc,typedecl))
+    | `TypeWith(_loc,decl,_) ->
+        self#stru (`Type(_loc,decl))
     | %{ type ${(`TyDcl (_,`Lid(_, name), _, _, _) as t)} } as x -> 
-        let item =  `Single (name, Strip.typedecl t) in
+        let item =  `Single (name, Strip.decl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
               pp_print_types  item in
@@ -157,13 +157,13 @@ let traversal () : traversal  = object (self:'self_type)
     | %{exception $_ } 
     | %{# $_ $_ }  as x)  ->  x (* always keep *)
     |  x ->  super#stru x  
-  method! typedecl = function
+  method! decl = function
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 
       ((if self#is_in_and_types then
         self#update_cur_and_types (fun lst ->
-          (name,Strip.typedecl t) :: lst ));
+          (name,Strip.decl t) :: lst ));
         t)
-    | t -> super#typedecl t 
+    | t -> super#decl t 
 end
 
 

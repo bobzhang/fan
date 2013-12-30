@@ -40,10 +40,10 @@ and row_field =
   [ ant | `Bar of (row_field* row_field) | `TyVrn of astring
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
 and tag_names = [ ant | `App of (tag_names* tag_names) | `TyVrn of astring] 
-and typedecl =
+and decl =
   [ `TyDcl of (alident* opt_decl_params* type_info* opt_type_constr)
   | `TyAbstr of (alident* opt_decl_params* opt_type_constr)
-  | `And of (typedecl* typedecl) | ant] 
+  | `And of (decl* decl) | ant] 
 and type_constr =
   [ `And of (type_constr* type_constr) | `Eq of (ctyp* ctyp) | ant] 
 and opt_type_constr = [ `Some of type_constr | `None] 
@@ -104,7 +104,7 @@ and mtyp =
   | `With of (mtyp* constr) | `ModuleTypeOf of mexp | ant] 
 and sigi =
   [ `Val of (alident* ctyp) | `External of (alident* ctyp* strings)
-  | `Type of typedecl | `Exception of of_ctyp | `Class of cltdecl
+  | `Type of decl | `Exception of of_ctyp | `Class of cltdecl
   | `ClassType of cltdecl | `Module of (auident* mtyp)
   | `ModuleTypeEnd of auident | `ModuleType of (auident* mtyp)
   | `Sem of (sigi* sigi) | `DirectiveSimple of alident
@@ -131,9 +131,8 @@ and stru =
   | `Exception of of_ctyp | `StExp of exp
   | `External of (alident* ctyp* strings) | `Include of mexp
   | `Module of (auident* mexp) | `RecModule of mbind
-  | `ModuleType of (auident* mtyp) | `Open of (flag* ident)
-  | `Type of typedecl | `TypeWith of (typedecl* strings)
-  | `Value of (flag* bind) | ant] 
+  | `ModuleType of (auident* mtyp) | `Open of (flag* ident) | `Type of decl
+  | `TypeWith of (decl* strings) | `Value of (flag* bind) | ant] 
 and cltdecl =
   [ `And of (cltdecl* cltdecl)
   | `CtDecl of (flag* ident* type_parameters* cltyp)

@@ -126,7 +126,7 @@ val mklabexp :
  *)    
       
 val mktype_decl :
-  typedecl ->
+  decl ->
   (string Asttypes.loc * Parsetree.type_declaration) list
 
 val mtyp : mtyp -> Parsetree.module_type
@@ -171,7 +171,7 @@ val phrase               : stru -> Parsetree.toplevel_phrase
     
 
 (** Filled by [typehook] module *)  
-val generate_type_code   : (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref
+val generate_type_code   : (Astf.loc -> Astf.decl -> Astf.strings -> Astf.stru) ref
 (** Filled by [Objs] module *)    
 val dump_ident           : (Astf.ident -> string) ref
 val dump_row_field       : (Astf.row_field -> string) ref
@@ -186,7 +186,7 @@ val dump_exp             : (Astf.exp -> string) ref
 val dump_case            : (Astf.case -> string) ref
 val dump_rec_exp         : (Astf.rec_exp -> string) ref
 val dump_type_constr     : (Astf.type_constr -> string) ref
-val dump_typedecl        : (Astf.typedecl -> string) ref
+val dump_decl        : (Astf.decl -> string) ref
 val dump_sigi            : (Astf.sigi -> string) ref
 val dump_mbind           : (Astf.mbind -> string) ref
 val dump_mexp            : (Astf.mexp -> string) ref

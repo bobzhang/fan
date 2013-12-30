@@ -16392,12 +16392,12 @@ let apply_ctyp () =
                          descr =
                            { tag = `Ant; word = (Kind ""); tag_name = "Ant" }
                        } : Tokenf.pattern )];
-                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl) s\n";
+                 annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
-                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl) s : 
+                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s : 
                            'type_declaration ) : Tokenf.ant ->
                                                    Locf.t ->
                                                      'type_declaration ))
@@ -16410,12 +16410,12 @@ let apply_ctyp () =
                           { tag = `Ant; word = (Kind "typ"); tag_name = "Ant"
                           }
                       } : Tokenf.pattern )];
-                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl) s\n";
+                annot = "mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                         let s = __fan_0 in
-                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl) s : 
+                        (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s : 
                           'type_declaration ) : Tokenf.ant ->
                                                   Locf.t -> 'type_declaration ))
               };

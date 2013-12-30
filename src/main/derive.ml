@@ -225,7 +225,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
 let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record  ~result
     simple_exp_of_ctyp exp_of_ctyp exp_of_variant  tydcl :exp = 
-    match (tydcl:typedecl) with 
+    match (tydcl:decl) with 
     | `TyDcl ( _, tyvars, ctyp, _constraints) ->
        begin match ctyp with
        |  `TyMan(_,_,repr) | `TyRepr(_,repr) ->
@@ -266,7 +266,7 @@ let fun_of_tydcl
         end
     | t -> failwithf  "fun_of_tydcl middle %s" (ObjsN.dump_type_info t)
        end
-   | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_typedecl t)
+   | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_decl t)
 
 
 
@@ -307,7 +307,7 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
         tydcl
     else
       begin 
-        eprintf "Warning: %s as a abstract type no structure generated\n" @@ ObjsN.dump_typedecl tydcl;
+        eprintf "Warning: %s as a abstract type no structure generated\n" @@ ObjsN.dump_decl tydcl;
         %exp-{ failwith "Abstract data type not implemented" }
       end in
   match annot with
@@ -322,7 +322,7 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
     simple_exp_of_ctyp_with_cxt
     (lst:mtyps) : stru =
   let cxt  = Hashset.create 50 in 
-  let mk_bind : typedecl -> bind =
+  let mk_bind : decl -> bind =
     bind_of_tydcl ?cons_transform ?arity ?annot
       ?names ~default ~mk_variant ~left_type_id ~left_type_variable ~mk_record
       (simple_exp_of_ctyp_with_cxt cxt) in
@@ -405,7 +405,7 @@ let obj_of_mtyps
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          | Some n  -> 
-           let ty_str : string =   ObjsN.dump_typedecl tydcl  in
+           let ty_str : string =   ObjsN.dump_decl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
            %clfield-{ method $lid:name : $ty= ${Expn_util.unknown n}}

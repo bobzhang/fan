@@ -25,7 +25,7 @@ val ctyp : ctyp t
 val type_parameters : type_parameters t
 val row_field : row_field t
 val tag_names : tag_names t
-val typedecl : typedecl t
+val decl : decl t
 val type_constr : type_constr t
 val opt_type_constr : opt_type_constr t
 val decl_param : decl_param t

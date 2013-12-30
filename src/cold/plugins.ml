@@ -293,7 +293,7 @@ let _ = ("OIter", (some gen_iter)) |> Typehook.register
 let generate (mtyps : mtyps) =
   (let tbl = Hashtbl.create 30 in
    let aux (_,ty) =
-     match (ty : typedecl ) with
+     match (ty : decl ) with
      | `TyDcl (_,_,`TyEq (_,`PolyEq t),_) ->
          let branches = Ctyp.view_variant t in
          List.iter
@@ -308,7 +308,7 @@ let generate (mtyps : mtyps) =
                   with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
                   ()
             | _ -> ()) branches
-     | _ -> failwithf "generate mtyps %s" (ObjsN.dump_typedecl ty) in
+     | _ -> failwithf "generate mtyps %s" (ObjsN.dump_decl ty) in
    let _ =
      List.iter
        (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
@@ -352,7 +352,7 @@ let generate (mtyps : mtyps) =
           match x with
           | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
           | `Single (x,_) -> [x]) mtyps in
-   let typedecl =
+   let decl =
      let x =
        (tys |> (List.map (fun x  -> uid @@ (String.capitalize x)))) |>
          bar_of_list in
@@ -405,7 +405,7 @@ let generate (mtyps : mtyps) =
                   ((`Lid x),
                     (`Constraint ((`Uid u), (`App ((`Lid "t"), (`Lid x)))))))) :>
             Astfn.stru)) tys in
-   sem_of_list (typedecl :: to_string :: of_string :: tags) : stru )
+   sem_of_list (decl :: to_string :: of_string :: tags) : stru )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not @@ (List.mem s ["loc"; "ant"; "quot"]))
@@ -473,7 +473,7 @@ let generate (mtyps : mtyps) =
                      (`TyVrnOf ((x :>Astfn.astring), (y :>Astfn.ctyp)) :>
                      Astfn.row_field))
             | x -> x) in
-       obj#typedecl ty
+       obj#decl ty
      else ty in
    (fun x  -> stru_from_mtyps ~f x) mtyps : stru option )
 let _ = Typehook.register ~filter:(fun _  -> true) ("LocType", generate)

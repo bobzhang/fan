@@ -220,7 +220,7 @@ and pp_print_tag_names: Format.formatter -> tag_names -> unit =
           pp_print_tag_names _a1
     | `TyVrn _a0 ->
         Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]" pp_print_astring _a0
-and pp_print_typedecl: Format.formatter -> typedecl -> unit =
+and pp_print_decl: Format.formatter -> decl -> unit =
   fun fmt  ->
     function
     | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -231,8 +231,8 @@ and pp_print_typedecl: Format.formatter -> typedecl -> unit =
         Format.fprintf fmt "@[<1>(`TyAbstr@ %a@ %a@ %a)@]" pp_print_alident
           _a0 pp_print_opt_decl_params _a1 pp_print_opt_type_constr _a2
     | `And (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" pp_print_typedecl _a0
-          pp_print_typedecl _a1
+        Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" pp_print_decl _a0
+          pp_print_decl _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 and pp_print_type_constr: Format.formatter -> type_constr -> unit =
   fun fmt  ->
@@ -546,8 +546,7 @@ and pp_print_sigi: Format.formatter -> sigi -> unit =
     | `External (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a)@]" pp_print_alident
           _a0 pp_print_ctyp _a1 pp_print_strings _a2
-    | `Type _a0 ->
-        Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_typedecl _a0
+    | `Type _a0 -> Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_decl _a0
     | `Exception _a0 ->
         Format.fprintf fmt "@[<1>(`Exception@ %a)@]" pp_print_of_ctyp _a0
     | `Class _a0 ->
@@ -691,10 +690,9 @@ and pp_print_stru: Format.formatter -> stru -> unit =
     | `Open (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" pp_print_flag _a0
           pp_print_ident _a1
-    | `Type _a0 ->
-        Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_typedecl _a0
+    | `Type _a0 -> Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_decl _a0
     | `TypeWith (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" pp_print_typedecl _a0
+        Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" pp_print_decl _a0
           pp_print_strings _a1
     | `Value (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" pp_print_flag _a0
@@ -1090,7 +1088,7 @@ class print =
               self#tag_names _a1
         | `TyVrn _a0 ->
             Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]" self#astring _a0
-    method typedecl : 'fmt -> typedecl -> unit=
+    method decl : 'fmt -> decl -> unit=
       fun fmt  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -1101,8 +1099,8 @@ class print =
             Format.fprintf fmt "@[<1>(`TyAbstr@ %a@ %a@ %a)@]" self#alident
               _a0 self#opt_decl_params _a1 self#opt_type_constr _a2
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#typedecl _a0
-              self#typedecl _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#decl _a0
+              self#decl _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method type_constr : 'fmt -> type_constr -> unit=
       fun fmt  ->
@@ -1415,8 +1413,7 @@ class print =
         | `External (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a)@]" self#alident
               _a0 self#ctyp _a1 self#strings _a2
-        | `Type _a0 ->
-            Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
+        | `Type _a0 -> Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#decl _a0
         | `Exception _a0 ->
             Format.fprintf fmt "@[<1>(`Exception@ %a)@]" self#of_ctyp _a0
         | `Class _a0 ->
@@ -1560,10 +1557,9 @@ class print =
         | `Open (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" self#flag _a0
               self#ident _a1
-        | `Type _a0 ->
-            Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
+        | `Type _a0 -> Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#decl _a0
         | `TypeWith (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" self#typedecl _a0
+            Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" self#decl _a0
               self#strings _a1
         | `Value (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" self#flag _a0
@@ -1921,7 +1917,7 @@ class map =
           let _a0 = self#tag_names _a0 in
           let _a1 = self#tag_names _a1 in `App (_a0, _a1)
       | `TyVrn _a0 -> let _a0 = self#astring _a0 in `TyVrn _a0
-    method typedecl : typedecl -> typedecl=
+    method decl : decl -> decl=
       function
       | `TyDcl (_a0,_a1,_a2,_a3) ->
           let _a0 = self#alident _a0 in
@@ -1933,9 +1929,9 @@ class map =
           let _a1 = self#opt_decl_params _a1 in
           let _a2 = self#opt_type_constr _a2 in `TyAbstr (_a0, _a1, _a2)
       | `And (_a0,_a1) ->
-          let _a0 = self#typedecl _a0 in
-          let _a1 = self#typedecl _a1 in `And (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>typedecl)
+          let _a0 = self#decl _a0 in
+          let _a1 = self#decl _a1 in `And (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>decl)
     method type_constr : type_constr -> type_constr=
       function
       | `And (_a0,_a1) ->
@@ -2216,7 +2212,7 @@ class map =
           let _a0 = self#alident _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#strings _a2 in `External (_a0, _a1, _a2)
-      | `Type _a0 -> let _a0 = self#typedecl _a0 in `Type _a0
+      | `Type _a0 -> let _a0 = self#decl _a0 in `Type _a0
       | `Exception _a0 -> let _a0 = self#of_ctyp _a0 in `Exception _a0
       | `Class _a0 -> let _a0 = self#cltdecl _a0 in `Class _a0
       | `ClassType _a0 -> let _a0 = self#cltdecl _a0 in `ClassType _a0
@@ -2344,9 +2340,9 @@ class map =
       | `Open (_a0,_a1) ->
           let _a0 = self#flag _a0 in
           let _a1 = self#ident _a1 in `Open (_a0, _a1)
-      | `Type _a0 -> let _a0 = self#typedecl _a0 in `Type _a0
+      | `Type _a0 -> let _a0 = self#decl _a0 in `Type _a0
       | `TypeWith (_a0,_a1) ->
-          let _a0 = self#typedecl _a0 in
+          let _a0 = self#decl _a0 in
           let _a1 = self#strings _a1 in `TypeWith (_a0, _a1)
       | `Value (_a0,_a1) ->
           let _a0 = self#flag _a0 in
@@ -2656,7 +2652,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
       | `App (_a0,_a1) -> let self = self#tag_names _a0 in self#tag_names _a1
       | `TyVrn _a0 -> self#astring _a0
-    method typedecl : typedecl -> 'self_type=
+    method decl : decl -> 'self_type=
       function
       | `TyDcl (_a0,_a1,_a2,_a3) ->
           let self = self#alident _a0 in
@@ -2665,7 +2661,7 @@ class fold =
       | `TyAbstr (_a0,_a1,_a2) ->
           let self = self#alident _a0 in
           let self = self#opt_decl_params _a1 in self#opt_type_constr _a2
-      | `And (_a0,_a1) -> let self = self#typedecl _a0 in self#typedecl _a1
+      | `And (_a0,_a1) -> let self = self#decl _a0 in self#decl _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method type_constr : type_constr -> 'self_type=
       function
@@ -2846,7 +2842,7 @@ class fold =
       | `External (_a0,_a1,_a2) ->
           let self = self#alident _a0 in
           let self = self#ctyp _a1 in self#strings _a2
-      | `Type _a0 -> self#typedecl _a0
+      | `Type _a0 -> self#decl _a0
       | `Exception _a0 -> self#of_ctyp _a0
       | `Class _a0 -> self#cltdecl _a0
       | `ClassType _a0 -> self#cltdecl _a0
@@ -2918,9 +2914,8 @@ class fold =
       | `RecModule _a0 -> self#mbind _a0
       | `ModuleType (_a0,_a1) -> let self = self#auident _a0 in self#mtyp _a1
       | `Open (_a0,_a1) -> let self = self#flag _a0 in self#ident _a1
-      | `Type _a0 -> self#typedecl _a0
-      | `TypeWith (_a0,_a1) ->
-          let self = self#typedecl _a0 in self#strings _a1
+      | `Type _a0 -> self#decl _a0
+      | `TypeWith (_a0,_a1) -> let self = self#decl _a0 in self#strings _a1
       | `Value (_a0,_a1) -> let self = self#flag _a0 in self#bind _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method cltdecl : cltdecl -> 'self_type=
@@ -3095,8 +3090,8 @@ let map_row_field f =
 let map_tag_names f =
   object  inherit  map as super method! tag_names x = f (super#tag_names x)
   end
-let map_typedecl f =
-  object  inherit  map as super method! typedecl x = f (super#typedecl x) end
+let map_decl f =
+  object  inherit  map as super method! decl x = f (super#decl x) end
 let map_type_constr f =
   object 
     inherit  map as super
@@ -3195,7 +3190,7 @@ let dump_ctyp = Formatf.to_string dump#ctyp
 let dump_type_parameters = Formatf.to_string dump#type_parameters
 let dump_row_field = Formatf.to_string dump#row_field
 let dump_tag_names = Formatf.to_string dump#tag_names
-let dump_typedecl = Formatf.to_string dump#typedecl
+let dump_decl = Formatf.to_string dump#decl
 let dump_type_constr = Formatf.to_string dump#type_constr
 let dump_opt_type_constr = Formatf.to_string dump#opt_type_constr
 let dump_decl_param = Formatf.to_string dump#decl_param

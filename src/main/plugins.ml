@@ -368,7 +368,7 @@ let gen_iter =
 let generate (mtyps:mtyps) : stru =
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
-    match (ty:typedecl) with
+    match (ty:decl) with
     |`TyDcl(_,_,`TyEq(_,`PolyEq t),_) ->
       let branches = Ctyp.view_variant t in
       List.iter
@@ -381,7 +381,7 @@ let generate (mtyps:mtyps) : stru =
               with 
                 Not_found -> Hashtbl.add tbl s arity)
           | _ -> ()) branches
-    | _ -> failwithf  "generate mtyps %s" (ObjsN.dump_typedecl ty)  in   
+    | _ -> failwithf  "generate mtyps %s" (ObjsN.dump_decl ty)  in   
   let _ =
     List.iter
       (function
@@ -427,7 +427,7 @@ let generate (mtyps:mtyps) : stru =
         match x with
         |`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
         |`Single (x,_) -> [x] ) mtyps in
-  let typedecl =
+  let decl =
     let x  =
       tys
       |> List.map (fun x -> uid  @@ String.capitalize x)
@@ -456,7 +456,7 @@ let generate (mtyps:mtyps) : stru =
      (fun x->
        let u = String.capitalize x in
        %stru-{let $lid:x :  $lid:x t = $uid:u }) tys  in
-       sem_of_list (typedecl::to_string::of_string::tags) ;;
+       sem_of_list (decl::to_string::of_string::tags) ;;
   
 Typehook.register
   ~filter:(fun s -> not @@ List.mem s ["loc";"ant";"quot"]) ("DynAst",some generate);;
@@ -509,7 +509,7 @@ let generate (mtyps:mtyps) : stru option =
            | %ctyp-{ $_ * $_ } -> %row_field-{ $vrn:x of $par:y }
            | _ -> %row_field-{ $vrn:x of $y })
        | x -> x in 
-     obj#typedecl ty
+     obj#decl ty
   else ty  in
   (fun x ->  stru_from_mtyps ~f x) mtyps;;
 

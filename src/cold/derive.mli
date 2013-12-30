@@ -181,7 +181,7 @@ val fun_of_tydcl :
             (ctyp -> exp ) ->
               (or_ctyp -> exp ) ->
                 (result:ctyp -> row_field -> exp) ->  (* labeld as variant *)
-                  typedecl -> exp
+                  decl -> exp
 
 
 (** destination is [Str_item] generate [stru], type annotations may not be
@@ -200,7 +200,7 @@ val bind_of_tydcl :
                   left_type_id:basic_id_transform ->
                     left_type_variable:basic_id_transform ->
                       mk_record:(record_col list -> exp) ->
-                        typedecl ->
+                        decl ->
                         bind
                           
 val stru_of_mtyps :

@@ -174,11 +174,8 @@ let value_type _loc (comps : int Mapf.String.t) : Astf.stru =
       comps
       [ %or_ctyp{$uid{Names.int_cons} of int} ]
     in
-      let t_repr : type_repr = `Sum _loc (or_of_list ts) in
-        let t_info : type_info = `TyRepr _loc (`Negative _loc) t_repr
-        and l_id : alident = `Lid _loc Names.val_type in
-          let t_decl : typedecl = `TyDcl _loc l_id (`None _loc) t_info (`None _loc) in
-            `Type _loc t_decl
+    let ts = or_of_list ts in   
+    %stru{type $lid{Names.val_type} = | $ts}
 
 (** Generate "list_of_plval" function declaration. *)
 let list_repr _loc comps =
@@ -188,14 +185,13 @@ let list_repr _loc comps =
     else
       %case{$uid{Names.comp Names.nil} -> []} :: cases
     in
-      let cases = if not (comps_contains comps Names.cons 2) then
-        cases
-      else
-        %case{$uid{Names.comp Names.cons} (a, b) ->
-          a :: $lid{Names.list_of} b } :: cases
-      in
-        let cases = bar_of_list cases in
-          %stru{let rec $lid{Names.list_of} = fun | $cases}
+    let cases = if not (comps_contains comps Names.cons 2) then cases
+    else
+      %case{$uid{Names.comp Names.cons} (a, b) ->
+        a :: $lid{Names.list_of} b } :: cases
+    in
+    let cases = bar_of_list cases in
+    %stru{let rec $lid{Names.list_of} = fun | $cases}
 
 (** Generate "int_of_plval" function declaration. *)
 let int_repr _loc comps =

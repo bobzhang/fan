@@ -177,7 +177,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
       List.fold_right f vars (Expn_util.abstract names acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
-  (match (tydcl : typedecl ) with
+  (match (tydcl : decl ) with
    | `TyDcl (_,tyvars,ctyp,_constraints) ->
        (match ctyp with
         | `TyMan (_,_,repr)|`TyRepr (_,repr) ->
@@ -218,8 +218,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars case
              | t -> failwithf "fun_of_tydcl inner %s" (ObjsN.dump_ctyp t))
         | t -> failwithf "fun_of_tydcl middle %s" (ObjsN.dump_type_info t))
-   | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_typedecl t) : 
-  exp )
+   | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_decl t) : exp )
 let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
   [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant 
   ~left_type_id:(left_type_id : basic_id_transform) 
@@ -246,7 +245,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
            ~destination simple_exp_of_ctyp) tydcl
     else
       ((eprintf "Warning: %s as a abstract type no structure generated\n") @@
-         (ObjsN.dump_typedecl tydcl);
+         (ObjsN.dump_decl tydcl);
        (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) :>
        Astfn.exp)) in
   match annot with
@@ -260,7 +259,7 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
   ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
   (let cxt = Hashset.create 50 in
-   let mk_bind: typedecl -> bind =
+   let mk_bind: decl -> bind =
      bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
        ~left_type_id ~left_type_variable ~mk_record
        (simple_exp_of_ctyp_with_cxt cxt) in
@@ -324,7 +323,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
       | `Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
-               let ty_str: string = ObjsN.dump_typedecl tydcl in
+               let ty_str: string = ObjsN.dump_decl tydcl in
                let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                let (ty,_) = mk_type tydcl in
                (`CrMth

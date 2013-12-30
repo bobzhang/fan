@@ -604,7 +604,7 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#loc _loc _a0), (self#astring _loc _a1))))))
-    method typedecl : 'loc -> typedecl -> Astf.ep=
+    method decl : 'loc -> decl -> Astf.ep=
       fun _loc  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
@@ -641,8 +641,8 @@ class meta =
                      (`Com
                         (_loc, (self#loc _loc _a0),
                           (`Com
-                             (_loc, (self#typedecl _loc _a1),
-                               (self#typedecl _loc _a2))))))))
+                             (_loc, (self#decl _loc _a1),
+                               (self#decl _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
     method type_constr : 'loc -> type_constr -> Astf.ep=
       fun _loc  ->
@@ -1560,8 +1560,7 @@ class meta =
               (_loc, (`Vrn (_loc, "Type")),
                 (`Par
                    (_loc,
-                     (`Com
-                        (_loc, (self#loc _loc _a0), (self#typedecl _loc _a1))))))
+                     (`Com (_loc, (self#loc _loc _a0), (self#decl _loc _a1))))))
         | `Exception (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "Exception")),
@@ -1985,8 +1984,7 @@ class meta =
               (_loc, (`Vrn (_loc, "Type")),
                 (`Par
                    (_loc,
-                     (`Com
-                        (_loc, (self#loc _loc _a0), (self#typedecl _loc _a1))))))
+                     (`Com (_loc, (self#loc _loc _a0), (self#decl _loc _a1))))))
         | `TypeWith (_a0,_a1,_a2) ->
             `App
               (_loc, (`Vrn (_loc, "TypeWith")),
@@ -1995,7 +1993,7 @@ class meta =
                      (`Com
                         (_loc, (self#loc _loc _a0),
                           (`Com
-                             (_loc, (self#typedecl _loc _a1),
+                             (_loc, (self#decl _loc _a1),
                                (self#strings _loc _a2))))))))
         | `Value (_a0,_a1,_a2) ->
             `App

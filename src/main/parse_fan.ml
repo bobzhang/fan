@@ -1154,7 +1154,7 @@ ctyp_quot:
   ]
 
   type_declaration:
-  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl)  s}
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl)  s}
   | S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}
   | type_ident_and_parameters as rest; "="; type_info as tk; L0 constrain as cl
       %{ let (n, tpl) = rest in

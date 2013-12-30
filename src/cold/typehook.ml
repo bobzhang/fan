@@ -108,10 +108,10 @@ let traversal () =
              if !State.keep
              then x
              else (`StExp (_loc, (`Unit _loc)) :>Astf.stru)))
-       | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
+       | `TypeWith (_loc,decl,_) -> self#stru (`Type (_loc, decl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->
-           let item = `Single (name, (Strip.typedecl t)) in
+           let item = `Single (name, (Strip.decl t)) in
            let () =
              if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in
@@ -123,15 +123,15 @@ let traversal () =
          |(`Exception (_loc,_) : Astf.stru)
          |(`Directive (_loc,_,_) : Astf.stru) as x -> x
        | x -> super#stru x
-     method! typedecl =
+     method! decl =
        function
        | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
            (if self#is_in_and_types
             then
               self#update_cur_and_types
-                (fun lst  -> (name, (Strip.typedecl t)) :: lst);
+                (fun lst  -> (name, (Strip.decl t)) :: lst);
             t)
-       | t -> super#typedecl t
+       | t -> super#decl t
    end : traversal )
 let genenrate_type_code _loc tdl (ns : Astf.strings) =
   (let x: Astf.stru = `Type (_loc, tdl) in

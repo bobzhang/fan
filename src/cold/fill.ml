@@ -200,7 +200,7 @@ and tag_names: Locf.t -> Astfn.tag_names -> Astf.tag_names =
         let _a0 = tag_names loc _a0 in
         let _a1 = tag_names loc _a1 in `App (loc, _a0, _a1)
     | `TyVrn _a0 -> let _a0 = astring loc _a0 in `TyVrn (loc, _a0)
-and typedecl: Locf.t -> Astfn.typedecl -> Astf.typedecl =
+and decl: Locf.t -> Astfn.decl -> Astf.decl =
   fun loc  ->
     function
     | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -213,9 +213,9 @@ and typedecl: Locf.t -> Astfn.typedecl -> Astf.typedecl =
         let _a1 = opt_decl_params loc _a1 in
         let _a2 = opt_type_constr loc _a2 in `TyAbstr (loc, _a0, _a1, _a2)
     | `And (_a0,_a1) ->
-        let _a0 = typedecl loc _a0 in
-        let _a1 = typedecl loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (ant loc _a0 :>Astf.typedecl)
+        let _a0 = decl loc _a0 in
+        let _a1 = decl loc _a1 in `And (loc, _a0, _a1)
+    | #ant as _a0 -> (ant loc _a0 :>Astf.decl)
 and type_constr: Locf.t -> Astfn.type_constr -> Astf.type_constr =
   fun loc  ->
     function
@@ -525,7 +525,7 @@ and sigi: Locf.t -> Astfn.sigi -> Astf.sigi =
         let _a0 = alident loc _a0 in
         let _a1 = ctyp loc _a1 in
         let _a2 = strings loc _a2 in `External (loc, _a0, _a1, _a2)
-    | `Type _a0 -> let _a0 = typedecl loc _a0 in `Type (loc, _a0)
+    | `Type _a0 -> let _a0 = decl loc _a0 in `Type (loc, _a0)
     | `Exception _a0 -> let _a0 = of_ctyp loc _a0 in `Exception (loc, _a0)
     | `Class _a0 -> let _a0 = cltdecl loc _a0 in `Class (loc, _a0)
     | `ClassType _a0 -> let _a0 = cltdecl loc _a0 in `ClassType (loc, _a0)
@@ -660,9 +660,9 @@ and stru: Locf.t -> Astfn.stru -> Astf.stru =
     | `Open (_a0,_a1) ->
         let _a0 = flag loc _a0 in
         let _a1 = ident loc _a1 in `Open (loc, _a0, _a1)
-    | `Type _a0 -> let _a0 = typedecl loc _a0 in `Type (loc, _a0)
+    | `Type _a0 -> let _a0 = decl loc _a0 in `Type (loc, _a0)
     | `TypeWith (_a0,_a1) ->
-        let _a0 = typedecl loc _a0 in
+        let _a0 = decl loc _a0 in
         let _a1 = strings loc _a1 in `TypeWith (loc, _a0, _a1)
     | `Value (_a0,_a1) ->
         let _a0 = flag loc _a0 in

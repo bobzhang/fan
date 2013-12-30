@@ -59,14 +59,14 @@ let (<+) (names : string list) (ty : ctyp) =
     (fun name  acc  ->
        (`Arrow ((`Quote (`Normal, (`Lid name))), (acc :>Astfn.ctyp)) :>
        Astfn.ctyp)) names ty
-let name_length_of_tydcl (x : typedecl) =
+let name_length_of_tydcl (x : decl) =
   (match x with
    | `TyDcl (`Lid name,tyvars,_,_) ->
        (name,
          ((match tyvars with
            | `None -> 0
            | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-   | tydcl -> failwith ("name_length_of_tydcl" ^ (ObjsN.dump_typedecl tydcl)) : 
+   | tydcl -> failwith ("name_length_of_tydcl" ^ (ObjsN.dump_decl tydcl)) : 
   (string* int) )
 let gen_quantifiers1 ~arity  n =
   (((Listf.init arity
@@ -82,7 +82,7 @@ let of_id_len ~off  ((id : ident),len) =
        (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp))))
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
-let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
+let gen_ty_of_tydcl ~off  (tydcl : decl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= Ast_basic.N.list_of_sem ty [] in
@@ -171,7 +171,7 @@ let is_recursive ty_dcl =
   | `And _ -> true
   | _ ->
       failwithf "is_recursive not type declartion: %s"
-        (ObjsN.dump_typedecl ty_dcl)
+        (ObjsN.dump_decl ty_dcl)
 let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : Astfn.ctyp) as x ->
@@ -182,9 +182,8 @@ let qualified_app_list (x : ctyp) =
    | `Lid _|`Uid _ -> None
    | #ident' as i -> Some (i, [])
    | _ -> None : (ident* ctyp list) option )
-let is_abstract (x : typedecl) =
-  match x with | `TyAbstr _ -> true | _ -> false
-let abstract_list (x : typedecl) =
+let is_abstract (x : decl) = match x with | `TyAbstr _ -> true | _ -> false
+let abstract_list (x : decl) =
   match x with
   | `TyAbstr (_,lst,_) ->
       (match lst with

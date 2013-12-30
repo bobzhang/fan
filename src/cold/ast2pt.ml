@@ -81,11 +81,10 @@ let dump_type_constr =
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
          "dump_type_constr")
-let dump_typedecl =
+let dump_decl =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_typedecl")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_decl")
 let dump_sigi =
   ref
     (fun _  ->
@@ -224,7 +223,7 @@ let mk_constant_pat _loc (x : literal) =
        Ppat_construct ({ txt = (Lident "()"); loc = _loc }, None, false) : 
   Parsetree.pattern_desc )
 let generate_type_code:
-  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
+  (Astf.loc -> Astf.decl -> Astf.strings -> Astf.stru) ref =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
@@ -914,7 +913,7 @@ and mklabexp (x : rec_exp) =
      | x ->
          (Locf.failf (unsafe_loc_of x) "mklabexp : %s") @@ (! dump_rec_exp x))
     binds
-and mktype_decl (x : typedecl) =
+and mktype_decl (x : decl) =
   let type_decl tl cl loc (x : type_info) =
     match x with
     | `TyMan (_,t1,p,t2) ->
@@ -958,9 +957,8 @@ and mktype_decl (x : typedecl) =
          ((with_loc c sloc),
            (mktype cloc (mk_type_parameters tl) cl ~type_kind:Ptype_abstract
               ~priv:Private ~manifest:None))
-     | (t : typedecl) ->
-         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (! dump_typedecl t))
-    tys
+     | (t : decl) ->
+         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (! dump_decl t)) tys
 and mkwithc (wc : constr) =
   let mkwithtyp
     (pwith_type : Parsetree.type_declaration -> Parsetree.with_constraint)

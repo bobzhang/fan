@@ -62,7 +62,7 @@ let dump_exp = %undef{}
 let dump_case = %undef{}
 let dump_rec_exp =  %undef{}
 let dump_type_constr = %undef{}
-let dump_typedecl = %undef{} 
+let dump_decl = %undef{} 
 let dump_sigi = %undef{}  
 let dump_mbind =  %undef{}
 let dump_mexp = %undef{}
@@ -159,7 +159,7 @@ let mk_constant_pat _loc (x:literal) : Parsetree.pattern_desc =
                                      
     
 let generate_type_code :
-  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
+  (Astf.loc -> Astf.decl -> Astf.strings -> Astf.stru) ref =
   %undef{}
 
 
@@ -923,7 +923,7 @@ and mklabexp (x:rec_exp)  =
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 (** used by [sigi] and [stru] transoformation *)
-and mktype_decl (x:typedecl)  =
+and mktype_decl (x:decl)  =
   let type_decl tl cl loc (x:type_info) =
     match x with
     |`TyMan(_,t1,p,t2) ->
@@ -967,8 +967,8 @@ and mktype_decl (x:typedecl)  =
            (mk_type_parameters tl) cl
            ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
 
-      | (t:typedecl) ->
-        Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
+      | (t:decl) ->
+        Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_decl t)) tys
 
 (** utility , used by [mtyp] transoformation *)    
 and  mkwithc (wc:constr)  =

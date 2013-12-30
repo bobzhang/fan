@@ -21,7 +21,7 @@ type 'a t =
   | Type_parameters
   | Row_field
   | Tag_names
-  | Typedecl
+  | Decl
   | Type_constr
   | Opt_type_constr
   | Decl_param
@@ -75,7 +75,7 @@ let to_string =
   | Type_parameters  -> "type_parameters"
   | Row_field  -> "row_field"
   | Tag_names  -> "tag_names"
-  | Typedecl  -> "typedecl"
+  | Decl  -> "decl"
   | Type_constr  -> "type_constr"
   | Opt_type_constr  -> "opt_type_constr"
   | Decl_param  -> "decl_param"
@@ -129,7 +129,7 @@ let of_string =
   | "type_parameters" -> Type_parameters
   | "row_field" -> Row_field
   | "tag_names" -> Tag_names
-  | "typedecl" -> Typedecl
+  | "decl" -> Decl
   | "type_constr" -> Type_constr
   | "opt_type_constr" -> Opt_type_constr
   | "decl_param" -> Decl_param
@@ -182,7 +182,7 @@ let ctyp: ctyp t = Ctyp
 let type_parameters: type_parameters t = Type_parameters
 let row_field: row_field t = Row_field
 let tag_names: tag_names t = Tag_names
-let typedecl: typedecl t = Typedecl
+let decl: decl t = Decl
 let type_constr: type_constr t = Type_constr
 let opt_type_constr: opt_type_constr t = Opt_type_constr
 let decl_param: decl_param t = Decl_param

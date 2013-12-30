@@ -219,7 +219,7 @@ and eq_tag_names curry__097_ curry__098_ =
   | (`TyVrn (_a0,_a1),`TyVrn (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_astring _a1 _b1)
   | (_,_) -> false
-and eq_typedecl curry__095_ curry__096_ =
+and eq_decl curry__095_ curry__096_ =
   match (curry__095_, curry__096_) with
   | (`TyDcl (_a0,_a1,_a2,_a3,_a4),`TyDcl (_b0,_b1,_b2,_b3,_b4)) ->
       ((((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) &&
@@ -231,7 +231,7 @@ and eq_typedecl curry__095_ curry__096_ =
          (eq_opt_decl_params _a2 _b2))
         && (eq_opt_type_constr _a3 _b3)
   | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
-      ((eq_loc _a0 _b0) && (eq_typedecl _a1 _b1)) && (eq_typedecl _a2 _b2)
+      ((eq_loc _a0 _b0) && (eq_decl _a1 _b1)) && (eq_decl _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>'result47)
   | (_,_) -> false
 and eq_type_constr curry__093_ curry__094_ =
@@ -507,7 +507,7 @@ and eq_sigi curry__063_ curry__064_ =
       (((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) && (eq_ctyp _a2 _b2)) &&
         (eq_strings _a3 _b3)
   | (`Type (_a0,_a1),`Type (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_typedecl _a1 _b1)
+      (eq_loc _a0 _b0) && (eq_decl _a1 _b1)
   | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_of_ctyp _a1 _b1)
   | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
@@ -627,9 +627,9 @@ and eq_stru curry__051_ curry__052_ =
   | (`Open (_a0,_a1,_a2),`Open (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_flag _a1 _b1)) && (eq_ident _a2 _b2)
   | (`Type (_a0,_a1),`Type (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_typedecl _a1 _b1)
+      (eq_loc _a0 _b0) && (eq_decl _a1 _b1)
   | (`TypeWith (_a0,_a1,_a2),`TypeWith (_b0,_b1,_b2)) ->
-      ((eq_loc _a0 _b0) && (eq_typedecl _a1 _b1)) && (eq_strings _a2 _b2)
+      ((eq_loc _a0 _b0) && (eq_decl _a1 _b1)) && (eq_strings _a2 _b2)
   | (`Value (_a0,_a1,_a2),`Value (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_flag _a1 _b1)) && (eq_bind _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>'result25)

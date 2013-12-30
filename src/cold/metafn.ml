@@ -362,7 +362,7 @@ class meta =
                           (self#tag_names _loc _a1))))))
         | `TyVrn _a0 ->
             `App (_loc, (`Vrn (_loc, "TyVrn")), (self#astring _loc _a0))
-    method typedecl : 'loc -> typedecl -> Astf.ep=
+    method decl : 'loc -> decl -> Astf.ep=
       fun _loc  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -392,9 +392,7 @@ class meta =
               (_loc, (`Vrn (_loc, "And")),
                 (`Par
                    (_loc,
-                     (`Com
-                        (_loc, (self#typedecl _loc _a0),
-                          (self#typedecl _loc _a1))))))
+                     (`Com (_loc, (self#decl _loc _a0), (self#decl _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
     method type_constr : 'loc -> type_constr -> Astf.ep=
       fun _loc  ->
@@ -981,7 +979,7 @@ class meta =
                              (_loc, (self#ctyp _loc _a1),
                                (self#strings _loc _a2))))))))
         | `Type _a0 ->
-            `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
+            `App (_loc, (`Vrn (_loc, "Type")), (self#decl _loc _a0))
         | `Exception _a0 ->
             `App (_loc, (`Vrn (_loc, "Exception")), (self#of_ctyp _loc _a0))
         | `Class _a0 ->
@@ -1243,15 +1241,14 @@ class meta =
                      (`Com
                         (_loc, (self#flag _loc _a0), (self#ident _loc _a1))))))
         | `Type _a0 ->
-            `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
+            `App (_loc, (`Vrn (_loc, "Type")), (self#decl _loc _a0))
         | `TypeWith (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "TypeWith")),
                 (`Par
                    (_loc,
                      (`Com
-                        (_loc, (self#typedecl _loc _a0),
-                          (self#strings _loc _a1))))))
+                        (_loc, (self#decl _loc _a0), (self#strings _loc _a1))))))
         | `Value (_a0,_a1) ->
             `App
               (_loc, (`Vrn (_loc, "Value")),

@@ -1,8 +1,8 @@
 open Astn_util
 open Astfn
 open StdFan
-let pp_print_typedecl = ObjsN.pp_print_typedecl
-type named_type = (string* typedecl) 
+let pp_print_decl = ObjsN.pp_print_decl
+type named_type = (string* decl) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and mtyps = types list 
@@ -10,7 +10,7 @@ let rec pp_print_named_type: Format.formatter -> named_type -> unit =
   fun fmt  eta__003_  ->
     (fun fmt  (_a0,_a1)  ->
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
-         pp_print_typedecl _a1) fmt eta__003_
+         pp_print_decl _a1) fmt eta__003_
 and pp_print_and_types: Format.formatter -> and_types -> unit =
   fun fmt  eta__002_  -> pp_print_list pp_print_named_type fmt eta__002_
 and pp_print_types: Format.formatter -> types -> unit =
@@ -41,7 +41,7 @@ let apply_filter f (m : mtyps) =
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
    Listf.filter_map f m : mtyps )
-let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
+let stru_from_mtyps ~f:(aux : named_type -> decl)  (x : mtyps) =
   (match x with
    | [] -> None
    | _ ->
@@ -50,10 +50,9 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
            (function
             | `Mutual tys ->
                 let v = and_of_list (List.map aux tys) in
-                (`Type (v :>Astfn.typedecl) :>Astfn.stru)
+                (`Type (v :>Astfn.decl) :>Astfn.stru)
             | `Single ty ->
-                let v = aux ty in (`Type (v :>Astfn.typedecl) :>Astfn.stru))
-           x in
+                let v = aux ty in (`Type (v :>Astfn.decl) :>Astfn.stru)) x in
        Some (sem_of_list xs) : stru option )
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
@@ -105,6 +104,6 @@ let transform_mtyps (lst : mtyps) =
     List.map
       (function
        | `Mutual ls ->
-           `Mutual (List.map (fun (s,ty)  -> (s, (obj#typedecl ty))) ls)
-       | `Single (s,ty) -> `Single (s, (obj#typedecl ty))) lst in
+           `Mutual (List.map (fun (s,ty)  -> (s, (obj#decl ty))) ls)
+       | `Single (s,ty) -> `Single (s, (obj#decl ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
