@@ -31,7 +31,7 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
    let base = name_exp +> names in
-   let id_eps = (Listf.init arity) @@ (fun index  -> Fid.xid ~off:index i) in
+   let id_eps = (Listf.init arity) @@ (fun index  -> Id.xid ~off:index i) in
    let ep0 = List.hd id_eps in
    let id_ep = tuple_com id_eps in
    let exp = appl_of_list (base :: (id_eps :>exp list)) in
@@ -59,7 +59,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
         if Hashset.mem cxt id
         then lid (left_trans id)
         else right_trans (`Lid id)
-    | #ident' as id -> right_trans (IdN.to_vid id)
+    | #ident' as id -> right_trans (Idn_util.to_vid id)
     | `App (t1,t2) ->
         (`App ((aux t1 :>Astfn.exp), (aux t2 :>Astfn.exp)) :>Astfn.exp)
     | `Quote (_,`Lid s) -> tyvar s
@@ -82,12 +82,12 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
   let tyvar = right_transform right_type_variable in
   let rec aux: ctyp -> exp =
     function
-    | #ident' as id -> trans (IdN.to_vid id)
+    | #ident' as id -> trans (Idn_util.to_vid id)
     | `Quote (_,`Lid s) -> tyvar s
     | `App _ as ty ->
         (match Ast_basic.N.list_of_app ty [] with
          | (#ident' as tctor)::ls ->
-             appl_of_list ((trans (IdN.to_vid tctor)) ::
+             appl_of_list ((trans (Idn_util.to_vid tctor)) ::
                (ls |>
                   (List.map
                      (function

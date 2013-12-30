@@ -220,7 +220,7 @@ and tag_names =
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
 and typedecl =
-    (* {:stru| type  ('a, 'b, 'c) t = t |} *)
+    (* %stru{ type  ('a, 'b, 'c) t = t } *)
   [ `TyDcl of (loc * alident * opt_decl_params * type_info * opt_type_constr)
   | `TyAbstr of (loc * alident * opt_decl_params * opt_type_constr ) 
   | `And of (loc * typedecl * typedecl)

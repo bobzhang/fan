@@ -19,5 +19,5 @@ let allxid ?(off=0) i = `Lid (allx ~off i)
   
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/basicN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/id.cmo" *)
 (* end: *)

@@ -82,7 +82,7 @@ let mk_transform_type_eq () =
                if not ((vars : decl_params list  :>ctyp list) = lst)
                then super#stru x
                else
-                 (let src = i and dest = IdN.to_string i in
+                 (let src = i and dest = Idn_util.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
                   (`StExp `Unit :>Astfn.stru))
            | None  -> super#stru x)
@@ -91,7 +91,7 @@ let mk_transform_type_eq () =
       match Ctyp.qualified_app_list x with
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
-          let src = i and dest = IdN.to_string i in
+          let src = i and dest = Idn_util.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
            appl_of_list ((`Lid dest :>Astfn.ctyp) :: lst))
       | None  -> super#ctyp x

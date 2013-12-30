@@ -146,7 +146,7 @@ FAN_FILES = \
     eq \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
-    fid \
+    id \
     compile_lex compile_stream ctyp \
     derive dyn_load \
     id_epn\
@@ -158,7 +158,8 @@ FAN_FILES = \
     compile_gram \
     sigs_util  \
     gfold gramlib\
-    idN  ns \
+    idn_util \
+    ns \
     fan_args mktop \
     strip\
     objs objsN \

@@ -1140,18 +1140,29 @@ ctyp_quot:
   (* only used in ctyps *)
   name_tags:
   [ Ant (""|"typ" ,s) %{  mk_ant ~c:(Dyn_tag.to_string Dyn_tag.tag_names)  s}
-| S as t1; S as t2 %{ `App (_loc, t1, t2)}
-| "`"; astr as i %{ `TyVrn (_loc, i)}  ]
+  | S as t1; S as t2 %{ `App (_loc, t1, t2)}
+  | "`"; astr as i %{ `TyVrn (_loc, i)}  ]
+
+  type_ident_and_parameters:
+  [ "(";  L1 type_parameter SEP "," as tpl; ")"; a_lident as i %{
+    (i, `Some(_loc, com_of_list (tpl :>  decl_params list)))}
+
+  | Ant ("param",s); a_lident as i %{
+    (i, `Some (s.loc, mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl_params) s ))}
+  |  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
+  |  a_lident as i %{ (i, `None _loc)}
+  ]
+
   type_declaration:
   [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.typedecl)  s}
-| S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}
-|  type_ident_and_parameters as rest; "="; type_info as tk; L0 constrain as cl
+  | S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}
+  | type_ident_and_parameters as rest; "="; type_info as tk; L0 constrain as cl
       %{ let (n, tpl) = rest in
       `TyDcl (_loc, n, tpl, tk,
               match cl with
               |[]-> `None _loc
               | _ -> `Some(_loc,and_of_list cl))}
-| type_ident_and_parameters as rest; L0 constrain as cl %{
+  | type_ident_and_parameters as rest; L0 constrain as cl %{
     let (n,tpl) = rest in
     `TyAbstr(_loc,n,tpl,
              match cl with
@@ -1159,23 +1170,22 @@ ctyp_quot:
              | _ -> `Some(_loc, and_of_list cl))}]
   type_info:
   [ type_repr as t2 %{ `TyRepr(_loc,`Negative _loc,t2)}
-| ctyp as t1; "="; type_repr as t2 %{ `TyMan(_loc, t1, `Negative _loc, t2)}
-| ctyp as t1 %{ `TyEq(_loc,`Negative _loc, t1)}
-| "private"; ctyp as t1 %{ `TyEq(_loc,`Positive _loc,t1)}
-|  ctyp as t1; "=";"private"; type_repr as t2 %{ `TyMan(_loc, t1, `Positive _loc,t2)}
-| "private"; type_repr as t2 %{ `TyRepr(_loc,`Positive _loc, t2)}
-]
+  | ctyp as t1; "="; type_repr as t2 %{ `TyMan(_loc, t1, `Negative _loc, t2)}
+  | ctyp as t1 %{ `TyEq(_loc,`Negative _loc, t1)}
+  | "private"; ctyp as t1 %{ `TyEq(_loc,`Positive _loc,t1)}
+  |  ctyp as t1; "=";"private"; type_repr as t2 %{ `TyMan(_loc, t1, `Positive _loc,t2)}
+  | "private"; type_repr as t2 %{ `TyRepr(_loc,`Positive _loc, t2)}
+  ]
 
   type_repr:
   [ "|"; constructor_declarations as t %{ `Sum(_loc,t)}
   | "{"; label_declaration_list as t; "}" %{ `Record (_loc, t)}]
-  type_ident_and_parameters:
-  [ "(";  L1 type_parameter SEP "," as tpl; ")"; a_lident as i %{
-    (i, `Some(_loc, com_of_list (tpl :>  decl_params list)))}
-  |  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
-  |  a_lident as i %{ (i, `None _loc)}]
+  
+  
+
   constrain:
   [ "constraint"; ctyp as t1; "="; ctyp as t2 %{ `Eq(_loc,t1, t2)} ]
+
   typevars:
   [ S as t1; S as t2 %{ `App(_loc,t1,t2)}
   | Ant (""|"typ" ,s) %{  mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}

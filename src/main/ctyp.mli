@@ -79,7 +79,7 @@ type full_id_transform =
 val arrow_of_list : ctyp list -> ctyp
 val app_arrow : ctyp list -> ctyp -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp
-(* val ( +> ) : ctyp list -> ctyp -> ctyp *)
+
 
 (** {[
     match {:stru< type 'a list  = [A of int | B of 'a] |} with
@@ -113,8 +113,8 @@ val of_name_len : off:int -> string * int -> ctyp
 
 
 val list_of_record : name_ctyp -> col list
-val gen_tuple_n : ctyp -> int -> ctyp
-val repeat_arrow_n : ctyp -> int -> ctyp
+
+
 
 (**
      [result] is a keyword
@@ -160,7 +160,7 @@ val mk_method_type_of_name :
   number:int ->
   prefix:string list -> string * int -> destination -> (ctyp*ctyp)
       
-(* val mk_dest_type: destination:destination -> ident * int -> ctyp  *)
+
         
 val mk_obj : string -> string -> clfield -> stru
 val is_recursive : typedecl -> bool
@@ -182,8 +182,7 @@ val reduce_data_ctors:
 val view_sum: or_ctyp -> branch list
 val view_variant: row_field -> vbranch list    
 
-(* val ty_name_of_tydcl : typedecl -> ctyp *)    
-(* val gen_quantifiers : arity:int -> int -> ctyp *)
+
 
 
 val transform : full_id_transform -> vid -> exp

@@ -2,7 +2,7 @@
 
 
 %import{
-Fid:
+Id:
   xid
 ;
 };;

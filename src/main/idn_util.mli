@@ -2,8 +2,7 @@
 open Astfn
 
 
-(** mapping an ident to  a type variable *)  
-val tvar_of_ident : vid -> string
+
 
 
 (** {[
@@ -31,6 +30,5 @@ val ident_map :
       vid -> [> `Dot of vid * [> `Lid of string ] | `Lid of string ]
 
 (* the same as [ident_map] except f is of type [string -> ident ] *)
-
 val ident_map_of_ident : (string -> vid) -> vid -> vid
 

@@ -1,11 +1,6 @@
 open Astfn
 open Astn_util
 open Util
-let rec tvar_of_ident: vid -> string =
-  function
-  | `Lid x|`Uid x -> x
-  | `Dot (`Uid x,xs) -> x ^ ("__" ^ (tvar_of_ident xs))
-  | _ -> failwith "internal error in the Grammar extension"
 let map_to_string (ident : vid) =
   let rec aux i acc =
     match i with
@@ -25,13 +20,13 @@ let to_string (ident : ident) =
   aux ident ""
 let rec to_vid (x : ident) =
   (match x with
-   | `Apply _ -> failwith "IdN.to_vid"
+   | `Apply _ -> invalid_arg ("Idn_util" ^ ("." ^ "to_vid"))
    | `Dot (a,b) -> dot (to_vid a) (to_vid b)
    | `Lid _|`Uid _|`Ant _ as x -> x : vid )
 let ident_map f (x : vid) =
   let lst = Ast_basic.N.list_of_dot x [] in
   match lst with
-  | [] -> invalid_arg "ident_map identifier [] "
+  | [] -> invalid_arg ("Idn_util" ^ ("." ^ "ident_map"))
   | (`Lid y)::[] -> lid (f y)
   | ls ->
       let l = List.length ls in
@@ -41,7 +36,7 @@ let ident_map f (x : vid) =
 let ident_map_of_ident f x =
   (let lst = Ast_basic.N.list_of_dot x [] in
    match lst with
-   | [] -> invalid_arg "ident_map identifier [] "
+   | [] -> invalid_arg ("Idn_util" ^ ("." ^ "ident_map_of_ident"))
    | (`Lid y)::[] -> f y
    | ls ->
        let l = List.length ls in

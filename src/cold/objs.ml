@@ -4116,7 +4116,6 @@ let dump_clexp = Formatf.to_string dump#clexp
 let dump_clfield = Formatf.to_string dump#clfield
 let dump_ep = Formatf.to_string dump#ep
 let dump_rec_bind = Formatf.to_string dump#rec_bind
-class reloc _loc = object  inherit  map method! loc _ = _loc end
 let wildcarder =
   object (self)
     inherit  map as super

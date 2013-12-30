@@ -1,6 +1,6 @@
 open StdFan
 open Astf
-(* let strip_ant ant = ant ;; *)
+
 %fans{
 keep off;
 derive((* Map2 Fold2 OIter   OEq *)
@@ -10,15 +10,7 @@ derive((* Map2 Fold2 OIter   OEq *)
 
 %ocaml{%include{ "../common/astf.mli"};;  };;
 
-(* change all the [loc] to [ghost] *)    
-class reloc _loc = object
-  inherit map 
-  method! loc _ = _loc
-end
 
-(*
-  {[]}
- *)  
 let wildcarder = object (self)
   inherit map as super
   method! pat = function

@@ -16276,6 +16276,109 @@ let apply_ctyp () =
      } : _ Gramf.single_extend_statement );
   Gramf.extend_single
     ({
+       entry =
+         (type_ident_and_parameters : 'type_ident_and_parameters Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "("); tag_name = "Key" }
+                       } : Tokenf.pattern );
+                   List1sep
+                     ((Nterm
+                         (Gramf.obj
+                            (type_parameter : 'type_parameter Gramf.t ))),
+                       (Token
+                          ({
+                             descr =
+                               { tag = `Key; word = (A ","); tag_name = "Key"
+                               }
+                           } : Tokenf.pattern )));
+                   Token
+                     ({
+                        descr =
+                          { tag = `Key; word = (A ")"); tag_name = "Key" }
+                      } : Tokenf.pattern );
+                   Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
+                 annot =
+                   "(i, (`Some (_loc, (com_of_list (tpl :>decl_params list)))))\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (i : 'a_lident)  _  (tpl : 'type_parameter list) 
+                         _  (_loc : Locf.t)  ->
+                         ((i,
+                            (`Some
+                               (_loc, (com_of_list (tpl :>decl_params list))))) : 
+                         'type_ident_and_parameters ) : 'a_lident ->
+                                                          Tokenf.txt ->
+                                                            'type_parameter
+                                                              list ->
+                                                              Tokenf.txt ->
+                                                                Locf.t ->
+                                                                  'type_ident_and_parameters ))
+               };
+              {
+                symbols =
+                  [Token
+                     ({
+                        descr =
+                          {
+                            tag = `Ant;
+                            word = (Kind "param");
+                            tag_name = "Ant"
+                          }
+                      } : Tokenf.pattern );
+                  Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
+                annot =
+                  "(i, (`Some ((s.loc), (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl_params) s))))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (i : 'a_lident)  (__fan_0 : Tokenf.ant) 
+                        (_loc : Locf.t)  ->
+                        let s = __fan_0 in
+                        ((i,
+                           (`Some
+                              ((s.loc),
+                                (mk_ant
+                                   ~c:(Dyn_tag.to_string Dyn_tag.decl_params)
+                                   s)))) : 'type_ident_and_parameters ) : 
+                     'a_lident ->
+                       Tokenf.ant -> Locf.t -> 'type_ident_and_parameters ))
+              };
+              {
+                symbols =
+                  [Nterm
+                     (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
+                  Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
+                annot = "(i, (`Some (_loc, (t :>decl_params))))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (i : 'a_lident)  (t : 'type_parameter) 
+                        (_loc : Locf.t)  ->
+                        ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters ) : 
+                     'a_lident ->
+                       'type_parameter ->
+                         Locf.t -> 'type_ident_and_parameters ))
+              };
+              {
+                symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
+                annot = "(i, (`None _loc))\n";
+                fn =
+                  (Gramf.mk_action
+                     (fun (i : 'a_lident)  (_loc : Locf.t)  ->
+                        ((i, (`None _loc)) : 'type_ident_and_parameters ) : 
+                     'a_lident -> Locf.t -> 'type_ident_and_parameters ))
+              }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
        entry = (type_declaration : 'type_declaration Gramf.t );
        olevel =
          ({
@@ -16556,81 +16659,6 @@ let apply_ctyp () =
                      Tokenf.txt ->
                        'label_declaration_list ->
                          Tokenf.txt -> Locf.t -> 'type_repr ))
-              }]
-          } : Gramf.olevel )
-     } : _ Gramf.single_extend_statement );
-  Gramf.extend_single
-    ({
-       entry =
-         (type_ident_and_parameters : 'type_ident_and_parameters Gramf.t );
-       olevel =
-         ({
-            label = None;
-            lassoc = true;
-            productions =
-              [{
-                 symbols =
-                   [Token
-                      ({
-                         descr =
-                           { tag = `Key; word = (A "("); tag_name = "Key" }
-                       } : Tokenf.pattern );
-                   List1sep
-                     ((Nterm
-                         (Gramf.obj
-                            (type_parameter : 'type_parameter Gramf.t ))),
-                       (Token
-                          ({
-                             descr =
-                               { tag = `Key; word = (A ","); tag_name = "Key"
-                               }
-                           } : Tokenf.pattern )));
-                   Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A ")"); tag_name = "Key" }
-                      } : Tokenf.pattern );
-                   Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
-                 annot =
-                   "(i, (`Some (_loc, (com_of_list (tpl :>decl_params list)))))\n";
-                 fn =
-                   (Gramf.mk_action
-                      (fun (i : 'a_lident)  _  (tpl : 'type_parameter list) 
-                         _  (_loc : Locf.t)  ->
-                         ((i,
-                            (`Some
-                               (_loc, (com_of_list (tpl :>decl_params list))))) : 
-                         'type_ident_and_parameters ) : 'a_lident ->
-                                                          Tokenf.txt ->
-                                                            'type_parameter
-                                                              list ->
-                                                              Tokenf.txt ->
-                                                                Locf.t ->
-                                                                  'type_ident_and_parameters ))
-               };
-              {
-                symbols =
-                  [Nterm
-                     (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
-                  Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
-                annot = "(i, (`Some (_loc, (t :>decl_params))))\n";
-                fn =
-                  (Gramf.mk_action
-                     (fun (i : 'a_lident)  (t : 'type_parameter) 
-                        (_loc : Locf.t)  ->
-                        ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters ) : 
-                     'a_lident ->
-                       'type_parameter ->
-                         Locf.t -> 'type_ident_and_parameters ))
-              };
-              {
-                symbols = [Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))];
-                annot = "(i, (`None _loc))\n";
-                fn =
-                  (Gramf.mk_action
-                     (fun (i : 'a_lident)  (_loc : Locf.t)  ->
-                        ((i, (`None _loc)) : 'type_ident_and_parameters ) : 
-                     'a_lident -> Locf.t -> 'type_ident_and_parameters ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );

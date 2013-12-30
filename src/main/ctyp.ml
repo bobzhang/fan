@@ -93,7 +93,7 @@ let app_arrow lst acc = List.fold_right arrow lst acc
 let (<+) (names: string list ) (ty:ctyp) =
   List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) names ty
     
-let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
+
 
 let name_length_of_tydcl (x:typedecl) : (string * int) =
   match x with 
@@ -102,8 +102,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
       | `None  -> 0
       | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
   | tydcl ->
-      failwithf "name_length_of_tydcl  %s \n"
-        (ObjsN.dump_typedecl tydcl)
+      failwith (__BIND__ ^ ObjsN.dump_typedecl tydcl)
 
 
 (**
@@ -117,7 +116,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   Listf.init arity
     (fun i ->
       Listf.init n
-        @@ fun j -> %ctyp-{'$lid{Fid.allx ~off:i j}} )
+        @@ fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} )
   |> List.concat |> appl_of_list
 
 
@@ -126,7 +125,7 @@ let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
      Listf.init len
-       (fun i -> %ctyp-{'$lid{Fid.allx ~off i}}))
+       (fun i -> %ctyp-{'$lid{Id.allx ~off i}}))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -182,14 +181,6 @@ let list_of_record (ty:name_ctyp) : col list  =
  *)
 let gen_tuple_n ty n = Listf.init n (fun _ -> ty) |> tuple_sta
 
-(*
-  {[
-  repeat_arrow_n <:ctyp< 'a >> 3 |> eprint;
-  'a -> 'a -> 'a
-  ]}
- *)
-let repeat_arrow_n ty n =
-  Listf.init n (fun _ -> ty) |>  arrow_of_list
     
 
 (* to be clean soon *)
@@ -217,12 +208,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     Listf.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Listf.init number @@ fun _ -> %ctyp-{ '$lid{Fid.allx ~off:0 i}} in
+        Listf.init number @@ fun _ -> %ctyp-{ '$lid{Id.allx ~off:0 i}} in
       match k with
       |Obj u  ->
           let dst =
             match  u with
-            | Map -> let x  = Fid.allx ~off:1 i in %ctyp-{  '$lid:x }
+            | Map -> let x  = Id.allx ~off:1 i in %ctyp-{  '$lid:x }
             | Iter -> result_type
             | Concrete c -> c
             | Fold-> self_type  in
@@ -232,12 +223,11 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let base = prefix <+ app_src dst in
   if len = 0 then
     ( `TyPolEnd  base,dst)
-  else let quantifiers = gen_quantifiers1 ~arity:quant len in
-  (%ctyp-{!$quantifiers . ${params +> base}},dst)
+  else
+    let quantifiers = gen_quantifiers1 ~arity:quant len in
+    (%ctyp-{!$quantifiers . ${List.fold_right arrow params  base}},dst)
 
 
-
-(* *)  
 let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
   let id = lid name in
   mk_method_type ~number ~prefix (id,len) k 
@@ -399,7 +389,7 @@ let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 (*************************************************************************)
 (* transformation function *)    
 let transform : full_id_transform -> vid -> exp  =
-  let open IdN in  function
+  let open Idn_util in  function
     | `Pre pre ->
         fun  x ->  (ident_map (fun x -> pre ^ x) x : exp)
             (* fun [x -> %{ $(id: ident_map (fun x ->  pre ^ x) x ) } ] *)
@@ -451,10 +441,10 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $lid{ Fid.x ~off:i 0 }) }in
+    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $lid{ Id.x ~off:i 0 }) }in
   let exps =
     Listf.init arity @@ fun i ->
-      %exp-{ $id{Fid.xid ~off:i 0} }  in
+      %exp-{ $id{Id.xid ~off:i 0} }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with

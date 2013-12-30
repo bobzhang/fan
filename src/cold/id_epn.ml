@@ -1,4 +1,4 @@
-let xid = Fid.xid
+let xid = Id.xid
 open Astfn
 open Astn_util
 let of_vstr_number name i =

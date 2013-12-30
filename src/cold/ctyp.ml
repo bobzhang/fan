@@ -59,8 +59,6 @@ let (<+) (names : string list) (ty : ctyp) =
     (fun name  acc  ->
        (`Arrow ((`Quote (`Normal, (`Lid name))), (acc :>Astfn.ctyp)) :>
        Astfn.ctyp)) names ty
-let (+>) (params : ctyp list) (base : ctyp) =
-  List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
   (match x with
    | `TyDcl (`Lid name,tyvars,_,_) ->
@@ -68,21 +66,20 @@ let name_length_of_tydcl (x : typedecl) =
          ((match tyvars with
            | `None -> 0
            | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-   | tydcl ->
-       failwithf "name_length_of_tydcl  %s \n" (ObjsN.dump_typedecl tydcl) : 
+   | tydcl -> failwith ("name_length_of_tydcl" ^ (ObjsN.dump_typedecl tydcl)) : 
   (string* int) )
 let gen_quantifiers1 ~arity  n =
   (((Listf.init arity
        (fun i  ->
           (Listf.init n) @@
             (fun j  ->
-               (`Quote (`Normal, (`Lid (Fid.allx ~off:i j))) :>Astfn.ctyp))))
+               (`Quote (`Normal, (`Lid (Id.allx ~off:i j))) :>Astfn.ctyp))))
       |> List.concat)
      |> appl_of_list : ctyp )
 let of_id_len ~off  ((id : ident),len) =
   appl_of_list ((id :>ctyp) ::
     (Listf.init len
-       (fun i  -> (`Quote (`Normal, (`Lid (Fid.allx ~off i))) :>Astfn.ctyp))))
+       (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp))))
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
@@ -97,7 +94,6 @@ let list_of_record (ty : name_ctyp) =
          | t0 -> failwithf "list_of_record %s" (ObjsN.dump_name_ctyp t0))) : 
   col list )
 let gen_tuple_n ty n = (Listf.init n (fun _  -> ty)) |> tuple_sta
-let repeat_arrow_n ty n = (Listf.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let prefix =
@@ -123,13 +119,13 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
             app_arrow @@
               ((Listf.init number) @@
                  (fun _  ->
-                    (`Quote (`Normal, (`Lid (Fid.allx ~off:0 i))) :>Astfn.ctyp))) in
+                    (`Quote (`Normal, (`Lid (Id.allx ~off:0 i))) :>Astfn.ctyp))) in
           match k with
           | Obj u ->
               let dst =
                 match u with
                 | Map  ->
-                    let x = Fid.allx ~off:1 i in
+                    let x = Id.allx ~off:1 i in
                     (`Quote (`Normal, (`Lid x)) :>Astfn.ctyp)
                 | Iter  -> result_type
                 | Concrete c -> c
@@ -141,8 +137,10 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    then ((`TyPolEnd base), dst)
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
-      ((`TyPol ((quantifiers :>Astfn.ctyp), (params +> base :>Astfn.ctyp)) :>
-        Astfn.ctyp), dst)) : (ctyp* ctyp) )
+      ((`TyPol
+          ((quantifiers :>Astfn.ctyp),
+            (List.fold_right arrow params base :>Astfn.ctyp)) :>Astfn.ctyp),
+        dst)) : (ctyp* ctyp) )
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = lid name in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
@@ -224,7 +222,7 @@ let view_variant (t : row_field) =
   vbranch list )
 let conversion_table: (string,string) Hashtbl.t = Hashtbl.create 50
 let transform: full_id_transform -> vid -> exp =
-  let open IdN in
+  let open Idn_util in
     function
     | `Pre pre -> (fun x  -> (ident_map (fun x  -> pre ^ x) x : exp ))
     | `Post post -> (fun x  -> (ident_map (fun x  -> x ^ post) x : exp ))
@@ -260,11 +258,11 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: pat list =
     (Listf.init arity) @@
       (fun i  ->
-         (`Alias ((`ClassPath (name :>Astfn.ident)), (`Lid (Fid.x ~off:i 0))) :>
+         (`Alias ((`ClassPath (name :>Astfn.ident)), (`Lid (Id.x ~off:i 0))) :>
          Astfn.pat)) in
   let exps =
     (Listf.init arity) @@
-      (fun i  -> ((Fid.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
+      (fun i  -> ((Id.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
   let e = appl_of_list (e :: exps) in
   let pat = args |> tuple_com in
   match destination with

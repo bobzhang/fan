@@ -181,62 +181,150 @@ let _ = begin
     ~exp_filter
     ~pat_filter;
   
-  add_quotation {domain; name =  "pat'"} pat_quot ~mexp:(me#pat)
-    ~mpat:(mp#pat) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "exp'"} exp_quot ~mexp:(me#exp)
-    ~mpat:(mp#exp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "ep'"} ep ~mexp:me#ep
-    ~mpat:mp#ep ~exp_filter ~pat_filter;
-
-  add_quotation {domain; name =  "mtyp'"} mtyp_quot ~mexp:(me#mtyp)
-    ~mpat:(mp#mtyp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "mexp'"} mexp_quot ~mexp:(me#mexp)
-    ~mpat:(mp#mexp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "cltyp'"} cltyp_quot ~mexp:(me#cltyp)
-    ~mpat:(mp#cltyp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "clexp'"} clexp_quot ~mexp:(me#clexp)
-    ~mpat:(mp#clexp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "clsigi'"} clsigi_quot ~mexp:(me#clsigi)
-    ~mpat:(mp#clsigi) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "clfield'"} clfield_quot ~mexp:(me#clfield)
-    ~mpat:(mp#clfield) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "constr'"} constr_quot ~mexp:(me#constr)
-    ~mpat:(mp#constr) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "bind'"} bind_quot ~mexp:(me#bind)
-    ~mpat:(mp#bind) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "rec_exp'"} rec_exp_quot ~mexp:(me#rec_exp)
-    ~mpat:(mp#rec_exp) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "case'"} case_quot ~mexp:(me#case)
-    ~mpat:(mp#case) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "mbind'"} mbind_quot ~mexp:(me#mbind)
-    ~mpat:(mp#mbind) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "ident'"} ident_quot ~mexp:(me#ident)
-    ~mpat:(mp#ident) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "rec_flag'"} rec_flag_quot ~mexp:(me#flag)
-    ~mpat:(mp#flag) ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "private_flag'"} private_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "row_var_flag'"} row_var_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "mutable_flag'"} mutable_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "virtual_flag'"} virtual_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "override_flag'"} override_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "direction_flag'"} direction_flag_quot
-    ~mexp:(me#flag) ~mpat:(mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "or_ctyp'"} constructor_declarations
-    ~mexp:(me#or_ctyp) ~mpat:(me#or_ctyp) ~exp_filter
+  add_quotation {domain; name =  "pat'"} pat_quot 
+    ~mexp:(me#pat)
+    ~mpat:(mp#pat)
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "row_field'"} row_field ~mexp:(me#row_field)
-    ~mpat:(mp#row_field) ~exp_filter ~pat_filter
+
+  add_quotation {domain; name =  "exp'"} exp_quot
+    ~mexp:me#exp
+    ~mpat:mp#exp
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "ep'"} ep
+    ~mexp:me#ep
+    ~mpat:mp#ep
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "mtyp'"} mtyp_quot
+    ~mexp:me#mtyp
+    ~mpat:mp#mtyp
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "mexp'"} mexp_quot
+    ~mexp:me#mexp
+    ~mpat:mp#mexp
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "cltyp'"} cltyp_quot
+    ~mexp:me#cltyp
+    ~mpat:mp#cltyp
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "clexp'"} clexp_quot
+    ~mexp:me#clexp
+    ~mpat:mp#clexp
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "clsigi'"} clsigi_quot
+    ~mexp:me#clsigi
+    ~mpat:mp#clsigi
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "clfield'"} clfield_quot
+    ~mexp:me#clfield
+    ~mpat:mp#clfield
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "constr'"} constr_quot
+    ~mexp:me#constr
+    ~mpat:mp#constr
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "bind'"} bind_quot
+    ~mexp:me#bind
+    ~mpat:mp#bind
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "rec_exp'"} rec_exp_quot
+    ~mexp:me#rec_exp
+    ~mpat:mp#rec_exp
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "case'"} case_quot
+    ~mexp:me#case
+    ~mpat:mp#case
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "mbind'"} mbind_quot
+    ~mexp:me#mbind
+    ~mpat:mp#mbind
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "ident'"} ident_quot
+    ~mexp:me#ident
+    ~mpat:mp#ident
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "rec_flag'"} rec_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "private_flag'"} private_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "row_var_flag'"} row_var_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "mutable_flag'"} mutable_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "virtual_flag'"} virtual_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "override_flag'"} override_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "direction_flag'"} direction_flag_quot
+    ~mexp:me#flag
+    ~mpat:mp#flag
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "or_ctyp'"} constructor_declarations
+    ~mexp:me#or_ctyp
+    ~mpat:me#or_ctyp
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "row_field'"} row_field
+    ~mexp:me#row_field
+    ~mpat:mp#row_field
+    ~exp_filter
+    ~pat_filter
+
 end;;
 
 

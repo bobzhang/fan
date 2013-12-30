@@ -120,7 +120,7 @@ let mk_transform_type_eq () = object(self:'self_type)
                  This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
                *)
               let src = i and dest =             
-                IdN.to_string i in begin
+                Idn_util.to_string i in begin
                   Hashtbl.replace transformers dest (src,List.length lst);
                   %stru-{ let _ = ()} (* FIXME *)
                 end 
@@ -131,7 +131,7 @@ let mk_transform_type_eq () = object(self:'self_type)
     match Ctyp.qualified_app_list x with
     | Some (i, lst) ->
         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-        let src = i and dest = IdN.to_string i in begin
+        let src = i and dest = Idn_util.to_string i in begin
           Hashtbl.replace transformers dest (src,List.length lst);
           appl_of_list (%ctyp-{ $lid:dest } :: lst )
         end
