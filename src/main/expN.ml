@@ -3,8 +3,6 @@
 
 open Astfn
 open Astn_util
-open Fid
-
 
 
 let mkfun names acc  =
@@ -23,7 +21,7 @@ let currying cases ~arity =
 
 
 let eta_expand (exp:exp) number : exp =
-  let names = Listf.init number (fun i -> x ~off:0 i ) in
+  let names = Listf.init number (fun _ -> %fresh{eta}) in
   mkfun names (exp +> names )
       
 

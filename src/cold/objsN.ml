@@ -1,7 +1,7 @@
 open StdFan
 open Astfn
 let pp_print_loc: Format.formatter -> loc -> unit =
-  fun fmt  _a0  -> Locf.pp_print_t fmt _a0
+  fun fmt  eta__001_  -> Locf.pp_print_t fmt eta__001_
 let pp_print_ant: Format.formatter -> ant -> unit =
   fun fmt  (`Ant (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
@@ -870,7 +870,8 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
 class print =
   object (self : 'self_type)
     inherit  printbase
-    method loc : 'fmt -> loc -> unit= fun fmt  _a0  -> self#locf_t fmt _a0
+    method loc : 'fmt -> loc -> unit=
+      fun fmt  eta__002_  -> self#locf_t fmt eta__002_
     method ant : 'fmt -> ant -> unit=
       fun fmt  (`Ant (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc _a0
@@ -1738,7 +1739,7 @@ class print =
 class map =
   object (self : 'self_type)
     inherit  mapbase
-    method loc : loc -> loc= fun _a0  -> self#locf_t _a0
+    method loc : loc -> loc= fun eta__003_  -> self#locf_t eta__003_
     method ant : ant -> ant=
       fun (`Ant (_a0,_a1))  ->
         let _a0 = self#loc _a0 in
@@ -2525,7 +2526,7 @@ class map =
 class fold =
   object (self : 'self_type)
     inherit  foldbase
-    method loc : loc -> 'self_type= fun _a0  -> self#locf_t _a0
+    method loc : loc -> 'self_type= fun eta__004_  -> self#locf_t eta__004_
     method ant : ant -> 'self_type=
       fun (`Ant (_a0,_a1))  -> let self = self#loc _a0 in self#tokenf_ant _a1
     method literal : literal -> 'self_type=

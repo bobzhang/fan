@@ -15,7 +15,7 @@ let currying cases ~arity  =
     mkfun names (`Match ((x :>Astfn.exp), cases) :>Astfn.exp)
   else (`Fun cases :>Astfn.exp)
 let eta_expand (exp : exp) number =
-  (let names = Listf.init number (fun i  -> x ~off:0 i) in
+  (let names = Listf.init number (fun _  -> Gensym.fresh ~prefix:"eta" ()) in
    mkfun names (exp +> names) : exp )
 let unknown len =
   if len = 0
