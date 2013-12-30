@@ -11,11 +11,11 @@ let mkfun names acc  =
   List.fold_right  (fun name acc ->  %exp-{ function | $lid:name -> $acc }) names acc 
 
 
-  
+(** used in code generators with two or three arguments *)  
 let currying cases ~arity =
   let cases = bar_of_list cases in 
   if  arity >= 2 then 
-    let names = Listf.init arity (fun i -> x ~off:i 0) in
+    let names = Listf.init arity (fun _ -> %fresh{curry}) in
     let exps = Listf.map (fun s-> %exp-{ $lid:s } ) names in
     let x = tuple_com exps in
     mkfun names  %exp-{ match $x with | $cases } 

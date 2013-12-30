@@ -1,26 +1,27 @@
 open Astfn
 open Astn_util
-open Fid
 let mkfun names acc =
   List.fold_right
     (fun name  acc  ->
        (`Fun (`Case ((`Lid name), (acc :>Astfn.exp))) :>Astfn.exp)) names acc
-let currying cases ~arity  =
-  let cases = bar_of_list cases in
-  if arity >= 2
-  then
-    let names = Listf.init arity (fun _  -> Gensym.fresh ~prefix:"curry" ()) in
-    let exps = Listf.map (fun s  -> (`Lid s :>Astfn.exp)) names in
-    let x = tuple_com exps in
-    mkfun names (`Match ((x :>Astfn.exp), cases) :>Astfn.exp)
-  else (`Fun cases :>Astfn.exp)
-let eta_expand (exp : exp) number =
-  (let names = Listf.init number (fun i  -> x ~off:0 i) in
-   mkfun names (exp +> names) : exp )
 let unknown len =
   if len = 0
   then (`Send ((`Lid "self"), (`Lid "unknown")) :>Astfn.exp)
-  else (`App ((`Lid "failwith"), (`Str "not implemented!")) :>Astfn.exp)
+  else
+    (`App
+       ((`Lid "ref"),
+         (`Fun
+            (`Case
+               (`Any,
+                 (`App
+                    ((`App
+                        ((`App
+                            ((`App
+                                ((`Dot ((`Uid "Format"), (`Lid "ksprintf"))),
+                                  (`Lid "failwith"))),
+                              (`Str "%s.%s not implemented "))),
+                          (`Lid "__MODULE__"))), (`Lid "__BIND__"))))))) :>
+    Astfn.exp)
 let mk_record label_exps =
   (let rec_exps =
      List.map

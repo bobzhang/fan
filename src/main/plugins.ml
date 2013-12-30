@@ -29,9 +29,13 @@ let mk_tuple exps = mk_variant "" exps
 let mk_record : Ctyp.record_col list  -> exp  = fun cols -> 
     cols |> List.map (fun  (x:Ctyp.record_col) -> x.info)
          |> mk_variant "" 
-    
+
+
+(** it can exist without prefix only when you do not need
+    any runtime -- 
+ *)             
 let (gen_eq,gen_eqobj) = 
-  (gen_stru ~id:(`Pre "eq_")
+  (gen_stru ~id:(`Pre "eq_") 
     ~arity:2 ~mk_tuple ~mk_record ~mk_variant
     ~default: %exp-{false} (),
    gen_object ~kind:Iter ~mk_tuple ~mk_record
@@ -41,11 +45,10 @@ let (gen_eq,gen_eqobj) =
 
 let some f  = fun x -> Some (f x)  
 
-(* let _ = begin  *)
-(*     List.iter Typehook.register *)
-(*     [ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ] *)
-
-(* end *)
+let _ = begin
+    List.iter Typehook.register
+    [ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ]
+end
 
 
 

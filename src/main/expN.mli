@@ -32,7 +32,7 @@ val currying : case list -> arity:int -> exp
 
 
     
-val unknown : int -> exp    
+val unknown : int -> exp
 
 (** Mainly used to overcome the value restriction
    {[

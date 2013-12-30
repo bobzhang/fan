@@ -154,7 +154,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result (prev_symb:Gdefs.symbol)
         end
     | Try _ | Peek _ (*NP: not sure about this*)   -> txt ^ " expected"
     | Snterml _ | Self | Nterm _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb                                                                            
-    | Token v  -> "Token pattern:" ^ Tokenf.string_of_pattern v ^ " " ^ txt ^ " expected after " ^ name_of_symbol entry prev_symb in
+    | Token _(* v *)  -> (* "Token pattern:" ^ Tokenf.string_of_pattern v ^ " " ^ *) txt ^ " expected after " ^ name_of_symbol entry prev_symb in
   begin
     (* it may not necessary fail when  we use try somewhere*)
     if verbose then

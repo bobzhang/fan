@@ -28,6 +28,9 @@ let (gen_eq,gen_eqobj) =
        ~class_name:"eq" ~mk_variant ~arity:2
        ~default:(`Bool false :>Astfn.exp) ()))
 let some f x = Some (f x)
+let _ =
+  List.iter Typehook.register
+    [("Eq", (some gen_eq)); ("OEq", (some gen_eqobj))]
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>

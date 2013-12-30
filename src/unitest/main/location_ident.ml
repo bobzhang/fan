@@ -1,7 +1,7 @@
 
 open OUnit
 let () =
-  Ast_parsers.use_parsers ["revise"]
+  Ast_parsers.use_parsers ["fan"]
 let test_ident_location  _ =
   let result =
     try Some
