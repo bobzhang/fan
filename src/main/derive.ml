@@ -66,7 +66,8 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     let tys =
       mk_tuple
         (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
-    ExpN.mkfun names (ExpN.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
+    Expn_util.mkfun names
+      (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
   | _  -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty)
   
 let rec  normal_simple_exp_of_ctyp
@@ -161,7 +162,7 @@ let exp_of_ctyp
           | None -> res 
         else res in
       List.rev t in 
-    ExpN.currying ~arity res 
+    Expn_util.currying ~arity res 
   end
 
 let exp_of_variant ?cons_transform
@@ -196,7 +197,7 @@ let exp_of_variant ?cons_transform
       (* [default info :: res] *)
     else res in
   List.rev t in
-  ExpN.currying ~arity res
+  Expn_util.currying ~arity res
 
 let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable= 
   (* let open Transform in  *)
@@ -207,10 +208,10 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
     | t  ->
         failwithf  "mk_prefix: %s" (ObjsN.dump_decl_params t) in
   match vars with
-  |`None  -> ExpN.mkfun names  acc
+  |`None  -> Expn_util.mkfun names  acc
   |`Some xs ->
       let vars = Ast_basic.N.list_of_com xs [] in
-      List.fold_right f vars (ExpN.mkfun names  acc)
+      List.fold_right f vars (Expn_util.mkfun names  acc)
   
 
 
@@ -244,7 +245,7 @@ let fun_of_tydcl
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
-            (ExpN.currying ~arity [ %case-{ $pat:pat -> ${mk_record info}  } ])
+            (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${mk_record info}  } ])
 
        |  `Sum ctyp -> 
           let funct = exp_of_ctyp ctyp in  
@@ -257,7 +258,7 @@ let fun_of_tydcl
         begin match ctyp with 
         | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
           let exp = simple_exp_of_ctyp x in
-          let funct = ExpN.eta_expand (exp+>names) arity  in
+          let funct = Expn_util.eta_expand (exp+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct
         | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) -> 
             let case =  exp_of_variant ~result t  in
@@ -408,7 +409,7 @@ let obj_of_mtyps
            let ty_str : string =   ObjsN.dump_typedecl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
-           %clfield-{ method $lid:name : $ty= ${ExpN.unknown n}}
+           %clfield-{ method $lid:name : $ty= ${Expn_util.unknown n}}
          | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
@@ -418,7 +419,7 @@ let obj_of_mtyps
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        %clfield-{ method $lid:dest : $ty = ${ExpN.unknown len} } ) extras in
+        %clfield-{ method $lid:dest : $ty = ${Expn_util.unknown len} } ) extras in
       sem_of_list (body @ items) in 
         let v = Ctyp.mk_obj class_name  base body in
         (Hashtbl.iter (fun _ v ->

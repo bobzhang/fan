@@ -1,37 +1,33 @@
 
 
 
-
-
-
 open Astfn
-
 open Astn_util
 
+
 let mkfun names acc  =
-  List.fold_right
-    (fun name acc ->  %exp-{ function | $lid:name -> $acc }) names acc 
+  List.fold_right  (fun name acc ->  %exp-{ function | $lid:name -> $acc }) names acc 
 
 
+(** used in code generators with two or three arguments *)  
+let currying cases ~arity =
+  let cases = bar_of_list cases in 
+  if  arity >= 2 then 
+    let names = Listf.init arity (fun _ -> %fresh{curry}) in
+    let exps = Listf.map (fun s-> %exp-{ $lid:s } ) names in
+    let x = tuple_com exps in
+    mkfun names  %exp-{ match $x with | $cases } 
+  else %exp-{ function | $cases }
 
-(* let currying cases ~arity = *)
-(*   let cases = bar_of_list cases in  *)
-(*   if  arity >= 2 then  *)
-(*     let names = Listf.init arity (fun i -> x ~off:i 0) in *)
-(*     let exps = Listf.map (fun s-> %exp-{ $lid:s } ) names in *)
-(*     let x = tuple_com exps in *)
-(*     mkfun names  %exp-{ match $x with | $cases }  *)
-(*   else %exp-{ function | $cases } *)
 
-
-(* let eta_expand (exp:exp) number : exp = *)
-(*   let names = Listf.init number (fun i -> x ~off:0 i ) in *)
-(*   mkfun names (exp +> names ) *)
+let eta_expand (exp:exp) number : exp =
+  let names = Listf.init number (fun _ -> %fresh{eta}) in
+  mkfun names (exp +> names )
       
-(* %exp-{function | $case } *)
+
 let unknown len =
   if len = 0 then %exp-{self#unknown }
-  else %exp-{ %undef{} }
+  else %exp-{ failwith  "not implemented!" }
 
 
 
@@ -47,19 +43,15 @@ let mk_record label_exps : exp=
 (*************************************************************************)
 (* Multiple stage code *)
 let mee_comma x y =
-
-  (* (`App ((`App ((`App ((`Vrn "Com"), (`Lid "_loc"))), x)), y) : Astfn.exp ) *)
-  %exp-{`Com(_loc,$x,$y)}
-  (* %exp-{%exp'{${$x}, ${$y}} } *)(** BOOTSTRAPPING*)
+  (* %exp-{`Com(_loc,$x,$y)} *)
+  %exp-{%exp'{${$x}, ${$y}} } (* BOOTSTRAPPING *)
 
 
 (** %exp{ %ep{ $($x) $($y) }}
     both work, I did not see obvious performance difference *)
 let mee_app x y = (* BOOTSTRAPPING *)
-  %exp-{`App (_loc, $x,$y)}
-  (* (`App ((`App ((`App ((`Vrn "App"), (`Lid "_loc"))), x)), y) : Astfn.exp ) *)
-
-  (* %exp-{%exp'{${$x} ${$y}}} *)
+  (* %exp-{`App (_loc, $x,$y)} *)
+  %exp-{%exp'{${$x} ${$y}}}
 
 
 let mee_of_str s = (*    BOOTSTRAPING *)  
@@ -74,7 +66,7 @@ let mee_of_str s = (*    BOOTSTRAPING *)
 
 
 let mk_tuple_ee = function (* BOOTSTRAPPING *)
-  | [] -> invalid_arg "mktupee arity is zero "
+  | [] -> %invalid_arg{}
   | [x] -> x
   | xs  ->
       let v = Listf.reduce_right mee_comma xs in
@@ -83,8 +75,8 @@ let mk_tuple_ee = function (* BOOTSTRAPPING *)
 
   
 
-let mee_record_col label exp =
-  %exp-{ %rec_exp'{ $lid{($str:label)} = ${$exp} }} 
+let mee_record_col (label:string) (exp:exp) =
+  %exp-{ %rec_exp'{ $lid{$str:label} = ${$exp} }} 
 
 
 let mee_record_semi a b = %exp-{ %rec_exp'{ ${$a};${$b} } }
@@ -98,7 +90,7 @@ let mk_record_ee label_exps =
       %exp-{ %exp'{ { ${$x} } }} )
 
       
-    
+
 (* local variables: *)
-(* compile-command: "cd .. && pmake  main_annot/expn_util.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/expN.cmo" *)
 (* end: *)

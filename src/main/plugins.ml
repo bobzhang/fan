@@ -116,7 +116,7 @@ let (gen_map,gen_map2) =
           match x with
           | {label; info={ep0;_ }  ; _ }  ->
             (label,(ep0:>exp))  )
-    |> ExpN.mk_record   in
+    |> Expn_util.mk_record   in
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
         %exp-{let $pat{ep0} = $exp in $res }) cols result in
@@ -236,19 +236,21 @@ let mk_variant cons params =
     let params =
       params
          |> List.map (fun  (x:Ctyp.ty_info) -> x.info_exp ) in
-    let a = (ExpN.mee_of_str cons) in
+    let a = (Expn_util.mee_of_str cons) in
     match params with
     | [] -> a
-    | _ ->
-        ExpN.mee_app a  @@ ExpN.mk_tuple_ee params 
+    | _ -> 
+        Expn_util.mee_app a  (Expn_util.mk_tuple_ee params ) (* Fusing ?*)
     
-let mk_record cols = cols |> List.map
-  (fun  (x : Ctyp.record_col)
-    -> (x.label, x.info.info_exp)) |>
-  ExpN.mk_record_ee 
+let mk_record cols =
+  cols
+    |> List.map (fun  (x : Ctyp.record_col)    -> (x.label, x.info.info_exp))
+    |> Expn_util.mk_record_ee 
 
 let mk_tuple params =
-    params |> List.map (fun (x:Ctyp.ty_info) -> x.info_exp) |> ExpN.mk_tuple_ee 
+  params
+    |> List.map (fun (x:Ctyp.ty_info) -> x.info_exp)
+    |> Expn_util.mk_tuple_ee 
 
 let gen_meta_exp = 
   gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]

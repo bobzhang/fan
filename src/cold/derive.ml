@@ -44,8 +44,8 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
        let len = List.length ls in
        let pat = (EpN.mk_tuple ~arity ~number:len :>pat) in
        let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
-       ExpN.mkfun names
-         (ExpN.currying
+       Expn_util.mkfun names
+         (Expn_util.currying
             [(`Case ((pat :>Astfn.pat), (tys :>Astfn.exp)) :>Astfn.case)]
             ~arity)
    | _ -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty) : exp )
@@ -130,7 +130,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
-  ExpN.currying ~arity res
+  Expn_util.currying ~arity res
 let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
   let f (cons,tyargs) =
@@ -161,7 +161,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
-  ExpN.currying ~arity res
+  Expn_util.currying ~arity res
 let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
   ~left_type_variable  =
   let varf = basic_transform left_type_variable in
@@ -171,10 +171,10 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
         (`Fun (`Case ((`Lid (varf s)), (acc :>Astfn.exp))) :>Astfn.exp)
     | t -> failwithf "mk_prefix: %s" (ObjsN.dump_decl_params t) in
   match vars with
-  | `None -> ExpN.mkfun names acc
+  | `None -> Expn_util.mkfun names acc
   | `Some xs ->
       let vars = Ast_basic.N.list_of_com xs [] in
-      List.fold_right f vars (ExpN.mkfun names acc)
+      List.fold_right f vars (Expn_util.mkfun names acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : typedecl ) with
@@ -198,7 +198,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                               is_mutable
                             }) cols in
                  mk_prefix ~names ~left_type_variable tyvars
-                   (ExpN.currying ~arity
+                   (Expn_util.currying ~arity
                       [(`Case
                           ((pat :>Astfn.pat), (mk_record info :>Astfn.exp)) :>
                       Astfn.case)])
@@ -211,7 +211,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match ctyp with
              | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
                  let exp = simple_exp_of_ctyp x in
-                 let funct = ExpN.eta_expand (exp +> names) arity in
+                 let funct = Expn_util.eta_expand (exp +> names) arity in
                  mk_prefix ~names ~left_type_variable tyvars funct
              | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
                  let case = exp_of_variant ~result t in
@@ -329,7 +329,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                let (ty,_) = mk_type tydcl in
                (`CrMth
                   ((`Lid name), `Negative, `Negative,
-                    (ExpN.unknown n :>Astfn.exp), (ty :>Astfn.ctyp)) :>
+                    (Expn_util.unknown n :>Astfn.exp), (ty :>Astfn.ctyp)) :>
                  Astfn.clfield)
            | None  -> mk_clfield named_type) : clfield ) in
    let (extras,lst) = Sigs_util.transform_mtyps lst in
@@ -344,7 +344,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
             let () = Hashtbl.add tbl dest (Qualified dest) in
             (`CrMth
                ((`Lid dest), `Negative, `Negative,
-                 (ExpN.unknown len :>Astfn.exp), (ty :>Astfn.ctyp)) :>
+                 (Expn_util.unknown len :>Astfn.exp), (ty :>Astfn.ctyp)) :>
               Astfn.clfield)) extras in
      sem_of_list (body @ items) in
    let v = Ctyp.mk_obj class_name base body in

@@ -19,5 +19,5 @@ let eval_ast fmt ast =
         
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake fEval.cmo " *)
+(* compile-command: "cd .. && pmake main_annot/fEval.cmo " *)
 (* end: *)

@@ -149,7 +149,8 @@ FAN_FILES = \
     fid \
     compile_lex compile_stream ctyp \
     derive dyn_load epN \
-    expN astfn control control_require \
+    astfn \
+    control control_require \
     metaf \
     metafn \
     gram_def  \
