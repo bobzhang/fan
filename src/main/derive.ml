@@ -4,7 +4,7 @@ open Format
 open Util
 open Astn_util
 open Astfn
-open Fid
+(* open Fid *)
 open Ctyp
 open Sigs_util
   
@@ -43,7 +43,7 @@ let mapi_exp ?(arity=1) ?(names=[])
   let name_exp = f ty in 
   let base = name_exp  +> names in
   (* FIXME as a tuple it is useful when arity> 1??? *)
-  let id_eps = Listf.init arity @@ fun index  -> xid ~off:index i  in 
+  let id_eps = Listf.init arity @@ fun index  -> Fid.xid ~off:index i  in 
   let ep0 = List.hd id_eps in
   let id_ep = tuple_com  id_eps  in
   let exp = appl_of_list (base:: (id_eps:>exp list))  in
@@ -62,11 +62,11 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   | `Par t  -> 
     let ls = Ast_basic.N.list_of_star t [] in
     let len = List.length ls in
-    let pat = (EpN.mk_tuple ~arity ~number:len :> pat) in
+    let pat = (Id_epn.mk_tuple ~arity ~number:len :> pat) in
     let tys =
       mk_tuple
         (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
-    Expn_util.mkfun names
+    Expn_util.abstract names
       (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
   | _  -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty)
   
@@ -145,7 +145,7 @@ let exp_of_ctyp
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p : pat =
       (* calling gen_tuple_n*)
-      (EpN.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
+      (Id_epn.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -170,7 +170,7 @@ let exp_of_variant ?cons_transform
     simple_exp_of_ctyp ~result ty =
   let f (cons,tyargs) :  case=
     let len = List.length tyargs in
-    let p = (EpN.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
+    let p = (Id_epn.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -208,10 +208,10 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
     | t  ->
         failwithf  "mk_prefix: %s" (ObjsN.dump_decl_params t) in
   match vars with
-  |`None  -> Expn_util.mkfun names  acc
+  |`None  -> Expn_util.abstract names  acc
   |`Some xs ->
       let vars = Ast_basic.N.list_of_com xs [] in
-      List.fold_right f vars (Expn_util.mkfun names  acc)
+      List.fold_right f vars (Expn_util.abstract names  acc)
   
 
 
@@ -233,7 +233,7 @@ let fun_of_tydcl
          begin match repr with
          | `Record t ->       
            let cols =  Ctyp.list_of_record t  in
-           let pat = (EpN.mk_record ~arity  cols  :> pat)in
+           let pat = (Id_epn.mk_record ~arity  cols  :> pat)in
            let info =
              List.mapi
                (fun i x ->
@@ -466,7 +466,7 @@ let gen_stru
         `Last (fun s -> %ident-'{ $uid:m.$lid{basic_transform id s} } )  in
   let default (_,number)=
     if number > 1 then
-      let pat = (EpN.tuple_of_number `Any  arity :> pat) in 
+      let pat = (Id_epn.tuple_of_number `Any  arity :> pat) in 
       Some %case-{ $pat:pat -> $default }
     else None in
   let names = names in
@@ -511,7 +511,7 @@ let gen_object
       `Obj (basic_transform left_type_id) in
     let default (_,number)=
       if number > 1 then
-        let pat = (EpN.tuple_of_number `Any arity :> pat)in 
+        let pat = (Id_epn.tuple_of_number `Any arity :> pat)in 
         Some %case-{ $pat:pat -> $default }
       else None in
     obj_of_mtyps

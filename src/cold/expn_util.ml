@@ -1,6 +1,6 @@
 open Astfn
 open Astn_util
-let mkfun names acc =
+let abstract names acc =
   List.fold_right
     (fun name  acc  ->
        (`Fun (`Case ((`Lid name), (acc :>Astfn.exp))) :>Astfn.exp)) names acc
@@ -11,11 +11,11 @@ let currying cases ~arity  =
     let names = Listf.init arity (fun _  -> Gensym.fresh ~prefix:"curry" ()) in
     let exps = Listf.map (fun s  -> (`Lid s :>Astfn.exp)) names in
     let x = tuple_com exps in
-    mkfun names (`Match ((x :>Astfn.exp), cases) :>Astfn.exp)
+    abstract names (`Match ((x :>Astfn.exp), cases) :>Astfn.exp)
   else (`Fun cases :>Astfn.exp)
 let eta_expand (exp : exp) number =
   (let names = Listf.init number (fun _  -> Gensym.fresh ~prefix:"eta" ()) in
-   mkfun names (exp +> names) : exp )
+   abstract names (exp +> names) : exp )
 let unknown len =
   if len = 0
   then (`Send ((`Lid "self"), (`Lid "unknown")) :>Astfn.exp)

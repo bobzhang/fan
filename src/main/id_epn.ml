@@ -11,15 +11,6 @@ open Astfn
 open Astn_util
 
 
-let of_str (s:string) : ep =
-  let len = String.length s in 
-  if len = 0 then
-    invalid_arg "[exp|pat]_of_str len=0"
-  else
-    match s.[0] with
-    | '`'-> %ep-{  $vrn{ String.sub s 1 (len - 1)} }
-    | x when Charf.is_uppercase x -> %ep-{$uid:s}
-    | _ -> %ep-{ $lid:s } 
 
 let of_vstr_number name i : ep=
   let items = Listf.init i xid  in
@@ -39,7 +30,7 @@ let gen_tuple_first ~number ~off =
         ~acc:(xid ~off 0 )
         (fun acc i -> com acc (xid ~off i) ) in
     %exp-'{$par:lst}
-  | _ -> invalid_arg "n < 1 in gen_tuple_first" 
+  | _ -> %invalid_arg{}
 
 (*
    {[
@@ -152,7 +143,7 @@ let mk_tuple ~arity ~number  =
         Int.fold_left ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
       %ep-{ $par:e }
-  | _ -> invalid_arg "mk_tuple arity < 1 " 
+  | _ -> %invalid_arg{} 
 
   
 
@@ -164,5 +155,5 @@ let mk_tuple ~arity ~number  =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/epN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/id_epn.cmo" *)
 (* end: *)

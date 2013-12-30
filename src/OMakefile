@@ -148,7 +148,8 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     fid \
     compile_lex compile_stream ctyp \
-    derive dyn_load epN \
+    derive dyn_load \
+    id_epn\
     astfn \
     control control_require \
     metaf \

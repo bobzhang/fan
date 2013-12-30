@@ -6,9 +6,9 @@ open Astfn
   
 
 
-(** {[ mkfun ["a";"b"]  %{3};
+(** {[ abstract ["a";"b"]  %{3};
       - : exp = fun a  b  -> 3  ]} *)
-val mkfun : string list -> exp -> exp
+val abstract : string list -> exp -> exp
 
 
 (**

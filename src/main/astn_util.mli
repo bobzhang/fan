@@ -57,3 +57,24 @@ val tuple_sta : ([> `Par of 'a | `Sta of 'a * 'a ] as 'a) list -> 'a
   
 val (+>) :
     ([> `App of 'a * 'a | `Lid of string ] as 'a) -> string list -> 'a
+
+
+
+(**
+   A very naive lifting. It does not do any parsing at all
+   It is applied to both exp and pat
+
+   {[
+   of_str "`A" =   `Vrn  "A" 
+   
+   of_str "A" = `Uid  "A"
+
+   of_str "abs" = `Lid  "abs"
+
+   of_str "&&" = `Lid  "&&"
+      
+   of_str "::" = `Uid "::"
+   ]}
+ *)
+
+val of_str: string -> ep

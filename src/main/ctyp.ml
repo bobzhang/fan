@@ -3,7 +3,6 @@
 open Astfn
 open Astn_util
 open Util
-open Fid
 
 
 type vrn =
@@ -118,7 +117,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   Listf.init arity
     (fun i ->
       Listf.init n
-        @@ fun j -> %ctyp-{'$lid{allx ~off:i j}} )
+        @@ fun j -> %ctyp-{'$lid{Fid.allx ~off:i j}} )
   |> List.concat |> appl_of_list
 
 
@@ -127,7 +126,7 @@ let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
      Listf.init len
-       (fun i -> %ctyp-{'$lid{allx ~off i}}))
+       (fun i -> %ctyp-{'$lid{Fid.allx ~off i}}))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -218,12 +217,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     Listf.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Listf.init number @@ fun _ -> %ctyp-{ '$lid{allx ~off:0 i}} in
+        Listf.init number @@ fun _ -> %ctyp-{ '$lid{Fid.allx ~off:0 i}} in
       match k with
       |Obj u  ->
           let dst =
             match  u with
-            | Map -> let x  = allx ~off:1 i in %ctyp-{  '$lid:x }
+            | Map -> let x  = Fid.allx ~off:1 i in %ctyp-{  '$lid:x }
             | Iter -> result_type
             | Concrete c -> c
             | Fold-> self_type  in
@@ -452,10 +451,10 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $lid{ x ~off:i 0 }) }in
+    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $lid{ Fid.x ~off:i 0 }) }in
   let exps =
     Listf.init arity @@ fun i ->
-      %exp-{ $id{xid ~off:i 0} }  in
+      %exp-{ $id{Fid.xid ~off:i 0} }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with

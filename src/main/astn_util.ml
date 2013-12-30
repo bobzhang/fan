@@ -81,8 +81,20 @@ let tuple_sta y =
 
 let (+>) f (names:string list)  =
   appl_of_list (f:: (List.map lid  names))
+
+
+let of_str (s:string) : ep =
+  let len = String.length s in 
+  if len = 0 then
+    %invalid_arg{}
+  else
+    match s.[0] with
+    | '`'-> %ep-{  $vrn{ String.sub s 1 (len - 1)} }
+    | x when Charf.is_uppercase x || s = "::"-> %ep-{$uid:s}
+    | _ -> %ep-{ $lid:s } 
+
          
 
 (* local variables: *)
-(* compile-command: "cd ..  && pmake main_annot/lib " *)
+(* compile-command: "cd ..  && pmake main_annot/astn_util.cmo " *)
 (* end: *)

@@ -41,3 +41,12 @@ let tuple_sta y =
   | x::[] -> x
   | _ -> `Par (sta_of_list y)
 let (+>) f (names : string list) = appl_of_list (f :: (List.map lid names))
+let of_str (s : string) =
+  (let len = String.length s in
+   if len = 0
+   then invalid_arg ("Astn_util" ^ ("." ^ "of_str"))
+   else
+     (match s.[0] with
+      | '`' -> (`Vrn (String.sub s 1 (len - 1)) :>Astfn.ep)
+      | x when (Charf.is_uppercase x) || (s = "::") -> (`Uid s :>Astfn.ep)
+      | _ -> (`Lid s :>Astfn.ep)) : ep )

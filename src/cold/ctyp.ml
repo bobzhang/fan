@@ -1,7 +1,6 @@
 open Astfn
 open Astn_util
 open Util
-open Fid
 type vrn =  
   | Sum
   | TyVrnEq
@@ -77,13 +76,13 @@ let gen_quantifiers1 ~arity  n =
        (fun i  ->
           (Listf.init n) @@
             (fun j  ->
-               (`Quote (`Normal, (`Lid (allx ~off:i j))) :>Astfn.ctyp))))
+               (`Quote (`Normal, (`Lid (Fid.allx ~off:i j))) :>Astfn.ctyp))))
       |> List.concat)
      |> appl_of_list : ctyp )
 let of_id_len ~off  ((id : ident),len) =
   appl_of_list ((id :>ctyp) ::
     (Listf.init len
-       (fun i  -> (`Quote (`Normal, (`Lid (allx ~off i))) :>Astfn.ctyp))))
+       (fun i  -> (`Quote (`Normal, (`Lid (Fid.allx ~off i))) :>Astfn.ctyp))))
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
@@ -124,13 +123,13 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
             app_arrow @@
               ((Listf.init number) @@
                  (fun _  ->
-                    (`Quote (`Normal, (`Lid (allx ~off:0 i))) :>Astfn.ctyp))) in
+                    (`Quote (`Normal, (`Lid (Fid.allx ~off:0 i))) :>Astfn.ctyp))) in
           match k with
           | Obj u ->
               let dst =
                 match u with
                 | Map  ->
-                    let x = allx ~off:1 i in
+                    let x = Fid.allx ~off:1 i in
                     (`Quote (`Normal, (`Lid x)) :>Astfn.ctyp)
                 | Iter  -> result_type
                 | Concrete c -> c
@@ -261,11 +260,11 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: pat list =
     (Listf.init arity) @@
       (fun i  ->
-         (`Alias ((`ClassPath (name :>Astfn.ident)), (`Lid (x ~off:i 0))) :>
+         (`Alias ((`ClassPath (name :>Astfn.ident)), (`Lid (Fid.x ~off:i 0))) :>
          Astfn.pat)) in
   let exps =
     (Listf.init arity) @@
-      (fun i  -> ((xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
+      (fun i  -> ((Fid.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
   let e = appl_of_list (e :: exps) in
   let pat = args |> tuple_com in
   match destination with

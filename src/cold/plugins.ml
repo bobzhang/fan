@@ -58,7 +58,7 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list ((EpN.of_str cons) ::
+      appl_of_list ((of_str cons) ::
         (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) in
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
@@ -102,7 +102,7 @@ let gen_strip =
     let params' =
       List.filter (fun (x : Ctyp.ty_info)  -> x.ty <> (`Lid "loc")) params in
     let result =
-      (appl_of_list ((EpN.of_str cons) ::
+      (appl_of_list ((of_str cons) ::
          (params' |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
       exp) in
     List.fold_right
@@ -147,7 +147,7 @@ let _ =
 let gen_fill =
   let mk_variant cons params =
     let result =
-      (appl_of_list ((EpN.of_str cons) :: (`Lid "loc" :>Astfn.ep) ::
+      (appl_of_list ((of_str cons) :: (`Lid "loc" :>Astfn.ep) ::
          (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
       exp) in
     List.fold_right
@@ -194,7 +194,7 @@ let _ =
 let mk_variant cons params =
   let len = List.length params in
   if Stringf.ends_with cons "Ant"
-  then (EpN.of_vstr_number "Ant" len :>exp)
+  then (Id_epn.of_vstr_number "Ant" len :>exp)
   else
     (let params =
        params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp)) in

@@ -18,23 +18,3 @@ val mk_record : ?arity:int -> Ctyp.col list -> ep
 
 val mk_tuple : arity:int -> number:int -> ep
 
-(**
-   A very naive lifting. It does not do any parsing at all
-   It is applied to both exp and pat
-
-   {[
-   of_str "`A";
-   Vrn  "A" || Vrn "A"
-   
-   of_str "A";
-   ExId  (Uid  "A")
-
-   of_str "abs";
-   ExId  (Lid  "abs")
-
-   of_str "&&";
-   ExId  (Lid  "&&")
-   ]}
- *)
-
-val of_str: string -> ep

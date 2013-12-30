@@ -5,7 +5,7 @@ open Astfn
 open Astn_util
 
 
-let mkfun names acc  =
+let abstract names acc  =
   List.fold_right  (fun name acc ->  %exp-{ function | $lid:name -> $acc }) names acc 
 
 
@@ -16,13 +16,13 @@ let currying cases ~arity =
     let names = Listf.init arity (fun _ -> %fresh{curry}) in
     let exps = Listf.map (fun s-> %exp-{ $lid:s } ) names in
     let x = tuple_com exps in
-    mkfun names  %exp-{ match $x with | $cases } 
+    abstract names  %exp-{ match $x with | $cases } 
   else %exp-{ function | $cases }
 
 
 let eta_expand (exp:exp) number : exp =
   let names = Listf.init number (fun _ -> %fresh{eta}) in
-  mkfun names (exp +> names )
+  abstract names (exp +> names )
       
 
 let unknown len =
