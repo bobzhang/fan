@@ -262,10 +262,12 @@ and type_repr =
   [ `Record of (loc * name_ctyp)
   | `Sum of (loc * or_ctyp)
   | ant]
-and name_ctyp =
+and name_ctyp = (* used in both object and record .. *)
   [ `Sem of (loc * name_ctyp * name_ctyp)
-  | `TyCol of (loc * alident * ctyp )
-  | `TyColMut of (loc * alident * ctyp)
+  (* | `TyCol of (loc * alident * ctyp ) *)
+  (* | `TyColMut of (loc * alident * ctyp) *)
+  | `RecCol of (loc * alident * ctyp * flag )
+        (* [positive -> mutable] *)
   | ant]
 and or_ctyp =
   [ `Bar of (loc * or_ctyp * or_ctyp )

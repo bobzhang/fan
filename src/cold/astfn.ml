@@ -61,8 +61,7 @@ and type_info =
   | `TyEq of (flag* ctyp) | ant] 
 and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant] 
 and name_ctyp =
-  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (alident* ctyp)
-  | `TyColMut of (alident* ctyp) | ant] 
+  [ `Sem of (name_ctyp* name_ctyp) | `RecCol of (alident* ctyp* flag) | ant] 
 and or_ctyp =
   [ `Bar of (or_ctyp* or_ctyp) | `TyCol of (auident* ctyp)
   | `Of of (auident* ctyp) | auident] 

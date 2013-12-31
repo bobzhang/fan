@@ -188,6 +188,11 @@ let mkrf (x: Astf.flag) : Asttypes.rec_flag =
   | `Positive _  -> Recursive
   | `Negative _  -> Nonrecursive
   | `Ant(_loc,_) -> ant_error _loc
+let mkmutable (x:Astf.flag) : Asttypes.mutable_flag = 
+  match x with
+  | `Positive _ -> Mutable
+  | `Negative _ -> Immutable
+  | `Ant(_loc,_) -> ant_error _loc 
 
 let ident_tag (i : Astf.ident) :
     (Longident.t * [> `app | `lident | `uident ]) =
@@ -374,7 +379,8 @@ and row_field (x: Astf.row_field) acc : Parsetree.row_field list =
 and meth_list (fl: Astf.name_ctyp) acc : Parsetree.core_field_type list   =
   match fl with
   |`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol(_loc,`Lid(_,lab),t) ->
+  | `RecCol(_loc,`Lid(_,lab),t, `Negative _) -> 
+  (* | `TyCol(_loc,`Lid(_,lab),t) -> *)
     mkfield _loc (Pfield (lab, (mkpolytype (ctyp t)))) :: acc
   | x -> Locf.failf (unsafe_loc_of x) "meth_list: %s" (!dump_name_ctyp x )
 
@@ -404,13 +410,14 @@ and package_type (x : Astf.mtyp) :
 (*************************************)                                                                           
 let mktrecord (x: name_ctyp) :
   (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc)=
-  match x with 
-  |`TyColMut(_loc,`Lid(sloc,s),t) ->
-    (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
-  | `TyCol(_loc,`Lid(sloc,s),t) ->
-    (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
-  | t -> Locf.failf (unsafe_loc_of t) "mktrecord %s "
-           (!dump_name_ctyp t)
+  match x with
+  | `RecCol(_loc,`Lid(sloc,s),t,flag) -> 
+  (* |`TyColMut(_loc,`Lid(sloc,s),t) -> *)
+  (*   (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc) *)
+  (* | `TyCol(_loc,`Lid(sloc,s),t) -> *)
+    (with_loc s sloc, mkmutable flag, mkpolytype (ctyp t),  _loc)
+  | t ->
+      Locf.failf (unsafe_loc_of t) "mktrecord %s " (!dump_name_ctyp t)
 
 let mkvariant (x:or_ctyp) :
   (string Location.loc * Parsetree.core_type list *  Parsetree.core_type option * Locf.t) =

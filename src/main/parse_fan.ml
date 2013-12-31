@@ -1121,7 +1121,7 @@ with ctyp
   | meth_decl as m; ?";"; opt_dot_dot as v %{ (m, v)}]
 
   meth_decl:
-  [ a_lident as lab; ":"; ctyp as t  %{`TyCol(_loc,lab,t)}]
+  [ a_lident as lab; ":"; ctyp as t  %{`RecCol(_loc,lab,t,`Negative _loc)}]
 
   opt_meth_list:
   [ meth_list as rest  %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
@@ -1292,8 +1292,9 @@ with ctyp
   
       label_declaration:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.name_ctyp)  s}
-      | a_lident as s; ":"; ctyp as t %{ `TyCol(_loc,s,t)}
-      | "mutable"; a_lident as s; ":";  ctyp as t %{ `TyColMut(_loc,s,t)}
+      | a_lident as s; ":"; ctyp as t %{ `RecCol(_loc,s,t,`Negative _loc)}
+      | "mutable"; a_lident as s; ":";  ctyp as t
+          %{ `RecCol(_loc,s,t,`Positive _loc)}
       ]
       comma_type_parameter:
       [ S as t1; ","; S as t2 %{  `Com (_loc, t1, t2)}

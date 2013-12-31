@@ -307,12 +307,9 @@ and pp_print_name_ctyp: Format.formatter -> name_ctyp -> unit =
     | `Sem (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" pp_print_name_ctyp _a0
           pp_print_name_ctyp _a1
-    | `TyCol (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" pp_print_alident _a0
-          pp_print_ctyp _a1
-    | `TyColMut (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a)@]" pp_print_alident _a0
-          pp_print_ctyp _a1
+    | `RecCol (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`RecCol@ %a@ %a@ %a)@]" pp_print_alident
+          _a0 pp_print_ctyp _a1 pp_print_flag _a2
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 and pp_print_or_ctyp: Format.formatter -> or_ctyp -> unit =
   fun fmt  ->
@@ -1175,12 +1172,9 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#name_ctyp _a0
               self#name_ctyp _a1
-        | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#alident _a0
-              self#ctyp _a1
-        | `TyColMut (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a)@]" self#alident _a0
-              self#ctyp _a1
+        | `RecCol (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`RecCol@ %a@ %a@ %a)@]" self#alident
+              _a0 self#ctyp _a1 self#flag _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method or_ctyp : 'fmt -> or_ctyp -> unit=
       fun fmt  ->
@@ -1991,12 +1985,10 @@ class map =
       | `Sem (_a0,_a1) ->
           let _a0 = self#name_ctyp _a0 in
           let _a1 = self#name_ctyp _a1 in `Sem (_a0, _a1)
-      | `TyCol (_a0,_a1) ->
+      | `RecCol (_a0,_a1,_a2) ->
           let _a0 = self#alident _a0 in
-          let _a1 = self#ctyp _a1 in `TyCol (_a0, _a1)
-      | `TyColMut (_a0,_a1) ->
-          let _a0 = self#alident _a0 in
-          let _a1 = self#ctyp _a1 in `TyColMut (_a0, _a1)
+          let _a1 = self#ctyp _a1 in
+          let _a2 = self#flag _a2 in `RecCol (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
       function
@@ -2705,8 +2697,9 @@ class fold =
     method name_ctyp : name_ctyp -> 'self_type=
       function
       | `Sem (_a0,_a1) -> let self = self#name_ctyp _a0 in self#name_ctyp _a1
-      | `TyCol (_a0,_a1) -> let self = self#alident _a0 in self#ctyp _a1
-      | `TyColMut (_a0,_a1) -> let self = self#alident _a0 in self#ctyp _a1
+      | `RecCol (_a0,_a1,_a2) ->
+          let self = self#alident _a0 in
+          let self = self#ctyp _a1 in self#flag _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function

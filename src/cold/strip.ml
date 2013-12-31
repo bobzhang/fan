@@ -222,10 +222,9 @@ and name_ctyp: Astf.name_ctyp -> Astfn.name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = name_ctyp _a1 in let _a2 = name_ctyp _a2 in `Sem (_a1, _a2)
-  | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = alident _a1 in let _a2 = ctyp _a2 in `TyCol (_a1, _a2)
-  | `TyColMut (_a0,_a1,_a2) ->
-      let _a1 = alident _a1 in let _a2 = ctyp _a2 in `TyColMut (_a1, _a2)
+  | `RecCol (_a0,_a1,_a2,_a3) ->
+      let _a1 = alident _a1 in
+      let _a2 = ctyp _a2 in let _a3 = flag _a3 in `RecCol (_a1, _a2, _a3)
   | #ant as _a0 -> (ant _a0 :>Astfn.name_ctyp)
 and or_ctyp: Astf.or_ctyp -> Astfn.or_ctyp =
   function

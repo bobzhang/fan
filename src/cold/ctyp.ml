@@ -56,10 +56,16 @@ let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= Ast_basic.N.list_of_sem ty [] in
    tys |>
      (List.map
-        (function
-         | `TyColMut (`Lid label,ty) -> { label; ty; is_mutable = true }
-         | `TyCol (`Lid label,ty) -> { label; ty; is_mutable = false }
-         | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
+        (fun (x : name_ctyp)  ->
+           match x with
+           | `RecCol (`Lid label,ty,(`Positive|`Negative as f)) ->
+               {
+                 label;
+                 ty;
+                 is_mutable =
+                   (((function | `Positive -> true | _ -> false)) f)
+               }
+           | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
   col list )
 let gen_tuple_n ty n = (Listf.init n (fun _  -> ty)) |> tuple_sta
 let result_id = ref 0

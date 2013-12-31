@@ -30,3 +30,7 @@
          |-`Quot _---.
          `-exp---.]  
   #+END_SRC
+* 0002 build system dependency
+
+  astfn.ml <: astf.mli
+  -- the dependency is not specified in the build 

@@ -513,20 +513,16 @@ class meta =
                      (`Com
                         (_loc, (self#name_ctyp _loc _a0),
                           (self#name_ctyp _loc _a1))))))
-        | `TyCol (_a0,_a1) ->
+        | `RecCol (_a0,_a1,_a2) ->
             `App
-              (_loc, (`Vrn (_loc, "TyCol")),
+              (_loc, (`Vrn (_loc, "RecCol")),
                 (`Par
                    (_loc,
                      (`Com
-                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
-        | `TyColMut (_a0,_a1) ->
-            `App
-              (_loc, (`Vrn (_loc, "TyColMut")),
-                (`Par
-                   (_loc,
-                     (`Com
-                        (_loc, (self#alident _loc _a0), (self#ctyp _loc _a1))))))
+                        (_loc, (self#alident _loc _a0),
+                          (`Com
+                             (_loc, (self#ctyp _loc _a1),
+                               (self#flag _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
     method or_ctyp : 'loc -> or_ctyp -> Astf.ep=
       fun _loc  ->

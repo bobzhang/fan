@@ -15988,13 +15988,15 @@ let apply_ctyp () =
                           { tag = `Key; word = (A ":"); tag_name = "Key" }
                       } : Tokenf.pattern );
                    Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
-                 annot = "`TyCol (_loc, lab, t)\n";
+                 annot = "`RecCol (_loc, lab, t, (`Negative _loc))\n";
                  fn =
                    (Gramf.mk_action
                       (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : Locf.t)
-                          -> (`TyCol (_loc, lab, t) : 'meth_decl ) : 
-                      'ctyp ->
-                        Tokenf.txt -> 'a_lident -> Locf.t -> 'meth_decl ))
+                          ->
+                         (`RecCol (_loc, lab, t, (`Negative _loc)) : 
+                         'meth_decl ) : 'ctyp ->
+                                          Tokenf.txt ->
+                                            'a_lident -> Locf.t -> 'meth_decl ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );
@@ -17981,11 +17983,12 @@ let apply_ctyp () =
                          { tag = `Key; word = (A ":"); tag_name = "Key" }
                      } : Tokenf.pattern );
                   Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
-                annot = "`TyCol (_loc, s, t)\n";
+                annot = "`RecCol (_loc, s, t, (`Negative _loc))\n";
                 fn =
                   (Gramf.mk_action
                      (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : Locf.t) 
-                        -> (`TyCol (_loc, s, t) : 'label_declaration ) : 
+                        ->
+                        (`RecCol (_loc, s, t, (`Negative _loc)) : 'label_declaration ) : 
                      'ctyp ->
                        Tokenf.txt ->
                          'a_lident -> Locf.t -> 'label_declaration ))
@@ -18008,11 +18011,12 @@ let apply_ctyp () =
                          { tag = `Key; word = (A ":"); tag_name = "Key" }
                      } : Tokenf.pattern );
                   Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))];
-                annot = "`TyColMut (_loc, s, t)\n";
+                annot = "`RecCol (_loc, s, t, (`Positive _loc))\n";
                 fn =
                   (Gramf.mk_action
                      (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : Locf.t)
-                         -> (`TyColMut (_loc, s, t) : 'label_declaration ) : 
+                         ->
+                        (`RecCol (_loc, s, t, (`Positive _loc)) : 'label_declaration ) : 
                      'ctyp ->
                        Tokenf.txt ->
                          'a_lident ->

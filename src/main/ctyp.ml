@@ -102,15 +102,12 @@ let list_of_record (ty:name_ctyp) : col list  =
   let (tys : name_ctyp list )  = Ast_basic.N.list_of_sem ty [] in
   tys|> List.map
     (
-     function
-       | (* %{ $lid:label : mutable $ctyp  } *)
-         `TyColMut(`Lid label,ty) ->
-           {label; ty; is_mutable=true}
-       | (* %{ $lid:label :  $ctyp  } *)
-         `TyCol (`Lid label, ty) -> 
-          {label; ty; is_mutable=false}
-    | t0 ->
-        failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
+     function (x:name_ctyp) ->
+       match x with 
+       | `RecCol(`Lid label,ty, ((`Positive  | `Negative) as f) ) ->
+           {label; ty; is_mutable = %p{`Positive} f}
+       | t0 ->
+           failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
 
     
 (*

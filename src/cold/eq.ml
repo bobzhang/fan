@@ -301,10 +301,9 @@ and eq_name_ctyp curry__079_ curry__080_ =
   match (curry__079_, curry__080_) with
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_name_ctyp _a1 _b1)) && (eq_name_ctyp _a2 _b2)
-  | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
-      ((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) && (eq_ctyp _a2 _b2)
-  | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
-      ((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) && (eq_ctyp _a2 _b2)
+  | (`RecCol (_a0,_a1,_a2,_a3),`RecCol (_b0,_b1,_b2,_b3)) ->
+      (((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) && (eq_ctyp _a2 _b2)) &&
+        (eq_flag _a3 _b3)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>'result39)
   | (_,_) -> false
 and eq_or_ctyp curry__077_ curry__078_ =

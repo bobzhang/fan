@@ -84,7 +84,6 @@ let loc_of =
   | `TyCol (_loc,_,_) -> _loc
   | `ObjPat (_loc,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
-  | `TyColMut (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `OptLablS (_loc,_) -> _loc
@@ -146,6 +145,7 @@ let loc_of =
   | `ModuleType (_loc,_,_) -> _loc
   | `Inherit (_loc,_,_) -> _loc
   | `None _loc -> _loc
+  | `RecCol (_loc,_,_,_) -> _loc
   | `ObjTy (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc

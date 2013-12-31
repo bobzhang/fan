@@ -287,12 +287,10 @@ and name_ctyp: Locf.t -> Astfn.name_ctyp -> Astf.name_ctyp =
     | `Sem (_a0,_a1) ->
         let _a0 = name_ctyp loc _a0 in
         let _a1 = name_ctyp loc _a1 in `Sem (loc, _a0, _a1)
-    | `TyCol (_a0,_a1) ->
+    | `RecCol (_a0,_a1,_a2) ->
         let _a0 = alident loc _a0 in
-        let _a1 = ctyp loc _a1 in `TyCol (loc, _a0, _a1)
-    | `TyColMut (_a0,_a1) ->
-        let _a0 = alident loc _a0 in
-        let _a1 = ctyp loc _a1 in `TyColMut (loc, _a0, _a1)
+        let _a1 = ctyp loc _a1 in
+        let _a2 = flag loc _a2 in `RecCol (loc, _a0, _a1, _a2)
     | #ant as _a0 -> (ant loc _a0 :>Astf.name_ctyp)
 and or_ctyp: Locf.t -> Astfn.or_ctyp -> Astf.or_ctyp =
   fun loc  ->
