@@ -176,6 +176,8 @@ let _ =
     ~mpat:(mp#sigi) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "stru'" } stru_quot ~mexp:(me#stru)
     ~mpat:(mp#stru) ~exp_filter ~pat_filter;
+  add_quotation { domain; name = "decl'" } decl_quot ~mexp:(me#decl)
+    ~mpat:(mp#decl) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "ctyp'" } ctyp_quot ~mexp:(me#ctyp)
     ~mpat:(mp#ctyp) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "pat'" } pat_quot ~mexp:(me#pat)
@@ -231,6 +233,8 @@ let _ =
     ~mpat:(mp#sigi) ~exp_filter:(efilter "sigi") ~pat_filter:(pfilter "sigi");
   add_quotation { domain; name = "stru" } stru_quot ~mexp:(me#stru)
     ~mpat:(mp#stru) ~exp_filter:(efilter "stru") ~pat_filter:(pfilter "stru");
+  add_quotation { domain; name = "decl" } decl_quot ~mexp:(me#decl)
+    ~mpat:(mp#decl) ~exp_filter:(efilter "decl") ~pat_filter:(pfilter "decl");
   add_quotation { domain; name = "ctyp" } ctyp_quot ~mexp:(me#ctyp)
     ~mpat:(mp#ctyp) ~exp_filter:(efilter "ctyp") ~pat_filter:(pfilter "ctyp");
   add_quotation { domain; name = "pat" } pat_quot ~mexp:(me#pat)
@@ -302,6 +306,10 @@ let _ =
     ~mexp:(fun loc  p  -> m#stru loc (Strip.stru p))
     ~mpat:(fun loc  p  -> m#stru loc (Strip.stru p))
     ~exp_filter:(efilter "stru") ~pat_filter:(pfilter "stru");
+  add_quotation { domain; name = "decl-" } decl_quot
+    ~mexp:(fun loc  p  -> m#decl loc (Strip.decl p))
+    ~mpat:(fun loc  p  -> m#decl loc (Strip.decl p))
+    ~exp_filter:(efilter "decl") ~pat_filter:(pfilter "decl");
   add_quotation { domain; name = "ctyp-" } ctyp_quot
     ~mexp:(fun loc  p  -> m#ctyp loc (Strip.ctyp p))
     ~mpat:(fun loc  p  -> m#ctyp loc (Strip.ctyp p))
@@ -383,6 +391,9 @@ let _ =
   add_quotation { domain; name = "stru-'" } stru_quot
     ~mexp:(fun loc  p  -> m#stru loc (Strip.stru p))
     ~mpat:(fun loc  p  -> m#stru loc (Strip.stru p)) ~exp_filter ~pat_filter;
+  add_quotation { domain; name = "decl-'" } decl_quot
+    ~mexp:(fun loc  p  -> m#decl loc (Strip.decl p))
+    ~mpat:(fun loc  p  -> m#decl loc (Strip.decl p)) ~exp_filter ~pat_filter;
   add_quotation { domain; name = "ctyp-'" } ctyp_quot
     ~mexp:(fun loc  p  -> m#ctyp loc (Strip.ctyp p))
     ~mpat:(fun loc  p  -> m#ctyp loc (Strip.ctyp p)) ~exp_filter ~pat_filter;

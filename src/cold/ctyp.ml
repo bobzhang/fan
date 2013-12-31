@@ -52,38 +52,6 @@ type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp]
 type full_id_transform =
   [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
   | `Last of string -> vid | `Obj of string -> string] 
-let arrow_of_list f = Listf.reduce_right arrow f
-let app_arrow lst acc = List.fold_right arrow lst acc
-let (<+) (names : string list) (ty : ctyp) =
-  List.fold_right
-    (fun name  acc  ->
-       (`Arrow ((`Quote (`Normal, (`Lid name))), (acc :>Astfn.ctyp)) :>
-       Astfn.ctyp)) names ty
-let name_length_of_tydcl (x : decl) =
-  (match x with
-   | `TyDcl (`Lid name,tyvars,_,_) ->
-       (name,
-         ((match tyvars with
-           | `None -> 0
-           | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-   | tydcl -> failwith ("name_length_of_tydcl" ^ (ObjsN.dump_decl tydcl)) : 
-  (string* int) )
-let gen_quantifiers1 ~arity  n =
-  (((Listf.init arity
-       (fun i  ->
-          (Listf.init n) @@
-            (fun j  ->
-               (`Quote (`Normal, (`Lid (Id.allx ~off:i j))) :>Astfn.ctyp))))
-      |> List.concat)
-     |> appl_of_list : ctyp )
-let of_id_len ~off  ((id : ident),len) =
-  appl_of_list ((id :>ctyp) ::
-    (Listf.init len
-       (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp))))
-let of_name_len ~off  (name,len) =
-  let id = lid name in of_id_len ~off (id, len)
-let gen_ty_of_tydcl ~off  (tydcl : decl) =
-  (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= Ast_basic.N.list_of_sem ty [] in
    tys |>
@@ -91,15 +59,25 @@ let list_of_record (ty : name_ctyp) =
         (function
          | `TyColMut (`Lid label,ty) -> { label; ty; is_mutable = true }
          | `TyCol (`Lid label,ty) -> { label; ty; is_mutable = false }
-         | t0 -> failwithf "list_of_record %s" (ObjsN.dump_name_ctyp t0))) : 
+         | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
   col list )
 let gen_tuple_n ty n = (Listf.init n (fun _  -> ty)) |> tuple_sta
 let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
-  (let prefix =
+  (let of_id_len ~off  ((id : ident),len) =
+     appl_of_list ((id :>ctyp) ::
+       (Listf.init len
+          (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp)))) in
+   let prefix =
      List.map (fun s  -> Stringf.drop_while (fun c  -> c = '_') s) prefix in
+   let app_arrow = List.fold_right arrow in
    let app_src =
      app_arrow @@ (Listf.init number (fun _  -> of_id_len ~off:0 (id, len))) in
+   let (<+) =
+     List.fold_right
+       (fun name  acc  ->
+          (`Arrow ((`Quote (`Normal, (`Lid name))), (acc :>Astfn.ctyp)) :>
+          Astfn.ctyp)) in
    let result_type =
      (`Quote (`Normal, (`Lid ("result" ^ (string_of_int (!result_id))))) :>
      Astfn.ctyp) in
@@ -136,7 +114,15 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    if len = 0
    then ((`TyPolEnd base), dst)
    else
-     (let quantifiers = gen_quantifiers1 ~arity:quant len in
+     (let gen_quantifiers1 ~arity  n =
+        (((Listf.init arity
+             (fun i  ->
+                (Listf.init n) @@
+                  (fun j  ->
+                     (`Quote (`Normal, (`Lid (Id.allx ~off:i j))) :>Astfn.ctyp))))
+            |> List.concat)
+           |> appl_of_list : ctyp ) in
+      let quantifiers = gen_quantifiers1 ~arity:quant len in
       ((`TyPol
           ((quantifiers :>Astfn.ctyp),
             (List.fold_right arrow params base :>Astfn.ctyp)) :>Astfn.ctyp),

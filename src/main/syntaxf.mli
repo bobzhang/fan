@@ -147,7 +147,11 @@ val com_ctyp: ctyp Gramf.t
 val stru : stru Gramf.t
 val stru_quot : stru Gramf.t
 val strus : stru Gramf.t
-val type_declaration : decl Gramf.t
+
+val decl : decl Gramf.t
+
+val decl_quot : decl Gramf.t
+    
 val type_ident_and_parameters : (alident * opt_decl_params) Gramf.t 
 val type_info: type_info Gramf.t
 val type_repr: type_repr Gramf.t

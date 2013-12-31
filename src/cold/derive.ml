@@ -225,7 +225,14 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
   ~left_type_variable:(left_type_variable : basic_id_transform)  ~mk_record 
   tydcl =
   let tctor_var = basic_transform left_type_id in
-  let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+  let (name,len) =
+    match tydcl with
+    | `TyDcl (`Lid name,tyvars,_,_) ->
+        (name,
+          ((match tyvars with
+            | `None -> 0
+            | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
+    | tydcl -> failwith ("bind_of_tydcl" ^ (ObjsN.dump_decl tydcl)) in
   let fname = tctor_var name in
   let (_ty,result) =
     Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
@@ -306,7 +313,14 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
        (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
           ~default ~mk_variant simple_exp_of_ctyp) ~result tydcl in
    let mk_type tydcl =
-     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+     let (name,len) =
+       match tydcl with
+       | `TyDcl (`Lid name,tyvars,_,_) ->
+           (name,
+             ((match tyvars with
+               | `None -> 0
+               | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
+       | tydcl -> failwith ("obj_of_mtyps.mk_type" ^ (ObjsN.dump_decl tydcl)) in
      let (ty,result_type) =
        Ctyp.mk_method_type ~number:arity ~prefix:names
          ((`Lid name :>Astfn.ident), len) (Obj k) in

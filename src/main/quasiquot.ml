@@ -175,6 +175,12 @@ let _ = begin
     ~exp_filter
     ~pat_filter;
 
+  add_quotation {domain; name =  "decl'"} decl_quot (* FIXME *)
+    ~mexp:(me#decl)
+    ~mpat:(mp#decl)
+    ~exp_filter
+    ~pat_filter;
+
   add_quotation {domain; name =  "ctyp'"} ctyp_quot
     ~mexp:(me#ctyp)
     ~mpat:(mp#ctyp)
@@ -335,65 +341,131 @@ end;;
 (* };; *)
     
 let _ = begin
-  add_quotation {domain; name =  "sigi"} sigi_quot ~mexp:(me#sigi)
-    ~mpat:(mp#sigi) ~exp_filter:(efilter "sigi")
+  add_quotation {domain; name =  "sigi"} sigi_quot 
+    ~mexp:me#sigi
+    ~mpat:mp#sigi
+    ~exp_filter:(efilter "sigi")
     ~pat_filter:(pfilter "sigi");
-  add_quotation {domain; name =  "stru"} stru_quot ~mexp:(me#stru)
-    ~mpat:(mp#stru) ~exp_filter:(efilter "stru")
+
+  add_quotation {domain; name =  "stru"} stru_quot
+    ~mexp:me#stru
+    ~mpat:mp#stru
+    ~exp_filter:(efilter "stru")
     ~pat_filter:(pfilter "stru");
-  add_quotation {domain; name =  "ctyp"} ctyp_quot ~mexp:(me#ctyp)
-    ~mpat:(mp#ctyp) ~exp_filter:(efilter "ctyp")
+
+  add_quotation {domain; name =  "decl"} decl_quot
+    ~mexp:me#decl
+    ~mpat:mp#decl
+    ~exp_filter:(efilter "decl")
+    ~pat_filter:(pfilter "decl");
+
+  add_quotation {domain; name =  "ctyp"} ctyp_quot
+    ~mexp:me#ctyp
+    ~mpat:mp#ctyp
+    ~exp_filter:(efilter "ctyp")
     ~pat_filter:(pfilter "ctyp");
-  add_quotation {domain; name =  "pat"} pat_quot ~mexp:(me#pat)
-    ~mpat:(mp#pat) ~exp_filter:(efilter "pat")
+  
+  add_quotation {domain; name =  "pat"} pat_quot
+    ~mexp:me#pat
+    ~mpat:mp#pat
+    ~exp_filter:(efilter "pat")
     ~pat_filter:(pfilter "pat");
-  add_quotation {domain; name =  "ep"} ep ~mexp:(me#ep) (* FIXME *)
-    ~mpat:(mp#ep) ~exp_filter:(efilter "ep")
+  
+  add_quotation {domain; name =  "ep"} ep
+    ~mexp:me#ep
+    ~mpat:mp#ep
+    ~exp_filter:(efilter "ep")
     ~pat_filter:(pfilter "ep");
-  add_quotation {domain; name =  "exp"} exp_quot ~mexp:(me#exp)
-    ~mpat:(mp#exp) ~exp_filter:(efilter "exp")
+  
+  add_quotation {domain; name =  "exp"} exp_quot
+    ~mexp:me#exp
+    ~mpat:mp#exp
+    ~exp_filter:(efilter "exp")
     ~pat_filter:(pfilter "exp");
-  add_quotation {domain; name =  "mtyp"} mtyp_quot ~mexp:(me#mtyp)
-    ~mpat:(mp#mtyp) ~exp_filter:(efilter "mtyp")
+  
+  add_quotation {domain; name =  "mtyp"} mtyp_quot
+    ~mexp:me#mtyp
+    ~mpat:mp#mtyp
+    ~exp_filter:(efilter "mtyp")
     ~pat_filter:(pfilter "mtyp");
-  add_quotation {domain; name =  "mexp"} mexp_quot ~mexp:(me#mexp)
-    ~mpat:(mp#mexp) ~exp_filter:(efilter "mexp")
+
+  add_quotation {domain; name =  "mexp"} mexp_quot
+    ~mexp:me#mexp
+    ~mpat:mp#mexp
+    ~exp_filter:(efilter "mexp")
     ~pat_filter:(pfilter "mexp");
-  add_quotation {domain; name =  "cltyp"} cltyp_quot ~mexp:(me#cltyp)
-    ~mpat:(mp#cltyp) ~exp_filter:(efilter "cltyp")
+  
+  add_quotation {domain; name =  "cltyp"} cltyp_quot
+    ~mexp:me#cltyp
+    ~mpat:mp#cltyp
+    ~exp_filter:(efilter "cltyp")
     ~pat_filter:(pfilter "cltyp");
-  add_quotation {domain; name =  "clexp"} clexp_quot ~mexp:(me#clexp)
-    ~mpat:(mp#clexp) ~exp_filter:(efilter "clexp")
+  
+  add_quotation {domain; name =  "clexp"} clexp_quot
+    ~mexp:me#clexp
+    ~mpat:mp#clexp
+    ~exp_filter:(efilter "clexp")
     ~pat_filter:(pfilter "clexp");
-  add_quotation {domain; name =  "clsigi"} clsigi_quot ~mexp:(me#clsigi)
-    ~mpat:(mp#clsigi) ~exp_filter:(efilter "clsigi")
+  
+  add_quotation {domain; name =  "clsigi"} clsigi_quot
+    ~mexp:me#clsigi
+    ~mpat:mp#clsigi
+    ~exp_filter:(efilter "clsigi")
     ~pat_filter:(pfilter "clsigi");
-  add_quotation {domain; name =  "clfield"} clfield_quot ~mexp:(me#clfield)
-    ~mpat:(mp#clfield) ~exp_filter:(efilter "clfield")
+  
+  add_quotation {domain; name =  "clfield"} clfield_quot
+    ~mexp:me#clfield
+    ~mpat:mp#clfield
+    ~exp_filter:(efilter "clfield")
     ~pat_filter:(pfilter "clfield");
-  add_quotation {domain; name =  "constr"} constr_quot ~mexp:(me#constr)
-    ~mpat:(mp#constr) ~exp_filter:(efilter "constr")
+  
+  add_quotation {domain; name =  "constr"} constr_quot
+    ~mexp:me#constr
+    ~mpat:mp#constr
+    ~exp_filter:(efilter "constr")
     ~pat_filter:(pfilter "constr");
-  add_quotation {domain; name =  "bind"} bind_quot ~mexp:(me#bind)
-    ~mpat:(mp#bind) ~exp_filter:(efilter "bind")
+  
+  add_quotation {domain; name =  "bind"} bind_quot
+    ~mexp:me#bind
+    ~mpat:mp#bind
+    ~exp_filter:(efilter "bind")
     ~pat_filter:(pfilter "bind");
-  add_quotation {domain; name =  "rec_exp"} rec_exp_quot ~mexp:(me#rec_exp)
-    ~mpat:(mp#rec_exp) ~exp_filter:(efilter "rec_exp")
+  
+  add_quotation {domain; name =  "rec_exp"} rec_exp_quot
+    ~mexp:me#rec_exp
+    ~mpat:mp#rec_exp
+    ~exp_filter:(efilter "rec_exp")
     ~pat_filter:(pfilter "rec_exp");
-  add_quotation {domain; name =  "case"} case_quot ~mexp:(me#case)
-    ~mpat:(mp#case) ~exp_filter:(efilter "case")
+  
+  add_quotation {domain; name =  "case"} case_quot
+    ~mexp:me#case
+    ~mpat:mp#case
+    ~exp_filter:(efilter "case")
     ~pat_filter:(pfilter "case");
-  add_quotation {domain; name =  "mbind"} mbind_quot ~mexp:(me#mbind)
-    ~mpat:(mp#mbind) ~exp_filter:(efilter "mbind")
+  
+  add_quotation {domain; name =  "mbind"} mbind_quot
+    ~mexp:me#mbind
+    ~mpat:mp#mbind
+    ~exp_filter:(efilter "mbind")
     ~pat_filter:(pfilter "mbind");
-  add_quotation {domain; name =  "ident"} ident_quot ~mexp:(me#ident)
-    ~mpat:(mp#ident) ~exp_filter:(efilter "ident")
+  
+  add_quotation {domain; name =  "ident"}
+    ident_quot
+    ~mexp:me#ident
+    ~mpat:mp#ident
+    ~exp_filter:(efilter "ident")
     ~pat_filter:(pfilter "ident");
+  
   add_quotation {domain; name =  "or_ctyp"} constructor_declarations
-    ~mexp:(me#or_ctyp) ~mpat:(me#or_ctyp)
-    ~exp_filter:(efilter "or_ctyp") ~pat_filter:(pfilter "or_ctyp");
-  add_quotation {domain; name =  "row_field"} row_field ~mexp:(me#row_field)
-    ~mpat:(mp#row_field) ~exp_filter:(efilter "row_field")
+    ~mexp:me#or_ctyp
+    ~mpat:me#or_ctyp
+    ~exp_filter:(efilter "or_ctyp")
+    ~pat_filter:(pfilter "or_ctyp");
+  
+  add_quotation {domain; name =  "row_field"} row_field
+    ~mexp:me#row_field
+    ~mpat:mp#row_field
+    ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field");
 end
 ;;
@@ -439,7 +511,13 @@ begin
     ~mpat:(fun loc p -> m#stru loc (Strip.stru p))
     ~exp_filter:(efilter "stru")
     ~pat_filter:(pfilter "stru");
-  
+
+  add_quotation {domain; name =  "decl-"} decl_quot
+    ~mexp:(fun loc p -> m#decl loc (Strip.decl p))
+    ~mpat:(fun loc p -> m#decl loc (Strip.decl p))
+    ~exp_filter:(efilter "decl")
+    ~pat_filter:(pfilter "decl");
+
   add_quotation {domain; name =  "ctyp-"} ctyp_quot
     ~mexp:(fun loc p -> m#ctyp loc (Strip.ctyp p))
     ~mpat:(fun loc p -> m#ctyp loc (Strip.ctyp p))
@@ -553,18 +631,34 @@ end;;
 let exp_filter = exp_filter_n in
 let pat_filter = pat_filter_n in
 begin
-    add_quotation {domain; name =  "sigi-'"} sigi_quot ~mexp:(fun loc p -> m#sigi loc (Strip.sigi p))
+    add_quotation {domain; name =  "sigi-'"} sigi_quot
+    ~mexp:(fun loc p -> m#sigi loc (Strip.sigi p))
     ~mpat:(fun loc p -> m#sigi loc (Strip.sigi p))
      ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "stru-'"} stru_quot ~mexp:(fun loc p -> m#stru loc (Strip.stru p))
-    ~mpat:(fun loc p -> m#stru loc (Strip.stru p)) ~exp_filter
+
+  add_quotation {domain; name =  "stru-'"} stru_quot
+    ~mexp:(fun loc p -> m#stru loc (Strip.stru p))
+    ~mpat:(fun loc p -> m#stru loc (Strip.stru p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "ctyp-'"} ctyp_quot ~mexp:(fun loc p -> m#ctyp loc (Strip.ctyp p))
-    ~mpat:(fun loc p -> m#ctyp loc (Strip.ctyp p)) ~exp_filter
+
+  add_quotation {domain; name =  "decl-'"} decl_quot
+    ~mexp:(fun loc p -> m#decl loc (Strip.decl p))
+    ~mpat:(fun loc p -> m#decl loc (Strip.decl p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "pat-'"} pat_quot ~mexp:(fun loc p -> m#pat loc (Strip.pat p))
-    ~mpat:(fun loc p -> m#pat loc (Strip.pat p)) ~exp_filter
+
+  add_quotation {domain; name =  "ctyp-'"} ctyp_quot
+    ~mexp:(fun loc p -> m#ctyp loc (Strip.ctyp p))
+    ~mpat:(fun loc p -> m#ctyp loc (Strip.ctyp p))
+    ~exp_filter
+    ~pat_filter;
+
+  add_quotation {domain; name =  "pat-'"} pat_quot
+    ~mexp:(fun loc p -> m#pat loc (Strip.pat p))
+    ~mpat:(fun loc p -> m#pat loc (Strip.pat p))
+    ~exp_filter
     ~pat_filter;
   
   add_quotation {domain; name =  "ep-'"} ep
@@ -572,52 +666,95 @@ begin
     ~mpat:(fun loc p -> m#ep loc (Strip.ep p))
     ~exp_filter
     ~pat_filter;
+
   add_quotation {domain; name =  "exp-'"} exp_quot
     ~mexp:(fun loc p -> m#exp loc (Strip.exp p))
     ~mpat:(fun loc p -> m#exp loc (Strip.exp p))
     ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "mtyp-'"} mtyp_quot ~mexp:(fun loc p -> m#mtyp loc (Strip.mtyp p))
-    ~mpat:(fun loc p -> m#mtyp loc (Strip.mtyp p)) ~exp_filter
+  
+  add_quotation {domain; name =  "mtyp-'"} mtyp_quot
+    ~mexp:(fun loc p -> m#mtyp loc (Strip.mtyp p))
+    ~mpat:(fun loc p -> m#mtyp loc (Strip.mtyp p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "mexp-'"} mexp_quot ~mexp:(fun loc p -> m#mexp loc (Strip.mexp p))
-    ~mpat:(fun loc p -> m#mexp loc (Strip.mexp p)) ~exp_filter
+
+  add_quotation {domain; name =  "mexp-'"} mexp_quot
+    ~mexp:(fun loc p -> m#mexp loc (Strip.mexp p))
+    ~mpat:(fun loc p -> m#mexp loc (Strip.mexp p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "cltyp-'"} cltyp_quot ~mexp:(fun loc p -> m#cltyp loc (Strip.cltyp p))
-    ~mpat:(fun loc p -> m#cltyp loc (Strip.cltyp p)) ~exp_filter
+
+  add_quotation {domain; name =  "cltyp-'"} cltyp_quot
+    ~mexp:(fun loc p -> m#cltyp loc (Strip.cltyp p))
+    ~mpat:(fun loc p -> m#cltyp loc (Strip.cltyp p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "clexp-'"} clexp_quot ~mexp:(fun loc p -> m#clexp loc (Strip.clexp p))
-    ~mpat:(fun loc p -> m#clexp loc (Strip.clexp p)) ~exp_filter
+
+  add_quotation {domain; name =  "clexp-'"} clexp_quot
+    ~mexp:(fun loc p -> m#clexp loc (Strip.clexp p))
+    ~mpat:(fun loc p -> m#clexp loc (Strip.clexp p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "clsigi-'"} clsigi_quot ~mexp:(fun loc p -> m#clsigi loc (Strip.clsigi p))
-    ~mpat:(fun loc p -> m#clsigi loc (Strip.clsigi p)) ~exp_filter
+  
+  add_quotation {domain; name =  "clsigi-'"} clsigi_quot
+    ~mexp:(fun loc p -> m#clsigi loc (Strip.clsigi p))
+    ~mpat:(fun loc p -> m#clsigi loc (Strip.clsigi p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "clfield-'"} clfield_quot ~mexp:(fun loc p -> m#clfield loc (Strip.clfield p))
-    ~mpat:(fun loc p -> m#clfield loc (Strip.clfield p)) ~exp_filter
+  
+  add_quotation {domain; name =  "clfield-'"} clfield_quot
+    ~mexp:(fun loc p -> m#clfield loc (Strip.clfield p))
+    ~mpat:(fun loc p -> m#clfield loc (Strip.clfield p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "constr-'"} constr_quot ~mexp:(fun loc p -> m#constr loc (Strip.constr p))
-    ~mpat:(fun loc p -> m#constr loc (Strip.constr p)) ~exp_filter
+  
+  add_quotation {domain; name =  "constr-'"} constr_quot
+    ~mexp:(fun loc p -> m#constr loc (Strip.constr p))
+    ~mpat:(fun loc p -> m#constr loc (Strip.constr p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "bind-'"} bind_quot ~mexp:(fun loc p -> m#bind loc (Strip.bind p))
-    ~mpat:(fun loc p -> m#bind loc (Strip.bind p)) ~exp_filter
+  
+  add_quotation {domain; name =  "bind-'"} bind_quot
+    ~mexp:(fun loc p -> m#bind loc (Strip.bind p))
+    ~mpat:(fun loc p -> m#bind loc (Strip.bind p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "rec_exp-'"} rec_exp_quot ~mexp:(fun loc p -> m#rec_exp loc (Strip.rec_exp p))
-    ~mpat:(fun loc p -> m#rec_exp loc (Strip.rec_exp p)) ~exp_filter
+  
+  add_quotation {domain; name =  "rec_exp-'"} rec_exp_quot
+    ~mexp:(fun loc p -> m#rec_exp loc (Strip.rec_exp p))
+    ~mpat:(fun loc p -> m#rec_exp loc (Strip.rec_exp p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "case-'"} case_quot ~mexp:(fun loc p -> m#case loc (Strip.case p))
-    ~mpat:(fun loc p -> m#case loc (Strip.case p)) ~exp_filter
+  
+  add_quotation {domain; name =  "case-'"} case_quot
+    ~mexp:(fun loc p -> m#case loc (Strip.case p))
+    ~mpat:(fun loc p -> m#case loc (Strip.case p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "mbind-'"} mbind_quot ~mexp:(fun loc p -> m#mbind loc (Strip.mbind p))
-    ~mpat:(fun loc p -> m#mbind loc (Strip.mbind p)) ~exp_filter
+  
+  add_quotation {domain; name =  "mbind-'"} mbind_quot
+    ~mexp:(fun loc p -> m#mbind loc (Strip.mbind p))
+    ~mpat:(fun loc p -> m#mbind loc (Strip.mbind p))
+    ~exp_filter
     ~pat_filter;
-  add_quotation {domain; name =  "ident-'"} ident_quot ~mexp:(fun loc p -> m#ident loc (Strip.ident p))
-    ~mpat:(fun loc p -> m#ident loc (Strip.ident p)) ~exp_filter
+  
+  add_quotation {domain; name =  "ident-'"} ident_quot
+    ~mexp:(fun loc p -> m#ident loc (Strip.ident p))
+    ~mpat:(fun loc p -> m#ident loc (Strip.ident p))
+    ~exp_filter
     ~pat_filter;
+  
   add_quotation {domain; name =  "or_ctyp-'"} constructor_declarations
-    ~mexp:(fun loc p -> m#or_ctyp loc (Strip.or_ctyp p)) ~mpat:(fun loc p -> m#or_ctyp loc (Strip.or_ctyp p))
-    ~exp_filter ~pat_filter;
-  add_quotation {domain; name =  "row_field-'"} row_field ~mexp:(fun loc p -> m#row_field loc (Strip.row_field p))
-    ~mpat:(fun loc p -> m#row_field loc (Strip.row_field p)) ~exp_filter
+    ~mexp:(fun loc p -> m#or_ctyp loc (Strip.or_ctyp p))
+    ~mpat:(fun loc p -> m#or_ctyp loc (Strip.or_ctyp p))
+    ~exp_filter
+    ~pat_filter;
+  
+  add_quotation {domain; name =  "row_field-'"} row_field
+    ~mexp:(fun loc p -> m#row_field loc (Strip.row_field p))
+    ~mpat:(fun loc p -> m#row_field loc (Strip.row_field p))
+    ~exp_filter
     ~pat_filter
 end
 ;;

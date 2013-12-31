@@ -86,63 +86,7 @@ type full_id_transform =
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of  (string -> string) ]
         
-let arrow_of_list f = Listf.reduce_right arrow f
-    
-let app_arrow lst acc = List.fold_right arrow lst acc
-    
-let (<+) (names: string list ) (ty:ctyp) =
-  List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) names ty
-    
 
-
-let name_length_of_tydcl (x:decl) : (string * int) =
-  match x with 
-  | `TyDcl ( `Lid name, tyvars, _, _) ->
-      (name, match tyvars with
-      | `None  -> 0
-      | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
-  | tydcl ->
-      failwith (__BIND__ ^ ObjsN.dump_decl tydcl)
-
-
-(**
-  generate universal quantifiers for object's type signatures
-  {[
-  gen_quantifiers ~arity:2 3 |> eprint;
-  'all_a0 'all_a1 'all_a2 'all_b0 'all_b1 'all_b2
-  ]}  quantifier variables can not be unified *)  
-
-let gen_quantifiers1 ~arity n  : ctyp =
-  Listf.init arity
-    (fun i ->
-      Listf.init n
-        @@ fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} )
-  |> List.concat |> appl_of_list
-
-
- 
-let of_id_len ~off ((id:ident),len) =
-  appl_of_list
-    ((id:>ctyp) ::
-     Listf.init len
-       (fun i -> %ctyp-{'$lid{Id.allx ~off i}}))
-    
-let of_name_len ~off (name,len) =
-  let id = lid name   in
-  of_id_len ~off (id,len)
-
-
-
-(*
-  {[
-  (fun [ <:stru<type .$x$. >> -> gen_ty_of_tydcl ~off:2 x  |> eprint ])
-  <:stru< type list 'a 'b = [A of int | B of 'a] >> ;
-
-  list 'all_c0 'all_c1
-  ]}
- *)  
-let gen_ty_of_tydcl ~off (tydcl:decl) =
-  tydcl |> name_length_of_tydcl |>of_name_len ~off 
     
 (*
   @raise Invalid_argument 
@@ -166,8 +110,7 @@ let list_of_record (ty:name_ctyp) : col list  =
          `TyCol (`Lid label, ty) -> 
           {label; ty; is_mutable=false}
     | t0 ->
-        failwithf
-          "list_of_record %s" (ObjsN.dump_name_ctyp t0) )
+        failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
 
     
 (*
@@ -188,10 +131,19 @@ let result_id = ref 0
     
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
+  (** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
+    ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
+  let of_id_len ~off ((id:ident),len) =
+    appl_of_list
+      ((id:>ctyp) ::
+       Listf.init len
+         (fun i -> %ctyp-{'$lid{Id.allx ~off i}})) in
   let prefix = List.map
-      (fun s -> Stringf.drop_while (fun c -> c = '_') s) prefix in 
+      (fun s -> Stringf.drop_while (fun c -> c = '_') s) prefix in
+  let app_arrow = List.fold_right arrow in
   let app_src   =
     app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
+  let (<+) = List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) in
   let result_type = (* %{ 'result } *)
     %ctyp-{'$lid{"result"^string_of_int !result_id}} in
   let _ = incr result_id in
@@ -224,6 +176,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else
+    let gen_quantifiers1 ~arity n  : ctyp =
+      Listf.init arity
+        (fun i ->
+          Listf.init n
+          @@ fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} )
+      |> List.concat |> appl_of_list in
     let quantifiers = gen_quantifiers1 ~arity:quant len in
     (%ctyp-{!$quantifiers . ${List.fold_right arrow params  base}},dst)
 

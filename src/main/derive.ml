@@ -282,7 +282,14 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     = 
   (* let open Transform in  *)
   let tctor_var = basic_transform left_type_id in
-  let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+  let (name,len) =
+    match  tydcl with
+    | `TyDcl ( `Lid name, tyvars, _, _) ->
+        (name, match tyvars with
+        | `None  -> 0
+        | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
+    | tydcl ->
+        failwith (__BIND__ ^ ObjsN.dump_decl tydcl) in
   let fname = tctor_var name in
   (* FIXME the annot using [_ty]?*)
   let (_ty,result) =
@@ -389,8 +396,15 @@ let obj_of_mtyps
            ~default ~mk_variant
            simple_exp_of_ctyp) ~result tydcl in
     let mk_type tydcl =
-      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
-        let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names
+      let (name,len) =
+        match  tydcl with
+        | `TyDcl ( `Lid name, tyvars, _, _) ->
+            (name, match tyvars with
+            | `None  -> 0
+            | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
+        | tydcl ->
+            failwith (__BIND__ ^ ObjsN.dump_decl tydcl) in
+      let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names
             (%ident-{ $lid:name } ,len )
             (Obj k) in
         (ty,result_type) in

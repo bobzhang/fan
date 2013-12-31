@@ -5646,14 +5646,12 @@ let apply () =
                            { tag = `Key; word = (A "type"); tag_name = "Key"
                            }
                        } : Tokenf.pattern );
-                   Nterm
-                     (Gramf.obj
-                        (type_declaration : 'type_declaration Gramf.t ))];
+                   Nterm (Gramf.obj (decl : 'decl Gramf.t ))];
                  annot = "`Type (_loc, t)\n";
                  fn =
                    (Gramf.mk_action
-                      (fun (t : 'type_declaration)  _  (_loc : Locf.t)  ->
-                         (`Type (_loc, t) : 'sigi ) : 'type_declaration ->
+                      (fun (t : 'decl)  _  (_loc : Locf.t)  ->
+                         (`Type (_loc, t) : 'sigi ) : 'decl ->
                                                         Tokenf.txt ->
                                                           Locf.t -> 'sigi ))
                };
@@ -12678,14 +12676,12 @@ let apply () =
                            { tag = `Key; word = (A "type"); tag_name = "Key"
                            }
                        } : Tokenf.pattern );
-                   Nterm
-                     (Gramf.obj
-                        (type_declaration : 'type_declaration Gramf.t ))];
+                   Nterm (Gramf.obj (decl : 'decl Gramf.t ))];
                  annot = "`Type (_loc, t)\n";
                  fn =
                    (Gramf.mk_action
-                      (fun (t : 'type_declaration)  _  (_loc : Locf.t)  ->
-                         (`Type (_loc, t) : 'stru ) : 'type_declaration ->
+                      (fun (t : 'decl)  _  (_loc : Locf.t)  ->
+                         (`Type (_loc, t) : 'stru ) : 'decl ->
                                                         Tokenf.txt ->
                                                           Locf.t -> 'stru ))
                };
@@ -12835,9 +12831,7 @@ let apply () =
                            { tag = `Key; word = (A "type"); tag_name = "Key"
                            }
                        } : Tokenf.pattern );
-                   Nterm
-                     (Gramf.obj
-                        (type_declaration : 'type_declaration Gramf.t ));
+                   Nterm (Gramf.obj (decl : 'decl Gramf.t ));
                    Token
                      ({
                         descr =
@@ -12857,8 +12851,8 @@ let apply () =
                  annot = "`TypeWith (_loc, t, ns)\n";
                  fn =
                    (Gramf.mk_action
-                      (fun _  (ns : 'string_list)  _  _ 
-                         (t : 'type_declaration)  _  (_loc : Locf.t)  ->
+                      (fun _  (ns : 'string_list)  _  _  (t : 'decl)  _ 
+                         (_loc : Locf.t)  ->
                          (`TypeWith (_loc, t, ns) : 'stru ) : Tokenf.txt ->
                                                                 'string_list
                                                                   ->
@@ -12866,8 +12860,7 @@ let apply () =
                                                                     ->
                                                                     Tokenf.txt
                                                                     ->
-                                                                    'type_declaration
-                                                                    ->
+                                                                    'decl ->
                                                                     Tokenf.txt
                                                                     ->
                                                                     Locf.t ->
@@ -16379,7 +16372,34 @@ let apply_ctyp () =
      } : _ Gramf.single_extend_statement );
   Gramf.extend_single
     ({
-       entry = (type_declaration : 'type_declaration Gramf.t );
+       entry = (decl_quot : 'decl_quot Gramf.t );
+       olevel =
+         ({
+            label = None;
+            lassoc = true;
+            productions =
+              [{
+                 symbols =
+                   [Token
+                      ({
+                         descr =
+                           { tag = `Key; word = (A "type"); tag_name = "Key"
+                           }
+                       } : Tokenf.pattern );
+                   Nterm (Gramf.obj (decl : 'decl Gramf.t ))];
+                 annot = "x\n";
+                 fn =
+                   (Gramf.mk_action
+                      (fun (x : 'decl)  _  (_loc : Locf.t)  ->
+                         (x : 'decl_quot ) : 'decl ->
+                                               Tokenf.txt ->
+                                                 Locf.t -> 'decl_quot ))
+               }]
+          } : Gramf.olevel )
+     } : _ Gramf.single_extend_statement );
+  Gramf.extend_single
+    ({
+       entry = (decl : 'decl Gramf.t );
        olevel =
          ({
             label = None;
@@ -16398,9 +16418,7 @@ let apply_ctyp () =
                       (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                          let s = __fan_0 in
                          (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s : 
-                           'type_declaration ) : Tokenf.ant ->
-                                                   Locf.t ->
-                                                     'type_declaration ))
+                           'decl ) : Tokenf.ant -> Locf.t -> 'decl ))
                };
               {
                 symbols =
@@ -16416,8 +16434,7 @@ let apply_ctyp () =
                      (fun (__fan_0 : Tokenf.ant)  (_loc : Locf.t)  ->
                         let s = __fan_0 in
                         (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl) s : 
-                          'type_declaration ) : Tokenf.ant ->
-                                                  Locf.t -> 'type_declaration ))
+                          'decl ) : Tokenf.ant -> Locf.t -> 'decl ))
               };
               {
                 symbols =
@@ -16431,12 +16448,12 @@ let apply_ctyp () =
                 annot = "`And (_loc, t1, t2)\n";
                 fn =
                   (Gramf.mk_action
-                     (fun (t2 : 'type_declaration)  _ 
-                        (t1 : 'type_declaration)  (_loc : Locf.t)  ->
-                        (`And (_loc, t1, t2) : 'type_declaration ) : 
-                     'type_declaration ->
-                       Tokenf.txt ->
-                         'type_declaration -> Locf.t -> 'type_declaration ))
+                     (fun (t2 : 'decl)  _  (t1 : 'decl)  (_loc : Locf.t)  ->
+                        (`And (_loc, t1, t2) : 'decl ) : 'decl ->
+                                                           Tokenf.txt ->
+                                                             'decl ->
+                                                               Locf.t ->
+                                                                 'decl ))
               };
               {
                 symbols =
@@ -16464,13 +16481,11 @@ let apply_ctyp () =
                              (match cl with
                               | [] -> `None _loc
                               | _ -> `Some (_loc, (and_of_list cl)))) : 
-                        'type_declaration ) : 'constrain list ->
-                                                'type_info ->
-                                                  Tokenf.txt ->
-                                                    'type_ident_and_parameters
-                                                      ->
-                                                      Locf.t ->
-                                                        'type_declaration ))
+                        'decl ) : 'constrain list ->
+                                    'type_info ->
+                                      Tokenf.txt ->
+                                        'type_ident_and_parameters ->
+                                          Locf.t -> 'decl ))
               };
               {
                 symbols =
@@ -16492,9 +16507,9 @@ let apply_ctyp () =
                              (match cl with
                               | [] -> `None _loc
                               | _ -> `Some (_loc, (and_of_list cl)))) : 
-                        'type_declaration ) : 'constrain list ->
-                                                'type_ident_and_parameters ->
-                                                  Locf.t -> 'type_declaration ))
+                        'decl ) : 'constrain list ->
+                                    'type_ident_and_parameters ->
+                                      Locf.t -> 'decl ))
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );

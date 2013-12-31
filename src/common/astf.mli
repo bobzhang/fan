@@ -269,7 +269,7 @@ and name_ctyp =
   | ant]
 and or_ctyp =
   [ `Bar of (loc * or_ctyp * or_ctyp )
-  | `TyCol of (loc * auident * ctyp)
+  | `TyCol of (loc * auident * ctyp) (* For GADT *)
   | `Of of (loc * auident * ctyp)
   | auident  ]
 and of_ctyp = (* For exception definition*)

@@ -482,7 +482,7 @@ let apply () = begin
                 match bang with
                  | Some _ -> `Positive _loc
                  | None -> `Negative _loc , (i:vid :> ident))}
-  | "type"; type_declaration as t  %{`Type(_loc,t)}
+  | "type"; decl as t  %{`Type(_loc,t)}
   | "module"; "type"; a_uident as i; "="; mtyp as mt %{`ModuleType(_loc,i,mt)}
   | "class"; "type"; cltyp_declaration as ctd  %{ `ClassType(_loc,ctd)}
   | "exception"; constructor_declaration as t %{ `Exception(_loc,t)}
@@ -943,7 +943,7 @@ let apply () = begin
       | "module"; a_uident as i; mbind0 as mb %{ `Module(_loc,i,mb)}
       | "module"; "rec"; mbind as mb %{ `RecModule(_loc,mb)}
       | @stru_sigi
-      | "type"; type_declaration as t;"with"; "("; string_list as ns;")"
+      | "type"; decl as t;"with"; "("; string_list as ns;")"
             %{`TypeWith (_loc,t,ns)}
       | @let_stru_exp %{fun x -> %stru{$exp:x}}
       | "let"; opt_rec as r; bind as bi %{
@@ -1085,14 +1085,16 @@ end;;
 let apply_ctyp () = begin
 with ctyp
   %extend{
-ctyp_quot:
+
+  ctyp_quot:
   [ctyp as x; "*"; star_ctyp as y %{ `Sta (_loc, x, y)}
-|ctyp as x %{x} ]
+  |ctyp as x %{x} ]
+  
   unquoted_typevars:
   [ S as t1; S as t2 %{ `App(_loc,t1,t2)(* %{ $t1 $t2 } *) (* FIXME order matters ?*)}
   | Ant (""|"typ" ,s) %{  mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
-
   | a_lident as i %{ (i:>ctyp)} ]
+  
   type_parameter:
   [ Ant (""|"typ" ,s) %{ mk_ant s}
   | "'"; a_lident as i %{ `Quote(_loc,`Normal _loc, i)}
@@ -1102,23 +1104,29 @@ ctyp_quot:
   }
   | ("+"|"-" as p); "_" %{ `QuoteAny (_loc, if p = "+" then `Positive _loc else `Negative _loc)}
   | "_" %{  `Any _loc}]
+  
   type_longident_and_parameters:
   [ "("; type_parameters as tpl; ")";type_longident as i %{ tpl (i:>ctyp) }
   | type_parameter as tpl ; type_longident as i %{ `App(_loc, (i:>ctyp),(tpl:>ctyp))}
   | type_longident as i %{ (i:>ctyp)}
   | Ant ("" ,s) %{mk_ant s ~c:(Dyn_tag.to_string Dyn_tag.ctyp)}]
+
   type_parameters:
   [ type_parameter as t1; S as t2 %{ fun acc -> t2 (`App(_loc,acc, (t1:>ctyp)))}
   | type_parameter as t %{ fun acc -> `App(_loc,acc, (t:>ctyp))}
   |  %{fun t -> t}  ]
+
   meth_list:
   [ meth_decl as m; ";"; S as rest   %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
   | meth_decl as m; ?";"; opt_dot_dot as v %{ (m, v)}]
+
   meth_decl:
   [ a_lident as lab; ":"; ctyp as t  %{`TyCol(_loc,lab,t)}]
+
   opt_meth_list:
   [ meth_list as rest  %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
   | opt_dot_dot as v     %{ `TyObjEnd(_loc,v)} ]
+
   row_field:
   [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.row_field)  s}
   | Ant("vrn" , s) %{ `TyVrn(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.astring)  s)} (* FIXME*)
@@ -1152,8 +1160,9 @@ ctyp_quot:
   |  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
   |  a_lident as i %{ (i, `None _loc)}
   ]
-
-  type_declaration:
+  decl_quot:
+  ["type"; decl as x %{x} ]
+  decl:
   [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl)  s}
   | S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}
   | type_ident_and_parameters as rest; "="; type_info as tk; L0 constrain as cl

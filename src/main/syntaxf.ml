@@ -53,7 +53,9 @@
   semi
   sequence
   sigi  sigis  star_ctyp  stru  strus  top_phrase
-  type_declaration  type_ident_and_parameters  type_longident  type_longident_and_parameters
+  decl
+  decl_quot
+  type_ident_and_parameters  type_longident  type_longident_and_parameters
   type_parameter  type_parameters  typevars  val_longident  constr
   exp_quot
   pat_quot
