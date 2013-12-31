@@ -68,19 +68,20 @@ let list_of_record (ty : name_ctyp) =
            | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
   col list )
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
-  (let of_id_len ~off  ((id : ident),len) =
-     appl_of_list ((id :>ctyp) ::
-       (Listf.init len
-          (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp)))) in
+  (let a_var_lens =
+     Listf.init len
+       (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off:0 i))) :>Astfn.ctyp)) in
+   let b_var_lens =
+     Listf.init len
+       (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off:1 i))) :>Astfn.ctyp)) in
+   let a_names = appl_of_list ((id :>ctyp) :: a_var_lens) in
+   let b_names = appl_of_list ((id :>ctyp) :: b_var_lens) in
    let prefix =
      List.map
        (fun s  ->
           Gensym.fresh
             ~prefix:(Stringf.drop_while (function | '_' -> true | _ -> false)
                        s) ()) prefix in
-   let app_arrow = List.fold_right arrow in
-   let app_src =
-     app_arrow @@ (Listf.init number (fun _  -> of_id_len ~off:0 (id, len))) in
    let (<+) =
      List.fold_right
        (fun name  acc  ->
@@ -91,44 +92,35 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    let self_type = (`Quote (`Normal, (`Lid "self_type")) :>Astfn.ctyp) in
    let (quant,dst) =
      match k with
-     | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
-     | Obj (Iter ) -> (1, result_type)
-     | Obj (Fold ) -> (1, self_type)
-     | Obj (Concrete c) -> (1, c)
-     | Str_item  -> (1, result_type) in
-   let params =
-     (Listf.init len) @@
-       (fun i  ->
-          let app_src =
-            app_arrow @@
-              ((Listf.init number) @@
-                 (fun _  ->
-                    (`Quote (`Normal, (`Lid (Id.allx ~off:0 i))) :>Astfn.ctyp))) in
-          match k with
-          | Obj u ->
-              let dst =
-                match u with
-                | Map  ->
-                    let x = Id.allx ~off:1 i in
-                    (`Quote (`Normal, (`Lid x)) :>Astfn.ctyp)
-                | Iter  -> result_type
-                | Concrete c -> c
-                | Fold  -> self_type in
-              (arrow self_type) @@ (prefix <+ (app_src dst))
-          | Str_item  -> prefix <+ (app_src result_type)) in
-   let base = prefix <+ (app_src dst) in
+     | Obj (Map ) -> ((a_var_lens @ b_var_lens), b_names)
+     | Obj (Iter ) -> (a_var_lens, result_type)
+     | Obj (Fold ) -> (a_var_lens, self_type)
+     | Obj (Concrete c) -> (a_var_lens, c)
+     | Str_item  -> (a_var_lens, result_type) in
+   let base =
+     prefix <+
+       (List.fold_right arrow (Listf.init number (const a_names)) dst) in
    if len = 0
    then ((`TyPolEnd base), dst)
    else
-     (let gen_quantifiers1 ~arity  n =
-        (((Listf.init arity
-             (fun i  ->
-                (Listf.init n) @@
-                  (fun j  ->
-                     (`Quote (`Normal, (`Lid (Id.allx ~off:i j))) :>Astfn.ctyp))))
-            |> List.concat)
-           |> appl_of_list : ctyp ) in
-      let quantifiers = gen_quantifiers1 ~arity:quant len in
+     (let quantifiers = appl_of_list quant in
+      let params =
+        Listf.init len
+          (fun i  ->
+             let ith_a = List.nth a_var_lens i in
+             let ith_b = List.nth b_var_lens i in
+             let app_src =
+               List.fold_right arrow (Listf.init number (const ith_a)) in
+             match k with
+             | Obj u ->
+                 let dst =
+                   match u with
+                   | Map  -> ith_b
+                   | Iter  -> result_type
+                   | Concrete c -> c
+                   | Fold  -> self_type in
+                 (arrow self_type) @@ (prefix <+ (app_src dst))
+             | Str_item  -> prefix <+ (app_src result_type)) in
       ((`TyPol
           ((quantifiers :>Astfn.ctyp),
             (List.fold_right arrow params base :>Astfn.ctyp)) :>Astfn.ctyp),

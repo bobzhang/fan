@@ -118,35 +118,24 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let b_var_lens = Listf.init len (fun i -> %ctyp-{'$lid{Id.allx ~off:1 i}}) in
   let a_names = appl_of_list ((id:>ctyp) :: a_var_lens) in
   let b_names = appl_of_list ((id:>ctyp) :: b_var_lens) in
-  let of_id_len ~off ((id:ident),len) =
-    appl_of_list
-      ((id:>ctyp) ::
-       Listf.init len
-         (fun i -> %ctyp-{'$lid{Id.allx ~off i}})) in
-  let a_names = of_id_len ~off:0 (id,len) in
-  let b_names = of_id_len ~off:1 (id,len) in
   let prefix =
     List.map(fun s -> %fresh{${Stringf.drop_while %p{'_'} s}}) prefix in
   let (<+) = List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) in
   let result_type = %ctyp-{'$lid{%fresh{result}}} in
   let self_type = %ctyp-{'self_type}  in
-  let gen_quantifiers1 ~arity n  : ctyp =
-    Listf.init arity
-      (fun i -> Listf.init n (fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} ))
-|> List.concat |> appl_of_list in
   let (quant,dst) =
     match k with
-    |Obj Map -> (2, b_names)
-    |Obj Iter -> (1, result_type)
-    |Obj Fold -> (1, self_type)
-    |Obj (Concrete c ) -> (1,c)
-    |Str_item -> (1,result_type) in
+    |Obj Map -> (a_var_lens @ b_var_lens, b_names)
+    |Obj Iter -> (a_var_lens, result_type)
+    |Obj Fold -> (a_var_lens, self_type)
+    |Obj (Concrete c ) -> (a_var_lens, c)
+    |Str_item -> (a_var_lens, result_type) in
   let base = prefix <+
     List.fold_right arrow (Listf.init number (const  a_names)) dst in
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else
-    let quantifiers = gen_quantifiers1 ~arity:quant len in
+    let quantifiers = appl_of_list quant in
     let params =
       Listf.init len 
       (fun i ->
@@ -154,12 +143,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
         let ith_b = List.nth b_var_lens i in
         let app_src =
           List.fold_right arrow
-            (Listf.init number (const ith_a ) (* %ctyp-{ '$lid{Id.allx ~off:0 i}} *)) in
+            (Listf.init number (const ith_a )) in
         match k with
         |Obj u  ->
             let dst =
               match  u with
-              | Map -> ith_b (* %ctyp-{  '$lid{Id.allx ~off:1 i} } *)
+              | Map -> ith_b
               | Iter -> result_type
               | Concrete c -> c
               | Fold-> self_type  in
