@@ -1,7 +1,7 @@
 open StdFan
 open Astf
 let pp_print_loc: Format.formatter -> loc -> unit =
-  fun fmt  eta__003_  -> Locf.pp_print_t fmt eta__003_
+  fun fmt  eta__001_  -> Locf.pp_print_t fmt eta__001_
 let pp_print_ant: Format.formatter -> ant -> unit =
   fun fmt  (`Ant (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
@@ -1012,13 +1012,13 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
 class print =
   object (self : 'self_type)
     inherit  printbase
-    method loc : 'fmt__110_ -> loc -> unit=
-      fun fmt  eta__112_  -> self#locf_t fmt eta__112_
-    method ant : 'fmt__113_ -> ant -> unit=
+    method loc : _ -> loc -> unit=
+      fun fmt  eta__002_  -> self#locf_t fmt eta__002_
+    method ant : _ -> ant -> unit=
       fun fmt  (`Ant (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc _a0
           self#tokenf_ant _a1
-    method literal : 'fmt__115_ -> literal -> unit=
+    method literal : _ -> literal -> unit=
       fun fmt  ->
         function
         | `Chr (_a0,_a1) ->
@@ -1046,7 +1046,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Bool@ %a@ %a)@]" self#loc _a0
               self#bool _a1
         | `Unit _a0 -> Format.fprintf fmt "@[<1>(`Unit@ %a)@]" self#loc _a0
-    method flag : 'fmt__117_ -> flag -> unit=
+    method flag : _ -> flag -> unit=
       fun fmt  ->
         function
         | `Positive _a0 ->
@@ -1054,7 +1054,7 @@ class print =
         | `Negative _a0 ->
             Format.fprintf fmt "@[<1>(`Negative@ %a)@]" self#loc _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method position_flag : 'fmt__119_ -> position_flag -> unit=
+    method position_flag : _ -> position_flag -> unit=
       fun fmt  ->
         function
         | `Positive _a0 ->
@@ -1064,7 +1064,7 @@ class print =
         | `Normal _a0 ->
             Format.fprintf fmt "@[<1>(`Normal@ %a)@]" self#loc _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method strings : 'fmt__121_ -> strings -> unit=
+    method strings : _ -> strings -> unit=
       fun fmt  ->
         function
         | `App (_a0,_a1,_a2) ->
@@ -1074,37 +1074,37 @@ class print =
             Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method lident : 'fmt__123_ -> lident -> unit=
+    method lident : _ -> lident -> unit=
       fun fmt  (`Lid (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" self#loc _a0 self#string
           _a1
-    method alident : 'fmt__125_ -> alident -> unit=
+    method alident : _ -> alident -> unit=
       fun fmt  ->
         function
         | `Lid (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method auident : 'fmt__127_ -> auident -> unit=
+    method auident : _ -> auident -> unit=
       fun fmt  ->
         function
         | `Uid (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method aident : 'fmt__129_ -> aident -> unit=
+    method aident : _ -> aident -> unit=
       fun fmt  ->
         function
         | #alident as _a0 -> (self#alident fmt _a0 :>unit)
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
-    method astring : 'fmt__131_ -> astring -> unit=
+    method astring : _ -> astring -> unit=
       fun fmt  ->
         function
         | `C (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`C@ %a@ %a)@]" self#loc _a0 self#string
               _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method uident : 'fmt__133_ -> uident -> unit=
+    method uident : _ -> uident -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
@@ -1114,7 +1114,7 @@ class print =
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
               self#uident _a1 self#uident _a2
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
-    method ident : 'fmt__135_ -> ident -> unit=
+    method ident : _ -> ident -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
@@ -1125,7 +1125,7 @@ class print =
               self#ident _a1 self#ident _a2
         | #alident as _a0 -> (self#alident fmt _a0 :>unit)
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
-    method ident' : 'fmt__137_ -> ident' -> unit=
+    method ident' : _ -> ident' -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
@@ -1140,7 +1140,7 @@ class print =
         | `Uid (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" self#loc _a0
               self#string _a1
-    method vid : 'fmt__139_ -> vid -> unit=
+    method vid : _ -> vid -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
@@ -1153,7 +1153,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method vid' : 'fmt__141_ -> vid' -> unit=
+    method vid' : _ -> vid' -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
@@ -1165,24 +1165,24 @@ class print =
         | `Uid (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" self#loc _a0
               self#string _a1
-    method dupath : 'fmt__143_ -> dupath -> unit=
+    method dupath : _ -> dupath -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
               self#dupath _a1 self#dupath _a2
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
-    method dlpath : 'fmt__145_ -> dlpath -> unit=
+    method dlpath : _ -> dlpath -> unit=
       fun fmt  ->
         function
         | `Dot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
               self#dupath _a1 self#alident _a2
         | #alident as _a0 -> (self#alident fmt _a0 :>unit)
-    method any : 'fmt__147_ -> any -> unit=
+    method any : _ -> any -> unit=
       fun fmt  (`Any _a0)  ->
         Format.fprintf fmt "@[<1>(`Any@ %a)@]" self#loc _a0
-    method ctyp : 'fmt__149_ -> ctyp -> unit=
+    method ctyp : _ -> ctyp -> unit=
       fun fmt  ->
         function
         | `Alias (_a0,_a1,_a2) ->
@@ -1251,7 +1251,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Package@ %a@ %a)@]" self#loc _a0
               self#mtyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method type_parameters : 'fmt__151_ -> type_parameters -> unit=
+    method type_parameters : _ -> type_parameters -> unit=
       fun fmt  ->
         function
         | `Com (_a0,_a1,_a2) ->
@@ -1261,7 +1261,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Ctyp@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method row_field : 'fmt__153_ -> row_field -> unit=
+    method row_field : _ -> row_field -> unit=
       fun fmt  ->
         function
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
@@ -1277,7 +1277,7 @@ class print =
         | `Ctyp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Ctyp@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1
-    method tag_names : 'fmt__155_ -> tag_names -> unit=
+    method tag_names : _ -> tag_names -> unit=
       fun fmt  ->
         function
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
@@ -1287,7 +1287,7 @@ class print =
         | `TyVrn (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyVrn@ %a@ %a)@]" self#loc _a0
               self#astring _a1
-    method decl : 'fmt__157_ -> decl -> unit=
+    method decl : _ -> decl -> unit=
       fun fmt  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
@@ -1302,7 +1302,7 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#decl _a1 self#decl _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method type_constr : 'fmt__159_ -> type_constr -> unit=
+    method type_constr : _ -> type_constr -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
@@ -1312,14 +1312,14 @@ class print =
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method opt_type_constr : 'fmt__161_ -> opt_type_constr -> unit=
+    method opt_type_constr : _ -> opt_type_constr -> unit=
       fun fmt  ->
         function
         | `Some (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Some@ %a@ %a)@]" self#loc _a0
               self#type_constr _a1
         | `None _a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc _a0
-    method decl_param : 'fmt__163_ -> decl_param -> unit=
+    method decl_param : _ -> decl_param -> unit=
       fun fmt  ->
         function
         | `Quote (_a0,_a1,_a2) ->
@@ -1330,7 +1330,7 @@ class print =
               self#position_flag _a1
         | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" self#loc _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method decl_params : 'fmt__165_ -> decl_params -> unit=
+    method decl_params : _ -> decl_params -> unit=
       fun fmt  ->
         function
         | `Quote (_a0,_a1,_a2) ->
@@ -1344,14 +1344,14 @@ class print =
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
               self#decl_params _a1 self#decl_params _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method opt_decl_params : 'fmt__167_ -> opt_decl_params -> unit=
+    method opt_decl_params : _ -> opt_decl_params -> unit=
       fun fmt  ->
         function
         | `Some (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Some@ %a@ %a)@]" self#loc _a0
               self#decl_params _a1
         | `None _a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc _a0
-    method type_info : 'fmt__169_ -> type_info -> unit=
+    method type_info : _ -> type_info -> unit=
       fun fmt  ->
         function
         | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -1364,7 +1364,7 @@ class print =
             Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" self#loc _a0
               self#flag _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method type_repr : 'fmt__171_ -> type_repr -> unit=
+    method type_repr : _ -> type_repr -> unit=
       fun fmt  ->
         function
         | `Record (_a0,_a1) ->
@@ -1374,7 +1374,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0
               self#or_ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method name_ctyp : 'fmt__173_ -> name_ctyp -> unit=
+    method name_ctyp : _ -> name_ctyp -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1384,7 +1384,7 @@ class print =
             Format.fprintf fmt "@[<1>(`RecCol@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#alident _a1 self#ctyp _a2 self#flag _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method or_ctyp : 'fmt__175_ -> or_ctyp -> unit=
+    method or_ctyp : _ -> or_ctyp -> unit=
       fun fmt  ->
         function
         | `Bar (_a0,_a1,_a2) ->
@@ -1397,7 +1397,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#auident _a1 self#ctyp _a2
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
-    method of_ctyp : 'fmt__177_ -> of_ctyp -> unit=
+    method of_ctyp : _ -> of_ctyp -> unit=
       fun fmt  ->
         function
         | `Of (_a0,_a1,_a2) ->
@@ -1405,7 +1405,7 @@ class print =
               self#vid _a1 self#ctyp _a2
         | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method pat : 'fmt__179_ -> pat -> unit=
+    method pat : _ -> pat -> unit=
       fun fmt  ->
         function
         | #vid as _a0 -> (self#vid fmt _a0 :>unit)
@@ -1473,7 +1473,7 @@ class print =
         | `ModuleConstraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
               self#loc _a0 self#auident _a1 self#ctyp _a2
-    method rec_pat : 'fmt__181_ -> rec_pat -> unit=
+    method rec_pat : _ -> rec_pat -> unit=
       fun fmt  ->
         function
         | `RecBind (_a0,_a1,_a2) ->
@@ -1484,7 +1484,7 @@ class print =
               self#rec_pat _a1 self#rec_pat _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method exp : 'fmt__183_ -> exp -> unit=
+    method exp : _ -> exp -> unit=
       fun fmt  ->
         function
         | #vid as _a0 -> (self#vid fmt _a0 :>unit)
@@ -1621,7 +1621,7 @@ class print =
         | `Package_exp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Package_exp@ %a@ %a)@]" self#loc _a0
               self#mexp _a1
-    method rec_exp : 'fmt__185_ -> rec_exp -> unit=
+    method rec_exp : _ -> rec_exp -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1632,7 +1632,7 @@ class print =
               self#vid _a1 self#exp _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method mtyp : 'fmt__187_ -> mtyp -> unit=
+    method mtyp : _ -> mtyp -> unit=
       fun fmt  ->
         function
         | #ident' as _a0 -> (self#ident' fmt _a0 :>unit)
@@ -1651,7 +1651,7 @@ class print =
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc _a0
               self#mexp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method sigi : 'fmt__189_ -> sigi -> unit=
+    method sigi : _ -> sigi -> unit=
       fun fmt  ->
         function
         | `Val (_a0,_a1,_a2) ->
@@ -1700,7 +1700,7 @@ class print =
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
               self#mbind _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method mbind : 'fmt__191_ -> mbind -> unit=
+    method mbind : _ -> mbind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
@@ -1713,7 +1713,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#mtyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method constr : 'fmt__193_ -> constr -> unit=
+    method constr : _ -> constr -> unit=
       fun fmt  ->
         function
         | `TypeEq (_a0,_a1,_a2) ->
@@ -1735,7 +1735,7 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#constr _a1 self#constr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method bind : 'fmt__195_ -> bind -> unit=
+    method bind : _ -> bind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
@@ -1745,7 +1745,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method case : 'fmt__197_ -> case -> unit=
+    method case : _ -> case -> unit=
       fun fmt  ->
         function
         | `Bar (_a0,_a1,_a2) ->
@@ -1758,7 +1758,7 @@ class print =
             Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#pat _a1 self#exp _a2 self#exp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method mexp : 'fmt__199_ -> mexp -> unit=
+    method mexp : _ -> mexp -> unit=
       fun fmt  ->
         function
         | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
@@ -1780,7 +1780,7 @@ class print =
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc _a0
               self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method stru : 'fmt__201_ -> stru -> unit=
+    method stru : _ -> stru -> unit=
       fun fmt  ->
         function
         | `Class (_a0,_a1) ->
@@ -1832,7 +1832,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" self#loc _a0
               self#flag _a1 self#bind _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method cltdecl : 'fmt__203_ -> cltdecl -> unit=
+    method cltdecl : _ -> cltdecl -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
@@ -1846,7 +1846,7 @@ class print =
             Format.fprintf fmt "@[<1>(`CtDeclS@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#flag _a1 self#ident _a2 self#cltyp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method cltyp : 'fmt__205_ -> cltyp -> unit=
+    method cltyp : _ -> cltyp -> unit=
       fun fmt  ->
         function
         | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
@@ -1871,7 +1871,7 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#cltyp _a1 self#cltyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method clsigi : 'fmt__207_ -> clsigi -> unit=
+    method clsigi : _ -> clsigi -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1894,7 +1894,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method cldecl : 'fmt__209_ -> cldecl -> unit=
+    method cldecl : _ -> cldecl -> unit=
       fun fmt  ->
         function
         | `ClDecl (_a0,_a1,_a2,_a3,_a4) ->
@@ -1908,7 +1908,7 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#cldecl _a1 self#cldecl _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method clexp : 'fmt__211_ -> clexp -> unit=
+    method clexp : _ -> clexp -> unit=
       fun fmt  ->
         function
         | `CeApp (_a0,_a1,_a2) ->
@@ -1939,7 +1939,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#clexp _a1 self#cltyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method clfield : 'fmt__213_ -> clfield -> unit=
+    method clfield : _ -> clfield -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1976,7 +1976,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
               self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method ep : 'fmt__215_ -> ep -> unit=
+    method ep : _ -> ep -> unit=
       fun fmt  ->
         function
         | #vid as _a0 -> (self#vid fmt _a0 :>unit)
@@ -2008,7 +2008,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
               self#rec_bind _a1
         | #literal as _a0 -> (self#literal fmt _a0 :>unit)
-    method rec_bind : 'fmt__217_ -> rec_bind -> unit=
+    method rec_bind : _ -> rec_bind -> unit=
       fun fmt  ->
         function
         | `RecBind (_a0,_a1,_a2) ->
@@ -2019,13 +2019,13 @@ class print =
               self#rec_bind _a1 self#rec_bind _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method tokenf_ant : 'fmt__219_ -> Tokenf.ant -> unit= self#unknown
-    method locf_t : 'fmt__221_ -> Locf.t -> unit= self#unknown
+    method tokenf_ant : _ -> Tokenf.ant -> unit= self#unknown
+    method locf_t : _ -> Locf.t -> unit= self#unknown
   end
 class map =
   object (self : 'self_type)
     inherit  mapbase
-    method loc : loc -> loc= fun eta__224_  -> self#locf_t eta__224_
+    method loc : loc -> loc= fun eta__003_  -> self#locf_t eta__003_
     method ant : ant -> ant=
       fun (`Ant (_a0,_a1))  ->
         let _a0 = self#loc _a0 in
@@ -3157,7 +3157,7 @@ class map =
 class fold =
   object (self : 'self_type)
     inherit  foldbase
-    method loc : loc -> 'self_type= fun eta__281_  -> self#locf_t eta__281_
+    method loc : loc -> 'self_type= fun eta__004_  -> self#locf_t eta__004_
     method ant : ant -> 'self_type=
       fun (`Ant (_a0,_a1))  -> let self = self#loc _a0 in self#tokenf_ant _a1
     method literal : literal -> 'self_type=

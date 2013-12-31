@@ -291,10 +291,13 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     | tydcl ->
         failwith (__BIND__ ^ ObjsN.dump_decl tydcl) in
   let fname = tctor_var name in
+  let prefix = List.length names in
   (* FIXME the annot using [_ty]?*)
   let (_ty,result) =
-    Ctyp.mk_method_type_of_name
-      ~number:arity ~prefix:names (name,len) destination in
+    Ctyp.mk_method_type
+      ~number:arity ~prefix
+      ~id:(lid name)
+      len destination in
   let (annot,result) =
     match annot with
     |None -> (None,result)
@@ -404,8 +407,9 @@ let obj_of_mtyps
             | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
         | tydcl ->
             failwith (__BIND__ ^ ObjsN.dump_decl tydcl) in
-      let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names
-            (%ident-{ $lid:name } ,len )
+      let prefix = List.length names in
+      let (ty,result_type) =
+        Ctyp.mk_method_type ~number:arity ~prefix ~id:%ident-{ $lid:name } len 
             (Obj k) in
         (ty,result_type) in
         
@@ -427,10 +431,11 @@ let obj_of_mtyps
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
     let (extras,lst) = Sigs_util.transform_mtyps lst in 
-    let body = List.map fs lst in 
+    let body = List.map fs lst in
+    let prefix = List.length names in
     let body : clfield =
       let items = List.map (fun (dest,src,len) ->
-        let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
+        let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix ~id:src len (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
         %clfield-{ method $lid:dest : $ty = ${Expn_util.unknown len} } ) extras in
       sem_of_list (body @ items) in 

@@ -234,9 +234,9 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
             | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
     | tydcl -> failwith ("bind_of_tydcl" ^ (ObjsN.dump_decl tydcl)) in
   let fname = tctor_var name in
+  let prefix = List.length names in
   let (_ty,result) =
-    Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
-      destination in
+    Ctyp.mk_method_type ~number:arity ~prefix ~id:(lid name) len destination in
   let (annot,result) =
     match annot with
     | None  -> (None, result)
@@ -321,9 +321,10 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                | `None -> 0
                | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
        | tydcl -> failwith ("obj_of_mtyps.mk_type" ^ (ObjsN.dump_decl tydcl)) in
+     let prefix = List.length names in
      let (ty,result_type) =
-       Ctyp.mk_method_type ~number:arity ~prefix:names
-         ((`Lid name :>Astfn.ident), len) (Obj k) in
+       Ctyp.mk_method_type ~number:arity ~prefix
+         ~id:(`Lid name :>Astfn.ident) len (Obj k) in
      (ty, result_type) in
    let mk_clfield (name,tydcl) =
      (let (ty,result_type) = mk_type tydcl in
@@ -347,13 +348,13 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
            | None  -> mk_clfield named_type) : clfield ) in
    let (extras,lst) = Sigs_util.transform_mtyps lst in
    let body = List.map fs lst in
+   let prefix = List.length names in
    let body: clfield =
      let items =
        List.map
          (fun (dest,src,len)  ->
             let (ty,_dest) =
-              Ctyp.mk_method_type ~number:arity ~prefix:names (src, len)
-                (Obj k) in
+              Ctyp.mk_method_type ~number:arity ~prefix ~id:src len (Obj k) in
             let () = Hashtbl.add tbl dest (Qualified dest) in
             (`CrMth
                ((`Lid dest), `Negative, `Negative,

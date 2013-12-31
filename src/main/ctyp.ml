@@ -109,19 +109,21 @@ let list_of_record (ty:name_ctyp) : col list  =
        | t0 ->
            failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
 
-(** [number] is how many arguments -- in most cases it should be [2]*)    
-let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
-  (** FIXME A type variable name need to be valid *)
-  (** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
-      ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)
-  let a_var_lens = Listf.init len (fun i -> %ctyp-{'$lid{Id.allx ~off:0 i}}) in
-  let b_var_lens = Listf.init len (fun i -> %ctyp-{'$lid{Id.allx ~off:1 i}}) in
+(** [number] is how many arguments -- in most cases it should be [2]
+    [prefix] is additional parameter -- we keep the shape here, only generate type variables [_]
+    [id] is the main type, such as [list]
+    [len] is the arity of the type, for [list], it's one
+ *)    
+let mk_method_type ~number ~id:(id:ident) ~prefix len (k:destination) : (ctyp * ctyp) =
+  let a_var_lens =
+    Listf.init len (fun _ -> %ctyp-{'$lid{%fresh{all_}}}) in
+  let b_var_lens =
+    Listf.init len (fun _ -> %ctyp-{'$lid{%fresh{all_}}}) in
   let a_names = appl_of_list ((id:>ctyp) :: a_var_lens) in
   let b_names = appl_of_list ((id:>ctyp) :: b_var_lens) in
-  let prefix =
-    List.map(fun s -> %fresh{${Stringf.drop_while %p{'_'} s}}) prefix in
-  let (<+) = List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) in
-  let result_type = %ctyp-{'$lid{%fresh{result}}} in
+  let prefix = Listf.init prefix (const %ctyp-{_}) in
+
+  let result_type = %ctyp-{_} in
   let self_type = %ctyp-{'self_type}  in
   let (quant,dst) =
     match k with
@@ -130,8 +132,8 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     |Obj Fold -> (a_var_lens, self_type)
     |Obj (Concrete c ) -> (a_var_lens, c)
     |Str_item -> (a_var_lens, result_type) in
-  let base = prefix <+
-    List.fold_right arrow (Listf.init number (const  a_names)) dst in
+  let base =
+    List.fold_right arrow (prefix @ Listf.init number (const  a_names)) dst in
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else
@@ -141,9 +143,6 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
       (fun i ->
         let ith_a = List.nth  a_var_lens i in
         let ith_b = List.nth b_var_lens i in
-        let app_src =
-          List.fold_right arrow
-            (Listf.init number (const ith_a )) in
         match k with
         |Obj u  ->
             let dst =
@@ -152,14 +151,11 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
               | Iter -> result_type
               | Concrete c -> c
               | Fold-> self_type  in
-            arrow self_type  @@ (prefix <+ app_src dst)
-        |Str_item -> prefix <+ app_src result_type) in
+            List.fold_right arrow (self_type::prefix) dst 
+        |Str_item -> List.fold_right arrow (prefix@Listf.init number (const ith_a)) result_type ) in
     (%ctyp-{!$quantifiers . ${List.fold_right arrow params  base}},dst)
 
 
-let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
-  let id = lid name in
-  mk_method_type ~number ~prefix (id,len) k 
 
 
 let mk_obj class_name  base body =

@@ -117,13 +117,12 @@ val list_of_record : name_ctyp -> col list
   ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
   'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result]} *)
 val mk_method_type :
-  number:int ->
-  prefix:string list -> ident * int -> destination -> (ctyp*ctyp)
+    number:int ->
+      id:ident -> 
+        prefix:int ->
+      int -> destination -> (ctyp*ctyp)
 
 
-val mk_method_type_of_name :
-  number:int ->
-  prefix:string list -> string * int -> destination -> (ctyp*ctyp)
       
 
         
