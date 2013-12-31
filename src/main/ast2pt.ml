@@ -412,9 +412,6 @@ let mktrecord (x: name_ctyp) :
   (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc)=
   match x with
   | `RecCol(_loc,`Lid(sloc,s),t,flag) -> 
-  (* |`TyColMut(_loc,`Lid(sloc,s),t) -> *)
-  (*   (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc) *)
-  (* | `TyCol(_loc,`Lid(sloc,s),t) -> *)
     (with_loc s sloc, mkmutable flag, mkpolytype (ctyp t),  _loc)
   | t ->
       Locf.failf (unsafe_loc_of t) "mktrecord %s " (!dump_name_ctyp t)

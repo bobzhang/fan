@@ -109,60 +109,62 @@ let list_of_record (ty:name_ctyp) : col list  =
        | t0 ->
            failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
 
-    
+(** [number] is how many arguments -- in most cases it should be [2]*)    
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   (** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
-    ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
+      ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)
+  let a_var_lens = Listf.init len (fun i -> %ctyp-{'$lid{Id.allx ~off:0 i}}) in
+  let b_var_lens = Listf.init len (fun i -> %ctyp-{'$lid{Id.allx ~off:1 i}}) in
+  let a_names = appl_of_list ((id:>ctyp) :: a_var_lens) in
+  let b_names = appl_of_list ((id:>ctyp) :: b_var_lens) in
   let of_id_len ~off ((id:ident),len) =
     appl_of_list
       ((id:>ctyp) ::
        Listf.init len
          (fun i -> %ctyp-{'$lid{Id.allx ~off i}})) in
-  let prefix = List.map
-      (fun s -> Stringf.drop_while (fun c -> c = '_') s) prefix in
-  let app_arrow = List.fold_right arrow in
-  let app_src   =
-    app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
+  let a_names = of_id_len ~off:0 (id,len) in
+  let b_names = of_id_len ~off:1 (id,len) in
+  let prefix =
+    List.map(fun s -> %fresh{${Stringf.drop_while %p{'_'} s}}) prefix in
   let (<+) = List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) in
-  let result_type = 
-    %ctyp-{'$lid{%fresh{result}}} in
-  let self_type = %ctyp-{'self_type}  in 
+  let result_type = %ctyp-{'$lid{%fresh{result}}} in
+  let self_type = %ctyp-{'self_type}  in
+  let gen_quantifiers1 ~arity n  : ctyp =
+    Listf.init arity
+      (fun i -> Listf.init n (fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} ))
+|> List.concat |> appl_of_list in
   let (quant,dst) =
     match k with
-    |Obj Map -> (2, (of_id_len ~off:1 (id,len)))
+    |Obj Map -> (2, b_names)
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Obj (Concrete c ) -> (1,c)
-    (* |Type c -> (1,c)  *)
-    |Str_item -> (1,result_type) in 
-  let params =
-    Listf.init len @@
-    fun i ->
-      let app_src = app_arrow @@
-        Listf.init number @@ fun _ -> %ctyp-{ '$lid{Id.allx ~off:0 i}} in
-      match k with
-      |Obj u  ->
-          let dst =
-            match  u with
-            | Map -> let x  = Id.allx ~off:1 i in %ctyp-{  '$lid:x }
-            | Iter -> result_type
-            | Concrete c -> c
-            | Fold-> self_type  in
-          arrow self_type  @@ (prefix <+ app_src dst)
-      |Str_item -> prefix <+ app_src result_type
-            (* |Type _  -> prefix <+ app_src dst *)  in 
-  let base = prefix <+ app_src dst in
+    |Str_item -> (1,result_type) in
+  let base = prefix <+
+    List.fold_right arrow (Listf.init number (const  a_names)) dst in
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else
-    let gen_quantifiers1 ~arity n  : ctyp =
-      Listf.init arity
-        (fun i ->
-          Listf.init n
-          @@ fun j -> %ctyp-{'$lid{Id.allx ~off:i j}} )
-      |> List.concat |> appl_of_list in
     let quantifiers = gen_quantifiers1 ~arity:quant len in
+    let params =
+      Listf.init len 
+      (fun i ->
+        let ith_a = List.nth  a_var_lens i in
+        let ith_b = List.nth b_var_lens i in
+        let app_src =
+          List.fold_right arrow
+            (Listf.init number (const ith_a ) (* %ctyp-{ '$lid{Id.allx ~off:0 i}} *)) in
+        match k with
+        |Obj u  ->
+            let dst =
+              match  u with
+              | Map -> ith_b (* %ctyp-{  '$lid{Id.allx ~off:1 i} } *)
+              | Iter -> result_type
+              | Concrete c -> c
+              | Fold-> self_type  in
+            arrow self_type  @@ (prefix <+ app_src dst)
+        |Str_item -> prefix <+ app_src result_type) in
     (%ctyp-{!$quantifiers . ${List.fold_right arrow params  base}},dst)
 
 

@@ -20,7 +20,7 @@ class primitive =
 class meta =
   object (self : 'self_type)
     inherit  primitive
-    method literal : 'loc -> literal -> Astf.ep=
+    method literal : 'loc__001_ -> literal -> Astf.ep=
       fun _loc  ->
         function
         | `Chr _a0 ->
@@ -40,20 +40,20 @@ class meta =
         | `Bool _a0 ->
             `App (_loc, (`Vrn (_loc, "Bool")), (self#bool _loc _a0))
         | `Unit -> `Vrn (_loc, "Unit")
-    method flag : 'loc -> flag -> Astf.ep=
+    method flag : 'loc__003_ -> flag -> Astf.ep=
       fun _loc  ->
         function
         | `Positive -> `Vrn (_loc, "Positive")
         | `Negative -> `Vrn (_loc, "Negative")
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method position_flag : 'loc -> position_flag -> Astf.ep=
+    method position_flag : 'loc__005_ -> position_flag -> Astf.ep=
       fun _loc  ->
         function
         | `Positive -> `Vrn (_loc, "Positive")
         | `Negative -> `Vrn (_loc, "Negative")
         | `Normal -> `Vrn (_loc, "Normal")
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method strings : 'loc -> strings -> Astf.ep=
+    method strings : 'loc__007_ -> strings -> Astf.ep=
       fun _loc  ->
         function
         | `App (_a0,_a1) ->
@@ -67,32 +67,32 @@ class meta =
         | `Str _a0 ->
             `App (_loc, (`Vrn (_loc, "Str")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method lident : 'loc -> lident -> Astf.ep=
+    method lident : 'loc__009_ -> lident -> Astf.ep=
       fun _loc  (`Lid _a0)  ->
         `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
-    method alident : 'loc -> alident -> Astf.ep=
+    method alident : 'loc__011_ -> alident -> Astf.ep=
       fun _loc  ->
         function
         | `Lid _a0 ->
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method auident : 'loc -> auident -> Astf.ep=
+    method auident : 'loc__013_ -> auident -> Astf.ep=
       fun _loc  ->
         function
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method aident : 'loc -> aident -> Astf.ep=
+    method aident : 'loc__015_ -> aident -> Astf.ep=
       fun _loc  ->
         function
         | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
-    method astring : 'loc -> astring -> Astf.ep=
+    method astring : 'loc__017_ -> astring -> Astf.ep=
       fun _loc  ->
         function
         | `C _a0 -> `App (_loc, (`Vrn (_loc, "C")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method uident : 'loc -> uident -> Astf.ep=
+    method uident : 'loc__019_ -> uident -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -112,7 +112,7 @@ class meta =
                         (_loc, (self#uident _loc _a0),
                           (self#uident _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
-    method ident : 'loc -> ident -> Astf.ep=
+    method ident : 'loc__021_ -> ident -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -131,7 +131,7 @@ class meta =
                         (_loc, (self#ident _loc _a0), (self#ident _loc _a1))))))
         | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
-    method ident' : 'loc -> ident' -> Astf.ep=
+    method ident' : 'loc__023_ -> ident' -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -152,7 +152,7 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-    method vid : 'loc -> vid -> Astf.ep=
+    method vid : 'loc__025_ -> vid -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -166,7 +166,7 @@ class meta =
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method vid' : 'loc -> vid' -> Astf.ep=
+    method vid' : 'loc__027_ -> vid' -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -179,7 +179,7 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Lid")), (self#string _loc _a0))
         | `Uid _a0 ->
             `App (_loc, (`Vrn (_loc, "Uid")), (self#string _loc _a0))
-    method dupath : 'loc -> dupath -> Astf.ep=
+    method dupath : 'loc__029_ -> dupath -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -191,7 +191,7 @@ class meta =
                         (_loc, (self#dupath _loc _a0),
                           (self#dupath _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
-    method dlpath : 'loc -> dlpath -> Astf.ep=
+    method dlpath : 'loc__031_ -> dlpath -> Astf.ep=
       fun _loc  ->
         function
         | `Dot (_a0,_a1) ->
@@ -203,9 +203,9 @@ class meta =
                         (_loc, (self#dupath _loc _a0),
                           (self#alident _loc _a1))))))
         | #alident as _a0 -> (self#alident _loc _a0 :>Astf.ep)
-    method any : 'loc -> any -> Astf.ep=
+    method any : 'loc__033_ -> any -> Astf.ep=
       fun _loc  `Any  -> `Vrn (_loc, "Any")
-    method ctyp : 'loc -> ctyp -> Astf.ep=
+    method ctyp : 'loc__035_ -> ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Alias (_a0,_a1) ->
@@ -311,7 +311,7 @@ class meta =
         | `Package _a0 ->
             `App (_loc, (`Vrn (_loc, "Package")), (self#mtyp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method type_parameters : 'loc -> type_parameters -> Astf.ep=
+    method type_parameters : 'loc__037_ -> type_parameters -> Astf.ep=
       fun _loc  ->
         function
         | `Com (_a0,_a1) ->
@@ -325,7 +325,7 @@ class meta =
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method row_field : 'loc -> row_field -> Astf.ep=
+    method row_field : 'loc__039_ -> row_field -> Astf.ep=
       fun _loc  ->
         function
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
@@ -348,7 +348,7 @@ class meta =
                         (_loc, (self#astring _loc _a0), (self#ctyp _loc _a1))))))
         | `Ctyp _a0 ->
             `App (_loc, (`Vrn (_loc, "Ctyp")), (self#ctyp _loc _a0))
-    method tag_names : 'loc -> tag_names -> Astf.ep=
+    method tag_names : 'loc__041_ -> tag_names -> Astf.ep=
       fun _loc  ->
         function
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
@@ -362,7 +362,7 @@ class meta =
                           (self#tag_names _loc _a1))))))
         | `TyVrn _a0 ->
             `App (_loc, (`Vrn (_loc, "TyVrn")), (self#astring _loc _a0))
-    method decl : 'loc -> decl -> Astf.ep=
+    method decl : 'loc__043_ -> decl -> Astf.ep=
       fun _loc  ->
         function
         | `TyDcl (_a0,_a1,_a2,_a3) ->
@@ -394,7 +394,7 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#decl _loc _a0), (self#decl _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method type_constr : 'loc -> type_constr -> Astf.ep=
+    method type_constr : 'loc__045_ -> type_constr -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -412,13 +412,13 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method opt_type_constr : 'loc -> opt_type_constr -> Astf.ep=
+    method opt_type_constr : 'loc__047_ -> opt_type_constr -> Astf.ep=
       fun _loc  ->
         function
         | `Some _a0 ->
             `App (_loc, (`Vrn (_loc, "Some")), (self#type_constr _loc _a0))
         | `None -> `Vrn (_loc, "None")
-    method decl_param : 'loc -> decl_param -> Astf.ep=
+    method decl_param : 'loc__049_ -> decl_param -> Astf.ep=
       fun _loc  ->
         function
         | `Quote (_a0,_a1) ->
@@ -435,7 +435,7 @@ class meta =
                 (self#position_flag _loc _a0))
         | `Any -> `Vrn (_loc, "Any")
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method decl_params : 'loc -> decl_params -> Astf.ep=
+    method decl_params : 'loc__051_ -> decl_params -> Astf.ep=
       fun _loc  ->
         function
         | `Quote (_a0,_a1) ->
@@ -460,13 +460,13 @@ class meta =
                         (_loc, (self#decl_params _loc _a0),
                           (self#decl_params _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method opt_decl_params : 'loc -> opt_decl_params -> Astf.ep=
+    method opt_decl_params : 'loc__053_ -> opt_decl_params -> Astf.ep=
       fun _loc  ->
         function
         | `Some _a0 ->
             `App (_loc, (`Vrn (_loc, "Some")), (self#decl_params _loc _a0))
         | `None -> `Vrn (_loc, "None")
-    method type_info : 'loc -> type_info -> Astf.ep=
+    method type_info : 'loc__055_ -> type_info -> Astf.ep=
       fun _loc  ->
         function
         | `TyMan (_a0,_a1,_a2) ->
@@ -494,7 +494,7 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#flag _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method type_repr : 'loc -> type_repr -> Astf.ep=
+    method type_repr : 'loc__057_ -> type_repr -> Astf.ep=
       fun _loc  ->
         function
         | `Record _a0 ->
@@ -502,7 +502,7 @@ class meta =
         | `Sum _a0 ->
             `App (_loc, (`Vrn (_loc, "Sum")), (self#or_ctyp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method name_ctyp : 'loc -> name_ctyp -> Astf.ep=
+    method name_ctyp : 'loc__059_ -> name_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -524,7 +524,7 @@ class meta =
                              (_loc, (self#ctyp _loc _a1),
                                (self#flag _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method or_ctyp : 'loc -> or_ctyp -> Astf.ep=
+    method or_ctyp : 'loc__061_ -> or_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
@@ -550,7 +550,7 @@ class meta =
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
         | #auident as _a0 -> (self#auident _loc _a0 :>Astf.ep)
-    method of_ctyp : 'loc -> of_ctyp -> Astf.ep=
+    method of_ctyp : 'loc__063_ -> of_ctyp -> Astf.ep=
       fun _loc  ->
         function
         | `Of (_a0,_a1) ->
@@ -561,7 +561,7 @@ class meta =
                      (`Com (_loc, (self#vid _loc _a0), (self#ctyp _loc _a1))))))
         | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method pat : 'loc -> pat -> Astf.ep=
+    method pat : 'loc__065_ -> pat -> Astf.ep=
       fun _loc  ->
         function
         | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
@@ -659,7 +659,7 @@ class meta =
                    (_loc,
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#ctyp _loc _a1))))))
-    method rec_pat : 'loc -> rec_pat -> Astf.ep=
+    method rec_pat : 'loc__067_ -> rec_pat -> Astf.ep=
       fun _loc  ->
         function
         | `RecBind (_a0,_a1) ->
@@ -678,7 +678,7 @@ class meta =
                           (self#rec_pat _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method exp : 'loc -> exp -> Astf.ep=
+    method exp : 'loc__069_ -> exp -> Astf.ep=
       fun _loc  ->
         function
         | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
@@ -909,7 +909,7 @@ class meta =
                         (_loc, (self#alident _loc _a0), (self#exp _loc _a1))))))
         | `Package_exp _a0 ->
             `App (_loc, (`Vrn (_loc, "Package_exp")), (self#mexp _loc _a0))
-    method rec_exp : 'loc -> rec_exp -> Astf.ep=
+    method rec_exp : 'loc__071_ -> rec_exp -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -928,7 +928,7 @@ class meta =
                      (`Com (_loc, (self#vid _loc _a0), (self#exp _loc _a1))))))
         | #any as _a0 -> (self#any _loc _a0 :>Astf.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method mtyp : 'loc -> mtyp -> Astf.ep=
+    method mtyp : 'loc__073_ -> mtyp -> Astf.ep=
       fun _loc  ->
         function
         | #ident' as _a0 -> (self#ident' _loc _a0 :>Astf.ep)
@@ -954,7 +954,7 @@ class meta =
         | `ModuleTypeOf _a0 ->
             `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (self#mexp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method sigi : 'loc -> sigi -> Astf.ep=
+    method sigi : 'loc__075_ -> sigi -> Astf.ep=
       fun _loc  ->
         function
         | `Val (_a0,_a1) ->
@@ -1028,7 +1028,7 @@ class meta =
         | `RecModule _a0 ->
             `App (_loc, (`Vrn (_loc, "RecModule")), (self#mbind _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method mbind : 'loc -> mbind -> Astf.ep=
+    method mbind : 'loc__077_ -> mbind -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1056,7 +1056,7 @@ class meta =
                      (`Com
                         (_loc, (self#auident _loc _a0), (self#mtyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method constr : 'loc -> constr -> Astf.ep=
+    method constr : 'loc__079_ -> constr -> Astf.ep=
       fun _loc  ->
         function
         | `TypeEq (_a0,_a1) ->
@@ -1100,7 +1100,7 @@ class meta =
                         (_loc, (self#constr _loc _a0),
                           (self#constr _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method bind : 'loc -> bind -> Astf.ep=
+    method bind : 'loc__081_ -> bind -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1116,7 +1116,7 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#pat _loc _a0), (self#exp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method case : 'loc -> case -> Astf.ep=
+    method case : 'loc__083_ -> case -> Astf.ep=
       fun _loc  ->
         function
         | `Bar (_a0,_a1) ->
@@ -1141,7 +1141,7 @@ class meta =
                           (`Com
                              (_loc, (self#exp _loc _a1), (self#exp _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method mexp : 'loc -> mexp -> Astf.ep=
+    method mexp : 'loc__085_ -> mexp -> Astf.ep=
       fun _loc  ->
         function
         | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
@@ -1173,7 +1173,7 @@ class meta =
         | `PackageModule _a0 ->
             `App (_loc, (`Vrn (_loc, "PackageModule")), (self#exp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method stru : 'loc -> stru -> Astf.ep=
+    method stru : 'loc__087_ -> stru -> Astf.ep=
       fun _loc  ->
         function
         | `Class _a0 ->
@@ -1252,7 +1252,7 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#flag _loc _a0), (self#bind _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method cltdecl : 'loc -> cltdecl -> Astf.ep=
+    method cltdecl : 'loc__089_ -> cltdecl -> Astf.ep=
       fun _loc  ->
         function
         | `And (_a0,_a1) ->
@@ -1286,7 +1286,7 @@ class meta =
                              (_loc, (self#ident _loc _a1),
                                (self#cltyp _loc _a2))))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method cltyp : 'loc -> cltyp -> Astf.ep=
+    method cltyp : 'loc__091_ -> cltyp -> Astf.ep=
       fun _loc  ->
         function
         | #vid' as _a0 -> (self#vid' _loc _a0 :>Astf.ep)
@@ -1325,7 +1325,7 @@ class meta =
                      (`Com
                         (_loc, (self#cltyp _loc _a0), (self#cltyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method clsigi : 'loc -> clsigi -> Astf.ep=
+    method clsigi : 'loc__093_ -> clsigi -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -1377,7 +1377,7 @@ class meta =
                    (_loc,
                      (`Com (_loc, (self#ctyp _loc _a0), (self#ctyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method cldecl : 'loc -> cldecl -> Astf.ep=
+    method cldecl : 'loc__095_ -> cldecl -> Astf.ep=
       fun _loc  ->
         function
         | `ClDecl (_a0,_a1,_a2,_a3) ->
@@ -1411,7 +1411,7 @@ class meta =
                         (_loc, (self#cldecl _loc _a0),
                           (self#cldecl _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method clexp : 'loc -> clexp -> Astf.ep=
+    method clexp : 'loc__097_ -> clexp -> Astf.ep=
       fun _loc  ->
         function
         | `CeApp (_a0,_a1) ->
@@ -1465,7 +1465,7 @@ class meta =
                      (`Com
                         (_loc, (self#clexp _loc _a0), (self#cltyp _loc _a1))))))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method clfield : 'loc -> clfield -> Astf.ep=
+    method clfield : 'loc__099_ -> clfield -> Astf.ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1) ->
@@ -1560,7 +1560,7 @@ class meta =
         | `Initializer _a0 ->
             `App (_loc, (`Vrn (_loc, "Initializer")), (self#exp _loc _a0))
         | #ant as _a0 -> (self#ant _loc _a0 :>Astf.ep)
-    method ep : 'loc -> ep -> Astf.ep=
+    method ep : 'loc__101_ -> ep -> Astf.ep=
       fun _loc  ->
         function
         | #vid as _a0 -> (self#vid _loc _a0 :>Astf.ep)
@@ -1598,7 +1598,7 @@ class meta =
         | `Record _a0 ->
             `App (_loc, (`Vrn (_loc, "Record")), (self#rec_bind _loc _a0))
         | #literal as _a0 -> (self#literal _loc _a0 :>Astf.ep)
-    method rec_bind : 'loc -> rec_bind -> Astf.ep=
+    method rec_bind : 'loc__103_ -> rec_bind -> Astf.ep=
       fun _loc  ->
         function
         | `RecBind (_a0,_a1) ->

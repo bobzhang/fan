@@ -16,7 +16,7 @@
   Note that [com_of_list] and other utilities  is making use of [of_listr] *)
 let rec of_listr f xs =
   match xs with
-  | [] -> invalid_arg __BIND__
+  | [] -> %invalid_arg{}
   | [t] -> t
   | t :: ts -> f t (of_listr f ts)
 
@@ -31,7 +31,7 @@ let rec of_listr f xs =
  *)
 let rec of_listl f xs =
   match xs with
-  | [] -> invalid_arg __BIND__
+  | [] -> %invalid_arg{}
   | [t] -> t
   | x::y::xs -> of_listl f (f x y :: xs)
 
@@ -171,5 +171,5 @@ module N = struct
 end
     
 (* local variables: *)
-(* compile-command: "pmake ast_basic.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/ast_basic.cmo" *)
 (* end: *)

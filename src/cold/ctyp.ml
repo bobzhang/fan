@@ -73,7 +73,11 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
        (Listf.init len
           (fun i  -> (`Quote (`Normal, (`Lid (Id.allx ~off i))) :>Astfn.ctyp)))) in
    let prefix =
-     List.map (fun s  -> Stringf.drop_while (fun c  -> c = '_') s) prefix in
+     List.map
+       (fun s  ->
+          Gensym.fresh
+            ~prefix:(Stringf.drop_while (function | '_' -> true | _ -> false)
+                       s) ()) prefix in
    let app_arrow = List.fold_right arrow in
    let app_src =
      app_arrow @@ (Listf.init number (fun _  -> of_id_len ~off:0 (id, len))) in
