@@ -110,22 +110,6 @@ let list_of_record (ty:name_ctyp) : col list  =
            failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
 
     
-(*
-  @raise Invalid_argument 
-  {[
-  gen_tuple_n %{ int } 3  |> eprint;
-  (int * int * int)
-  gen_tuple_n %{ int } 1  |> eprint;
-  int
-  ]}
- *)
-let gen_tuple_n ty n = Listf.init n (fun _ -> ty) |> tuple_sta
-
-    
-
-(* to be clean soon *)
-let result_id = ref 0 
-    
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   (** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
@@ -141,9 +125,8 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let app_src   =
     app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let (<+) = List.fold_right (fun name acc -> %ctyp-{'$lid:name -> $acc }) in
-  let result_type = (* %{ 'result } *)
-    %ctyp-{'$lid{"result"^string_of_int !result_id}} in
-  let _ = incr result_id in
+  let result_type = 
+    %ctyp-{'$lid{%fresh{result}}} in
   let self_type = %ctyp-{'self_type}  in 
   let (quant,dst) =
     match k with

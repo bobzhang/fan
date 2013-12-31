@@ -67,8 +67,6 @@ let list_of_record (ty : name_ctyp) =
                }
            | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
   col list )
-let gen_tuple_n ty n = (Listf.init n (fun _  -> ty)) |> tuple_sta
-let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let of_id_len ~off  ((id : ident),len) =
      appl_of_list ((id :>ctyp) ::
@@ -85,9 +83,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
           (`Arrow ((`Quote (`Normal, (`Lid name))), (acc :>Astfn.ctyp)) :>
           Astfn.ctyp)) in
    let result_type =
-     (`Quote (`Normal, (`Lid ("result" ^ (string_of_int (!result_id))))) :>
-     Astfn.ctyp) in
-   let _ = incr result_id in
+     (`Quote (`Normal, (`Lid (Gensym.fresh ~prefix:"result" ()))) :>Astfn.ctyp) in
    let self_type = (`Quote (`Normal, (`Lid "self_type")) :>Astfn.ctyp) in
    let (quant,dst) =
      match k with

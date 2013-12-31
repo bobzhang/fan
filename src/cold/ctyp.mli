@@ -77,16 +77,6 @@ type full_id_transform =
     | `Obj of  (string -> string) ]
         
 
-
-
-
-
-
-
-
-
-
-
 val list_of_record : name_ctyp -> col list
 
 
