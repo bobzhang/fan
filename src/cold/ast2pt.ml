@@ -306,11 +306,7 @@ let long_lident id =
       Locf.failf (unsafe_loc_of id) "invalid long identifier %s"
         (! dump_ident id)
 let long_type_ident (x : Astf.ident) =
-  (let _loc = unsafe_loc_of x in
-   match (x, (!self_object_typ)) with
-   | ((`Lid (_loc,"__THIS_OBJ_TYPE__") : Astf.ident),Some x) ->
-       { txt = (Lident x); loc = _loc }
-   | _ -> long_lident x : Longident.t Location.loc )
+  (long_lident x : Longident.t Location.loc )
 let long_class_ident = long_lident
 let long_uident_noloc (i : Astf.ident) =
   match ident_tag i with
@@ -397,12 +393,16 @@ let rec ctyp (x : Astf.ctyp) =
        let rec to_var_list =
          function
          | `App (_,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
-         | `Quote (_,(`Normal _|`Positive _|`Negative _),`Lid (_,s)) -> [s]
+         | `Quote (_,_,`Lid (_,s)) -> [s]
          | _ -> assert false in
        (mktyp _loc) @@ (Ptyp_poly ((to_var_list t1), (ctyp t2)))
+   | (`Quote (_loc,`Normal _,`Lid (_,"__THIS_OBJ_TYPE__")) : Astf.ctyp) ->
+       (match !self_object_typ with
+        | None  -> Locf.failf _loc "__THIS_OBJ_TYPE__ is not set up"
+        | Some x -> (mktyp _loc) @@ (Ptyp_var x))
    | `Quote (_,`Normal _,`Lid (_,s)) -> (mktyp _loc) @@ (Ptyp_var s)
    | `Par (_,`Sta (_,t1,t2)) ->
-       (mktyp _loc) @@
+       mktyp _loc
          (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
    | `PolyEq (_,t) ->
        (mktyp _loc) @@ (Ptyp_variant ((row_field t []), true, None))

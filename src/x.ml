@@ -15,5 +15,5 @@ let z = object (x:ty)
 end
 
 let v = object 
-  method v = __SELF_OBJ__#v 
+  method v : '__THIS_OBJ_TYPE__ = __THIS_OBJ__#v 
 end
