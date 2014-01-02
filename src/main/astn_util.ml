@@ -82,6 +82,10 @@ let tuple_sta y =
 let (+>) f (names:string list)  =
   appl_of_list (f:: (List.map lid  names))
 
+let apply_args f (names : string list) = 
+  appl_of_list (f:: (List.map lid  names))
+
+
 
 let of_str (s:string) : ep =
   let len = String.length s in 

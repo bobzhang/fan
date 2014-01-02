@@ -80,19 +80,19 @@ val check : string list -> unit
     id_ep = `Par (, `Com (, `Lid (, "_a3"), `Lid (, "_b3")));
     id_eps = [`Lid (, "_a3"); `Lid (, "_b3")]; ty = `Lid (, "int")}
  *)      
-val mapi_exp :
-  ?arity:int ->
-  ?names:string list ->
-  f:(ctyp -> exp) -> int -> ctyp -> ty_info
+(* val mapi_exp : *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   f:(ctyp -> exp) -> int -> ctyp -> ty_info *)
 
 (** @raise Invalid_argument when type can not be handled
     [mk_tuple]
     spits out an expression node when the input is a tuple type *)        
-val tuple_exp_of_ctyp :
-    ?arity:int ->
-      ?names:string list ->
-        mk_tuple:(ty_info list -> exp) ->
-          f:(ctyp -> exp ) -> ctyp -> exp
+(* val tuple_exp_of_ctyp : *)
+(*     ?arity:int -> *)
+(*       ?names:string list -> *)
+(*         mk_tuple:(ty_info list -> exp) -> *)
+(*           f:(ctyp -> exp ) -> ctyp -> exp *)
 
 
 (**

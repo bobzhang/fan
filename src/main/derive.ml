@@ -35,39 +35,44 @@ let check names =
     else check_valid name) names
 
 
-let mapi_exp ?(arity=1) ?(names=[])
-    ~f:(f:(ctyp->exp))
-    (i:int) (ty : ctyp)  :
-    ty_info =
-  let name_exp = f ty in 
-  let base = name_exp  +> names in
-  (* FIXME as a tuple it is useful when arity> 1??? *)
-  let id_eps = Listf.init arity @@ fun index  -> Id.xid ~off:index i  in 
-  let ep0 = List.hd id_eps in
-  let id_ep = tuple_com  id_eps  in
-  let exp = appl_of_list (base:: (id_eps:>exp list))  in
-  {name_exp;
-   info_exp=exp;
-   id_ep;
-   id_eps;
-   ep0;
-   ty
- }
+(* let mapi_exp *)
+(*     ?(arity=1) *)
+(*     ?(names=[]) *)
+(*     ~f:(f:(ctyp->exp)) *)
+(*     (i:int) *)
+(*     (ty : ctyp)  : *)
+(*     ty_info = *)
+(*   let name_exp = f ty in  *)
+(*   let base = apply_args name_exp  names in *)
+(*   (\* FIXME as a tuple it is useful when arity> 1??? *\) *)
+(*   let id_eps = Listf.init arity @@ fun index  -> Id.xid ~off:index i  in *)
+(*   let ep0 = List.hd id_eps in *)
+(*   let id_ep = tuple_com  id_eps  in *)
+(*   let exp = appl_of_list (base:: (id_eps:>exp list))  in *)
+(*   {name_exp; *)
+(*    info_exp=exp; *)
+(*    id_ep; *)
+(*    id_eps; *)
+(*    ep0; *)
+(*    ty *)
+(*  } *)
 
 
-let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
-    ~f (ty:ctyp) : exp =
-  match ty with
-  | `Par t  -> 
-    let ls = Ast_basic.N.list_of_star t [] in
-    let len = List.length ls in
-    let pat = (Id_epn.mk_tuple ~arity ~number:len :> pat) in
-    let tys =
-      mk_tuple
-        (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
-    Expn_util.abstract names
-      (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
-  | _  -> failwithf "tuple_exp_of_ctyp %s" (Astfn_print.dump_ctyp ty)
+(* let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple *)
+(*     ~f (ty:ctyp) : exp = *)
+(*   match ty with *)
+(*   | `Par t  ->  *)
+(*     let ls = Ast_basic.N.list_of_star t [] in *)
+(*     let len = List.length ls in *)
+(*     let pat = (Id_epn.mk_tuple ~arity ~number:len :> pat) in *)
+(*     let tys = *)
+(*       mk_tuple *)
+(*         (List.mapi (mapi_exp ~arity ~names  ~f) ls) in *)
+(*     Expn_util.abstract names *)
+(*       (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity) *)
+(*   | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty) *)
+
+
   
 let rec  normal_simple_exp_of_ctyp
     ?arity ?names ~mk_tuple
@@ -83,7 +88,7 @@ let rec  normal_simple_exp_of_ctyp
         if Hashset.mem cxt id then
           lid (left_trans id)
         else
-          right_trans (`Lid id)
+          right_trans (lid id)
     | (#ident' as id) ->
         right_trans (Idn_util.to_vid id )
     | `App(t1,t2) ->
@@ -97,7 +102,7 @@ let rec  normal_simple_exp_of_ctyp
              ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
-    | (ty:ctyp) ->
+    | (ty:ctyp) -> (* TOPBIND required *)
        failwithf "normal_simple_exp_of_ctyp : %s"
           (Astfn_print.dump_ctyp ty) in
   aux ty
