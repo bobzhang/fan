@@ -11,7 +11,7 @@ let stringnize =
   ("flo'", (Some (`Lid "string_of_float" :>Astfn.exp)));
   ("bool'", None)]
 let expander ant_annot =
-  object 
+  object (_this__007_ : 'this_type__008_)
     inherit  Objs.map as super
     method! pat (x : Astf.pat) =
       match x with
@@ -91,7 +91,7 @@ let expander ant_annot =
       | e -> super#exp e
   end
 let expandern ant_annot =
-  object 
+  object (_this__005_ : 'this_type__006_)
     inherit  Objs.map as super
     method! pat (x : Astf.pat) =
       match x with
@@ -161,7 +161,7 @@ let pfilter str (e : ep) =
        (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) :>Astf.pat)
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 let me =
-  object 
+  object (_this__003_ : 'this_type__004_)
     inherit  Metaf.meta
     method! loc _loc loc =
       match !Ast_quotation.current_loc_name with
@@ -169,7 +169,11 @@ let me =
       | Some "here" -> Ast_gen.meta_here _loc loc
       | Some x -> `Lid (_loc, x)
   end
-let mp = object  inherit  Metaf.meta method! loc _loc _ = `Any _loc end
+let mp =
+  object (_this__001_ : 'this_type__002_)
+    inherit  Metaf.meta
+    method! loc _loc _ = `Any _loc
+  end
 let m = new Metafn.meta
 let _ =
   add_quotation { domain; name = "sigi'" } sigi_quot ~mexp:(me#sigi)

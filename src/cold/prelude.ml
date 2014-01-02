@@ -72,7 +72,7 @@ let () =
     }
 let () =
   let obj =
-    object 
+    object (_this__001_ : 'this_type__002_)
       inherit  Objs.print
       method! loc fmt l = Location_util.fmt_location ~file:false fmt l
     end in

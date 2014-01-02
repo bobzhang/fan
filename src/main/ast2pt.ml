@@ -79,7 +79,7 @@ let dump_clfield = %undef{}
 let module_path :  string list ref = ref []
 let current_top_bind : string list ref = ref []
 let self_object : string option ref = ref None
-let self_object_typ : Parsetree.core_type option ref = ref None
+let self_object_typ : string option ref = ref None
 
 (*****************************)
 (* Util functions            *)    
@@ -247,8 +247,13 @@ let long_lident  id =
   | _ ->
     Locf.failf (unsafe_loc_of id)  "invalid long identifier %s" (!dump_ident id)
 
-let long_type_ident: Astf.ident -> Longident.t Location.loc =
-  long_lident 
+(* used in [type] conversion *)        
+let long_type_ident (x : Astf.ident) : Longident.t Location.loc =
+  let _loc = unsafe_loc_of x in
+  match (x,!self_object_typ) with 
+  | (%ident{__THIS_OBJ_TYPE__}, Some x ) ->
+      {txt = Lident x ; loc = _loc}
+  | _ ->   long_lident x 
 
 let long_class_ident = long_lident
 
@@ -691,7 +696,7 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | %exp{ __PWD__ } ->
       let s =  Filename.dirname (Locf.file_name _loc) in
       Pexp_constant (Const_string s)
-  | %exp{ __SELF_OBJ__ } ->
+  | %exp{ __THIS_OBJ__ } ->
       begin match !self_object with
       | None -> Locf.failf _loc "__SELF_OBJ__ not set up"
       | Some x -> exp_desc _loc  %exp{$lid:x}
@@ -814,29 +819,37 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `Match (_,e,a) -> Pexp_match (exp e,case a )
   | `New (_,id) -> Pexp_new (long_type_ident id)
   | `ObjEnd _ -> Pexp_object{pcstr_pat= mkpat _loc Ppat_any; pcstr_fields=[]}
+
   | `Obj(_,cfl) ->
-    Pexp_object { pcstr_pat = mkpat _loc Ppat_any; pcstr_fields =  clfield cfl [] }
+      let this_obj = %fresh{_this} in
+      let this_typ = %fresh{this_type}  in
+      Ref.protect2 (self_object,Some this_obj) (self_object_typ,Some this_typ)
+        (fun _ ->
+          Parsetree.Pexp_object { pcstr_pat =
+                        mkpat _loc (Ppat_constraint
+                                      (mkpat _loc (Parsetree.Ppat_var {txt=this_obj;loc=_loc}),
+                                       mktyp _loc (Parsetree.Ptyp_var this_typ)));
+                        pcstr_fields =  clfield cfl [] }
+        )
+
   | `ObjPatEnd(_,p) -> Pexp_object{pcstr_pat=pat p; pcstr_fields=[]}
 
-  | `ObjPat(_loc,`Lid (sloc,x),cfl) ->
-      Ref.protect self_object (Some x)
-        (fun _ ->
-          (Parsetree.Pexp_object
-            {pcstr_pat = mkpat sloc (Ppat_var {txt=x;loc=sloc})
-               ; pcstr_fields = clfield cfl []}))
+  (* | `ObjPat(_loc,`Lid (sloc,x),cfl) -> *)
+  (*     (\* Ref.protect self_object (Some x) *\) *)
+  (*     (\*   (fun _ -> *\) *)
+  (*     Parsetree.Pexp_object *)
+  (*       {pcstr_pat = mkpat sloc (Ppat_var {txt=x;loc=sloc}) *)
+  (*              ; pcstr_fields = clfield cfl []} *)
 
-  | `ObjPat (_loc, (`Constraint (loc, (`Lid (sloc, x)), ty)), cfl) ->
-      let ty = ctyp ty in
-      Ref.protect2
-        (self_object, Some x)
-        (self_object_typ, Some ty)
-        (fun _ ->
-          Parsetree.Pexp_object
-            { pcstr_pat = mkpat loc (Ppat_constraint
-                                       (mkpat sloc (Ppat_var {txt=x;loc=sloc}),
-                                        ty));
-              pcstr_fields = clfield cfl [] }
-        )
+  (* | `ObjPat (_loc, (`Constraint (loc, (`Lid (sloc, x)), ty)), cfl) -> *)
+  (*     let ty = ctyp ty in *)
+  (*     Parsetree.Pexp_object *)
+  (*       { pcstr_pat = mkpat loc *)
+  (*           (Ppat_constraint *)
+  (*              (mkpat sloc (Ppat_var {txt=x;loc=sloc}), *)
+  (*                                       ty)); *)
+  (*             pcstr_fields = clfield cfl [] } *)
+
 
   | `ObjPat (_,p,cfl) -> Pexp_object { pcstr_pat = pat p; pcstr_fields = clfield cfl [] }
   | `OvrInstEmpty _ -> Pexp_override []
