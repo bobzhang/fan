@@ -73,7 +73,7 @@ let () =
 let () =
   let obj =
     object (_this__001_ : 'this_type__002_)
-      inherit  Objs.print
+      inherit  Astf_print.print
       method! loc fmt l = Location_util.fmt_location ~file:false fmt l
     end in
   let ast_of_interf ?input_file:_  ?output_file  ast =
@@ -104,7 +104,8 @@ let () =
          match ast with
          | None  -> ()
          | Some xs ->
-             Format.fprintf fmt "@[%a@]@." ObjsN.dump#sigi (Strip.sigi xs)) in
+             Format.fprintf fmt "@[%a@]@." Astfn_print.dump#sigi
+               (Strip.sigi xs)) in
   let ast_of_implem ?input_file:_  ?output_file  ast =
     (with_open_out_file output_file) @@
       (fun oc  ->
@@ -112,7 +113,8 @@ let () =
          match ast with
          | None  -> ()
          | Some xs ->
-             Format.fprintf fmt "@[%a@]@." ObjsN.dump#stru (Strip.stru xs)) in
+             Format.fprintf fmt "@[%a@]@." Astfn_print.dump#stru
+               (Strip.stru xs)) in
   Hashtbl.add backends "dfanl"
     {
       descr = "Compiles to Fan's original representation without location";

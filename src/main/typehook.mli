@@ -33,7 +33,7 @@ val plugin_remove : plugin_name -> unit
     This function will *apply all the plugins* after finishing the traversal
     to generate the code *)  
 class type traversal = object
-  inherit Objs.map
+  inherit Astf_map.map
   method get_cur_mtyps: mtyps
   method get_cur_and_types: and_types
   (* method in_and_types: *)

@@ -107,7 +107,7 @@ let list_of_record (ty:name_ctyp) : col list  =
        | `RecCol(`Lid label,ty, ((`Positive  | `Negative) as f) ) ->
            {label; ty; is_mutable = %p{`Positive} f}
        | t0 ->
-           failwith  ( __BIND__ ^ ObjsN.dump_name_ctyp t0) )
+           failwith  ( __BIND__ ^ Astfn_print.dump_name_ctyp t0) )
 
 (** [number] is how many arguments -- in most cases it should be [2]
     [prefix] is additional parameter -- we keep the shape here, only generate type variables [_]
@@ -170,7 +170,7 @@ let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name, _, ctyp, _)  ->
       let obj = object(self)
-        inherit ObjsN.fold as super;
+        inherit Astfn_fold.fold as super;
         val mutable is_recursive = false;
         method! ctyp = function
           | %ctyp-{ $lid:i } when i = name -> begin
@@ -183,7 +183,7 @@ let is_recursive ty_dcl =
       end in
       (obj#type_info ctyp)#is_recursive
   | `And _  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (ObjsN.dump_decl ty_dcl)
+  | _ -> failwithf "is_recursive not type declartion: %s" (Astfn_print.dump_decl ty_dcl)
 
 (*
   {:stru|
@@ -260,7 +260,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
       | `Uid  cons -> compose  (f cons [] ) acc
       | t->
           failwithf
-            "reduce_data_ctors: %s" (ObjsN.dump_or_ctyp t)) init  branches
+            "reduce_data_ctors: %s" (Astfn_print.dump_or_ctyp t)) init  branches
     
 let view_sum (t:or_ctyp) =
   let bs = Ast_basic.N.list_of_bar t [] in
@@ -308,7 +308,7 @@ let view_variant (t:row_field) : vbranch list  =
       `TyVrn (`C cons) ->
         `variant (cons, [])
     | `Ctyp ((#ident' as i)) -> `abbrev i  
-    | u -> failwithf "%s %s" __BIND__ (ObjsN.dump_row_field u)  ) lst 
+    | u -> failwithf "%s %s" __BIND__ (Astfn_print.dump_row_field u)  ) lst 
 
 let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 (*************************************************************************)
@@ -339,7 +339,7 @@ let transform : full_id_transform -> vid -> exp  =
           | `Lid x  -> %exp-{ self# $lid{ f x} }
           | t -> 
               let dest =  map_to_string t in
-              let src = ObjsN.dump_vid t in (* FIXME *)
+              let src = Astfn_print.dump_vid t in (* FIXME *)
               let () =
                 if not @@ Hashtbl.mem conversion_table src then begin 
                   Hashtbl.add conversion_table src dest;   

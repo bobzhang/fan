@@ -4,7 +4,7 @@ open Astfn
 
 open StdFan (* for [pp_print_list] [pp_print_string] *)
 
-let pp_print_decl = ObjsN.pp_print_decl;;  
+let pp_print_decl = Astfn_print.pp_print_decl;;  
 
 type named_type = (string* decl) 
 and and_types = named_type list
@@ -101,7 +101,7 @@ let stru_from_ty  ~f:(f:string -> stru) (x:mtyps) : stru  =
  *)
 let mk_transform_type_eq () = object(self)
   val transformers = Hashtbl.create 50
-  inherit ObjsN.map as super
+  inherit Astfn_map.map as super
   method! stru = function
     | %stru-{ type ${`TyDcl ( _name, vars, ctyp, _) } } as x -> (* FIXME why tuple?*)
         let r =

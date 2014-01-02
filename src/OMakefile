@@ -158,12 +158,16 @@ FAN_FILES = \
     compile_gram \
     sigs_util  \
     astf_fold \
+    astfn_fold \
+    astf_map \
+    astfn_map \
+    astf_print \
+    astfn_print \
     gfold gramlib\
     idn_util \
     ns \
     fan_args mktop \
     strip\
-    objs objsN \
     parse_fan \
     parse_parse \
     parse_stream \

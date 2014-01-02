@@ -1,7 +1,7 @@
 %import{
 StdFan:
   pp_print_string;
-Objs:
+Astf_print:
   pp_print_vid'
   pp_print_vid
   pp_print_alident

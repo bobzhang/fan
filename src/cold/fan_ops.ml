@@ -50,7 +50,7 @@ let rec is_module_longident (x : ident) =
 let ident_of_ctyp: ctyp -> ident =
   let error x =
     invalid_argf "ident_of_ctyp: this type %s is not an identifier"
-      (Objs.dump_ctyp x) in
+      (Astf_print.dump_ctyp x) in
   let rec self (x : ctyp) =
     match x with
     | `Apply (_loc,t1,t2) ->

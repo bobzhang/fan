@@ -308,7 +308,7 @@ let generate (mtyps : mtyps) =
                   with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
                   ()
             | _ -> ()) branches
-     | _ -> failwithf "generate mtyps %s" (ObjsN.dump_decl ty) in
+     | _ -> failwithf "generate mtyps %s" (Astfn_print.dump_decl ty) in
    let _ =
      List.iter
        (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
@@ -461,7 +461,7 @@ let generate (mtyps : mtyps) =
      if name <> "ant"
      then
        let obj =
-         ObjsN.map_row_field @@
+         Astfn_map.map_row_field @@
            (function
             | (`TyVrnOf (x,`Lid "loc") : Astfn.row_field) ->
                 (`TyVrn (x :>Astfn.astring) :>Astfn.row_field)

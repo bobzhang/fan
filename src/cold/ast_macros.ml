@@ -19,7 +19,7 @@ let fibm y =
 let _ = register_macro ("FIB", fibm)
 let macro_expander =
   object (self : 'this_type__001_)
-    inherit  Objs.map as super
+    inherit  Astf_map.map as super
     method! exp =
       function
       | (`App (_loc,`Uid (_,a),y) : Astf.exp) ->

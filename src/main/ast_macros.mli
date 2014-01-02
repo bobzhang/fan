@@ -68,4 +68,4 @@ val fib : int -> int
     %exp{ f (a,b,c) } ]}*)
 val fibm : exp -> exp
 
-val macro_expander : Objs.map
+val macro_expander : Astf_map.map

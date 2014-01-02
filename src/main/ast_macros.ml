@@ -29,7 +29,7 @@ register_macro ("FIB",fibm);;
   
 
 let macro_expander = object(self)
-  inherit Objs.map as super
+  inherit Astf_map.map as super
   method! exp = with exp function
     | %{ $uid:a $y } ->
         (let try f = Hashtbl.find macro_expanders a in

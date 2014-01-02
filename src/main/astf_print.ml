@@ -1,25 +1,12 @@
 open StdFan
 open Astf
-
 %fans{
 keep off;
-derive((* Map2 Fold2 OIter   OEq *)
-  Print OPrint Map   MapWrapper PrintWrapper);
+derive (Print OPrint PrintWrapper);
 };;
-
 
 %ocaml{%include{ "../common/astf.mli"};;  };;
 
-
-let wildcarder = object (self)
-  inherit map as super
-  method! pat = function
-    | %pat{ $lid:_ } -> %pat{ _ }
-    | %pat{ ($p as $_) } -> self#pat p
-    | p -> super#pat p 
-end
-
-(* let print = new print  *)
 
 let () =     begin
   Ast2pt.dump_ident := dump_ident;
@@ -50,5 +37,5 @@ let () =     begin
 end    
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/objs.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/astf_print.cmo" *)
 (* end: *)

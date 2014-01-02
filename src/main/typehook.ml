@@ -60,7 +60,7 @@ let plugin_remove plugin =
 
 
 class type traversal = object
-  inherit Objs.map
+  inherit Astf_map.map
   method get_cur_mtyps: Sigs_util.mtyps
   method get_cur_and_types: Sigs_util.and_types
   (* method in_and_types: *)
@@ -77,7 +77,7 @@ let make_filter (s,code) =
     | %stru{ $lid:s'} when s =s' ->
         Fill.stru _loc code
     | e -> e   in
-  ("filter_"^s, (Objs.map_stru f )#stru)
+  ("filter_"^s, (Astf_map.map_stru f )#stru)
 
 let iterate_code sloc mtyps = 
   (fun (_, (x:Sigs_util.plugin)) acc ->
@@ -98,7 +98,7 @@ let iterate_code sloc mtyps =
     |(_,None) -> acc);;
  
 let traversal () : traversal  = object (self)
-  inherit Objs.map as super
+  inherit Astf_map.map as super
   val mtyps_stack : Sigs_util.mtyps Stack.t  = Stack.create ()
   val mutable cur_and_types : Sigs_util.and_types= []
   val mutable and_group = false

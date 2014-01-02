@@ -381,7 +381,7 @@ let generate (mtyps:mtyps) : stru =
               with 
                 Not_found -> Hashtbl.add tbl s arity)
           | _ -> ()) branches
-    | _ -> failwithf  "generate mtyps %s" (ObjsN.dump_decl ty)  in   
+    | _ -> failwithf  "generate mtyps %s" (Astfn_print.dump_decl ty)  in   
   let _ =
     List.iter
       (function
@@ -502,7 +502,7 @@ Typehook.register
 let generate (mtyps:mtyps) : stru option = 
   let f (name,ty) =
     if  name <> "ant" then 
-     let obj = ObjsN.map_row_field @@ function
+     let obj = Astfn_map.map_row_field @@ function
        | %row_field-{ $vrn:x of loc } -> %row_field-{ $vrn:x }
        | %row_field-{ $vrn:x of (loc * $y ) }->
            (match y with

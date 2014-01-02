@@ -65,7 +65,8 @@ let list_of_record (ty : name_ctyp) =
                  is_mutable =
                    (((function | `Positive -> true | _ -> false)) f)
                }
-           | t0 -> failwith ("list_of_record" ^ (ObjsN.dump_name_ctyp t0)))) : 
+           | t0 ->
+               failwith ("list_of_record" ^ (Astfn_print.dump_name_ctyp t0)))) : 
   col list )
 let mk_method_type ~number  ~id:(id : ident)  ~prefix  len (k : destination)
   =
@@ -133,7 +134,7 @@ let is_recursive ty_dcl =
   | `TyDcl (`Lid name,_,ctyp,_) ->
       let obj =
         object (self : 'this_type__001_)
-          inherit  ObjsN.fold as super
+          inherit  Astfn_fold.fold as super
           val mutable is_recursive = false
           method! ctyp =
             function
@@ -146,7 +147,7 @@ let is_recursive ty_dcl =
   | `And _ -> true
   | _ ->
       failwithf "is_recursive not type declartion: %s"
-        (ObjsN.dump_decl ty_dcl)
+        (Astfn_print.dump_decl ty_dcl)
 let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : Astfn.ctyp) as x ->
@@ -174,8 +175,8 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
        | `Of (`Uid cons,tys) ->
            compose (f cons (Ast_basic.N.list_of_star tys [])) acc
        | `Uid cons -> compose (f cons []) acc
-       | t -> failwithf "reduce_data_ctors: %s" (ObjsN.dump_or_ctyp t)) init
-    branches
+       | t -> failwithf "reduce_data_ctors: %s" (Astfn_print.dump_or_ctyp t))
+    init branches
 let view_sum (t : or_ctyp) =
   let bs = Ast_basic.N.list_of_bar t [] in
   List.map
@@ -192,8 +193,8 @@ let view_variant (t : row_field) =
       | `TyVrnOf (`C cons,t) -> `variant (cons, [t])
       | `TyVrn `C cons -> `variant (cons, [])
       | `Ctyp (#ident' as i) -> `abbrev i
-      | u -> failwithf "%s %s" "view_variant" (ObjsN.dump_row_field u)) lst : 
-  vbranch list )
+      | u -> failwithf "%s %s" "view_variant" (Astfn_print.dump_row_field u))
+     lst : vbranch list )
 let conversion_table: (string,string) Hashtbl.t = Hashtbl.create 50
 let transform: full_id_transform -> vid -> exp =
   let open Idn_util in
@@ -210,7 +211,7 @@ let transform: full_id_transform -> vid -> exp =
          | `Lid x -> (`Send ((`Lid "self"), (`Lid (f x))) :>Astfn.exp)
          | t ->
              let dest = map_to_string t in
-             let src = ObjsN.dump_vid t in
+             let src = Astfn_print.dump_vid t in
              let () =
                if not @@ (Hashtbl.mem conversion_table src)
                then

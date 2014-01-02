@@ -47,7 +47,8 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
          (Expn_util.currying
             [(`Case ((pat :>Astfn.pat), (tys :>Astfn.exp)) :>Astfn.case)]
             ~arity)
-   | _ -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty) : exp )
+   | _ -> failwithf "tuple_exp_of_ctyp %s" (Astfn_print.dump_ctyp ty) : 
+  exp )
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt (ty : ctyp) =
   let right_trans = transform right_type_id in
@@ -73,7 +74,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           ~f:(normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple
                 ~right_type_id ~left_type_id ~right_type_variable cxt) ty
     | (ty : ctyp) ->
-        failwithf "normal_simple_exp_of_ctyp : %s" (ObjsN.dump_ctyp ty) in
+        failwithf "normal_simple_exp_of_ctyp : %s" (Astfn_print.dump_ctyp ty) in
   aux ty
 let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
@@ -97,7 +98,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
                           Astfn.exp)))))
          | _ ->
              failwithf "list_of_app in obj_simple_exp_of_ctyp: %s"
-               (ObjsN.dump_ctyp ty))
+               (Astfn_print.dump_ctyp ty))
     | `Arrow (t1,t2) ->
         aux
           (`App
@@ -107,7 +108,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           ~f:(obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
                 ~right_type_variable ?names ?arity ~mk_tuple) ty
-    | ty -> failwithf "obj_simple_exp_of_ctyp: %s" (ObjsN.dump_ctyp ty) in
+    | ty -> failwithf "obj_simple_exp_of_ctyp: %s" (Astfn_print.dump_ctyp ty) in
   aux ty
 let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
@@ -169,7 +170,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
     match var with
     | `Quote (_,`Lid s) ->
         (`Fun (`Case ((`Lid (varf s)), (acc :>Astfn.exp))) :>Astfn.exp)
-    | t -> failwithf "mk_prefix: %s" (ObjsN.dump_decl_params t) in
+    | t -> failwithf "mk_prefix: %s" (Astfn_print.dump_decl_params t) in
   match vars with
   | `None -> Expn_util.abstract names acc
   | `Some xs ->
@@ -206,7 +207,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  let funct = exp_of_ctyp ctyp in
                  mk_prefix ~names ~left_type_variable tyvars funct
              | t ->
-                 failwithf "fun_of_tydcl outer %s" (ObjsN.dump_type_repr t))
+                 failwithf "fun_of_tydcl outer %s"
+                   (Astfn_print.dump_type_repr t))
         | `TyEq (_,ctyp) ->
             (match ctyp with
              | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
@@ -216,9 +218,12 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
              | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
                  let case = exp_of_variant ~result t in
                  mk_prefix ~names ~left_type_variable tyvars case
-             | t -> failwithf "fun_of_tydcl inner %s" (ObjsN.dump_ctyp t))
-        | t -> failwithf "fun_of_tydcl middle %s" (ObjsN.dump_type_info t))
-   | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_decl t) : exp )
+             | t ->
+                 failwithf "fun_of_tydcl inner %s" (Astfn_print.dump_ctyp t))
+        | t ->
+            failwithf "fun_of_tydcl middle %s" (Astfn_print.dump_type_info t))
+   | t -> failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_decl t) : 
+  exp )
 let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
   [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant 
   ~left_type_id:(left_type_id : basic_id_transform) 
@@ -232,7 +237,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
           ((match tyvars with
             | `None -> 0
             | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-    | tydcl -> failwith ("bind_of_tydcl" ^ (ObjsN.dump_decl tydcl)) in
+    | tydcl -> failwith ("bind_of_tydcl" ^ (Astfn_print.dump_decl tydcl)) in
   let fname = tctor_var name in
   let prefix = List.length names in
   let (_ty,result) =
@@ -252,7 +257,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
            ~destination simple_exp_of_ctyp) tydcl
     else
       ((eprintf "Warning: %s as a abstract type no structure generated\n") @@
-         (ObjsN.dump_decl tydcl);
+         (Astfn_print.dump_decl tydcl);
        (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) :>
        Astfn.exp)) in
   match annot with
@@ -320,7 +325,8 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
              ((match tyvars with
                | `None -> 0
                | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-       | tydcl -> failwith ("obj_of_mtyps.mk_type" ^ (ObjsN.dump_decl tydcl)) in
+       | tydcl ->
+           failwith ("obj_of_mtyps.mk_type" ^ (Astfn_print.dump_decl tydcl)) in
      let prefix = List.length names in
      let (ty,result_type) =
        Ctyp.mk_method_type ~number:arity ~prefix
@@ -338,7 +344,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
       | `Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
-               let ty_str: string = ObjsN.dump_decl tydcl in
+               let ty_str: string = Astfn_print.dump_decl tydcl in
                let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                let (ty,_) = mk_type tydcl in
                (`CrMth

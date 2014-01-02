@@ -12,7 +12,7 @@ let stringnize =
   ("bool'", None)]
 let expander ant_annot =
   object (_this__007_ : 'this_type__008_)
-    inherit  Objs.map as super
+    inherit  Astf_map.map as super
     method! pat (x : Astf.pat) =
       match x with
       | `Ant (_loc,x) ->
@@ -92,7 +92,7 @@ let expander ant_annot =
   end
 let expandern ant_annot =
   object (_this__005_ : 'this_type__006_)
-    inherit  Objs.map as super
+    inherit  Astf_map.map as super
     method! pat (x : Astf.pat) =
       match x with
       | `Ant (_loc,x) ->

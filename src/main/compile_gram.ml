@@ -306,7 +306,7 @@ let make_localbinds _loc locals   =
         %bind{ $lid:i = (* FIXME -- not type annotations*)
                (Gramf.mk $str:i : '$lid:x $id{(gm():vid)}.t )}
     | _  -> failwithf "internal error in the Grammar extension %s"
-          (Objs.dump_vid x.id)   in
+          (Astf_print.dump_vid x.id)   in
   List.map local_bind_of_name locals
 
 (** entrance *)        
