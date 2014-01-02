@@ -819,6 +819,19 @@ let rec exp_desc _loc (x : exp) =
               })
    | `ObjPatEnd (_,p) ->
        Pexp_object { pcstr_pat = (pat p); pcstr_fields = [] }
+   | `ObjPat (_loc,`Lid (sloc,x),cfl) ->
+       let this_typ = Gensym.fresh ~prefix:"this_type" () in
+       Ref.protect self_object_typ (Some this_typ)
+         (fun _  ->
+            Parsetree.Pexp_object
+              {
+                pcstr_pat =
+                  (mkpat sloc
+                     (Ppat_constraint
+                        (((mkpat sloc) @@ (Ppat_var { txt = x; loc = sloc })),
+                          (mktyp _loc (Ptyp_var this_typ)))));
+                pcstr_fields = (clfield cfl [])
+              })
    | `ObjPat (_,p,cfl) ->
        Pexp_object { pcstr_pat = (pat p); pcstr_fields = (clfield cfl []) }
    | `OvrInstEmpty _ -> Pexp_override []
@@ -1270,12 +1283,38 @@ and clexp_desc loc (x : Astf.clexp) =
    | `LetIn (_,rf,bi,ce) -> Pcl_let ((mkrf rf), (top_bind bi), (clexp ce))
    | `ObjEnd _ ->
        Pcl_structure { pcstr_pat = (mkpat loc Ppat_any); pcstr_fields = [] }
-   | `Obj (_,cfl) ->
-       Pcl_structure
-         { pcstr_pat = (mkpat loc Ppat_any); pcstr_fields = (clfield cfl [])
-         }
+   | `Obj (_loc,cfl) ->
+       let this_obj = Gensym.fresh ~prefix:"_this" () in
+       let this_typ = Gensym.fresh ~prefix:"this_type" () in
+       Ref.protect2 (self_object, (Some this_obj))
+         (self_object_typ, (Some this_typ))
+         (fun _  ->
+            Parsetree.Pcl_structure
+              {
+                pcstr_pat =
+                  (mkpat _loc
+                     (Ppat_constraint
+                        ((mkpat _loc
+                            (Parsetree.Ppat_var
+                               { txt = this_obj; loc = _loc })),
+                          (mktyp _loc (Parsetree.Ptyp_var this_typ)))));
+                pcstr_fields = (clfield cfl [])
+              })
    | `ObjPatEnd (_,p) ->
        Pcl_structure { pcstr_pat = (pat p); pcstr_fields = [] }
+   | `ObjPat (_loc,`Lid (sloc,x),cfl) ->
+       let this_typ = Gensym.fresh ~prefix:"this_type" () in
+       Ref.protect self_object_typ (Some this_typ)
+         (fun _  ->
+            Parsetree.Pcl_structure
+              {
+                pcstr_pat =
+                  (mkpat sloc
+                     (Ppat_constraint
+                        (((mkpat sloc) @@ (Ppat_var { txt = x; loc = sloc })),
+                          (mktyp _loc (Ptyp_var this_typ)))));
+                pcstr_fields = (clfield cfl [])
+              })
    | `ObjPat (_,p,cfl) ->
        let cil = clfield cfl [] in
        Pcl_structure { pcstr_pat = (pat p); pcstr_fields = cil }

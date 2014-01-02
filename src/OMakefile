@@ -157,6 +157,7 @@ FAN_FILES = \
     gram_def  \
     compile_gram \
     sigs_util  \
+    astf_fold \
     gfold gramlib\
     idn_util \
     ns \

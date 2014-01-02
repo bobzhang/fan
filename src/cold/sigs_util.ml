@@ -7,12 +7,12 @@ and and_types = named_type list
 and types = [ `Mutual of and_types | `Single of named_type] 
 and mtyps = types list 
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
-  fun fmt  eta__003_  ->
+  fun fmt  eta__004_  ->
     (fun fmt  (_a0,_a1)  ->
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
-         pp_print_decl _a1) fmt eta__003_
+         pp_print_decl _a1) fmt eta__004_
 and pp_print_and_types: Format.formatter -> and_types -> unit =
-  fun fmt  eta__002_  -> pp_print_list pp_print_named_type fmt eta__002_
+  fun fmt  eta__003_  -> pp_print_list pp_print_named_type fmt eta__003_
 and pp_print_types: Format.formatter -> types -> unit =
   fun fmt  ->
     function
@@ -21,7 +21,7 @@ and pp_print_types: Format.formatter -> types -> unit =
     | `Single _a0 ->
         Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
 and pp_print_mtyps: Format.formatter -> mtyps -> unit =
-  fun fmt  eta__001_  -> pp_print_list pp_print_types fmt eta__001_
+  fun fmt  eta__002_  -> pp_print_list pp_print_types fmt eta__002_
 type plugin_name = string 
 type plugin = 
   {
@@ -62,7 +62,7 @@ let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
         | `Single (x,_) -> [x]) x in
    sem_of_list (List.map f tys) : stru )
 let mk_transform_type_eq () =
-  object (self : 'self_type)
+  object (self : 'this_type__001_)
     val transformers = Hashtbl.create 50
     inherit  ObjsN.map as super
     method! stru =

@@ -97,7 +97,7 @@ let iterate_code sloc mtyps =
         (%stru@sloc{ $acc;; $code };)
     |(_,None) -> acc);;
  
-let traversal () : traversal  = object (self:'self_type)
+let traversal () : traversal  = object (self)
   inherit Objs.map as super
   val mtyps_stack : Sigs_util.mtyps Stack.t  = Stack.create ()
   val mutable cur_and_types : Sigs_util.and_types= []

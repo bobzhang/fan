@@ -18,7 +18,7 @@ let fibm y =
       (`App (_loc, (`Lid (_loc, "fib")), (x :>Astf.exp)) :>Astf.exp)
 let _ = register_macro ("FIB", fibm)
 let macro_expander =
-  object (self)
+  object (self : 'this_type__001_)
     inherit  Objs.map as super
     method! exp =
       function

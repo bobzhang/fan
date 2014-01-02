@@ -83,7 +83,8 @@ let mk_method_type ~number  ~id:(id : ident)  ~prefix  len (k : destination)
    let b_names = appl_of_list ((id :>ctyp) :: b_var_lens) in
    let prefix = Listf.init prefix (const (`Any :>Astfn.ctyp)) in
    let result_type = (`Any :>Astfn.ctyp) in
-   let self_type = (`Quote (`Normal, (`Lid "self_type")) :>Astfn.ctyp) in
+   let self_type =
+     (`Quote (`Normal, (`Lid "__THIS_OBJ_TYPE__")) :>Astfn.ctyp) in
    let (quant,dst) =
      match k with
      | Obj (Map ) -> ((a_var_lens @ b_var_lens), b_names)
@@ -123,8 +124,7 @@ let mk_obj class_name base body =
      (`ClDeclS
         (`Negative, (`Lid class_name),
           (`ObjPat
-             ((`Constraint
-                 ((`Lid "self"), (`Quote (`Normal, (`Lid "self_type"))))),
+             ((`Lid "self"),
                (`Sem
                   ((`Inherit (`Negative, (`Lid base))),
                     (body :>Astfn.clfield))))))) :>Astfn.stru)
@@ -132,7 +132,7 @@ let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name,_,ctyp,_) ->
       let obj =
-        object (self : 'self_type)
+        object (self : 'this_type__001_)
           inherit  ObjsN.fold as super
           val mutable is_recursive = false
           method! ctyp =

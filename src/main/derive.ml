@@ -22,7 +22,7 @@ let check_valid str =
 
 
 (* preserved keywords for the generator *)
-let preserve =  ["self"; "self_type"; "unit"; "result"]
+let preserve =  ["self";"unit"; "result"]
 
 let check names =
   List.iter (fun name ->

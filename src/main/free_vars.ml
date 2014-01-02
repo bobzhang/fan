@@ -6,7 +6,7 @@ open Astf
 
 (* syntax error class declaration TODO FIXME *)
 class c_fold_pattern_vars ['accu] (f:string -> 'accu->'accu) init =  object
-  inherit Objs.fold as super
+  inherit Astf_fold.fold as super
   val acc = init
   method acc : 'accu = acc
   method! pat = function
@@ -26,7 +26,7 @@ let rec fold_bind_vars f bi acc =
 
 
 class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = Setf.String.empty) free_init =  object (o)
-  inherit Objs.fold as super
+  inherit Astf_fold.fold as super
   val free : 'accu = free_init
   val env : Setf.String.t = env_init
       
@@ -102,5 +102,5 @@ let free_vars env_init e =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/freeVars.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/free_vars.cmo" *)
 (* end: *)

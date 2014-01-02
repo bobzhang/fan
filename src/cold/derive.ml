@@ -16,7 +16,7 @@ let check_valid str =
      eprintf
        "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
      exit 2)
-let preserve = ["self"; "self_type"; "unit"; "result"]
+let preserve = ["self"; "unit"; "result"]
 let check names =
   List.iter
     (fun name  ->

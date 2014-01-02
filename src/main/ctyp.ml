@@ -124,7 +124,7 @@ let mk_method_type ~number ~id:(id:ident) ~prefix len (k:destination) : (ctyp * 
   let prefix = Listf.init prefix (const %ctyp-{_}) in
 
   let result_type = %ctyp-{_} in
-  let self_type = %ctyp-{'self_type}  in
+  let self_type = %ctyp-{'__THIS_OBJ_TYPE__}  in
   let (quant,dst) =
     match k with
     |Obj Map -> (a_var_lens @ b_var_lens, b_names)
@@ -160,7 +160,7 @@ let mk_method_type ~number ~id:(id:ident) ~prefix len (k:destination) : (ctyp * 
 
 let mk_obj class_name  base body =
   %stru-{
-   class $lid:class_name = object (self: 'self_type)
+   class $lid:class_name = object (self)
      inherit $lid:base ;
      $body;
    end }
@@ -169,7 +169,7 @@ let mk_obj class_name  base body =
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name, _, ctyp, _)  ->
-      let obj = object(self:'self_type)
+      let obj = object(self)
         inherit ObjsN.fold as super;
         val mutable is_recursive = false;
         method! ctyp = function

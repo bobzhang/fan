@@ -99,7 +99,7 @@ let stru_from_ty  ~f:(f:string -> stru) (x:mtyps) : stru  =
   here we record the relationship [Loc.t => u ]
   ]}
  *)
-let mk_transform_type_eq () = object(self:'self_type)
+let mk_transform_type_eq () = object(self)
   val transformers = Hashtbl.create 50
   inherit ObjsN.map as super
   method! stru = function

@@ -863,7 +863,7 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 class print =
-  object (self : 'self_type)
+  object (self : 'this_type__116_)
     inherit  printbase
     method loc : _ -> loc -> unit=
       fun fmt  eta__002_  -> self#locf_t fmt eta__002_
@@ -1727,7 +1727,7 @@ class print =
     method locf_t : _ -> Locf.t -> unit= self#unknown
   end
 class map =
-  object (self : 'self_type)
+  object (self : 'this_type__115_)
     inherit  mapbase
     method loc : loc -> loc= fun eta__003_  -> self#locf_t eta__003_
     method ant : ant -> ant=
@@ -2512,12 +2512,13 @@ class map =
     method locf_t : Locf.t -> Locf.t= self#unknown
   end
 class fold =
-  object (self : 'self_type)
+  object (self : 'this_type__114_)
     inherit  foldbase
-    method loc : loc -> 'self_type= fun eta__004_  -> self#locf_t eta__004_
-    method ant : ant -> 'self_type=
+    method loc : loc -> 'this_type__114_=
+      fun eta__004_  -> self#locf_t eta__004_
+    method ant : ant -> 'this_type__114_=
       fun (`Ant (_a0,_a1))  -> let self = self#loc _a0 in self#tokenf_ant _a1
-    method literal : literal -> 'self_type=
+    method literal : literal -> 'this_type__114_=
       function
       | `Chr _a0 -> self#string _a0
       | `Int _a0 -> self#string _a0
@@ -2528,86 +2529,87 @@ class fold =
       | `Str _a0 -> self#string _a0
       | `Bool _a0 -> self#bool _a0
       | `Unit -> self
-    method flag : flag -> 'self_type=
+    method flag : flag -> 'this_type__114_=
       function
       | `Positive -> self
       | `Negative -> self
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method position_flag : position_flag -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method position_flag : position_flag -> 'this_type__114_=
       function
       | `Positive -> self
       | `Negative -> self
       | `Normal -> self
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method strings : strings -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method strings : strings -> 'this_type__114_=
       function
       | `App (_a0,_a1) -> let self = self#strings _a0 in self#strings _a1
       | `Str _a0 -> self#string _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method lident : lident -> 'self_type= fun (`Lid _a0)  -> self#string _a0
-    method alident : alident -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method lident : lident -> 'this_type__114_=
+      fun (`Lid _a0)  -> self#string _a0
+    method alident : alident -> 'this_type__114_=
       function
       | `Lid _a0 -> self#string _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method auident : auident -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method auident : auident -> 'this_type__114_=
       function
       | `Uid _a0 -> self#string _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method aident : aident -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method aident : aident -> 'this_type__114_=
       function
-      | #alident as _a0 -> (self#alident _a0 :>'self_type)
-      | #auident as _a0 -> (self#auident _a0 :>'self_type)
-    method astring : astring -> 'self_type=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__114_)
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__114_)
+    method astring : astring -> 'this_type__114_=
       function
       | `C _a0 -> self#string _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method uident : uident -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method uident : uident -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#uident _a0 in self#uident _a1
       | `App (_a0,_a1) -> let self = self#uident _a0 in self#uident _a1
-      | #auident as _a0 -> (self#auident _a0 :>'self_type)
-    method ident : ident -> 'self_type=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__114_)
+    method ident : ident -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
       | `Apply (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
-      | #alident as _a0 -> (self#alident _a0 :>'self_type)
-      | #auident as _a0 -> (self#auident _a0 :>'self_type)
-    method ident' : ident' -> 'self_type=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__114_)
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__114_)
+    method ident' : ident' -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
       | `Apply (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
       | `Lid _a0 -> self#string _a0
       | `Uid _a0 -> self#string _a0
-    method vid : vid -> 'self_type=
+    method vid : vid -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#vid _a0 in self#vid _a1
       | `Lid _a0 -> self#string _a0
       | `Uid _a0 -> self#string _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method vid' : vid' -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method vid' : vid' -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#vid _a0 in self#vid _a1
       | `Lid _a0 -> self#string _a0
       | `Uid _a0 -> self#string _a0
-    method dupath : dupath -> 'self_type=
+    method dupath : dupath -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#dupath _a0 in self#dupath _a1
-      | #auident as _a0 -> (self#auident _a0 :>'self_type)
-    method dlpath : dlpath -> 'self_type=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__114_)
+    method dlpath : dlpath -> 'this_type__114_=
       function
       | `Dot (_a0,_a1) -> let self = self#dupath _a0 in self#alident _a1
-      | #alident as _a0 -> (self#alident _a0 :>'self_type)
-    method any : any -> 'self_type= fun `Any  -> self
-    method ctyp : ctyp -> 'self_type=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__114_)
+    method any : any -> 'this_type__114_= fun `Any  -> self
+    method ctyp : ctyp -> 'this_type__114_=
       function
       | `Alias (_a0,_a1) -> let self = self#ctyp _a0 in self#alident _a1
-      | #any as _a0 -> (self#any _a0 :>'self_type)
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
       | `Arrow (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
       | `ClassPath _a0 -> self#ident _a0
       | `Label (_a0,_a1) -> let self = self#alident _a0 in self#ctyp _a1
       | `OptLabl (_a0,_a1) -> let self = self#alident _a0 in self#ctyp _a1
-      | #ident' as _a0 -> (self#ident' _a0 :>'self_type)
+      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__114_)
       | `TyObj (_a0,_a1) -> let self = self#name_ctyp _a0 in self#flag _a1
       | `TyObjEnd _a0 -> self#flag _a0
       | `TyPol (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
@@ -2625,26 +2627,26 @@ class fold =
       | `PolyInfSup (_a0,_a1) ->
           let self = self#row_field _a0 in self#tag_names _a1
       | `Package _a0 -> self#mtyp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method type_parameters : type_parameters -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method type_parameters : type_parameters -> 'this_type__114_=
       function
       | `Com (_a0,_a1) ->
           let self = self#type_parameters _a0 in self#type_parameters _a1
       | `Ctyp _a0 -> self#ctyp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method row_field : row_field -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method row_field : row_field -> 'this_type__114_=
       function
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
       | `Bar (_a0,_a1) -> let self = self#row_field _a0 in self#row_field _a1
       | `TyVrn _a0 -> self#astring _a0
       | `TyVrnOf (_a0,_a1) -> let self = self#astring _a0 in self#ctyp _a1
       | `Ctyp _a0 -> self#ctyp _a0
-    method tag_names : tag_names -> 'self_type=
+    method tag_names : tag_names -> 'this_type__114_=
       function
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#tag_names _a0 in self#tag_names _a1
       | `TyVrn _a0 -> self#astring _a0
-    method decl : decl -> 'self_type=
+    method decl : decl -> 'this_type__114_=
       function
       | `TyDcl (_a0,_a1,_a2,_a3) ->
           let self = self#alident _a0 in
@@ -2654,23 +2656,23 @@ class fold =
           let self = self#alident _a0 in
           let self = self#opt_decl_params _a1 in self#opt_type_constr _a2
       | `And (_a0,_a1) -> let self = self#decl _a0 in self#decl _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method type_constr : type_constr -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method type_constr : type_constr -> 'this_type__114_=
       function
       | `And (_a0,_a1) ->
           let self = self#type_constr _a0 in self#type_constr _a1
       | `Eq (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method opt_type_constr : opt_type_constr -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method opt_type_constr : opt_type_constr -> 'this_type__114_=
       function | `Some _a0 -> self#type_constr _a0 | `None -> self
-    method decl_param : decl_param -> 'self_type=
+    method decl_param : decl_param -> 'this_type__114_=
       function
       | `Quote (_a0,_a1) ->
           let self = self#position_flag _a0 in self#alident _a1
       | `QuoteAny _a0 -> self#position_flag _a0
       | `Any -> self
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method decl_params : decl_params -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method decl_params : decl_params -> 'this_type__114_=
       function
       | `Quote (_a0,_a1) ->
           let self = self#position_flag _a0 in self#alident _a1
@@ -2678,51 +2680,51 @@ class fold =
       | `Any -> self
       | `Com (_a0,_a1) ->
           let self = self#decl_params _a0 in self#decl_params _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method opt_decl_params : opt_decl_params -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method opt_decl_params : opt_decl_params -> 'this_type__114_=
       function | `Some _a0 -> self#decl_params _a0 | `None -> self
-    method type_info : type_info -> 'self_type=
+    method type_info : type_info -> 'this_type__114_=
       function
       | `TyMan (_a0,_a1,_a2) ->
           let self = self#ctyp _a0 in
           let self = self#flag _a1 in self#type_repr _a2
       | `TyRepr (_a0,_a1) -> let self = self#flag _a0 in self#type_repr _a1
       | `TyEq (_a0,_a1) -> let self = self#flag _a0 in self#ctyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method type_repr : type_repr -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method type_repr : type_repr -> 'this_type__114_=
       function
       | `Record _a0 -> self#name_ctyp _a0
       | `Sum _a0 -> self#or_ctyp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method name_ctyp : name_ctyp -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method name_ctyp : name_ctyp -> 'this_type__114_=
       function
       | `Sem (_a0,_a1) -> let self = self#name_ctyp _a0 in self#name_ctyp _a1
       | `RecCol (_a0,_a1,_a2) ->
           let self = self#alident _a0 in
           let self = self#ctyp _a1 in self#flag _a2
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method or_ctyp : or_ctyp -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method or_ctyp : or_ctyp -> 'this_type__114_=
       function
       | `Bar (_a0,_a1) -> let self = self#or_ctyp _a0 in self#or_ctyp _a1
       | `TyCol (_a0,_a1) -> let self = self#auident _a0 in self#ctyp _a1
       | `Of (_a0,_a1) -> let self = self#auident _a0 in self#ctyp _a1
-      | #auident as _a0 -> (self#auident _a0 :>'self_type)
-    method of_ctyp : of_ctyp -> 'self_type=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__114_)
+    method of_ctyp : of_ctyp -> 'this_type__114_=
       function
       | `Of (_a0,_a1) -> let self = self#vid _a0 in self#ctyp _a1
-      | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method pat : pat -> 'self_type=
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__114_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method pat : pat -> 'this_type__114_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'self_type)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#pat _a0 in self#pat _a1
       | `Vrn _a0 -> self#string _a0
       | `Com (_a0,_a1) -> let self = self#pat _a0 in self#pat _a1
       | `Sem (_a0,_a1) -> let self = self#pat _a0 in self#pat _a1
       | `Par _a0 -> self#pat _a0
-      | #any as _a0 -> (self#any _a0 :>'self_type)
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
       | `Record _a0 -> self#rec_pat _a0
-      | #literal as _a0 -> (self#literal _a0 :>'self_type)
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__114_)
       | `Alias (_a0,_a1) -> let self = self#pat _a0 in self#alident _a1
       | `ArrayEmpty -> self
       | `Array _a0 -> self#pat _a0
@@ -2741,23 +2743,23 @@ class fold =
       | `ModuleUnpack _a0 -> self#auident _a0
       | `ModuleConstraint (_a0,_a1) ->
           let self = self#auident _a0 in self#ctyp _a1
-    method rec_pat : rec_pat -> 'self_type=
+    method rec_pat : rec_pat -> 'this_type__114_=
       function
       | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#pat _a1
       | `Sem (_a0,_a1) -> let self = self#rec_pat _a0 in self#rec_pat _a1
-      | #any as _a0 -> (self#any _a0 :>'self_type)
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method exp : exp -> 'self_type=
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method exp : exp -> 'this_type__114_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'self_type)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
       | `Vrn _a0 -> self#string _a0
       | `Com (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
       | `Sem (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
       | `Par _a0 -> self#exp _a0
-      | #any as _a0 -> (self#any _a0 :>'self_type)
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
       | `Record _a0 -> self#rec_exp _a0
-      | #literal as _a0 -> (self#literal _a0 :>'self_type)
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__114_)
       | `RecordWith (_a0,_a1) -> let self = self#rec_exp _a0 in self#exp _a1
       | `Field (_a0,_a1) -> let self = self#exp _a0 in self#vid _a1
       | `ArrayDot (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
@@ -2812,15 +2814,15 @@ class fold =
       | `LocalTypeFun (_a0,_a1) ->
           let self = self#alident _a0 in self#exp _a1
       | `Package_exp _a0 -> self#mexp _a0
-    method rec_exp : rec_exp -> 'self_type=
+    method rec_exp : rec_exp -> 'this_type__114_=
       function
       | `Sem (_a0,_a1) -> let self = self#rec_exp _a0 in self#rec_exp _a1
       | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#exp _a1
-      | #any as _a0 -> (self#any _a0 :>'self_type)
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method mtyp : mtyp -> 'self_type=
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method mtyp : mtyp -> 'this_type__114_=
       function
-      | #ident' as _a0 -> (self#ident' _a0 :>'self_type)
+      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__114_)
       | `Sig _a0 -> self#sigi _a0
       | `SigEnd -> self
       | `Functor (_a0,_a1,_a2) ->
@@ -2828,8 +2830,8 @@ class fold =
           let self = self#mtyp _a1 in self#mtyp _a2
       | `With (_a0,_a1) -> let self = self#mtyp _a0 in self#constr _a1
       | `ModuleTypeOf _a0 -> self#mexp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method sigi : sigi -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method sigi : sigi -> 'this_type__114_=
       function
       | `Val (_a0,_a1) -> let self = self#alident _a0 in self#ctyp _a1
       | `External (_a0,_a1,_a2) ->
@@ -2848,16 +2850,16 @@ class fold =
       | `Open (_a0,_a1) -> let self = self#flag _a0 in self#ident _a1
       | `Include _a0 -> self#mtyp _a0
       | `RecModule _a0 -> self#mbind _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method mbind : mbind -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method mbind : mbind -> 'this_type__114_=
       function
       | `And (_a0,_a1) -> let self = self#mbind _a0 in self#mbind _a1
       | `ModuleBind (_a0,_a1,_a2) ->
           let self = self#auident _a0 in
           let self = self#mtyp _a1 in self#mexp _a2
       | `Constraint (_a0,_a1) -> let self = self#auident _a0 in self#mtyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method constr : constr -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method constr : constr -> 'this_type__114_=
       function
       | `TypeEq (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
       | `ModuleEq (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
@@ -2865,22 +2867,22 @@ class fold =
       | `TypeSubst (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
       | `ModuleSubst (_a0,_a1) -> let self = self#ident _a0 in self#ident _a1
       | `And (_a0,_a1) -> let self = self#constr _a0 in self#constr _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method bind : bind -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method bind : bind -> 'this_type__114_=
       function
       | `And (_a0,_a1) -> let self = self#bind _a0 in self#bind _a1
       | `Bind (_a0,_a1) -> let self = self#pat _a0 in self#exp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method case : case -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method case : case -> 'this_type__114_=
       function
       | `Bar (_a0,_a1) -> let self = self#case _a0 in self#case _a1
       | `Case (_a0,_a1) -> let self = self#pat _a0 in self#exp _a1
       | `CaseWhen (_a0,_a1,_a2) ->
           let self = self#pat _a0 in let self = self#exp _a1 in self#exp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method mexp : mexp -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method mexp : mexp -> 'this_type__114_=
       function
-      | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#mexp _a0 in self#mexp _a1
       | `Functor (_a0,_a1,_a2) ->
           let self = self#auident _a0 in
@@ -2889,8 +2891,8 @@ class fold =
       | `StructEnd -> self
       | `Constraint (_a0,_a1) -> let self = self#mexp _a0 in self#mtyp _a1
       | `PackageModule _a0 -> self#exp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method stru : stru -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method stru : stru -> 'this_type__114_=
       function
       | `Class _a0 -> self#cldecl _a0
       | `ClassType _a0 -> self#cltdecl _a0
@@ -2910,8 +2912,8 @@ class fold =
       | `Type _a0 -> self#decl _a0
       | `TypeWith (_a0,_a1) -> let self = self#decl _a0 in self#strings _a1
       | `Value (_a0,_a1) -> let self = self#flag _a0 in self#bind _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method cltdecl : cltdecl -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method cltdecl : cltdecl -> 'this_type__114_=
       function
       | `And (_a0,_a1) -> let self = self#cltdecl _a0 in self#cltdecl _a1
       | `CtDecl (_a0,_a1,_a2,_a3) ->
@@ -2921,10 +2923,10 @@ class fold =
       | `CtDeclS (_a0,_a1,_a2) ->
           let self = self#flag _a0 in
           let self = self#ident _a1 in self#cltyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method cltyp : cltyp -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method cltyp : cltyp -> 'this_type__114_=
       function
-      | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__114_)
       | `ClApply (_a0,_a1) ->
           let self = self#vid _a0 in self#type_parameters _a1
       | `CtFun (_a0,_a1) -> let self = self#ctyp _a0 in self#cltyp _a1
@@ -2933,8 +2935,8 @@ class fold =
       | `Obj _a0 -> self#clsigi _a0
       | `ObjEnd -> self
       | `And (_a0,_a1) -> let self = self#cltyp _a0 in self#cltyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method clsigi : clsigi -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method clsigi : clsigi -> 'this_type__114_=
       function
       | `Sem (_a0,_a1) -> let self = self#clsigi _a0 in self#clsigi _a1
       | `SigInherit _a0 -> self#cltyp _a0
@@ -2949,8 +2951,8 @@ class fold =
           let self = self#alident _a0 in
           let self = self#flag _a1 in self#ctyp _a2
       | `Eq (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method cldecl : cldecl -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method cldecl : cldecl -> 'this_type__114_=
       function
       | `ClDecl (_a0,_a1,_a2,_a3) ->
           let self = self#flag _a0 in
@@ -2960,11 +2962,11 @@ class fold =
           let self = self#flag _a0 in
           let self = self#ident _a1 in self#clexp _a2
       | `And (_a0,_a1) -> let self = self#cldecl _a0 in self#cldecl _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method clexp : clexp -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method clexp : clexp -> 'this_type__114_=
       function
       | `CeApp (_a0,_a1) -> let self = self#clexp _a0 in self#exp _a1
-      | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__114_)
       | `ClApply (_a0,_a1) ->
           let self = self#vid _a0 in self#type_parameters _a1
       | `CeFun (_a0,_a1) -> let self = self#pat _a0 in self#clexp _a1
@@ -2976,8 +2978,8 @@ class fold =
       | `ObjPat (_a0,_a1) -> let self = self#pat _a0 in self#clfield _a1
       | `ObjPatEnd _a0 -> self#pat _a0
       | `Constraint (_a0,_a1) -> let self = self#clexp _a0 in self#cltyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method clfield : clfield -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method clfield : clfield -> 'this_type__114_=
       function
       | `Sem (_a0,_a1) -> let self = self#clfield _a0 in self#clfield _a1
       | `Inherit (_a0,_a1) -> let self = self#flag _a0 in self#clexp _a1
@@ -3005,297 +3007,297 @@ class fold =
           let self = self#flag _a1 in self#ctyp _a2
       | `Eq (_a0,_a1) -> let self = self#ctyp _a0 in self#ctyp _a1
       | `Initializer _a0 -> self#exp _a0
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method ep : ep -> 'self_type=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method ep : ep -> 'this_type__114_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'self_type)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__114_)
       | `App (_a0,_a1) -> let self = self#ep _a0 in self#ep _a1
       | `Vrn _a0 -> self#string _a0
       | `Com (_a0,_a1) -> let self = self#ep _a0 in self#ep _a1
       | `Sem (_a0,_a1) -> let self = self#ep _a0 in self#ep _a1
       | `Par _a0 -> self#ep _a0
       | `Constraint (_a0,_a1) -> let self = self#ep _a0 in self#ctyp _a1
-      | #any as _a0 -> (self#any _a0 :>'self_type)
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
       | `ArrayEmpty -> self
       | `Array _a0 -> self#ep _a0
       | `Record _a0 -> self#rec_bind _a0
-      | #literal as _a0 -> (self#literal _a0 :>'self_type)
-    method rec_bind : rec_bind -> 'self_type=
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__114_)
+    method rec_bind : rec_bind -> 'this_type__114_=
       function
       | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#ep _a1
       | `Sem (_a0,_a1) -> let self = self#rec_bind _a0 in self#rec_bind _a1
-      | #any as _a0 -> (self#any _a0 :>'self_type)
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method tokenf_ant : Tokenf.ant -> 'self_type= self#unknown
-    method locf_t : Locf.t -> 'self_type= self#unknown
+      | #any as _a0 -> (self#any _a0 :>'this_type__114_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__114_)
+    method tokenf_ant : Tokenf.ant -> 'this_type__114_= self#unknown
+    method locf_t : Locf.t -> 'this_type__114_= self#unknown
   end
 let map_loc f =
-  object (_this__111_ : 'this_type__112_)
+  object (_this__112_ : 'this_type__113_)
     inherit  map as super
     method! loc x = f (super#loc x)
   end
 let map_ant f =
-  object (_this__109_ : 'this_type__110_)
+  object (_this__110_ : 'this_type__111_)
     inherit  map as super
     method! ant x = f (super#ant x)
   end
 let map_literal f =
-  object (_this__107_ : 'this_type__108_)
+  object (_this__108_ : 'this_type__109_)
     inherit  map as super
     method! literal x = f (super#literal x)
   end
 let map_flag f =
-  object (_this__105_ : 'this_type__106_)
+  object (_this__106_ : 'this_type__107_)
     inherit  map as super
     method! flag x = f (super#flag x)
   end
 let map_position_flag f =
-  object (_this__103_ : 'this_type__104_)
+  object (_this__104_ : 'this_type__105_)
     inherit  map as super
     method! position_flag x = f (super#position_flag x)
   end
 let map_strings f =
-  object (_this__101_ : 'this_type__102_)
+  object (_this__102_ : 'this_type__103_)
     inherit  map as super
     method! strings x = f (super#strings x)
   end
 let map_lident f =
-  object (_this__099_ : 'this_type__100_)
+  object (_this__100_ : 'this_type__101_)
     inherit  map as super
     method! lident x = f (super#lident x)
   end
 let map_alident f =
-  object (_this__097_ : 'this_type__098_)
+  object (_this__098_ : 'this_type__099_)
     inherit  map as super
     method! alident x = f (super#alident x)
   end
 let map_auident f =
-  object (_this__095_ : 'this_type__096_)
+  object (_this__096_ : 'this_type__097_)
     inherit  map as super
     method! auident x = f (super#auident x)
   end
 let map_aident f =
-  object (_this__093_ : 'this_type__094_)
+  object (_this__094_ : 'this_type__095_)
     inherit  map as super
     method! aident x = f (super#aident x)
   end
 let map_astring f =
-  object (_this__091_ : 'this_type__092_)
+  object (_this__092_ : 'this_type__093_)
     inherit  map as super
     method! astring x = f (super#astring x)
   end
 let map_uident f =
-  object (_this__089_ : 'this_type__090_)
+  object (_this__090_ : 'this_type__091_)
     inherit  map as super
     method! uident x = f (super#uident x)
   end
 let map_ident f =
-  object (_this__087_ : 'this_type__088_)
+  object (_this__088_ : 'this_type__089_)
     inherit  map as super
     method! ident x = f (super#ident x)
   end
 let map_ident' f =
-  object (_this__085_ : 'this_type__086_)
+  object (_this__086_ : 'this_type__087_)
     inherit  map as super
     method! ident' x = f (super#ident' x)
   end
 let map_vid f =
-  object (_this__083_ : 'this_type__084_)
+  object (_this__084_ : 'this_type__085_)
     inherit  map as super
     method! vid x = f (super#vid x)
   end
 let map_vid' f =
-  object (_this__081_ : 'this_type__082_)
+  object (_this__082_ : 'this_type__083_)
     inherit  map as super
     method! vid' x = f (super#vid' x)
   end
 let map_dupath f =
-  object (_this__079_ : 'this_type__080_)
+  object (_this__080_ : 'this_type__081_)
     inherit  map as super
     method! dupath x = f (super#dupath x)
   end
 let map_dlpath f =
-  object (_this__077_ : 'this_type__078_)
+  object (_this__078_ : 'this_type__079_)
     inherit  map as super
     method! dlpath x = f (super#dlpath x)
   end
 let map_any f =
-  object (_this__075_ : 'this_type__076_)
+  object (_this__076_ : 'this_type__077_)
     inherit  map as super
     method! any x = f (super#any x)
   end
 let map_ctyp f =
-  object (_this__073_ : 'this_type__074_)
+  object (_this__074_ : 'this_type__075_)
     inherit  map as super
     method! ctyp x = f (super#ctyp x)
   end
 let map_type_parameters f =
-  object (_this__071_ : 'this_type__072_)
+  object (_this__072_ : 'this_type__073_)
     inherit  map as super
     method! type_parameters x = f (super#type_parameters x)
   end
 let map_row_field f =
-  object (_this__069_ : 'this_type__070_)
+  object (_this__070_ : 'this_type__071_)
     inherit  map as super
     method! row_field x = f (super#row_field x)
   end
 let map_tag_names f =
-  object (_this__067_ : 'this_type__068_)
+  object (_this__068_ : 'this_type__069_)
     inherit  map as super
     method! tag_names x = f (super#tag_names x)
   end
 let map_decl f =
-  object (_this__065_ : 'this_type__066_)
+  object (_this__066_ : 'this_type__067_)
     inherit  map as super
     method! decl x = f (super#decl x)
   end
 let map_type_constr f =
-  object (_this__063_ : 'this_type__064_)
+  object (_this__064_ : 'this_type__065_)
     inherit  map as super
     method! type_constr x = f (super#type_constr x)
   end
 let map_opt_type_constr f =
-  object (_this__061_ : 'this_type__062_)
+  object (_this__062_ : 'this_type__063_)
     inherit  map as super
     method! opt_type_constr x = f (super#opt_type_constr x)
   end
 let map_decl_param f =
-  object (_this__059_ : 'this_type__060_)
+  object (_this__060_ : 'this_type__061_)
     inherit  map as super
     method! decl_param x = f (super#decl_param x)
   end
 let map_decl_params f =
-  object (_this__057_ : 'this_type__058_)
+  object (_this__058_ : 'this_type__059_)
     inherit  map as super
     method! decl_params x = f (super#decl_params x)
   end
 let map_opt_decl_params f =
-  object (_this__055_ : 'this_type__056_)
+  object (_this__056_ : 'this_type__057_)
     inherit  map as super
     method! opt_decl_params x = f (super#opt_decl_params x)
   end
 let map_type_info f =
-  object (_this__053_ : 'this_type__054_)
+  object (_this__054_ : 'this_type__055_)
     inherit  map as super
     method! type_info x = f (super#type_info x)
   end
 let map_type_repr f =
-  object (_this__051_ : 'this_type__052_)
+  object (_this__052_ : 'this_type__053_)
     inherit  map as super
     method! type_repr x = f (super#type_repr x)
   end
 let map_name_ctyp f =
-  object (_this__049_ : 'this_type__050_)
+  object (_this__050_ : 'this_type__051_)
     inherit  map as super
     method! name_ctyp x = f (super#name_ctyp x)
   end
 let map_or_ctyp f =
-  object (_this__047_ : 'this_type__048_)
+  object (_this__048_ : 'this_type__049_)
     inherit  map as super
     method! or_ctyp x = f (super#or_ctyp x)
   end
 let map_of_ctyp f =
-  object (_this__045_ : 'this_type__046_)
+  object (_this__046_ : 'this_type__047_)
     inherit  map as super
     method! of_ctyp x = f (super#of_ctyp x)
   end
 let map_pat f =
-  object (_this__043_ : 'this_type__044_)
+  object (_this__044_ : 'this_type__045_)
     inherit  map as super
     method! pat x = f (super#pat x)
   end
 let map_rec_pat f =
-  object (_this__041_ : 'this_type__042_)
+  object (_this__042_ : 'this_type__043_)
     inherit  map as super
     method! rec_pat x = f (super#rec_pat x)
   end
 let map_exp f =
-  object (_this__039_ : 'this_type__040_)
+  object (_this__040_ : 'this_type__041_)
     inherit  map as super
     method! exp x = f (super#exp x)
   end
 let map_rec_exp f =
-  object (_this__037_ : 'this_type__038_)
+  object (_this__038_ : 'this_type__039_)
     inherit  map as super
     method! rec_exp x = f (super#rec_exp x)
   end
 let map_mtyp f =
-  object (_this__035_ : 'this_type__036_)
+  object (_this__036_ : 'this_type__037_)
     inherit  map as super
     method! mtyp x = f (super#mtyp x)
   end
 let map_sigi f =
-  object (_this__033_ : 'this_type__034_)
+  object (_this__034_ : 'this_type__035_)
     inherit  map as super
     method! sigi x = f (super#sigi x)
   end
 let map_mbind f =
-  object (_this__031_ : 'this_type__032_)
+  object (_this__032_ : 'this_type__033_)
     inherit  map as super
     method! mbind x = f (super#mbind x)
   end
 let map_constr f =
-  object (_this__029_ : 'this_type__030_)
+  object (_this__030_ : 'this_type__031_)
     inherit  map as super
     method! constr x = f (super#constr x)
   end
 let map_bind f =
-  object (_this__027_ : 'this_type__028_)
+  object (_this__028_ : 'this_type__029_)
     inherit  map as super
     method! bind x = f (super#bind x)
   end
 let map_case f =
-  object (_this__025_ : 'this_type__026_)
+  object (_this__026_ : 'this_type__027_)
     inherit  map as super
     method! case x = f (super#case x)
   end
 let map_mexp f =
-  object (_this__023_ : 'this_type__024_)
+  object (_this__024_ : 'this_type__025_)
     inherit  map as super
     method! mexp x = f (super#mexp x)
   end
 let map_stru f =
-  object (_this__021_ : 'this_type__022_)
+  object (_this__022_ : 'this_type__023_)
     inherit  map as super
     method! stru x = f (super#stru x)
   end
 let map_cltdecl f =
-  object (_this__019_ : 'this_type__020_)
+  object (_this__020_ : 'this_type__021_)
     inherit  map as super
     method! cltdecl x = f (super#cltdecl x)
   end
 let map_cltyp f =
-  object (_this__017_ : 'this_type__018_)
+  object (_this__018_ : 'this_type__019_)
     inherit  map as super
     method! cltyp x = f (super#cltyp x)
   end
 let map_clsigi f =
-  object (_this__015_ : 'this_type__016_)
+  object (_this__016_ : 'this_type__017_)
     inherit  map as super
     method! clsigi x = f (super#clsigi x)
   end
 let map_cldecl f =
-  object (_this__013_ : 'this_type__014_)
+  object (_this__014_ : 'this_type__015_)
     inherit  map as super
     method! cldecl x = f (super#cldecl x)
   end
 let map_clexp f =
-  object (_this__011_ : 'this_type__012_)
+  object (_this__012_ : 'this_type__013_)
     inherit  map as super
     method! clexp x = f (super#clexp x)
   end
 let map_clfield f =
-  object (_this__009_ : 'this_type__010_)
+  object (_this__010_ : 'this_type__011_)
     inherit  map as super
     method! clfield x = f (super#clfield x)
   end
 let map_ep f =
-  object (_this__007_ : 'this_type__008_)
+  object (_this__008_ : 'this_type__009_)
     inherit  map as super
     method! ep x = f (super#ep x)
   end
 let map_rec_bind f =
-  object (_this__005_ : 'this_type__006_)
+  object (_this__006_ : 'this_type__007_)
     inherit  map as super
     method! rec_bind x = f (super#rec_bind x)
   end
@@ -3353,7 +3355,7 @@ let dump_clfield = Formatf.to_string dump#clfield
 let dump_ep = Formatf.to_string dump#ep
 let dump_rec_bind = Formatf.to_string dump#rec_bind
 let wildcarder =
-  object (self)
+  object (self : 'this_type__005_)
     inherit  map as super
     method! pat =
       function

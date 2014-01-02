@@ -4,7 +4,7 @@ open Astf
 %fans{
 keep off;
 derive((* Map2 Fold2 OIter   OEq *)
-  Print OPrint Map Fold   MapWrapper PrintWrapper);
+  Print OPrint Map   MapWrapper PrintWrapper);
 };;
 
 

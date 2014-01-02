@@ -843,12 +843,16 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
 
   | `ObjPatEnd(_,p) -> Pexp_object{pcstr_pat=pat p; pcstr_fields=[]}
 
-  (* | `ObjPat(_loc,`Lid (sloc,x),cfl) -> *)
-  (*     (\* Ref.protect self_object (Some x) *\) *)
-  (*     (\*   (fun _ -> *\) *)
-  (*     Parsetree.Pexp_object *)
-  (*       {pcstr_pat = mkpat sloc (Ppat_var {txt=x;loc=sloc}) *)
-  (*              ; pcstr_fields = clfield cfl []} *)
+  | `ObjPat(_loc,`Lid (sloc,x),cfl) ->
+      let this_typ = %fresh{this_type} in 
+      Ref.protect self_object_typ (Some this_typ)
+        (fun _ ->
+      Parsetree.Pexp_object
+        {pcstr_pat = mkpat sloc
+           (Ppat_constraint
+              (mkpat sloc @@ Ppat_var {txt=x;loc=sloc},
+               mktyp _loc (Ptyp_var this_typ))) ;
+         pcstr_fields = clfield cfl []})
 
   (* | `ObjPat (_loc, (`Constraint (loc, (`Lid (sloc, x)), ty)), cfl) -> *)
   (*     let ty = ctyp ty in *)
@@ -1111,6 +1115,12 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
   (*     [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ] *)
   (* | {@loc| exception $uid:_ of $_ = $_ |} -> *)
   (*     error loc "type in exception alias" *)
+    (*     %stru-{ *)
+    (*   class fold =  object(x) *)
+    (*     method x : '__THIS_OBJ_TYPE__ = *)
+    (*       "ghos" *)
+    (*   end *)
+    (* } *)
   | `Exception (_,_) -> assert false (*FIXME*)
   | `StExp (_,e) -> Pstr_eval (exp e)
   | `External(_,`Lid(sloc,n),t,sl) ->
@@ -1291,10 +1301,37 @@ and clexp_desc loc (x:Astf.clexp) : Parsetree.class_expr_desc =
       Pcl_let (mkrf rf, top_bind bi, clexp ce)
   | `ObjEnd _ ->
       Pcl_structure{pcstr_pat= mkpat loc Ppat_any; pcstr_fields=[]}
-  | `Obj(_,cfl) ->
-    Pcl_structure {pcstr_pat = mkpat loc Ppat_any; pcstr_fields = clfield cfl [];}
+
+        (* duplication *)
+  | `Obj(_loc,cfl) ->
+      let this_obj = %fresh{_this} in
+      let this_typ = %fresh{this_type}  in
+      Ref.protect2 (self_object,Some this_obj) (self_object_typ,Some this_typ)
+        (fun _ ->
+          Parsetree.Pcl_structure
+            { pcstr_pat =
+              mkpat _loc (Ppat_constraint
+                            (mkpat _loc (Parsetree.Ppat_var {txt=this_obj;loc=_loc}),
+                             mktyp _loc (Parsetree.Ptyp_var this_typ)));
+              pcstr_fields =  clfield cfl [] }
+        )
+        
+  (* | `Obj(_,cfl) -> *)
+  (*   Pcl_structure {pcstr_pat = mkpat loc Ppat_any; pcstr_fields = clfield cfl [];} *)
   | `ObjPatEnd(_,p) ->
       Pcl_structure {pcstr_pat= pat p; pcstr_fields = []}
+    (* class duplicated with obj *)
+  | `ObjPat(_loc,`Lid (sloc,x),cfl) ->
+      let this_typ = %fresh{this_type} in 
+      Ref.protect self_object_typ (Some this_typ)
+        (fun _ ->
+      Parsetree.Pcl_structure
+        {pcstr_pat = mkpat sloc
+           (Ppat_constraint
+              (mkpat sloc @@ Ppat_var {txt=x;loc=sloc},
+               mktyp _loc (Ptyp_var this_typ))) ;
+         pcstr_fields = clfield cfl []})
+        
   | `ObjPat (_,p,cfl) ->
     let cil = clfield cfl [] in
     Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;}
