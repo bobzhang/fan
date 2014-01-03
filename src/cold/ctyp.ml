@@ -257,6 +257,8 @@ let basic_transform =
   | `Pre pre -> (fun x  -> pre ^ x)
   | `Post post -> (fun x  -> x ^ post)
   | `Fun f -> f
+let left_transform (#basic_id_transform as x) =
+  let f = basic_transform x in fun x  -> lid (f x)
 let right_transform =
   function
   | #basic_id_transform as x ->

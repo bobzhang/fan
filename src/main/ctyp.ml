@@ -415,7 +415,13 @@ let basic_transform = function
   | `Pre pre -> (fun x -> pre ^ x)
   | `Post post -> (fun x -> x ^ post)
   | `Fun f -> f 
-  
+
+let left_transform = function
+  |  #basic_id_transform as x ->
+      (** add as here to overcome the type system *)
+      let f = basic_transform x in 
+      fun x -> lid (f  x)
+   
 let right_transform = function
   | #basic_id_transform as x ->
       (** add as here to overcome the type system *)

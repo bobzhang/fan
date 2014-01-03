@@ -6,33 +6,31 @@ let check _ = ()
 type param =  {
   arity: int;
   names: string list} 
-let normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
-  ~left_type_id  ~right_type_variable  cxt (ty : ctyp) =
-  let right_trans = transform right_type_id in
-  let left_trans = basic_transform left_type_id in
-  let tyvar = right_transform right_type_variable in
-  let rec aux =
-    function
-    | `Lid id ->
-        if Hashset.mem cxt id
-        then lid (left_trans id)
-        else right_trans (lid id)
-    | #ident' as id -> right_trans (Idn_util.to_vid id)
-    | `App (t1,t2) ->
-        (`App ((aux t1 :>Astfn.exp), (aux t2 :>Astfn.exp)) :>Astfn.exp)
-    | `Quote (_,`Lid s) -> tyvar s
-    | `Arrow (t1,t2) ->
-        aux
-          (`App
-             ((`App ((`Lid "arrow"), (t1 :>Astfn.ctyp))), (t2 :>Astfn.ctyp)) :>
-          Astfn.ctyp)
-    | `Par _ as ty -> tuple_exp_of_ctyp ?arity ?names ~mk_tuple ~f:aux ty
-    | (ty : ctyp) ->
-        failwithf "normal_simple_exp_of_ctyp : %s" (Astfn_print.dump_ctyp ty) in
+let normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~left_type_id 
+  (ty : ctyp) =
+  let right_trans = left_transform left_type_id in
+  let tyvar = Ctyp.right_transform (`Pre "mf_") in
+  let rec aux x =
+    (match x with
+     | `Lid id -> (right_trans id :>exp)
+     | #ident' as id ->
+         (Idn_util.ident_map_of_ident right_trans (Idn_util.to_vid id) :>
+         exp)
+     | `App (t1,t2) ->
+         (`App ((aux t1 :>Astfn.exp), (aux t2 :>Astfn.exp)) :>Astfn.exp)
+     | `Quote (_,`Lid s) -> tyvar s
+     | `Arrow (t1,t2) ->
+         aux
+           (`App
+              ((`App ((`Lid "arrow"), (t1 :>Astfn.ctyp))), (t2 :>Astfn.ctyp)) :>
+           Astfn.ctyp)
+     | `Par _ as ty -> tuple_exp_of_ctyp ?arity ?names ~mk_tuple ~f:aux ty
+     | (ty : ctyp) ->
+         failwithf "normal_simple_exp_of_ctyp : %s"
+           (Astfn_print.dump_ctyp ty) : exp ) in
   aux ty
-let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
-  ~left_type_variable  =
-  let varf = basic_transform left_type_variable in
+let mk_prefix ?(names= [])  (vars : opt_decl_params) (acc : exp) =
+  let varf = basic_transform (`Pre "mf_") in
   let f (var : decl_params) acc =
     match var with
     | `Quote (_,`Lid s) ->
@@ -96,8 +94,8 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   Expn_util.currying ~arity res
-let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
-  ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
+let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~mk_record  ~result 
+  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : decl ) with
    | `TyDcl (_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -118,14 +116,14 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                               label;
                               is_mutable
                             }) cols in
-                 mk_prefix ~names ~left_type_variable tyvars
+                 mk_prefix ~names tyvars
                    (Expn_util.currying ~arity
                       [(`Case
                           ((pat :>Astfn.pat), (mk_record info :>Astfn.exp)) :>
                       Astfn.case)])
              | `Sum ctyp ->
                  let funct = exp_of_ctyp ctyp in
-                 mk_prefix ~names ~left_type_variable tyvars funct
+                 mk_prefix ~names tyvars funct
              | t ->
                  failwithf "fun_of_tydcl outer %s"
                    (Astfn_print.dump_type_repr t))
@@ -134,10 +132,10 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
              | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
                  let exp = simple_exp_of_ctyp x in
                  let funct = Expn_util.eta_expand (exp +> names) arity in
-                 mk_prefix ~names ~left_type_variable tyvars funct
+                 mk_prefix ~names tyvars funct
              | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
                  let case = exp_of_variant ~result t in
-                 mk_prefix ~names ~left_type_variable tyvars case
+                 mk_prefix ~names tyvars case
              | t ->
                  failwithf "fun_of_tydcl inner %s" (Astfn_print.dump_ctyp t))
         | t ->
@@ -145,11 +143,9 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
    | t -> failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_decl t) : 
   exp )
 let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
-  [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant 
-  ~left_type_id:(left_type_id : basic_id_transform) 
-  ~left_type_variable:(left_type_variable : basic_id_transform)  ~mk_record 
-  tydcl =
-  let tctor_var = basic_transform left_type_id in
+  [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant  ~left_type_id
+   ~mk_record  tydcl =
+  let tctor_var = left_transform left_type_id in
   let (name,len) =
     match tydcl with
     | `TyDcl (`Lid name,tyvars,_,_) ->
@@ -165,12 +161,12 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
   let (annot,result) =
     match annot with
     | None  -> (None, result)
-    | Some f -> let (a,b) = f name in ((Some a), b) in
+    | Some (f : string -> (ctyp* ctyp)) ->
+        let (a,b) = f name in ((Some a), b) in
   let fun_exp =
     if not @@ (Ctyp.is_abstract tydcl)
     then
-      fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record ~result
-        simple_exp_of_ctyp
+      fun_of_tydcl ~names ~arity ~mk_record ~result simple_exp_of_ctyp
         (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
            simple_exp_of_ctyp)
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
@@ -182,40 +178,36 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
        (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) :>
        Astfn.exp)) in
   match annot with
-  | None  -> (`Bind ((`Lid fname), (fun_exp :>Astfn.exp)) :>Astfn.bind)
+  | None  ->
+      (`Bind ((fname :>Astfn.pat), (fun_exp :>Astfn.exp)) :>Astfn.bind)
   | Some x ->
       (`Bind
-         ((`Lid fname),
+         ((fname :>Astfn.pat),
            (`Constraint ((fun_exp :>Astfn.exp), (x :>Astfn.ctyp)))) :>
       Astfn.bind)
 let stru_of_mtyps ?cons_transform  ?annot  ?arity  ?names  ~default 
-  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
-  simple_exp_of_ctyp_with_cxt (lst : Sigs_util.mtyps) =
-  (let cxt = Hashset.create 50 in
-   let mk_bind: decl -> bind =
+  ~mk_variant  ~left_type_id  ~mk_record  simple_exp_of_ctyp_with_cxt
+  (lst : Sigs_util.mtyps) =
+  (let mk_bind: decl -> bind =
      bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
-       ~left_type_id ~left_type_variable ~mk_record
-       (simple_exp_of_ctyp_with_cxt cxt) in
+       ~left_type_id ~mk_record simple_exp_of_ctyp_with_cxt in
    let fs (ty : Sigs_util.types) =
      (match ty with
       | `Mutual named_types ->
           (match named_types with
            | [] -> (`StExp `Unit :>Astfn.stru)
            | xs ->
-               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-                (let bind =
-                   Listf.reduce_right_with
-                     ~compose:(fun x  y  ->
-                                 (`And ((x :>Astfn.bind), (y :>Astfn.bind)) :>
-                                 Astfn.bind))
-                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
-                 (`Value (`Positive, (bind :>Astfn.bind)) :>Astfn.stru))))
-      | `Single (name,tydcl) ->
-          (Hashset.add cxt name;
-           (let flag =
-              if Ctyp.is_recursive tydcl then `Positive else `Negative
-            and bind = mk_bind tydcl in
-            (`Value ((flag :>Astfn.flag), (bind :>Astfn.bind)) :>Astfn.stru))) : 
+               let bind =
+                 Listf.reduce_right_with
+                   ~compose:(fun x  y  ->
+                               (`And ((x :>Astfn.bind), (y :>Astfn.bind)) :>
+                               Astfn.bind))
+                   ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+               (`Value (`Positive, (bind :>Astfn.bind)) :>Astfn.stru))
+      | `Single (_,tydcl) ->
+          let flag = if Ctyp.is_recursive tydcl then `Positive else `Negative
+          and bind = mk_bind tydcl in
+          (`Value ((flag :>Astfn.flag), (bind :>Astfn.bind)) :>Astfn.stru) : 
      stru ) in
    match lst with
    | [] -> (`StExp `Unit :>Astfn.stru)
@@ -223,11 +215,9 @@ let stru_of_mtyps ?cons_transform  ?annot  ?arity  ?names  ~default
 let mk ?(arity= 1)  ?(default=
   (`App ((`Lid "failwith"), (`Str "arity >= 2 in other branches")) :>
   Astfn.exp))  ?cons_transform  ?annot  ~id:(id : basic_id_transform) 
-  ?(names= [])  ~mk_record  ~mk_variant  () =
-  let left_type_variable = `Pre "mf_" in
-  let right_type_variable = `Pre "mf_" in
+  ?(names= [])  ~mk_record:(mk_record : record_col list -> exp)  ~mk_variant 
+  () =
   let left_type_id = id in
-  let right_type_id = (id :>full_id_transform) in
   let default (_,number) =
     if number > 1
     then
@@ -240,6 +230,5 @@ let mk ?(arity= 1)  ?(default=
   let () = check names in
   let mk_tuple = mk_variant None in
   stru_of_mtyps ?cons_transform ?annot ~arity ~names ~default ~mk_variant
-    ~left_type_id ~left_type_variable ~mk_record
-    (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
-       ~left_type_id ~right_type_variable)
+    ~left_type_id ~mk_record
+    (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~left_type_id)
