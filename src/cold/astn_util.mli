@@ -58,6 +58,8 @@ val tuple_sta : ([> `Par of 'a | `Sta of 'a * 'a ] as 'a) list -> 'a
 val (+>) :
     ([> `App of 'a * 'a | `Lid of string ] as 'a) -> string list -> 'a
 
+val apply_args :
+    exp -> string list -> exp 
 
 
 (**

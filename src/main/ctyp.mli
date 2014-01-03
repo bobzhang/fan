@@ -87,6 +87,7 @@ val tuple_exp_of_ctyp :
         mk_tuple:(ty_info list -> exp) ->
           f:(ctyp -> exp ) -> ctyp -> exp
 
+val mk_record: ?arity:int -> col list -> ep
 
 val list_of_record : name_ctyp -> col list
 

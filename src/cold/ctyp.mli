@@ -77,6 +77,18 @@ type full_id_transform =
     | `Obj of  (string -> string) ]
         
 
+val mapi_exp :
+    ?arity:int ->
+      ?names:string list -> f:(ctyp -> exp) -> int -> ctyp -> ty_info      
+
+val tuple_exp_of_ctyp :
+    ?arity:int ->
+      ?names:string list ->
+        mk_tuple:(ty_info list -> exp) ->
+          f:(ctyp -> exp ) -> ctyp -> exp
+
+val mk_record: ?arity:int -> col list -> ep
+
 val list_of_record : name_ctyp -> col list
 
 

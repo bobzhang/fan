@@ -41,6 +41,8 @@ let tuple_sta y =
   | x::[] -> x
   | _ -> `Par (sta_of_list y)
 let (+>) f (names : string list) = appl_of_list (f :: (List.map lid names))
+let apply_args f (names : string list) =
+  appl_of_list (f :: (List.map lid names))
 let of_str (s : string) =
   (let len = String.length s in
    if len = 0

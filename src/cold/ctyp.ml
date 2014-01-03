@@ -20,6 +20,39 @@ type ty_info =
   id_ep: ep;
   id_eps: ep list;
   ty: ctyp} 
+let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
+  (ty : ctyp) =
+  (let name_exp = f ty in
+   let base = apply_args name_exp names in
+   let id_eps = (Listf.init arity) @@ (fun index  -> Id.xid ~off:index i) in
+   let ep0 = List.hd id_eps in
+   let id_ep = tuple_com id_eps in
+   let exp = appl_of_list (base :: (id_eps :>exp list)) in
+   { name_exp; info_exp = exp; id_ep; id_eps; ep0; ty } : ty_info )
+let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
+  (match ty with
+   | `Par t ->
+       let ls = Ast_basic.N.list_of_star t [] in
+       let len = List.length ls in
+       let pat = (Id_epn.mk_tuple ~arity ~number:len :>pat) in
+       let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
+       Expn_util.abstract names
+         (Expn_util.currying
+            [(`Case ((pat :>Astfn.pat), (tys :>Astfn.exp)) :>Astfn.case)]
+            ~arity)
+   | _ -> failwith ("tuple_exp_of_ctyp" ^ (Astfn_print.dump_ctyp ty)) : 
+  exp )
+let mk_record ?(arity= 1)  cols =
+  (let mk_list off =
+     Listf.mapi
+       (fun i  (x : col)  -> `RecBind ((`Lid (x.label)), (Id.xid ~off i)))
+       cols in
+   let res =
+     let ls = sem_of_list (mk_list 0) in
+     (Int.fold_left ~start:1 ~until:(arity - 1) ~acc:(`Record ls)) @@
+       (fun acc  i  ->
+          let v = sem_of_list @@ (mk_list i) in com acc (`Record v)) in
+   if arity > 1 then `Par res else res : ep )
 type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
 type branch = [ `branch of (string* ctyp list)] 
 type destination =  

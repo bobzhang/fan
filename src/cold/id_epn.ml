@@ -36,17 +36,6 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   (args |>
      (List.map (function | [] -> pat | lst -> `App (pat, (tuple_com lst)))))
     |> tuple_com
-let mk_record ?(arity= 1)  cols =
-  (let mk_list off =
-     Listf.mapi
-       (fun i  (x : Ctyp.col)  -> `RecBind ((`Lid (x.label)), (xid ~off i)))
-       cols in
-   let res =
-     let ls = sem_of_list (mk_list 0) in
-     (Int.fold_left ~start:1 ~until:(arity - 1) ~acc:(`Record ls)) @@
-       (fun acc  i  ->
-          let v = sem_of_list @@ (mk_list i) in com acc (`Record v)) in
-   if arity > 1 then `Par res else res : ep )
 let mk_tuple ~arity  ~number  =
   match arity with
   | 1 -> gen_tuple_first ~number ~off:0

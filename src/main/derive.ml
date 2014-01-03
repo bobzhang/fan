@@ -74,7 +74,7 @@ let check names =
 
 
   
-let rec  normal_simple_exp_of_ctyp
+let normal_simple_exp_of_ctyp
     ?arity ?names ~mk_tuple
     ~right_type_id ~left_type_id
     ~right_type_variable
@@ -98,10 +98,7 @@ let rec  normal_simple_exp_of_ctyp
         aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
     | `Par _  as ty ->
         tuple_exp_of_ctyp  ?arity ?names ~mk_tuple
-          ~f:(normal_simple_exp_of_ctyp
-             ?arity ?names ~mk_tuple
-             ~right_type_id ~left_type_id ~right_type_variable
-             cxt) ty 
+          ~f:aux ty 
     | (ty:ctyp) -> (* TOPBIND required *)
        failwithf "normal_simple_exp_of_ctyp : %s"
           (Astfn_print.dump_ctyp ty) in
@@ -152,7 +149,7 @@ let exp_of_ctyp
       (Id_epn.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
-      mk_variant cons exps in
+      mk_variant (Some cons) exps in
     let e = mk (cons,tyargs) in
     %case-{ $pat:p -> $e } in  begin 
     let info = (Sum, List.length (Ast_basic.N.list_of_bar ty [])) in 
@@ -177,7 +174,7 @@ let exp_of_variant ?cons_transform
     let p = (Id_epn.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
-      mk_variant cons exps in
+      mk_variant (Some cons) exps in
     let e = mk (cons,tyargs) in
     %case-{ $pat:p -> $e } in 
   (* for the case [`a | b ] *)
@@ -237,7 +234,7 @@ let fun_of_tydcl
          begin match repr with
          | `Record t ->       
            let cols =  Ctyp.list_of_record t  in
-           let pat = (Id_epn.mk_record ~arity  cols  :> pat)in
+           let pat = (Ctyp.mk_record ~arity  cols  :> pat)in
            let info =
              List.mapi
                (fun i x ->
@@ -331,7 +328,7 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
   | Some x ->
       %bind-{ $lid:fname : $x = $fun_exp }
 
-let stru_of_mtyps ?module_name ?cons_transform ?annot
+let stru_of_mtyps (* ?module_name *) ?cons_transform ?annot
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
     simple_exp_of_ctyp_with_cxt
@@ -362,13 +359,13 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
            else `Negative  
          and bind = mk_bind  tydcl in 
          %stru-{ let $rec:flag  $bind }) in
-  let item =
+  (* let item = *)
     match lst with
     | [] -> %stru-{let _ = ()}
-    | _ ->  sem_of_list (List.map fs lst )   in
-      match module_name with
-      | None -> item
-      | Some m -> %stru-{ module $uid:m = struct $item end } 
+    | _ ->  sem_of_list (List.map fs lst )
+      (* match module_name with *)
+      (* | None -> item *)
+      (* | Some m -> %stru-{ module $uid:m = struct $item end }  *)
 
 
             
@@ -381,7 +378,7 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
 (*************************************************************************)
 let obj_of_mtyps
     ?cons_transform
-    ?module_name
+    (* ?module_name *)
     ?(arity=1) ?(names=[]) ~default  
     ~left_type_variable:(left_type_variable:basic_id_transform)
     ~mk_record
@@ -446,13 +443,12 @@ let obj_of_mtyps
       sem_of_list (body @ items) in 
         let v = Ctyp.mk_obj class_name  base body in
         (Hashtbl.iter (fun _ v ->
-          eprintf "@[%a@]@." pp_print_warning_type  v)
-           tbl;
-         match module_name with
-         | None -> v
-         |Some u -> %stru-{ module $uid:u = struct $v  end  }) 
+            eprintf "@[%a@]@." pp_print_warning_type  v)
+            tbl;
+          v
+         ) 
 
-  
+
   
 
 (*   check S.names; *)
@@ -471,22 +467,18 @@ let obj_of_mtyps
    FIXME we may need a more flexible way to compose branches
  *)
 let gen_stru
-    ?module_name
     ?(arity=1)
     ?(default= %exp-{ failwith "arity >= 2 in other branches" } )
     ?cons_transform
     ?annot
     ~id:(id:basic_id_transform)  ?(names=[])  
     (* you must specify when arity >=2 *)
-    ~mk_tuple  ~mk_record ~mk_variant ()= 
+    ~mk_record ~mk_variant ()= 
   let left_type_variable  = `Pre "mf_" in
   let right_type_variable = `Pre "mf_"in
   let left_type_id = id in
   let right_type_id =
-    match module_name with
-    |None ->   (id:>full_id_transform)
-    |Some m ->
-        `Last (fun s -> %ident-'{ $uid:m.$lid{basic_transform id s} } )  in
+    (id:>full_id_transform)  in
   let default (_,number)=
     if number > 1 then
       let pat = (Id_epn.tuple_of_number `Any  arity :> pat) in 
@@ -496,8 +488,8 @@ let gen_stru
   let mk_record = mk_record in
   let cons_transform = cons_transform in
   let () = check names in
+  let mk_tuple = mk_variant None in
   stru_of_mtyps
-    ?module_name
     ?cons_transform
     ?annot
     ~arity
@@ -516,15 +508,15 @@ let gen_stru
 
     
 let gen_object
-    ?module_name
     ?(arity=1)
     ?(default= %exp-{ failwith "arity >= 2 in other branches" } )
     ?cons_transform
     ~kind
     ~base
     ~class_name = 
-  let make ?(names=[]) ~mk_tuple  ~mk_record  ~mk_variant ()= 
+  let make ?(names=[])  ~mk_record  ~mk_variant ()= 
     let () =  check names in
+    let mk_tuple = mk_variant None in
     let left_type_variable  = `Pre "mf_" in
     let right_type_variable =
       `Exp (fun v -> let v = basic_transform left_type_variable v
@@ -539,7 +531,6 @@ let gen_object
       else None in
     obj_of_mtyps
       ?cons_transform
-      ?module_name
       ~arity
       ~names
       ~default

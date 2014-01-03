@@ -80,19 +80,19 @@ val check : string list -> unit
     id_ep = `Par (, `Com (, `Lid (, "_a3"), `Lid (, "_b3")));
     id_eps = [`Lid (, "_a3"); `Lid (, "_b3")]; ty = `Lid (, "int")}
  *)      
-val mapi_exp :
-  ?arity:int ->
-  ?names:string list ->
-  f:(ctyp -> exp) -> int -> ctyp -> ty_info
+(* val mapi_exp : *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   f:(ctyp -> exp) -> int -> ctyp -> ty_info *)
 
 (** @raise Invalid_argument when type can not be handled
     [mk_tuple]
     spits out an expression node when the input is a tuple type *)        
-val tuple_exp_of_ctyp :
-    ?arity:int ->
-      ?names:string list ->
-        mk_tuple:(ty_info list -> exp) ->
-          f:(ctyp -> exp ) -> ctyp -> exp
+(* val tuple_exp_of_ctyp : *)
+(*     ?arity:int -> *)
+(*       ?names:string list -> *)
+(*         mk_tuple:(ty_info list -> exp) -> *)
+(*           f:(ctyp -> exp ) -> ctyp -> exp *)
 
 
 (**
@@ -137,25 +137,25 @@ val obj_simple_exp_of_ctyp :
   call [reduce_data_ctors]  for [sum types]
   assume input is  [sum type]
   accept input type to generate  a function expession *)  
-val exp_of_ctyp :
-  ?cons_transform:(string -> string) ->
-  ?arity:int ->
-  ?names:string list ->
-  default:(vrn * int -> case option) ->
-  mk_variant:(string -> ty_info list -> exp) ->
-  (ctyp -> exp) -> or_ctyp -> exp
+(* val exp_of_ctyp : *)
+(*   ?cons_transform:(string -> string) -> *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   default:(vrn * int -> case option) -> *)
+(*   mk_variant:(string -> ty_info list -> exp) -> *)
+(*   (ctyp -> exp) -> or_ctyp -> exp *)
 
       
 
       
 (** return a [exp] node accept [variant types] *)  
-val exp_of_variant:
-    ?cons_transform:(string -> string) ->
-      ?arity:int ->
-        ?names:string list ->
-          default:(vrn * int -> case option) ->
-            mk_variant:(string -> ty_info list -> exp) ->
-              destination:destination -> (ctyp -> exp) -> result:ctyp -> row_field ->  exp
+(* val exp_of_variant: *)
+(*     ?cons_transform:(string -> string) -> *)
+(*       ?arity:int -> *)
+(*         ?names:string list -> *)
+(*           default:(vrn * int -> case option) -> *)
+(*             mk_variant:(string -> ty_info list -> exp) -> *)
+(*               destination:destination -> (ctyp -> exp) -> result:ctyp -> row_field ->  exp *)
                   
 
 
@@ -188,64 +188,63 @@ val fun_of_tydcl :
     needed here outputs  a binding
     called by [stru_of_mtyps]
  *)                          
-val bind_of_tydcl :
-    ?cons_transform:(string -> string) ->
-      (ctyp -> exp ) ->
-          ?arity:int ->
-            ?names:string list ->
-              ?destination:destination ->
-              ?annot:(string-> (ctyp*ctyp)) ->
-              default:(vrn * int -> case option) ->
-                mk_variant:(string -> ty_info list -> exp) ->
-                  left_type_id:basic_id_transform ->
-                    left_type_variable:basic_id_transform ->
-                      mk_record:(record_col list -> exp) ->
-                        decl ->
-                        bind
+(* val bind_of_tydcl : *)
+(*     ?cons_transform:(string -> string) -> *)
+(*       (ctyp -> exp ) -> *)
+(*           ?arity:int -> *)
+(*             ?names:string list -> *)
+(*               ?destination:destination -> *)
+(*               ?annot:(string-> (ctyp*ctyp)) -> *)
+(*               default:(vrn * int -> case option) -> *)
+(*                 mk_variant:(string -> ty_info list -> exp) -> *)
+(*                   left_type_id:basic_id_transform -> *)
+(*                     left_type_variable:basic_id_transform -> *)
+(*                       mk_record:(record_col list -> exp) -> *)
+(*                         decl -> *)
+(*                         bind *)
                           
-val stru_of_mtyps :
-  ?module_name:string ->
-    ?cons_transform:(string -> string) ->
-    ?annot:(string -> (ctyp*ctyp)) -> 
-  ?arity:int ->
-  ?names:string list ->
-  default:(vrn * int -> case option) ->
-  mk_variant:(string -> ty_info list -> exp) ->
-  left_type_id:basic_id_transform ->
-  left_type_variable:basic_id_transform ->
-  mk_record:(record_col list -> exp) ->
-  (* destination:destination ->  *)
-  (string Hashset.t -> ctyp -> exp ) ->
-  mtyps -> stru
+(* val stru_of_mtyps : *)
+(*   (\* ?module_name:string -> *\) *)
+(*     ?cons_transform:(string -> string) -> *)
+(*     ?annot:(string -> (ctyp*ctyp)) ->  *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   default:(vrn * int -> case option) -> *)
+(*   mk_variant:(string -> ty_info list -> exp) -> *)
+(*   left_type_id:basic_id_transform -> *)
+(*   left_type_variable:basic_id_transform -> *)
+(*   mk_record:(record_col list -> exp) -> *)
+(*   (\* destination:destination ->  *\) *)
+(*   (string Hashset.t -> ctyp -> exp ) -> *)
+(*   mtyps -> stru *)
       
-val obj_of_mtyps :
-  ?cons_transform:(string -> string) ->
-    ?module_name:string ->
-  ?arity:int ->
-  ?names:string list ->
-  default:(vrn * int -> case option) ->
-  left_type_variable:basic_id_transform ->
-  mk_record:(record_col list -> exp) ->
-  mk_variant:(string -> ty_info list -> exp) ->
-  (* destination:destination  -> *)
-     string ->  string ->  (ctyp -> exp ) -> 
-  kind:kind -> mtyps -> stru
+(* val obj_of_mtyps : *)
+(*   ?cons_transform:(string -> string) -> *)
+(*     (\* ?module_name:string -> *\) *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   default:(vrn * int -> case option) -> *)
+(*   left_type_variable:basic_id_transform -> *)
+(*   mk_record:(record_col list -> exp) -> *)
+(*   mk_variant:(string -> ty_info list -> exp) -> *)
+(*   (\* destination:destination  -> *\) *)
+(*      string ->  string ->  (ctyp -> exp ) ->  *)
+(*   kind:kind -> mtyps -> stru *)
   
 
 val gen_stru :
-    ?module_name:string ->
+    (* ?module_name:string -> *)
       ?arity:int ->
         ?default:exp ->
           ?cons_transform:(string -> string) ->
             ?annot:(string -> (ctyp*ctyp)) ->
               id:basic_id_transform ->
                 ?names:string list ->
-                  mk_tuple:(ty_info list -> exp) ->
+                  (* mk_tuple:(ty_info list -> exp) -> *)
                     mk_record:(record_col list -> exp) ->
-                      mk_variant:(string -> ty_info list -> exp) -> unit -> 
+                      mk_variant:(string option -> ty_info list -> exp) -> unit -> 
                         mtyps -> stru
 val gen_object :
-  ?module_name:string ->
   ?arity:int ->
   ?default:exp ->
   ?cons_transform:(string -> string) ->
@@ -253,8 +252,8 @@ val gen_object :
   base:string ->
   class_name:string ->
   ?names:string list ->
-  mk_tuple:(ty_info list -> exp) ->
+  (* mk_tuple:(ty_info list -> exp) -> *)
   mk_record:(record_col list -> exp) ->
-  mk_variant:(string -> ty_info list -> exp) -> unit -> 
+  mk_variant:(string option -> ty_info list -> exp) -> unit -> 
   mtyps -> stru
       

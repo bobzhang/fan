@@ -70,6 +70,30 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
       (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
   | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty)
     
+(*
+  Example:
+   {[
+  mk_record ~arity:3 (Ctyp.list_of_record %ctyp{ u:int; v:mutable float } )
+  |> Ast2pt.print_pat f;
+  ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
+
+   ]}
+ *)
+let mk_record ?(arity=1) cols : ep  =
+  let mk_list off = 
+    Listf.mapi
+      (fun i (x:col) ->
+        %rec_exp-'{ $lid{x.label} = ${Id.xid ~off i} } ) cols in
+  let res =
+    let ls = sem_of_list (mk_list  0) in 
+    Int.fold_left
+      ~start:1 ~until:(arity-1) ~acc:%exp-'{{$ls}} @@ fun acc i ->
+        let v = sem_of_list @@ mk_list i in
+        com acc %exp-'{{$v}} in
+  if arity > 1 then
+    %exp-'{$par:res}
+  else res     
+
 type vbranch =
    [ `variant of (string* ctyp list )
    | `abbrev of ident ]

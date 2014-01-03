@@ -20,15 +20,13 @@ open Sigs_util
 let mk_variant _cons : Ctyp.ty_info list   -> exp  =
   function 
   | [] ->  %exp-{true}
-  | ls -> Listf.reduce_left_with
+  | ls -> 
+      Listf.reduce_left_with
         ~compose:(fun x y -> %exp-{ $x && $y}  )
         ~project:(fun (x:Ctyp.ty_info) -> x.info_exp) ls
-  
-let mk_tuple exps = mk_variant "" exps
-    
-let mk_record : Ctyp.record_col list  -> exp  = fun cols -> 
+let mk_record cols = 
     cols |> List.map (fun  (x:Ctyp.record_col) -> x.info)
-         |> mk_variant "" 
+         |> mk_variant None
 
 
 (** it can exist without prefix only when you do not need
@@ -36,9 +34,9 @@ let mk_record : Ctyp.record_col list  -> exp  = fun cols ->
  *)             
 let (gen_eq,gen_eqobj) = 
   (gen_stru ~id:(`Pre "eq_") 
-    ~arity:2 ~mk_tuple ~mk_record ~mk_variant
+    ~arity:2  ~mk_record ~mk_variant
     ~default: %exp-{false} (),
-   gen_object ~kind:Iter ~mk_tuple ~mk_record
+   gen_object ~kind:Iter  ~mk_record
      ~base:"eqbase" ~class_name:"eq"
      ~mk_variant:mk_variant
      ~arity:2 ~default:%exp-{false} ()) ;;
@@ -66,13 +64,12 @@ let (gen_fold,gen_fold2) =
         | [] -> %exp-{self}
         | ls ->
             Listf.reduce_right (fun v acc -> %exp-{ let self = $v in $acc }) ls ) in
-  let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
     cols |> List.map (fun  (x:Ctyp.record_col) -> x.info  )
-         |> mk_variant "" in 
-  (gen_object ~kind:Fold ~mk_tuple ~mk_record
+         |> mk_variant None in 
+  (gen_object ~kind:Fold ~mk_record
      ~base:"foldbase" ~class_name:"fold" ~mk_variant (),
-   gen_object ~kind:Fold ~mk_tuple ~mk_record
+   gen_object ~kind:Fold  ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
      ~mk_variant
      ~arity:2 ~default:%exp-{invalid_arg "fold2 failure" } () )
@@ -95,18 +92,16 @@ let _ =
 let (gen_map,gen_map2) = 
   let mk_variant cons params =
     let result =
-      appl_of_list
-        (of_str cons ::
-         (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0)) ) in 
+      match cons with
+      | Some cons -> 
+          appl_of_list
+            (of_str cons ::
+             (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0)) )
+      | None ->   params |> List.map (fun (x:Ctyp.ty_info) ->x.ep0) |> tuple_com
+    in 
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
               %exp-{let $pat{x.ep0} = ${x.info_exp} in $res })  params (result:>exp) in
-  let mk_tuple params =
-    let result = 
-      params |> List.map (fun (x:Ctyp.ty_info) ->x.ep0) |> tuple_com in
-    List.fold_right
-      (fun (x:Ctyp.ty_info) res ->
-        %exp-{ let $pat{x.ep0} = ${x.info_exp} in $res }) params (result:>exp) in 
   let mk_record cols =
     (* (->label,info.exp0) *)
     let result = 
@@ -120,10 +115,10 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
         %exp-{let $pat{ep0} = $exp in $res }) cols result in
-  (gen_object ~kind:Map ~mk_tuple ~mk_record
+  (gen_object ~kind:Map  ~mk_record
      ~base:"mapbase" ~class_name:"map"
      ~mk_variant  (),
-   gen_object ~kind:Map ~mk_tuple ~mk_record
+   gen_object ~kind:Map  ~mk_record
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
      ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());;
 
@@ -145,34 +140,26 @@ let gen_strip =
       List.filter
         (function (x:Ctyp.ty_info) -> x.ty <> `Lid "loc")
         params in
-    let result =
-      (appl_of_list
-         (of_str cons  :: (params' |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) )) :> exp)  in 
-    List.fold_right
-      (fun (x:Ctyp.ty_info) res ->
-        match x.ty with
-        | `Lid("int" |"char"| "string" | "int32"| "unit" | "nativeint" |"bool"|"loc")
-        | %ctyp-{Tokenf.quot}(** BOOTSTRAPING, associated with module [Tokenf] *)
-        | %ctyp-{Tokenf.ant} -> res
-        | _ ->
-            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result in
-  let mk_tuple params =
-    let result = 
-      (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) |> tuple_com  :> exp) in
-    List.fold_right
-      (fun (x:Ctyp.ty_info) res ->
-        match x.ty with
-        | `Lid("int"|"char" | "string" | "int32" | "unit"| "nativeint" |"bool"|"loc")
-        | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res (* BOOTSTRAPING *)
-        | _ ->
-            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result
-  in 
+    
+      match cons with
+      | Some cons -> 
+          let result =
+            (appl_of_list
+               (of_str cons  :: (params' |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) )) :> exp) in
+                List.fold_right
+            (fun (x:Ctyp.ty_info) res ->
+              match x.ty with
+              | `Lid("int" |"char"| "string" | "int32"| "unit" | "nativeint" |"bool"|"loc")
+              | %ctyp-{Tokenf.quot}(** BOOTSTRAPING, associated with module [Tokenf] *)
+              | %ctyp-{Tokenf.ant} -> res
+              | _ ->
+                  %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result 
+      | None ->   assert false in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant
+  gen_stru ~id:(`Pre "")  ~mk_record ~mk_variant
     ~annot:(fun  x ->
       (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
       (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}))
-    
     ();;
 
 Typehook.register
@@ -187,31 +174,25 @@ Typehook.register
    are not processed *)
 let gen_fill =
   let mk_variant cons params =
-    let result =
-      (appl_of_list
-         (of_str cons ::
-          %ep-{loc} ::
-          (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) )) :> exp)  in 
-    List.fold_right
+    match cons with 
+    |Some cons ->
+        let result =
+        (appl_of_list
+           (of_str cons ::
+            %ep-{loc} ::
+            (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) )) :> exp)  in 
+      List.fold_right
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" |"char"| "string" | "int32" |"unit"| "nativeint"|"bool" |"loc"|"ant")
         | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} -> res
         | _ ->
-            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result in
-  let mk_tuple params =
-    let result = 
-      (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0) |> tuple_com :> exp) in
-    List.fold_right
-      (fun (x:Ctyp.ty_info) res ->
-        match x.ty with
-        | `Lid("int"|"char" | "string" | "int32" | "unit" | "nativeint" |"bool"|"loc"|"ant")
-        | %ctyp-{Tokenf.ant} | %ctyp-{Tokenf.quot} ->  res
-        | _ ->
-            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result in 
+            %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result
+    | None -> assert false in
+
   let mk_record _cols = assert false in
   gen_stru
-    ~id:(`Pre "") ~mk_tuple
+    ~id:(`Pre "")
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
@@ -230,18 +211,26 @@ Typehook.register
 (* only object is used here *)
 let mk_variant cons params = 
   let len = List.length params in 
-  if Stringf.ends_with cons "Ant" then
-    (Id_epn.of_vstr_number "Ant" len :> exp)
-  else
+  match cons with
+  | Some cons when Stringf.ends_with cons "Ant" -> 
+      (Id_epn.of_vstr_number "Ant" len :> exp)
+  | Some cons -> 
     let params =
       params
          |> List.map (fun  (x:Ctyp.ty_info) -> x.info_exp ) in
     let a = (Expn_util.mee_of_str cons) in
-    match params with
+    begin match params with
     | [] -> a
     | _ -> 
-        Expn_util.mee_app a  (Expn_util.mk_tuple_ee params ) (* Fusing ?*)
-    
+        Expn_util.mee_app a  (Expn_util.mk_tuple_ee params )
+    end
+  | None ->
+        params
+        |> List.map (fun (x:Ctyp.ty_info) -> x.info_exp)
+        |> Expn_util.mk_tuple_ee 
+
+      
+      (* Fusing ?*)
 let mk_record cols =
   cols
     |> List.map (fun  (x : Ctyp.record_col)    -> (x.label, x.info.info_exp))
@@ -254,12 +243,10 @@ let mk_tuple params =
 
 let gen_meta_exp = 
   gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]
-    ~mk_tuple
-    ~mk_record ~mk_variant:mk_variant ();;
+    ~mk_record ~mk_variant ();;
 
 let gen_meta =
   gen_object ~kind:(Concrete %ctyp-{Astf.ep})
-    ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
     ~names:["_loc"]
@@ -282,21 +269,16 @@ let mkfmt pre sep post fields =
   let s =  pre^ String.concat sep fields ^ post in
   %exp-{Format.fprintf fmt $str:s } 
   
-let mk_variant_print cons params =
+let mk_variant cons params =
     let len = List.length params in
     let pre =
-      if len >= 1 then
-        mkfmt ("@[<1>("^cons^"@ ") "@ " ")@]" @@ Listf.init len (fun _ -> "%a")
-      else
-        mkfmt cons "" "" [] in
+        match cons  with
+        | Some cons when len >= 1  -> 
+            mkfmt ("@[<1>("^cons^"@ ") "@ " ")@]" @@ Listf.init len (fun _ -> "%a")
+        | Some cons ->
+            mkfmt cons "" "" []
+        | None -> mkfmt "@[<1>(" ",@," ")@]" @@ Listf.init len (fun _ -> "%a") in
     appl_of_list (pre :: extract params)
-    
-
-let mk_tuple_print params =
-    let len = List.length params in
-    let pre = mkfmt "@[<1>(" ",@," ")@]" @@ Listf.init len (fun _ -> "%a") in
-    appl_of_list (pre :: extract params)
-
     
 let mk_record_print cols = 
     let pre = cols
@@ -309,17 +291,17 @@ let mk_record_print cols =
   
 let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
-    ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
+    ~mk_record:mk_record_print
     ~annot:(fun s ->
       (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}))
-    ~mk_variant:mk_variant_print ()
+    ~mk_variant ()
 
 
 let gen_print_obj =
-  gen_object ~kind:(Concrete %ctyp-{unit}) ~mk_tuple:mk_tuple_print
+  gen_object ~kind:(Concrete %ctyp-{unit}) (* ~mk_tuple:mk_tuple_print *)
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
-    ~mk_variant:mk_variant_print ();;
+    ~mk_variant:mk_variant ();;
 
 [("Print",some gen_print);
  ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;;
@@ -338,9 +320,6 @@ let mk_variant_iter _cons params :exp =
             %exp-{ ${x.name_exp} ${x.id_ep} }) in
         seq_sem lst 
 
-let mk_tuple_iter params : exp =
-  mk_variant_iter "" params
-
 let mk_record_iter cols = 
   cols
   |> List.map
@@ -355,7 +334,6 @@ let gen_iter =
     ~base:"iterbase"
     ~class_name:"iter"
     ~names:[] 
-    ~mk_tuple:mk_tuple_iter
     ~mk_record:mk_record_iter
     ~mk_variant:mk_variant_iter
     ();;

@@ -16,17 +16,14 @@ let mk_variant _cons =
          ~project:(fun (x : Ctyp.ty_info)  -> x.info_exp) ls : Ctyp.ty_info
                                                                  list -> 
                                                                  exp )
-let mk_tuple exps = mk_variant "" exps
-let mk_record: Ctyp.record_col list -> exp =
-  fun cols  ->
-    (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
-      (mk_variant "")
+let mk_record cols =
+  (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
+    (mk_variant "")
 let (gen_eq,gen_eqobj) =
-  ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
+  ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_record ~mk_variant
       ~default:(`Bool false :>Astfn.exp) ()),
-    (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
-       ~class_name:"eq" ~mk_variant ~arity:2
-       ~default:(`Bool false :>Astfn.exp) ()))
+    (gen_object ~kind:Iter ~mk_record ~base:"eqbase" ~class_name:"eq"
+       ~mk_variant ~arity:2 ~default:(`Bool false :>Astfn.exp) ()))
 let some f x = Some (f x)
 let _ =
   List.iter Typehook.register
@@ -42,14 +39,13 @@ let (gen_fold,gen_fold2) =
                 (`LetIn
                    (`Negative, (`Bind ((`Lid "self"), (v :>Astfn.exp))),
                      (acc :>Astfn.exp)) :>Astfn.exp)) ls) in
-  let mk_tuple = mk_variant "" in
   let mk_record cols =
     (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
-      (mk_variant "") in
-  ((gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase"
-      ~class_name:"fold" ~mk_variant ()),
-    (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
-       ~class_name:"fold2" ~mk_variant ~arity:2
+      (mk_variant None) in
+  ((gen_object ~kind:Fold ~mk_record ~base:"foldbase" ~class_name:"fold"
+      ~mk_variant ()),
+    (gen_object ~kind:Fold ~mk_record ~base:"foldbase2" ~class_name:"fold2"
+       ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) :>
        Astfn.exp) ()))
 let _ =
@@ -58,17 +54,13 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list ((of_str cons) ::
-        (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) in
-    List.fold_right
-      (fun (x : Ctyp.ty_info)  res  ->
-         (`LetIn
-            (`Negative,
-              (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
-              (res :>Astfn.exp)) :>Astfn.exp)) params (result :>exp) in
-  let mk_tuple params =
-    let result =
-      (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com in
+      match cons with
+      | Some cons ->
+          appl_of_list ((of_str cons) ::
+            (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))))
+      | None  ->
+          (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |>
+            tuple_com in
     List.fold_right
       (fun (x : Ctyp.ty_info)  res  ->
          (`LetIn
@@ -88,10 +80,10 @@ let (gen_map,gen_map2) =
          (`LetIn
             (`Negative, (`Bind ((ep0 :>Astfn.pat), (exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) cols result in
-  ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
-      ~class_name:"map" ~mk_variant ()),
-    (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
-       ~class_name:"map2" ~mk_variant ~arity:2
+  ((gen_object ~kind:Map ~mk_record ~base:"mapbase" ~class_name:"map"
+      ~mk_variant ()),
+    (gen_object ~kind:Map ~mk_record ~base:"mapbase2" ~class_name:"map2"
+       ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "map2 failure")) :>
        Astfn.exp) ()))
 let _ =
@@ -101,40 +93,27 @@ let gen_strip =
   let mk_variant cons params =
     let params' =
       List.filter (fun (x : Ctyp.ty_info)  -> x.ty <> (`Lid "loc")) params in
-    let result =
-      (appl_of_list ((of_str cons) ::
-         (params' |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
-      exp) in
-    List.fold_right
-      (fun (x : Ctyp.ty_info)  res  ->
-         match x.ty with
-         | `Lid
-             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc")
-           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
-           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
-         | _ ->
-             (`LetIn
-                (`Negative,
-                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
-                  (res :>Astfn.exp)) :>Astfn.exp)) params' result in
-  let mk_tuple params =
-    let result =
-      ((params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com :>
-      exp) in
-    List.fold_right
-      (fun (x : Ctyp.ty_info)  res  ->
-         match x.ty with
-         | `Lid
-             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc")
-           |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
-           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
-         | _ ->
-             (`LetIn
-                (`Negative,
-                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
-                  (res :>Astfn.exp)) :>Astfn.exp)) params result in
+    match cons with
+    | Some cons ->
+        let result =
+          (appl_of_list ((of_str cons) ::
+             (params' |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
+          exp) in
+        List.fold_right
+          (fun (x : Ctyp.ty_info)  res  ->
+             match x.ty with
+             | `Lid
+                 ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"
+                  |"loc")|(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp)
+               |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp) -> res
+             | _ ->
+                 (`LetIn
+                    (`Negative,
+                      (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                      (res :>Astfn.exp)) :>Astfn.exp)) params' result
+    | None  -> assert false in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant
+  gen_stru ~id:(`Pre "") ~mk_record ~mk_variant
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Astf"), (`Lid x))),
@@ -146,40 +125,28 @@ let _ =
     ("Strip", (some gen_strip))
 let gen_fill =
   let mk_variant cons params =
-    let result =
-      (appl_of_list ((of_str cons) :: (`Lid "loc" :>Astfn.ep) ::
-         (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
-      exp) in
-    List.fold_right
-      (fun (x : Ctyp.ty_info)  res  ->
-         match x.ty with
-         | `Lid
-             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc"
-              |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
-           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
-         | _ ->
-             (`LetIn
-                (`Negative,
-                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
-                  (res :>Astfn.exp)) :>Astfn.exp)) params result in
-  let mk_tuple params =
-    let result =
-      ((params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0))) |> tuple_com :>
-      exp) in
-    List.fold_right
-      (fun (x : Ctyp.ty_info)  res  ->
-         match x.ty with
-         | `Lid
-             ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"|"loc"
-              |"ant")|(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
-           |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
-         | _ ->
-             (`LetIn
-                (`Negative,
-                  (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
-                  (res :>Astfn.exp)) :>Astfn.exp)) params result in
+    match cons with
+    | Some cons ->
+        let result =
+          (appl_of_list ((of_str cons) :: (`Lid "loc" :>Astfn.ep) ::
+             (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.ep0)))) :>
+          exp) in
+        List.fold_right
+          (fun (x : Ctyp.ty_info)  res  ->
+             match x.ty with
+             | `Lid
+                 ("int"|"char"|"string"|"int32"|"unit"|"nativeint"|"bool"
+                  |"loc"|"ant")
+               |(`Dot (`Uid "Tokenf",`Lid "ant") : Astfn.ctyp)
+               |(`Dot (`Uid "Tokenf",`Lid "quot") : Astfn.ctyp) -> res
+             | _ ->
+                 (`LetIn
+                    (`Negative,
+                      (`Bind ((x.ep0 :>Astfn.pat), (x.info_exp :>Astfn.exp))),
+                      (res :>Astfn.exp)) :>Astfn.exp)) params result
+    | None  -> assert false in
   let mk_record _cols = assert false in
-  gen_stru ~id:(`Pre "") ~mk_tuple ~mk_record ~mk_variant ~names:["loc"]
+  gen_stru ~id:(`Pre "") ~mk_record ~mk_variant ~names:["loc"]
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Locf"), (`Lid "t"))),
@@ -193,15 +160,19 @@ let _ =
     ("Fill", (some gen_fill))
 let mk_variant cons params =
   let len = List.length params in
-  if Stringf.ends_with cons "Ant"
-  then (Id_epn.of_vstr_number "Ant" len :>exp)
-  else
-    (let params =
-       params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp)) in
-     let a = Expn_util.mee_of_str cons in
-     match params with
-     | [] -> a
-     | _ -> Expn_util.mee_app a (Expn_util.mk_tuple_ee params))
+  match cons with
+  | Some cons when Stringf.ends_with cons "Ant" ->
+      (Id_epn.of_vstr_number "Ant" len :>exp)
+  | Some cons ->
+      let params =
+        params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp)) in
+      let a = Expn_util.mee_of_str cons in
+      (match params with
+       | [] -> a
+       | _ -> Expn_util.mee_app a (Expn_util.mk_tuple_ee params))
+  | None  ->
+      (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
+        Expn_util.mk_tuple_ee
 let mk_record cols =
   (cols |>
      (List.map
@@ -211,12 +182,11 @@ let mk_tuple params =
   (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
     Expn_util.mk_tuple_ee
 let gen_meta_exp =
-  gen_stru ~id:(`Pre "meta_") ~names:["_loc"] ~mk_tuple ~mk_record
-    ~mk_variant ()
+  gen_stru ~id:(`Pre "meta_") ~names:["_loc"] ~mk_record ~mk_variant ()
 let gen_meta =
   gen_object
     ~kind:(Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp))
-    ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
+    ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
 let _ =
   Typehook.register
@@ -231,18 +201,16 @@ let mkfmt pre sep post fields =
   (`App
      ((`App ((`Dot ((`Uid "Format"), (`Lid "fprintf"))), (`Lid "fmt"))),
        (`Str s)) :>Astfn.exp)
-let mk_variant_print cons params =
+let mk_variant cons params =
   let len = List.length params in
   let pre =
-    if len >= 1
-    then
-      (mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]") @@
-        (Listf.init len (fun _  -> "%a"))
-    else mkfmt cons "" "" [] in
-  appl_of_list (pre :: (extract params))
-let mk_tuple_print params =
-  let len = List.length params in
-  let pre = (mkfmt "@[<1>(" ",@," ")@]") @@ (Listf.init len (fun _  -> "%a")) in
+    match cons with
+    | Some cons when len >= 1 ->
+        (mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]") @@
+          (Listf.init len (fun _  -> "%a"))
+    | Some cons -> mkfmt cons "" "" []
+    | None  ->
+        (mkfmt "@[<1>(" ",@," ")@]") @@ (Listf.init len (fun _  -> "%a")) in
   appl_of_list (pre :: (extract params))
 let mk_record_print cols =
   let pre =
@@ -251,17 +219,16 @@ let mk_record_print cols =
   appl_of_list (pre ::
     ((cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |> extract))
 let gen_print =
-  gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
-    ~mk_record:mk_record_print
+  gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_record:mk_record_print
     ~annot:(fun s  ->
               ((`Arrow
                   ((`Dot ((`Uid "Format"), (`Lid "formatter"))),
                     (`Arrow ((`Lid s), (`Lid "unit")))) :>Astfn.ctyp),
-                (`Lid "unit" :>Astfn.ctyp))) ~mk_variant:mk_variant_print ()
+                (`Lid "unit" :>Astfn.ctyp))) ~mk_variant ()
 let gen_print_obj =
-  gen_object ~kind:(Concrete (`Lid "unit" :>Astfn.ctyp))
-    ~mk_tuple:mk_tuple_print ~base:"printbase" ~class_name:"print"
-    ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
+  gen_object ~kind:(Concrete (`Lid "unit" :>Astfn.ctyp)) ~base:"printbase"
+    ~class_name:"print" ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant
+    ()
 let _ =
   [("Print", (some gen_print)); ("OPrint", (some gen_print_obj))] |>
     (List.iter Typehook.register)
@@ -276,7 +243,6 @@ let mk_variant_iter _cons params =
                  (`App ((x.name_exp :>Astfn.exp), (x.id_ep :>Astfn.exp)) :>
                  Astfn.exp))) in
        seq_sem lst : exp )
-let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =
   (cols |>
      (List.map
@@ -287,8 +253,7 @@ let mk_record_iter cols =
     |> seq_sem
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
-    ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter
-    ~mk_variant:mk_variant_iter ()
+    ~mk_record:mk_record_iter ~mk_variant:mk_variant_iter ()
 let _ = ("OIter", (some gen_iter)) |> Typehook.register
 let generate (mtyps : mtyps) =
   (let tbl = Hashtbl.create 30 in

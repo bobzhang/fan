@@ -148,7 +148,10 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     id \
     compile_lex compile_stream ctyp \
-    derive dyn_load \
+    derive \
+    derive_obj \
+    derive_stru \
+    dyn_load \
     id_epn\
     astfn \
     control control_require \
