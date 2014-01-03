@@ -1,5 +1,3 @@
-let gen_stru = Derive.gen_stru
-let gen_object = Derive.gen_object
 open Astfn
 open Astn_util
 open Util
@@ -18,11 +16,11 @@ let mk_variant _cons =
                                                                  exp )
 let mk_record cols =
   (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
-    (mk_variant "")
+    (mk_variant None)
 let (gen_eq,gen_eqobj) =
-  ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_record ~mk_variant
+  ((Derive_stru.mk ~id:(`Pre "eq_") ~arity:2 ~mk_record ~mk_variant
       ~default:(`Bool false :>Astfn.exp) ()),
-    (gen_object ~kind:Iter ~mk_record ~base:"eqbase" ~class_name:"eq"
+    (Derive_obj.mk ~kind:Iter ~mk_record ~base:"eqbase" ~class_name:"eq"
        ~mk_variant ~arity:2 ~default:(`Bool false :>Astfn.exp) ()))
 let some f x = Some (f x)
 let _ =
@@ -42,10 +40,10 @@ let (gen_fold,gen_fold2) =
   let mk_record cols =
     (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
       (mk_variant None) in
-  ((gen_object ~kind:Fold ~mk_record ~base:"foldbase" ~class_name:"fold"
+  ((Derive_obj.mk ~kind:Fold ~mk_record ~base:"foldbase" ~class_name:"fold"
       ~mk_variant ()),
-    (gen_object ~kind:Fold ~mk_record ~base:"foldbase2" ~class_name:"fold2"
-       ~mk_variant ~arity:2
+    (Derive_obj.mk ~kind:Fold ~mk_record ~base:"foldbase2"
+       ~class_name:"fold2" ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) :>
        Astfn.exp) ()))
 let _ =
@@ -80,9 +78,9 @@ let (gen_map,gen_map2) =
          (`LetIn
             (`Negative, (`Bind ((ep0 :>Astfn.pat), (exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) cols result in
-  ((gen_object ~kind:Map ~mk_record ~base:"mapbase" ~class_name:"map"
+  ((Derive_obj.mk ~kind:Map ~mk_record ~base:"mapbase" ~class_name:"map"
       ~mk_variant ()),
-    (gen_object ~kind:Map ~mk_record ~base:"mapbase2" ~class_name:"map2"
+    (Derive_obj.mk ~kind:Map ~mk_record ~base:"mapbase2" ~class_name:"map2"
        ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "map2 failure")) :>
        Astfn.exp) ()))
@@ -113,7 +111,7 @@ let gen_strip =
                       (res :>Astfn.exp)) :>Astfn.exp)) params' result
     | None  -> assert false in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "") ~mk_record ~mk_variant
+  Derive_stru.mk ~id:(`Pre "") ~mk_record ~mk_variant
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Astf"), (`Lid x))),
@@ -146,7 +144,7 @@ let gen_fill =
                       (res :>Astfn.exp)) :>Astfn.exp)) params result
     | None  -> assert false in
   let mk_record _cols = assert false in
-  gen_stru ~id:(`Pre "") ~mk_record ~mk_variant ~names:["loc"]
+  Derive_stru.mk ~id:(`Pre "") ~mk_record ~mk_variant ~names:["loc"]
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "Locf"), (`Lid "t"))),
@@ -182,9 +180,9 @@ let mk_tuple params =
   (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
     Expn_util.mk_tuple_ee
 let gen_meta_exp =
-  gen_stru ~id:(`Pre "meta_") ~names:["_loc"] ~mk_record ~mk_variant ()
+  Derive_stru.mk ~id:(`Pre "meta_") ~names:["_loc"] ~mk_record ~mk_variant ()
 let gen_meta =
-  gen_object
+  Derive_obj.mk
     ~kind:(Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp))
     ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
@@ -219,14 +217,15 @@ let mk_record_print cols =
   appl_of_list (pre ::
     ((cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |> extract))
 let gen_print =
-  gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_record:mk_record_print
+  Derive_stru.mk ~id:(`Pre "pp_print_") ~names:["fmt"]
+    ~mk_record:mk_record_print
     ~annot:(fun s  ->
               ((`Arrow
                   ((`Dot ((`Uid "Format"), (`Lid "formatter"))),
                     (`Arrow ((`Lid s), (`Lid "unit")))) :>Astfn.ctyp),
                 (`Lid "unit" :>Astfn.ctyp))) ~mk_variant ()
 let gen_print_obj =
-  gen_object ~kind:(Concrete (`Lid "unit" :>Astfn.ctyp)) ~base:"printbase"
+  Derive_obj.mk ~kind:(Concrete (`Lid "unit" :>Astfn.ctyp)) ~base:"printbase"
     ~class_name:"print" ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant
     ()
 let _ =
@@ -252,7 +251,7 @@ let mk_record_iter cols =
            Astfn.exp))))
     |> seq_sem
 let gen_iter =
-  gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
+  Derive_obj.mk ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_record:mk_record_iter ~mk_variant:mk_variant_iter ()
 let _ = ("OIter", (some gen_iter)) |> Typehook.register
 let generate (mtyps : mtyps) =

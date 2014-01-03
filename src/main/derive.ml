@@ -363,7 +363,7 @@ let stru_of_mtyps (* ?module_name *) ?cons_transform ?annot
     match lst with
     | [] -> %stru-{let _ = ()}
     | _ ->  sem_of_list (List.map fs lst )
-      (* match module_name with *)
+          (* match module_name with *)
       (* | None -> item *)
       (* | Some m -> %stru-{ module $uid:m = struct $item end }  *)
 

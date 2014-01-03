@@ -1,10 +1,10 @@
 
-%import{
-Derive:
-  gen_stru
-  gen_object
-  ;
-};;
+(* %import{ *)
+(* Derive: *)
+(*   gen_stru *)
+(*   gen_object *)
+(*   ; *)
+(* };; *)
 open Astfn
 open Astn_util
 open Util
@@ -33,10 +33,10 @@ let mk_record cols =
     any runtime -- 
  *)             
 let (gen_eq,gen_eqobj) = 
-  (gen_stru ~id:(`Pre "eq_") 
+  (Derive_stru.mk ~id:(`Pre "eq_") 
     ~arity:2  ~mk_record ~mk_variant
     ~default: %exp-{false} (),
-   gen_object ~kind:Iter  ~mk_record
+   Derive_obj.mk ~kind:Iter  ~mk_record
      ~base:"eqbase" ~class_name:"eq"
      ~mk_variant:mk_variant
      ~arity:2 ~default:%exp-{false} ()) ;;
@@ -67,9 +67,9 @@ let (gen_fold,gen_fold2) =
   let mk_record cols =
     cols |> List.map (fun  (x:Ctyp.record_col) -> x.info  )
          |> mk_variant None in 
-  (gen_object ~kind:Fold ~mk_record
+  (Derive_obj.mk ~kind:Fold ~mk_record
      ~base:"foldbase" ~class_name:"fold" ~mk_variant (),
-   gen_object ~kind:Fold  ~mk_record
+   Derive_obj.mk ~kind:Fold  ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
      ~mk_variant
      ~arity:2 ~default:%exp-{invalid_arg "fold2 failure" } () )
@@ -115,10 +115,10 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
         %exp-{let $pat{ep0} = $exp in $res }) cols result in
-  (gen_object ~kind:Map  ~mk_record
+  (Derive_obj.mk ~kind:Map  ~mk_record
      ~base:"mapbase" ~class_name:"map"
      ~mk_variant  (),
-   gen_object ~kind:Map  ~mk_record
+   Derive_obj.mk ~kind:Map  ~mk_record
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
      ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());;
 
@@ -156,7 +156,7 @@ let gen_strip =
                   %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result 
       | None ->   assert false in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "")  ~mk_record ~mk_variant
+  Derive_stru.mk ~id:(`Pre "")  ~mk_record ~mk_variant
     ~annot:(fun  x ->
       (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
       (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}))
@@ -191,7 +191,7 @@ let gen_fill =
     | None -> assert false in
 
   let mk_record _cols = assert false in
-  gen_stru
+  Derive_stru.mk
     ~id:(`Pre "")
     ~mk_record ~mk_variant
     ~names:["loc"]
@@ -242,11 +242,11 @@ let mk_tuple params =
     |> Expn_util.mk_tuple_ee 
 
 let gen_meta_exp = 
-  gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]
+  Derive_stru.mk  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_record ~mk_variant ();;
 
 let gen_meta =
-  gen_object ~kind:(Concrete %ctyp-{Astf.ep})
+  Derive_obj.mk ~kind:(Concrete %ctyp-{Astf.ep})
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
     ~names:["_loc"]
@@ -290,7 +290,7 @@ let mk_record_print cols =
                   |> extract )) (* apply pre *)  
   
 let gen_print =
-  gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
+  Derive_stru.mk  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_record:mk_record_print
     ~annot:(fun s ->
       (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}))
@@ -298,7 +298,7 @@ let gen_print =
 
 
 let gen_print_obj =
-  gen_object ~kind:(Concrete %ctyp-{unit}) (* ~mk_tuple:mk_tuple_print *)
+  Derive_obj.mk ~kind:(Concrete %ctyp-{unit}) (* ~mk_tuple:mk_tuple_print *)
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
     ~mk_variant:mk_variant ();;
@@ -330,7 +330,7 @@ let mk_record_iter cols =
 
 
 let gen_iter =
-  gen_object ~kind:Iter
+  Derive_obj.mk ~kind:Iter
     ~base:"iterbase"
     ~class_name:"iter"
     ~names:[] 

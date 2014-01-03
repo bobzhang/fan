@@ -51,7 +51,7 @@ open Sigs_util
 
 
 (* we preserve some keywords to avoid variable capture *)
-val check : string list -> unit
+(* val check : string list -> unit *)
 
 
 
@@ -105,14 +105,14 @@ val check : string list -> unit
    (m_float _loc fmt (a0, b0))))]
    return type is result
    Plz supply current type [type 'a list] =>  [list] *)    
-val normal_simple_exp_of_ctyp :
-  ?arity:int ->
-  ?names:string list ->
-  mk_tuple:(ty_info list -> exp) ->
-  right_type_id:full_id_transform ->
-  left_type_id:basic_id_transform ->
-  right_type_variable:rhs_basic_id_transform ->
-  string Hashset.t -> ctyp -> exp
+(* val normal_simple_exp_of_ctyp : *)
+(*   ?arity:int -> *)
+(*   ?names:string list -> *)
+(*   mk_tuple:(ty_info list -> exp) -> *)
+(*   right_type_id:full_id_transform -> *)
+(*   left_type_id:basic_id_transform -> *)
+(*   right_type_variable:rhs_basic_id_transform -> *)
+(*   string Hashset.t -> ctyp -> exp *)
 
 
 (**
@@ -121,14 +121,14 @@ val normal_simple_exp_of_ctyp :
   'a  ==> (mf_a self)
   list ('a list) ==>  self#list (fun self -> (self#list mf_a))
   m_list (tree 'a) ==>  self#m_list (fun self -> self#tree mf_a) *)         
-val obj_simple_exp_of_ctyp :
-  right_type_id:full_id_transform ->
-  left_type_variable:basic_id_transform ->
-  right_type_variable:rhs_basic_id_transform ->
-  ?names:string list ->
-  ?arity:int ->
-  mk_tuple:(ty_info list -> exp) ->
-  ctyp -> exp
+(* val obj_simple_exp_of_ctyp : *)
+(*   right_type_id:full_id_transform -> *)
+(*   left_type_variable:basic_id_transform -> *)
+(*   right_type_variable:rhs_basic_id_transform -> *)
+(*   ?names:string list -> *)
+(*   ?arity:int -> *)
+(*   mk_tuple:(ty_info list -> exp) -> *)
+(*   ctyp -> exp *)
 
 
 
@@ -164,24 +164,24 @@ val obj_simple_exp_of_ctyp :
 
 
 (* add extra arguments to the generated expession node *)  
-val mk_prefix:
-  opt_decl_params ->
-  exp ->
-  ?names:string list ->
-  left_type_variable:basic_id_transform ->
-  exp
+(* val mk_prefix: *)
+(*   opt_decl_params -> *)
+(*   exp -> *)
+(*   ?names:string list -> *)
+(*   left_type_variable:basic_id_transform -> *)
+(*   exp *)
 
       
-val fun_of_tydcl :
-    ?names:string list ->
-    ?arity:int ->
-      left_type_variable:basic_id_transform ->
-        mk_record:(record_col list -> exp) ->
-          result:ctyp -> 
-            (ctyp -> exp ) ->
-              (or_ctyp -> exp ) ->
-                (result:ctyp -> row_field -> exp) ->  (* labeld as variant *)
-                  decl -> exp
+(* val fun_of_tydcl : *)
+(*     ?names:string list -> *)
+(*     ?arity:int -> *)
+(*       left_type_variable:basic_id_transform -> *)
+(*         mk_record:(record_col list -> exp) -> *)
+(*           result:ctyp ->  *)
+(*             (ctyp -> exp ) -> *)
+(*               (or_ctyp -> exp ) -> *)
+(*                 (result:ctyp -> row_field -> exp) ->  (\* labeld as variant *\) *)
+(*                   decl -> exp *)
 
 
 (** destination is [Str_item] generate [stru], type annotations may not be
@@ -240,10 +240,9 @@ val gen_stru :
             ?annot:(string -> (ctyp*ctyp)) ->
               id:basic_id_transform ->
                 ?names:string list ->
-                  (* mk_tuple:(ty_info list -> exp) -> *)
-                    mk_record:(record_col list -> exp) ->
-                      mk_variant:(string option -> ty_info list -> exp) -> unit -> 
-                        mtyps -> stru
+                  mk_record:(record_col list -> exp) ->
+                    mk_variant:(string option -> ty_info list -> exp) -> unit -> 
+                      mtyps -> stru
 val gen_object :
   ?arity:int ->
   ?default:exp ->
@@ -252,7 +251,6 @@ val gen_object :
   base:string ->
   class_name:string ->
   ?names:string list ->
-  (* mk_tuple:(ty_info list -> exp) -> *)
   mk_record:(record_col list -> exp) ->
   mk_variant:(string option -> ty_info list -> exp) -> unit -> 
   mtyps -> stru
