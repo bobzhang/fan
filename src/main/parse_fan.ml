@@ -1207,12 +1207,12 @@ with ctyp
   [ S as t1; "->"; S as t2 %{  `Arrow(_loc,t1,t2)} ]
   ctyp: 40  
   [ "~"; a_lident as i; ":"; S as t %{ `Label (_loc, i, t)}
-      | Label s ; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
-      | Optlabel s ; S as t %{ `OptLabl(_loc,`Lid(_loc,s),t)}
-      | "?"; a_lident as i; ":"; S as t %{ `OptLabl(_loc,i,t)}]
-      ctyp: 50  
-      [ S as t1; S as t2 %{`App (_loc,t2,t1)} ]
-       (* [mod_ext_longident] and [type_longident]
+  | Label s ; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
+  | Optlabel s ; S as t %{ `OptLabl(_loc,`Lid(_loc,s),t)}
+  | "?"; a_lident as i; ":"; S as t %{ `OptLabl(_loc,i,t)}]
+  ctyp: 50  
+  [ S as t1; S as t2 %{`App (_loc,t2,t1)} ]
+  (* [mod_ext_longident] and [type_longident]
           | type_longident
           | simple_core_type2 type_longident
           | LPAREN core_type_comma_list RPAREN type_longident *)  
@@ -1223,83 +1223,93 @@ with ctyp
        (*        `Dot (_loc, ident_of_ctyp t1, ident_of_ctyp t2) *)
        (*          ) (\* FIXME*\) *)
        (*      with Invalid_argument s -> raise (Streamf.Error s) ] *)
-      ctyp: 60 
-      [ "'"; a_lident as i %{  `Quote (_loc, `Normal _loc,  i)}
-      | "_" %{ `Any _loc}
-      | Ant (""|"typ"|"par"|"id" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
-      | Ant ("id" ,s); "."; S as t %{
-        let try id = ident_of_ctyp t  in
-        (`Dot(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ident)  s,id) :ctyp)
-        with Invalid_argument s -> raise (Streamf.Error s)}
-      | a_uident as i; "."; S as t %{
-        let try id = ident_of_ctyp t in
-        `Dot(_loc,(i:>ident),id)
-        with Invalid_argument s -> raise (Streamf.Error s)}
-      | a_lident as i %{  (i :> ctyp)}
-      | "("; S as t; "*"; star_ctyp as tl; ")" %{
-        `Par (_loc, `Sta (_loc, t, tl))}
-      | "("; S as t; ")" %{ t}
-      | "("; S as t; ","; com_ctyp as tl; ")" ; type_longident as j %{
-        appl_of_list  ((j:>ctyp):: t:: Ast_basic.list_of_com tl [])}
-      | "["; row_field as rfl; "]" %{ `PolyEq(_loc,rfl)}
-          (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
-      | "[>"; row_field as rfl; "]" %{   `PolySup (_loc, rfl)}
-          
-      | "[<"; row_field as rfl; ? [ ">"; name_tags as ntl ] ; "]" %{
-        match ntl with
-        | None -> `PolyInf(_loc,rfl)
-        | Some ntl -> `PolyInfSup(_loc,rfl,ntl)}
-
-      | "#"; class_longident as i %{  `ClassPath (_loc, i)}
-      | "<"; opt_meth_list as t; ">" %{ t}
-      | "("; "module"; mtyp as p; ")" %{ `Package(_loc,p)}
-      ] 
-      comma_ctyp: (* DUPLICATED removed later *)
-      [ S as t1; ","; S as t2 %{ `Com (_loc, t1, t2) }
-      | Ant ( "" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.type_parameters)  s}
-      | ctyp as t %{ `Ctyp(_loc,t)}
-      ]
-      com_ctyp:
-      [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
-      | S as t1; ","; S as t2 %{ `Com(_loc,t1,t2)}
-      | ctyp as t %{ t}
-      ]
-      star_ctyp:
-      [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
-      | S as t1; "*"; S as t2 %{ `Sta(_loc,t1,t2)}
-      | ctyp as t %{ t}
-      ]
-      constructor_declarations:
-      [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.or_ctyp)  s}
-      | S as t1; "|"; S as t2 %{    `Bar(_loc,t1,t2)}
-      | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,s,t)}
-      | a_uident as s; ":"; ctyp as t %{ (* GADT  *) `TyCol(_loc,s,t)}
-      | a_uident as s %{ (s :> or_ctyp)}
-      ]
-      constructor_declaration:
-      [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.of_ctyp)  s}
-      | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,(s:>vid),t)}
-      | a_uident as s %{ (s:>of_ctyp)}
-      ]
-      constructor_arg_list:
-      [ S as t1; "*"; S as t2 %{ `Sta(_loc,t1,t2)}
-      | ctyp as t %{ t}
-      ]
-      label_declaration_list:
-      [ label_declaration as t1; ";"; S as t2 %{ `Sem(_loc,t1,t2)}
-      | label_declaration as t1; ? ";"            %{ t1}
-      ]
+  ctyp: 60 
+  [ "'"; a_lident as i %{  `Quote (_loc, `Normal _loc,  i)}
+  | "_" %{ `Any _loc}
+  | Ant (""|"typ"|"par"|"id" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
+  | Ant ("id" ,s); "."; S as t %{
+    let try id = ident_of_ctyp t  in
+    (`Dot(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ident)  s,id) :ctyp)
+    with Invalid_argument s -> raise (Streamf.Error s)}
+  | a_uident as i; "."; S as t %{
+    let try id = ident_of_ctyp t in
+    `Dot(_loc,(i:>ident),id)
+    with Invalid_argument s -> raise (Streamf.Error s)}
+  | a_lident as i %{  (i :> ctyp)}
+  | "("; S as t; "*"; star_ctyp as tl; ")" %{
+    `Par (_loc, `Sta (_loc, t, tl))}
+  | "("; S as t; ")" %{ t}
+  | "("; S as t; ","; com_ctyp as tl; ")" ; type_longident as j %{
+    appl_of_list  ((j:>ctyp):: t:: Ast_basic.list_of_com tl [])}
+  | "["; row_field as rfl; "]" %{ `PolyEq(_loc,rfl)}
+      (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
+  | "[>"; row_field as rfl; "]" %{   `PolySup (_loc, rfl)}
+      
+  | "[<"; row_field as rfl; ? [ ">"; name_tags as ntl ] ; "]" %{
+    match ntl with
+    | None -> `PolyInf(_loc,rfl)
+    | Some ntl -> `PolyInfSup(_loc,rfl,ntl)}
+      
+  | "#"; class_longident as i %{  `ClassPath (_loc, i)}
+  | "<"; opt_meth_list as t; ">" %{ t}
+  | "("; "module"; mtyp as p; ")" %{ `Package(_loc,p)}
+  ] 
+  comma_ctyp: (* DUPLICATED removed later *)
+  [ S as t1; ","; S as t2 %{ `Com (_loc, t1, t2) }
+  | Ant ( "" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.type_parameters)  s}
+  | ctyp as t %{ `Ctyp(_loc,t)}
+  ]
   
-      label_declaration:
-      [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.name_ctyp)  s}
-      | a_lident as s; ":"; ctyp as t %{ `RecCol(_loc,s,t,`Negative _loc)}
-      | "mutable"; a_lident as s; ":";  ctyp as t
-          %{ `RecCol(_loc,s,t,`Positive _loc)}
-      ]
-      comma_type_parameter:
-      [ S as t1; ","; S as t2 %{  `Com (_loc, t1, t2)}
-      | type_parameter as t %{ `Ctyp(_loc, (t:>ctyp))}
-      ]
+  com_ctyp:
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
+  | S as t1; ","; S as t2 %{ `Com(_loc,t1,t2)}
+  | ctyp as t %{ t}
+  ]
+
+  star_ctyp:
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
+  | S as t1; "*"; S as t2 %{ `Sta(_loc,t1,t2)}
+  | ctyp as t %{ t}
+  ]
+
+
+  constructor_declarations:
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.or_ctyp)  s}
+  | S as t1; "|"; S as t2 %{    `Bar(_loc,t1,t2)}
+  | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,s,t)}
+  | a_uident as s; ":"; ctyp as t %{ (* GADT  *) `TyCol(_loc,s,t)}
+  | a_uident as s %{ (s :> or_ctyp)}
+  ]
+
+
+  constructor_declaration:
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.of_ctyp)  s}
+  | a_uident as s; "of"; constructor_arg_list as t %{ `Of(_loc,(s:>vid),t)}
+  | a_uident as s %{ (s:>of_ctyp)}
+  ]
+
+  constructor_arg_list:
+  [ S as t1; "*"; S as t2 %{ `Sta(_loc,t1,t2)}
+  | ctyp as t %{ t}
+  ]
+
+  label_declaration_list:
+  [ label_declaration as t1; ";"; S as t2 %{ `Sem(_loc,t1,t2)}
+  | label_declaration as t1; ? ";"            %{ t1}
+  ]
+  
+
+  label_declaration:
+  [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.name_ctyp)  s}
+  | a_lident as s; ":"; ctyp as t %{ `RecCol(_loc,s,t,`Negative _loc)}
+  | "mutable"; a_lident as s; ":";  ctyp as t
+      %{ `RecCol(_loc,s,t,`Positive _loc)}
+  ]
+
+  comma_type_parameter:
+  [ S as t1; ","; S as t2 %{  `Com (_loc, t1, t2)}
+  | type_parameter as t %{ `Ctyp(_loc, (t:>ctyp))}
+  ]
   };
 end;;
 

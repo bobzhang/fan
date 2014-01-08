@@ -71,7 +71,7 @@ let exp_of_ctyp ~arity  ~names  ~default  ~mk_variant  simple_exp_of_ctyp
     | _ ->
         let res = List.fold_left aux [] branches in
         if arity >= 2
-        then (match default info with | None  -> res | Some x -> x :: res)
+        then (match default with | None  -> res | Some x -> x :: res)
         else res in
   ((reduce_data_ctors ty f ~compose:cons) |> List.rev) |>
     (Expn_util.currying ~arity)
@@ -102,7 +102,7 @@ let exp_of_variant ~arity  ~names  ~default  ~mk_variant  ~destination
            | `abbrev lid -> (simple lid) :: acc) [] ls in
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
-      then match default info with | Some x -> x :: res | None  -> res
+      then match default with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
   Expn_util.currying ~arity res
@@ -227,9 +227,7 @@ let mk ?(arity= 1)  ?(default=
   Astfn.exp))  ?annot  ~id:(id : basic_id_transform)  ?(names= []) 
   ~mk_record:(mk_record : record_col list -> exp)  ~mk_variant  () =
   let left_type_id = id in
-  let default (_,_) =
-    let pat = (Id_epn.tuple_of_number `Any arity :>pat) in
-    Some (`Case ((pat :>Astfn.pat), (default :>Astfn.exp)) :>Astfn.case) in
+  let default = Some (`Case (`Any, (default :>Astfn.exp)) :>Astfn.case) in
   let mk_record = mk_record in
   let () = check names in
   let mk_tuple = mk_variant None in
