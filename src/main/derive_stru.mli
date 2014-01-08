@@ -17,9 +17,23 @@
 (*   left_type_id:basic_id_transform -> *)
 (*   right_type_variable:rhs_basic_id_transform -> *)
 (*   string Hashset.t -> ctyp -> exp *)
+
+(*
+  [default] is unnecessary for some type such as
+  {[
+  type u = A
+  let cmp_u (x,y)= 
+    match (x,y) with
+    | (A, A) -> true
+    |  _ -> false 
+  ]}
+ *)
 open Astfn
 open Sigs_util
 open Ctyp
+
+
+
 val mk :
     ?arity:int ->
       ?default:exp ->
@@ -27,5 +41,5 @@ val mk :
           id:basic_id_transform ->
             ?names:string list ->
               mk_record:(record_col list -> exp) ->
-                mk_variant:(string option -> ty_info list -> exp) -> unit -> 
+                mk_variant:(string option -> ty_info list -> exp) -> unit ->
                   mtyps -> stru

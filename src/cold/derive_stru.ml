@@ -3,10 +3,13 @@ open Astn_util
 open Astfn
 open Ctyp
 let check _ = ()
-type param =  {
-  arity: int;
-  names: string list} 
-let normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~left_type_id 
+type arity =  
+  | Single
+  | Multiple of (int* exp) 
+type default =  
+  | Atom of exp
+  | Invalid_argument 
+let normal_simple_exp_of_ctyp ~arity  ~names  ~mk_tuple  ~left_type_id 
   (ty : ctyp) =
   let right_trans = left_transform left_type_id in
   let tyvar = Ctyp.right_transform (`Pre "mf_") in
@@ -24,12 +27,12 @@ let normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~left_type_id
            (`App
               ((`App ((`Lid "arrow"), (t1 :>Astfn.ctyp))), (t2 :>Astfn.ctyp)) :>
            Astfn.ctyp)
-     | `Par _ as ty -> tuple_exp_of_ctyp ?arity ?names ~mk_tuple ~f:aux ty
+     | `Par _ as ty -> tuple_exp_of_ctyp ~arity ~names ~mk_tuple ~f:aux ty
      | (ty : ctyp) ->
          failwithf "normal_simple_exp_of_ctyp : %s"
            (Astfn_print.dump_ctyp ty) : exp ) in
   aux ty
-let mk_prefix ?(names= [])  (vars : opt_decl_params) (acc : exp) =
+let mk_prefix ~names  (vars : opt_decl_params) (acc : exp) =
   let varf = basic_transform (`Pre "mf_") in
   let f (var : decl_params) acc =
     match var with
@@ -41,13 +44,11 @@ let mk_prefix ?(names= [])  (vars : opt_decl_params) (acc : exp) =
   | `Some xs ->
       let vars = Ast_basic.N.list_of_com xs [] in
       List.fold_right f vars (Expn_util.abstract names acc)
-let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
-  ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
+let exp_of_ctyp ~arity  ~names  ~default  ~mk_variant  simple_exp_of_ctyp
+  (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
-     let p: pat =
-       (Id_epn.gen_tuple_n ?cons_transform ~arity cons args_length :>
-       pat) in
+     let p: pat = (Id_epn.gen_tuple_n ~arity cons args_length :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -55,19 +56,30 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
      let e = mk (cons, tyargs) in
      (`Case ((p :>Astfn.pat), (e :>Astfn.exp)) :>Astfn.case) : case ) in
   let info = (Sum, (List.length (Ast_basic.N.list_of_bar ty []))) in
-  let res: case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
-  let res =
-    let t =
-      if ((List.length res) >= 2) && (arity >= 2)
-      then match default info with | Some x -> x :: res | None  -> res
-      else res in
-    List.rev t in
-  Expn_util.currying ~arity res
-let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
-  ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
+  let reduce_data_ctors (ty : or_ctyp) ~compose 
+    (f : string -> ctyp list -> 'e) =
+    let branches = Ast_basic.N.list_of_bar ty [] in
+    let aux acc (x : or_ctyp) =
+      match x with
+      | `Of (`Uid cons,tys) ->
+          compose (f cons (Ast_basic.N.list_of_star tys [])) acc
+      | `Uid cons -> compose (f cons []) acc
+      | t -> failwithf "reduce_data_ctors: %s" (Astfn_print.dump_or_ctyp t) in
+    match branches with
+    | [] -> []
+    | x::[] -> aux [] x
+    | _ ->
+        let res = List.fold_left aux [] branches in
+        if arity >= 2
+        then (match default info with | None  -> res | Some x -> x :: res)
+        else res in
+  ((reduce_data_ctors ty f ~compose:cons) |> List.rev) |>
+    (Expn_util.currying ~arity)
+let exp_of_variant ~arity  ~names  ~default  ~mk_variant  ~destination 
+  simple_exp_of_ctyp ~result  ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
-     let p = (Id_epn.gen_tuple_n ?cons_transform ~arity cons len :>pat) in
+     let p = (Id_epn.gen_tuple_n ~arity cons len :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -94,8 +106,8 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   Expn_util.currying ~arity res
-let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~mk_record  ~result 
-  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
+let fun_of_tydcl ~arity  ~names  ~mk_record  ~result  simple_exp_of_ctyp
+  exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : decl ) with
    | `TyDcl (_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -142,9 +154,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~mk_record  ~result
             failwithf "fun_of_tydcl middle %s" (Astfn_print.dump_type_info t))
    | t -> failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_decl t) : 
   exp )
-let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
-  [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant  ~left_type_id
-   ~mk_record  tydcl =
+let bind_of_tydcl simple_exp_of_ctyp ~arity  ~names  ?(destination= Str_item)
+   ?annot  ~default  ~mk_variant  ~left_type_id  ~mk_record  tydcl =
   let tctor_var = left_transform left_type_id in
   let (name,len) =
     match tydcl with
@@ -167,10 +178,9 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
     if not @@ (Ctyp.is_abstract tydcl)
     then
       fun_of_tydcl ~names ~arity ~mk_record ~result simple_exp_of_ctyp
-        (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
-           simple_exp_of_ctyp)
-        (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
-           ~destination simple_exp_of_ctyp) tydcl
+        (exp_of_ctyp ~arity ~names ~default ~mk_variant simple_exp_of_ctyp)
+        (exp_of_variant ~arity ~names ~default ~mk_variant ~destination
+           simple_exp_of_ctyp) tydcl
     else
       ((Format.eprintf
           "Warning: %s as a abstract type no structure generated\n")
@@ -185,12 +195,12 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
          ((fname :>Astfn.pat),
            (`Constraint ((fun_exp :>Astfn.exp), (x :>Astfn.ctyp)))) :>
       Astfn.bind)
-let stru_of_mtyps ?cons_transform  ?annot  ?arity  ?names  ~default 
-  ~mk_variant  ~left_type_id  ~mk_record  simple_exp_of_ctyp_with_cxt
+let stru_of_mtyps ?annot  ?(arity= 1)  ?(names= [])  ~default  ~mk_variant 
+  ~left_type_id  ~mk_record  simple_exp_of_ctyp_with_cxt
   (lst : Sigs_util.mtyps) =
   (let mk_bind: decl -> bind =
-     bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
-       ~left_type_id ~mk_record simple_exp_of_ctyp_with_cxt in
+     bind_of_tydcl ~arity ?annot ~names ~default ~mk_variant ~left_type_id
+       ~mk_record simple_exp_of_ctyp_with_cxt in
    let fs (ty : Sigs_util.types) =
      (match ty with
       | `Mutual named_types ->
@@ -214,21 +224,15 @@ let stru_of_mtyps ?cons_transform  ?annot  ?arity  ?names  ~default
    | _ -> sem_of_list (List.map fs lst) : stru )
 let mk ?(arity= 1)  ?(default=
   (`App ((`Lid "failwith"), (`Str "arity >= 2 in other branches")) :>
-  Astfn.exp))  ?cons_transform  ?annot  ~id:(id : basic_id_transform) 
-  ?(names= [])  ~mk_record:(mk_record : record_col list -> exp)  ~mk_variant 
-  () =
+  Astfn.exp))  ?annot  ~id:(id : basic_id_transform)  ?(names= []) 
+  ~mk_record:(mk_record : record_col list -> exp)  ~mk_variant  () =
   let left_type_id = id in
-  let default (_,number) =
-    if number > 1
-    then
-      let pat = (Id_epn.tuple_of_number `Any arity :>pat) in
-      Some (`Case ((pat :>Astfn.pat), (default :>Astfn.exp)) :>Astfn.case)
-    else None in
-  let names = names in
+  let default (_,_) =
+    let pat = (Id_epn.tuple_of_number `Any arity :>pat) in
+    Some (`Case ((pat :>Astfn.pat), (default :>Astfn.exp)) :>Astfn.case) in
   let mk_record = mk_record in
-  let cons_transform = cons_transform in
   let () = check names in
   let mk_tuple = mk_variant None in
-  stru_of_mtyps ?cons_transform ?annot ~arity ~names ~default ~mk_variant
-    ~left_type_id ~mk_record
+  stru_of_mtyps ?annot ~arity ~names ~default ~mk_variant ~left_type_id
+    ~mk_record
     (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~left_type_id)
