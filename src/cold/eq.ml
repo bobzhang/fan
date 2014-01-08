@@ -6,7 +6,6 @@ module Tokenf =
     include Tokenf
     let eq_ant (_x : Tokenf.ant) (_y : Tokenf.ant) = true
   end
-
 open Astf
 let eq_loc eta__001_ eta__002_ = Locf.eq_t eta__001_ eta__002_
 let eq_ant curry__003_ curry__004_ =

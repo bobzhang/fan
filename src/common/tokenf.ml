@@ -109,6 +109,7 @@ type space_token =
 type t =
   [ `Key          of txt
   | `Lid          of txt
+  | `Eid          of txt 
   | `Uid          of txt
   | `Int          of txt
   | `Int32        of txt
@@ -208,6 +209,9 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
       Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string x.txt
   | `Lid x ->
       Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string x.txt
+  | `Eid x ->
+      Format.fprintf fmt "@[<1>(`Eid@ %a)@]" Format.pp_print_string x.txt
+  
   | `Uid x ->
       Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string x.txt
   | `Int x ->
@@ -264,6 +268,7 @@ let destruct (x:t) =
   
 let get_string (x:t) :  string =
   match x with
+  | `Eid x
   | `Pre x 
   | `Key x
   | `Lid x
@@ -285,6 +290,7 @@ let get_string (x:t) :  string =
 
 let get_loc (x:t) =
   match x with
+  | `Eid x 
   | `Key x
   | `Lid x
   | `Uid x

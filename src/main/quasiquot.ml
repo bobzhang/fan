@@ -17,6 +17,36 @@ let stringnize  = [
   ("flo'",Some %exp-{string_of_float});
   ("bool'",None) ]
 
+
+
+
+    
+let mk_lexer () =  
+  let tbl = Hashtbl.create 31 in
+  fun loc str ->
+    Lex_fan.from_stream  loc str
+    |>
+      Streamf.map
+        (fun x ->
+          match (x:Tokenf.t) with
+          | `Eid x -> begin
+              let txt =
+                match Hashtblf.find_opt tbl x with
+                | None ->
+                    begin 
+                      let res = %fresh{${x.txt}} in
+                      let () = Hashtbl.add tbl x res  in
+                      res 
+                    end
+                | Some x -> x in
+              `Lid {x with txt = txt }
+          end
+          | v -> v )
+
+let add_quotation x =
+  let lexer = mk_lexer () in 
+  add_quotation ~lexer  x
+
 let expander ant_annot = object
   inherit Astf_map.map as super
   method! pat (x:Astf.pat)= 
@@ -163,7 +193,7 @@ end
 let m = new Metafn.meta    
 
 let _ = begin 
-  add_quotation {domain; name =  "sigi'"} sigi_quot
+  add_quotation {domain; name =  "sigi'"} sigi_quot 
     ~mexp:me#sigi
     ~mpat:mp#sigi
     ~exp_filter

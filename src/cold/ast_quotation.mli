@@ -54,7 +54,7 @@ val add : Tokenf.name -> 'a Dyn_tag.t -> 'a Tokenf.expand_fun -> unit
    [exp_filter] and [pat_filter] default to an id 
 *)
 val add_quotation:
-    ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+    lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
     exp_filter:(ep -> exp) ->
       pat_filter:(ep -> pat) ->
         mexp:(Locf.t -> 'c -> ep) ->

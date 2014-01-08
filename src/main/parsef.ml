@@ -14,20 +14,20 @@ ep: [Lid x %ep{$lid:x}]
 (* let antiquot_ep = Gramlib.eoi_entry ep *)
 
 let exp  loc str =
-  Gramlib.parse_string_eoi   Syntaxf.exp (* antiquot_exp *) ~loc str
+  Gramlib.parse_string_eoi   Syntaxf.exp  ~loc str
 
 let pat loc str =
-  Gramlib.parse_string_eoi  Syntaxf.pat (* antiquot_pat *) ~loc str
+  Gramlib.parse_string_eoi  Syntaxf.pat  ~loc str
 
 let stru  loc str =
-  Gramlib.parse_string_eoi   Syntaxf.stru (* antiquot_exp *) ~loc str
+  Gramlib.parse_string_eoi   Syntaxf.stru ~loc str
     
 (* FIXME -- to be improved *)
 let ep  loc str : ep =
   Gramlib.parse_string_eoi  ep  ~loc str 
     
 let ident  loc str =
-  Gramlib.parse_string_eoi Syntaxf.ident(* antiquot_ident *) ~loc str
+  Gramlib.parse_string_eoi Syntaxf.ident ~loc str
 
 
 let expand_exp  (x:Tokenf.quot)  =

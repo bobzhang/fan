@@ -282,11 +282,11 @@ module Make(U:S) =
               (`Value ((flag :>Astfn.flag), (bind :>Astfn.bind)) :>Astfn.stru) : 
          stru ) in
        match lst with
-       | [] -> (`StExp `Unit :>Astfn.stru)
-       | _ -> sem_of_list (List.map fs lst) : stru )
+       | [] -> None
+       | _ -> Some (sem_of_list (List.map fs lst)) : stru option )
     let () =
       Typehook.register ~filter:(fun x  -> not (List.mem x p.excludes))
-        ((p.plugin_name), (fun x  -> Some (stru_of_mtyps x)))
+        ((p.plugin_name), stru_of_mtyps)
   end
 let register p =
   let module M = struct let p = p end in let module N = Make(M) in ()

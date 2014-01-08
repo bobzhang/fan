@@ -88,7 +88,7 @@ module Make(U:S) : sig
 
   val bind_of_tydcl : decl -> bind
 
-  val stru_of_mtyps : Sigs_util.mtyps -> stru
+  val stru_of_mtyps : Sigs_util.mtyps -> stru option
 
 end
 

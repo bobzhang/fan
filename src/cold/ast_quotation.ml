@@ -84,8 +84,8 @@ let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
                (Tokenf.string_of_name name) pos_tag in
        let expander = ExpFun.unpack tag pack in Tokenf.quot_expand expander x : 
   'a )
-let add_quotation ?(lexer= Lex_fan.from_stream)  ~exp_filter  ~pat_filter 
-  ~mexp  ~mpat  name entry =
+let add_quotation ~lexer  ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry
+  =
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations, true)
       (current_loc_name, loc_name_opt)

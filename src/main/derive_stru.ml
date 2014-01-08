@@ -21,7 +21,8 @@ type param = {
     names: string list;
     plugin_name:  string;
     id: Ctyp.basic_id_transform;
-    default: default option; (*   ?(default= %exp-{ failwith "arity >= 2 in other branches" } )*)
+    default: default option;
+   (*   ?(default= %exp-{ failwith "arity >= 2 in other branches" } )*)
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;

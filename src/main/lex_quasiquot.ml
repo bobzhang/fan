@@ -57,12 +57,6 @@ let make_token low_keys =
    | @ocaml_float_literal       (** FIXME safety check *)
    | @ocaml_string
    | @ocaml_char
-   | '*' (ocaml_lid as txt)  '*' %{`Eid {loc = !!lexbuf; txt }}
-       (*
-         Hygenic post-processed by the quasiquotation filter
-         The other solution is make a separate lexer for quasiquot,
-         however, in that case, we have to sync-up keywords table, etc.
-        *)
    | "~" (ocaml_lid as txt) ':' %{`Label {loc= !! lexbuf;txt}}
    | "?" (ocaml_lid as txt) ':' %{`Optlabel {loc= !!lexbuf;txt}}
    | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{

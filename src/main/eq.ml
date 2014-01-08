@@ -18,7 +18,7 @@ module Tokenf = struct
 end
 
 
-open StdFan
+
   (* for [eq_string] -- we need  a built in library for each plugin  *)
 open Astf
 ;;

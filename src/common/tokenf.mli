@@ -58,6 +58,7 @@ type dir_quotation = [`DirQuotation of quot  ]
   [Key s] is the keyword [s].
   [LidENT s] is the ident [s] starting with a lowercase letter.
   [UidENT s] is the ident [s] starting with an uppercase letter.
+  [Eid s] we use it as Hygenic id, it would be post-processed by quasiquot filter  
   [INT i s]
    (resp. [INT32 i s], [INT64 i s] and [Nativeint i s])
    the integer constant [i] whose string source is [s].
@@ -121,6 +122,7 @@ type t =
   | `Pre            of txt
   | `Lid            of txt
   | `Uid            of txt
+  | `Eid            of txt 
   | `Int            of txt
   | `Int32          of txt
   | `Int64          of txt

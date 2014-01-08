@@ -10,6 +10,23 @@ let stringnize =
   ("str'", (Some (`Dot ((`Uid "String"), (`Lid "escaped")) :>Astfn.exp)));
   ("flo'", (Some (`Lid "string_of_float" :>Astfn.exp)));
   ("bool'", None)]
+let mk_lexer () =
+  let tbl = Hashtbl.create 31 in
+  fun loc  str  ->
+    (Lex_fan.from_stream loc str) |>
+      (Streamf.map
+         (fun x  ->
+            match (x : Tokenf.t ) with
+            | `Eid x ->
+                let txt =
+                  match Hashtblf.find_opt tbl x with
+                  | None  ->
+                      let res = Gensym.fresh ~prefix:(x.txt) () in
+                      let () = Hashtbl.add tbl x res in res
+                  | Some x -> x in
+                `Lid { x with txt }
+            | v -> v))
+let add_quotation x = let lexer = mk_lexer () in add_quotation ~lexer x
 let expander ant_annot =
   object (_this__007_ : 'this_type__008_)
     inherit  Astf_map.map as super

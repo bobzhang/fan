@@ -18,7 +18,7 @@ val token :  Lexing.lexbuf ->   Tokenf.t
 
 (** the stack is cleared to clear the previous error message
     call [from_lexbuf] internally *)    
-val from_stream : Tokenf.t Streamf.t Tokenf.lex
+val from_stream : Locf.t -> char Streamf.t -> Tokenf.t Streamf.t
 
 
 (** the stack is cleared to clear the previous error message
