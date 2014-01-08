@@ -80,7 +80,7 @@ type record_col =  {
   info: ty_info} 
 type record_info = record_col list 
 type basic_id_transform =
-  [ `Pre of string | `Post of string | `Fun of string -> string] 
+  [ `Pre of string | `Post of string | `Fun of string -> string | `Same] 
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
 type full_id_transform =
   [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
@@ -236,6 +236,7 @@ let transform: full_id_transform -> vid -> exp =
     | `Post post -> (fun x  -> (ident_map (fun x  -> x ^ post) x : exp ))
     | `Fun f -> (fun x  -> ident_map f x)
     | `Last f -> (fun x  -> (ident_map_of_ident f x : vid  :>exp))
+    | `Same -> (fun x  -> (x : vid  :>exp))
     | `Id f -> (fun x  -> (f x : vid  :>exp))
     | `Idents f ->
         (fun x  -> (f (Ast_basic.N.list_of_dot x []) : vid  :>exp))
@@ -256,6 +257,7 @@ let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)
   | `Post post -> (fun x  -> x ^ post)
+  | `Same -> (fun x  -> x)
   | `Fun f -> f
 let left_transform (#basic_id_transform as x) =
   let f = basic_transform x in fun x  -> lid (f x)

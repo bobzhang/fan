@@ -30,7 +30,7 @@
  *)
 open Astfn
 
-open Ctyp
+(* open Ctyp *)
 
 type default =
   | Atom of exp
@@ -40,10 +40,10 @@ type param = {
     arity: int;
     names: string list;
     plugin_name:  string;
-    id: basic_id_transform;
+    id: Ctyp.basic_id_transform;
     default: default option;
-    mk_record: (record_col list -> exp) option;
-    mk_variant: (string option -> ty_info list -> exp) option ;
+    mk_record: (Ctyp.record_col list -> exp) option;
+    mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;
     excludes : string list;
 
@@ -55,7 +55,43 @@ module type S =
     val p : param 
   end
 
-module Make(U:S) : sig 
+module Make(U:S) : sig
+
+  (**
+     suppose [id] is [`Pre "xx"];
+     [names] is [["arg0"; "arg1"]]
+     {[
+     [int] -> [xx int]
+     [int list] -> [xxlist xxint]
+     ]}
+     For tuple type, it's more complicated.
+
+     Two problems: bad eror message when
+     %fn@sexp_of{'a list}
+
+   *)
+  val normal_simple_exp_of_ctyp : ctyp -> exp
+
+
+
+      
+  val exp_of_ctyp :  or_ctyp -> exp
+
+  val exp_of_variant :
+      (ctyp -> exp) ->
+        ctyp -> row_field -> exp
+
+  val fun_of_tydcl :
+      ctyp ->
+        (ctyp -> exp) ->
+          (or_ctyp -> exp) ->
+            (ctyp -> row_field -> exp) ->
+              decl -> exp
+  val bind_of_tydcl :
+      (ctyp -> exp) -> decl -> bind
+  val stru_of_mtyps :
+      (ctyp -> exp) -> Sigs_util.mtyps -> stru
+
 end
 
 val register : param -> unit    

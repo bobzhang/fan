@@ -885,6 +885,7 @@ let apply () = begin
       a_uident:
       [ Ant(""|"uid" ,s) %{ mk_ant    s}
       | Uid s  %{ `Uid (_loc, s)} ]
+      
       string_list:
       [ Ant("",s) %{ mk_ant  s}
       | Ant("",s) ; S as xs %{ `App(_loc,mk_ant  s, xs)}
@@ -943,8 +944,10 @@ let apply () = begin
       | "module"; a_uident as i; mbind0 as mb %{ `Module(_loc,i,mb)}
       | "module"; "rec"; mbind as mb %{ `RecModule(_loc,mb)}
       | @stru_sigi
+
       | "type"; decl as t;"with"; "("; string_list as ns;")"
             %{`TypeWith (_loc,t,ns)}
+      (* | "type"; decl as t; "with"; L1 Lid  *)
       | @let_stru_exp %{fun x -> %stru{$exp:x}}
       | "let"; opt_rec as r; bind as bi %{
           match bi with

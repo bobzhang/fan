@@ -133,7 +133,8 @@ type record_info =  record_col list
 type basic_id_transform =
     [ `Pre of string
     | `Post of string
-    | `Fun of (string->string) ]
+    | `Fun of (string->string)
+    | `Same ]
 
 type rhs_basic_id_transform =
     [ basic_id_transform
@@ -390,7 +391,7 @@ let transform : full_id_transform -> vid -> exp  =
     | `Last f ->
         fun  x -> (ident_map_of_ident f x : vid :> exp)
             (* %{ $(id: ident_map_of_ident f x  ) } *) 
-            
+    | `Same -> fun x -> (x : vid :> exp )
     | `Id f->
         fun x -> (f x : vid :> exp)
             (* fun [x -> %{ $(id: f x ) } ] *)
@@ -414,6 +415,7 @@ let transform : full_id_transform -> vid -> exp  =
 let basic_transform = function 
   | `Pre pre -> (fun x -> pre ^ x)
   | `Post post -> (fun x -> x ^ post)
+  | `Same  -> (fun x -> x)
   | `Fun f -> f 
 
 let left_transform = function

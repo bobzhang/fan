@@ -7,11 +7,6 @@ open Astfn
 
 let check _ = ()
 
-(* type arity = *)
-(*   | Single *)
-(*   | Multiple of (int * exp) *)
-
-
 type default =
   | Atom of exp
   | Invalid_argument 
@@ -20,6 +15,7 @@ let transform default =
   match default with
   | Atom e -> e
   | Invalid_argument -> %exp-{%invalid_arg{}}
+
 type param = {
     arity: int;
     names: string list;
@@ -36,8 +32,34 @@ module type S = sig
   val p : param
 end
       
+
+
 module Make (U:S) = struct
   open U
+  let arity = p.arity
+  let names = p.names
+  let plugin_name = p.plugin_name
+
+  let mk_variant =
+    lazy begin
+      match p.mk_variant with 
+      | None -> failwithf "Generator  %s can not handle variant" plugin_name
+      | Some x -> x
+    end
+  let mk_tuple =
+    lazy
+      begin
+        match mk_variant with 
+        | lazy x -> x None 
+      end
+  let mk_record =
+    lazy
+      begin
+        match p.mk_record with 
+        | None -> failwithf "Generator %s can not handle record" plugin_name
+        | Some x -> x 
+      end
+
   let normal_simple_exp_of_ctyp (ty:ctyp) =
     let right_trans = Ctyp.left_transform p.id  in
     let tyvar = Ctyp.right_transform (`Pre "mf_")  in
@@ -52,11 +74,8 @@ module Make (U:S) = struct
       | `Arrow(t1,t2) ->
           aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
       | `Par _  as ty ->
-          let mk_tuple = 
-            match p.mk_variant with
-            | None -> assert false
-            | Some x -> x None in
-          Ctyp.tuple_exp_of_ctyp  ~arity:p.arity ~names:p.names ~mk_tuple
+          let mk_tuple = Lazy.force mk_tuple  in
+          Ctyp.tuple_exp_of_ctyp  ~arity ~names:p.names ~mk_tuple
             ~f:aux ty
       | (ty:ctyp) -> (* TOPBIND required *)
           failwithf "normal_simple_exp_of_ctyp : %s"
@@ -77,18 +96,14 @@ module Make (U:S) = struct
         List.fold_right f vars (Expn_util.abstract p.names  acc)
 
           
-  let exp_of_ctyp simple_exp_of_ctyp (ty : or_ctyp)  : exp=
-    let (arity,names) = (p.arity, p.names) in
+  let exp_of_ctyp (ty : or_ctyp)  : exp=
+
     let f  (cons:string) (tyargs:ctyp list )  : case =
       let args_length = List.length tyargs in  (* ` is not needed here *)
 
       let mk (cons,tyargs) =
-        let mk_variant =
-          match p.mk_variant with
-          | Some x -> x
-          | None -> assert false in
-        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
-        mk_variant (Some cons) exps in
+        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp) tyargs in
+        Lazy.force mk_variant (Some cons) exps in
       let p : pat =
         (* calling gen_tuple_n*)
         (Id_epn.gen_tuple_n ~arity  cons args_length :> pat) in
@@ -121,19 +136,14 @@ module Make (U:S) = struct
 
       
   let exp_of_variant
-      simple_exp_of_ctyp ~result ty =
-    let (arity,names) = (p.arity, p.names) in
+      simple_exp_of_ctyp result ty =
+
     let f (cons,tyargs) :  case=
       let len = List.length tyargs in
 
       let mk (cons,tyargs) =
-        let mk_variant =
-          match p.mk_variant with
-          | None -> assert false
-          | Some x -> x in
-          (* lazy value ..*)
         let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
-        mk_variant (Some cons) exps in
+        Lazy.force mk_variant (Some cons) exps in
       let e = mk (cons,tyargs) in
       let p = (Id_epn.gen_tuple_n  ~arity cons len :> pat) in
       %case-{ $pat:p -> $e } in
@@ -166,19 +176,14 @@ module Make (U:S) = struct
 (*   Given type declarations, generate corresponding *)
 (*   Astf node represent the [function] *)
 (*   (combine both exp_of_ctyp and simple_exp_of_ctyp) *)
-  let fun_of_tydcl  ~result
+  let fun_of_tydcl  result
       simple_exp_of_ctyp exp_of_ctyp exp_of_variant  tydcl :exp =
-    let (arity,names) = (p.arity,p.names) in
     match (tydcl:decl) with
     | `TyDcl ( _, tyvars, ctyp, _constraints) ->
         begin match ctyp with
         |  `TyMan(_,_,repr) | `TyRepr(_,repr) ->
             begin match repr with
             | `Record t ->
-                let mk_record = 
-                  match p.mk_record with
-                  | None -> assert false 
-                  | Some x -> x in
                 let cols =  Ctyp.list_of_record t  in
                 let pat = (Ctyp.mk_record ~arity  cols  :> pat)in
                 let info =
@@ -192,7 +197,7 @@ module Make (U:S) = struct
                 (* For single tuple pattern match this can be optimized *)
 (*            by the ocaml compiler *)
                 mk_prefix   tyvars
-                  (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${mk_record info}  } ])
+                  (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ])
 
             |  `Sum ctyp ->
                 let funct = exp_of_ctyp ctyp in
@@ -208,7 +213,7 @@ module Make (U:S) = struct
                 let funct = Expn_util.eta_expand (exp+>names) arity  in
                 mk_prefix  tyvars funct
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
-                let case =  exp_of_variant ~result t  in
+                let case =  exp_of_variant result t  in
                 mk_prefix  tyvars case
             | t -> failwithf "fun_of_tydcl inner %s" (Astfn_print.dump_ctyp t)
             end
@@ -216,7 +221,7 @@ module Make (U:S) = struct
         end
     | t -> failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_decl t)
 
-  let bind_of_tydcl simple_exp_of_ctyp ?(destination=Ctyp.Str_item)
+  let bind_of_tydcl simple_exp_of_ctyp (* ?(destination=Ctyp.Str_item) *)
        tydcl
       =
     let tctor_var = Ctyp.left_transform p.id in
@@ -233,9 +238,9 @@ module Make (U:S) = struct
     (* FIXME the annot using [_ty]?*)
     let (_ty,result) =
       Ctyp.mk_method_type
-        ~number:p.arity ~prefix
+        ~number:arity ~prefix
         ~id:(lid name)
-        len destination in (* FIXME *)
+        len Ctyp.Str_item in (* FIXME *)
     let (annot,result) =
       match p.annot with
       |None -> (None,result)
@@ -244,9 +249,10 @@ module Make (U:S) = struct
     let fun_exp =
       if not @@  Ctyp.is_abstract tydcl then
         fun_of_tydcl
-          ~result
+          result
           simple_exp_of_ctyp
-          (exp_of_ctyp    simple_exp_of_ctyp)
+          exp_of_ctyp 
+
           (exp_of_variant  simple_exp_of_ctyp)
           tydcl
       else

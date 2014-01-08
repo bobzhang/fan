@@ -121,7 +121,7 @@ let _ =
     | None  -> assert false in
   Derive_stru.register
     {
-      id = (`Pre "");
+      id = `Same;
       arity = 1;
       mk_record = None;
       mk_variant = (Some mk_variant);
@@ -161,7 +161,7 @@ let gen_fill =
     | None  -> assert false in
   Derive_stru.register
     {
-      id = (`Pre "");
+      id = `Same;
       mk_record = None;
       arity = 1;
       default = None;

@@ -60,7 +60,8 @@ type record_info =  record_col list
 type basic_id_transform =
     [ `Pre of string
     | `Post of string
-    | `Fun of (string->string) ]
+    | `Fun of (string->string)
+    | `Same ]
 
 type rhs_basic_id_transform =
     [ basic_id_transform
@@ -162,9 +163,8 @@ val view_variant: row_field -> vbranch list
 
 
 val transform : full_id_transform -> vid -> exp
-val basic_transform :
-  [< `Fun of string -> string | `Post of string | `Pre of string ] ->
-  string -> string
+
+val basic_transform : basic_id_transform -> string -> string
 
 val left_transform : basic_id_transform-> string -> vid
 

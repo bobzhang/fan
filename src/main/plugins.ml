@@ -1,10 +1,4 @@
 
-(* %import{ *)
-(* Derive: *)
-(*   gen_stru *)
-(*   gen_object *)
-(*   ; *)
-(* };; *)
 open Astfn
 open Astn_util
 open Util
@@ -38,7 +32,7 @@ let gen_eqobj =
      ~mk_variant:mk_variant
      ~arity:2 ~default:%exp-{false} () ;;
 
-let some f  = fun x -> Some (f x)  
+let some f  = fun x -> Some (f x)
 
 
 let _ = begin
@@ -166,7 +160,7 @@ let mk_variant cons params =
                   %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result 
       | None ->   assert false in 
 Derive_stru.register {
-    id = `Pre "";
+    id =  `Same;
     arity = 1 ;
     mk_record = None;
     mk_variant = Some mk_variant;
@@ -205,7 +199,7 @@ let gen_fill =
 
 
   Derive_stru.register {
-    id = (`Pre "");
+    id = `Same;
     mk_record = None;
     arity  =  1;
     default = None; 
@@ -215,8 +209,7 @@ let gen_fill =
       (%ctyp-{ Locf.t -> Astfn.$lid:x -> Astf.$lid:x },
        %ctyp-{Astf.$lid:x} ));
     plugin_name = "Fill";
-    excludes = ["loc"; "ant";"quot"]
-}
+    excludes = ["loc"; "ant";"quot"]}
     ;;
 
   
