@@ -32,20 +32,30 @@ let mk_record cols =
 (** it can exist without prefix only when you do not need
     any runtime -- 
  *)             
-let (gen_eq,gen_eqobj) = 
-  (Derive_stru.mk ~id:(`Pre "eq_") 
-    ~arity:2  ~mk_record ~mk_variant
-    ~default: %exp-{false} (),
-   Derive_obj.mk ~kind:Iter  ~mk_record
+let gen_eqobj = 
+  Derive_obj.mk ~kind:Iter  ~mk_record
      ~base:"eqbase" ~class_name:"eq"
      ~mk_variant:mk_variant
-     ~arity:2 ~default:%exp-{false} ()) ;;
+     ~arity:2 ~default:%exp-{false} () ;;
 
 let some f  = fun x -> Some (f x)  
 
+
 let _ = begin
+Derive_stru.register {
+    id = `Pre "eq_";
+    arity = 2;
+    mk_record = Some mk_record;
+    mk_variant = Some mk_variant;
+    default = Some (Atom %exp-{false});
+    plugin_name = "Eq";
+    excludes = [];
+    names = [];
+    annot = None;
+  };
+   
     List.iter Typehook.register
-    [ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ]
+    [ ("OEq", some gen_eqobj ) ]
 end
 
 
@@ -134,8 +144,8 @@ end;;
 (* [Astf] transformed to [Astfn].
    Types [loc] and [ant] will not be processed
  *)
-let gen_strip =
-  let mk_variant cons params =
+
+let mk_variant cons params =
     let params' =
       List.filter
         (function (x:Ctyp.ty_info) -> x.ty <> `Lid "loc")
@@ -154,17 +164,20 @@ let gen_strip =
               | %ctyp-{Tokenf.ant} -> res
               | _ ->
                   %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params' result 
-      | None ->   assert false in
-  let mk_record _ = assert false in
-  Derive_stru.mk ~id:(`Pre "")  ~mk_record ~mk_variant
-    ~annot:(fun  x ->
+      | None ->   assert false in 
+Derive_stru.register {
+    id = `Pre "";
+    arity = 1 ;
+    mk_record = None;
+    mk_variant = Some mk_variant;
+    default = None;
+    plugin_name = "Strip";
+    excludes = ["loc";"ant";"quot"];
+    names = [];
+    annot = Some (fun  x ->
       (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
-      (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}))
-    ();;
-
-Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"; "ant";"quot"]))
-    ("Strip",some gen_strip);;
+      (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}));
+  }
 
 
 (*******************************)
@@ -190,19 +203,21 @@ let gen_fill =
             %exp-{let $pat{x.ep0} = ${x.info_exp} in $res }) params result
     | None -> assert false in
 
-  let mk_record _cols = assert false in
-  Derive_stru.mk
-    ~id:(`Pre "")
-    ~mk_record ~mk_variant
-    ~names:["loc"]
-    ~annot:(fun x ->
-      (%ctyp-{ Locf.t -> Astfn.$lid:x -> Astf.$lid:x },
-       %ctyp-{Astf.$lid:x} ))
-    ();;
 
-Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"; "ant";"quot"]))
-    ("Fill",some gen_fill);;
+  Derive_stru.register {
+    id = (`Pre "");
+    mk_record = None;
+    arity  =  1;
+    default = None; 
+    mk_variant = Some mk_variant; 
+    names = ["loc"];
+    annot= Some (fun x ->
+      (%ctyp-{ Locf.t -> Astfn.$lid:x -> Astf.$lid:x },
+       %ctyp-{Astf.$lid:x} ));
+    plugin_name = "Fill";
+    excludes = ["loc"; "ant";"quot"]
+}
+    ;;
 
   
 (*******************************)
@@ -241,9 +256,13 @@ let mk_tuple params =
     |> List.map (fun (x:Ctyp.ty_info) -> x.info_exp)
     |> Expn_util.mk_tuple_ee 
 
-let gen_meta_exp = 
-  Derive_stru.mk  ~id:(`Pre "meta_")  ~names:["_loc"]
-    ~mk_record ~mk_variant ();;
+(* let gen_meta_exp =  *)
+(*   Derive_stru.register  { *)
+(*   id = (`Pre "meta_"); *)
+(*   names = ["_loc"] *)
+(*   mk_record = Some mk_record; *)
+(*   mk_variant = Some  mk_variant; *)
+(*   ();; *)
 
 let gen_meta =
   Derive_obj.mk ~kind:(Concrete %ctyp-{Astf.ep})
@@ -289,12 +308,7 @@ let mk_record_print cols =
                   |> List.map(fun  (x:Ctyp.record_col) -> x.info )
                   |> extract )) (* apply pre *)  
   
-let gen_print =
-  Derive_stru.mk  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
-    ~mk_record:mk_record_print
-    ~annot:(fun s ->
-      (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}))
-    ~mk_variant ()
+
 
 
 let gen_print_obj =
@@ -303,8 +317,25 @@ let gen_print_obj =
     ~names:["fmt"]  ~mk_record:mk_record_print
     ~mk_variant:mk_variant ();;
 
-[("Print",some gen_print);
- ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;;
+let () =
+  begin 
+    Derive_stru.register {
+    arity = 1;
+    default  = None;
+    id =  (`Pre "pp_print_");
+    names = ["fmt"] ;
+    mk_record = Some mk_record_print;
+    annot = Some (fun s ->
+      (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}));
+    mk_variant = Some mk_variant;
+    plugin_name = "Print";
+    excludes = [];
+  };
+    [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;
+  end
+
+
+
 
 
 

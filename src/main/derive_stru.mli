@@ -29,17 +29,33 @@
   ]}
  *)
 open Astfn
-open Sigs_util
+
 open Ctyp
 
+type default =
+  | Atom of exp
+  | Invalid_argument 
+
+type param = {
+    arity: int;
+    names: string list;
+    plugin_name:  string;
+    id: basic_id_transform;
+    default: default option;
+    mk_record: (record_col list -> exp) option;
+    mk_variant: (string option -> ty_info list -> exp) option ;
+    annot: (string -> (ctyp*ctyp)) option;
+    excludes : string list;
+
+  }
 
 
-val mk :
-    ?arity:int ->
-      ?default:exp ->
-        ?annot:(string -> (ctyp*ctyp)) ->
-          id:basic_id_transform ->
-            ?names:string list ->
-              mk_record:(record_col list -> exp) ->
-                mk_variant:(string option -> ty_info list -> exp) -> unit ->
-                  mtyps -> stru
+module type S =
+  sig
+    val p : param 
+  end
+
+module Make(U:S) : sig 
+end
+
+val register : param -> unit    
