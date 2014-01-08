@@ -1207,7 +1207,7 @@ with ctyp
   [ S as t1; "->"; S as t2 %{  `Arrow(_loc,t1,t2)} ]
   ctyp: 40  
   [ "~"; a_lident as i; ":"; S as t %{ `Label (_loc, i, t)}
-      | Label s ; ":"; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
+      | Label s ; S as t %{ `Label (_loc, (`Lid (_loc, s)), t)} (* FIXME *)
       | Optlabel s ; S as t %{ `OptLabl(_loc,`Lid(_loc,s),t)}
       | "?"; a_lident as i; ":"; S as t %{ `OptLabl(_loc,i,t)}]
       ctyp: 50  

@@ -16922,20 +16922,15 @@ let apply_ctyp () =
                         descr =
                           { tag = `Label; word = Any; tag_name = "Label" }
                       } : Tokenf.pattern );
-                  Token
-                    ({
-                       descr =
-                         { tag = `Key; word = (A ":"); tag_name = "Key" }
-                     } : Tokenf.pattern );
                   Self];
                 annot = "`Label (_loc, (`Lid (_loc, s)), t)\n";
                 fn =
                   (Gramf.mk_action
-                     (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.txt) 
+                     (fun (t : 'ctyp)  (__fan_0 : Tokenf.txt) 
                         (_loc : Locf.t)  ->
                         let s = __fan_0.txt in
                         (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp ) : 
-                     'ctyp -> Tokenf.txt -> Tokenf.txt -> Locf.t -> 'ctyp ))
+                     'ctyp -> Tokenf.txt -> Locf.t -> 'ctyp ))
               };
               {
                 symbols =
