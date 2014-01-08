@@ -45,8 +45,8 @@ type param = {
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;
+    builtin_tbl : (string *  exp) list;
     excludes : string list;
-
   }
 
 
@@ -72,25 +72,23 @@ module Make(U:S) : sig
    *)
   val normal_simple_exp_of_ctyp : ctyp -> exp
 
-
-
       
   val exp_of_ctyp :  or_ctyp -> exp
 
-  val exp_of_variant :
-      (ctyp -> exp) ->
-        ctyp -> row_field -> exp
+  (** The first argument is type annotations.
+      This function is used to handle polymorphic variant,
+      it should be treated with special care
+   *)    
+  val exp_of_variant : ctyp -> row_field -> exp
 
-  val fun_of_tydcl :
-      ctyp ->
-        (ctyp -> exp) ->
-          (or_ctyp -> exp) ->
-            (ctyp -> row_field -> exp) ->
-              decl -> exp
-  val bind_of_tydcl :
-      (ctyp -> exp) -> decl -> bind
-  val stru_of_mtyps :
-      (ctyp -> exp) -> Sigs_util.mtyps -> stru
+  (** 1. idem
+      
+   *)
+  val fun_of_tydcl : ctyp -> decl -> exp
+
+  val bind_of_tydcl : decl -> bind
+
+  val stru_of_mtyps : Sigs_util.mtyps -> stru
 
 end
 

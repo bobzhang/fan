@@ -36,7 +36,8 @@ let some f  = fun x -> Some (f x)
 
 
 let _ = begin
-Derive_stru.register {
+
+  Derive_stru.register {
     id = `Pre "eq_";
     arity = 2;
     mk_record = Some mk_record;
@@ -46,6 +47,28 @@ Derive_stru.register {
     excludes = [];
     names = [];
     annot = None;
+    builtin_tbl =
+     [
+      ("int",
+       %exp-{ (Pervasives.(=) : int -> int -> bool )});
+      ("char",
+       %exp-{ (Pervasives.(=) : char -> char -> bool )});
+      ("bool",
+       %exp-{ (Pervasives.(=) : bool -> bool -> bool )}
+      );
+      ("string",
+       %exp-{ (Pervasives.(=) : string -> string -> bool )}
+      );
+      ("nativeint",
+       %exp-{ (Pervasives.(=) : nativeint -> nativeint -> bool )}
+      );
+      ("unit",
+       %exp-{ (Pervasives.(=) : unit -> unit -> bool )}
+      );
+      ("int32",
+       %exp-{ (Pervasives.(=) : int32 -> int32 -> bool )}
+      )
+    ]
   };
    
     List.iter Typehook.register
@@ -168,6 +191,7 @@ Derive_stru.register {
     plugin_name = "Strip";
     excludes = ["loc";"ant";"quot"];
     names = [];
+    builtin_tbl =  [];
     annot = Some (fun  x ->
       (* BOOTSTRAPING, associated with module [Astf], [Astfn] *)
       (%ctyp-{ Astf.$lid:x -> Astfn.$lid:x }, %ctyp-{Astfn.$lid:x}));
@@ -209,7 +233,9 @@ let gen_fill =
       (%ctyp-{ Locf.t -> Astfn.$lid:x -> Astf.$lid:x },
        %ctyp-{Astf.$lid:x} ));
     plugin_name = "Fill";
-    excludes = ["loc"; "ant";"quot"]}
+    excludes = ["loc"; "ant";"quot"];
+    builtin_tbl = []
+   }
     ;;
 
   
@@ -323,6 +349,7 @@ let () =
     mk_variant = Some mk_variant;
     plugin_name = "Print";
     excludes = [];
+    builtin_tbl = [];
   };
     [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;
   end

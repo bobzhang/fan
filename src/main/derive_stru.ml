@@ -5,7 +5,7 @@ open Astn_util
 open Astfn
 
 
-let check _ = ()
+
 
 type default =
   | Atom of exp
@@ -25,6 +25,7 @@ type param = {
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;
+    builtin_tbl: (string* exp) list;
     excludes : string list;
   }
 
@@ -38,6 +39,7 @@ module Make (U:S) = struct
   open U
   let arity = p.arity
   let names = p.names
+  let builtin_tbl = Hashtblf.of_list p.builtin_tbl
   let plugin_name = p.plugin_name
 
   let mk_variant =
@@ -65,6 +67,9 @@ module Make (U:S) = struct
     let tyvar = Ctyp.right_transform (`Pre "mf_")  in
     let rec aux  x : exp =
       match x with
+      | `Lid(("int" |"char"| "string" | "int32"| "unit" | "nativeint" |"bool") as x ) when Hashtbl.mem builtin_tbl x ->
+          Hashtbl.find builtin_tbl x 
+
       | `Lid id -> (right_trans id :> exp )
       | (#ident' as id) ->
           (Idn_util.ident_map_of_ident right_trans (Idn_util.to_vid id ) :> exp)
@@ -135,24 +140,31 @@ module Make (U:S) = struct
     end
 
       
-  let exp_of_variant
-      simple_exp_of_ctyp result ty =
+  let exp_of_variant result ty =
 
     let f (cons,tyargs) :  case=
       let len = List.length tyargs in
 
       let mk (cons,tyargs) =
-        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
+        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp) tyargs in
         Lazy.force mk_variant (Some cons) exps in
       let e = mk (cons,tyargs) in
       let p = (Id_epn.gen_tuple_n  ~arity cons len :> pat) in
       %case-{ $pat:p -> $e } in
     (* for the case [`a | b ] *)
     let simple (lid:ident) :case=
-      let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
+      let e = (normal_simple_exp_of_ctyp (lid:>ctyp)) +> names  in
       let (f,a) = Ast_basic.N.view_app [] result in
       let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
-      Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:Ctyp.Str_item lid e in
+      let gen_tuple_abbrev  ~arity ~annot name e  =
+        let args :  pat list =
+          Listf.init arity (fun i -> %pat-{ (#$id:name as $lid{ Id.x ~off:i 0 }) })in
+        let exps =
+          Listf.init arity (fun i -> %exp-{ $id{Id.xid ~off:i 0} })  in
+        let e = appl_of_list (e:: exps) in 
+        let pat = args |>tuple_com in
+        %case-{$pat:pat->( $e  :> $annot)} in
+      gen_tuple_abbrev ~arity ~annot  lid e in
     (* FIXME, be more precise  *)
     let ls = Ctyp.view_variant ty in
     let res =
@@ -176,8 +188,7 @@ module Make (U:S) = struct
 (*   Given type declarations, generate corresponding *)
 (*   Astf node represent the [function] *)
 (*   (combine both exp_of_ctyp and simple_exp_of_ctyp) *)
-  let fun_of_tydcl  result
-      simple_exp_of_ctyp exp_of_ctyp exp_of_variant  tydcl :exp =
+  let fun_of_tydcl  result   tydcl :exp =
     match (tydcl:decl) with
     | `TyDcl ( _, tyvars, ctyp, _constraints) ->
         begin match ctyp with
@@ -191,7 +202,7 @@ module Make (U:S) = struct
                     (fun i x ->
                       match (x:Ctyp.col) with
                       | {label;is_mutable;ty} ->
-                          {Ctyp.info = Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp i ty  ;
+                          {Ctyp.info = Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp i ty  ;
                            label;
                            is_mutable}) cols in
                 (* For single tuple pattern match this can be optimized *)
@@ -209,7 +220,7 @@ module Make (U:S) = struct
         | `TyEq(_,ctyp) ->
             begin match ctyp with
             | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
-                let exp = simple_exp_of_ctyp x in
+                let exp = normal_simple_exp_of_ctyp x in
                 let funct = Expn_util.eta_expand (exp+>names) arity  in
                 mk_prefix  tyvars funct
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
@@ -221,9 +232,7 @@ module Make (U:S) = struct
         end
     | t -> failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_decl t)
 
-  let bind_of_tydcl simple_exp_of_ctyp (* ?(destination=Ctyp.Str_item) *)
-       tydcl
-      =
+  let bind_of_tydcl tydcl =
     let tctor_var = Ctyp.left_transform p.id in
     let (name,len) =
       match  tydcl with
@@ -248,13 +257,7 @@ module Make (U:S) = struct
 
     let fun_exp =
       if not @@  Ctyp.is_abstract tydcl then
-        fun_of_tydcl
-          result
-          simple_exp_of_ctyp
-          exp_of_ctyp 
-
-          (exp_of_variant  simple_exp_of_ctyp)
-          tydcl
+        fun_of_tydcl result tydcl
       else
         begin
           Format.eprintf "Warning: %s as a abstract type no structure generated\n" @@ Astfn_print.dump_decl tydcl;
@@ -267,11 +270,9 @@ module Make (U:S) = struct
         %bind-{ $fname  = ($fun_exp : $x ) }
           
 
-  let stru_of_mtyps
-      simple_exp_of_ctyp_with_cxt
-      (lst:Sigs_util.mtyps) : stru =
+  let stru_of_mtyps (lst:Sigs_util.mtyps) : stru option =
     let mk_bind : decl -> bind =
-      bind_of_tydcl simple_exp_of_ctyp_with_cxt in
+      bind_of_tydcl  in
     (* return new types as generated  new context *)
     let fs (ty:Sigs_util.types) : stru=
       match ty with
@@ -294,8 +295,8 @@ module Make (U:S) = struct
           and bind = mk_bind  tydcl in
           %stru-{ let $rec:flag  $bind } in
           match lst with
-          | [] -> %stru-{let _ = ()}
-          | _ ->  sem_of_list (List.map fs lst )
+          | [] -> None 
+          | _ ->  Some (sem_of_list (List.map fs lst ))
 
                 
 
@@ -314,12 +315,8 @@ module Make (U:S) = struct
 (*  *)
   let () = 
    begin 
-    let () = check p.names in
-    let f = stru_of_mtyps
-      normal_simple_exp_of_ctyp in 
-
     Typehook.register ~filter:(fun x -> not (List.mem x  p.excludes))
-      (p.plugin_name, fun x -> Some (f x) )
+      (p.plugin_name, stru_of_mtyps )
    end   
 end
 

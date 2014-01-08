@@ -32,7 +32,51 @@ let _ =
       plugin_name = "Eq";
       excludes = [];
       names = [];
-      annot = None
+      annot = None;
+      builtin_tbl =
+        [("int",
+           (`Constraint
+              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+                (`Arrow
+                   ((`Lid "int"), (`Arrow ((`Lid "int"), (`Lid "bool")))))) :>
+           Astfn.exp));
+        ("char",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "char"), (`Arrow ((`Lid "char"), (`Lid "bool")))))) :>
+          Astfn.exp));
+        ("bool",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "bool"), (`Arrow ((`Lid "bool"), (`Lid "bool")))))) :>
+          Astfn.exp));
+        ("string",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "string"),
+                    (`Arrow ((`Lid "string"), (`Lid "bool")))))) :>Astfn.exp));
+        ("nativeint",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "nativeint"),
+                    (`Arrow ((`Lid "nativeint"), (`Lid "bool")))))) :>
+          Astfn.exp));
+        ("unit",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "unit"), (`Arrow ((`Lid "unit"), (`Lid "bool")))))) :>
+          Astfn.exp));
+        ("int32",
+          (`Constraint
+             ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
+               (`Arrow
+                  ((`Lid "int32"), (`Arrow ((`Lid "int32"), (`Lid "bool")))))) :>
+          Astfn.exp))]
     };
   List.iter Typehook.register [("OEq", (some gen_eqobj))]
 let (gen_fold,gen_fold2) =
@@ -129,6 +173,7 @@ let _ =
       plugin_name = "Strip";
       excludes = ["loc"; "ant"; "quot"];
       names = [];
+      builtin_tbl = [];
       annot =
         (Some
            (fun x  ->
@@ -177,7 +222,8 @@ let gen_fill =
                          (`Dot ((`Uid "Astf"), (`Lid x)))))) :>Astfn.ctyp),
                 (`Dot ((`Uid "Astf"), (`Lid x)) :>Astfn.ctyp))));
       plugin_name = "Fill";
-      excludes = ["loc"; "ant"; "quot"]
+      excludes = ["loc"; "ant"; "quot"];
+      builtin_tbl = []
     }
 let mk_variant cons params =
   let len = List.length params in
@@ -258,7 +304,8 @@ let () =
                 (`Lid "unit" :>Astfn.ctyp))));
       mk_variant = (Some mk_variant);
       plugin_name = "Print";
-      excludes = []
+      excludes = [];
+      builtin_tbl = []
     };
   [("OPrint", (some gen_print_obj))] |> (List.iter Typehook.register)
 let mk_variant_iter _cons params =

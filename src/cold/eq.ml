@@ -6,7 +6,7 @@ module Tokenf =
     include Tokenf
     let eq_ant (_x : Tokenf.ant) (_y : Tokenf.ant) = true
   end
-open StdFan
+
 open Astf
 let eq_loc eta__001_ eta__002_ = Locf.eq_t eta__001_ eta__002_
 let eq_ant curry__003_ curry__004_ =
@@ -16,21 +16,29 @@ let eq_ant curry__003_ curry__004_ =
 let eq_literal curry__005_ curry__006_ =
   match (curry__005_, curry__006_) with
   | (`Chr (_a0,_a1),`Chr (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Int (_a0,_a1),`Int (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Int32 (_a0,_a1),`Int32 (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Int64 (_a0,_a1),`Int64 (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Flo (_a0,_a1),`Flo (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Nativeint (_a0,_a1),`Nativeint (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Str (_a0,_a1),`Str (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Bool (_a0,_a1),`Bool (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_bool _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : bool -> bool -> bool ) _a1 _b1)
   | (`Unit _a0,`Unit _b0) -> eq_loc _a0 _b0
   | _ -> false
 let eq_flag curry__007_ curry__008_ =
@@ -51,23 +59,27 @@ let rec eq_strings curry__011_ curry__012_ =
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_strings _a1 _b1)) && (eq_strings _a2 _b2)
   | (`Str (_a0,_a1),`Str (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
 let eq_lident curry__013_ curry__014_ =
   match (curry__013_, curry__014_) with
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
 let eq_alident curry__015_ curry__016_ =
   match (curry__015_, curry__016_) with
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
 let eq_auident curry__017_ curry__018_ =
   match (curry__017_, curry__018_) with
   | (`Uid (_a0,_a1),`Uid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
 let eq_aident curry__019_ curry__020_ =
@@ -77,7 +89,9 @@ let eq_aident curry__019_ curry__020_ =
   | _ -> false
 let eq_astring curry__021_ curry__022_ =
   match (curry__021_, curry__022_) with
-  | (`C (_a0,_a1),`C (_b0,_b1)) -> (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+  | (`C (_a0,_a1),`C (_b0,_b1)) ->
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
 let rec eq_uident curry__023_ curry__024_ =
@@ -104,18 +118,22 @@ let eq_ident' curry__027_ curry__028_ =
   | (`Apply (_a0,_a1,_a2),`Apply (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ident _a1 _b1)) && (eq_ident _a2 _b2)
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Uid (_a0,_a1),`Uid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | _ -> false
 let rec eq_vid curry__029_ curry__030_ =
   match (curry__029_, curry__030_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_vid _a2 _b2)
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Uid (_a0,_a1),`Uid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
 let eq_vid' curry__031_ curry__032_ =
@@ -123,9 +141,11 @@ let eq_vid' curry__031_ curry__032_ =
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_vid _a2 _b2)
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Uid (_a0,_a1),`Uid (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | _ -> false
 let rec eq_dupath curry__033_ curry__034_ =
   match (curry__033_, curry__034_) with
@@ -329,7 +349,8 @@ and eq_pat curry__073_ curry__074_ =
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_pat _a1 _b1)) && (eq_pat _a2 _b2)
   | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_pat _a1 _b1)) && (eq_pat _a2 _b2)
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -384,7 +405,8 @@ and eq_exp curry__069_ curry__070_ =
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_exp _a1 _b1)) && (eq_exp _a2 _b2)
   | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_exp _a1 _b1)) && (eq_exp _a2 _b2)
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -760,7 +782,8 @@ let rec eq_ep curry__107_ curry__108_ =
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ep _a1 _b1)) && (eq_ep _a2 _b2)
   | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
-      (eq_loc _a0 _b0) && (eq_string _a1 _b1)
+      (eq_loc _a0 _b0) &&
+        ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ep _a1 _b1)) && (eq_ep _a2 _b2)
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->

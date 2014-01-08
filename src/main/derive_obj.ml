@@ -6,10 +6,10 @@ open Astfn
 open Ctyp
 
 let check _ = ()
-type param =
-    {arity: int;
-     names: string list;
-   }
+(* type param = *)
+(*     {arity: int; *)
+(*      names: string list; *)
+(*    } *)
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
     ?names ?arity ~mk_tuple ty = with {pat:ctyp}
   (* let open Transform in  *)
