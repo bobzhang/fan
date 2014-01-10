@@ -23,7 +23,7 @@ let _ =
     "identchar" +> %re{['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']};
 
     "eof" +> Eof;
-    "_"   +> Characters Fcset.all_chars ;
+    "_"   +> Characters Cset.all_chars ;
     
     "hexa_char" +> %re{['0'-'9' 'A'-'F' 'a'-'f']};
     "ident" +> %re{(lowercase|uppercase) identchar*};
@@ -372,3 +372,7 @@ let _ =
     ;
   ]
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/lex_predef.cmo" *)
+(* end: *)

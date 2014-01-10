@@ -4,7 +4,10 @@ open Astn_util
 open Util
 open Sigs_util
 
+(* type u = (int*bool) list array   option with ("Eq") *)
 
+(* let () = *)
+(*   ignore eq_u  *)
 
 (************************************) 
 (* Eq generator                     *)
@@ -49,25 +52,52 @@ let _ = begin
     annot = None;
     builtin_tbl =
      [
-      ("int",
+      (%ctyp-{int},
        %exp-{ (Pervasives.(=) : int -> int -> bool )});
-      ("char",
+      (%ctyp-{char},
        %exp-{ (Pervasives.(=) : char -> char -> bool )});
-      ("bool",
+      (%ctyp-{bool},
        %exp-{ (Pervasives.(=) : bool -> bool -> bool )}
       );
-      ("string",
+      (%ctyp-{string},
        %exp-{ (Pervasives.(=) : string -> string -> bool )}
       );
-      ("nativeint",
+      (%ctyp-{nativeint},
        %exp-{ (Pervasives.(=) : nativeint -> nativeint -> bool )}
       );
-      ("unit",
+      (%ctyp-{unit},
        %exp-{ (Pervasives.(=) : unit -> unit -> bool )}
       );
-      ("int32",
+      (%ctyp-{int32},
        %exp-{ (Pervasives.(=) : int32 -> int32 -> bool )}
-      )
+      );
+      (%ctyp-{list}, %exp-{let rec f = (function p xs ys -> 
+        match (xs ,ys) with 
+        |  ([],[]) -> true 
+        |  (x::xs, y::ys) ->
+            p x y && f p xs ys 
+        |  _  -> false) in f }
+      );
+      (%ctyp-{option}, %exp-{ function p x y -> 
+        match (x,y) with 
+        | (None, None) -> true
+        | (Some x , Some y) -> p x y 
+        | _ -> false}
+      );
+      (%ctyp-{array}, %exp-{
+       function  f t1 t2  -> 
+         let len = Array.length t1 in
+         if length t2 <> len then false
+         else 
+           let rec loop i =
+             if i < 0
+             then true
+             else if f t1.(i) t2.(i)
+             then loop (i - 1)
+             else false in
+         loop (len - 1)
+      })
+      (* tuples, arrays, lists, sets, hash tables, queues, stacks, data streams *)
     ]
   };
    
@@ -275,21 +305,43 @@ let mk_tuple params =
     |> List.map (fun (x:Ctyp.ty_info) -> x.info_exp)
     |> Expn_util.mk_tuple_ee 
 
-(* let gen_meta_exp =  *)
-(*   Derive_stru.register  { *)
-(*   id = (`Pre "meta_"); *)
-(*   names = ["_loc"] *)
-(*   mk_record = Some mk_record; *)
-(*   mk_variant = Some  mk_variant; *)
-(*   ();; *)
 
+(* Functor parameterize [meta_loc] *)
 let gen_meta =
+  begin
+    Derive_stru.register  {
+    id = (`Pre "meta_");
+    names = ["_loc"];
+    mk_record = Some mk_record;
+    mk_variant = Some  mk_variant;
+    builtin_tbl = [
+     (%ctyp-{int}, %exp-{fun _loc (i:int) -> %ep{$int':i} });
+     (%ctyp-{int32}, %exp-{fun _loc (i:int32) -> %ep{$int32':i} });
+     (%ctyp-{int64}, %exp-{fun _loc (i:int64) -> %ep{$int64':i} });
+     (%ctyp-{nativeint}, %exp-{fun _loc (i:nativeint) -> %ep{$nativeint':i} });
+     (%ctyp-{float}, %exp-{fun _loc (i:float) -> %ep{$flo':i} });
+     (%ctyp-{string}, %exp-{fun _loc (i:string) -> %ep{$str':i} });
+     (%ctyp-{char}, %exp-{fun _loc (i:char) -> %ep{$chr':i} });
+     (%ctyp-{unit}, %exp-{fun _loc (i:unit) -> %ep{()} });
+     (%ctyp-{bool}, %exp-{fun _loc (i:bool) -> %ep{$bool':i} });
+    ];
+    plugin_name = "Meta";
+    arity = 1;
+    annot = None;
+    default = None;
+    excludes = ["loc"; "ant"; "quot"];
+  } ;
+
   Derive_obj.mk ~kind:(Concrete %ctyp-{Astf.ep})
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
     ~names:["_loc"]
-    ();;
+    ()
+  end;;
 
+(* %{}[@ *)
+(* meta_loc : loc  *)
+(*   ] *)
 
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc";"ant";"quot"]))
@@ -349,7 +401,23 @@ let () =
     mk_variant = Some mk_variant;
     plugin_name = "Print";
     excludes = [];
-    builtin_tbl = [];
+    builtin_tbl = [
+    (%ctyp-{int}, %exp-{Format.pp_print_int});
+    (%ctyp-{int32}, %exp-{fun fmt -> Format.fprintf "%ld"});
+    (%ctyp-{int64}, %exp-{fun fmt -> Format.fprintf "%Ld"});
+    (%ctyp-{nativeint}, %exp-{fun fmt -> Format.fprintf "%nd"});
+    (%ctyp-{float}, %exp-{Format.pp_print_float});
+    (%ctyp-{string}, %exp-{fun fmt -> Format.fprintf fmt "%S"});
+    (%ctyp-{bool}, %exp-{Format.pp_print_bool});
+    (%ctyp-{char}, %exp-{Format.pp_print_char});
+    (%ctyp-{unit}, %exp-{fun fmt (_:unit)-> Format.fprintf fmt "()"});
+    (%ctyp-{option},
+     %exp-{fun mf_a fmt v -> 
+       match v with
+       | None  -> Format.fprintf fmt "None"
+       | Some v -> Format.fprintf fmt "Some @[%a@]" mf_a v})
+      (* %exp-@check{....}*)
+  ];
   };
     [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;
   end

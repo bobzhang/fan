@@ -169,8 +169,12 @@ FAN_FILES = \
     gfold gramlib\
     idn_util \
     ns \
+    lexgen \
+    lex_util \
     fan_args mktop \
     strip\
+    tag_regexp \
+    translate_lex \
     parse_fan \
     parse_parse \
     parse_stream \

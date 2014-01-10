@@ -34,48 +34,233 @@ let _ =
       names = [];
       annot = None;
       builtin_tbl =
-        [("int",
+        [((`Lid "int" :>Astfn.ctyp),
            (`Constraint
               ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                 (`Arrow
                    ((`Lid "int"), (`Arrow ((`Lid "int"), (`Lid "bool")))))) :>
            Astfn.exp));
-        ("char",
+        ((`Lid "char" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "char"), (`Arrow ((`Lid "char"), (`Lid "bool")))))) :>
           Astfn.exp));
-        ("bool",
+        ((`Lid "bool" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "bool"), (`Arrow ((`Lid "bool"), (`Lid "bool")))))) :>
           Astfn.exp));
-        ("string",
+        ((`Lid "string" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "string"),
                     (`Arrow ((`Lid "string"), (`Lid "bool")))))) :>Astfn.exp));
-        ("nativeint",
+        ((`Lid "nativeint" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "nativeint"),
                     (`Arrow ((`Lid "nativeint"), (`Lid "bool")))))) :>
           Astfn.exp));
-        ("unit",
+        ((`Lid "unit" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "unit"), (`Arrow ((`Lid "unit"), (`Lid "bool")))))) :>
           Astfn.exp));
-        ("int32",
+        ((`Lid "int32" :>Astfn.ctyp),
           (`Constraint
              ((`Dot ((`Uid "Pervasives"), (`Lid "="))),
                (`Arrow
                   ((`Lid "int32"), (`Arrow ((`Lid "int32"), (`Lid "bool")))))) :>
+          Astfn.exp));
+        ((`Lid "list" :>Astfn.ctyp),
+          (`LetIn
+             (`Positive,
+               (`Bind
+                  ((`Lid "f"),
+                    (`Fun
+                       (`Case
+                          ((`Lid "p"),
+                            (`Fun
+                               (`Case
+                                  ((`Lid "xs"),
+                                    (`Fun
+                                       (`Case
+                                          ((`Lid "ys"),
+                                            (`Match
+                                               ((`Par
+                                                   (`Com
+                                                      ((`Lid "xs"),
+                                                        (`Lid "ys")))),
+                                                 (`Bar
+                                                    ((`Case
+                                                        ((`Par
+                                                            (`Com
+                                                               ((`Uid "[]"),
+                                                                 (`Uid "[]")))),
+                                                          (`Bool true))),
+                                                      (`Bar
+                                                         ((`Case
+                                                             ((`Par
+                                                                 (`Com
+                                                                    ((`App
+                                                                    ((`Uid
+                                                                    "::"),
+                                                                    (`Par
+                                                                    (`Com
+                                                                    ((`Lid
+                                                                    "x"),
+                                                                    (`Lid
+                                                                    "xs")))))),
+                                                                    (`App
+                                                                    ((`Uid
+                                                                    "::"),
+                                                                    (`Par
+                                                                    (`Com
+                                                                    ((`Lid
+                                                                    "y"),
+                                                                    (`Lid
+                                                                    "ys"))))))))),
+                                                               (`App
+                                                                  ((`App
+                                                                    ((`Lid
+                                                                    "&&"),
+                                                                    (`App
+                                                                    ((`App
+                                                                    ((`Lid
+                                                                    "p"),
+                                                                    (`Lid "x"))),
+                                                                    (`Lid "y"))))),
+                                                                    (
+                                                                    `App
+                                                                    ((`App
+                                                                    ((`App
+                                                                    ((`Lid
+                                                                    "f"),
+                                                                    (`Lid "p"))),
+                                                                    (`Lid
+                                                                    "xs"))),
+                                                                    (`Lid
+                                                                    "ys"))))))),
+                                                           (`Case
+                                                              (`Any,
+                                                                (`Bool false)))))))))))))))))))),
+               (`Lid "f")) :>Astfn.exp));
+        ((`Lid "option" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "p"),
+                  (`Fun
+                     (`Case
+                        ((`Lid "x"),
+                          (`Fun
+                             (`Case
+                                ((`Lid "y"),
+                                  (`Match
+                                     ((`Par (`Com ((`Lid "x"), (`Lid "y")))),
+                                       (`Bar
+                                          ((`Case
+                                              ((`Par
+                                                  (`Com
+                                                     ((`Uid "None"),
+                                                       (`Uid "None")))),
+                                                (`Bool true))),
+                                            (`Bar
+                                               ((`Case
+                                                   ((`Par
+                                                       (`Com
+                                                          ((`App
+                                                              ((`Uid "Some"),
+                                                                (`Lid "x"))),
+                                                            (`App
+                                                               ((`Uid "Some"),
+                                                                 (`Lid "y")))))),
+                                                     (`App
+                                                        ((`App
+                                                            ((`Lid "p"),
+                                                              (`Lid "x"))),
+                                                          (`Lid "y"))))),
+                                                 (`Case (`Any, (`Bool false))))))))))))))))) :>
+          Astfn.exp));
+        ((`Lid "array" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "f"),
+                  (`Fun
+                     (`Case
+                        ((`Lid "t1"),
+                          (`Fun
+                             (`Case
+                                ((`Lid "t2"),
+                                  (`LetIn
+                                     (`Negative,
+                                       (`Bind
+                                          ((`Lid "len"),
+                                            (`App
+                                               ((`Dot
+                                                   ((`Uid "Array"),
+                                                     (`Lid "length"))),
+                                                 (`Lid "t1"))))),
+                                       (`IfThenElse
+                                          ((`App
+                                              ((`App
+                                                  ((`Lid "<>"),
+                                                    (`App
+                                                       ((`Lid "length"),
+                                                         (`Lid "t2"))))),
+                                                (`Lid "len"))),
+                                            (`Bool false),
+                                            (`LetIn
+                                               (`Positive,
+                                                 (`Bind
+                                                    ((`Lid "loop"),
+                                                      (`Fun
+                                                         (`Case
+                                                            ((`Lid "i"),
+                                                              (`IfThenElse
+                                                                 ((`App
+                                                                    ((`App
+                                                                    ((`Lid
+                                                                    "<"),
+                                                                    (`Lid "i"))),
+                                                                    (`Int "0"))),
+                                                                   (`Bool
+                                                                    true),
+                                                                   (`IfThenElse
+                                                                    ((`App
+                                                                    ((`App
+                                                                    ((`Lid
+                                                                    "f"),
+                                                                    (`ArrayDot
+                                                                    ((`Lid
+                                                                    "t1"),
+                                                                    (`Lid "i"))))),
+                                                                    (`ArrayDot
+                                                                    ((`Lid
+                                                                    "t2"),
+                                                                    (`Lid "i"))))),
+                                                                    (`App
+                                                                    ((`Lid
+                                                                    "loop"),
+                                                                    (`App
+                                                                    ((`App
+                                                                    ((`Lid
+                                                                    "-"),
+                                                                    (`Lid "i"))),
+                                                                    (`Int "1"))))),
+                                                                    (`Bool
+                                                                    false)))))))))),
+                                                 (`App
+                                                    ((`Lid "loop"),
+                                                      (`App
+                                                         ((`App
+                                                             ((`Lid "-"),
+                                                               (`Lid "len"))),
+                                                           (`Int "1"))))))))))))))))))) :>
           Astfn.exp))]
     };
   List.iter Typehook.register [("OEq", (some gen_eqobj))]
@@ -249,6 +434,179 @@ let mk_tuple params =
   (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
     Expn_util.mk_tuple_ee
 let gen_meta =
+  Derive_stru.register
+    {
+      id = (`Pre "meta_");
+      names = ["_loc"];
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      builtin_tbl =
+        [((`Lid "int" :>Astfn.ctyp),
+           (`Fun
+              (`Case
+                 ((`Lid "_loc"),
+                   (`Fun
+                      (`Case
+                         ((`Constraint ((`Lid "i"), (`Lid "int"))),
+                           (`Subtype
+                              ((`App
+                                  ((`Vrn "Int"),
+                                    (`Par
+                                       (`Com
+                                          ((`Lid "_loc"),
+                                            (`App
+                                               ((`Lid "string_of_int"),
+                                                 (`Lid "i")))))))),
+                                (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+           Astfn.exp));
+        ((`Lid "int32" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "int32"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Int32"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Dot
+                                                  ((`Uid "Int32"),
+                                                    (`Lid "to_string"))),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "int64" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "int64"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Int64"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Dot
+                                                  ((`Uid "Int64"),
+                                                    (`Lid "to_string"))),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "nativeint" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "nativeint"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Nativeint"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Dot
+                                                  ((`Uid "Nativeint"),
+                                                    (`Lid "to_string"))),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "float" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "float"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Flo"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Lid "string_of_float"),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "string" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "string"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Str"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Dot
+                                                  ((`Uid "String"),
+                                                    (`Lid "escaped"))),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "char" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "char"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Chr"),
+                                   (`Par
+                                      (`Com
+                                         ((`Lid "_loc"),
+                                           (`App
+                                              ((`Dot
+                                                  ((`Uid "Char"),
+                                                    (`Lid "escaped"))),
+                                                (`Lid "i")))))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "unit" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "unit"))),
+                          (`Subtype
+                             ((`App ((`Vrn "Unit"), (`Lid "_loc"))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "bool" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "_loc"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint ((`Lid "i"), (`Lid "bool"))),
+                          (`Subtype
+                             ((`App
+                                 ((`Vrn "Bool"),
+                                   (`Par (`Com ((`Lid "_loc"), (`Lid "i")))))),
+                               (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp))];
+      plugin_name = "Meta";
+      arity = 1;
+      annot = None;
+      default = None;
+      excludes = ["loc"; "ant"; "quot"]
+    };
   Derive_obj.mk
     ~kind:(Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp))
     ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
@@ -305,7 +663,97 @@ let () =
       mk_variant = (Some mk_variant);
       plugin_name = "Print";
       excludes = [];
-      builtin_tbl = []
+      builtin_tbl =
+        [((`Lid "int" :>Astfn.ctyp),
+           (`Dot ((`Uid "Format"), (`Lid "pp_print_int")) :>Astfn.exp));
+        ((`Lid "int32" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%ld"))))) :>Astfn.exp));
+        ((`Lid "int64" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%Ld"))))) :>Astfn.exp));
+        ((`Lid "nativeint" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%nd"))))) :>Astfn.exp));
+        ((`Lid "float" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_float")) :>Astfn.exp));
+        ((`Lid "string" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`App
+                         ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                           (`Lid "fmt"))), (`Str "%S"))))) :>Astfn.exp));
+        ((`Lid "bool" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_bool")) :>Astfn.exp));
+        ((`Lid "char" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_char")) :>Astfn.exp));
+        ((`Lid "unit" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint (`Any, (`Lid "unit"))),
+                          (`App
+                             ((`App
+                                 ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                                   (`Lid "fmt"))), (`Str "()")))))))) :>
+          Astfn.exp));
+        ((`Lid "option" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "mf_a"),
+                  (`Fun
+                     (`Case
+                        ((`Lid "fmt"),
+                          (`Fun
+                             (`Case
+                                ((`Lid "v"),
+                                  (`Match
+                                     ((`Lid "v"),
+                                       (`Bar
+                                          ((`Case
+                                              ((`Uid "None"),
+                                                (`App
+                                                   ((`App
+                                                       ((`Dot
+                                                           ((`Uid "Format"),
+                                                             (`Lid "fprintf"))),
+                                                         (`Lid "fmt"))),
+                                                     (`Str "None"))))),
+                                            (`Case
+                                               ((`App
+                                                   ((`Uid "Some"),
+                                                     (`Lid "v"))),
+                                                 (`App
+                                                    ((`App
+                                                        ((`App
+                                                            ((`App
+                                                                ((`Dot
+                                                                    ((`Uid
+                                                                    "Format"),
+                                                                    (`Lid
+                                                                    "fprintf"))),
+                                                                  (`Lid "fmt"))),
+                                                              (`Str
+                                                                 "Some @[%a@]"))),
+                                                          (`Lid "mf_a"))),
+                                                      (`Lid "v"))))))))))))))))) :>
+          Astfn.exp))]
     };
   [("OPrint", (some gen_print_obj))] |> (List.iter Typehook.register)
 let mk_variant_iter _cons params =

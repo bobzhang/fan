@@ -26,7 +26,7 @@ type param = {
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;
-    builtin_tbl: (string* exp) list;
+    builtin_tbl: ( ctyp * exp) list;
     excludes : string list;
   }
 
@@ -67,25 +67,25 @@ module Make (U:S) = struct
     let right_trans = Ctyp.left_transform p.id  in
     let tyvar = Ctyp.right_transform (`Pre "mf_")  in
     let rec aux  x : exp =
-      match x with
-      | `Lid(("int" |"char"| "string" | "int32"| "unit" | "nativeint" |"bool") as x ) when Hashtbl.mem builtin_tbl x ->
-          Hashtbl.find builtin_tbl x 
-
-      | `Lid id -> (right_trans id :> exp )
-      | (#ident' as id) ->
-          (Idn_util.ident_map_of_ident right_trans (Idn_util.to_vid id ) :> exp)
-      | `App(t1,t2) ->
-          %exp-{ ${aux t1} ${aux t2} }
-      | `Quote (_,`Lid s) ->   tyvar s
-      | `Arrow(t1,t2) ->
-          aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
-      | `Par _  as ty ->
-          let mk_tuple = Lazy.force mk_tuple  in
-          Ctyp.tuple_exp_of_ctyp  ~arity ~names:p.names ~mk_tuple
-            ~f:aux ty
-      | (ty:ctyp) -> (* TOPBIND required *)
-          failwithf "normal_simple_exp_of_ctyp : %s"
-            (Astfn_print.dump_ctyp ty) in
+      if Hashtbl.mem builtin_tbl x then
+        Hashtbl.find builtin_tbl x
+      else 
+        match x with
+        | `Lid id -> (right_trans id :> exp )
+        | (#ident' as id) ->
+            (Idn_util.ident_map_of_ident right_trans (Idn_util.to_vid id ) :> exp)
+        | `App(t1,t2) ->
+            %exp-{ ${aux t1} ${aux t2} }
+        | `Quote (_,`Lid s) ->   tyvar s
+        | `Arrow(t1,t2) ->
+            aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
+        | `Par _  as ty ->
+            let mk_tuple = Lazy.force mk_tuple  in
+            Ctyp.tuple_exp_of_ctyp  ~arity ~names:p.names ~mk_tuple
+              ~f:aux ty
+        | (ty:ctyp) -> (* TOPBIND required *)
+            failwithf "normal_simple_exp_of_ctyp : %s"
+              (Astfn_print.dump_ctyp ty) in
     aux ty
 
   let mk_prefix  (vars:opt_decl_params) (acc:exp)   =

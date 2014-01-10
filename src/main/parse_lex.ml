@@ -7,7 +7,18 @@ Translate_lex:
 };;
 
 
-let meta_cset _loc (x:Fcset.t)=
+
+(* type concrete_regexp = *)
+(*   | Epsilon *)
+(*   | Eof       *)
+(*   | Characters of Fcset.t *)
+(*   | Sequence of concrete_regexp * concrete_regexp *)
+(*   | Alternative of concrete_regexp * concrete_regexp *)
+(*   | Repetition of concrete_regexp *)
+(*   | Bind of concrete_regexp * (Locf.t * string) with ("Meta") *)
+
+
+let meta_cset _loc (x:Cset.t)=
   Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
     
 (** FIXME derive later *)
@@ -93,13 +104,13 @@ end;;
   [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in
       let s2 = as_cset r2 in
-      Characters (Fcset.diff s1 s2)}]
+      Characters (Cset.diff s1 s2)}]
   regexp: 30  
   [S as r1; "|"; S as r2 %{ Alternative (r1,r2)}]
   regexp: 40
   [ S as r1;S as r2 %{ Sequence(r1,r2)}]  
   regexp: 50  
-  [ Chr c %{ Characters (Fcset.singleton (Char.code @@ Escape.char c))}
+  [ Chr c %{ Characters (Cset.singleton (Char.code @@ Escape.char c))}
   | Str s %{ regexp_for_string @@ Escape.string s (* FIXME *)}
   | "["; char_class as cc; "]" %{ Characters cc}
   | S as r1;"*" %{ Repetition r1}
@@ -118,7 +129,7 @@ end;;
   ] (* FIXME rule mask more friendly error message *) 
   
   char_class:
-  [ "^"; char_class1 as r %{ Fcset.complement r}
+  [ "^"; char_class1 as r %{ Cset.complement r}
   | char_class1 as r %{ r}
   ]
 
@@ -126,9 +137,9 @@ end;;
   [ Chr c1; "-"; Chr c2 %{
     let c1 = Char.code @@ Escape.char c1 in
     let c2 = Char.code @@ Escape.char c2 in
-    Fcset.interval c1 c2}
-  | Chr c1   %{ Fcset.singleton (Char.code @@ Escape.char c1)}
-  | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }]
+    Cset.interval c1 c2}
+  | Chr c1   %{ Cset.singleton (Char.code @@ Escape.char c1)}
+  | S as cc1; S as cc2 %{ Cset.union cc1 cc2 }]
 
   declare_regexp:
   ["let"; Lid@xloc x ; "=";regexp as r %{

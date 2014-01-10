@@ -54,19 +54,19 @@ class map =
 let rec pp_print_lident: Format.formatter -> lident -> unit =
   fun fmt  (`Lid (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-      pp_print_string _a1
+      (fun fmt  -> Format.fprintf fmt "%S") _a1
 and pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
     function
     | `Vrn (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `App (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_t _a1 pp_print_t _a2
     | `Lid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
     | `Com (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -76,7 +76,7 @@ and pp_print_t: Format.formatter -> t -> unit =
           pp_print_t _a1 pp_print_lident _a2
     | `Str (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
 let wildcarder =
   object (self : 'this_type__001_)

@@ -5,7 +5,7 @@ open Tag_regexp
 type concrete_regexp =
   | Epsilon
   | Eof      
-  | Characters of Fcset.t
+  | Characters of Cset.t
   | Sequence of concrete_regexp * concrete_regexp
   | Alternative of concrete_regexp * concrete_regexp
   | Repetition of concrete_regexp
@@ -22,10 +22,10 @@ let regexp_for_string s =
     let len = String.length s in
     if n >= len then Epsilon
     else if  n + 1 = len then
-      Characters (Fcset.singleton (Char.code s.[n]))
+      Characters (Cset.singleton (Char.code s.[n]))
     else
       Sequence
-        (Characters(Fcset.singleton (Char.code s.[n])),
+        (Characters(Cset.singleton (Char.code s.[n])),
          re_string (n+1)) in re_string 0
     
 
@@ -98,7 +98,7 @@ let rec find_all_vars (x:concrete_regexp) : Id_set.t=
   ("" as x | 'a' as x) -> non-optional
  *)
 let find_optional e = 
-  let rec do_find_opt x : Id_set.t * Id_set.t =
+  let rec do_find_opt x : (Id_set.t * Id_set.t) =
     let open Id_set in
     match x with 
     | Characters _|Epsilon|Eof -> (empty, empty)
@@ -130,7 +130,7 @@ let find_optional e =
 
  *)
 
-let rec do_find_double x : Id_set.t * Id_set.t =
+let rec do_find_double x : (Id_set.t * Id_set.t) =
   let open Id_set in
   match x with 
   | Characters _|Epsilon|Eof -> (empty, empty)
@@ -161,7 +161,7 @@ let add_some x = function
   | None   -> None
 
 let add_some_some x y =
-  match x,y with
+  match (x,y) with
   | (Some i, Some j) -> Some (i+j)
   | (_,_)            -> None
 
@@ -205,7 +205,7 @@ let find_chars e =
 (* From shallow to deep syntax *)
 (*******************************)
 
-let chars = ref ([] : Fcset.t list)
+let chars = ref ([] : Cset.t list)
 let chars_count = ref 0
 
 (* the first argument [char_vars] is produced by [find_chars] *)
@@ -220,7 +220,7 @@ let rec encode_regexp (char_vars : Id_set.t) ( act : int) x : regexp =
       end
   | Eof ->
       let n = !chars_count in begin
-        chars := Fcset.eof :: !chars;
+        chars := Cset.eof :: !chars;
         incr chars_count;
         Chars(n,true)
       end
@@ -255,9 +255,9 @@ let rec encode_regexp (char_vars : Id_set.t) ( act : int) x : regexp =
 
 
 let mk_seq (r1: regexp) (r2 : regexp) : regexp=
-  match r1,r2  with
-  | Empty,_ -> r2
-  | _,Empty -> r1
+  match (r1,r2)  with
+  | (Empty,_) -> r2
+  | (_,Empty) -> r1
   | _     -> Seq (r1,r2)
 
 let add_pos p i =
@@ -305,7 +305,7 @@ let rec size_backward pos (x:regexp) =
 
 (* type dir = Backward | Forward          *)
 let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
-    (Id_set.elt * ident_info) list * regexp * int=
+    ((Id_set.elt * ident_info) list * regexp * int) =
 (* From removed tags to their addresses *)
   let env = Hashtbl.create 17 in
   let rec simple_forward pos r double_vars=
@@ -322,8 +322,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
         (r,Some (if is_eof then  pos else pos+1))
     | Seq (r1,r2) ->
         begin match simple_forward pos r1 double_vars with
-        | r1,None -> (mk_seq r1 r2,None)
-        | r1,Some pos ->
+        | (r1,None) -> (mk_seq r1 r2,None)
+        | (r1,Some pos) ->
             let (r2,pos) = simple_forward pos r2 double_vars in
             (mk_seq r1 r2,pos)
         end
@@ -347,8 +347,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
         (r,Some (if is_eof then pos else pos-1))
     | Seq (r1,r2) ->
         begin match simple_backward pos r2 double_vars with
-        | r2,None -> (mk_seq r1 r2,None)
-        | r2,Some pos ->
+        | (r2,None) -> (mk_seq r1 r2,None)
+        | (r2,Some pos) ->
             let (r1,pos) = simple_backward pos r1 double_vars in
             (mk_seq r1 r2,pos)
         end
@@ -359,8 +359,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
     | Star _ -> (r,None)
     | Action _ -> assert false in
   let r = (* optimization *)
-    let r,_ = simple_forward 0 r double_vars in
-    let r,_ = simple_backward 0 r double_vars in
+    let (r,_) = simple_forward 0 r double_vars in
+    let (r,_) = simple_backward 0 r double_vars in
     r in
   let loc_count = ref 0 in
   let get_tag_addr t =
@@ -443,8 +443,10 @@ let encode_casedef (regexps :(concrete_regexp * 'a) list) =
 
 
 let reset () =
-  chars := [];
-  chars_count := 0
+  begin
+    chars := [];
+    chars_count := 0
+  end
 
 type 'a lexer_entry = { 
     lex_regexp: regexp;
@@ -453,24 +455,27 @@ type 'a lexer_entry = {
   }
       
 let encode_lexdef (def:' a entry list) :
-    Fcset.t array * ('a lexer_entry * bool) list
+    (Cset.t array * ('a lexer_entry * bool) list)
     =
-  reset ();
-  let entry_list =
-    List.map
-      (fun {shortest ; clauses } ->
-        let (lex_regexp,actions,_,lex_mem_tags) = encode_casedef clauses in
-        ({lex_regexp ;
-          lex_mem_tags ;
-          lex_actions = List.rev actions },
-         shortest))
-      def in
-  Array.of_list (List.rev !chars), entry_list
+  begin 
+    reset ();
+    let entry_list =
+      List.map
+        (fun {shortest ; clauses } ->
+          let (lex_regexp,actions,_,lex_mem_tags) = encode_casedef clauses in
+          ({lex_regexp ;
+            lex_mem_tags ;
+            lex_actions = List.rev actions },
+           shortest))
+        def in
+    (Array.of_list (List.rev !chars), entry_list)
+  end
 
     
 let encode_single_lexdef (def:'a entry) :
-    Fcset.t array * ('a lexer_entry * bool) = 
-  reset ();
+    (Cset.t array * ('a lexer_entry * bool)) = 
+  begin 
+    reset ();
    let result =
      match def with
        {shortest ; clauses} ->
@@ -479,6 +484,10 @@ let encode_single_lexdef (def:'a entry) :
            lex_mem_tags;
            lex_actions = List.rev actions },
           shortest) in
-    Array.of_list (List.rev !chars),result
+    (Array.of_list (List.rev !chars),result)
+  end
 
 
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/translate_lex.cmo" *)
+(* end: *)

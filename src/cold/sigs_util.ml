@@ -9,8 +9,9 @@ and mtyps = types list
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
   fun fmt  eta__004_  ->
     (fun fmt  (_a0,_a1)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
-         pp_print_decl _a1) fmt eta__004_
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]"
+         (fun fmt  -> Format.fprintf fmt "%S") _a0 pp_print_decl _a1) fmt
+      eta__004_
 and pp_print_and_types: Format.formatter -> and_types -> unit =
   fun fmt  eta__003_  -> pp_print_list pp_print_named_type fmt eta__003_
 and pp_print_types: Format.formatter -> types -> unit =

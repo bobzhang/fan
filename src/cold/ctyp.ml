@@ -63,7 +63,6 @@ and kind =
   | Iter
   | Map
   | Concrete of ctyp 
-open Format
 type warning_type =  
   | Abstract of string
   | Qualified of string 
@@ -71,9 +70,11 @@ let pp_print_warning_type: Format.formatter -> warning_type -> unit =
   fun fmt  ->
     function
     | Abstract _a0 ->
-        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
+        Format.fprintf fmt "@[<1>(Abstract@ %a)@]"
+          (fun fmt  -> Format.fprintf fmt "%S") _a0
     | Qualified _a0 ->
-        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
+        Format.fprintf fmt "@[<1>(Qualified@ %a)@]"
+          (fun fmt  -> Format.fprintf fmt "%S") _a0
 type record_col =  {
   label: string;
   is_mutable: bool;

@@ -1,7 +1,7 @@
 let as_cset = Translate_lex.as_cset
 let regexp_for_string = Translate_lex.regexp_for_string
 let remove_as = Translate_lex.remove_as
-let meta_cset _loc (x : Fcset.t) =
+let meta_cset _loc (x : Cset.t) =
   Fan_ops.meta_list
     (fun _loc  (a,b)  ->
        (`Par
@@ -409,15 +409,16 @@ let _ =
                       } : Tokenf.pattern );
                    Self];
                  annot =
-                   "let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n";
+                   "let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Cset.diff s1 s2)\n";
                  fn =
                    (Gramf.mk_action
                       (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : Locf.t)
                           ->
                          (let s1 = as_cset r1 in
-                          let s2 = as_cset r2 in
-                          Characters (Fcset.diff s1 s2) : 'regexp ) : 
-                      'regexp -> Tokenf.txt -> 'regexp -> Locf.t -> 'regexp ))
+                          let s2 = as_cset r2 in Characters (Cset.diff s1 s2) : 
+                         'regexp ) : 'regexp ->
+                                       Tokenf.txt ->
+                                         'regexp -> Locf.t -> 'regexp ))
                }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );
@@ -487,13 +488,13 @@ let _ =
                       ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" }
                        } : Tokenf.pattern )];
                  annot =
-                   "Characters (Fcset.singleton (Char.code @@ (Escape.char c)))\n";
+                   "Characters (Cset.singleton (Char.code @@ (Escape.char c)))\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                          let c = __fan_0.txt in
                          (Characters
-                            (Fcset.singleton (Char.code @@ (Escape.char c))) : 
+                            (Cset.singleton (Char.code @@ (Escape.char c))) : 
                            'regexp ) : Tokenf.txt -> Locf.t -> 'regexp ))
                };
               {
@@ -642,15 +643,13 @@ let _ =
                            { tag = `Key; word = (A "^"); tag_name = "Key" }
                        } : Tokenf.pattern );
                    Nterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))];
-                 annot = "Fcset.complement r\n";
+                 annot = "Cset.complement r\n";
                  fn =
                    (Gramf.mk_action
                       (fun (r : 'char_class1)  _  (_loc : Locf.t)  ->
-                         (Fcset.complement r : 'char_class ) : 'char_class1
-                                                                 ->
-                                                                 Tokenf.txt
-                                                                   ->
-                                                                   Locf.t ->
+                         (Cset.complement r : 'char_class ) : 'char_class1 ->
+                                                                Tokenf.txt ->
+                                                                  Locf.t ->
                                                                     'char_class ))
                };
               {
@@ -687,7 +686,7 @@ let _ =
                      ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" }
                       } : Tokenf.pattern )];
                  annot =
-                   "let c1 = Char.code @@ (Escape.char c1) in\nlet c2 = Char.code @@ (Escape.char c2) in Fcset.interval c1 c2\n";
+                   "let c1 = Char.code @@ (Escape.char c1) in\nlet c2 = Char.code @@ (Escape.char c2) in Cset.interval c1 c2\n";
                  fn =
                    (Gramf.mk_action
                       (fun (__fan_2 : Tokenf.txt)  _  (__fan_0 : Tokenf.txt) 
@@ -696,9 +695,9 @@ let _ =
                          let c2 = __fan_2.txt in
                          (let c1 = Char.code @@ (Escape.char c1) in
                           let c2 = Char.code @@ (Escape.char c2) in
-                          Fcset.interval c1 c2 : 'char_class1 ) : Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.txt
+                          Cset.interval c1 c2 : 'char_class1 ) : Tokenf.txt
+                                                                   ->
+                                                                   Tokenf.txt
                                                                     ->
                                                                     Tokenf.txt
                                                                     ->
@@ -710,27 +709,27 @@ let _ =
                   [Token
                      ({ descr = { tag = `Chr; word = Any; tag_name = "Chr" }
                       } : Tokenf.pattern )];
-                annot = "Fcset.singleton (Char.code @@ (Escape.char c1))\n";
+                annot = "Cset.singleton (Char.code @@ (Escape.char c1))\n";
                 fn =
                   (Gramf.mk_action
                      (fun (__fan_0 : Tokenf.txt)  (_loc : Locf.t)  ->
                         let c1 = __fan_0.txt in
-                        (Fcset.singleton (Char.code @@ (Escape.char c1)) : 
+                        (Cset.singleton (Char.code @@ (Escape.char c1)) : 
                           'char_class1 ) : Tokenf.txt ->
                                              Locf.t -> 'char_class1 ))
               };
               {
                 symbols = [Self; Self];
-                annot = "Fcset.union cc1 cc2\n";
+                annot = "Cset.union cc1 cc2\n";
                 fn =
                   (Gramf.mk_action
                      (fun (cc2 : 'char_class1)  (cc1 : 'char_class1) 
                         (_loc : Locf.t)  ->
-                        (Fcset.union cc1 cc2 : 'char_class1 ) : 'char_class1
-                                                                  ->
-                                                                  'char_class1
-                                                                    ->
-                                                                    Locf.t ->
+                        (Cset.union cc1 cc2 : 'char_class1 ) : 'char_class1
+                                                                 ->
+                                                                 'char_class1
+                                                                   ->
+                                                                   Locf.t ->
                                                                     'char_class1 ))
               }]
           } : Gramf.olevel )

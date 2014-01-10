@@ -239,8 +239,8 @@ let create_new_state {final=(act,(_,m_act)) ; others=o} =
   let used =
     MemMap.fold (fun _ (_,m) r -> old_in_map m r)
       o (old_in_map m_act Setf.Int.empty) in
-  let new_m_act,mvs  = alloc_map used m_act Setf.Int.empty in
-  let new_o,mvs =
+  let (new_m_act,mvs)  = alloc_map used m_act Setf.Int.empty in
+  let (new_o,mvs) =
     MemMap.fold (fun k (x,m) (r,mvs) ->
       let (m,mvs) = alloc_map used m mvs in
       (MemMap.add k (x,m) r,mvs))
@@ -447,19 +447,19 @@ let rec split_env gen follow pos m s = function
   | [] -> (* Can occur ! because of non-matching regexp ([^'\000'-'\255']) *)
       []
   | ((s1,st1) as p)::rem ->
-      let here = Fcset.inter s s1 in
-      if Fcset.is_empty here then
+      let here = Cset.inter s s1 in
+      if Cset.is_empty here then
         p::split_env gen follow pos m s rem
       else
-        let rest = Fcset.diff s here in
+        let rest = Cset.diff s here in
         let rem =
-          if Fcset.is_empty rest then
+          if Cset.is_empty rest then
             rem
           else
             split_env gen follow pos m rest rem
         and new_st = apply_transitions gen st1 pos m follow in
-        let stay = Fcset.diff s1 here in
-        if Fcset.is_empty stay then
+        let stay = Cset.diff s1 here in
+        if Cset.is_empty stay then
           (here, new_st)::rem
         else
           (stay, st1)::(here, new_st)::rem
@@ -469,7 +469,7 @@ let rec split_env gen follow pos m s = function
 let comp_shift gen chars follow st =
   MemMap.fold
     (fun pos (_,m) env -> split_env gen follow.(pos) pos m chars.(pos) env)
-    st [(Fcset.all_chars_eof,dfa_state_empty)]
+    st [(Cset.all_chars_eof,dfa_state_empty)]
 
 
 let reachs chars follow st =
@@ -481,7 +481,7 @@ let reachs chars follow st =
     List.map
       (fun (s,dfa_state) -> (s,goto_state dfa_state)) env in
 (* finally build the char indexed array -> new state num *)
-  let shift = Fcset.env_to_array env in
+  let shift = Cset.env_to_array env in
   shift
 
 
@@ -574,7 +574,7 @@ let extract_tags (l:(int * ((Locf.t * string) * ident_info) list * 'b) list)
 
 type 'a automata_entry = {
     auto_mem_size : int ;
-    auto_initial_state : int * memory_action list;
+    auto_initial_state : (int * memory_action list);
     auto_actions : (int * t_env * 'a) list
   }
 
@@ -661,5 +661,5 @@ let make_dfa (lexdef:'a entry list) :
 end
 
 (* local variables: *)
-(* compile-command: "pmake lexgen.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lexgen.cmo" *)
 (* end: *)

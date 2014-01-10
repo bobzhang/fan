@@ -16,15 +16,12 @@ FILES = \
     ast_print \
     id_set\
     locf \
-    fcset\
+    cset\
     options\
     tokenf \
-    lex_util \
-    lexgen \
     location_util \
     parsetree_util\
     escape \
-    translate_lex\
     fan_util \
     fan_warnings\
     token_stream

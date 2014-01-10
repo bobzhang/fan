@@ -23,7 +23,7 @@ end
     
 module Tags = Set.Make(Tag)
 
-type transition = t_transition * Tags.t
+type transition = (t_transition * Tags.t)
       
 
 module TagMap = Map.Make (Tag)
@@ -98,3 +98,7 @@ let followpos size entry_list =
      (fun (entry,_) -> fill TransSet.empty entry.Translate_lex.lex_regexp)
      entry_list ;
    v)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/lex_util.cmo" *)
+(* end: *)

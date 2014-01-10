@@ -110,7 +110,7 @@ and kind =
   | Map (* Map style *)
   | Concrete of ctyp
 
-open Format;;
+
 
 type warning_type =
   | Abstract of string 

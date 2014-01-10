@@ -45,7 +45,7 @@ type param = {
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
     annot: (string -> (ctyp*ctyp)) option;
-    builtin_tbl : (string *  exp) list;
+    builtin_tbl : (ctyp *  exp) list;
     excludes : string list;
   }
 

@@ -32,7 +32,7 @@ let _ =
        (216, 246);
        (248, 255)] : Translate_lex.concrete_regexp );
   "eof" +> Eof;
-  "_" +> (Characters Fcset.all_chars);
+  "_" +> (Characters Cset.all_chars);
   "hexa_char" +>
     (Characters [(48, 57); (65, 70); (97, 102)] : Translate_lex.concrete_regexp );
   "ident" +>
@@ -287,15 +287,15 @@ let _ =
                         {
                           pos_fname = "lex_predef.ml";
                           pos_lnum = 64;
-                          pos_bol = 2201;
-                          pos_cnum = 2226
+                          pos_bol = 2200;
+                          pos_cnum = 2225
                         };
                       loc_end =
                         {
                           pos_fname = "lex_predef.ml";
                           pos_lnum = 64;
-                          pos_bol = 2201;
-                          pos_cnum = 2229
+                          pos_bol = 2200;
+                          pos_cnum = 2228
                         };
                       loc_ghost = false
                     } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -459,15 +459,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 94;
-                         pos_bol = 3192;
-                         pos_cnum = 3216
+                         pos_bol = 3191;
+                         pos_cnum = 3215
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 94;
-                         pos_bol = 3192;
-                         pos_cnum = 3219
+                         pos_bol = 3191;
+                         pos_cnum = 3218
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -739,15 +739,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 147;
-                         pos_bol = 4984;
-                         pos_cnum = 5010
+                         pos_bol = 4983;
+                         pos_cnum = 5009
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 147;
-                         pos_bol = 4984;
-                         pos_cnum = 5013
+                         pos_bol = 4983;
+                         pos_cnum = 5012
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -821,15 +821,15 @@ let _ =
                                      {
                                        pos_fname = "lex_predef.ml";
                                        pos_lnum = 152;
-                                       pos_bol = 5135;
-                                       pos_cnum = 5177
+                                       pos_bol = 5134;
+                                       pos_cnum = 5176
                                      };
                                    loc_end =
                                      {
                                        pos_fname = "lex_predef.ml";
                                        pos_lnum = 152;
-                                       pos_bol = 5135;
-                                       pos_cnum = 5178
+                                       pos_bol = 5134;
+                                       pos_cnum = 5177
                                      };
                                    loc_ghost = false
                                  } : Locf.t ), "s"))))))),
@@ -838,15 +838,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 152;
-                         pos_bol = 5135;
-                         pos_cnum = 5187
+                         pos_bol = 5134;
+                         pos_cnum = 5186
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 152;
-                         pos_bol = 5135;
-                         pos_cnum = 5190
+                         pos_bol = 5134;
+                         pos_cnum = 5189
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -995,15 +995,15 @@ let _ =
                                 {
                                   pos_fname = "lex_predef.ml";
                                   pos_lnum = 167;
-                                  pos_bol = 5581;
-                                  pos_cnum = 5608
+                                  pos_bol = 5580;
+                                  pos_cnum = 5607
                                 };
                               loc_end =
                                 {
                                   pos_fname = "lex_predef.ml";
                                   pos_lnum = 167;
-                                  pos_bol = 5581;
-                                  pos_cnum = 5611
+                                  pos_bol = 5580;
+                                  pos_cnum = 5610
                                 };
                               loc_ghost = false
                             } : Locf.t ), "txt"))))),
@@ -1166,15 +1166,15 @@ let _ =
                                {
                                  pos_fname = "lex_predef.ml";
                                  pos_lnum = 180;
-                                 pos_bol = 6013;
-                                 pos_cnum = 6044
+                                 pos_bol = 6012;
+                                 pos_cnum = 6043
                                };
                              loc_end =
                                {
                                  pos_fname = "lex_predef.ml";
                                  pos_lnum = 180;
-                                 pos_bol = 6013;
-                                 pos_cnum = 6047
+                                 pos_bol = 6012;
+                                 pos_cnum = 6046
                                };
                              loc_ghost = false
                            } : Locf.t ), "txt"))))), (Characters [(39, 39)])) : 
@@ -1237,15 +1237,15 @@ let _ =
                            {
                              pos_fname = "lex_predef.ml";
                              pos_lnum = 186;
-                             pos_bol = 6236;
-                             pos_cnum = 6257
+                             pos_bol = 6235;
+                             pos_cnum = 6256
                            };
                          loc_end =
                            {
                              pos_fname = "lex_predef.ml";
                              pos_lnum = 186;
-                             pos_bol = 6236;
-                             pos_cnum = 6258
+                             pos_bol = 6235;
+                             pos_cnum = 6257
                            };
                          loc_ghost = false
                        } : Locf.t ), "c")))) : Translate_lex.concrete_regexp ),
@@ -1320,15 +1320,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 193;
-                         pos_bol = 6517;
-                         pos_cnum = 6546
+                         pos_bol = 6516;
+                         pos_cnum = 6545
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 193;
-                         pos_bol = 6517;
-                         pos_cnum = 6549
+                         pos_bol = 6516;
+                         pos_cnum = 6548
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -1397,15 +1397,15 @@ let _ =
                                  {
                                    pos_fname = "lex_predef.ml";
                                    pos_lnum = 202;
-                                   pos_bol = 6815;
-                                   pos_cnum = 6840
+                                   pos_bol = 6814;
+                                   pos_cnum = 6839
                                  };
                                loc_end =
                                  {
                                    pos_fname = "lex_predef.ml";
                                    pos_lnum = 202;
-                                   pos_bol = 6815;
-                                   pos_cnum = 6841
+                                   pos_bol = 6814;
+                                   pos_cnum = 6840
                                  };
                                loc_ghost = false
                              } : Locf.t ), "x")))))) : Translate_lex.concrete_regexp ),
@@ -1618,15 +1618,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 237;
-                         pos_bol = 7974;
-                         pos_cnum = 7989
+                         pos_bol = 7973;
+                         pos_cnum = 7988
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 237;
-                         pos_bol = 7974;
-                         pos_cnum = 7990
+                         pos_bol = 7973;
+                         pos_cnum = 7989
                        };
                      loc_ghost = false
                    } : Locf.t ), "c")) : Translate_lex.concrete_regexp ),
@@ -1952,15 +1952,15 @@ let _ =
                                              {
                                                pos_fname = "lex_predef.ml";
                                                pos_lnum = 271;
-                                               pos_bol = 9000;
-                                               pos_cnum = 9035
+                                               pos_bol = 8999;
+                                               pos_cnum = 9034
                                              };
                                            loc_end =
                                              {
                                                pos_fname = "lex_predef.ml";
                                                pos_lnum = 271;
-                                               pos_bol = 9000;
-                                               pos_cnum = 9039
+                                               pos_bol = 8999;
+                                               pos_cnum = 9038
                                              };
                                            loc_ghost = false
                                          } : Locf.t ), "name"))))))),
@@ -1995,15 +1995,15 @@ let _ =
                                               {
                                                 pos_fname = "lex_predef.ml";
                                                 pos_lnum = 271;
-                                                pos_bol = 9000;
-                                                pos_cnum = 9058
+                                                pos_bol = 8999;
+                                                pos_cnum = 9057
                                               };
                                             loc_end =
                                               {
                                                 pos_fname = "lex_predef.ml";
                                                 pos_lnum = 271;
-                                                pos_bol = 9000;
-                                                pos_cnum = 9062
+                                                pos_bol = 8999;
+                                                pos_cnum = 9061
                                               };
                                             loc_ghost = false
                                           } : Locf.t ), "meta"))))))))),
@@ -2013,15 +2013,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 271;
-                         pos_bol = 9000;
-                         pos_cnum = 9076
+                         pos_bol = 8999;
+                         pos_cnum = 9075
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 271;
-                         pos_bol = 9000;
-                         pos_cnum = 9081
+                         pos_bol = 8999;
+                         pos_cnum = 9080
                        };
                      loc_ghost = false
                    } : Locf.t ), "shift")) : Translate_lex.concrete_regexp ),
@@ -2281,15 +2281,15 @@ let _ =
                                                 {
                                                   pos_fname = "lex_predef.ml";
                                                   pos_lnum = 294;
-                                                  pos_bol = 9805;
-                                                  pos_cnum = 9825
+                                                  pos_bol = 9804;
+                                                  pos_cnum = 9824
                                                 };
                                               loc_end =
                                                 {
                                                   pos_fname = "lex_predef.ml";
                                                   pos_lnum = 294;
-                                                  pos_bol = 9805;
-                                                  pos_cnum = 9826
+                                                  pos_bol = 9804;
+                                                  pos_cnum = 9825
                                                 };
                                               loc_ghost = false
                                             } : Locf.t ), "x"))))),
@@ -2344,15 +2344,15 @@ let _ =
                                              {
                                                pos_fname = "lex_predef.ml";
                                                pos_lnum = 294;
-                                               pos_bol = 9805;
-                                               pos_cnum = 9854
+                                               pos_bol = 9804;
+                                               pos_cnum = 9853
                                              };
                                            loc_end =
                                              {
                                                pos_fname = "lex_predef.ml";
                                                pos_lnum = 294;
-                                               pos_bol = 9805;
-                                               pos_cnum = 9858
+                                               pos_bol = 9804;
+                                               pos_cnum = 9857
                                              };
                                            loc_ghost = false
                                          } : Locf.t ), "name"))))))),
@@ -2387,15 +2387,15 @@ let _ =
                                               {
                                                 pos_fname = "lex_predef.ml";
                                                 pos_lnum = 294;
-                                                pos_bol = 9805;
-                                                pos_cnum = 9877
+                                                pos_bol = 9804;
+                                                pos_cnum = 9876
                                               };
                                             loc_end =
                                               {
                                                 pos_fname = "lex_predef.ml";
                                                 pos_lnum = 294;
-                                                pos_bol = 9805;
-                                                pos_cnum = 9881
+                                                pos_bol = 9804;
+                                                pos_cnum = 9880
                                               };
                                             loc_ghost = false
                                           } : Locf.t ), "meta"))))))))),
@@ -2405,15 +2405,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 294;
-                         pos_bol = 9805;
-                         pos_cnum = 9892
+                         pos_bol = 9804;
+                         pos_cnum = 9891
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 294;
-                         pos_bol = 9805;
-                         pos_cnum = 9897
+                         pos_bol = 9804;
+                         pos_cnum = 9896
                        };
                      loc_ghost = false
                    } : Locf.t ), "shift")) : Translate_lex.concrete_regexp ),
@@ -2781,15 +2781,15 @@ let _ =
                                             {
                                               pos_fname = "lex_predef.ml";
                                               pos_lnum = 322;
-                                              pos_bol = 10751;
-                                              pos_cnum = 10791
+                                              pos_bol = 10750;
+                                              pos_cnum = 10790
                                             };
                                           loc_end =
                                             {
                                               pos_fname = "lex_predef.ml";
                                               pos_lnum = 322;
-                                              pos_bol = 10751;
-                                              pos_cnum = 10794
+                                              pos_bol = 10750;
+                                              pos_cnum = 10793
                                             };
                                           loc_ghost = false
                                         } : Locf.t ), "num"))))),
@@ -2812,16 +2812,16 @@ let _ =
                                                     pos_fname =
                                                       "lex_predef.ml";
                                                     pos_lnum = 323;
-                                                    pos_bol = 10808;
-                                                    pos_cnum = 10850
+                                                    pos_bol = 10807;
+                                                    pos_cnum = 10849
                                                   };
                                                 loc_end =
                                                   {
                                                     pos_fname =
                                                       "lex_predef.ml";
                                                     pos_lnum = 323;
-                                                    pos_bol = 10808;
-                                                    pos_cnum = 10854
+                                                    pos_bol = 10807;
+                                                    pos_cnum = 10853
                                                   };
                                                 loc_ghost = false
                                               } : Locf.t ), "name"))))),
@@ -2888,15 +2888,15 @@ let _ =
                                     {
                                       pos_fname = "lex_predef.ml";
                                       pos_lnum = 343;
-                                      pos_bol = 11388;
-                                      pos_cnum = 11418
+                                      pos_bol = 11387;
+                                      pos_cnum = 11417
                                     };
                                   loc_end =
                                     {
                                       pos_fname = "lex_predef.ml";
                                       pos_lnum = 343;
-                                      pos_bol = 11388;
-                                      pos_cnum = 11422
+                                      pos_bol = 11387;
+                                      pos_cnum = 11421
                                     };
                                   loc_ghost = false
                                 } : Locf.t ), "name"))))),
@@ -2930,15 +2930,15 @@ let _ =
                                      {
                                        pos_fname = "lex_predef.ml";
                                        pos_lnum = 343;
-                                       pos_bol = 11388;
-                                       pos_cnum = 11444
+                                       pos_bol = 11387;
+                                       pos_cnum = 11443
                                      };
                                    loc_end =
                                      {
                                        pos_fname = "lex_predef.ml";
                                        pos_lnum = 343;
-                                       pos_bol = 11388;
-                                       pos_cnum = 11450
+                                       pos_bol = 11387;
+                                       pos_cnum = 11449
                                      };
                                    loc_ghost = false
                                  } : Locf.t ), "follow"))))))),
@@ -2947,15 +2947,15 @@ let _ =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 343;
-                         pos_bol = 11388;
-                         pos_cnum = 11456
+                         pos_bol = 11387;
+                         pos_cnum = 11455
                        };
                      loc_end =
                        {
                          pos_fname = "lex_predef.ml";
                          pos_lnum = 343;
-                         pos_bol = 11388;
-                         pos_cnum = 11459
+                         pos_bol = 11387;
+                         pos_cnum = 11458
                        };
                      loc_ghost = false
                    } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -3095,15 +3095,15 @@ let _ =
                                         {
                                           pos_fname = "lex_predef.ml";
                                           pos_lnum = 354;
-                                          pos_bol = 11759;
-                                          pos_cnum = 11789
+                                          pos_bol = 11758;
+                                          pos_cnum = 11788
                                         };
                                       loc_end =
                                         {
                                           pos_fname = "lex_predef.ml";
                                           pos_lnum = 354;
-                                          pos_bol = 11759;
-                                          pos_cnum = 11793
+                                          pos_bol = 11758;
+                                          pos_cnum = 11792
                                         };
                                       loc_ghost = false
                                     } : Locf.t ), "name"))))))),
@@ -3113,15 +3113,15 @@ let _ =
                       {
                         pos_fname = "lex_predef.ml";
                         pos_lnum = 354;
-                        pos_bol = 11759;
-                        pos_cnum = 11804
+                        pos_bol = 11758;
+                        pos_cnum = 11803
                       };
                     loc_end =
                       {
                         pos_fname = "lex_predef.ml";
                         pos_lnum = 354;
-                        pos_bol = 11759;
-                        pos_cnum = 11807
+                        pos_bol = 11758;
+                        pos_cnum = 11806
                       };
                     loc_ghost = false
                   } : Locf.t ), "txt")) : Translate_lex.concrete_regexp ),
@@ -3325,15 +3325,15 @@ let _ =
                            {
                              pos_fname = "lex_predef.ml";
                              pos_lnum = 370;
-                             pos_bol = 12345;
-                             pos_cnum = 12364
+                             pos_bol = 12344;
+                             pos_cnum = 12363
                            };
                          loc_end =
                            {
                              pos_fname = "lex_predef.ml";
                              pos_lnum = 370;
-                             pos_bol = 12345;
-                             pos_cnum = 12365
+                             pos_bol = 12344;
+                             pos_cnum = 12364
                            };
                          loc_ghost = false
                        } : Locf.t ), "c")))) : Translate_lex.concrete_regexp ),

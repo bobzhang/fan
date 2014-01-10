@@ -11,28 +11,28 @@ let pp_print_literal: Format.formatter -> literal -> unit =
     function
     | `Chr (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Chr@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Int (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Int@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Int32 (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Int32@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Int64 (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Int64@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Flo (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Nativeint (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Nativeint@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Str (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Bool (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Bool@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_bool _a1
+          Format.pp_print_bool _a1
     | `Unit _a0 -> Format.fprintf fmt "@[<1>(`Unit@ %a)@]" pp_print_loc _a0
 let pp_print_flag: Format.formatter -> flag -> unit =
   fun fmt  ->
@@ -60,25 +60,25 @@ let rec pp_print_strings: Format.formatter -> strings -> unit =
           pp_print_strings _a1 pp_print_strings _a2
     | `Str (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 let pp_print_lident: Format.formatter -> lident -> unit =
   fun fmt  (`Lid (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-      pp_print_string _a1
+      (fun fmt  -> Format.fprintf fmt "%S") _a1
 let pp_print_alident: Format.formatter -> alident -> unit =
   fun fmt  ->
     function
     | `Lid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 let pp_print_auident: Format.formatter -> auident -> unit =
   fun fmt  ->
     function
     | `Uid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 let pp_print_aident: Format.formatter -> aident -> unit =
   fun fmt  ->
@@ -90,7 +90,7 @@ let pp_print_astring: Format.formatter -> astring -> unit =
     function
     | `C (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`C@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 let rec pp_print_uident: Format.formatter -> uident -> unit =
   fun fmt  ->
@@ -124,10 +124,10 @@ let pp_print_ident': Format.formatter -> ident' -> unit =
           pp_print_ident _a1 pp_print_ident _a2
     | `Lid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Uid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
 let rec pp_print_vid: Format.formatter -> vid -> unit =
   fun fmt  ->
     function
@@ -136,10 +136,10 @@ let rec pp_print_vid: Format.formatter -> vid -> unit =
           pp_print_vid _a1 pp_print_vid _a2
     | `Lid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Uid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 let pp_print_vid': Format.formatter -> vid' -> unit =
   fun fmt  ->
@@ -149,10 +149,10 @@ let pp_print_vid': Format.formatter -> vid' -> unit =
           pp_print_vid _a1 pp_print_vid _a2
     | `Lid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Uid (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
 let rec pp_print_dupath: Format.formatter -> dupath -> unit =
   fun fmt  ->
     function
@@ -402,7 +402,7 @@ and pp_print_pat: Format.formatter -> pat -> unit =
           pp_print_pat _a1 pp_print_pat _a2
     | `Vrn (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Com (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_pat _a1 pp_print_pat _a2
@@ -482,7 +482,7 @@ and pp_print_exp: Format.formatter -> exp -> unit =
           pp_print_exp _a1 pp_print_exp _a2
     | `Vrn (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Com (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_exp _a1 pp_print_exp _a2
@@ -975,7 +975,7 @@ let rec pp_print_ep: Format.formatter -> ep -> unit =
           pp_print_ep _a1 pp_print_ep _a2
     | `Vrn (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
+          (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Com (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_ep _a1 pp_print_ep _a2
