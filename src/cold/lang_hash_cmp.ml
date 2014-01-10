@@ -1,3 +1,4 @@
+let lexer = Lex_fan.from_stream
 let hash_p = Gramf.mk "hash_p"
 let _ =
   Gramf.extend_single
@@ -66,4 +67,4 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement );
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "hash_cmp" }
-    ~entry:hash_p ()
+    ~entry:hash_p ~lexer ()

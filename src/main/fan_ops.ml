@@ -69,8 +69,7 @@ let mklist loc =
     | e1 :: el ->
         let _loc =
           if top then loc else Locf.merge (loc_of (e1)) loc in
-        `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el))
-          (* %exp-{ [$e1 :: $(loop false el)] } *)
+        %ep'{ $e1 :: ${loop false el} }
   in loop true 
 
 let meta_list mf_a _loc  ls =

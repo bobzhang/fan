@@ -23,6 +23,7 @@ let compile _loc pairs =
                Ast_quotation.$p
                  ~name:{domain = Ns.lang; name = $n }
                  ~entry:$e
+                 ~lexer:Lex_fan.from_stream (* warning may be needed *)
                  ()
              }
            | Some (_,l,loc) ->
@@ -73,3 +74,7 @@ let () =
     lexer:from_stream
   }
   end;;
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/lang_register.cmo" *)
+(* end: *)

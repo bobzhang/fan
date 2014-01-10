@@ -1,28 +1,37 @@
 open Astn_util
 open Astfn
-open StdFan
 let pp_print_decl = Astfn_print.pp_print_decl
 type named_type = (string* decl) 
 and and_types = named_type list 
-and types = [ `Mutual of and_types | `Single of named_type] 
+and types =  
+  | Mutual of and_types
+  | Single of named_type 
 and mtyps = types list 
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
-  fun fmt  eta__004_  ->
+  fun fmt  eta__005_  ->
     (fun fmt  (_a0,_a1)  ->
        Format.fprintf fmt "@[<1>(%a,@,%a)@]"
          (fun fmt  -> Format.fprintf fmt "%S") _a0 pp_print_decl _a1) fmt
-      eta__004_
+      eta__005_
 and pp_print_and_types: Format.formatter -> and_types -> unit =
-  fun fmt  eta__003_  -> pp_print_list pp_print_named_type fmt eta__003_
+  fun fmt  eta__004_  ->
+    (fun mf_a  fmt  lst  ->
+       Format.fprintf fmt "@[<1>[%a]@]"
+         (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x))
+         lst) pp_print_named_type fmt eta__004_
 and pp_print_types: Format.formatter -> types -> unit =
   fun fmt  ->
     function
-    | `Mutual _a0 ->
-        Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types _a0
-    | `Single _a0 ->
-        Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
+    | Mutual _a0 ->
+        Format.fprintf fmt "@[<1>(Mutual@ %a)@]" pp_print_and_types _a0
+    | Single _a0 ->
+        Format.fprintf fmt "@[<1>(Single@ %a)@]" pp_print_named_type _a0
 and pp_print_mtyps: Format.formatter -> mtyps -> unit =
-  fun fmt  eta__002_  -> pp_print_list pp_print_types fmt eta__002_
+  fun fmt  eta__003_  ->
+    (fun mf_a  fmt  lst  ->
+       Format.fprintf fmt "@[<1>[%a]@]"
+         (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x))
+         lst) pp_print_types fmt eta__003_
 type plugin_name = string 
 type plugin = 
   {
@@ -32,15 +41,15 @@ type plugin =
 let apply_filter f (m : mtyps) =
   (let f =
      function
-     | `Single (s,_) as x -> if f s then Some x else None
-     | `Mutual ls ->
+     | Single (s,_) as x -> if f s then Some x else None
+     | Mutual ls ->
          let x =
            Listf.filter_map
              (fun ((s,_) as x)  -> if f s then Some x else None) ls in
          (match x with
           | [] -> None
-          | x::[] -> Some (`Single x)
-          | y -> Some (`Mutual y)) in
+          | x::[] -> Some (Single x)
+          | y -> Some (Mutual y)) in
    Listf.filter_map f m : mtyps )
 let stru_from_mtyps ~f:(aux : named_type -> decl)  (x : mtyps) =
   (match x with
@@ -49,21 +58,21 @@ let stru_from_mtyps ~f:(aux : named_type -> decl)  (x : mtyps) =
        let xs: stru list =
          List.map
            (function
-            | `Mutual tys ->
+            | Mutual tys ->
                 let v = and_of_list (List.map aux tys) in
                 (`Type (v :>Astfn.decl) :>Astfn.stru)
-            | `Single ty ->
+            | Single ty ->
                 let v = aux ty in (`Type (v :>Astfn.decl) :>Astfn.stru)) x in
        Some (sem_of_list xs) : stru option )
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
      Listf.concat_map
        (function
-        | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
-        | `Single (x,_) -> [x]) x in
+        | Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
+        | Single (x,_) -> [x]) x in
    sem_of_list (List.map f tys) : stru )
 let mk_transform_type_eq () =
-  object (self : 'this_type__001_)
+  object (self : 'this_type__002_)
     val transformers = Hashtbl.create 50
     inherit  Astfn_map.map as super
     method! stru =
@@ -104,7 +113,7 @@ let transform_mtyps (lst : mtyps) =
   let item1 =
     List.map
       (function
-       | `Mutual ls ->
-           `Mutual (List.map (fun (s,ty)  -> (s, (obj#decl ty))) ls)
-       | `Single (s,ty) -> `Single (s, (obj#decl ty))) lst in
+       | Mutual ls ->
+           Mutual (List.map (fun (s,ty)  -> (s, (obj#decl ty))) ls)
+       | Single (s,ty) -> Single (s, (obj#decl ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)

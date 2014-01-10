@@ -277,7 +277,7 @@ module Make (U:S) = struct
     (* return new types as generated  new context *)
     let fs (ty:Sigs_util.types) : stru=
       match ty with
-      | `Mutual named_types ->
+      | Mutual named_types ->
           begin match named_types with
           | [] ->  %stru-{ let _ = ()} (* FIXME *)
           | xs ->
@@ -289,7 +289,7 @@ module Make (U:S) = struct
                     mk_bind  ty ) xs in
               %stru-{ let rec $bind }
           end
-      | `Single (_,tydcl) ->
+      | Single (_,tydcl) ->
           let flag =
             if Ctyp.is_recursive tydcl then `Positive
             else `Negative
@@ -301,12 +301,12 @@ module Make (U:S) = struct
 
                 
 
-(*************************************************************************)
+(************************************)
 (** *)
 (*   Generate warnings for abstract data type *)
 (*   and qualified data type. *)
 (*   all the types in one module will derive a class  *)
-(*************************************************************************)
+(************************************)
 
 (** For var, in most cases we just add a prefix *)
 (*    mf_, so we just fix it here *)
@@ -314,18 +314,18 @@ module Make (U:S) = struct
 (*    For Objects, tctor_var, always (`Fun (fun x -> x)) *)
 (*    FIXME we may need a more flexible way to compose branches *)
 (*  *)
-  let () = 
-   begin 
-    Typehook.register ~filter:(fun x -> not (List.mem x  p.excludes))
-      (p.plugin_name, stru_of_mtyps )
-   end   
 end
 
 let register p =
   let module M = struct
     let p = p 
   end in
-  let module N = Make(M) in ()
+  let module N = Make(M) in
+  begin 
+    Typehook.register ~filter:(fun x -> not (List.mem x  p.excludes))
+      (p.plugin_name, N.stru_of_mtyps )
+   end   
+
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/derive_stru.cmo" *)
 (* end: *)

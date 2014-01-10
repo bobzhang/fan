@@ -28,19 +28,7 @@ end;;
 
 
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fanAstN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/metafn.cmo" *)
 (* end: *)
+

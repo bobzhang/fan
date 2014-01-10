@@ -137,14 +137,14 @@ let traversal () : traversal  = object (self)
       self#in_and_types;
       let _ = super#stru x in
       (self#update_cur_mtyps
-          (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
+          (fun lst -> Mutual (List.rev self#get_cur_and_types) :: lst );
        self#out_and_types;
        (if !State.keep then x else %{ let _ = () } (* FIXME *) ))
     end
     | `TypeWith(_loc,decl,_) ->
         self#stru (`Type(_loc,decl))
     | %{ type ${(`TyDcl (_,`Lid(_, name), _, _, _) as t)} } as x -> 
-        let item =  `Single (name, Strip.decl t) in
+        let item =  Sigs_util.Single (name, Strip.decl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
               pp_print_types  item in

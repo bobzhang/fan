@@ -167,7 +167,7 @@ let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name,_,ctyp,_) ->
       let obj =
-        object (self : 'this_type__001_)
+        object (self : 'this_type__002_)
           inherit  Astfn_fold.fold as super
           val mutable is_recursive = false
           method! ctyp =

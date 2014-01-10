@@ -1,6 +1,12 @@
 
 
-type t = (int * int) list 
+type t = (int * int) list (* with ("Meta") *)
+
+(** whenever  a piece of code is meta lifted,
+   it cannot  be abstract pattern, or at least
+   it cannot appear in the pattern position 
+   in t
+ *)
 
 let empty = []
 

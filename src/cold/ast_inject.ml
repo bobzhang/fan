@@ -98,6 +98,8 @@ let _ =
 let _ =
   let open Ast_quotation in
     let domain = Ns.inject in
-    of_exp ~name:{ domain; name = "exp" } ~entry:inject_exp ();
-    of_stru ~name:{ domain; name = "stru" } ~entry:inject_stru ();
-    of_clfield ~name:{ domain; name = "clfield" } ~entry:inject_clfield ()
+    let lexer = Lex_fan.from_stream in
+    of_exp ~name:{ domain; name = "exp" } ~entry:inject_exp ~lexer ();
+    of_stru ~name:{ domain; name = "stru" } ~entry:inject_stru ~lexer ();
+    of_clfield ~name:{ domain; name = "clfield" } ~entry:inject_clfield
+      ~lexer ()

@@ -600,6 +600,46 @@ let gen_meta =
                                  ((`Vrn "Bool"),
                                    (`Par (`Com ((`Lid "_loc"), (`Lid "i")))))),
                                (`Dot ((`Uid "Astf"), (`Lid "ep")))))))))) :>
+          Astfn.exp));
+        ((`Lid "option" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "mf_a"),
+                  (`Fun
+                     (`Case
+                        ((`Lid "_loc"),
+                          (`Fun
+                             (`Bar
+                                ((`Case
+                                    ((`Uid "None"),
+                                      (`Subtype
+                                         ((`App ((`Vrn "Uid"), (`Str "None"))),
+                                           (`Dot
+                                              ((`Uid "Astfn"), (`Lid "ep"))))))),
+                                  (`Case
+                                     ((`App ((`Uid "Some"), (`Lid "x"))),
+                                       (`Subtype
+                                          ((`App
+                                              ((`Vrn "App"),
+                                                (`Par
+                                                   (`Com
+                                                      ((`App
+                                                          ((`Vrn "Uid"),
+                                                            (`Str "Some"))),
+                                                        (`Subtype
+                                                           ((`App
+                                                               ((`App
+                                                                   ((`Lid
+                                                                    "mf_a"),
+                                                                    (`Lid
+                                                                    "_loc"))),
+                                                                 (`Lid "x"))),
+                                                             (`Dot
+                                                                ((`Uid
+                                                                    "Astfn"),
+                                                                  (`Lid "ep")))))))))),
+                                            (`Dot
+                                               ((`Uid "Astfn"), (`Lid "ep"))))))))))))))) :>
           Astfn.exp))];
       plugin_name = "Meta";
       arity = 1;
@@ -713,6 +753,52 @@ let () =
                                  ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
                                    (`Lid "fmt"))), (`Str "()")))))))) :>
           Astfn.exp));
+        ((`Lid "list" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "mf_a"),
+                  (`Fun
+                     (`Case
+                        ((`Lid "fmt"),
+                          (`Fun
+                             (`Case
+                                ((`Lid "lst"),
+                                  (`App
+                                     ((`App
+                                         ((`App
+                                             ((`App
+                                                 ((`Dot
+                                                     ((`Uid "Format"),
+                                                       (`Lid "fprintf"))),
+                                                   (`Lid "fmt"))),
+                                               (`Str "@[<1>[%a]@]"))),
+                                           (`Fun
+                                              (`Case
+                                                 ((`Lid "fmt"),
+                                                   (`App
+                                                      ((`Dot
+                                                          ((`Uid "List"),
+                                                            (`Lid "iter"))),
+                                                        (`Fun
+                                                           (`Case
+                                                              ((`Lid "x"),
+                                                                (`App
+                                                                   ((`App
+                                                                    ((`App
+                                                                    ((`App
+                                                                    ((`Dot
+                                                                    ((`Uid
+                                                                    "Format"),
+                                                                    (`Lid
+                                                                    "fprintf"))),
+                                                                    (`Lid
+                                                                    "fmt"))),
+                                                                    (`Str
+                                                                    "%a@ "))),
+                                                                    (`Lid
+                                                                    "mf_a"))),
+                                                                    (`Lid "x"))))))))))))),
+                                       (`Lid "lst"))))))))))) :>Astfn.exp));
         ((`Lid "option" :>Astfn.ctyp),
           (`Fun
              (`Case
@@ -800,8 +886,7 @@ let generate (mtyps : mtyps) =
      | _ -> failwithf "generate mtyps %s" (Astfn_print.dump_decl ty) in
    let _ =
      List.iter
-       (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
-       mtyps in
+       (function | Mutual tys -> List.iter aux tys | Single t -> aux t) mtyps in
    let case =
      Hashtbl.fold
        (fun key  arity  acc  ->
@@ -839,8 +924,8 @@ let generate (mtyps : mtyps) =
      Listf.concat_map
        (fun x  ->
           match x with
-          | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
-          | `Single (x,_) -> [x]) mtyps in
+          | Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
+          | Single (x,_) -> [x]) mtyps in
    let decl =
      let x =
        (tys |> (List.map (fun x  -> uid @@ (String.capitalize x)))) |>

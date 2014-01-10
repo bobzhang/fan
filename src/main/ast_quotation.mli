@@ -61,35 +61,37 @@ val add_quotation:
           mpat:(Locf.t -> 'c -> ep) -> Tokenf.name -> 'c Gramf.t -> unit
 
 
-
+val make_parser :
+    lexer:Tokenf.stream Tokenf.lex ->
+      'a Gramf.t -> Locf.t -> string option -> string -> 'a
 (* FIXME revised parser *cannot* parse name:string -> unit*)
 (*************************************************************)
 (* Registration: requies  optional lexer, domain name and    *)
 (*   parser entry                                            *)
 (*************************************************************)    
 val of_stru :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.stru Gramf.t ->
     unit -> unit
 val of_pat :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.pat Gramf.t
     -> unit -> unit
 val of_clfield :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.clfield Gramf.t
     -> unit -> unit
 val of_case :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.case Gramf.t
     -> unit -> unit 
 val of_exp :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.exp Gramf.t
     -> unit -> unit
         
 val of_ep :
-  ?lexer:(Location.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Location.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.ep Gramf.t ->
     unit -> unit
 
@@ -97,26 +99,26 @@ val of_ep :
 (* the same as above, allows a filter plugin though          *)    
 (*************************************************************)        
 val of_pat_with_filter :
-    ?lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
+    lexer:(loc -> char Streamf.t -> Tokenf.stream) ->
       name:Tokenf.name -> entry:'a Gramf.t -> filter:('a -> pat)
         -> unit -> unit 
 val of_stru_with_filter :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name ->
   entry:'a Gramf.t -> filter:('a -> Astf.stru)
     -> unit -> unit
 val of_clfield_with_filter :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name ->
   entry:'a Gramf.t -> filter:('a -> Astf.clfield)
     -> unit -> unit 
 val of_case_with_filter :
-  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
+  lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> 
   entry:'a Gramf.t -> filter:('a -> Astf.case)
     -> unit -> unit
 val of_exp_with_filter :
-  ?lexer:(loc -> char Streamf.t -> Tokenf.stream)
+  lexer:(loc -> char Streamf.t -> Tokenf.stream)
   -> name:Tokenf.name
     -> entry:'a Gramf.t -> filter:('a -> exp)
       -> unit -> unit
@@ -127,6 +129,6 @@ val register : Tokenf.name * unit Tokenf.expand_fun -> unit
 val handle_quot : Tokenf.quot -> unit    
 
 val register_unit_parser :
-    ?lexer:Tokenf.stream Tokenf.lex -> Tokenf.name * unit Gramf.t -> unit
+    lexer:Tokenf.stream Tokenf.lex -> Tokenf.name * unit Gramf.t -> unit
 
 val dump_directives : unit -> unit

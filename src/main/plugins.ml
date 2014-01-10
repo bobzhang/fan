@@ -324,6 +324,12 @@ let gen_meta =
      (%ctyp-{char}, %exp-{fun _loc (i:char) -> %ep{$chr':i} });
      (%ctyp-{unit}, %exp-{fun _loc (i:unit) -> %ep{()} });
      (%ctyp-{bool}, %exp-{fun _loc (i:bool) -> %ep{$bool':i} });
+    (* (%ctyp-{list},%exp-{}); *)
+    (%ctyp-{option},
+     %exp-{fun mf_a _loc -> function
+       | None -> %ep-{None}
+       | Some x -> %ep-{Some ${mf_a _loc x}}
+         })
     ];
     plugin_name = "Meta";
     arity = 1;
@@ -411,6 +417,9 @@ let () =
     (%ctyp-{bool}, %exp-{Format.pp_print_bool});
     (%ctyp-{char}, %exp-{Format.pp_print_char});
     (%ctyp-{unit}, %exp-{fun fmt (_:unit)-> Format.fprintf fmt "()"});
+    (%ctyp-{list}, %exp-{fun mf_a fmt lst -> 
+      Format.fprintf fmt "@[<1>[%a]@]"
+        (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x)) lst});
     (%ctyp-{option},
      %exp-{fun mf_a fmt v -> 
        match v with
@@ -482,8 +491,8 @@ let generate (mtyps:mtyps) : stru =
   let _ =
     List.iter
       (function
-        |`Mutual tys -> List.iter aux tys
-        |`Single t -> aux t) mtyps in
+        |Mutual tys -> List.iter aux tys
+        |Single t -> aux t) mtyps in
   let case = Hashtbl.fold
     (fun key arity acc ->
       if arity= 1 then
@@ -522,8 +531,8 @@ let generate (mtyps:mtyps) : stru =
     Listf.concat_map
       (fun x ->
         match x with
-        |`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
-        |`Single (x,_) -> [x] ) mtyps in
+        |Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
+        |Single (x,_) -> [x] ) mtyps in
   let decl =
     let x  =
       tys

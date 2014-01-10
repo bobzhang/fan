@@ -53,6 +53,7 @@
    clfield :: The type of class structure items *)
 
 
+%code@ast{
 type loc = Locf.t
 
 type ant = [ `Ant of (loc * Tokenf.ant)]
@@ -622,8 +623,11 @@ and rec_bind =
   [  `RecBind of (loc * vid (* ident *) * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
-  | ant] 
+  | ant]
+ }
       
       
-(* let _loc = Locf.ghost; *)
-(* #filter "serialize";; *)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/astf.cmo" *)
+(* end: *)

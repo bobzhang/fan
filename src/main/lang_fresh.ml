@@ -12,11 +12,12 @@ fresh:
     }
   | %exp{Gensym.fresh ()}]        
 };;
-
+let lexer = Lex_fan.from_stream in 
 %register{
 name:fresh;
 entry:fresh;
-position:exp
+position:exp;
+lexer:lexer
 };;
 
 

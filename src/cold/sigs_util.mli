@@ -6,8 +6,8 @@ open Astfn
 type named_type = (string* decl)
 and and_types = named_type list
 and types =
-    [ `Mutual of and_types
-    | `Single of named_type ]
+  | Mutual of and_types
+  | Single of named_type 
 and mtyps =  types list
 
 

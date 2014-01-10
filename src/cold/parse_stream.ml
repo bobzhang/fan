@@ -376,4 +376,4 @@ let _ =
      } : _ Gramf.single_extend_statement )
 let () =
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "parser" }
-    ~entry:parser_exp ()
+    ~entry:parser_exp ~lexer:Lex_fan.from_stream ()

@@ -4,7 +4,7 @@ open Astf
       derive(Map MapWrapper);
 };;
 
-%ocaml{%include{ "../common/astf.mli"};;  };;
+%ocaml{%include{ "astf.ml"};;  };;
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/astf_map.cmo" *)

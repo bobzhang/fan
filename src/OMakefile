@@ -137,6 +137,7 @@ FAN_LEX_LIB_FILES = \
     
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
+    astf \
     ast_basic \
     ast2pt \
     ast_gen \
@@ -146,6 +147,8 @@ FAN_FILES = \
     eq \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
+    gen_print \
+    builtin\
     id \
     compile_lex compile_stream ctyp \
     derive \
@@ -194,6 +197,7 @@ FAN_FILES = \
     lang_clear\
     free_vars \
     lang_hash_cmp \
+    lang_code \
     lang_not_implement \
     gensym \
     lang_fresh \

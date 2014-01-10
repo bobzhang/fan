@@ -9,7 +9,8 @@ open! Syntaxf
 include Prelude
 let domain = Ns.lang
 let _ =
-  of_stru_with_filter ~name:{ domain; name = "ocaml" } ~entry:strus
+  of_stru_with_filter ~lexer:Lex_fan.from_stream
+    ~name:{ domain; name = "ocaml" } ~entry:strus
     ~filter:(fun s  ->
                let _loc = loc_of s in
                let v = (`Struct (_loc, (s :>Astf.stru)) :>Astf.mexp) in
@@ -84,7 +85,8 @@ let _ =
               }]
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
-let () = of_exp ~name:{ domain; name = "p" } ~entry:p ()
+let () =
+  of_exp ~name:{ domain; name = "p" } ~entry:p ~lexer:Lex_fan.from_stream ()
 let import = Gramf.mk "import"
 let _ =
   let a: 'a Gramf.t = Gramf.mk "a" and n: 'n Gramf.t = Gramf.mk "n" in
@@ -217,13 +219,17 @@ let _ =
      } : _ Gramf.single_extend_statement )
 let domain = Ns.lang
 let () =
-  of_exp ~name:{ domain; name = "with_exp" } ~entry:with_exp_lang ();
-  of_stru ~name:{ domain; name = "with_stru" } ~entry:with_stru_lang ();
+  of_exp ~name:{ domain; name = "with_exp" } ~entry:with_exp_lang
+    ~lexer:Lex_fan.from_stream ();
+  of_stru ~name:{ domain; name = "with_stru" } ~entry:with_stru_lang
+    ~lexer:Lex_fan.from_stream ();
   add { domain; name = "str" } Dyn_tag.exp
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
   add { domain; name = "str" } Dyn_tag.stru
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
-let () = of_stru ~name:{ domain; name = "import" } ~entry:import ()
+let () =
+  of_stru ~name:{ domain; name = "import" } ~entry:import
+    ~lexer:Lex_fan.from_stream ()
 let () =
   let f (loc : Locf.t) _meta _content =
     let s = Locf.to_string loc in (`Str (loc, s) :>Astf.exp) in

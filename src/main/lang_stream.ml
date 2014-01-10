@@ -35,11 +35,12 @@ stream_exp stream_exp_comp stream_exp_comp_list
     ] 
 
 };;  
-
+let lexer = Lex_fan.from_stream in 
 %register{
 position:exp;
 entry:stream_exp;
-name:stream
+name:stream;
+lexer:lexer 
 }
 
   

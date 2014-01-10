@@ -265,7 +265,7 @@ module Make(U:S) =
       (let mk_bind: decl -> bind = bind_of_tydcl in
        let fs (ty : Sigs_util.types) =
          (match ty with
-          | `Mutual named_types ->
+          | Mutual named_types ->
               (match named_types with
                | [] -> (`StExp `Unit :>Astfn.stru)
                | xs ->
@@ -276,7 +276,7 @@ module Make(U:S) =
                                    Astfn.bind))
                        ~f:(fun (_name,ty)  -> mk_bind ty) xs in
                    (`Value (`Positive, (bind :>Astfn.bind)) :>Astfn.stru))
-          | `Single (_,tydcl) ->
+          | Single (_,tydcl) ->
               let flag =
                 if Ctyp.is_recursive tydcl then `Positive else `Negative
               and bind = mk_bind tydcl in
@@ -285,9 +285,9 @@ module Make(U:S) =
        match lst with
        | [] -> None
        | _ -> Some (sem_of_list (List.map fs lst)) : stru option )
-    let () =
-      Typehook.register ~filter:(fun x  -> not (List.mem x p.excludes))
-        ((p.plugin_name), stru_of_mtyps)
   end
 let register p =
-  let module M = struct let p = p end in let module N = Make(M) in ()
+  let module M = struct let p = p end in
+    let module N = Make(M) in
+      Typehook.register ~filter:(fun x  -> not (List.mem x p.excludes))
+        ((p.plugin_name), N.stru_of_mtyps)

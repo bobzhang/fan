@@ -40,11 +40,12 @@ let register_inject_clfield (k,f) =
 };;
 
 let open Ast_quotation in
-let domain = Ns.inject in 
+let domain = Ns.inject in
+let lexer = Lex_fan.from_stream in
 begin
-  of_exp ~name:{domain; name = "exp"} ~entry:inject_exp ();
-  of_stru ~name:{domain; name =  "stru"} ~entry:inject_stru ();
-  of_clfield ~name:{domain; name =  "clfield"} ~entry:inject_clfield ();  
+  of_exp ~name:{domain; name = "exp"} ~entry:inject_exp ~lexer  ();
+  of_stru ~name:{domain; name =  "stru"} ~entry:inject_stru ~lexer ();
+  of_clfield ~name:{domain; name =  "clfield"} ~entry:inject_clfield ~lexer ();  
 end
 
 (* local variables: *)

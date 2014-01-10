@@ -77,17 +77,23 @@ newterminals :
                   %stru{ let $lid:x = $mk $str:x  }
               | (None,Some typ) ->
                   %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls) }]
-}  
+}
+
+  
 let _ =
+  let lexer = Lex_fan.from_stream in (* FIXME *)
   begin
     %register{
     position:stru;
     name:create;
-    entry:nonterminals};
+    entry:nonterminals;
+    lexer:lexer 
+  };
     %register{
     position:stru;
     name:new;
-    entry:newterminals
+    entry:newterminals;
+    lexer:lexer  
     }
   end
 

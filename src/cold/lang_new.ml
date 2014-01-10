@@ -564,7 +564,8 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let _ =
+  let lexer = Lex_fan.from_stream in
   Ast_quotation.of_stru ~name:{ domain = Ns.lang; name = "create" }
-    ~entry:nonterminals ();
+    ~entry:nonterminals ~lexer ();
   Ast_quotation.of_stru ~name:{ domain = Ns.lang; name = "new" }
-    ~entry:newterminals ()
+    ~entry:newterminals ~lexer ()

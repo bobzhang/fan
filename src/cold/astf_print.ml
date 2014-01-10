@@ -1,7 +1,7 @@
 open StdFan
 open Astf
 let pp_print_loc: Format.formatter -> loc -> unit =
-  fun fmt  eta__001_  -> Locf.pp_print_t fmt eta__001_
+  fun fmt  eta__002_  -> Locf.pp_print_t fmt eta__002_
 let pp_print_ant: Format.formatter -> ant -> unit =
   fun fmt  (`Ant (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
@@ -1010,10 +1010,10 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 class print =
-  object (self : 'this_type__003_)
+  object (self : 'this_type__004_)
     inherit  printbase
     method loc : _ -> loc -> unit=
-      fun fmt  eta__002_  -> self#locf_t fmt eta__002_
+      fun fmt  eta__003_  -> self#locf_t fmt eta__003_
     method ant : _ -> ant -> unit=
       fun fmt  (`Ant (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc _a0

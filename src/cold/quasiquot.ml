@@ -28,7 +28,7 @@ let mk_lexer () =
             | v -> v))
 let add_quotation x = let lexer = mk_lexer () in add_quotation ~lexer x
 let expander ant_annot =
-  object (_this__007_ : 'this_type__008_)
+  object (_this__008_ : 'this_type__009_)
     inherit  Astf_map.map as super
     method! pat (x : Astf.pat) =
       match x with
@@ -108,7 +108,7 @@ let expander ant_annot =
       | e -> super#exp e
   end
 let expandern ant_annot =
-  object (_this__005_ : 'this_type__006_)
+  object (_this__006_ : 'this_type__007_)
     inherit  Astf_map.map as super
     method! pat (x : Astf.pat) =
       match x with
@@ -178,7 +178,7 @@ let pfilter str (e : ep) =
        (`Dot (_loc, (`Uid (_loc, "Astf")), (`Lid (_loc, str))))) :>Astf.pat)
 let domain = `Absolute ["Fan"; "Lang"; "Meta"]
 let me =
-  object (_this__003_ : 'this_type__004_)
+  object (_this__004_ : 'this_type__005_)
     inherit  Metaf.meta
     method! loc _loc loc =
       match !Ast_quotation.current_loc_name with
@@ -187,7 +187,7 @@ let me =
       | Some x -> `Lid (_loc, x)
   end
 let mp =
-  object (_this__001_ : 'this_type__002_)
+  object (_this__002_ : 'this_type__003_)
     inherit  Metaf.meta
     method! loc _loc _ = `Any _loc
   end

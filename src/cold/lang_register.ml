@@ -25,34 +25,46 @@ let compile _loc pairs =
                              (_loc,
                                (`App
                                   (_loc,
-                                    (`Dot
-                                       (_loc, (`Uid (_loc, "Ast_quotation")),
-                                         (p :>Astf.vid))),
-                                    (`Label
-                                       (_loc, (`Lid (_loc, "name")),
-                                         (`Record
+                                    (`App
+                                       (_loc,
+                                         (`Dot
                                             (_loc,
-                                              (`Sem
+                                              (`Uid (_loc, "Ast_quotation")),
+                                              (p :>Astf.vid))),
+                                         (`Label
+                                            (_loc, (`Lid (_loc, "name")),
+                                              (`Record
                                                  (_loc,
-                                                   (`RecBind
+                                                   (`Sem
                                                       (_loc,
-                                                        (`Lid
-                                                           (_loc, "domain")),
-                                                        (`Dot
+                                                        (`RecBind
                                                            (_loc,
-                                                             (`Uid
-                                                                (_loc, "Ns")),
                                                              (`Lid
                                                                 (_loc,
-                                                                  "lang")))))),
-                                                   (`RecBind
-                                                      (_loc,
-                                                        (`Lid (_loc, "name")),
-                                                        (n :>Astf.exp))))))))))),
+                                                                  "domain")),
+                                                             (`Dot
+                                                                (_loc,
+                                                                  (`Uid
+                                                                    (_loc,
+                                                                    "Ns")),
+                                                                  (`Lid
+                                                                    (_loc,
+                                                                    "lang")))))),
+                                                        (`RecBind
+                                                           (_loc,
+                                                             (`Lid
+                                                                (_loc,
+                                                                  "name")),
+                                                             (n :>Astf.exp))))))))))),
+                                    (`Label
+                                       (_loc, (`Lid (_loc, "entry")),
+                                         (e :>Astf.exp))))),
                                (`Label
-                                  (_loc, (`Lid (_loc, "entry")),
-                                    (e :>Astf.exp))))), (`Unit _loc)) :>
-                     Astf.exp)
+                                  (_loc, (`Lid (_loc, "lexer")),
+                                    (`Dot
+                                       (_loc, (`Uid (_loc, "Lex_fan")),
+                                         (`Lid (_loc, "from_stream")))))))),
+                          (`Unit _loc)) :>Astf.exp)
                  | Some (_,l,loc) ->
                      let l =
                        (`Label (loc, (`Lid (loc, "lexer")), (`Lid (loc, l))) :>

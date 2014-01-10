@@ -28,7 +28,7 @@ open Astf
   derive(Eq);};;
 
 
-%ocaml{%include{ "../common/astf.mli"};;  };;
+%ocaml{%include{ "astf.ml"};;  };;
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/eq.cmo" *)

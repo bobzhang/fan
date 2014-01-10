@@ -63,7 +63,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
       (`Sem (sloc, (acc :>Astf.stru), (code :>Astf.stru)) :>Astf.stru)
   | (_,None ) -> acc
 let traversal () =
-  (object (self : 'this_type__001_)
+  (object (self : 'this_type__002_)
      inherit  Astf_map.map as super
      val mtyps_stack = (Stack.create () : Sigs_util.mtyps Stack.t )
      val mutable cur_and_types = ([] : Sigs_util.and_types )
@@ -102,8 +102,7 @@ let traversal () =
            (self#in_and_types;
             (let _ = super#stru x in
              self#update_cur_mtyps
-               (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
-                  lst);
+               (fun lst  -> (Mutual (List.rev self#get_cur_and_types)) :: lst);
              self#out_and_types;
              if !State.keep
              then x
@@ -111,7 +110,7 @@ let traversal () =
        | `TypeWith (_loc,decl,_) -> self#stru (`Type (_loc, decl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
            x ->
-           let item = `Single (name, (Strip.decl t)) in
+           let item = Sigs_util.Single (name, (Strip.decl t)) in
            let () =
              if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in

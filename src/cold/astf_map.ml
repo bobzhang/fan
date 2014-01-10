@@ -1,9 +1,9 @@
 open StdFan
 open Astf
 class map =
-  object (self : 'this_type__110_)
+  object (self : 'this_type__111_)
     inherit  mapbase
-    method loc : loc -> loc= fun eta__001_  -> self#locf_t eta__001_
+    method loc : loc -> loc= fun eta__002_  -> self#locf_t eta__002_
     method ant : ant -> ant=
       fun (`Ant (_a0,_a1))  ->
         let _a0 = self#loc _a0 in
@@ -1133,272 +1133,272 @@ class map =
     method locf_t : Locf.t -> Locf.t= self#unknown
   end
 let map_loc f =
-  object (_this__108_ : 'this_type__109_)
+  object (_this__109_ : 'this_type__110_)
     inherit  map as super
     method! loc x = f (super#loc x)
   end
 let map_ant f =
-  object (_this__106_ : 'this_type__107_)
+  object (_this__107_ : 'this_type__108_)
     inherit  map as super
     method! ant x = f (super#ant x)
   end
 let map_literal f =
-  object (_this__104_ : 'this_type__105_)
+  object (_this__105_ : 'this_type__106_)
     inherit  map as super
     method! literal x = f (super#literal x)
   end
 let map_flag f =
-  object (_this__102_ : 'this_type__103_)
+  object (_this__103_ : 'this_type__104_)
     inherit  map as super
     method! flag x = f (super#flag x)
   end
 let map_position_flag f =
-  object (_this__100_ : 'this_type__101_)
+  object (_this__101_ : 'this_type__102_)
     inherit  map as super
     method! position_flag x = f (super#position_flag x)
   end
 let map_strings f =
-  object (_this__098_ : 'this_type__099_)
+  object (_this__099_ : 'this_type__100_)
     inherit  map as super
     method! strings x = f (super#strings x)
   end
 let map_lident f =
-  object (_this__096_ : 'this_type__097_)
+  object (_this__097_ : 'this_type__098_)
     inherit  map as super
     method! lident x = f (super#lident x)
   end
 let map_alident f =
-  object (_this__094_ : 'this_type__095_)
+  object (_this__095_ : 'this_type__096_)
     inherit  map as super
     method! alident x = f (super#alident x)
   end
 let map_auident f =
-  object (_this__092_ : 'this_type__093_)
+  object (_this__093_ : 'this_type__094_)
     inherit  map as super
     method! auident x = f (super#auident x)
   end
 let map_aident f =
-  object (_this__090_ : 'this_type__091_)
+  object (_this__091_ : 'this_type__092_)
     inherit  map as super
     method! aident x = f (super#aident x)
   end
 let map_astring f =
-  object (_this__088_ : 'this_type__089_)
+  object (_this__089_ : 'this_type__090_)
     inherit  map as super
     method! astring x = f (super#astring x)
   end
 let map_uident f =
-  object (_this__086_ : 'this_type__087_)
+  object (_this__087_ : 'this_type__088_)
     inherit  map as super
     method! uident x = f (super#uident x)
   end
 let map_ident f =
-  object (_this__084_ : 'this_type__085_)
+  object (_this__085_ : 'this_type__086_)
     inherit  map as super
     method! ident x = f (super#ident x)
   end
 let map_ident' f =
-  object (_this__082_ : 'this_type__083_)
+  object (_this__083_ : 'this_type__084_)
     inherit  map as super
     method! ident' x = f (super#ident' x)
   end
 let map_vid f =
-  object (_this__080_ : 'this_type__081_)
+  object (_this__081_ : 'this_type__082_)
     inherit  map as super
     method! vid x = f (super#vid x)
   end
 let map_vid' f =
-  object (_this__078_ : 'this_type__079_)
+  object (_this__079_ : 'this_type__080_)
     inherit  map as super
     method! vid' x = f (super#vid' x)
   end
 let map_dupath f =
-  object (_this__076_ : 'this_type__077_)
+  object (_this__077_ : 'this_type__078_)
     inherit  map as super
     method! dupath x = f (super#dupath x)
   end
 let map_dlpath f =
-  object (_this__074_ : 'this_type__075_)
+  object (_this__075_ : 'this_type__076_)
     inherit  map as super
     method! dlpath x = f (super#dlpath x)
   end
 let map_any f =
-  object (_this__072_ : 'this_type__073_)
+  object (_this__073_ : 'this_type__074_)
     inherit  map as super
     method! any x = f (super#any x)
   end
 let map_ctyp f =
-  object (_this__070_ : 'this_type__071_)
+  object (_this__071_ : 'this_type__072_)
     inherit  map as super
     method! ctyp x = f (super#ctyp x)
   end
 let map_type_parameters f =
-  object (_this__068_ : 'this_type__069_)
+  object (_this__069_ : 'this_type__070_)
     inherit  map as super
     method! type_parameters x = f (super#type_parameters x)
   end
 let map_row_field f =
-  object (_this__066_ : 'this_type__067_)
+  object (_this__067_ : 'this_type__068_)
     inherit  map as super
     method! row_field x = f (super#row_field x)
   end
 let map_tag_names f =
-  object (_this__064_ : 'this_type__065_)
+  object (_this__065_ : 'this_type__066_)
     inherit  map as super
     method! tag_names x = f (super#tag_names x)
   end
 let map_decl f =
-  object (_this__062_ : 'this_type__063_)
+  object (_this__063_ : 'this_type__064_)
     inherit  map as super
     method! decl x = f (super#decl x)
   end
 let map_type_constr f =
-  object (_this__060_ : 'this_type__061_)
+  object (_this__061_ : 'this_type__062_)
     inherit  map as super
     method! type_constr x = f (super#type_constr x)
   end
 let map_opt_type_constr f =
-  object (_this__058_ : 'this_type__059_)
+  object (_this__059_ : 'this_type__060_)
     inherit  map as super
     method! opt_type_constr x = f (super#opt_type_constr x)
   end
 let map_decl_param f =
-  object (_this__056_ : 'this_type__057_)
+  object (_this__057_ : 'this_type__058_)
     inherit  map as super
     method! decl_param x = f (super#decl_param x)
   end
 let map_decl_params f =
-  object (_this__054_ : 'this_type__055_)
+  object (_this__055_ : 'this_type__056_)
     inherit  map as super
     method! decl_params x = f (super#decl_params x)
   end
 let map_opt_decl_params f =
-  object (_this__052_ : 'this_type__053_)
+  object (_this__053_ : 'this_type__054_)
     inherit  map as super
     method! opt_decl_params x = f (super#opt_decl_params x)
   end
 let map_type_info f =
-  object (_this__050_ : 'this_type__051_)
+  object (_this__051_ : 'this_type__052_)
     inherit  map as super
     method! type_info x = f (super#type_info x)
   end
 let map_type_repr f =
-  object (_this__048_ : 'this_type__049_)
+  object (_this__049_ : 'this_type__050_)
     inherit  map as super
     method! type_repr x = f (super#type_repr x)
   end
 let map_name_ctyp f =
-  object (_this__046_ : 'this_type__047_)
+  object (_this__047_ : 'this_type__048_)
     inherit  map as super
     method! name_ctyp x = f (super#name_ctyp x)
   end
 let map_or_ctyp f =
-  object (_this__044_ : 'this_type__045_)
+  object (_this__045_ : 'this_type__046_)
     inherit  map as super
     method! or_ctyp x = f (super#or_ctyp x)
   end
 let map_of_ctyp f =
-  object (_this__042_ : 'this_type__043_)
+  object (_this__043_ : 'this_type__044_)
     inherit  map as super
     method! of_ctyp x = f (super#of_ctyp x)
   end
 let map_pat f =
-  object (_this__040_ : 'this_type__041_)
+  object (_this__041_ : 'this_type__042_)
     inherit  map as super
     method! pat x = f (super#pat x)
   end
 let map_rec_pat f =
-  object (_this__038_ : 'this_type__039_)
+  object (_this__039_ : 'this_type__040_)
     inherit  map as super
     method! rec_pat x = f (super#rec_pat x)
   end
 let map_exp f =
-  object (_this__036_ : 'this_type__037_)
+  object (_this__037_ : 'this_type__038_)
     inherit  map as super
     method! exp x = f (super#exp x)
   end
 let map_rec_exp f =
-  object (_this__034_ : 'this_type__035_)
+  object (_this__035_ : 'this_type__036_)
     inherit  map as super
     method! rec_exp x = f (super#rec_exp x)
   end
 let map_mtyp f =
-  object (_this__032_ : 'this_type__033_)
+  object (_this__033_ : 'this_type__034_)
     inherit  map as super
     method! mtyp x = f (super#mtyp x)
   end
 let map_sigi f =
-  object (_this__030_ : 'this_type__031_)
+  object (_this__031_ : 'this_type__032_)
     inherit  map as super
     method! sigi x = f (super#sigi x)
   end
 let map_mbind f =
-  object (_this__028_ : 'this_type__029_)
+  object (_this__029_ : 'this_type__030_)
     inherit  map as super
     method! mbind x = f (super#mbind x)
   end
 let map_constr f =
-  object (_this__026_ : 'this_type__027_)
+  object (_this__027_ : 'this_type__028_)
     inherit  map as super
     method! constr x = f (super#constr x)
   end
 let map_bind f =
-  object (_this__024_ : 'this_type__025_)
+  object (_this__025_ : 'this_type__026_)
     inherit  map as super
     method! bind x = f (super#bind x)
   end
 let map_case f =
-  object (_this__022_ : 'this_type__023_)
+  object (_this__023_ : 'this_type__024_)
     inherit  map as super
     method! case x = f (super#case x)
   end
 let map_mexp f =
-  object (_this__020_ : 'this_type__021_)
+  object (_this__021_ : 'this_type__022_)
     inherit  map as super
     method! mexp x = f (super#mexp x)
   end
 let map_stru f =
-  object (_this__018_ : 'this_type__019_)
+  object (_this__019_ : 'this_type__020_)
     inherit  map as super
     method! stru x = f (super#stru x)
   end
 let map_cltdecl f =
-  object (_this__016_ : 'this_type__017_)
+  object (_this__017_ : 'this_type__018_)
     inherit  map as super
     method! cltdecl x = f (super#cltdecl x)
   end
 let map_cltyp f =
-  object (_this__014_ : 'this_type__015_)
+  object (_this__015_ : 'this_type__016_)
     inherit  map as super
     method! cltyp x = f (super#cltyp x)
   end
 let map_clsigi f =
-  object (_this__012_ : 'this_type__013_)
+  object (_this__013_ : 'this_type__014_)
     inherit  map as super
     method! clsigi x = f (super#clsigi x)
   end
 let map_cldecl f =
-  object (_this__010_ : 'this_type__011_)
+  object (_this__011_ : 'this_type__012_)
     inherit  map as super
     method! cldecl x = f (super#cldecl x)
   end
 let map_clexp f =
-  object (_this__008_ : 'this_type__009_)
+  object (_this__009_ : 'this_type__010_)
     inherit  map as super
     method! clexp x = f (super#clexp x)
   end
 let map_clfield f =
-  object (_this__006_ : 'this_type__007_)
+  object (_this__007_ : 'this_type__008_)
     inherit  map as super
     method! clfield x = f (super#clfield x)
   end
 let map_ep f =
-  object (_this__004_ : 'this_type__005_)
+  object (_this__005_ : 'this_type__006_)
     inherit  map as super
     method! ep x = f (super#ep x)
   end
 let map_rec_bind f =
-  object (_this__002_ : 'this_type__003_)
+  object (_this__003_ : 'this_type__004_)
     inherit  map as super
     method! rec_bind x = f (super#rec_bind x)
   end

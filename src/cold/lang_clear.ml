@@ -139,4 +139,4 @@ let _ =
      } : _ Gramf.single_extend_statement )
 let _ =
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "clear" }
-    ~entry:nonterminalsclear ()
+    ~entry:nonterminalsclear ~lexer:Lex_fan.from_stream ()

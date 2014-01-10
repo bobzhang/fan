@@ -186,8 +186,8 @@ let obj_of_mtyps ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
      clfield ) in
    let fs (ty : Sigs_util.types) =
      (match ty with
-      | `Mutual named_types -> sem_of_list (List.map mk_clfield named_types)
-      | `Single ((name,tydcl) as named_type) ->
+      | Mutual named_types -> sem_of_list (List.map mk_clfield named_types)
+      | Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
                let ty_str: string = Astfn_print.dump_decl tydcl in

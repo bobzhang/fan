@@ -30,7 +30,9 @@ let mklist loc =
     | [] -> `Uid (loc, "[]")
     | e1::el ->
         let _loc = if top then loc else Locf.merge (loc_of e1) loc in
-        `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
+        `App
+          (_loc, (`Uid (_loc, "::")),
+            (`Par (_loc, (`Com (_loc, e1, (loop false el)))))) in
   loop true
 let meta_list mf_a _loc ls =
   mklist _loc (List.map (fun x  -> mf_a _loc x) ls)

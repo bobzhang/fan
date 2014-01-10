@@ -5,7 +5,7 @@ keep off;
 derive (Print OPrint PrintWrapper);
 };;
 
-%ocaml{%include{ "../common/astf.mli"};;  };;
+%ocaml{%include{ "astf.ml"};;  };;
 
 
 let () =     begin

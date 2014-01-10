@@ -25,10 +25,10 @@ end;;
 
 
 %fans{keep off; derive (MetaObj); };;
-%ocaml{%include{ "../common/astf.mli"};; };;
+%ocaml{%include{ "astf.ml"};; };;
 
   
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fMeta.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/metaf.cmo" *)
 (* end: *)

@@ -30,7 +30,7 @@ include Prelude
 let domain = Ns.lang
 
 let _ = begin (* FIXME make the printer more restict later *)
-  of_stru_with_filter ~name:{domain; name = "ocaml"} ~entry:strus
+  of_stru_with_filter ~lexer:Lex_fan.from_stream ~name:{domain; name = "ocaml"} ~entry:strus
     ~filter:(fun s  ->
     let _loc = loc_of s in
     let v = %mexp{ struct $s end } in
@@ -65,7 +65,7 @@ end;;
   |pat as p %{ %exp'{ function | $pat:p -> true | _ -> false } } ] };;
 
 let ()  =
-  of_exp ~name:{domain; name = "p"} ~entry:p () ;;
+  of_exp ~name:{domain; name = "p"} ~entry:p ~lexer:Lex_fan.from_stream () ;;
 
 
 
@@ -94,8 +94,16 @@ let ()  =
   };;
 let domain = Ns.lang
 let () = begin 
-    of_exp ~name:{domain; name =  "with_exp"} ~entry:with_exp_lang ();
-  of_stru ~name:{domain; name =  "with_stru"} ~entry:with_stru_lang ();
+    of_exp 
+    ~name:{domain; name =  "with_exp"}
+    ~entry:with_exp_lang
+    ~lexer:Lex_fan.from_stream
+    ();
+  of_stru 
+    ~name:{domain; name =  "with_stru"}
+    ~entry:with_stru_lang
+    ~lexer:Lex_fan.from_stream
+    ();
   add {domain; name =  "str"} Dyn_tag.exp
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
   add {domain; name =  "str"} Dyn_tag.stru
@@ -112,7 +120,11 @@ end
 (* such simple macro would be replaced by cmacros later *)
 
 let () =
-  of_stru ~name:{domain; name = "import"} ~entry:import ();;
+  of_stru 
+    ~name:{domain; name = "import"}
+    ~entry:import
+    ~lexer:Lex_fan.from_stream
+    ();;
 
 (***********************************)
 (*   simple error qq               *)

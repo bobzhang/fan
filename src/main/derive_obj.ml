@@ -222,9 +222,9 @@ let obj_of_mtyps
       %clfield-{ method $lid:name : $ty = ${f tydcl result_type} }  in 
     let fs (ty:Sigs_util.types) : clfield =
       match ty with
-      | `Mutual named_types ->
+      | Mutual named_types ->
         sem_of_list (List.map mk_clfield named_types)
-      | `Single ((name,tydcl) as  named_type) ->
+      | Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          | Some n  -> 
            let ty_str : string =   Astfn_print.dump_decl tydcl  in

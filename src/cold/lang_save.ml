@@ -99,5 +99,6 @@ let _ =
           } : Gramf.olevel )
      } : _ Gramf.single_extend_statement )
 let _ =
+  let lexer = Lex_fan.from_stream in
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "save" }
-    ~entry:save_quot ()
+    ~entry:save_quot ~lexer ()

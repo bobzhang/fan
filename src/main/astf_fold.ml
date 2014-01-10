@@ -7,7 +7,7 @@ derive(
   Fold);
 };;
 
-%ocaml{%include{ "../common/astf.mli"};;  };;
+%ocaml{%include{ "astf.ml"};;  };;
   
 
 (* local variables: *)

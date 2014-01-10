@@ -6,7 +6,7 @@
 open Astf
 
 %fans{keep off; derive(DynAst); };;
-%ocaml{%include{ "../common/astf.mli" };; };;
+%ocaml{%include{ "astf.ml" };; };;
 
 
 type dyn

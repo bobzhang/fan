@@ -341,7 +341,7 @@ let stru_of_mtyps (* ?module_name *) ?cons_transform ?annot
   (* return new types as generated  new context *)
   let fs (ty:types) : stru=
     match ty with
-    | `Mutual named_types ->
+    | Mutual named_types ->
         ( match named_types with
         | [] ->  %stru-{ let _ = ()} (* FIXME *)
         | xs ->
@@ -352,7 +352,7 @@ let stru_of_mtyps (* ?module_name *) ?cons_transform ?annot
                 ~f:(fun (_name,ty) ->
                   mk_bind  ty ) xs in
             %stru-{ let rec $bind }))
-    | `Single (name,tydcl) ->
+    | Single (name,tydcl) ->
         (Hashset.add cxt name;
          let flag =
            if Ctyp.is_recursive tydcl then `Positive 
@@ -420,9 +420,9 @@ let obj_of_mtyps
       %clfield-{ method $lid:name : $ty = ${f tydcl result_type} }  in 
     let fs (ty:types) : clfield =
       match ty with
-      | `Mutual named_types ->
+      | Mutual named_types ->
         sem_of_list (List.map mk_clfield named_types)
-      | `Single ((name,tydcl) as  named_type) ->
+      | Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          | Some n  -> 
            let ty_str : string =   Astfn_print.dump_decl tydcl  in

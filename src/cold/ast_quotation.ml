@@ -72,7 +72,7 @@ let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
    let name = x.name in
    match expander_name ~pos:pos_tag name with
    | None  ->
-       (Locf.failf x.loc "DDSL `%s' not found") @@
+       (Locf.failf x.loc "domain specific language *%s* not found") @@
          (Tokenf.string_of_name name)
    | Some absolute_name ->
        let pack =
@@ -80,7 +80,8 @@ let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
            QMap.find (absolute_name, (ExpKey.pack tag ())) (!expanders_table)
          with
          | Not_found  ->
-             Locf.failf x.loc "DDSL expander `%s' at position `%s' not found"
+             Locf.failf x.loc
+               "domain specific  expander *%s* at position *%s* not found"
                (Tokenf.string_of_name name) pos_tag in
        let expander = ExpFun.unpack tag pack in Tokenf.quot_expand expander x : 
   'a )
@@ -118,52 +119,51 @@ let add_quotation ~lexer  ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry
   add name Dyn_tag.exp expand_exp;
   add name Dyn_tag.pat expand_pat;
   add name Dyn_tag.stru expand_stru
-let make_parser ?(lexer= Lex_fan.from_stream)  entry loc loc_name_opt s =
-  Ref.protect2 (Configf.antiquotations, true)
-    (current_loc_name, loc_name_opt)
+let make_parser ~lexer  entry loc meta s =
+  Ref.protect2 (Configf.antiquotations, true) (current_loc_name, meta)
     (fun _  -> Gramlib.parse_string_eoi ~lexer entry ~loc s)
-let of_stru ?lexer  ~name  ~entry  () =
-  add name Dyn_tag.stru (make_parser ?lexer entry)
-let of_stru_with_filter ?lexer  ~name  ~entry  ~filter  () =
+let of_stru ~lexer  ~name  ~entry  () =
+  add name Dyn_tag.stru (make_parser ~lexer entry)
+let of_stru_with_filter ~lexer  ~name  ~entry  ~filter  () =
   add name Dyn_tag.stru
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser ?lexer entry loc loc_name_opt s))
-let of_pat ?lexer  ~name  ~entry  () =
-  add name Dyn_tag.pat (make_parser ?lexer entry)
-let of_exp ?lexer  ~name  ~entry  () =
-  let expand_fun = make_parser ?lexer entry in
+       filter (make_parser ~lexer entry loc loc_name_opt s))
+let of_pat ~lexer  ~name  ~entry  () =
+  add name Dyn_tag.pat (make_parser ~lexer entry)
+let of_exp ~lexer  ~name  ~entry  () =
+  let expand_fun = make_parser ~lexer entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   add name Dyn_tag.exp expand_fun; add name Dyn_tag.stru mk_fun
-let of_ep ?lexer  ~name  ~entry  () =
-  let (expand_fun :Astf.ep Tokenf.expand_fun)= make_parser ?lexer entry in
+let of_ep ~lexer  ~name  ~entry  () =
+  let (expand_fun :Astf.ep Tokenf.expand_fun)= make_parser ~lexer entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s :>Astf.exp)) :>Astf.stru) in
   add name Dyn_tag.pat
-    (make_parser ?lexer entry : Astf.ep Tokenf.expand_fun  :>Astf.pat
+    (make_parser ~lexer entry : Astf.ep Tokenf.expand_fun  :>Astf.pat
                                                                Tokenf.expand_fun);
   add name Dyn_tag.exp
     (expand_fun : Astf.ep Tokenf.expand_fun  :>Astf.exp Tokenf.expand_fun);
   add name Dyn_tag.stru mk_fun
-let of_pat_with_filter ?lexer  ~name  ~entry  ~filter  () =
+let of_pat_with_filter ~lexer  ~name  ~entry  ~filter  () =
   add name Dyn_tag.pat
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser ?lexer entry loc loc_name_opt s))
-let of_clfield ?lexer  ~name  ~entry  () =
-  add name Dyn_tag.clfield (make_parser ?lexer entry)
-let of_clfield_with_filter ?lexer  ~name  ~entry  ~filter  () =
+       filter (make_parser ~lexer entry loc loc_name_opt s))
+let of_clfield ~lexer  ~name  ~entry  () =
+  add name Dyn_tag.clfield (make_parser ~lexer entry)
+let of_clfield_with_filter ~lexer  ~name  ~entry  ~filter  () =
   (add name Dyn_tag.clfield) @@
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser ?lexer entry loc loc_name_opt s))
-let of_case ?lexer  ~name  ~entry  () =
-  add name Dyn_tag.case (make_parser ?lexer entry)
-let of_case_with_filter ?lexer  ~name  ~entry  ~filter  () =
+       filter (make_parser ~lexer entry loc loc_name_opt s))
+let of_case ~lexer  ~name  ~entry  () =
+  add name Dyn_tag.case (make_parser ~lexer entry)
+let of_case_with_filter ~lexer  ~name  ~entry  ~filter  () =
   add name Dyn_tag.case
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser ?lexer entry loc loc_name_opt s))
-let of_exp_with_filter ?lexer  ~name  ~entry  ~filter  () =
+       filter (make_parser ~lexer entry loc loc_name_opt s))
+let of_exp_with_filter ~lexer  ~name  ~entry  ~filter  () =
   let expand_fun loc loc_name_opt s =
-    filter (make_parser ?lexer entry loc loc_name_opt s) in
+    filter (make_parser ~lexer entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Astf.stru ) in
   add name Dyn_tag.exp expand_fun; add name Dyn_tag.stru mk_fun
@@ -187,5 +187,5 @@ let register (v,f) =
   if Hashtbl.mem dir_table v
   then (Format.eprintf "%s already registered") @@ (Tokenf.string_of_name v)
   else Hashtbl.add dir_table v f
-let register_unit_parser ?lexer  (v,entry) =
-  let expand = make_parser ?lexer entry in register (v, expand)
+let register_unit_parser ~lexer  (v,entry) =
+  let expand = make_parser ~lexer entry in register (v, expand)

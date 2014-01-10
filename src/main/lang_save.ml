@@ -36,11 +36,12 @@ Ast_gen:
           $restore ;
           raise $lid:exc
         end} } ]};;
-
+let lexer = Lex_fan.from_stream in
 %register{
 position:exp;
 name: save;
-entry: save_quot
+entry: save_quot;
+lexer:lexer
 };;
 
 (* local variables: *)
