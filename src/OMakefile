@@ -168,12 +168,14 @@ FAN_FILES = \
     astfn_print \
     gfold gramlib\
     idn_util \
+    cset \
     ns \
     lexgen \
     lex_util \
     fan_args mktop \
     strip\
     tag_regexp \
+    automata_def \
     translate_lex \
     parse_fan \
     parse_parse \
