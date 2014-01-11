@@ -53,6 +53,11 @@
    clfield :: The type of class structure items *)
 
 
+(** We serialize the ast for good reasons, the user could
+    derive third party libraries around ast, without include hacks..
+    however, it's not recommended to use it in the bootstrapping cycle,
+    since that would mean the cold ast and hot ast are out of sync.
+    *)
 %code@ast{
 type loc = Locf.t
 

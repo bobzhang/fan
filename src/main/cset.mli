@@ -1,7 +1,7 @@
 
 (** a list of intervals *)  
 type t = (int * int) list
-
+val meta_t : Locf.t -> t ->  Astf.ep 
 val empty : t
 
 val is_empty : t -> bool

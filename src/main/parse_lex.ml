@@ -18,22 +18,27 @@ Translate_lex:
 (*   | Bind of concrete_regexp * (Locf.t * string) with ("Meta") *)
 
 
-let meta_cset _loc (x:Cset.t)=
-  Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x
+(* let meta_cset _loc (x:Cset.t)= *)
+(*   Fan_ops.meta_list (fun _loc (a,b) -> %ep{($int':a,$int':b)}) _loc x *)
     
 (** FIXME derive later *)
 let  meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp ) = 
   let rec aux _loc (x : Translate_lex.concrete_regexp )  =
     match x with
     | Epsilon -> %ep{ Epsilon}
+
     | Eof -> %ep{Eof}
-    | Characters a -> %ep{Characters ${meta_cset _loc a}}
-    | Sequence (a0,a1) ->
-        %ep{Sequence (${aux _loc a0}, ${aux _loc a1})}
-    | Alternative(a0,a1) ->
-        %ep{Alternative (${aux _loc a0}, ${aux _loc a1})}
+
+    | Characters a -> %ep{Characters ${Cset.meta_t  _loc a}}
+
+    | Sequence (a0,a1) -> %ep{Sequence (${aux _loc a0}, ${aux _loc a1})}
+
+    | Alternative(a0,a1) -> %ep{Alternative (${aux _loc a0}, ${aux _loc a1})}
+
     | Repetition a -> %ep{Repetition ${aux _loc a}}
+
     | Bind (a,(loc,s)) ->
+
         %ep{Bind (${aux _loc  a},
                   (${Ast_gen.meta_here _loc loc }, ${%ep@loc{$str':s}}))} in
   %ep{ (${aux _loc x} : Translate_lex.concrete_regexp) }

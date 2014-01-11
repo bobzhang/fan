@@ -1,6 +1,6 @@
 
 
-type t = (int * int) list (* with ("Meta") *)
+type t = (int * int) list with ("Meta")
 
 (** whenever  a piece of code is meta lifted,
    it cannot  be abstract pattern, or at least
@@ -97,3 +97,7 @@ let to_string (set:t) =
     String.concat ";"
     @@ List.map (fun (x,y) -> Printf.sprintf "%d,%d" x y) set in
   "[ " ^ x ^ " ]"
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/cset.cmo" *)
+(* end: *)
