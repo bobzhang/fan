@@ -1,14 +1,39 @@
-open StdFan
+
 open Astf
-%fans{
-keep off;
-derive (Print OPrint PrintWrapper);
-};;
-
-%ocaml{%include{ "astf.ml"};;  };;
+module type S = sig
+  val pp_print_loc : Locf.t Formatf.t 
+end
 
 
+
+module Make (U:S) = struct
+  open U
+    %fans{
+  keep off;
+  derive (Print PrintWrapper );
+  };;
+
+  %ocaml{%include{ "astf.ml"};;  };;
+
+end;;
+
+(* %fans{ *)
+(* keep off; *)
+(* derive (Print OPrint PrintWrapper); *)
+(* };; *)
+
+(* %ocaml{%include{ "astf.ml"};;  };; *)
+
+  (* let module U : S = struct *)
+  (*   let pp_print_loc _ _ = ()  *)
+  (* end in  *)
+  (* let module M = Make (U) in *)
+include Make(struct
+    let pp_print_loc _ _ = () 
+end)
 let () =     begin
+
+  begin
   Ast2pt.dump_ident := dump_ident;
   Ast2pt.dump_ident := dump_ident ;           
   Ast2pt.dump_row_field := dump_row_field ;       
@@ -34,6 +59,7 @@ let () =     begin
   Ast2pt.dump_clsigi := dump_clsigi ;          
   Ast2pt.dump_clexp := dump_clexp ;           
   Ast2pt.dump_clfield := dump_clfield 
+  end
 end    
 
 (* local variables: *)

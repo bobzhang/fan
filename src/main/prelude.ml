@@ -121,25 +121,28 @@ let () =
   interf = print_interf}
     
 let () =
-  let obj = object
-    inherit Astf_print.print
-    method! loc fmt l =
+  let module N = Astf_print.Make (struct
+    let pp_print_loc fmt l =
       Location_util.fmt_location  ~file:false fmt l
-  end  in
+   end ) in 
+  (* let obj = object *)
+  (*   inherit Astf_print.print *)
+  (*   method!  *)
+  (* end  in *)
   let ast_of_interf ?input_file:(_) ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@." obj#sigi  xs in
+          Format.fprintf fmt "@[%a@]@." N.pp_print_sigi  xs in
   let ast_of_implem ?input_file:(_)  ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@." obj#stru  xs in
+          Format.fprintf fmt "@[%a@]@." N.pp_print_stru  xs in
   Hashtbl.add backends "dfan" {
   descr = "Compiles to Fan's original representation";
   implem = ast_of_implem;
@@ -153,7 +156,8 @@ let () =
       match ast with
       | None -> ()
       | Some xs  ->
-          Format.fprintf fmt "@[%a@]@." Astfn_print.dump#sigi  (Strip.sigi xs) in
+          Format.fprintf fmt "@[%a@]@."
+            Astfn_print.pp_print_sigi  (Strip.sigi xs) in
   let ast_of_implem ?input_file:(_)  ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
@@ -161,7 +165,7 @@ let () =
       | None -> ()
       | Some xs  ->
           Format.fprintf fmt "@[%a@]@."
-            Astfn_print.dump#stru  (Strip.stru xs) in
+            Astfn_print.pp_print_stru  (Strip.stru xs) in
   Hashtbl.add backends "dfanl" {
   descr = "Compiles to Fan's original representation without location";
   implem = ast_of_implem;

@@ -539,9 +539,9 @@ Typehook.register
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
     %stru-{  (** BOOTSTRAPING, associated with module [Formatf] *)
-    let $lid{"dump_"^f}  = Formatf.to_string dump#$lid:f  } in
-    sem
-      %stru-{let dump = new print}
+    let $lid{"dump_"^f}  = Formatf.to_string $lid{"pp_print_"^f}(* dump#$lid:f  *) } in
+    (* sem *)
+    (*   %stru-{let dump = new print} *)
       (stru_from_ty ~f:aux mtyps);;  
 
 

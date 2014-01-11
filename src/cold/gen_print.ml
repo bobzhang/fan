@@ -42,7 +42,7 @@ let default: Derive_stru.param =
               (`Lid "unit" :>Astfn.ctyp))));
     mk_variant = (Some mk_variant);
     plugin_name = "Print";
-    excludes = [];
+    excludes = ["loc"];
     builtin_tbl =
       [((`Lid "int" :>Astfn.ctyp),
          (`Dot ((`Uid "Format"), (`Lid "pp_print_int")) :>Astfn.exp));

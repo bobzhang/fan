@@ -984,11 +984,8 @@ let generate (mtyps : mtyps) =
               ((`Lid ("dump_" ^ f)),
                 (`App
                    ((`Dot ((`Uid "Formatf"), (`Lid "to_string"))),
-                     (`Send ((`Lid "dump"), (`Lid f)))))))) :>Astfn.stru) : 
-     stru ) in
-   sem
-     (`Value (`Negative, (`Bind ((`Lid "dump"), (`New (`Lid "print"))))) :>
-     Astfn.stru) (stru_from_ty ~f:aux mtyps) : stru )
+                     (`Lid ("pp_print_" ^ f))))))) :>Astfn.stru) : stru ) in
+   stru_from_ty ~f:aux mtyps : stru )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))

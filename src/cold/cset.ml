@@ -1,4 +1,28 @@
 type t = (int* int) list 
+let meta_t _loc eta__002_ =
+  (let mklist loc =
+     let rec loop top =
+       function
+       | [] -> `Uid (loc, "[]")
+       | e1::el ->
+           let _loc = if top then loc else Locf.merge (Ast_gen.loc_of e1) loc in
+           `App
+             (_loc, (`Uid (_loc, "::")),
+               (`Par (_loc, (`Com (_loc, e1, (loop false el)))))) in
+     loop true in
+   let meta_list mf_a _loc ls =
+     mklist _loc (List.map (fun x  -> mf_a _loc x) ls) in
+   meta_list)
+    (fun _loc  (_a0,_a1)  ->
+       `Par
+         (_loc,
+           (`Com
+              (_loc,
+                ((fun _loc  (i : int)  ->
+                    (`Int (_loc, (string_of_int i)) :>Astf.ep)) _loc _a0),
+                ((fun _loc  (i : int)  ->
+                    (`Int (_loc, (string_of_int i)) :>Astf.ep)) _loc _a1)))))
+    _loc eta__002_
 let empty = []
 let is_empty = function | [] -> true | _ -> false
 let singleton c = [(c, c)]

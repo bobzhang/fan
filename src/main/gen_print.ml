@@ -45,7 +45,7 @@ let default : Derive_stru.param =  {
       (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}));
     mk_variant = Some mk_variant;
     plugin_name = "Print";
-    excludes = [];
+    excludes = ["loc"]; (* only make sense in plugin*)
     builtin_tbl = [
     (%ctyp-{int}, %exp-{Format.pp_print_int});
     (%ctyp-{int32}, %exp-{fun fmt -> Format.fprintf "%ld"});

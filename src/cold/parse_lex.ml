@@ -1,14 +1,6 @@
 let as_cset = Translate_lex.as_cset
 let regexp_for_string = Translate_lex.regexp_for_string
 let remove_as = Translate_lex.remove_as
-let meta_cset _loc (x : Cset.t) =
-  Fan_ops.meta_list
-    (fun _loc  (a,b)  ->
-       (`Par
-          (_loc,
-            (`Com
-               (_loc, (`Int (_loc, (string_of_int a))),
-                 (`Int (_loc, (string_of_int b)))))) :>Astf.ep)) _loc x
 let meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
   let rec aux _loc (x : Translate_lex.concrete_regexp) =
     match x with
@@ -16,8 +8,8 @@ let meta_concrete_regexp _loc (x : Translate_lex.concrete_regexp) =
     | Eof  -> (`Uid (_loc, "Eof") :>Astf.ep)
     | Characters a ->
         (`App
-           (_loc, (`Uid (_loc, "Characters")), (meta_cset _loc a :>Astf.ep)) :>
-        Astf.ep)
+           (_loc, (`Uid (_loc, "Characters")),
+             (Cset.meta_t _loc a :>Astf.ep)) :>Astf.ep)
     | Sequence (a0,a1) ->
         (`App
            (_loc, (`Uid (_loc, "Sequence")),
