@@ -47,7 +47,7 @@ module Make(U:S) =
          | None  ->
              failwithf "Generator %s can not handle record" plugin_name
          | Some x -> x)
-    let normal_simple_exp_of_ctyp (ty : ctyp) =
+    let simple_exp_of_ctyp (ty : ctyp) =
       let right_trans = Ctyp.left_transform p.id in
       let tyvar = Ctyp.right_transform (`Pre "mf_") in
       let rec aux x =
@@ -73,8 +73,9 @@ module Make(U:S) =
                 Ctyp.tuple_exp_of_ctyp ~arity ~names:(p.names) ~mk_tuple
                   ~f:aux ty
             | (ty : ctyp) ->
-                failwithf "normal_simple_exp_of_ctyp : %s"
-                  (Astfn_print.dump_ctyp ty)) : exp ) in
+                failwith
+                  ("simple_exp_of_ctyp.aux" ^ (Astfn_print.dump_ctyp ty))) : 
+        exp ) in
       aux ty
     let mk_prefix (vars : opt_decl_params) (acc : exp) =
       let varf = Ctyp.basic_transform (`Pre "mf_") in
@@ -93,8 +94,7 @@ module Make(U:S) =
          (let args_length = List.length tyargs in
           let mk (cons,tyargs) =
             let exps =
-              List.mapi
-                (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp)
+              List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp)
                 tyargs in
             Lazy.force mk_variant (Some cons) exps in
           let p: pat = (Id_epn.gen_tuple_n ~arity cons args_length :>pat) in
@@ -129,15 +129,14 @@ module Make(U:S) =
         (let len = List.length tyargs in
          let mk (cons,tyargs) =
            let exps =
-             List.mapi
-               (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp)
+             List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp)
                tyargs in
            Lazy.force mk_variant (Some cons) exps in
          let e = mk (cons, tyargs) in
          let p = (Id_epn.gen_tuple_n ~arity cons len :>pat) in
          (`Case ((p :>Astfn.pat), (e :>Astfn.exp)) :>Astfn.case) : case ) in
       let simple (lid : ident) =
-        (let e = (normal_simple_exp_of_ctyp (lid :>ctyp)) +> names in
+        (let e = (simple_exp_of_ctyp (lid :>ctyp)) +> names in
          let (f,a) = Ast_basic.N.view_app [] result in
          let annot = appl_of_list (f :: (List.map (fun _  -> `Any) a)) in
          let gen_tuple_abbrev ~arity  ~annot  name e =
@@ -191,7 +190,7 @@ module Make(U:S) =
                                 {
                                   Ctyp.info =
                                     (Ctyp.mapi_exp ~arity ~names
-                                       ~f:normal_simple_exp_of_ctyp i ty);
+                                       ~f:simple_exp_of_ctyp i ty);
                                   label;
                                   is_mutable
                                 }) cols in
@@ -209,7 +208,7 @@ module Make(U:S) =
             | `TyEq (_,ctyp) ->
                 (match ctyp with
                  | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
-                     let exp = normal_simple_exp_of_ctyp x in
+                     let exp = simple_exp_of_ctyp x in
                      let funct = Expn_util.eta_expand (exp +> names) arity in
                      mk_prefix tyvars funct
                  | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
@@ -289,5 +288,6 @@ module Make(U:S) =
 let register p =
   let module M = struct let p = p end in
     let module N = Make(M) in
+      Hashtbl.replace Lang_t.dispatch_tbl p.plugin_name N.simple_exp_of_ctyp;
       Typehook.register ~filter:(fun x  -> not (List.mem x p.excludes))
         ((p.plugin_name), N.stru_of_mtyps)

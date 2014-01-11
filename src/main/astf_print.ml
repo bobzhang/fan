@@ -17,17 +17,7 @@ module Make (U:S) = struct
 
 end;;
 
-(* %fans{ *)
-(* keep off; *)
-(* derive (Print OPrint PrintWrapper); *)
-(* };; *)
 
-(* %ocaml{%include{ "astf.ml"};;  };; *)
-
-  (* let module U : S = struct *)
-  (*   let pp_print_loc _ _ = ()  *)
-  (* end in  *)
-  (* let module M = Make (U) in *)
 include Make(struct
     let pp_print_loc _ _ = () 
 end)

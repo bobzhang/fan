@@ -70,7 +70,7 @@ module Make(U:S) : sig
      %fn@sexp_of{'a list}
 
    *)
-  val normal_simple_exp_of_ctyp : ctyp -> exp
+  val simple_exp_of_ctyp : ctyp -> exp
 
       
   val exp_of_ctyp :  or_ctyp -> exp

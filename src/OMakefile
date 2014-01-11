@@ -186,7 +186,10 @@ FAN_FILES = \
     plugins prelude typehook\
     parse_lex \
     lex_predef \
-    lang_fans lang_include lang_save \
+    lang_fans \
+    lang_include \
+    lang_save \
+    lang_t \
     fan_ops state dyn_tag \
     syntaxf \
     parsef\

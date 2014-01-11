@@ -13,12 +13,16 @@ let specializer  : (string, ( t -> exp))Hashtbl.t =  Hashtbl.create 0
 
 let _  = begin
   let (+>) = Hashtbl.add specializer in
-  "Option" +> (fun t ->
+  "Option" +>
+  (fun t ->
     Ast_basic.fold_and_right
       (fun bind acc ->
       match bind with
       | %bind{ $p = $e } ->
-          %exp{match ($e : _ option) with | Some $p -> $acc | None -> None }
+          %exp{
+          match ($e : _ option) with
+          | Some $p -> $acc
+          | None -> None }
           (* %exp{$uid:module_name.bind $e (fun $p -> $acc)} *)
       | _ -> assert false)
       t.bind t.exp)

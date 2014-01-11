@@ -125,10 +125,6 @@ let () =
     let pp_print_loc fmt l =
       Location_util.fmt_location  ~file:false fmt l
    end ) in 
-  (* let obj = object *)
-  (*   inherit Astf_print.print *)
-  (*   method!  *)
-  (* end  in *)
   let ast_of_interf ?input_file:(_) ?output_file ast =
     with_open_out_file output_file @@ fun oc ->
       let fmt = Format.formatter_of_out_channel oc in

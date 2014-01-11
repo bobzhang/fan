@@ -63,7 +63,8 @@ module Make (U:S) = struct
         | Some x -> x 
       end
 
-  let normal_simple_exp_of_ctyp (ty:ctyp) =
+  (** *)    
+  let simple_exp_of_ctyp (ty:ctyp) =
     let right_trans = Ctyp.left_transform p.id  in
     let tyvar = Ctyp.right_transform (`Pre "mf_")  in
     let rec aux  x : exp =
@@ -84,8 +85,7 @@ module Make (U:S) = struct
             Ctyp.tuple_exp_of_ctyp  ~arity ~names:p.names ~mk_tuple
               ~f:aux ty
         | (ty:ctyp) -> (* TOPBIND required *)
-            failwithf "normal_simple_exp_of_ctyp : %s"
-              (Astfn_print.dump_ctyp ty) in
+            failwith (__BIND__ ^ Astfn_print.dump_ctyp ty) in
     aux ty
 
   let mk_prefix  (vars:opt_decl_params) (acc:exp)   =
@@ -108,7 +108,7 @@ module Make (U:S) = struct
       let args_length = List.length tyargs in  (* ` is not needed here *)
 
       let mk (cons,tyargs) =
-        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp) tyargs in
+        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
         Lazy.force mk_variant (Some cons) exps in
       let p : pat =
         (* calling gen_tuple_n*)
@@ -147,14 +147,14 @@ module Make (U:S) = struct
       let len = List.length tyargs in
 
       let mk (cons,tyargs) =
-        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp) tyargs in
+        let exps = List.mapi (Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
         Lazy.force mk_variant (Some cons) exps in
       let e = mk (cons,tyargs) in
       let p = (Id_epn.gen_tuple_n  ~arity cons len :> pat) in
       %case-{ $pat:p -> $e } in
     (* for the case [`a | b ] *)
     let simple (lid:ident) :case=
-      let e = (normal_simple_exp_of_ctyp (lid:>ctyp)) +> names  in
+      let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
       let (f,a) = Ast_basic.N.view_app [] result in
       let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
       let gen_tuple_abbrev  ~arity ~annot name e  =
@@ -203,7 +203,7 @@ module Make (U:S) = struct
                     (fun i x ->
                       match (x:Ctyp.col) with
                       | {label;is_mutable;ty} ->
-                          {Ctyp.info = Ctyp.mapi_exp ~arity ~names ~f:normal_simple_exp_of_ctyp i ty  ;
+                          {Ctyp.info = Ctyp.mapi_exp ~arity ~names ~f:simple_exp_of_ctyp i ty  ;
                            label;
                            is_mutable}) cols in
                 (* For single tuple pattern match this can be optimized *)
@@ -221,7 +221,7 @@ module Make (U:S) = struct
         | `TyEq(_,ctyp) ->
             begin match ctyp with
             | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
-                let exp = normal_simple_exp_of_ctyp x in
+                let exp = simple_exp_of_ctyp x in
                 let funct = Expn_util.eta_expand (exp+>names) arity  in
                 mk_prefix  tyvars funct
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
@@ -322,6 +322,7 @@ let register p =
   end in
   let module N = Make(M) in
   begin 
+    Hashtbl.replace Lang_t.dispatch_tbl p.plugin_name N.simple_exp_of_ctyp;
     Typehook.register ~filter:(fun x -> not (List.mem x  p.excludes))
       (p.plugin_name, N.stru_of_mtyps )
    end   
