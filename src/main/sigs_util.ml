@@ -12,7 +12,7 @@ and types =
   | Mutual of and_types
   | Single of named_type 
 and mtyps =  types list
-with ("Print")
+with print (* ("Print") *)
 
 type plugin_name = string 
 

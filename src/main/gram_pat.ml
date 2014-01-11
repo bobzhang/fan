@@ -30,7 +30,7 @@ and t =
   |`Com of (loc * t * t)
   |`Alias of (loc * t * lident)
   |`Str of (loc * string)
-  |`Any of loc] with ("Print" "Map")
+  |`Any of loc] with print, map (* ("Print" "Map") *)
 
 let wildcarder = object (self)
   inherit map as super

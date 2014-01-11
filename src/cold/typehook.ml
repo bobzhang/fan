@@ -139,6 +139,7 @@ let genenrate_type_code _loc tdl (ns : Astf.strings) =
      List.map
        (function
         | `Str (sloc,n) ->
+            let n = String.capitalize n in
             (match Hashtblf.find_opt filters n with
              | None  -> Locf.failf sloc "%s not found" n
              | Some p -> (n, p))

@@ -11960,7 +11960,8 @@ let apply () =
                 }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement ));
-  (let quots: 'quots Gramf.t = Gramf.mk "quots" in
+  (let quots: 'quots Gramf.t = Gramf.mk "quots"
+   and withs: 'withs Gramf.t = Gramf.mk "withs" in
    Gramf.extend_single
      ({
         entry = (quots : 'quots Gramf.t );
@@ -12837,28 +12838,13 @@ let apply () =
                         descr =
                           { tag = `Key; word = (A "with"); tag_name = "Key" }
                       } : Tokenf.pattern );
-                   Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A "("); tag_name = "Key" }
-                      } : Tokenf.pattern );
-                   Nterm (Gramf.obj (string_list : 'string_list Gramf.t ));
-                   Token
-                     ({
-                        descr =
-                          { tag = `Key; word = (A ")"); tag_name = "Key" }
-                      } : Tokenf.pattern )];
+                   Nterm (Gramf.obj (withs : 'withs Gramf.t ))];
                  annot = "`TypeWith (_loc, t, ns)\n";
                  fn =
                    (Gramf.mk_action
-                      (fun _  (ns : 'string_list)  _  _  (t : 'decl)  _ 
-                         (_loc : Locf.t)  ->
-                         (`TypeWith (_loc, t, ns) : 'stru ) : Tokenf.txt ->
-                                                                'string_list
-                                                                  ->
-                                                                  Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.txt
+                      (fun (ns : 'withs)  _  (t : 'decl)  _  (_loc : Locf.t) 
+                         -> (`TypeWith (_loc, t, ns) : 'stru ) : 'withs ->
+                                                                   Tokenf.txt
                                                                     ->
                                                                     'decl ->
                                                                     Tokenf.txt
@@ -13120,6 +13106,41 @@ let apply () =
                          (`StExp (_loc, e) : 'stru ) : 'exp ->
                                                          Locf.t -> 'stru ))
                }]
+           } : Gramf.olevel )
+      } : _ Gramf.single_extend_statement );
+   Gramf.extend_single
+     ({
+        entry = (withs : 'withs Gramf.t );
+        olevel =
+          ({
+             label = None;
+             lassoc = true;
+             productions =
+               [{
+                  symbols =
+                    [List1sep
+                       ((Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))),
+                         (Token
+                            ({
+                               descr =
+                                 {
+                                   tag = `Key;
+                                   word = (A ",");
+                                   tag_name = "Key"
+                                 }
+                             } : Tokenf.pattern )))];
+                  annot =
+                    "(Listf.reduce_left_with ~compose:Ast_gen.app\n   ~project:(fun (x : alident)  ->\n               match x with | `Ant y -> `Ant y | `Lid z -> `Str z) x : \nstrings )\n";
+                  fn =
+                    (Gramf.mk_action
+                       (fun (x : 'a_lident list)  (_loc : Locf.t)  ->
+                          ((Listf.reduce_left_with ~compose:Ast_gen.app
+                              ~project:(fun (x : alident)  ->
+                                          match x with
+                                          | `Ant y -> `Ant y
+                                          | `Lid z -> `Str z) x : strings ) : 
+                          'withs ) : 'a_lident list -> Locf.t -> 'withs ))
+                }]
            } : Gramf.olevel )
       } : _ Gramf.single_extend_statement ));
   (Gramf.extend_single

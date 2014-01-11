@@ -114,7 +114,7 @@ and kind =
 
 type warning_type =
   | Abstract of string 
-  | Qualified of string  with ("Print")
+  | Qualified of string  with print (* ("Print") *)
 
 
 

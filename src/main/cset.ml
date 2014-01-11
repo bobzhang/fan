@@ -1,6 +1,6 @@
 
 
-type t = (int * int) list with ("Meta")
+type t = (int * int) list with meta(* ("Meta") *)
 
 (** whenever  a piece of code is meta lifted,
    it cannot  be abstract pattern, or at least

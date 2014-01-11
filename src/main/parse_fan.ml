@@ -891,6 +891,8 @@ let apply () = begin
       | Ant("",s) ; S as xs %{ `App(_loc,mk_ant  s, xs)}
       | Str  x %{ `Str(_loc,x)}
       | Str x; S as xs %{ `App(_loc,`Str(_loc,x),xs)}]
+
+      
       rec_flag_quot:  [ opt_rec as x %{x} ]
       direction_flag_quot:  [ flag as x %{x} ] 
       mutable_flag_quot: [  opt_mutable as x %{x} ] 
@@ -945,7 +947,7 @@ let apply () = begin
       | "module"; "rec"; mbind as mb %{ `RecModule(_loc,mb)}
       | @stru_sigi
 
-      | "type"; decl as t;"with"; "("; string_list as ns;")"
+      | "type"; decl as t;"with"; withs as ns (* "("; string_list as ns;")" *)
             %{`TypeWith (_loc,t,ns)}
       (* | "type"; decl as t; "with"; L1 Lid  *)
       | @let_stru_exp %{fun x -> %stru{$exp:x}}
@@ -956,7 +958,21 @@ let apply () = begin
       | "class"; class_declaration as cd %{  `Class(_loc,cd)}
       | exp as e %{ `StExp(_loc,e)}
           (* this entry makes %{ let $rec:r $bi in $x } parsable *)
-     ]   };
+      ]
+
+      withs@Local:          
+      [
+       L1 a_lident SEP "," as x %{
+       (Listf.reduce_left_with
+         ~compose:Ast_gen.app
+         ~project:(fun (x:alident) ->
+           match x with
+           |`Ant y ->  `Ant y
+           | `Lid z -> `Str z) x : strings)
+       }
+      ]         
+               
+     };
 
 
     %extend{
