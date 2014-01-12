@@ -157,65 +157,61 @@ module Make (U:S) = struct
       
   let exp_of_poly_variant result ty =
 
-    let f (cons,tyargs) :  case=
-      let len = List.length tyargs in
-      let exps = List.mapi mapi_exp tyargs in
-      %case-{ $pat{Id_epn.gen_tuple_n  ~arity cons len} ->
-              ${Lazy.force mk_variant (Some cons) exps} } in
-    (* for the case [`a | b ] *)
-    let simple (lid:ident) :case=
-      let e = apply_args (exp_of_ctyp (lid:>ctyp)) (* +> *) names  in
-      let (f,a) = Ast_basic.N.view_app [] result in
-      let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
-      let gen_tuple_abbrev  ~arity ~annot name e  =
-        let args :  pat list =
-          Listf.init arity (fun i -> %pat-{ (#$id:name as $lid{ Id.x ~off:i 0 }) })in
-        let exps =
-          Listf.init arity (fun i -> %exp-{ $id{Id.xid ~off:i 0} })  in
-        let e = appl_of_list (e:: exps) in 
-        let pat = args |>tuple_com in
-        %case-{$pat:pat->( $e  :> $annot)} in
-      gen_tuple_abbrev ~arity ~annot  lid e in
+
+    
     (* FIXME, be more precise  *)
     let ls = Ctyp.view_variant ty in
-    let res =
-      let res = List.fold_left
-          (fun  acc x ->
-            match x with
-            | `variant (cons,args) -> f ("`"^cons,args)::acc
-            | `abbrev lid ->  simple lid :: acc  )  [] ls in
-      let t =
-        if List.length res >= 2 && arity >= 2 then
+    let aux acc x =
+        (match x with
+        | `variant (cons,args) ->
+            let cons = "`" ^ cons in
+            let len = List.length args in
+            let exps = List.mapi mapi_exp args in
+            %case-{ $pat{Id_epn.gen_tuple_n  ~arity cons len}
+                    ->
+                    ${Lazy.force mk_variant (Some cons) exps}}
+        | `abbrev lid ->  (* for the case [`a | b ] *)
+            let e = apply_args (exp_of_ctyp (lid:>ctyp))  names  in
+            let (f,a) = Ast_basic.N.view_app [] result in
+            let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
+            let pat  =
+              tuple_com
+                (Listf.init arity 
+                   (fun i -> %pat-{ (#$id:lid as $lid{ Id.x ~off:i 0 }) }))
+            in
+            let e = appl_of_list
+                (e::
+                 Listf.init arity (fun i -> %exp-{ $id{Id.xid ~off:i 0} })) in 
+            %case-{
+            $pat -> ( $e  :> $annot)}) :: acc   in
+    (match ls with
+    | [] -> []
+    | [x] -> aux [] x 
+    | _ -> 
+        let res = List.fold_left aux [] ls  in
+        let res =
           match Option.map transform p.default  with
-          | Some x-> %case-{_ -> $x}::res
-          | None ->  res
-              (* [default info :: res] *)
-        else res in
-      List.rev t in
-    Expn_util.currying ~arity res
+          | Some x when arity >= 2 -> %case-{_ -> $x}::res
+          | _ ->  res in
+        List.rev res )
+    |> Expn_util.currying ~arity
 
   let exp_of_or_ctyp (ty : or_ctyp)  : exp=
-    let f  (cons:string) (tyargs:ctyp list )  : case =
+    let mk   (cons,tyargs)  : case =
       let args_length = List.length tyargs in  (* ` is not needed here *)
-
-      let mk (cons,tyargs) =
-        let exps = List.mapi mapi_exp   tyargs in
-        Lazy.force mk_variant (Some cons) exps in
-      let p : pat =
-        (* calling gen_tuple_n*)
-        (Id_epn.gen_tuple_n ~arity  cons args_length :> pat) in
-      let e = mk (cons,tyargs) in
-      %case-{ $pat:p -> $e } in
+      let exps = List.mapi mapi_exp   tyargs in
+      %case-{ ${(Id_epn.gen_tuple_n ~arity  cons args_length )} ->
+         ${Lazy.force mk_variant (Some cons) exps} } in
     begin
-      let reduce_data_ctors (ty:or_ctyp)  ~compose
-          (f:  string -> ctyp list  -> _)  =
+      let reduce_data_ctors (ty:or_ctyp)   = 
         let branches = Ast_basic.N.list_of_bar ty [] in
         let aux acc (x:or_ctyp)   = 
-          match x with
+          (match x with
           | `Of (`Uid cons, tys) ->
-              compose (f cons (Ast_basic.N.list_of_star tys [])) acc
-          | `Uid  cons -> compose  (f cons [] ) acc
-          | t-> failwith  (__BIND__ ^ Astfn_print.dump_or_ctyp t) in
+              mk (cons , Ast_basic.N.list_of_star tys [])
+          | `Uid  cons -> 
+              mk (cons, [] )
+          | t-> failwith  (__BIND__ ^ Astfn_print.dump_or_ctyp t))::acc  in
         match branches with
         | [] -> [] (* should not happen *)
         | [x] -> aux [] x (* 1 x 1 x 1 ==> 1 *)
@@ -226,7 +222,7 @@ module Make (U:S) = struct
               | None -> res
               | Some x -> %case-{ _ -> $x} :: res
             else res in
-      reduce_data_ctors ty   f ~compose:cons
+      reduce_data_ctors ty  
       |>  List.rev
       |> Expn_util.currying ~arity 
     end
@@ -255,29 +251,29 @@ module Make (U:S) = struct
                            is_mutable}) cols in
                 (* For single tuple pattern match this can be optimized *)
 (*            by the ocaml compiler *)
-                mk_prefix   tyvars
-                  (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ])
-
+                [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ]
+                |> Expn_util.currying ~arity
             |  `Sum ctyp ->
                 (* for [exp_of_ctyp] appending names was delayed to be handled in mkcon *)
-                mk_prefix  tyvars (exp_of_or_ctyp ctyp)
+                exp_of_or_ctyp ctyp
             | t ->
-                failwithf "fun_of_tydcl outer %s" (Astfn_print.dump_type_repr t)
+                failwith (__BIND__  ^ Astfn_print.dump_type_repr t)
             end
+
         | `TyEq(_,ctyp) ->
             begin match ctyp with
             | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
-                let exp = exp_of_ctyp x in
-                let funct = Expn_util.eta_expand (exp+>names) arity  in
-                mk_prefix  tyvars funct
+                Expn_util.eta_expand (apply_args (exp_of_ctyp x) names) arity
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
-                let case =  exp_of_poly_variant result t  in
-                mk_prefix  tyvars case
+                exp_of_poly_variant result t
             | t -> failwith (__BIND__ ^ Astfn_print.dump_ctyp t)
             end
         | t -> failwith  (__BIND__ ^  Astfn_print.dump_type_info t)
-        end
+        end |> mk_prefix tyvars
+
+
     | t -> failwith (__BIND__  ^ Astfn_print.dump_decl t)
+
 
   let bind_of_tydcl tydcl =
     let (name,len) =
@@ -290,22 +286,21 @@ module Make (U:S) = struct
           failwith (__BIND__ ^ Astfn_print.dump_decl tydcl) in
     let fname = trans_to_id p.id name in
     let prefix = List.length p.names in
-    (* FIXME the annot using [_ty]?*)
-    let (_ty,result) =
-      Ctyp.mk_method_type ~number:arity ~prefix ~id:(lid name) len Ctyp.Str_item
-    in (* FIXME *)
     let (annot,result) =
       match p.annot with
-      |None -> (None,result)
+      |None ->     (* FIXME the annot using [_ty]?*)
+          let (_ty,result) =
+            Ctyp.mk_method_type ~number:arity ~prefix ~id:(lid name) len Ctyp.Str_item
+          in (* FIXME *)
+          (None,result)
       |Some (f:string -> (ctyp * ctyp))  -> let (a,b) = f name in (Some a, b) in
 
     let fun_exp =
-      if not @@  Ctyp.is_abstract tydcl then
+      if not @@ %p{`TyAbstr _} tydcl  then
         fun_of_tydcl result tydcl
       else
         begin
-          Format.eprintf
-            "Warning: %s as a abstract type no structure generated\n"
+          Format.eprintf "Warning: %s as a abstract type no structure generated\n"
           @@ Astfn_print.dump_decl tydcl;
           %exp-{ failwith "Abstract data type not implemented" }
         end in
