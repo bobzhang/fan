@@ -212,7 +212,8 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
           ((match tyvars with
             | `None -> 0
             | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-    | tydcl -> failwith ("bind_of_tydcl" ^ (Astfn_print.dump_decl tydcl)) in
+    | tydcl ->
+        failwith ("Derive.bind_of_tydcl" ^ (Astfn_print.dump_decl tydcl)) in
   let fname = tctor_var name in
   let prefix = List.length names in
   let (_ty,result) =
@@ -295,7 +296,8 @@ let obj_of_mtyps ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
                | `None -> 0
                | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
        | tydcl ->
-           failwith ("obj_of_mtyps.mk_type" ^ (Astfn_print.dump_decl tydcl)) in
+           failwith
+             ("Derive.obj_of_mtyps.mk_type" ^ (Astfn_print.dump_decl tydcl)) in
      let prefix = List.length names in
      let (ty,result_type) =
        Ctyp.mk_method_type ~number:arity ~prefix

@@ -160,7 +160,7 @@ let of_string =
   | "clfield" -> Clfield
   | "ep" -> Ep
   | "rec_bind" -> Rec_bind
-  | _ -> failwith ("Astf" ^ ("." ^ "of_string"))
+  | _ -> failwith ("Astf" ^ ("." ^ "Astf.of_string"))
 let literal: literal t = Literal
 let flag: flag t = Flag
 let position_flag: position_flag t = Position_flag

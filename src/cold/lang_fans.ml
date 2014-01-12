@@ -669,7 +669,9 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ ->
-          failwith ("Lang_fans" ^ ("." ^ ("token" ^ " lexing: empty token")))))
+          failwith
+            ("Lang_fans" ^
+               ("." ^ ("Lang_fans.token" ^ " lexing: empty token")))))
 let fan_quot = Gramf.mk "fan_quot"
 let fan_quots = Gramf.mk "fan_quots"
 let _ =

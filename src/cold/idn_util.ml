@@ -20,13 +20,13 @@ let to_string (ident : ident) =
   aux ident ""
 let rec to_vid (x : ident) =
   (match x with
-   | `Apply _ -> invalid_arg ("Idn_util" ^ ("." ^ "to_vid"))
+   | `Apply _ -> invalid_arg ("Idn_util" ^ ("." ^ "Idn_util.to_vid"))
    | `Dot (a,b) -> dot (to_vid a) (to_vid b)
    | `Lid _|`Uid _|`Ant _ as x -> x : vid )
 let ident_map f (x : vid) =
   let lst = Ast_basic.N.list_of_dot x [] in
   match lst with
-  | [] -> invalid_arg ("Idn_util" ^ ("." ^ "ident_map"))
+  | [] -> invalid_arg ("Idn_util" ^ ("." ^ "Idn_util.ident_map"))
   | (`Lid y)::[] -> lid (f y)
   | ls ->
       let l = List.length ls in
@@ -36,7 +36,7 @@ let ident_map f (x : vid) =
 let ident_map_of_ident f x =
   (let lst = Ast_basic.N.list_of_dot x [] in
    match lst with
-   | [] -> invalid_arg ("Idn_util" ^ ("." ^ "ident_map_of_ident"))
+   | [] -> invalid_arg ("Idn_util" ^ ("." ^ "Idn_util.ident_map_of_ident"))
    | (`Lid y)::[] -> f y
    | ls ->
        let l = List.length ls in

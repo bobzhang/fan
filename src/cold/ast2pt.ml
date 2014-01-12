@@ -21,117 +21,127 @@ let dump_ident =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_ident")
+         "Ast2pt.dump_ident")
 let dump_ctyp =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_ctyp")
 let dump_row_field =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_row_field")
+         "Ast2pt.dump_row_field")
 let dump_name_ctyp =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_name_ctyp")
+         "Ast2pt.dump_name_ctyp")
 let dump_constr =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_constr")
+         "Ast2pt.dump_constr")
 let dump_mtyp =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mtyp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_mtyp")
 let dump_ctyp =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_ctyp")
 let dump_or_ctyp =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_or_ctyp")
+         "Ast2pt.dump_or_ctyp")
 let dump_pat =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_pat")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_pat")
 let dump_type_parameters =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_type_parameters")
+         "Ast2pt.dump_type_parameters")
 let dump_exp =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_exp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_exp")
 let dump_case =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_case")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_case")
 let dump_rec_exp =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_rec_exp")
+         "Ast2pt.dump_rec_exp")
 let dump_type_constr =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_type_constr")
+         "Ast2pt.dump_type_constr")
 let dump_decl =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_decl")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_decl")
 let dump_sigi =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_sigi")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_sigi")
 let dump_mbind =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_mbind")
+         "Ast2pt.dump_mbind")
 let dump_mexp =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mexp")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_mexp")
 let dump_stru =
   ref
     (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_stru")
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "Ast2pt.dump_stru")
 let dump_cltyp =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_cltyp")
+         "Ast2pt.dump_cltyp")
 let dump_cldecl =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_cldecl")
+         "Ast2pt.dump_cldecl")
 let dump_cltdecl =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_cltdecl")
+         "Ast2pt.dump_cltdecl")
 let dump_clsigi =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_clsigi")
+         "Ast2pt.dump_clsigi")
 let dump_clexp =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_clexp")
+         "Ast2pt.dump_clexp")
 let dump_clfield =
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "dump_clfield")
+         "Ast2pt.dump_clfield")
 let module_path: string list ref = ref []
 let current_top_bind: string list ref = ref []
 let self_object: string option ref = ref None
@@ -229,7 +239,7 @@ let generate_type_code:
   ref
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "generate_type_code")
+         "Ast2pt.generate_type_code")
 let ant_error loc = error loc "antiquotation not expected here"
 let mkvirtual (x : Astf.flag) =
   (match x with
@@ -674,7 +684,12 @@ let rec exp_desc _loc (x : exp) =
          String.concat "." sl in
        Pexp_constant (Const_string s)
    | `Lid (_,"__BIND__") ->
-       let s = String.concat "." (List.rev (!current_top_bind)) in
+       let m =
+         ((((_loc |> Locf.file_name) |> Filename.basename) |>
+             Filenamef.chop_extension_if)
+            |> String.capitalize)
+         :: (List.rev (!module_path)) in
+       let s = String.concat "." (m @ (List.rev (!current_top_bind))) in
        Pexp_constant (Const_string s)
    | (`Lid (_loc,"__PWD__") : Astf.exp) ->
        let s = Filename.dirname (Locf.file_name _loc) in

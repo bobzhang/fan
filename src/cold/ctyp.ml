@@ -40,7 +40,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
          (Expn_util.currying
             [(`Case ((pat :>Astfn.pat), (tys :>Astfn.exp)) :>Astfn.case)]
             ~arity)
-   | _ -> failwith ("tuple_exp_of_ctyp" ^ (Astfn_print.dump_ctyp ty)) : 
+   | _ -> failwith ("Ctyp.tuple_exp_of_ctyp" ^ (Astfn_print.dump_ctyp ty)) : 
   exp )
 let mk_record ?(arity= 1)  cols =
   (let mk_list off =
@@ -100,7 +100,8 @@ let list_of_record (ty : name_ctyp) =
                    (((function | `Positive -> true | _ -> false)) f)
                }
            | t0 ->
-               failwith ("list_of_record" ^ (Astfn_print.dump_name_ctyp t0)))) : 
+               failwith
+                 ("Ctyp.list_of_record" ^ (Astfn_print.dump_name_ctyp t0)))) : 
   col list )
 let mk_method_type ~number  ~id:(id : ident)  ~prefix  len (k : destination)
   =
@@ -227,8 +228,9 @@ let view_variant (t : row_field) =
       | `TyVrnOf (`C cons,t) -> `variant (cons, [t])
       | `TyVrn `C cons -> `variant (cons, [])
       | `Ctyp (#ident' as i) -> `abbrev i
-      | u -> failwithf "%s %s" "view_variant" (Astfn_print.dump_row_field u))
-     lst : vbranch list )
+      | u ->
+          failwithf "%s %s" "Ctyp.view_variant"
+            (Astfn_print.dump_row_field u)) lst : vbranch list )
 let conversion_table: (string,string) Hashtbl.t = Hashtbl.create 50
 let transform: full_id_transform -> vid -> exp =
   let open Idn_util in

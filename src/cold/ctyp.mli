@@ -27,6 +27,8 @@ type ty_info = {
 type vbranch =
    [ `variant of (string* ctyp list )
    | `abbrev of ident ]
+
+
 type branch =
    [ `branch of (string * ctyp list) ]
 
@@ -91,7 +93,7 @@ val tuple_exp_of_ctyp :
 val mk_record: ?arity:int -> col list -> ep
 
 (** 
-    
+    destruct [name_ctyp] to a list 
  *)
 val list_of_record : Astfn.name_ctyp -> col list
 
@@ -160,6 +162,8 @@ val reduce_data_ctors:
 (* val of_stru: stru -> decl *)
 
 val view_sum: or_ctyp -> branch list
+
+(** destruct [row_field] *)
 val view_variant: row_field -> vbranch list    
 
 

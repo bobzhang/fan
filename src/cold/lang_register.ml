@@ -504,7 +504,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             (Lexing_util.from_lexbuf lexbuf)
       | _ ->
           failwith
-            ("Lang_register" ^ ("." ^ ("token" ^ " lexing: empty token")))))
+            ("Lang_register" ^
+               ("." ^ ("Lang_register.token" ^ " lexing: empty token")))))
 let make_register register compile =
   let pair: 'pair Gramf.t = Gramf.mk "pair" in
   Gramf.extend_single

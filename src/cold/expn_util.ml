@@ -49,7 +49,7 @@ let mee_of_str s =
     (`App ((`Vrn "Uid"), (`Par (`Com ((`Lid "_loc"), (`Str s))))) :>Astfn.exp)
 let mk_tuple_ee =
   function
-  | [] -> invalid_arg ("Expn_util" ^ ("." ^ "mk_tuple_ee"))
+  | [] -> invalid_arg ("Expn_util" ^ ("." ^ "Expn_util.mk_tuple_ee"))
   | x::[] -> x
   | xs ->
       let v = Listf.reduce_right mee_comma xs in

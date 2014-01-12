@@ -3081,5 +3081,6 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
           (Lexing_util.err (Illegal_character c)) @@
             (Lexing_util.from_lexbuf lexbuf)
       | _ ->
-          failwith ("Lex_gram" ^ ("." ^ ("token" ^ " lexing: empty token")))))
+          failwith
+            ("Lex_gram" ^ ("." ^ ("Lex_gram.token" ^ " lexing: empty token")))))
 let from_stream = Lexing_util.adapt_to_stream token

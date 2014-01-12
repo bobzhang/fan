@@ -699,8 +699,10 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
           :: List.rev !module_path in
         String.concat "." sl in Pexp_constant (Const_string s)
   | `Lid(_,"__BIND__") ->
+      let m =
+          (_loc |> Locf.file_name |> Filename.basename |> Filenamef.chop_extension_if |>  String.capitalize) :: List.rev !module_path in
       let s =
-          String.concat "." (List.rev !current_top_bind) in
+          String.concat "." (m @ List.rev !current_top_bind) in
       Pexp_constant (Const_string s )
   | %exp{ __PWD__ } ->
       let s =  Filename.dirname (Locf.file_name _loc) in

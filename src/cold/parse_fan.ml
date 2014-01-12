@@ -307,19 +307,20 @@ let make_case exp pat =
                          { tag = `Key; word = (A "->"); tag_name = "Key" }
                      } : Tokenf.pattern );
                   Nterm (Gramf.obj (exp : 'exp Gramf.t ))];
-                annot = "`Case (_loc, (mk_ant s), e)\n";
+                annot =
+                  "`Case (_loc, (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s), e)\n";
                 fn =
                   (Gramf.mk_action
                      (fun (e : 'exp)  _  (__fan_0 : Tokenf.ant) 
                         (_loc : Locf.t)  ->
                         let s = __fan_0 in
-                        (`Case (_loc, (mk_ant s), e) : 'case0 ) : 'exp ->
-                                                                    Tokenf.txt
-                                                                    ->
-                                                                    Tokenf.ant
-                                                                    ->
-                                                                    Locf.t ->
-                                                                    'case0 ))
+                        (`Case
+                           (_loc,
+                             (mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s),
+                             e) : 'case0 ) : 'exp ->
+                                               Tokenf.txt ->
+                                                 Tokenf.ant ->
+                                                   Locf.t -> 'case0 ))
               };
               {
                 symbols =

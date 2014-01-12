@@ -65,7 +65,7 @@ let output_moves
                 (fun x  -> (`Int (_loc, (string_of_int x)) :>Astf.pat)) pats)
        | None  -> (`Any _loc :>Astf.pat) in
      let action = seq_sem (output_action mems r) in
-     (`Case (_loc, pat, (action :>Astf.exp)) :>Astf.case) in
+     (`Case (_loc, (pat :>Astf.pat), (action :>Astf.exp)) :>Astf.case) in
    let (t
      :(Lexgen.automata_move,(Lexgen.memory_action list* int list)) Hashtbl.t)=
      Hashtbl.create 17 in

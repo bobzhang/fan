@@ -6313,7 +6313,7 @@ let make_token low_keys =
         | _ ->
             failwith
               ("Lex_fan" ^
-                 ("." ^ ("make_token.token" ^ " lexing: empty token"))))) in
+                 ("." ^ ("Lex_fan.make_token.token" ^ " lexing: empty token"))))) in
   token
 let token = make_token low_keys
 let (from_lexbuf,from_stream,from_string) =

@@ -1,11 +1,11 @@
 let rec of_listr f xs =
   match xs with
-  | [] -> invalid_arg ("Ast_basic" ^ ("." ^ "of_listr"))
+  | [] -> invalid_arg ("Ast_basic" ^ ("." ^ "Ast_basic.of_listr"))
   | t::[] -> t
   | t::ts -> f t (of_listr f ts)
 let rec of_listl f xs =
   match xs with
-  | [] -> invalid_arg ("Ast_basic" ^ ("." ^ "of_listl"))
+  | [] -> invalid_arg ("Ast_basic" ^ ("." ^ "Ast_basic.of_listl"))
   | t::[] -> t
   | x::y::xs -> of_listl f ((f x y) :: xs)
 let rec list_of a acc =

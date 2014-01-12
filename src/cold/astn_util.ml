@@ -32,12 +32,12 @@ let tuple_com_unit =
   function | [] -> unit | p::[] -> p | y -> `Par (com_of_list y)
 let tuple_com y =
   match y with
-  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "tuple_com"))
+  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "Astn_util.tuple_com"))
   | x::[] -> x
   | _ -> `Par (com_of_list y)
 let tuple_sta y =
   match y with
-  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "tuple_sta"))
+  | [] -> invalid_arg ("Astn_util" ^ ("." ^ "Astn_util.tuple_sta"))
   | x::[] -> x
   | _ -> `Par (sta_of_list y)
 let (+>) f (names : string list) = appl_of_list (f :: (List.map lid names))
@@ -46,7 +46,7 @@ let apply_args f (names : string list) =
 let of_str (s : string) =
   (let len = String.length s in
    if len = 0
-   then invalid_arg ("Astn_util" ^ ("." ^ "of_str"))
+   then invalid_arg ("Astn_util" ^ ("." ^ "Astn_util.of_str"))
    else
      (match s.[0] with
       | '`' -> (`Vrn (String.sub s 1 (len - 1)) :>Astfn.ep)

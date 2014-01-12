@@ -172,7 +172,9 @@ let obj_of_mtyps ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
                | `None -> 0
                | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
        | tydcl ->
-           failwith ("obj_of_mtyps.mk_type" ^ (Astfn_print.dump_decl tydcl)) in
+           failwith
+             ("Derive_obj.obj_of_mtyps.mk_type" ^
+                (Astfn_print.dump_decl tydcl)) in
      let prefix = List.length names in
      let (ty,result_type) =
        Ctyp.mk_method_type ~number:arity ~prefix

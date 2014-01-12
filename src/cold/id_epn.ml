@@ -14,7 +14,7 @@ let gen_tuple_first ~number  ~off  =
         Int.fold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off 0)
           (fun acc  i  -> com acc (xid ~off i)) in
       `Par lst
-  | _ -> invalid_arg ("Id_epn" ^ ("." ^ "gen_tuple_first"))
+  | _ -> invalid_arg ("Id_epn" ^ ("." ^ "Id_epn.gen_tuple_first"))
 let gen_tuple_second ~number  ~off  =
   match number with
   | 1 -> xid ~off:0 off
@@ -45,4 +45,4 @@ let mk_tuple ~arity  ~number  =
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
       (`Par e :>Astfn.ep)
-  | _ -> invalid_arg ("Id_epn" ^ ("." ^ "mk_tuple"))
+  | _ -> invalid_arg ("Id_epn" ^ ("." ^ "Id_epn.mk_tuple"))

@@ -146,7 +146,8 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
     | 4 -> with_store c lexbuf lex_comment
     | _ ->
         failwith
-          ("Lexing_util" ^ ("." ^ ("lex_comment" ^ " lexing: empty token")))))
+          ("Lexing_util" ^
+             ("." ^ ("Lexing_util.lex_comment" ^ " lexing: empty token")))))
 let rec lex_string c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
@@ -266,7 +267,8 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
     | 6 -> with_store c lexbuf lex_string
     | _ ->
         failwith
-          ("Lexing_util" ^ ("." ^ ("lex_string" ^ " lexing: empty token")))))
+          ("Lexing_util" ^
+             ("." ^ ("Lexing_util.lex_string" ^ " lexing: empty token")))))
 let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_next_char () =
     if lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len
@@ -1495,7 +1497,8 @@ let rec lex_quotation c (lexbuf : Lexing.lexbuf) =
     | 8 -> with_store c lexbuf lex_quotation
     | _ ->
         failwith
-          ("Lexing_util" ^ ("." ^ ("lex_quotation" ^ " lexing: empty token")))))
+          ("Lexing_util" ^
+             ("." ^ ("Lexing_util.lex_quotation" ^ " lexing: empty token")))))
 let adapt_to_stream token (loc : Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;

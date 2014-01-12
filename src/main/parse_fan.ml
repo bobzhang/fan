@@ -86,7 +86,7 @@ let make_case exp pat =
   | Ant ("",s) ;"when";exp as w;"->"; exp as e %{
     `CaseWhen(_loc,mk_ant  s, w,e )} (* %case{$p -> $e  }*)
   | Ant ("",s); "->"; exp as e %{
-    `Case(_loc,mk_ant  s ,e)}
+    `Case(_loc,mk_ant ~c:(Dyn_tag.to_string Dyn_tag.pat) s ,e)}
   | pat_as_pat_opt as p; "when"; exp as w;  "->"; exp as e %{
            `CaseWhen (_loc, p, w, e)}
   | pat_as_pat_opt as p; "->";exp as e %{ `Case(_loc,p,e)}]
@@ -1218,6 +1218,7 @@ with ctyp
   [ S as t1; S as t2 %{ `App(_loc,t1,t2)}
   | Ant (""|"typ" ,s) %{  mk_ant  ~c:(Dyn_tag.to_string Dyn_tag.ctyp)  s}
   | "'"; a_lident as i  %{ `Quote (_loc, `Normal _loc, i)}]
+
   ctyp: 10 
   [ S as t1; "as"; "'"; a_lident as i %{`Alias(_loc,t1,i)}]
   ctyp: 20  
