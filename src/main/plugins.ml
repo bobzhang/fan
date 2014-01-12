@@ -4,7 +4,7 @@ open Astn_util
 open Util
 open Sigs_util
 
-(* type u = (int*bool) list array   option with ("Eq") *)
+
 
 (* let () = *)
 (*   ignore eq_u  *)
@@ -87,7 +87,7 @@ let _ = begin
       (%ctyp-{array}, %exp-{
        function  f t1 t2  -> 
          let len = Array.length t1 in
-         if length t2 <> len then false
+         if Array.length t2 <> len then false
          else 
            let rec loop i =
              if i < 0

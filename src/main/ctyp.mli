@@ -90,7 +90,10 @@ val tuple_exp_of_ctyp :
 
 val mk_record: ?arity:int -> col list -> ep
 
-val list_of_record : name_ctyp -> col list
+(** 
+    
+ *)
+val list_of_record : Astfn.name_ctyp -> col list
 
 
 

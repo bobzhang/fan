@@ -35,35 +35,38 @@ let mk_record cols =
 
 
 let default : Derive_stru.param =  {
-    
-    arity = 1;
-    default  = None;
-    id =  (`Pre "pp_print_");
-    names = ["fmt"] ;
-    mk_record = Some mk_record;
-    annot = Some (fun s ->
+  arity = 1;
+  default  = None;
+  id =  (`Pre "pp_print_");
+  names = ["fmt"] ;
+  mk_record = Some mk_record;
+  annot = Some (fun s ->
       (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}));
-    mk_variant = Some mk_variant;
-    plugin_name = "Print";
-    excludes = ["loc"]; (* only make sense in plugin*)
-    builtin_tbl = [
-    (%ctyp-{int}, %exp-{Format.pp_print_int});
-    (%ctyp-{int32}, %exp-{fun fmt -> Format.fprintf "%ld"});
-    (%ctyp-{int64}, %exp-{fun fmt -> Format.fprintf "%Ld"});
-    (%ctyp-{nativeint}, %exp-{fun fmt -> Format.fprintf "%nd"});
-    (%ctyp-{float}, %exp-{Format.pp_print_float});
-    (%ctyp-{string}, %exp-{fun fmt -> Format.fprintf fmt "%S"});
-    (%ctyp-{bool}, %exp-{Format.pp_print_bool});
-    (%ctyp-{char}, %exp-{Format.pp_print_char});
-    (%ctyp-{unit}, %exp-{fun fmt (_:unit)-> Format.fprintf fmt "()"});
-    (%ctyp-{list}, %exp-{fun mf_a fmt lst -> 
-      Format.fprintf fmt "@[<1>[%a]@]"
-        (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x)) lst});
-    (%ctyp-{option},
-     %exp-{fun mf_a fmt v -> 
-       match v with
-       | None  -> Format.fprintf fmt "None"
-       | Some v -> Format.fprintf fmt "Some @[%a@]" mf_a v})
+  mk_variant = Some mk_variant;
+  plugin_name = "Print";
+  excludes = ["loc"]; (* only make sense in plugin*)
+  builtin_tbl = [
+  (%ctyp-{int}, %exp-{Format.pp_print_int});
+  (%ctyp-{int32}, %exp-{fun fmt -> Format.fprintf "%ld"});
+  (%ctyp-{int64}, %exp-{fun fmt -> Format.fprintf "%Ld"});
+  (%ctyp-{nativeint}, %exp-{fun fmt -> Format.fprintf "%nd"});
+  (%ctyp-{float}, %exp-{Format.pp_print_float});
+  (%ctyp-{string}, %exp-{fun fmt -> Format.fprintf fmt "%S"});
+  (%ctyp-{bool}, %exp-{Format.pp_print_bool});
+  (%ctyp-{char}, %exp-{Format.pp_print_char});
+  (%ctyp-{unit}, %exp-{fun fmt (_:unit)-> Format.fprintf fmt "()"});
+  
+  (%ctyp-{list}, %exp-{fun mf_a fmt lst -> 
+    Format.fprintf fmt "@[<1>[%a]@]"
+      (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x)) lst});
+  (%ctyp-{option},
+   %exp-{fun mf_a fmt v -> 
+     match v with
+     | None  -> Format.fprintf fmt "None"
+     | Some v -> Format.fprintf fmt "Some @[%a@]" mf_a v});
+  (%ctyp-{arrow},
+   %exp-{fun _ _ fmt _ -> Formatf.fprintf fmt "<fun>"})
+
       (* %exp-@check{....}*)
   ];
   }
@@ -75,3 +78,7 @@ let default : Derive_stru.param =  {
 (* %builtin{ *)
 (* print  *)
 (* };; *)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/gen_print.cmo" *)
+(* end: *)

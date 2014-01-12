@@ -94,6 +94,8 @@ let mk_record ?(arity=1) cols : ep  =
     %exp-'{$par:res}
   else res     
 
+
+
 type vbranch =
    [ `variant of (string* ctyp list )
    | `abbrev of ident ]
@@ -102,7 +104,6 @@ type branch =
 
 type destination =
   |Obj of kind
-  (* | Type of ctyp         *)
   |Str_item
 and kind =
   | Fold
@@ -114,7 +115,7 @@ and kind =
 
 type warning_type =
   | Abstract of string 
-  | Qualified of string  with print (* ("Print") *)
+  | Qualified of string  with print
 
 
 

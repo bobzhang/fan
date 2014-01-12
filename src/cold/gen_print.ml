@@ -179,5 +179,26 @@ let default: Derive_stru.param =
                                                                "Some @[%a@]"))),
                                                         (`Lid "mf_a"))),
                                                     (`Lid "v"))))))))))))))))) :>
+        Astfn.exp));
+      ((`Lid "arrow" :>Astfn.ctyp),
+        (`Fun
+           (`Case
+              (`Any,
+                (`Fun
+                   (`Case
+                      (`Any,
+                        (`Fun
+                           (`Case
+                              ((`Lid "fmt"),
+                                (`Fun
+                                   (`Case
+                                      (`Any,
+                                        (`App
+                                           ((`App
+                                               ((`Dot
+                                                   ((`Uid "Formatf"),
+                                                     (`Lid "fprintf"))),
+                                                 (`Lid "fmt"))),
+                                             (`Str "<fun>")))))))))))))) :>
         Astfn.exp))]
   }

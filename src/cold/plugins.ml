@@ -210,7 +210,9 @@ let _ =
                                               ((`App
                                                   ((`Lid "<>"),
                                                     (`App
-                                                       ((`Lid "length"),
+                                                       ((`Dot
+                                                           ((`Uid "Array"),
+                                                             (`Lid "length"))),
                                                          (`Lid "t2"))))),
                                                 (`Lid "len"))),
                                             (`Bool false),

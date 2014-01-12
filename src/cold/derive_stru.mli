@@ -70,16 +70,18 @@ module Make(U:S) : sig
      %fn@sexp_of{'a list}
 
    *)
-  val simple_exp_of_ctyp : ctyp -> exp
+  val exp_of_ctyp : ctyp -> exp
 
-      
-  val exp_of_ctyp :  or_ctyp -> exp
+
+  val mapi_exp : int -> ctyp -> Ctyp.ty_info 
+
+  val exp_of_or_ctyp :  or_ctyp -> exp
 
   (** The first argument is type annotations.
       This function is used to handle polymorphic variant,
       it should be treated with special care
    *)    
-  val exp_of_variant : ctyp -> row_field -> exp
+  val exp_of_poly_variant : ctyp -> row_field -> exp
 
   (** 1. idem
       
