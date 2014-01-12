@@ -264,7 +264,7 @@ module Make(U:S) =
              ("Derive_stru.Make.fun_of_tydcl" ^ (Astfn_print.dump_decl t)) : 
       exp )
     let bind_of_tydcl tydcl =
-      let (name,len) =
+      let (name,_len) =
         match tydcl with
         | `TyDcl (`Lid name,tyvars,_,_) ->
             (name,
@@ -276,14 +276,9 @@ module Make(U:S) =
               ("Derive_stru.Make.bind_of_tydcl" ^
                  (Astfn_print.dump_decl tydcl)) in
       let fname = trans_to_id p.id name in
-      let prefix = List.length p.names in
       let (annot,result) =
         match p.annot with
-        | None  ->
-            let (_ty,result) =
-              Ctyp.mk_method_type ~number:arity ~prefix ~id:(lid name) len
-                Ctyp.Str_item in
-            (None, result)
+        | None  -> (None, (`Any :>Astfn.ctyp))
         | Some (f : string -> (ctyp* ctyp)) ->
             let (a,b) = f name in ((Some a), b) in
       let fun_exp =
