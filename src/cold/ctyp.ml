@@ -179,10 +179,9 @@ let is_recursive ty_dcl =
           method is_recursive = is_recursive
         end in
       (obj#type_info ctyp)#is_recursive
+  | `TyAbstr _ -> false
   | `And _ -> true
-  | _ ->
-      failwithf "is_recursive not type declartion: %s"
-        (Astfn_print.dump_decl ty_dcl)
+  | _ -> failwith ("Ctyp.is_recursive" ^ (Astfn_print.dump_decl ty_dcl))
 let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : Astfn.ctyp) as x ->

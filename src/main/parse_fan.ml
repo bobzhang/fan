@@ -1181,6 +1181,7 @@ with ctyp
   ]
   decl_quot:
   ["type"; decl as x %{x} ]
+
   decl:
   [ Ant (""|"typ" ,s) %{ mk_ant ~c:(Dyn_tag.to_string Dyn_tag.decl)  s}
   | S as t1; "and"; S as t2 %{  `And(_loc,t1,t2)}

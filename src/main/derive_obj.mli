@@ -3,14 +3,28 @@ open Astfn
 open Sigs_util
 open Ctyp
 
-val mk :
-  ?arity:int ->
+type param = {
+    arity: int;
+    names: string list;
+    plugin_name:  string;
+    mk_record: (Ctyp.record_col list -> exp) option;
+    mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
+    excludes: string list;
+  }
+
+
+module type S =
+    sig
+      val p : param
+    end
+
+module Make (U:S) : sig 
+  val mk :
   ?default:exp ->
-  ?cons_transform:(string -> string) ->
+  (* ?cons_transform:(string -> string) -> *)
   kind:kind ->
   base:string ->
   class_name:string ->
-  ?names:string list ->
-  mk_record:(record_col list -> exp) ->
-  mk_variant:(string option -> ty_info list -> exp) -> unit -> 
-  mtyps -> stru
+    unit -> 
+      mtyps -> stru
+end

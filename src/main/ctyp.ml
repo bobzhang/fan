@@ -247,8 +247,9 @@ let is_recursive ty_dcl =
         method is_recursive = is_recursive
       end in
       (obj#type_info ctyp)#is_recursive
+  | `TyAbstr _ -> false 
   | `And _  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (Astfn_print.dump_decl ty_dcl)
+  | _ -> failwith (__BIND__  ^ Astfn_print.dump_decl ty_dcl)
 
 (*
   {:stru|

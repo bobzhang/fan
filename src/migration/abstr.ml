@@ -1,1 +1,1 @@
-type u  with sexp
+type ('a,'b) u  with sexp

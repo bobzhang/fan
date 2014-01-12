@@ -126,36 +126,48 @@ let traversal () : traversal  = object (self)
          let () = if !print_collect_mtyps then
            eprintf "@[%a@]@." pp_print_mtyps mtyps in
          let result =
-         List.fold_right (iterate_code sloc mtyps)
+         List.fold_right 
+             (iterate_code sloc mtyps)
              !State.current_filters 
              (if !State.keep then res else %@sloc{ let _ = () }) in
             (self#out_module ; %mexp@sloc{ struct $result end } ))
 
-    | x -> super#mexp x 
-  method! stru  = with stru function
-    | %{ type $_ and $_ } as x -> begin
+    | x -> super#mexp x
+          
+  method! stru  =   function
+    | `Type(_loc ,`And _) (* %{ type $_ and $_ }  *)as x -> begin
       self#in_and_types;
       let _ = super#stru x in
       (self#update_cur_mtyps
           (fun lst -> Mutual (List.rev self#get_cur_and_types) :: lst );
        self#out_and_types;
-       (if !State.keep then x else %{ let _ = () } (* FIXME *) ))
+       (if !State.keep then x else %stru{ let _ = () } (* FIXME *) ))
     end
     | `TypeWith(_loc,decl,_) ->
         self#stru (`Type(_loc,decl))
-    | %{ type ${(`TyDcl (_,`Lid(_, name), _, _, _) as t)} } as x -> 
+
+    | `Type (_loc,(`TyDcl (_,`Lid(_, name), _, _, _) as t) ) as x -> 
         let item =  Sigs_util.Single (name, Strip.decl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
               pp_print_types  item in
-        (self#update_cur_mtyps (fun lst -> item :: lst);
-       (* if !keep then x else %{ } *) (* always keep *)
-       x )
-
-    | ( %{let $_}  | %{module type $_ = $_ }  | %{include $_}
-    | %{external $_ : $_ = $_} | %{$exp:_ }
-    | %{exception $_ } 
-    | %{# $_ $_ }  as x)  ->  x (* always keep *)
+        begin
+          self#update_cur_mtyps (fun lst -> item :: lst);
+          (* if !keep then x else %{ } *) (* always keep *)
+          x 
+        end
+    | `Type(_loc, (`TyAbstr (_,`Lid (_,name),_,_) as t)) as x -> 
+        let item = Sigs_util.Single (name, Strip.decl t) in 
+        let () =
+          if !print_collect_mtyps then eprintf "Came across @[%a@]@."
+              pp_print_types  item in
+        begin
+          self#update_cur_mtyps (fun lst -> item :: lst);
+          x
+        end
+    | (`Value _ |`ModuleType _ | `Include _ 
+    | `External _ | `StExp _ | `Exception _ 
+    | `Directive _  as x ) -> x (* always keep *)
     |  x ->  super#stru x  
   method! decl = function
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 
@@ -165,15 +177,6 @@ let traversal () : traversal  = object (self)
         t)
     | t -> super#decl t 
 end
-
-
-
-
-
-
-
-
-
 
 
 let genenrate_type_code _loc tdl (ns:Astf.strings) : Astf.stru = 
@@ -196,7 +199,8 @@ let genenrate_type_code _loc tdl (ns:Astf.strings) : Astf.stru =
         match (traversal ())#mexp (`Struct(_loc,x): Astf.mexp) with
         | (`Struct(_loc,s):Astf.mexp) -> s
         | _ -> assert false) in
-  `Sem(_loc,x,code) 
+  %stru{$x;; $code}
+
 
 let () = begin
   Ast2pt.generate_type_code := genenrate_type_code

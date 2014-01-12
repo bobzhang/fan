@@ -98,7 +98,7 @@ let traversal () =
        | x -> super#mexp x
      method! stru =
        function
-       | (`Type (_loc,`And (_,_,_)) : Astf.stru) as x ->
+       | `Type (_loc,`And _) as x ->
            (self#in_and_types;
             (let _ = super#stru x in
              self#update_cur_mtyps
@@ -108,19 +108,20 @@ let traversal () =
              then x
              else (`StExp (_loc, (`Unit _loc)) :>Astf.stru)))
        | `TypeWith (_loc,decl,_) -> self#stru (`Type (_loc, decl))
-       | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Astf.stru) as
-           x ->
+       | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = Sigs_util.Single (name, (Strip.decl t)) in
            let () =
              if !print_collect_mtyps
              then eprintf "Came across @[%a@]@." pp_print_types item in
            (self#update_cur_mtyps (fun lst  -> item :: lst); x)
-       | (`Value (_loc,`Negative _,_) : Astf.stru)
-         |(`ModuleType (_loc,_,_) : Astf.stru)
-         |(`Include (_loc,_) : Astf.stru)
-         |(`External (_loc,_,_,_) : Astf.stru)|(`StExp (_loc,_) : Astf.stru)
-         |(`Exception (_loc,_) : Astf.stru)
-         |(`Directive (_loc,_,_) : Astf.stru) as x -> x
+       | `Type (_loc,(`TyAbstr (_,`Lid (_,name),_,_) as t)) as x ->
+           let item = Sigs_util.Single (name, (Strip.decl t)) in
+           let () =
+             if !print_collect_mtyps
+             then eprintf "Came across @[%a@]@." pp_print_types item in
+           (self#update_cur_mtyps (fun lst  -> item :: lst); x)
+       | `Value _|`ModuleType _|`Include _|`External _|`StExp _|`Exception _
+         |`Directive _ as x -> x
        | x -> super#stru x
      method! decl =
        function
@@ -152,5 +153,5 @@ let genenrate_type_code _loc tdl (ns : Astf.strings) =
           match (traversal ())#mexp (`Struct (_loc, x) : Astf.mexp ) with
           | (`Struct (_loc,s) : Astf.mexp) -> s
           | _ -> assert false) in
-   `Sem (_loc, x, code) : Astf.stru )
+   (`Sem (_loc, (x :>Astf.stru), (code :>Astf.stru)) :>Astf.stru) : Astf.stru )
 let () = Ast2pt.generate_type_code := genenrate_type_code

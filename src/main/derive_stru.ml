@@ -58,8 +58,9 @@ module Make (U:S) = struct
   open U
   let arity = p.arity
   let names = p.names
-  let builtin_tbl = Hashtblf.of_list p.builtin_tbl
   let plugin_name = p.plugin_name
+  let builtin_tbl = Hashtblf.of_list p.builtin_tbl
+
 
   let mk_variant =
     lazy begin
@@ -273,8 +274,9 @@ module Make (U:S) = struct
           end
             
       | t -> failwith (__BIND__  ^ Astfn_print.dump_decl t)
-   
 
+
+            
   let stru_of_mtyps (lst:Sigs_util.mtyps) : stru option =
     (* return new types as generated  new context *)
     let fs (ty:Sigs_util.types) : stru option =
