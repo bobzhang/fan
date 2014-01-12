@@ -1,6 +1,6 @@
 open Astfn
 class primitive =
-  object (_this__003_ : 'this_type__004_)
+  object (_this__009_ : 'this_type__010_)
     method int _loc (i : int) = (`Int (_loc, (string_of_int i)) :>Astf.ep)
     method int32 _loc (i : int32) =
       (`Int32 (_loc, (Int32.to_string i)) :>Astf.ep)
@@ -18,7 +18,7 @@ class primitive =
     method bool _loc x = (`Bool (_loc, x) : Astf.ep )
   end
 class meta =
-  object (self : 'this_type__002_)
+  object (self : 'this_type__008_)
     inherit  primitive
     method literal : _ -> literal -> Astf.ep=
       fun _loc  ->

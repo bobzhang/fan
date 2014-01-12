@@ -80,12 +80,9 @@ module Make (U:S) = struct
         | None -> failwithf "Generator %s can not handle record" plugin_name
         | Some x -> x 
       end
-  let mf_prefix = "mf_"
+  let mf_prefix = %fresh{_mf}
 
- 
-      
-
-  let rec  exp_of_tuple_ctyp (ty:ctyp) : exp =
+   let rec  exp_of_tuple_ctyp (ty:ctyp) : exp =
     match ty with
     | `Par t  -> 
         let ls = Ast_basic.N.list_of_star t [] in
@@ -100,7 +97,6 @@ module Make (U:S) = struct
     | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty)
 
   and  exp_of_ctyp (ty:ctyp) =
-
     let tyvar = fun x -> %exp-{$lid{mf_prefix^x}}  in
     let rec aux  x : exp =
       if Hashtbl.mem builtin_tbl x then
@@ -156,9 +152,6 @@ module Make (U:S) = struct
 
       
   let exp_of_poly_variant result ty =
-
-
-    
     (* FIXME, be more precise  *)
     let ls = Ctyp.view_variant ty in
     let aux acc x =
@@ -227,84 +220,60 @@ module Make (U:S) = struct
       |> Expn_util.currying ~arity 
     end
 
-      
-(* *)
-(*   Given type declarations, generate corresponding *)
-(*   Astf node represent the [function] *)
-(*   (combine both exp_of_ctyp and simple_exp_of_ctyp) *)
-  let fun_of_tydcl  result   tydcl :exp =
-    match (tydcl:decl) with
-    | `TyDcl ( _, tyvars, ctyp, _constraints) ->
-        begin match ctyp with
-        |  `TyMan(_,_,repr) | `TyRepr(_,repr) ->
-            begin match repr with
-            | `Record t ->
-                let cols =  Ctyp.list_of_record t  in
-                let pat = (Ctyp.mk_record ~arity  cols  :> pat)in
-                let info =
-                  List.mapi
-                    (fun i x ->
-                      match (x:Ctyp.col) with
-                      | {label;is_mutable;ty} ->
-                          {Ctyp.info = mapi_exp i ty  ;
-                           label;
-                           is_mutable}) cols in
-                (* For single tuple pattern match this can be optimized *)
-(*            by the ocaml compiler *)
-                [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ]
-                |> Expn_util.currying ~arity
-            |  `Sum ctyp ->
-                (* for [exp_of_ctyp] appending names was delayed to be handled in mkcon *)
-                exp_of_or_ctyp ctyp
-            | t ->
-                failwith (__BIND__  ^ Astfn_print.dump_type_repr t)
-            end
-
-        | `TyEq(_,ctyp) ->
+  let bind_of_decl (decl:decl) =
+      match (decl:decl) with
+      | `TyDcl ( `Lid name , tyvars, ctyp, _constraints) ->
+          let fname = trans_to_id p.id name in
+          let (annot,result) =
+            match p.annot with
+            |None -> (None,%ctyp-{_})
+            |Some (f:string -> (ctyp * ctyp))  -> let (a,b) = f name in (Some a, b)
+          in
+          let fun_exp = 
             begin match ctyp with
-            | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
-                Expn_util.eta_expand (apply_args (exp_of_ctyp x) names) arity
-            | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
-                exp_of_poly_variant result t
-            | t -> failwith (__BIND__ ^ Astfn_print.dump_ctyp t)
-            end
-        | t -> failwith  (__BIND__ ^  Astfn_print.dump_type_info t)
-        end |> mk_prefix tyvars
-
-
-    | t -> failwith (__BIND__  ^ Astfn_print.dump_decl t)
-
-          
-  let bind_of_tydcl tydcl =
-    let (name,_len) =
-      match  tydcl with
-      | `TyDcl ( `Lid name, tyvars, _, _) ->
-          (name, match tyvars with
-          | `None  -> 0
-          | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
-      | tydcl ->
-          failwith (__BIND__ ^ Astfn_print.dump_decl tydcl) in
-    let fname = trans_to_id p.id name in
-    let (annot,result) =
-      match p.annot with
-      |None -> (None,%ctyp-{_})
-      |Some (f:string -> (ctyp * ctyp))  -> let (a,b) = f name in (Some a, b) in
-
-    let fun_exp =
-      if not @@ %p{`TyAbstr _} tydcl  then
-        fun_of_tydcl result tydcl
-      else
-        begin
-          Format.eprintf "Warning: %s as a abstract type no structure generated\n"
-          @@ Astfn_print.dump_decl tydcl;
-          %exp-{ failwith "Abstract data type not implemented" }
-        end in
-    match annot with
-    | None ->
-        %bind-{ $fname = $fun_exp }
-    | Some x ->
-        %bind-{ $fname  = ($fun_exp : $x ) }
-          
+            |  `TyMan(_,_,repr) | `TyRepr(_,repr) ->
+                begin match repr with
+                | `Record t ->
+                    let cols =  Ctyp.list_of_record t  in
+                    let pat = (Ctyp.mk_record ~arity  cols  :> pat)in
+                    let info =
+                      List.mapi
+                        (fun i x ->
+                          match (x:Ctyp.col) with
+                          | {label;is_mutable;ty} ->
+                            {Ctyp.info = mapi_exp i ty  ;
+                             label;
+                             is_mutable}) cols in
+                    (* For single tuple pattern match this can be optimized *)
+                    (* by the ocaml compiler *)
+                    [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ]
+                |> Expn_util.currying ~arity
+              |  `Sum ctyp ->
+                  (* for [exp_of_ctyp] appending names was
+                     delayed to be handled in mkcon *)
+                  exp_of_or_ctyp ctyp
+              | t ->
+                  failwith (__BIND__  ^ Astfn_print.dump_type_repr t)
+                end
+            | `TyEq(_,ctyp) ->
+                begin match ctyp with
+                | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
+                    Expn_util.eta_expand (apply_args (exp_of_ctyp x) names) arity
+                | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) ->
+                    exp_of_poly_variant result t
+                | t -> failwith (__BIND__ ^ Astfn_print.dump_ctyp t)
+                end
+            | t -> failwith  (__BIND__ ^  Astfn_print.dump_type_info t)
+            end |> mk_prefix tyvars in 
+          begin match annot with
+          | None ->
+              %bind-{ $fname = $fun_exp }
+          | Some x ->
+              %bind-{ $fname  = ($fun_exp : $x ) }          
+          end
+            
+      | t -> failwith (__BIND__  ^ Astfn_print.dump_decl t)
+   
 
   let stru_of_mtyps (lst:Sigs_util.mtyps) : stru option =
     (* return new types as generated  new context *)
@@ -318,27 +287,22 @@ module Make (U:S) = struct
                 Listf.reduce_right_with
                   ~compose:(fun x y -> %bind-{ $x and $y } )
                   ~f:(fun (_name,ty) ->
-                    bind_of_tydcl  ty ) xs in
+                    bind_of_decl  ty ) xs in
               Some %stru-{ let rec $bind }
           end
       | Single (_,tydcl) ->
           let flag =
             if Ctyp.is_recursive tydcl then `Positive
             else `Negative in
-          let  bind = bind_of_tydcl  tydcl in
+          let  bind = bind_of_decl  tydcl in
           Some %stru-{ let $rec:flag  $bind } in
      match lst with
      | [] -> None 
      | _ ->  Some (sem_of_list (Listf.filter_map fs lst ))
 
-                
-
-(************************************)
-(** *)
 (*   Generate warnings for abstract data type *)
 (*   and qualified data type. *)
 (*   all the types in one module will derive a class  *)
-(************************************)
 
 (** For var, in most cases we just add a prefix *)
 (*    mf_, so we just fix it here *)

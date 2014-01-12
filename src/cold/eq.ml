@@ -7,13 +7,13 @@ module Tokenf =
     let eq_ant (_x : Tokenf.ant) (_y : Tokenf.ant) = true
   end
 open Astf
-let eq_loc eta__002_ eta__003_ = Locf.eq_t eta__002_ eta__003_
-let eq_ant curry__004_ curry__005_ =
-  match (curry__004_, curry__005_) with
+let eq_loc eta__008_ eta__009_ = Locf.eq_t eta__008_ eta__009_
+let eq_ant curry__010_ curry__011_ =
+  match (curry__010_, curry__011_) with
   | (`Ant (_a0,_a1),`Ant (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (Tokenf.eq_ant _a1 _b1)
-let eq_literal curry__006_ curry__007_ =
-  match (curry__006_, curry__007_) with
+let eq_literal curry__012_ curry__013_ =
+  match (curry__012_, curry__013_) with
   | (`Chr (_a0,_a1),`Chr (_b0,_b1)) ->
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
@@ -40,21 +40,21 @@ let eq_literal curry__006_ curry__007_ =
         ((Pervasives.( = )  : bool -> bool -> bool ) _a1 _b1)
   | (`Unit _a0,`Unit _b0) -> eq_loc _a0 _b0
   | _ -> false
-let eq_flag curry__008_ curry__009_ =
-  match (curry__008_, curry__009_) with
+let eq_flag curry__014_ curry__015_ =
+  match (curry__014_, curry__015_) with
   | (`Positive _a0,`Positive _b0) -> eq_loc _a0 _b0
   | (`Negative _a0,`Negative _b0) -> eq_loc _a0 _b0
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let eq_position_flag curry__010_ curry__011_ =
-  match (curry__010_, curry__011_) with
+let eq_position_flag curry__016_ curry__017_ =
+  match (curry__016_, curry__017_) with
   | (`Positive _a0,`Positive _b0) -> eq_loc _a0 _b0
   | (`Negative _a0,`Negative _b0) -> eq_loc _a0 _b0
   | (`Normal _a0,`Normal _b0) -> eq_loc _a0 _b0
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let rec eq_strings curry__012_ curry__013_ =
-  match (curry__012_, curry__013_) with
+let rec eq_strings curry__018_ curry__019_ =
+  match (curry__018_, curry__019_) with
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_strings _a1 _b1)) && (eq_strings _a2 _b2)
   | (`Str (_a0,_a1),`Str (_b0,_b1)) ->
@@ -62,47 +62,47 @@ let rec eq_strings curry__012_ curry__013_ =
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let eq_lident curry__014_ curry__015_ =
-  match (curry__014_, curry__015_) with
+let eq_lident curry__020_ curry__021_ =
+  match (curry__020_, curry__021_) with
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
-let eq_alident curry__016_ curry__017_ =
-  match (curry__016_, curry__017_) with
+let eq_alident curry__022_ curry__023_ =
+  match (curry__022_, curry__023_) with
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let eq_auident curry__018_ curry__019_ =
-  match (curry__018_, curry__019_) with
+let eq_auident curry__024_ curry__025_ =
+  match (curry__024_, curry__025_) with
   | (`Uid (_a0,_a1),`Uid (_b0,_b1)) ->
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let eq_aident curry__020_ curry__021_ =
-  match (curry__020_, curry__021_) with
+let eq_aident curry__026_ curry__027_ =
+  match (curry__026_, curry__027_) with
   | ((#alident as _a0),(#alident as _b0)) -> (eq_alident _a0 _b0 :>_)
   | ((#auident as _a0),(#auident as _b0)) -> (eq_auident _a0 _b0 :>_)
   | _ -> false
-let eq_astring curry__022_ curry__023_ =
-  match (curry__022_, curry__023_) with
+let eq_astring curry__028_ curry__029_ =
+  match (curry__028_, curry__029_) with
   | (`C (_a0,_a1),`C (_b0,_b1)) ->
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let rec eq_uident curry__024_ curry__025_ =
-  match (curry__024_, curry__025_) with
+let rec eq_uident curry__030_ curry__031_ =
+  match (curry__030_, curry__031_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_uident _a1 _b1)) && (eq_uident _a2 _b2)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_uident _a1 _b1)) && (eq_uident _a2 _b2)
   | ((#auident as _a0),(#auident as _b0)) -> (eq_auident _a0 _b0 :>_)
   | _ -> false
-let rec eq_ident curry__026_ curry__027_ =
-  match (curry__026_, curry__027_) with
+let rec eq_ident curry__032_ curry__033_ =
+  match (curry__032_, curry__033_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ident _a1 _b1)) && (eq_ident _a2 _b2)
   | (`Apply (_a0,_a1,_a2),`Apply (_b0,_b1,_b2)) ->
@@ -110,8 +110,8 @@ let rec eq_ident curry__026_ curry__027_ =
   | ((#alident as _a0),(#alident as _b0)) -> (eq_alident _a0 _b0 :>_)
   | ((#auident as _a0),(#auident as _b0)) -> (eq_auident _a0 _b0 :>_)
   | _ -> false
-let eq_ident' curry__028_ curry__029_ =
-  match (curry__028_, curry__029_) with
+let eq_ident' curry__034_ curry__035_ =
+  match (curry__034_, curry__035_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ident _a1 _b1)) && (eq_ident _a2 _b2)
   | (`Apply (_a0,_a1,_a2),`Apply (_b0,_b1,_b2)) ->
@@ -123,8 +123,8 @@ let eq_ident' curry__028_ curry__029_ =
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | _ -> false
-let rec eq_vid curry__030_ curry__031_ =
-  match (curry__030_, curry__031_) with
+let rec eq_vid curry__036_ curry__037_ =
+  match (curry__036_, curry__037_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_vid _a2 _b2)
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
@@ -135,8 +135,8 @@ let rec eq_vid curry__030_ curry__031_ =
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let eq_vid' curry__032_ curry__033_ =
-  match (curry__032_, curry__033_) with
+let eq_vid' curry__038_ curry__039_ =
+  match (curry__038_, curry__039_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_vid _a2 _b2)
   | (`Lid (_a0,_a1),`Lid (_b0,_b1)) ->
@@ -146,23 +146,23 @@ let eq_vid' curry__032_ curry__033_ =
       (eq_loc _a0 _b0) &&
         ((Pervasives.( = )  : string -> string -> bool ) _a1 _b1)
   | _ -> false
-let rec eq_dupath curry__034_ curry__035_ =
-  match (curry__034_, curry__035_) with
+let rec eq_dupath curry__040_ curry__041_ =
+  match (curry__040_, curry__041_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_dupath _a1 _b1)) && (eq_dupath _a2 _b2)
   | ((#auident as _a0),(#auident as _b0)) -> (eq_auident _a0 _b0 :>_)
   | _ -> false
-let eq_dlpath curry__036_ curry__037_ =
-  match (curry__036_, curry__037_) with
+let eq_dlpath curry__042_ curry__043_ =
+  match (curry__042_, curry__043_) with
   | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_dupath _a1 _b1)) && (eq_alident _a2 _b2)
   | ((#alident as _a0),(#alident as _b0)) -> (eq_alident _a0 _b0 :>_)
   | _ -> false
-let eq_any curry__038_ curry__039_ =
-  match (curry__038_, curry__039_) with
+let eq_any curry__044_ curry__045_ =
+  match (curry__044_, curry__045_) with
   | (`Any _a0,`Any _b0) -> eq_loc _a0 _b0
-let rec eq_ctyp curry__104_ curry__105_ =
-  match (curry__104_, curry__105_) with
+let rec eq_ctyp curry__110_ curry__111_ =
+  match (curry__110_, curry__111_) with
   | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)) && (eq_alident _a2 _b2)
   | ((#any as _a0),(#any as _b0)) -> (eq_any _a0 _b0 :>_)
@@ -209,8 +209,8 @@ let rec eq_ctyp curry__104_ curry__105_ =
       (eq_loc _a0 _b0) && (eq_mtyp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_type_parameters curry__102_ curry__103_ =
-  match (curry__102_, curry__103_) with
+and eq_type_parameters curry__108_ curry__109_ =
+  match (curry__108_, curry__109_) with
   | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_type_parameters _a1 _b1)) &&
         (eq_type_parameters _a2 _b2)
@@ -218,8 +218,8 @@ and eq_type_parameters curry__102_ curry__103_ =
       (eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_row_field curry__100_ curry__101_ =
-  match (curry__100_, curry__101_) with
+and eq_row_field curry__106_ curry__107_ =
+  match (curry__106_, curry__107_) with
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | (`Bar (_a0,_a1,_a2),`Bar (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_row_field _a1 _b1)) && (eq_row_field _a2 _b2)
@@ -230,16 +230,16 @@ and eq_row_field curry__100_ curry__101_ =
   | (`Ctyp (_a0,_a1),`Ctyp (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)
   | _ -> false
-and eq_tag_names curry__098_ curry__099_ =
-  match (curry__098_, curry__099_) with
+and eq_tag_names curry__104_ curry__105_ =
+  match (curry__104_, curry__105_) with
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_tag_names _a1 _b1)) && (eq_tag_names _a2 _b2)
   | (`TyVrn (_a0,_a1),`TyVrn (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_astring _a1 _b1)
   | _ -> false
-and eq_decl curry__096_ curry__097_ =
-  match (curry__096_, curry__097_) with
+and eq_decl curry__102_ curry__103_ =
+  match (curry__102_, curry__103_) with
   | (`TyDcl (_a0,_a1,_a2,_a3,_a4),`TyDcl (_b0,_b1,_b2,_b3,_b4)) ->
       ((((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) &&
           (eq_opt_decl_params _a2 _b2))
@@ -253,8 +253,8 @@ and eq_decl curry__096_ curry__097_ =
       ((eq_loc _a0 _b0) && (eq_decl _a1 _b1)) && (eq_decl _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_type_constr curry__094_ curry__095_ =
-  match (curry__094_, curry__095_) with
+and eq_type_constr curry__100_ curry__101_ =
+  match (curry__100_, curry__101_) with
   | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_type_constr _a1 _b1)) &&
         (eq_type_constr _a2 _b2)
@@ -262,14 +262,14 @@ and eq_type_constr curry__094_ curry__095_ =
       ((eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)) && (eq_ctyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_opt_type_constr curry__092_ curry__093_ =
-  match (curry__092_, curry__093_) with
+and eq_opt_type_constr curry__098_ curry__099_ =
+  match (curry__098_, curry__099_) with
   | (`Some (_a0,_a1),`Some (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_type_constr _a1 _b1)
   | (`None _a0,`None _b0) -> eq_loc _a0 _b0
   | _ -> false
-and eq_decl_param curry__090_ curry__091_ =
-  match (curry__090_, curry__091_) with
+and eq_decl_param curry__096_ curry__097_ =
+  match (curry__096_, curry__097_) with
   | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_position_flag _a1 _b1)) &&
         (eq_alident _a2 _b2)
@@ -278,8 +278,8 @@ and eq_decl_param curry__090_ curry__091_ =
   | (`Any _a0,`Any _b0) -> eq_loc _a0 _b0
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_decl_params curry__088_ curry__089_ =
-  match (curry__088_, curry__089_) with
+and eq_decl_params curry__094_ curry__095_ =
+  match (curry__094_, curry__095_) with
   | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_position_flag _a1 _b1)) &&
         (eq_alident _a2 _b2)
@@ -291,14 +291,14 @@ and eq_decl_params curry__088_ curry__089_ =
         (eq_decl_params _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_opt_decl_params curry__086_ curry__087_ =
-  match (curry__086_, curry__087_) with
+and eq_opt_decl_params curry__092_ curry__093_ =
+  match (curry__092_, curry__093_) with
   | (`Some (_a0,_a1),`Some (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_decl_params _a1 _b1)
   | (`None _a0,`None _b0) -> eq_loc _a0 _b0
   | _ -> false
-and eq_type_info curry__084_ curry__085_ =
-  match (curry__084_, curry__085_) with
+and eq_type_info curry__090_ curry__091_ =
+  match (curry__090_, curry__091_) with
   | (`TyMan (_a0,_a1,_a2,_a3),`TyMan (_b0,_b1,_b2,_b3)) ->
       (((eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)) && (eq_flag _a2 _b2)) &&
         (eq_type_repr _a3 _b3)
@@ -308,16 +308,16 @@ and eq_type_info curry__084_ curry__085_ =
       ((eq_loc _a0 _b0) && (eq_flag _a1 _b1)) && (eq_ctyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_type_repr curry__082_ curry__083_ =
-  match (curry__082_, curry__083_) with
+and eq_type_repr curry__088_ curry__089_ =
+  match (curry__088_, curry__089_) with
   | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_name_ctyp _a1 _b1)
   | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_or_ctyp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_name_ctyp curry__080_ curry__081_ =
-  match (curry__080_, curry__081_) with
+and eq_name_ctyp curry__086_ curry__087_ =
+  match (curry__086_, curry__087_) with
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_name_ctyp _a1 _b1)) && (eq_name_ctyp _a2 _b2)
   | (`RecCol (_a0,_a1,_a2,_a3),`RecCol (_b0,_b1,_b2,_b3)) ->
@@ -325,8 +325,8 @@ and eq_name_ctyp curry__080_ curry__081_ =
         (eq_flag _a3 _b3)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_or_ctyp curry__078_ curry__079_ =
-  match (curry__078_, curry__079_) with
+and eq_or_ctyp curry__084_ curry__085_ =
+  match (curry__084_, curry__085_) with
   | (`Bar (_a0,_a1,_a2),`Bar (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_or_ctyp _a1 _b1)) && (eq_or_ctyp _a2 _b2)
   | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
@@ -335,15 +335,15 @@ and eq_or_ctyp curry__078_ curry__079_ =
       ((eq_loc _a0 _b0) && (eq_auident _a1 _b1)) && (eq_ctyp _a2 _b2)
   | ((#auident as _a0),(#auident as _b0)) -> (eq_auident _a0 _b0 :>_)
   | _ -> false
-and eq_of_ctyp curry__076_ curry__077_ =
-  match (curry__076_, curry__077_) with
+and eq_of_ctyp curry__082_ curry__083_ =
+  match (curry__082_, curry__083_) with
   | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_ctyp _a2 _b2)
   | ((#vid' as _a0),(#vid' as _b0)) -> (eq_vid' _a0 _b0 :>_)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_pat curry__074_ curry__075_ =
-  match (curry__074_, curry__075_) with
+and eq_pat curry__080_ curry__081_ =
+  match (curry__080_, curry__081_) with
   | ((#vid as _a0),(#vid as _b0)) -> (eq_vid _a0 _b0 :>_)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_pat _a1 _b1)) && (eq_pat _a2 _b2)
@@ -389,8 +389,8 @@ and eq_pat curry__074_ curry__075_ =
   | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_auident _a1 _b1)) && (eq_ctyp _a2 _b2)
   | _ -> false
-and eq_rec_pat curry__072_ curry__073_ =
-  match (curry__072_, curry__073_) with
+and eq_rec_pat curry__078_ curry__079_ =
+  match (curry__078_, curry__079_) with
   | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_pat _a2 _b2)
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -398,8 +398,8 @@ and eq_rec_pat curry__072_ curry__073_ =
   | ((#any as _a0),(#any as _b0)) -> (eq_any _a0 _b0 :>_)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_exp curry__070_ curry__071_ =
-  match (curry__070_, curry__071_) with
+and eq_exp curry__076_ curry__077_ =
+  match (curry__076_, curry__077_) with
   | ((#vid as _a0),(#vid as _b0)) -> (eq_vid _a0 _b0 :>_)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_exp _a1 _b1)) && (eq_exp _a2 _b2)
@@ -496,8 +496,8 @@ and eq_exp curry__070_ curry__071_ =
   | (`Package_exp (_a0,_a1),`Package_exp (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_mexp _a1 _b1)
   | _ -> false
-and eq_rec_exp curry__068_ curry__069_ =
-  match (curry__068_, curry__069_) with
+and eq_rec_exp curry__074_ curry__075_ =
+  match (curry__074_, curry__075_) with
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_rec_exp _a1 _b1)) && (eq_rec_exp _a2 _b2)
   | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
@@ -505,8 +505,8 @@ and eq_rec_exp curry__068_ curry__069_ =
   | ((#any as _a0),(#any as _b0)) -> (eq_any _a0 _b0 :>_)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_mtyp curry__066_ curry__067_ =
-  match (curry__066_, curry__067_) with
+and eq_mtyp curry__072_ curry__073_ =
+  match (curry__072_, curry__073_) with
   | ((#ident' as _a0),(#ident' as _b0)) -> (eq_ident' _a0 _b0 :>_)
   | (`Sig (_a0,_a1),`Sig (_b0,_b1)) -> (eq_loc _a0 _b0) && (eq_sigi _a1 _b1)
   | (`SigEnd _a0,`SigEnd _b0) -> eq_loc _a0 _b0
@@ -519,8 +519,8 @@ and eq_mtyp curry__066_ curry__067_ =
       (eq_loc _a0 _b0) && (eq_mexp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_sigi curry__064_ curry__065_ =
-  match (curry__064_, curry__065_) with
+and eq_sigi curry__070_ curry__071_ =
+  match (curry__070_, curry__071_) with
   | (`Val (_a0,_a1,_a2),`Val (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_alident _a1 _b1)) && (eq_ctyp _a2 _b2)
   | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
@@ -554,8 +554,8 @@ and eq_sigi curry__064_ curry__065_ =
       (eq_loc _a0 _b0) && (eq_mbind _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_mbind curry__062_ curry__063_ =
-  match (curry__062_, curry__063_) with
+and eq_mbind curry__068_ curry__069_ =
+  match (curry__068_, curry__069_) with
   | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_mbind _a1 _b1)) && (eq_mbind _a2 _b2)
   | (`ModuleBind (_a0,_a1,_a2,_a3),`ModuleBind (_b0,_b1,_b2,_b3)) ->
@@ -565,8 +565,8 @@ and eq_mbind curry__062_ curry__063_ =
       ((eq_loc _a0 _b0) && (eq_auident _a1 _b1)) && (eq_mtyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_constr curry__060_ curry__061_ =
-  match (curry__060_, curry__061_) with
+and eq_constr curry__066_ curry__067_ =
+  match (curry__066_, curry__067_) with
   | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)) && (eq_ctyp _a2 _b2)
   | (`ModuleEq (_a0,_a1,_a2),`ModuleEq (_b0,_b1,_b2)) ->
@@ -581,16 +581,16 @@ and eq_constr curry__060_ curry__061_ =
       ((eq_loc _a0 _b0) && (eq_constr _a1 _b1)) && (eq_constr _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_bind curry__058_ curry__059_ =
-  match (curry__058_, curry__059_) with
+and eq_bind curry__064_ curry__065_ =
+  match (curry__064_, curry__065_) with
   | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_bind _a1 _b1)) && (eq_bind _a2 _b2)
   | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_pat _a1 _b1)) && (eq_exp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_case curry__056_ curry__057_ =
-  match (curry__056_, curry__057_) with
+and eq_case curry__062_ curry__063_ =
+  match (curry__062_, curry__063_) with
   | (`Bar (_a0,_a1,_a2),`Bar (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_case _a1 _b1)) && (eq_case _a2 _b2)
   | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
@@ -600,8 +600,8 @@ and eq_case curry__056_ curry__057_ =
         (eq_exp _a3 _b3)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_mexp curry__054_ curry__055_ =
-  match (curry__054_, curry__055_) with
+and eq_mexp curry__060_ curry__061_ =
+  match (curry__060_, curry__061_) with
   | ((#vid' as _a0),(#vid' as _b0)) -> (eq_vid' _a0 _b0 :>_)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_mexp _a1 _b1)) && (eq_mexp _a2 _b2)
@@ -617,8 +617,8 @@ and eq_mexp curry__054_ curry__055_ =
       (eq_loc _a0 _b0) && (eq_exp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_stru curry__052_ curry__053_ =
-  match (curry__052_, curry__053_) with
+and eq_stru curry__058_ curry__059_ =
+  match (curry__058_, curry__059_) with
   | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
       (eq_loc _a0 _b0) && (eq_cldecl _a1 _b1)
   | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -654,8 +654,8 @@ and eq_stru curry__052_ curry__053_ =
       ((eq_loc _a0 _b0) && (eq_flag _a1 _b1)) && (eq_bind _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_cltdecl curry__050_ curry__051_ =
-  match (curry__050_, curry__051_) with
+and eq_cltdecl curry__056_ curry__057_ =
+  match (curry__056_, curry__057_) with
   | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_cltdecl _a1 _b1)) && (eq_cltdecl _a2 _b2)
   | (`CtDecl (_a0,_a1,_a2,_a3,_a4),`CtDecl (_b0,_b1,_b2,_b3,_b4)) ->
@@ -667,8 +667,8 @@ and eq_cltdecl curry__050_ curry__051_ =
         (eq_cltyp _a3 _b3)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_cltyp curry__048_ curry__049_ =
-  match (curry__048_, curry__049_) with
+and eq_cltyp curry__054_ curry__055_ =
+  match (curry__054_, curry__055_) with
   | ((#vid' as _a0),(#vid' as _b0)) -> (eq_vid' _a0 _b0 :>_)
   | (`ClApply (_a0,_a1,_a2),`ClApply (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_type_parameters _a2 _b2)
@@ -685,8 +685,8 @@ and eq_cltyp curry__048_ curry__049_ =
       ((eq_loc _a0 _b0) && (eq_cltyp _a1 _b1)) && (eq_cltyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_clsigi curry__046_ curry__047_ =
-  match (curry__046_, curry__047_) with
+and eq_clsigi curry__052_ curry__053_ =
+  match (curry__052_, curry__053_) with
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_clsigi _a1 _b1)) && (eq_clsigi _a2 _b2)
   | (`SigInherit (_a0,_a1),`SigInherit (_b0,_b1)) ->
@@ -705,8 +705,8 @@ and eq_clsigi curry__046_ curry__047_ =
       ((eq_loc _a0 _b0) && (eq_ctyp _a1 _b1)) && (eq_ctyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_cldecl curry__044_ curry__045_ =
-  match (curry__044_, curry__045_) with
+and eq_cldecl curry__050_ curry__051_ =
+  match (curry__050_, curry__051_) with
   | (`ClDecl (_a0,_a1,_a2,_a3,_a4),`ClDecl (_b0,_b1,_b2,_b3,_b4)) ->
       ((((eq_loc _a0 _b0) && (eq_flag _a1 _b1)) && (eq_ident _a2 _b2)) &&
          (eq_type_parameters _a3 _b3))
@@ -718,8 +718,8 @@ and eq_cldecl curry__044_ curry__045_ =
       ((eq_loc _a0 _b0) && (eq_cldecl _a1 _b1)) && (eq_cldecl _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_clexp curry__042_ curry__043_ =
-  match (curry__042_, curry__043_) with
+and eq_clexp curry__048_ curry__049_ =
+  match (curry__048_, curry__049_) with
   | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_clexp _a1 _b1)) && (eq_exp _a2 _b2)
   | ((#vid' as _a0),(#vid' as _b0)) -> (eq_vid' _a0 _b0 :>_)
@@ -741,8 +741,8 @@ and eq_clexp curry__042_ curry__043_ =
       ((eq_loc _a0 _b0) && (eq_clexp _a1 _b1)) && (eq_cltyp _a2 _b2)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-and eq_clfield curry__040_ curry__041_ =
-  match (curry__040_, curry__041_) with
+and eq_clfield curry__046_ curry__047_ =
+  match (curry__046_, curry__047_) with
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_clfield _a1 _b1)) && (eq_clfield _a2 _b2)
   | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
@@ -775,8 +775,8 @@ and eq_clfield curry__040_ curry__041_ =
       (eq_loc _a0 _b0) && (eq_exp _a1 _b1)
   | ((#ant as _a0),(#ant as _b0)) -> (eq_ant _a0 _b0 :>_)
   | _ -> false
-let rec eq_ep curry__108_ curry__109_ =
-  match (curry__108_, curry__109_) with
+let rec eq_ep curry__114_ curry__115_ =
+  match (curry__114_, curry__115_) with
   | ((#vid as _a0),(#vid as _b0)) -> (eq_vid _a0 _b0 :>_)
   | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_ep _a1 _b1)) && (eq_ep _a2 _b2)
@@ -798,8 +798,8 @@ let rec eq_ep curry__108_ curry__109_ =
       (eq_loc _a0 _b0) && (eq_rec_bind _a1 _b1)
   | ((#literal as _a0),(#literal as _b0)) -> (eq_literal _a0 _b0 :>_)
   | _ -> false
-and eq_rec_bind curry__106_ curry__107_ =
-  match (curry__106_, curry__107_) with
+and eq_rec_bind curry__112_ curry__113_ =
+  match (curry__112_, curry__113_) with
   | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
       ((eq_loc _a0 _b0) && (eq_vid _a1 _b1)) && (eq_ep _a2 _b2)
   | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->

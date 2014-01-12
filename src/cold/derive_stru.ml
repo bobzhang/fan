@@ -71,7 +71,7 @@ module Make(U:S) =
          | None  ->
              failwithf "Generator %s can not handle record" plugin_name
          | Some x -> x)
-    let mf_prefix = "mf_"
+    let mf_prefix = Gensym.fresh ~prefix:"_mf" ()
     let rec exp_of_tuple_ctyp (ty : ctyp) =
       (match ty with
        | `Par t ->
@@ -215,90 +215,69 @@ module Make(U:S) =
              else res in
        ((reduce_data_ctors ty) |> List.rev) |> (Expn_util.currying ~arity) : 
       exp )
-    let fun_of_tydcl result tydcl =
-      (match (tydcl : decl ) with
-       | `TyDcl (_,tyvars,ctyp,_constraints) ->
-           (match ctyp with
-            | `TyMan (_,_,repr)|`TyRepr (_,repr) ->
-                (match repr with
-                 | `Record t ->
-                     let cols = Ctyp.list_of_record t in
-                     let pat = (Ctyp.mk_record ~arity cols :>pat) in
-                     let info =
-                       List.mapi
-                         (fun i  x  ->
-                            match (x : Ctyp.col ) with
-                            | { label; is_mutable; ty } ->
-                                {
-                                  Ctyp.info = (mapi_exp i ty);
-                                  label;
-                                  is_mutable
-                                }) cols in
-                     [(`Case
-                         ((pat :>Astfn.pat),
-                           (Lazy.force mk_record info :>Astfn.exp)) :>
-                     Astfn.case)] |> (Expn_util.currying ~arity)
-                 | `Sum ctyp -> exp_of_or_ctyp ctyp
-                 | t ->
-                     failwith
-                       ("Derive_stru.Make.fun_of_tydcl" ^
-                          (Astfn_print.dump_type_repr t)))
-            | `TyEq (_,ctyp) ->
-                (match ctyp with
-                 | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
-                     Expn_util.eta_expand (apply_args (exp_of_ctyp x) names)
-                       arity
-                 | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
-                     exp_of_poly_variant result t
-                 | t ->
-                     failwith
-                       ("Derive_stru.Make.fun_of_tydcl" ^
-                          (Astfn_print.dump_ctyp t)))
-            | t ->
-                failwith
-                  ("Derive_stru.Make.fun_of_tydcl" ^
-                     (Astfn_print.dump_type_info t)))
-             |> (mk_prefix tyvars)
-       | t ->
-           failwith
-             ("Derive_stru.Make.fun_of_tydcl" ^ (Astfn_print.dump_decl t)) : 
-      exp )
-    let bind_of_tydcl tydcl =
-      let (name,_len) =
-        match tydcl with
-        | `TyDcl (`Lid name,tyvars,_,_) ->
-            (name,
-              ((match tyvars with
-                | `None -> 0
-                | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
-        | tydcl ->
-            failwith
-              ("Derive_stru.Make.bind_of_tydcl" ^
-                 (Astfn_print.dump_decl tydcl)) in
-      let fname = trans_to_id p.id name in
-      let (annot,result) =
-        match p.annot with
-        | None  -> (None, (`Any :>Astfn.ctyp))
-        | Some (f : string -> (ctyp* ctyp)) ->
-            let (a,b) = f name in ((Some a), b) in
-      let fun_exp =
-        if not @@ ((function | `TyAbstr _ -> true | _ -> false) tydcl)
-        then fun_of_tydcl result tydcl
-        else
-          ((Format.eprintf
-              "Warning: %s as a abstract type no structure generated\n")
-             @@ (Astfn_print.dump_decl tydcl);
-           (`App
-              ((`Lid "failwith"),
-                (`Str "Abstract data type not implemented")) :>Astfn.exp)) in
-      match annot with
-      | None  ->
-          (`Bind ((fname :>Astfn.pat), (fun_exp :>Astfn.exp)) :>Astfn.bind)
-      | Some x ->
-          (`Bind
-             ((fname :>Astfn.pat),
-               (`Constraint ((fun_exp :>Astfn.exp), (x :>Astfn.ctyp)))) :>
-          Astfn.bind)
+    let bind_of_decl (decl : decl) =
+      match (decl : decl ) with
+      | `TyDcl (`Lid name,tyvars,ctyp,_constraints) ->
+          let fname = trans_to_id p.id name in
+          let (annot,result) =
+            match p.annot with
+            | None  -> (None, (`Any :>Astfn.ctyp))
+            | Some (f : string -> (ctyp* ctyp)) ->
+                let (a,b) = f name in ((Some a), b) in
+          let fun_exp =
+            (match ctyp with
+             | `TyMan (_,_,repr)|`TyRepr (_,repr) ->
+                 (match repr with
+                  | `Record t ->
+                      let cols = Ctyp.list_of_record t in
+                      let pat = (Ctyp.mk_record ~arity cols :>pat) in
+                      let info =
+                        List.mapi
+                          (fun i  x  ->
+                             match (x : Ctyp.col ) with
+                             | { label; is_mutable; ty } ->
+                                 {
+                                   Ctyp.info = (mapi_exp i ty);
+                                   label;
+                                   is_mutable
+                                 }) cols in
+                      [(`Case
+                          ((pat :>Astfn.pat),
+                            (Lazy.force mk_record info :>Astfn.exp)) :>
+                      Astfn.case)] |> (Expn_util.currying ~arity)
+                  | `Sum ctyp -> exp_of_or_ctyp ctyp
+                  | t ->
+                      failwith
+                        ("Derive_stru.Make.bind_of_decl.fun_exp" ^
+                           (Astfn_print.dump_type_repr t)))
+             | `TyEq (_,ctyp) ->
+                 (match ctyp with
+                  | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
+                      Expn_util.eta_expand (apply_args (exp_of_ctyp x) names)
+                        arity
+                  | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
+                      exp_of_poly_variant result t
+                  | t ->
+                      failwith
+                        ("Derive_stru.Make.bind_of_decl.fun_exp" ^
+                           (Astfn_print.dump_ctyp t)))
+             | t ->
+                 failwith
+                   ("Derive_stru.Make.bind_of_decl.fun_exp" ^
+                      (Astfn_print.dump_type_info t)))
+              |> (mk_prefix tyvars) in
+          (match annot with
+           | None  ->
+               (`Bind ((fname :>Astfn.pat), (fun_exp :>Astfn.exp)) :>
+               Astfn.bind)
+           | Some x ->
+               (`Bind
+                  ((fname :>Astfn.pat),
+                    (`Constraint ((fun_exp :>Astfn.exp), (x :>Astfn.ctyp)))) :>
+               Astfn.bind))
+      | t ->
+          failwith
+            ("Derive_stru.Make.bind_of_decl" ^ (Astfn_print.dump_decl t))
     let stru_of_mtyps (lst : Sigs_util.mtyps) =
       (let fs (ty : Sigs_util.types) =
          (match ty with
@@ -311,13 +290,13 @@ module Make(U:S) =
                        ~compose:(fun x  y  ->
                                    (`And ((x :>Astfn.bind), (y :>Astfn.bind)) :>
                                    Astfn.bind))
-                       ~f:(fun (_name,ty)  -> bind_of_tydcl ty) xs in
+                       ~f:(fun (_name,ty)  -> bind_of_decl ty) xs in
                    Some
                      (`Value (`Positive, (bind :>Astfn.bind)) :>Astfn.stru))
           | Single (_,tydcl) ->
               let flag =
                 if Ctyp.is_recursive tydcl then `Positive else `Negative in
-              let bind = bind_of_tydcl tydcl in
+              let bind = bind_of_decl tydcl in
               Some
                 (`Value ((flag :>Astfn.flag), (bind :>Astfn.bind)) :>
                 Astfn.stru) : stru option ) in

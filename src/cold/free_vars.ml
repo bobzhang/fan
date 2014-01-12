@@ -1,6 +1,6 @@
 open Astf
 class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
-  object (_this__003_ : 'this_type__004_)
+  object (_this__009_ : 'this_type__010_)
     inherit  Astf_fold.fold as super
     val acc = init
     method acc : 'accu= acc
@@ -20,7 +20,7 @@ let rec fold_bind_vars f bi acc =
   | `Ant _ -> assert false
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
   Setf.String.empty) free_init =
-  object (o : 'this_type__002_)
+  object (o : 'this_type__008_)
     inherit  Astf_fold.fold as super
     val free = (free_init : 'accu )
     val env = (env_init : Setf.String.t )

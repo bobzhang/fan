@@ -83,12 +83,7 @@ module Make(U:S) : sig
    *)    
   val exp_of_poly_variant : ctyp -> row_field -> exp
 
-  (** 1. idem
-      
-   *)
-  val fun_of_tydcl : ctyp -> decl -> exp
-
-  val bind_of_tydcl : decl -> bind
+  val bind_of_decl : decl -> bind
 
   val stru_of_mtyps : Sigs_util.mtyps -> stru option
 

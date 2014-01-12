@@ -33,7 +33,7 @@ let f (loc : Locf.t) meta content =
     match meta with
     | None  -> Locf.failf loc "cexp module name must be specified via \\@"
     | Some x -> String.capitalize x in
-  let tmp_entry__002_ = Gramf.get_levels exp in
+  let tmp_entry__008_ = Gramf.get_levels exp in
   try
     Gramf.extend_single
       ({
@@ -108,8 +108,8 @@ let f (loc : Locf.t) meta content =
             } : Gramf.olevel )
        } : _ Gramf.single_extend_statement );
     (let result = Gramlib.parse_string_eoi exp ~loc content in
-     Gramf.fresh_with_levels exp tmp_entry__002_; result)
-  with | x -> (Gramf.fresh_with_levels exp tmp_entry__002_; raise x)
+     Gramf.fresh_with_levels exp tmp_entry__008_; result)
+  with | x -> (Gramf.fresh_with_levels exp tmp_entry__008_; raise x)
 let f2 (_loc : Locf.t) _meta content =
   let res = f _loc _meta content in
   (`StExp (_loc, (res :>Astf.exp)) :>Astf.stru)

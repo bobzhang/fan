@@ -1,13 +1,13 @@
 open StdFan
 open Astf
 class fold =
-  object (self : 'this_type__003_)
+  object (self : 'this_type__009_)
     inherit  foldbase
-    method loc : loc -> 'this_type__003_=
-      fun eta__002_  -> self#locf_t eta__002_
-    method ant : ant -> 'this_type__003_=
+    method loc : loc -> 'this_type__009_=
+      fun eta__008_  -> self#locf_t eta__008_
+    method ant : ant -> 'this_type__009_=
       fun (`Ant (_a0,_a1))  -> let self = self#loc _a0 in self#tokenf_ant _a1
-    method literal : literal -> 'this_type__003_=
+    method literal : literal -> 'this_type__009_=
       function
       | `Chr (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Int (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
@@ -18,43 +18,43 @@ class fold =
       | `Str (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Bool (_a0,_a1) -> let self = self#loc _a0 in self#bool _a1
       | `Unit _a0 -> self#loc _a0
-    method flag : flag -> 'this_type__003_=
+    method flag : flag -> 'this_type__009_=
       function
       | `Positive _a0 -> self#loc _a0
       | `Negative _a0 -> self#loc _a0
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method position_flag : position_flag -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method position_flag : position_flag -> 'this_type__009_=
       function
       | `Positive _a0 -> self#loc _a0
       | `Negative _a0 -> self#loc _a0
       | `Normal _a0 -> self#loc _a0
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method strings : strings -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method strings : strings -> 'this_type__009_=
       function
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#strings _a1 in self#strings _a2
       | `Str (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method lident : lident -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method lident : lident -> 'this_type__009_=
       fun (`Lid (_a0,_a1))  -> let self = self#loc _a0 in self#string _a1
-    method alident : alident -> 'this_type__003_=
+    method alident : alident -> 'this_type__009_=
       function
       | `Lid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method auident : auident -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method auident : auident -> 'this_type__009_=
       function
       | `Uid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method aident : aident -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method aident : aident -> 'this_type__009_=
       function
-      | #alident as _a0 -> (self#alident _a0 :>'this_type__003_)
-      | #auident as _a0 -> (self#auident _a0 :>'this_type__003_)
-    method astring : astring -> 'this_type__003_=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__009_)
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__009_)
+    method astring : astring -> 'this_type__009_=
       function
       | `C (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method uident : uident -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method uident : uident -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -62,8 +62,8 @@ class fold =
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#uident _a1 in self#uident _a2
-      | #auident as _a0 -> (self#auident _a0 :>'this_type__003_)
-    method ident : ident -> 'this_type__003_=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__009_)
+    method ident : ident -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -71,9 +71,9 @@ class fold =
       | `Apply (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ident _a1 in self#ident _a2
-      | #alident as _a0 -> (self#alident _a0 :>'this_type__003_)
-      | #auident as _a0 -> (self#auident _a0 :>'this_type__003_)
-    method ident' : ident' -> 'this_type__003_=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__009_)
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__009_)
+    method ident' : ident' -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -83,38 +83,38 @@ class fold =
           let self = self#ident _a1 in self#ident _a2
       | `Lid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Uid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-    method vid : vid -> 'this_type__003_=
+    method vid : vid -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#vid _a2
       | `Lid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Uid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method vid' : vid' -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method vid' : vid' -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#vid _a2
       | `Lid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Uid (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-    method dupath : dupath -> 'this_type__003_=
+    method dupath : dupath -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#dupath _a1 in self#dupath _a2
-      | #auident as _a0 -> (self#auident _a0 :>'this_type__003_)
-    method dlpath : dlpath -> 'this_type__003_=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__009_)
+    method dlpath : dlpath -> 'this_type__009_=
       function
       | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#dupath _a1 in self#alident _a2
-      | #alident as _a0 -> (self#alident _a0 :>'this_type__003_)
-    method any : any -> 'this_type__003_= fun (`Any _a0)  -> self#loc _a0
-    method ctyp : ctyp -> 'this_type__003_=
+      | #alident as _a0 -> (self#alident _a0 :>'this_type__009_)
+    method any : any -> 'this_type__009_= fun (`Any _a0)  -> self#loc _a0
+    method ctyp : ctyp -> 'this_type__009_=
       function
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#alident _a2
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -128,7 +128,7 @@ class fold =
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#ctyp _a2
-      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__003_)
+      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__009_)
       | `TyObj (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#flag _a2
@@ -159,17 +159,17 @@ class fold =
           let self = self#loc _a0 in
           let self = self#row_field _a1 in self#tag_names _a2
       | `Package (_a0,_a1) -> let self = self#loc _a0 in self#mtyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method type_parameters : type_parameters -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method type_parameters : type_parameters -> 'this_type__009_=
       function
       | `Com (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#type_parameters _a1 in self#type_parameters _a2
       | `Ctyp (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method row_field : row_field -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method row_field : row_field -> 'this_type__009_=
       function
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
       | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#row_field _a1 in self#row_field _a2
@@ -178,14 +178,14 @@ class fold =
           let self = self#loc _a0 in
           let self = self#astring _a1 in self#ctyp _a2
       | `Ctyp (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
-    method tag_names : tag_names -> 'this_type__003_=
+    method tag_names : tag_names -> 'this_type__009_=
       function
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#tag_names _a1 in self#tag_names _a2
       | `TyVrn (_a0,_a1) -> let self = self#loc _a0 in self#astring _a1
-    method decl : decl -> 'this_type__003_=
+    method decl : decl -> 'this_type__009_=
       function
       | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
@@ -199,8 +199,8 @@ class fold =
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#decl _a1 in self#decl _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method type_constr : type_constr -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method type_constr : type_constr -> 'this_type__009_=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -208,12 +208,12 @@ class fold =
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method opt_type_constr : opt_type_constr -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method opt_type_constr : opt_type_constr -> 'this_type__009_=
       function
       | `Some (_a0,_a1) -> let self = self#loc _a0 in self#type_constr _a1
       | `None _a0 -> self#loc _a0
-    method decl_param : decl_param -> 'this_type__003_=
+    method decl_param : decl_param -> 'this_type__009_=
       function
       | `Quote (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -221,8 +221,8 @@ class fold =
       | `QuoteAny (_a0,_a1) ->
           let self = self#loc _a0 in self#position_flag _a1
       | `Any _a0 -> self#loc _a0
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method decl_params : decl_params -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method decl_params : decl_params -> 'this_type__009_=
       function
       | `Quote (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -233,12 +233,12 @@ class fold =
       | `Com (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#decl_params _a1 in self#decl_params _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method opt_decl_params : opt_decl_params -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method opt_decl_params : opt_decl_params -> 'this_type__009_=
       function
       | `Some (_a0,_a1) -> let self = self#loc _a0 in self#decl_params _a1
       | `None _a0 -> self#loc _a0
-    method type_info : type_info -> 'this_type__003_=
+    method type_info : type_info -> 'this_type__009_=
       function
       | `TyMan (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -250,13 +250,13 @@ class fold =
       | `TyEq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#flag _a1 in self#ctyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method type_repr : type_repr -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method type_repr : type_repr -> 'this_type__009_=
       function
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `Sum (_a0,_a1) -> let self = self#loc _a0 in self#or_ctyp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method name_ctyp : name_ctyp -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method name_ctyp : name_ctyp -> 'this_type__009_=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -265,8 +265,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#ctyp _a2 in self#flag _a3
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method or_ctyp : or_ctyp -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method or_ctyp : or_ctyp -> 'this_type__009_=
       function
       | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -277,16 +277,16 @@ class fold =
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#ctyp _a2
-      | #auident as _a0 -> (self#auident _a0 :>'this_type__003_)
-    method of_ctyp : of_ctyp -> 'this_type__003_=
+      | #auident as _a0 -> (self#auident _a0 :>'this_type__009_)
+    method of_ctyp : of_ctyp -> 'this_type__009_=
       function
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#ctyp _a2
-      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__003_)
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method pat : pat -> 'this_type__003_=
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__009_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method pat : pat -> 'this_type__009_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'this_type__003_)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Vrn (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
@@ -295,9 +295,9 @@ class fold =
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Par (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_pat _a1
-      | #literal as _a0 -> (self#literal _a0 :>'this_type__003_)
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__009_)
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#pat _a1 in self#alident _a2
@@ -328,18 +328,18 @@ class fold =
       | `ModuleConstraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#ctyp _a2
-    method rec_pat : rec_pat -> 'this_type__003_=
+    method rec_pat : rec_pat -> 'this_type__009_=
       function
       | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#pat _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_pat _a1 in self#rec_pat _a2
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method exp : exp -> 'this_type__003_=
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method exp : exp -> 'this_type__009_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'this_type__003_)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Vrn (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
@@ -348,9 +348,9 @@ class fold =
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Par (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_exp _a1
-      | #literal as _a0 -> (self#literal _a0 :>'this_type__003_)
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__009_)
       | `RecordWith (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_exp _a1 in self#exp _a2
@@ -433,18 +433,18 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#exp _a2
       | `Package_exp (_a0,_a1) -> let self = self#loc _a0 in self#mexp _a1
-    method rec_exp : rec_exp -> 'this_type__003_=
+    method rec_exp : rec_exp -> 'this_type__009_=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_exp _a1 in self#rec_exp _a2
       | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#exp _a2
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method mtyp : mtyp -> 'this_type__003_=
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method mtyp : mtyp -> 'this_type__009_=
       function
-      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__003_)
+      | #ident' as _a0 -> (self#ident' _a0 :>'this_type__009_)
       | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sigi _a1
       | `SigEnd _a0 -> self#loc _a0
       | `Functor (_a0,_a1,_a2,_a3) ->
@@ -455,8 +455,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#mtyp _a1 in self#constr _a2
       | `ModuleTypeOf (_a0,_a1) -> let self = self#loc _a0 in self#mexp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method sigi : sigi -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method sigi : sigi -> 'this_type__009_=
       function
       | `Val (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -490,8 +490,8 @@ class fold =
           let self = self#flag _a1 in self#ident _a2
       | `Include (_a0,_a1) -> let self = self#loc _a0 in self#mtyp _a1
       | `RecModule (_a0,_a1) -> let self = self#loc _a0 in self#mbind _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method mbind : mbind -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method mbind : mbind -> 'this_type__009_=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -503,8 +503,8 @@ class fold =
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method constr : constr -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method constr : constr -> 'this_type__009_=
       function
       | `TypeEq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -524,16 +524,16 @@ class fold =
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#constr _a1 in self#constr _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method bind : bind -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method bind : bind -> 'this_type__009_=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#bind _a1 in self#bind _a2
       | `Bind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method case : case -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method case : case -> 'this_type__009_=
       function
       | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -543,10 +543,10 @@ class fold =
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#pat _a1 in let self = self#exp _a2 in self#exp _a3
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method mexp : mexp -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method mexp : mexp -> 'this_type__009_=
       function
-      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__003_)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#mexp _a1 in self#mexp _a2
@@ -560,8 +560,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#mexp _a1 in self#mtyp _a2
       | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method stru : stru -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method stru : stru -> 'this_type__009_=
       function
       | `Class (_a0,_a1) -> let self = self#loc _a0 in self#cldecl _a1
       | `ClassType (_a0,_a1) -> let self = self#loc _a0 in self#cltdecl _a1
@@ -597,8 +597,8 @@ class fold =
       | `Value (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#flag _a1 in self#bind _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method cltdecl : cltdecl -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method cltdecl : cltdecl -> 'this_type__009_=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -612,10 +612,10 @@ class fold =
           let self = self#loc _a0 in
           let self = self#flag _a1 in
           let self = self#ident _a2 in self#cltyp _a3
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method cltyp : cltyp -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method cltyp : cltyp -> 'this_type__009_=
       function
-      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__003_)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__009_)
       | `ClApply (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#vid _a1 in self#type_parameters _a2
@@ -631,8 +631,8 @@ class fold =
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#cltyp _a1 in self#cltyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method clsigi : clsigi -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method clsigi : clsigi -> 'this_type__009_=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -654,8 +654,8 @@ class fold =
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method cldecl : cldecl -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method cldecl : cldecl -> 'this_type__009_=
       function
       | `ClDecl (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
@@ -669,13 +669,13 @@ class fold =
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#cldecl _a1 in self#cldecl _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method clexp : clexp -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method clexp : clexp -> 'this_type__009_=
       function
       | `CeApp (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#clexp _a1 in self#exp _a2
-      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__003_)
+      | #vid' as _a0 -> (self#vid' _a0 :>'this_type__009_)
       | `ClApply (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#vid _a1 in self#type_parameters _a2
@@ -695,8 +695,8 @@ class fold =
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#clexp _a1 in self#cltyp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method clfield : clfield -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method clfield : clfield -> 'this_type__009_=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -736,10 +736,10 @@ class fold =
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method ep : ep -> 'this_type__003_=
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method ep : ep -> 'this_type__009_=
       function
-      | #vid as _a0 -> (self#vid _a0 :>'this_type__003_)
+      | #vid as _a0 -> (self#vid _a0 :>'this_type__009_)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
       | `Vrn (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
@@ -750,20 +750,20 @@ class fold =
       | `Par (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#ep _a1 in self#ctyp _a2
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_bind _a1
-      | #literal as _a0 -> (self#literal _a0 :>'this_type__003_)
-    method rec_bind : rec_bind -> 'this_type__003_=
+      | #literal as _a0 -> (self#literal _a0 :>'this_type__009_)
+    method rec_bind : rec_bind -> 'this_type__009_=
       function
       | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#vid _a1 in self#ep _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_bind _a1 in self#rec_bind _a2
-      | #any as _a0 -> (self#any _a0 :>'this_type__003_)
-      | #ant as _a0 -> (self#ant _a0 :>'this_type__003_)
-    method tokenf_ant : Tokenf.ant -> 'this_type__003_= self#unknown
-    method locf_t : Locf.t -> 'this_type__003_= self#unknown
+      | #any as _a0 -> (self#any _a0 :>'this_type__009_)
+      | #ant as _a0 -> (self#ant _a0 :>'this_type__009_)
+    method tokenf_ant : Tokenf.ant -> 'this_type__009_= self#unknown
+    method locf_t : Locf.t -> 'this_type__009_= self#unknown
   end
