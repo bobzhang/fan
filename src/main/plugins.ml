@@ -29,11 +29,26 @@ let mk_record cols =
 (** it can exist without prefix only when you do not need
     any runtime -- 
  *)             
-let gen_eqobj = 
-  Derive_obj.mk ~kind:Iter  ~mk_record
-     ~base:"eqbase" ~class_name:"eq"
-     ~mk_variant:mk_variant
-     ~arity:2 ~default:%exp-{false} () ;;
+let gen_eqobj =
+  Derive_obj.register {
+  arity=2;
+  names=[];
+  plugin_name= "OEq";
+  mk_record = Some mk_record;
+  mk_variant = Some mk_variant;
+  default = Some (Atom %exp-{false});
+  excludes = [];
+  kind = Iter;
+  base = "eqbase";
+  class_name = "eq";
+ }
+  (*       List.iter Typehook.register *)
+  (*   [ ("OEq", some gen_eqobj ) ] *)
+
+  (* Derive_obj.mk ~kind:Iter  ~mk_record *)
+  (*    ~base:"eqbase" ~class_name:"eq" *)
+  (*    ~mk_variant:mk_variant *)
+  (*    ~arity:2 ~default:%exp-{false} () ;; *)
 
 let some f  = fun x -> Some (f x)
 
@@ -101,8 +116,6 @@ let _ = begin
     ]
   };
    
-    List.iter Typehook.register
-    [ ("OEq", some gen_eqobj ) ]
 end
 
 
@@ -113,7 +126,7 @@ end
 
 
 (* [Fold2] unused *)
-let (gen_fold,gen_fold2) = 
+let (* (gen_fold,gen_fold2) *)() = 
   let mk_variant _cons params = 
     params
     |> List.map (fun (x:Ctyp.ty_info)  -> x.info_exp)
@@ -123,19 +136,45 @@ let (gen_fold,gen_fold2) =
             Listf.reduce_right (fun v acc -> %exp-{ let self = $v in $acc }) ls ) in
   let mk_record cols =
     cols |> List.map (fun  (x:Ctyp.record_col) -> x.info  )
-         |> mk_variant None in 
-  (Derive_obj.mk ~kind:Fold ~mk_record
-     ~base:"foldbase" ~class_name:"fold" ~mk_variant (),
-   Derive_obj.mk ~kind:Fold  ~mk_record
-     ~base:"foldbase2" ~class_name:"fold2"
-     ~mk_variant
-     ~arity:2 ~default:%exp-{invalid_arg "fold2 failure" } () )
-
-let _ = 
-  begin
-    List.iter Typehook.register
-      [("Fold",some gen_fold); ("Fold2",some gen_fold2);]
+         |> mk_variant None in
+  begin 
+    Derive_obj.register {
+    kind = Fold;
+    mk_record = Some mk_record;
+    mk_variant = Some mk_variant;
+    default = None;
+    excludes = [];
+    base = "foldbase";
+    class_name = "fold";
+    plugin_name = "FOld" ;
+    arity = 1;
+    names = [];
+    };
+    Derive_obj.register {
+    kind = Fold;
+    mk_record = Some mk_record;
+    mk_variant = Some mk_variant;
+    default = Some (Atom %exp-{invalid_arg "fold2 failure" });
+    excludes = [];
+    base = "foldbase";
+    class_name = "fold";
+    plugin_name = "FOld2" ;
+    arity = 2;
+    names = []; 
+    }
   end
+  (* (Derive_obj.mk ~kind:Fold ~mk_record *)
+  (*    ~base:"foldbase" ~class_name:"fold" ~mk_variant (), *)
+  (*  Derive_obj.mk ~kind:Fold  ~mk_record *)
+  (*    ~base:"foldbase2" ~class_name:"fold2" *)
+  (*    ~mk_variant *)
+  (*    ~arity:2 ~default:%exp-{invalid_arg "fold2 failure" } () ) *)
+
+(* let _ =  *)
+(*   begin *)
+(*     List.iter Typehook.register *)
+(*       [("Fold",some gen_fold); ("Fold2",some gen_fold2);] *)
+(*   end *)
 
 
 (************************************) 
@@ -146,7 +185,7 @@ let _ =
    [self#unkown] -- or more compatible way
    dumping ast level do the transformation [__Tokenf_ant_]
  *)
-let (gen_map,gen_map2) = 
+let () = 
   let mk_variant cons params =
     let result =
       match cons with
@@ -172,18 +211,46 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun ({info={info_exp=exp;ep0;_};_} : Ctyp.record_col) res ->
         %exp-{let $pat{ep0} = $exp in $res }) cols result in
-  (Derive_obj.mk ~kind:Map  ~mk_record
-     ~base:"mapbase" ~class_name:"map"
-     ~mk_variant  (),
-   Derive_obj.mk ~kind:Map  ~mk_record
-     ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
-     ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());;
+  begin 
+    Derive_obj.register
+      {
+       kind = Map ;
+       mk_record = Some mk_record;
+       mk_variant = Some mk_variant;
+       base = "mapbase";
+       class_name = "map";
+       default = None ;
+       excludes = [];
+       names = [];
+       arity = 1;
+       plugin_name = "Map";
+     };
+    Derive_obj.register
+    {
+     kind = Map ;
+     mk_record = Some mk_record;
+     mk_variant = Some mk_variant;
+     base = "mapbase";
+     class_name = "map2";
+     default = None ;
+     excludes = [];
+     names = [];
+     arity = 2;
+     plugin_name = "Map2";
+   }
+  end
+(*   (Derive_obj.mk ~kind:Map  ~mk_record *)
+(*      ~base:"mapbase" ~class_name:"map" *)
+(*      ~mk_variant  (), *)
+(*    Derive_obj.mk ~kind:Map  ~mk_record *)
+(*      ~base:"mapbase2" ~class_name:"map2" ~mk_variant  *)
+(*      ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());; *)
 
-begin
-  [("Map",some gen_map);
-   ("Map2",some gen_map2);]
-  |> List.iter Typehook.register;
-end;;
+(* begin *)
+(*   [("Map",some gen_map); *)
+(*    ("Map2",some gen_map2);] *)
+(*   |> List.iter Typehook.register; *)
+(* end;; *)
 
 (************************************) 
 (* Strip generator                   *)
@@ -350,36 +417,49 @@ let gen_meta =
     excludes = ["loc"; "ant"; "quot"];
   } ;
 
-  Derive_obj.mk ~kind:(Concrete %ctyp-{Astf.ep})
-    ~mk_record
-    ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
-    ~names:["_loc"]
-    ()
+  Derive_obj.register
+      {
+       kind = Concrete %ctyp-{Astf.ep};
+       mk_record = Some mk_record;
+       mk_variant = Some mk_variant;
+       base = "primitive";
+       class_name = "meta";
+       names = ["_loc"];
+       default = None;
+       excludes = ["loc";"ant";"quot"];
+       arity = 1;
+       plugin_name = "MetaObj"
+  }
   end;;
-
-(* %{}[@ *)
-(* meta_loc : loc  *)
-(*   ] *)
-
-Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc";"ant";"quot"]))
-    ("MetaObj", some gen_meta);;
   
   
 
 
-
-let gen_print_obj =
-  Derive_obj.mk ~kind:(Concrete %ctyp-{unit}) (* ~mk_tuple:mk_tuple_print *)
-    ~base:"printbase" ~class_name:"print"
-    ~names:["fmt"]  ~mk_record:Gen_print.mk_record
-    ~mk_variant:Gen_print.mk_variant ();;
 
 let () =
-  begin 
-    Derive_stru.register Gen_print.default;
-    [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;
-  end
+  Derive_obj.register {
+  kind =   Concrete %ctyp-{unit};
+  mk_record = Some Gen_print.mk_record;
+  mk_variant = Some Gen_print.mk_variant;
+  base = "printbase";
+  class_name = "print";
+  arity = 1 ;
+  names = ["fmt"];
+  plugin_name = "Oprint";
+  default = None;
+  excludes = [];
+}
+(*   Derive_obj.mk ~kind:(Concrete %ctyp-{unit}) (\* ~mk_tuple:mk_tuple_print *\) *)
+(*     ~base:"printbase" ~class_name:"print" *)
+(*     ~names:["fmt"]  ~mk_record:Gen_print.mk_record *)
+(*     ~mk_variant:Gen_print.mk_variant ();; *)
+
+(* let () = *)
+(*   begin *)
+    
+(*     Derive_stru.register Gen_print.default; *)
+(*     [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register; *)
+(*   end *)
 
 
 
@@ -406,17 +486,30 @@ let mk_record_iter cols =
   |> seq_sem
 
 
+let () =
+  Derive_obj.register
+    {
+     kind = Iter;
+     base = "iterbase";
+     class_name = "iter";
+     names = [];
+     mk_record = Some mk_record_iter;
+     mk_variant = Some mk_variant_iter;
+     arity = 1;
+     default = None;
+     excludes = [];
+     plugin_name = "OIter" 
+   }
+(* let gen_iter = *)
+(*   Derive_obj.mk ~kind:Iter *)
+(*     ~base:"iterbase" *)
+(*     ~class_name:"iter" *)
+(*     ~names:[]  *)
+(*     ~mk_record:mk_record_iter *)
+(*     ~mk_variant:mk_variant_iter *)
+(*     ();; *)
 
-let gen_iter =
-  Derive_obj.mk ~kind:Iter
-    ~base:"iterbase"
-    ~class_name:"iter"
-    ~names:[] 
-    ~mk_record:mk_record_iter
-    ~mk_variant:mk_variant_iter
-    ();;
-
-("OIter",some gen_iter) |> Typehook.register;;
+(* ("OIter",some gen_iter) |> Typehook.register;; *)
 
 (*******************************)
 (* [Locof] generator           *) 
