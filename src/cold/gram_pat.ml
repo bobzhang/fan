@@ -7,7 +7,7 @@ let fprintf = Format.fprintf
 open Astf
 let pp_print_loc _f _loc = ()
 class mapbase =
-  object (_this__010_ : 'this_type__011_)
+  object (_this__018_ : 'this_type__019_)
     method loc (x : loc) = x
     method string (x : string) = x
     method ant (x : ant) = x
@@ -19,7 +19,7 @@ and t =
   | `Com of (loc* t* t) | `Alias of (loc* t* lident) | `Str of (loc* string)
   | `Any of loc] 
 class map =
-  object (self : 'this_type__009_)
+  object (self : 'this_type__017_)
     inherit  mapbase
     method lident : lident -> lident=
       fun (`Lid (_a0,_a1))  ->
@@ -79,7 +79,7 @@ and pp_print_t: Format.formatter -> t -> unit =
           (fun fmt  -> Format.fprintf fmt "%S") _a1
     | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
 let wildcarder =
-  object (self : 'this_type__008_)
+  object (self : 'this_type__016_)
     inherit  map as super
     method! t =
       function

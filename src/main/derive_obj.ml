@@ -3,7 +3,7 @@
 open Util
 open Astn_util
 open Astfn
-open Ctyp
+(* open Ctyp *)
 type default =
   | Atom of exp
   | Invalid_argument
@@ -99,19 +99,45 @@ module Make (U:S) = struct
 
   let left_type_id  = `Pre ""
   let right_type_id  =
-    `Obj (basic_transform left_type_id) 
+    `Obj (Ctyp.basic_transform left_type_id) 
 
   let right_type_variable =
-    `Exp (fun v -> let v = basic_transform left_type_variable v in
+    `Exp (fun v -> let v = Ctyp.basic_transform left_type_variable v in
     %exp-{ $lid:v self } )      
 
-
-
-  let rec obj_simple_exp_of_ctyp 
+  let rec mapi_exp (i:int)
+    (ty : ctyp)       =
+  let name_exp = obj_simple_exp_of_ctyp ty in 
+  let base = apply_args name_exp  names in
+  (* FIXME as a tuple it is useful when arity> 1??? *)
+  let id_eps = Listf.init arity @@ fun index  -> Id.xid ~off:index i  in
+  let ep0 = List.hd id_eps in
+  let id_ep = tuple_com  id_eps  in
+  let exp = appl_of_list (base:: (id_eps:>exp list))  in
+  {Ctyp.name_exp;
+   info_exp=exp;
+   id_ep;
+   id_eps;
+   ep0;
+   ty
+ }
+  and tuple_exp_of_ctyp (ty:ctyp) : exp =
+    match ty with
+    | `Par t  -> 
+    let ls = Ast_basic.N.list_of_star t [] in
+    let len = List.length ls in
+    let pat = (Id_epn.mk_tuple ~arity ~number:len :> pat) in
+    let tys =
+      Lazy.force mk_tuple
+        (List.mapi mapi_exp ls) in
+    Expn_util.abstract names
+      (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
+  | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty)
+  and  obj_simple_exp_of_ctyp 
       ty : exp =
   let trans = Ctyp.transform right_type_id in
-  let var = basic_transform left_type_variable in
-  let tyvar = right_transform right_type_variable  in 
+  let var = Ctyp.basic_transform left_type_variable in
+  let tyvar = Ctyp.right_transform right_type_variable  in 
   let rec aux : ctyp -> exp = function
     | (#ident' as id)  -> trans (Idn_util.to_vid id)
     | `Quote(_,`Lid s) ->   tyvar s
@@ -129,15 +155,14 @@ module Make (U:S) = struct
               (Astfn_print.dump_ctyp ty))
     | `Arrow(t1,t2) -> aux %ctyp-{ ($t1,$t2) arrow  } 
     | `Par _  as ty ->
-        tuple_exp_of_ctyp  ~mk_tuple:(Lazy.force mk_tuple)
-          ~f:(obj_simple_exp_of_ctyp  ) ty 
+        tuple_exp_of_ctyp  ty 
     | ty -> failwith ( __BIND__ ^ Astfn_print.dump_ctyp ty)  in
   aux ty 
 
 
   let mk_prefix (vars:opt_decl_params) (acc:exp)   = 
     (* let open Transform in  *)
-    let varf = basic_transform left_type_variable in
+    let varf = Ctyp.basic_transform left_type_variable in
     let  f (var:decl_params) acc =
       match var with
       | `Quote(_,`Lid(s)) -> %exp-{ fun $lid{ varf s} -> $acc }
@@ -155,7 +180,7 @@ module Make (U:S) = struct
       let len = List.length tyargs in
       let p = (Id_epn.gen_tuple_n  ~arity cons len :> pat) in
       let mk (cons,tyargs) =
-        let exps = List.mapi (mapi_exp  ~f:obj_simple_exp_of_ctyp) tyargs in
+        let exps = List.mapi mapi_exp tyargs in
         Lazy.force mk_variant (Some cons) exps in
       let e = mk (cons,tyargs) in
       %case-{ $pat:p -> $e } in 
@@ -164,7 +189,7 @@ module Make (U:S) = struct
       let e = (obj_simple_exp_of_ctyp (lid:>ctyp)) +> names  in
       let (f,a) = Ast_basic.N.view_app [] result in
       let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
-      gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e in
+      Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e in
     (* FIXME, be more precise  *)
     (* let info = (TyVrnEq, List.length (Ast_basic.N.list_of_bar ty [])) in *)
     let ls = Ctyp.view_variant ty in
@@ -193,7 +218,7 @@ module Make (U:S) = struct
         (* calling gen_tuple_n*)
         (Id_epn.gen_tuple_n  ~arity  cons args_length :> pat) in
       let mk (cons,tyargs) =
-        let exps = List.mapi (mapi_exp ~f:obj_simple_exp_of_ctyp) tyargs in
+        let exps = List.mapi mapi_exp tyargs in
         Lazy.force mk_variant (Some cons) exps in
       let e = mk (cons,tyargs) in
       %case-{ $pat:p -> $e } in  begin 
@@ -237,7 +262,7 @@ module Make (U:S) = struct
                     (fun i x ->
                       match (x:Ctyp.col) with
                         {label;is_mutable;ty} ->
-                          {info = (mapi_exp  ~f:obj_simple_exp_of_ctyp) i ty  ;
+                          {Ctyp.info = mapi_exp   i ty  ;
                            label;
                            is_mutable}) cols in
                 (* For single tuple pattern match this can be optimized
@@ -301,7 +326,7 @@ module Make (U:S) = struct
         match Ctyp.abstract_list tydcl with
         | Some n  -> 
             let ty_str : string =   Astfn_print.dump_decl tydcl  in
-            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
+            let () = Hashtbl.add tbl ty_str (Ctyp.Abstract ty_str) in 
             let (ty,_) = mk_type tydcl in
             %clfield-{ method $lid:name : $ty= ${Expn_util.unknown n}}
         | None ->  mk_clfield named_type  in 
@@ -321,7 +346,7 @@ module Make (U:S) = struct
   begin
     Hashtbl.iter
       (fun _ v ->
-        Formatf.eprintf "@[%a@]@." pp_print_warning_type  v)
+        Formatf.eprintf "@[%a@]@." Ctyp.pp_print_warning_type  v)
       tbl;
    Some v
   end

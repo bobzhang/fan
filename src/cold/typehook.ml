@@ -63,7 +63,7 @@ let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
       (`Sem (sloc, (acc :>Astf.stru), (code :>Astf.stru)) :>Astf.stru)
   | (_,None ) -> acc
 let traversal () =
-  (object (self : 'this_type__008_)
+  (object (self : 'this_type__016_)
      inherit  Astf_map.map as super
      val mtyps_stack = (Stack.create () : Sigs_util.mtyps Stack.t )
      val mutable cur_and_types = ([] : Sigs_util.and_types )

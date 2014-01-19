@@ -56,8 +56,8 @@ module Make(U:S) =
     open U
     let arity = p.arity
     let names = p.names
-    let builtin_tbl = Hashtblf.of_list p.builtin_tbl
     let plugin_name = p.plugin_name
+    let builtin_tbl = Hashtblf.of_list p.builtin_tbl
     let mk_variant =
       lazy
         (match p.mk_variant with

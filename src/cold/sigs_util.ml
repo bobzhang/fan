@@ -8,17 +8,17 @@ and types =
   | Single of named_type 
 and mtyps = types list 
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
-  fun fmt  eta__011_  ->
+  fun fmt  eta__019_  ->
     (fun fmt  (_a0,_a1)  ->
        Format.fprintf fmt "@[<1>(%a,@,%a)@]"
          (fun fmt  -> Format.fprintf fmt "%S") _a0 pp_print_decl _a1) fmt
-      eta__011_
+      eta__019_
 and pp_print_and_types: Format.formatter -> and_types -> unit =
-  fun fmt  eta__010_  ->
+  fun fmt  eta__018_  ->
     (fun mf_a  fmt  lst  ->
        Format.fprintf fmt "@[<1>[%a]@]"
          (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x))
-         lst) pp_print_named_type fmt eta__010_
+         lst) pp_print_named_type fmt eta__018_
 and pp_print_types: Format.formatter -> types -> unit =
   fun fmt  ->
     function
@@ -27,11 +27,11 @@ and pp_print_types: Format.formatter -> types -> unit =
     | Single _a0 ->
         Format.fprintf fmt "@[<1>(Single@ %a)@]" pp_print_named_type _a0
 and pp_print_mtyps: Format.formatter -> mtyps -> unit =
-  fun fmt  eta__009_  ->
+  fun fmt  eta__017_  ->
     (fun mf_a  fmt  lst  ->
        Format.fprintf fmt "@[<1>[%a]@]"
          (fun fmt  -> List.iter (fun x  -> Format.fprintf fmt "%a@ " mf_a x))
-         lst) pp_print_types fmt eta__009_
+         lst) pp_print_types fmt eta__017_
 type plugin_name = string 
 type plugin = 
   {
@@ -72,7 +72,7 @@ let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
         | Single (x,_) -> [x]) x in
    sem_of_list (List.map f tys) : stru )
 let mk_transform_type_eq () =
-  object (self : 'this_type__008_)
+  object (self : 'this_type__016_)
     val transformers = Hashtbl.create 50
     inherit  Astfn_map.map as super
     method! stru =

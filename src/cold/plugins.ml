@@ -18,8 +18,19 @@ let mk_record cols =
   (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
     (mk_variant None)
 let gen_eqobj =
-  Derive_obj.mk ~kind:Iter ~mk_record ~base:"eqbase" ~class_name:"eq"
-    ~mk_variant ~arity:2 ~default:(`Bool false :>Astfn.exp) ()
+  Derive_obj.register
+    {
+      arity = 2;
+      names = [];
+      plugin_name = "OEq";
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      default = (Some (Atom (`Bool false :>Astfn.exp)));
+      excludes = [];
+      kind = Iter;
+      base = "eqbase";
+      class_name = "eq"
+    }
 let some f x = Some (f x)
 let _ =
   Derive_stru.register
@@ -264,9 +275,8 @@ let _ =
                                                                (`Lid "len"))),
                                                            (`Int "1"))))))))))))))))))) :>
           Astfn.exp))]
-    };
-  List.iter Typehook.register [("OEq", (some gen_eqobj))]
-let (gen_fold,gen_fold2) =
+    }
+let () =
   let mk_variant _cons params =
     (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
       (function
@@ -280,16 +290,37 @@ let (gen_fold,gen_fold2) =
   let mk_record cols =
     (cols |> (List.map (fun (x : Ctyp.record_col)  -> x.info))) |>
       (mk_variant None) in
-  ((Derive_obj.mk ~kind:Fold ~mk_record ~base:"foldbase" ~class_name:"fold"
-      ~mk_variant ()),
-    (Derive_obj.mk ~kind:Fold ~mk_record ~base:"foldbase2"
-       ~class_name:"fold2" ~mk_variant ~arity:2
-       ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) :>
-       Astfn.exp) ()))
-let _ =
-  List.iter Typehook.register
-    [("Fold", (some gen_fold)); ("Fold2", (some gen_fold2))]
-let (gen_map,gen_map2) =
+  Derive_obj.register
+    {
+      kind = Fold;
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      default = None;
+      excludes = [];
+      base = "foldbase";
+      class_name = "fold";
+      plugin_name = "Fold";
+      arity = 1;
+      names = []
+    };
+  Derive_obj.register
+    {
+      kind = Fold;
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      default =
+        (Some
+           (Atom
+              (`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) :>
+              Astfn.exp)));
+      excludes = [];
+      base = "foldbase";
+      class_name = "fold";
+      plugin_name = "Fold2";
+      arity = 2;
+      names = []
+    }
+let () =
   let mk_variant cons params =
     let result =
       match cons with
@@ -318,15 +349,32 @@ let (gen_map,gen_map2) =
          (`LetIn
             (`Negative, (`Bind ((ep0 :>Astfn.pat), (exp :>Astfn.exp))),
               (res :>Astfn.exp)) :>Astfn.exp)) cols result in
-  ((Derive_obj.mk ~kind:Map ~mk_record ~base:"mapbase" ~class_name:"map"
-      ~mk_variant ()),
-    (Derive_obj.mk ~kind:Map ~mk_record ~base:"mapbase2" ~class_name:"map2"
-       ~mk_variant ~arity:2
-       ~default:(`App ((`Lid "invalid_arg"), (`Str "map2 failure")) :>
-       Astfn.exp) ()))
-let _ =
-  [("Map", (some gen_map)); ("Map2", (some gen_map2))] |>
-    (List.iter Typehook.register)
+  Derive_obj.register
+    {
+      kind = Map;
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      base = "mapbase";
+      class_name = "map";
+      default = None;
+      excludes = [];
+      names = [];
+      arity = 1;
+      plugin_name = "Map"
+    };
+  Derive_obj.register
+    {
+      kind = Map;
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      base = "mapbase";
+      class_name = "map2";
+      default = None;
+      excludes = [];
+      names = [];
+      arity = 2;
+      plugin_name = "Map2"
+    }
 let _ =
   let mk_variant cons params =
     let params' =
@@ -792,21 +840,34 @@ let gen_meta =
       default = None;
       excludes = ["loc"; "ant"; "quot"]
     };
-  Derive_obj.mk
-    ~kind:(Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp))
-    ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
-    ~names:["_loc"] ()
-let _ =
-  Typehook.register
-    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "quot"]))
-    ("MetaObj", (some gen_meta))
-let gen_print_obj =
-  Derive_obj.mk ~kind:(Concrete (`Lid "unit" :>Astfn.ctyp)) ~base:"printbase"
-    ~class_name:"print" ~names:["fmt"] ~mk_record:Gen_print.mk_record
-    ~mk_variant:Gen_print.mk_variant ()
+  Derive_obj.register
+    {
+      kind = (Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp));
+      mk_record = (Some mk_record);
+      mk_variant = (Some mk_variant);
+      base = "primitive";
+      class_name = "meta";
+      names = ["_loc"];
+      default = None;
+      excludes = ["loc"; "ant"; "quot"];
+      arity = 1;
+      plugin_name = "MetaObj"
+    }
 let () =
-  Derive_stru.register Gen_print.default;
-  [("OPrint", (some gen_print_obj))] |> (List.iter Typehook.register)
+  Derive_obj.register
+    {
+      kind = (Concrete (`Lid "unit" :>Astfn.ctyp));
+      mk_record = (Some Gen_print.mk_record);
+      mk_variant = (Some Gen_print.mk_variant);
+      base = "printbase";
+      class_name = "print";
+      arity = 1;
+      names = ["fmt"];
+      plugin_name = "Oprint";
+      default = None;
+      excludes = []
+    };
+  Derive_stru.register Gen_print.default
 let mk_variant_iter _cons params =
   (match params with
    | [] -> (unit :>exp)
@@ -826,10 +887,20 @@ let mk_record_iter cols =
               (((x.info).name_exp :>Astfn.exp), ((x.info).id_ep :>Astfn.exp)) :>
            Astfn.exp))))
     |> seq_sem
-let gen_iter =
-  Derive_obj.mk ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
-    ~mk_record:mk_record_iter ~mk_variant:mk_variant_iter ()
-let _ = ("OIter", (some gen_iter)) |> Typehook.register
+let () =
+  Derive_obj.register
+    {
+      kind = Iter;
+      base = "iterbase";
+      class_name = "iter";
+      names = [];
+      mk_record = (Some mk_record_iter);
+      mk_variant = (Some mk_variant_iter);
+      arity = 1;
+      default = None;
+      excludes = [];
+      plugin_name = "OIter"
+    }
 let generate (mtyps : mtyps) =
   (let tbl = Hashtbl.create 30 in
    let aux (_,ty) =

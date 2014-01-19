@@ -146,7 +146,7 @@ let (* (gen_fold,gen_fold2) *)() =
     excludes = [];
     base = "foldbase";
     class_name = "fold";
-    plugin_name = "FOld" ;
+    plugin_name = "Fold" ;
     arity = 1;
     names = [];
     };
@@ -158,7 +158,7 @@ let (* (gen_fold,gen_fold2) *)() =
     excludes = [];
     base = "foldbase";
     class_name = "fold";
-    plugin_name = "FOld2" ;
+    plugin_name = "Fold2" ;
     arity = 2;
     names = []; 
     }
@@ -432,23 +432,27 @@ let gen_meta =
   }
   end;;
   
-  
+
 
 
 
 let () =
-  Derive_obj.register {
-  kind =   Concrete %ctyp-{unit};
-  mk_record = Some Gen_print.mk_record;
-  mk_variant = Some Gen_print.mk_variant;
-  base = "printbase";
-  class_name = "print";
-  arity = 1 ;
-  names = ["fmt"];
-  plugin_name = "Oprint";
-  default = None;
-  excludes = [];
-}
+  begin 
+    Derive_obj.register
+      {
+       kind =   Concrete %ctyp-{unit};
+       mk_record = Some Gen_print.mk_record;
+       mk_variant = Some Gen_print.mk_variant;
+       base = "printbase";
+       class_name = "print";
+       arity = 1 ;
+       names = ["fmt"];
+       plugin_name = "Oprint";
+       default = None;
+       excludes = [];
+     };
+    Derive_stru.register Gen_print.default;
+  end
 (*   Derive_obj.mk ~kind:(Concrete %ctyp-{unit}) (\* ~mk_tuple:mk_tuple_print *\) *)
 (*     ~base:"printbase" ~class_name:"print" *)
 (*     ~names:["fmt"]  ~mk_record:Gen_print.mk_record *)
@@ -457,7 +461,7 @@ let () =
 (* let () = *)
 (*   begin *)
     
-(*     Derive_stru.register Gen_print.default; *)
+
 (*     [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register; *)
 (*   end *)
 

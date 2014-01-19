@@ -168,7 +168,7 @@ let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name,_,ctyp,_) ->
       let obj =
-        object (self : 'this_type__008_)
+        object (self : 'this_type__016_)
           inherit  Astfn_fold.fold as super
           val mutable is_recursive = false
           method! ctyp =
@@ -269,14 +269,13 @@ let right_transform =
       let f = basic_transform x in (fun x  -> (`Lid (f x) :>Astfn.exp))
   | `Exp f -> f
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
-  let args: pat list =
-    (Listf.init arity) @@
+  let args =
+    Listf.init arity
       (fun i  ->
          (`Alias ((`ClassPath (name :>Astfn.ident)), (`Lid (Id.x ~off:i 0))) :>
          Astfn.pat)) in
   let exps =
-    (Listf.init arity) @@
-      (fun i  -> ((Id.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
+    Listf.init arity (fun i  -> ((Id.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)) in
   let e = appl_of_list (e :: exps) in
   let pat = args |> tuple_com in
   match destination with
