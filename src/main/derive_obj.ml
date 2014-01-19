@@ -167,8 +167,7 @@ module Make (U:S) = struct
         let vars = Ast_basic.N.list_of_com xs [] in
         List.fold_right f vars (Expn_util.abstract names  acc)
 
-  let exp_of_poly_variant
-       ~result ty =
+  let exp_of_poly_variant ~result ty =
     let f (cons,tyargs) :  case=
       let len = List.length tyargs in
       let p = (Id_epn.gen_tuple_n  ~arity cons len :> pat) in
@@ -179,14 +178,21 @@ module Make (U:S) = struct
       %case-{ $pat:p -> $e } in 
     (* for the case [`a | b ] *)
     let simple (lid:ident) :case=
-      let e = (exp_of_ctyp (lid:>ctyp)) +> names  in
+      let e = apply_args (exp_of_ctyp (lid:>ctyp)) names  in
       let (f,a) = Ast_basic.N.view_app [] result in
       let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
-      
-      Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e
+      let pat  =
+        tuple_com
+          (Listf.init arity 
+             (fun i -> %pat-{ (#$id:lid as $lid{ Id.x ~off:i 0 }) })) in
+      let e = appl_of_list
+          (e::
+           Listf.init arity (fun i -> %exp-{ $id{Id.xid ~off:i 0} })) in 
+      match kind with
+      | Map -> 
+          %case-{$pat -> ( $e : ${lid} :> $annot)}
+      | _ ->  %case-{$pat -> ( $e  :> $annot)}
     in
-    (* FIXME, be more precise  *)
-    (* let info = (TyVrnEq, List.length (Ast_basic.N.list_of_bar ty [])) in *)
     let ls = Ctyp.view_variant ty in
     let res =
       let res = List.fold_left
@@ -274,9 +280,7 @@ module Make (U:S) = struct
                   (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ])
 
             |  `Sum ctyp -> 
-                let funct = exp_of_or_ctyp ctyp in  
-                (* for [exp_of_ctyp] appending names was delayed to be handled in mkcon *)
-                mk_prefix  tyvars funct
+                mk_prefix  tyvars (exp_of_or_ctyp ctyp)
             | t ->
                 failwith (__BIND__ ^ Astfn_print.dump_type_repr t)
             end
