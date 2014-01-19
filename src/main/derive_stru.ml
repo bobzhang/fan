@@ -191,7 +191,7 @@ module Make (U:S) = struct
     |> Expn_util.currying ~arity
 
   let exp_of_or_ctyp (ty : or_ctyp)  : exp=
-    let mk   (cons,tyargs)  : case =
+    let mk   (cons,tyargs)   =
       let args_length = List.length tyargs in  (* ` is not needed here *)
       let exps = List.mapi mapi_exp   tyargs in
       %case-{ ${(Id_epn.gen_tuple_n ~arity  cons args_length )} ->

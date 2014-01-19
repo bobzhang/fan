@@ -32,17 +32,17 @@ module type S =
 
 module Make (U:S) : sig 
  
-  val obj_simple_exp_of_ctyp : Astfn.ctyp -> Astfn.exp
+  val exp_of_ctyp : ctyp -> exp
 
-  val mk_prefix : Astfn.opt_decl_params -> Astfn.exp -> Astfn.exp
+  val mk_prefix : opt_decl_params -> exp -> exp
 
   val exp_of_poly_variant :
-            result:Astfn.ctyp -> Astfn.row_field -> Astfn.exp
+            result:ctyp -> row_field -> exp
 
   val exp_of_or_ctyp : or_ctyp -> exp
 
   val fun_of_tydcl :
-      result:Astfn.ctyp -> decl -> exp
+      result:ctyp -> decl -> exp
 
   val obj_of_mtyps :
          Sigs_util.mtyps -> stru option

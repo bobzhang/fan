@@ -183,12 +183,12 @@ module Make(U:S) =
         |> (Expn_util.currying ~arity)
     let exp_of_or_ctyp (ty : or_ctyp) =
       (let mk (cons,tyargs) =
-         (let args_length = List.length tyargs in
-          let exps = List.mapi mapi_exp tyargs in
-          (`Case
-             ((Id_epn.gen_tuple_n ~arity cons args_length :>Astfn.pat),
-               (Lazy.force mk_variant (Some cons) exps :>Astfn.exp)) :>
-            Astfn.case) : case ) in
+         let args_length = List.length tyargs in
+         let exps = List.mapi mapi_exp tyargs in
+         (`Case
+            ((Id_epn.gen_tuple_n ~arity cons args_length :>Astfn.pat),
+              (Lazy.force mk_variant (Some cons) exps :>Astfn.exp)) :>
+           Astfn.case) in
        let reduce_data_ctors (ty : or_ctyp) =
          let branches = Ast_basic.N.list_of_bar ty [] in
          let aux acc (x : or_ctyp) =

@@ -92,80 +92,73 @@ module Make (U:S) = struct
         | None -> failwithf "Generator %s can not handle record" plugin_name
         | Some x -> x 
       end
+
   let mf_prefix = %fresh{_mf}
   let kind = p.kind
   let left_type_variable = `Pre mf_prefix    
+  let tyvar_trans  x =  mf_prefix ^ x
 
-
-  let left_type_id  = `Pre ""
-  let right_type_id  =
-    `Obj (Ctyp.basic_transform left_type_id) 
-
-  let right_type_variable =
-    `Exp (fun v -> let v = Ctyp.basic_transform left_type_variable v in
-    %exp-{ $lid:v self } )      
-
-  let rec mapi_exp (i:int)
-    (ty : ctyp)       =
-  let name_exp = obj_simple_exp_of_ctyp ty in 
-  let base = apply_args name_exp  names in
-  (* FIXME as a tuple it is useful when arity> 1??? *)
-  let id_eps = Listf.init arity @@ fun index  -> Id.xid ~off:index i  in
-  let ep0 = List.hd id_eps in
-  let id_ep = tuple_com  id_eps  in
-  let exp = appl_of_list (base:: (id_eps:>exp list))  in
-  {Ctyp.name_exp;
-   info_exp=exp;
-   id_ep;
-   id_eps;
-   ep0;
-   ty
- }
-  and tuple_exp_of_ctyp (ty:ctyp) : exp =
+  (* The same as {!Derive_stru} *)
+  let rec  exp_of_tuple_ctyp (ty:ctyp) : exp =
     match ty with
     | `Par t  -> 
-    let ls = Ast_basic.N.list_of_star t [] in
-    let len = List.length ls in
-    let pat = (Id_epn.mk_tuple ~arity ~number:len :> pat) in
-    let tys =
-      Lazy.force mk_tuple
-        (List.mapi mapi_exp ls) in
-    Expn_util.abstract names
-      (Expn_util.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
-  | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty)
-  and  obj_simple_exp_of_ctyp 
-      ty : exp =
-  let trans = Ctyp.transform right_type_id in
-  let var = Ctyp.basic_transform left_type_variable in
-  let tyvar = Ctyp.right_transform right_type_variable  in 
-  let rec aux : ctyp -> exp = function
-    | (#ident' as id)  -> trans (Idn_util.to_vid id)
-    | `Quote(_,`Lid s) ->   tyvar s
-    | `App _  as ty ->
-        (match Ast_basic.N.list_of_app ty []  with
-        | (#ident' as tctor) :: ls  ->
-            appl_of_list
-              (trans (Idn_util.to_vid tctor) ::
-               (ls |> List.map
-                 (function
-                   | `Quote (_,`Lid s) -> %exp-{ $lid{var s} } 
-                   | t -> %exp-{ fun self -> ${aux t} } )) )
-        | _  ->
-            failwithf "list_of_app in obj_simple_exp_of_ctyp: %s"
-              (Astfn_print.dump_ctyp ty))
-    | `Arrow(t1,t2) -> aux %ctyp-{ ($t1,$t2) arrow  } 
-    | `Par _  as ty ->
-        tuple_exp_of_ctyp  ty 
-    | ty -> failwith ( __BIND__ ^ Astfn_print.dump_ctyp ty)  in
-  aux ty 
+        let ls = Ast_basic.N.list_of_star t [] in
+        let len = List.length ls in
+        Expn_util.abstract names
+          (Expn_util.currying ~arity
+             [ %case-{ 
+               $pat{Id_epn.mk_tuple ~arity ~number:len}
+               ->
+                 ${Lazy.force mk_tuple (List.mapi mapi_exp  ls)}
+             } ] )
+    | _  -> failwith (__BIND__  ^ Astfn_print.dump_ctyp ty)
+  (* Different *)        
+  and  exp_of_ctyp ty : exp =
+    let rec aux (x : ctyp) =
+      match x with 
+      | `Lid x -> %exp-{self#$lid:x}
+      | (#ident' as id)  -> (** Print warning FIXME *)
+          let s  = Idn_util.map_to_string (Idn_util.to_vid id) in
+          %exp-{self#$lid:s}
+      | `Quote(_,`Lid v) ->
+          %exp-{ $lid{tyvar_trans v} self } 
+      | `App _  as ty ->
+          (match Ast_basic.N.list_of_app ty []  with
+          | (#ident' as tctor) :: ls  ->
+              appl_of_list
+                (aux tctor  ::
+                 (ls |> List.map
+                   (function
+                     | `Quote (_,`Lid s) -> %exp-{ $lid{tyvar_trans s} } 
+                     | t -> %exp-{ fun self -> ${aux t} } )) )
+          | _  ->
+              failwith (__BIND__ ^ Astfn_print.dump_ctyp ty))
+      | `Arrow(t1,t2) -> aux %ctyp-{ ($t1,$t2) arrow  } 
+      | `Par _  as ty ->
+          exp_of_tuple_ctyp  ty 
+      | ty -> failwith ( __BIND__ ^ Astfn_print.dump_ctyp ty)  in
+    aux ty 
 
+
+  and mapi_exp (i:int) (ty : ctyp) =
+    let name_exp = exp_of_ctyp ty in 
+    let base = apply_args name_exp  names in
+    (* FIXME as a tuple it is useful when arity> 1??? *)
+    let id_eps = Listf.init arity @@ fun index  -> Id.xid ~off:index i  in
+    let ep0 = List.hd id_eps in
+    let id_ep = tuple_com  id_eps  in
+    let exp = appl_of_list (base:: (id_eps:>exp list))  in
+    {Ctyp.name_exp;
+     info_exp=exp;
+     id_ep;
+     id_eps;
+     ep0;
+     ty}
 
   let mk_prefix (vars:opt_decl_params) (acc:exp)   = 
-    (* let open Transform in  *)
-    let varf = Ctyp.basic_transform left_type_variable in
     let  f (var:decl_params) acc =
       match var with
-      | `Quote(_,`Lid(s)) -> %exp-{ fun $lid{ varf s} -> $acc }
+      | `Quote(_,`Lid(s)) -> %exp-{ fun $lid{tyvar_trans s} -> $acc }
       | t  ->
           failwith (__BIND__  ^ Astfn_print.dump_decl_params t) in
     match vars with
@@ -186,10 +179,12 @@ module Make (U:S) = struct
       %case-{ $pat:p -> $e } in 
     (* for the case [`a | b ] *)
     let simple (lid:ident) :case=
-      let e = (obj_simple_exp_of_ctyp (lid:>ctyp)) +> names  in
+      let e = (exp_of_ctyp (lid:>ctyp)) +> names  in
       let (f,a) = Ast_basic.N.view_app [] result in
       let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
-      Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e in
+      
+      Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e
+    in
     (* FIXME, be more precise  *)
     (* let info = (TyVrnEq, List.length (Ast_basic.N.list_of_bar ty [])) in *)
     let ls = Ctyp.view_variant ty in
@@ -209,32 +204,40 @@ module Make (U:S) = struct
       List.rev t in
     Expn_util.currying ~arity res
 
-      
-  let exp_of_or_ctyp
-       (ty : or_ctyp)  =
-    let f  (cons:string) (tyargs:ctyp list )  : case = 
+
+  (* The same as {!Derive_stru} *)
+  let exp_of_or_ctyp (ty : or_ctyp)  : exp=
+    let mk   (cons,tyargs)   =
       let args_length = List.length tyargs in  (* ` is not needed here *)
-      let p : pat =
-        (* calling gen_tuple_n*)
-        (Id_epn.gen_tuple_n  ~arity  cons args_length :> pat) in
-      let mk (cons,tyargs) =
-        let exps = List.mapi mapi_exp tyargs in
-        Lazy.force mk_variant (Some cons) exps in
-      let e = mk (cons,tyargs) in
-      %case-{ $pat:p -> $e } in  begin 
-        (* let info = (Sum, List.length (Ast_basic.N.list_of_bar ty [])) in  *)
-        let res :  case list =
-          Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
-        let res =
-          let t = (* only under this case we need defaulting  *)
-            if List.length res >= 2 && arity >= 2 then
-              match  Option.map transform p.default  with
-              | Some x-> %case-{_ -> $x}::res
-              | None -> res 
+      let exps = List.mapi mapi_exp   tyargs in
+      %case-{ ${(Id_epn.gen_tuple_n ~arity  cons args_length )} ->
+         ${Lazy.force mk_variant (Some cons) exps} } in
+    begin
+      let reduce_data_ctors (ty:or_ctyp)   = 
+        let branches = Ast_basic.N.list_of_bar ty [] in
+        let aux acc (x:or_ctyp)   = 
+          (match x with
+          | `Of (`Uid cons, tys) ->
+              mk (cons , Ast_basic.N.list_of_star tys [])
+          | `Uid  cons -> 
+              mk (cons, [] )
+          | t-> failwith  (__BIND__ ^ Astfn_print.dump_or_ctyp t))::acc  in
+        match branches with
+        | [] -> [] (* should not happen *)
+        | [x] -> aux [] x (* 1 x 1 x 1 ==> 1 *)
+        | _ -> 
+            let res = List.fold_left aux  []  branches in
+            if arity >= 2 then
+              match Option.map transform p.default with 
+              | None -> res
+              | Some x -> %case-{ _ -> $x} :: res
             else res in
-          List.rev t in 
-        Expn_util.currying ~arity res 
-      end
+      reduce_data_ctors ty  
+      |>  List.rev
+      |> Expn_util.currying ~arity 
+    end
+      
+  
 
 
 
@@ -280,9 +283,9 @@ module Make (U:S) = struct
         | `TyEq(_,ctyp) ->
             begin match ctyp with 
             | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
-                let exp = obj_simple_exp_of_ctyp x in
-                let funct = Expn_util.eta_expand (exp+>names) arity  in
-                mk_prefix  tyvars funct
+                mk_prefix  tyvars
+                  (Expn_util.eta_expand
+                      (Astn_util.apply_args (exp_of_ctyp x) names) arity)
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) -> 
                 let case =  exp_of_poly_variant  ~result t  in
                 mk_prefix   tyvars case
@@ -296,7 +299,7 @@ module Make (U:S) = struct
 
           
   let obj_of_mtyps
-    (lst:Sigs_util.mtyps)  = with {pat:ctyp}
+    (lst:Sigs_util.mtyps)  = 
   let tbl = Hashtbl.create 50 in 
   let f tydcl result : exp  =
     fun_of_tydcl ~result tydcl in
