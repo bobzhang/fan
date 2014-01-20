@@ -50,6 +50,7 @@ type param = {
     default : default option; 
     excludes : string list;
     kind : Ctyp.kind;
+    builtin_tbl : (ctyp * exp) list;
     base : string;
     class_name : string;
   } 
@@ -65,12 +66,14 @@ module Make (U:S) = struct
     
   let (arity,names,plugin_name,base,class_name)
       = (p.arity,p.names,p.plugin_name,p.base, p.class_name)
+  let builtin_tbl = Hashtblf.of_list p.builtin_tbl
   let mk_variant =
     lazy begin
       match p.mk_variant with 
       | None -> failwithf "Generator  %s can not handle variant" plugin_name
       | Some x -> x
     end
+
   let mk_tuple =
     lazy
       begin
@@ -107,6 +110,9 @@ module Make (U:S) = struct
   (* Different *)        
   and  exp_of_ctyp ty : exp =
     let rec aux (x : ctyp) =
+      if Hashtbl.mem builtin_tbl x then
+        Hashtbl.find builtin_tbl x 
+      else 
       match x with 
       | `Lid x -> %exp-{self#$lid:x}
       | (#ident' as id)  -> (** Print warning FIXME *)
@@ -131,7 +137,7 @@ module Make (U:S) = struct
       | ty -> failwith ( __BIND__ ^ Astfn_print.dump_ctyp ty)  in
     aux ty 
 
-
+  (* Same as {!Derive_stru} *)    
   and mapi_exp (i:int) (ty : ctyp) =
     let name_exp = exp_of_ctyp ty in 
     let base = apply_args name_exp  names in
@@ -257,7 +263,7 @@ module Make (U:S) = struct
             begin match repr with
             | `Record t ->       
                 let cols =  Ctyp.list_of_record t  in
-                let pat = (Ctyp.mk_record ~arity  cols  :> pat)in
+                let pat = Ctyp.mk_record ~arity  cols  in
                 let info =
                   List.mapi
                     (fun i x ->
@@ -268,8 +274,9 @@ module Make (U:S) = struct
                            is_mutable}) cols in
                 (* For single tuple pattern match this can be optimized
                    by the ocaml compiler *)
-                mk_prefix   tyvars
-                  (Expn_util.currying ~arity [ %case-{ $pat:pat -> ${Lazy.force mk_record info}  } ])
+                mk_prefix tyvars
+                  (Expn_util.currying ~arity
+                     [ %case-{ $pat -> ${Lazy.force mk_record info}  } ])
 
             |  `Sum ctyp -> 
                 mk_prefix  tyvars (exp_of_or_ctyp ctyp)
@@ -283,8 +290,7 @@ module Make (U:S) = struct
                   (Expn_util.eta_expand
                       (Astn_util.apply_args (exp_of_ctyp x) names) arity)
             | `PolyEq t | `PolySup t | `PolyInf t|`PolyInfSup(t,_) -> 
-                let case =  exp_of_poly_variant  ~result t  in
-                mk_prefix   tyvars case
+                mk_prefix   tyvars (  exp_of_poly_variant  ~result t)
             | t -> failwith (__BIND__  ^ Astfn_print.dump_ctyp t)
             end
         | t -> failwith  (__BIND__ ^ Astfn_print.dump_type_info t)
@@ -370,11 +376,10 @@ module Make (U:S) = struct
      we need to process extra to generate method loc_t *)
   let (extras,lst) = Sigs_util.transform_mtyps lst in 
   let body = List.map fs lst in
-  let prefix = List.length names in
   let body : clfield =
     let items = List.map (fun (dest,src,len) ->
-      let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix ~id:src len
-          (Obj kind) in
+      let (ty,_dest) =
+        mk_method_type (src,len) kind in
       let () = Hashtbl.add tbl dest (Qualified dest) in
       %clfield-{ method $lid:dest : $ty = ${Expn_util.unknown len} } ) extras in
     sem_of_list (body @ items) in 

@@ -27,6 +27,7 @@ let gen_eqobj =
       mk_variant = (Some mk_variant);
       default = (Some (Atom (`Bool false :>Astfn.exp)));
       excludes = [];
+      builtin_tbl = [];
       kind = Iter;
       base = "eqbase";
       class_name = "eq"
@@ -297,6 +298,7 @@ let () =
       mk_variant = (Some mk_variant);
       default = None;
       excludes = [];
+      builtin_tbl = [];
       base = "foldbase";
       class_name = "fold";
       plugin_name = "Fold";
@@ -305,6 +307,7 @@ let () =
     };
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = Fold;
       mk_record = (Some mk_record);
       mk_variant = (Some mk_variant);
@@ -351,6 +354,7 @@ let () =
               (res :>Astfn.exp)) :>Astfn.exp)) cols result in
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = Map;
       mk_record = (Some mk_record);
       mk_variant = (Some mk_variant);
@@ -364,6 +368,7 @@ let () =
     };
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = Map;
       mk_record = (Some mk_record);
       mk_variant = (Some mk_variant);
@@ -842,6 +847,7 @@ let gen_meta =
     };
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = (Concrete (`Dot ((`Uid "Astf"), (`Lid "ep")) :>Astfn.ctyp));
       mk_record = (Some mk_record);
       mk_variant = (Some mk_variant);
@@ -856,6 +862,7 @@ let gen_meta =
 let () =
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = (Concrete (`Lid "unit" :>Astfn.ctyp));
       mk_record = (Some Gen_print.mk_record);
       mk_variant = (Some Gen_print.mk_variant);
@@ -890,6 +897,7 @@ let mk_record_iter cols =
 let () =
   Derive_obj.register
     {
+      builtin_tbl = [];
       kind = Iter;
       base = "iterbase";
       class_name = "iter";

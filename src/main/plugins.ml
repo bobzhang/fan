@@ -36,6 +36,7 @@ let gen_eqobj =
   mk_variant = Some mk_variant;
   default = Some (Atom %exp-{false});
   excludes = [];
+  builtin_tbl = [];
   kind = Iter;
   base = "eqbase";
   class_name = "eq";
@@ -124,7 +125,7 @@ end
 
 
 (* [Fold2] unused *)
-let (* (gen_fold,gen_fold2) *)() = 
+let () = 
   let mk_variant _cons params = 
     params
     |> List.map (fun (x:Ctyp.ty_info)  -> x.info_exp)
@@ -142,6 +143,7 @@ let (* (gen_fold,gen_fold2) *)() =
     mk_variant = Some mk_variant;
     default = None;
     excludes = [];
+    builtin_tbl = [];
     base = "foldbase";
     class_name = "fold";
     plugin_name = "Fold" ;
@@ -149,6 +151,7 @@ let (* (gen_fold,gen_fold2) *)() =
     names = [];
     };
     Derive_obj.register {
+    builtin_tbl = [];
     kind = Fold;
     mk_record = Some mk_record;
     mk_variant = Some mk_variant;
@@ -161,18 +164,6 @@ let (* (gen_fold,gen_fold2) *)() =
     names = []; 
     }
   end
-  (* (Derive_obj.mk ~kind:Fold ~mk_record *)
-  (*    ~base:"foldbase" ~class_name:"fold" ~mk_variant (), *)
-  (*  Derive_obj.mk ~kind:Fold  ~mk_record *)
-  (*    ~base:"foldbase2" ~class_name:"fold2" *)
-  (*    ~mk_variant *)
-  (*    ~arity:2 ~default:%exp-{invalid_arg "fold2 failure" } () ) *)
-
-(* let _ =  *)
-(*   begin *)
-(*     List.iter Typehook.register *)
-(*       [("Fold",some gen_fold); ("Fold2",some gen_fold2);] *)
-(*   end *)
 
 
 (************************************) 
@@ -212,6 +203,7 @@ let () =
   begin 
     Derive_obj.register
       {
+       builtin_tbl = [];
        kind = Map ;
        mk_record = Some mk_record;
        mk_variant = Some mk_variant;
@@ -225,6 +217,7 @@ let () =
      };
     Derive_obj.register
     {
+     builtin_tbl =[];
      kind = Map ;
      mk_record = Some mk_record;
      mk_variant = Some mk_variant;
@@ -237,18 +230,6 @@ let () =
      plugin_name = "Map2";
    }
   end
-(*   (Derive_obj.mk ~kind:Map  ~mk_record *)
-(*      ~base:"mapbase" ~class_name:"map" *)
-(*      ~mk_variant  (), *)
-(*    Derive_obj.mk ~kind:Map  ~mk_record *)
-(*      ~base:"mapbase2" ~class_name:"map2" ~mk_variant  *)
-(*      ~arity:2 ~default: %exp-{  invalid_arg "map2 failure" } ());; *)
-
-(* begin *)
-(*   [("Map",some gen_map); *)
-(*    ("Map2",some gen_map2);] *)
-(*   |> List.iter Typehook.register; *)
-(* end;; *)
 
 (************************************) 
 (* Strip generator                   *)
@@ -374,49 +355,51 @@ let mk_tuple params =
 (* Functor parameterize [meta_loc] *)
 let gen_meta =
   begin
-    Derive_stru.register  {
-    id = (`Pre "meta_"); (* can be improved by sharing the code *)
-    names = ["_loc"];
-    mk_record = Some mk_record;
-    mk_variant = Some  mk_variant;
-    builtin_tbl = [
-     (%ctyp-{int}, %exp-{fun _loc (i:int) -> %ep{$int':i} });
-     (%ctyp-{int32}, %exp-{fun _loc (i:int32) -> %ep{$int32':i} });
-     (%ctyp-{int64}, %exp-{fun _loc (i:int64) -> %ep{$int64':i} });
-     (%ctyp-{nativeint}, %exp-{fun _loc (i:nativeint) -> %ep{$nativeint':i} });
-     (%ctyp-{float}, %exp-{fun _loc (i:float) -> %ep{$flo':i} });
-     (%ctyp-{string}, %exp-{fun _loc (i:string) -> %ep{$str':i} });
-     (%ctyp-{char}, %exp-{fun _loc (i:char) -> %ep{$chr':i} });
-     (%ctyp-{unit}, %exp-{fun _loc (i:unit) -> %ep{()} });
-     (%ctyp-{bool}, %exp-{fun _loc (i:bool) -> %ep{$bool':i} });
-    (%ctyp-{list},%exp-{
-     let mklist loc =
-       let rec loop top =  function
-         | [] -> %exp'@loc{ [] }
-         | e1 :: el ->
-             let _loc =  (* BOOTSTRAPING *)
-               if top then loc else Locf.merge (Ast_gen.loc_of e1) loc in
-             %ep'{ $e1 :: ${loop false el} }
-       in loop true in
-     let meta_list mf_a _loc  ls =
-       mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) in 
-     meta_list
-   });
-    (%ctyp-{option},
-     %exp-{fun mf_a _loc -> function
-       | None -> %ep-{None}
-       | Some x -> %ep-{Some ${mf_a _loc x}}
-         })
-    ];
-    plugin_name = "Meta";
-    arity = 1;
-    annot = None;
-    default = None;
-    excludes = ["loc"; "ant"; "quot"];
-  } ;
-
-  Derive_obj.register
+    Derive_stru.register
       {
+       id = (`Pre "meta_"); (* can be improved by sharing the code *)
+       names = ["_loc"];
+       mk_record = Some mk_record;
+       mk_variant = Some  mk_variant;
+       builtin_tbl = [
+       (%ctyp-{int}, %exp-{fun _loc (i:int) -> %ep{$int':i} });
+       (%ctyp-{int32}, %exp-{fun _loc (i:int32) -> %ep{$int32':i} });
+       (%ctyp-{int64}, %exp-{fun _loc (i:int64) -> %ep{$int64':i} });
+       (%ctyp-{nativeint}, %exp-{fun _loc (i:nativeint) -> %ep{$nativeint':i} });
+       (%ctyp-{float}, %exp-{fun _loc (i:float) -> %ep{$flo':i} });
+       (%ctyp-{string}, %exp-{fun _loc (i:string) -> %ep{$str':i} });
+       (%ctyp-{char}, %exp-{fun _loc (i:char) -> %ep{$chr':i} });
+       (%ctyp-{unit}, %exp-{fun _loc (i:unit) -> %ep{()} });
+       (%ctyp-{bool}, %exp-{fun _loc (i:bool) -> %ep{$bool':i} });
+       (%ctyp-{list},%exp-{
+        let mklist loc =
+          let rec loop top =  function
+            | [] -> %exp'@loc{ [] }
+            | e1 :: el ->
+                let _loc =  (* BOOTSTRAPING *)
+                  if top then loc else Locf.merge (Ast_gen.loc_of e1) loc in
+                %ep'{ $e1 :: ${loop false el} }
+          in loop true in
+        let meta_list mf_a _loc  ls =
+          mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) in 
+        meta_list
+      });
+       (%ctyp-{option},
+        %exp-{fun mf_a _loc -> function
+          | None -> %ep-{None}
+          | Some x -> %ep-{Some ${mf_a _loc x}}
+            })
+     ];
+       plugin_name = "Meta";
+       arity = 1;
+       annot = None;
+       default = None;
+       excludes = ["loc"; "ant"; "quot"];
+     } ;
+
+    Derive_obj.register
+      {
+       builtin_tbl = [];
        kind = Concrete %ctyp-{Astf.ep};
        mk_record = Some mk_record;
        mk_variant = Some mk_variant;
@@ -427,7 +410,7 @@ let gen_meta =
        excludes = ["loc";"ant";"quot"];
        arity = 1;
        plugin_name = "MetaObj"
-  }
+     }
   end;;
   
 
@@ -438,6 +421,7 @@ let () =
   begin 
     Derive_obj.register
       {
+       builtin_tbl = [];
        kind =   Concrete %ctyp-{unit};
        mk_record = Some Gen_print.mk_record;
        mk_variant = Some Gen_print.mk_variant;
@@ -451,17 +435,6 @@ let () =
      };
     Derive_stru.register Gen_print.default;
   end
-(*   Derive_obj.mk ~kind:(Concrete %ctyp-{unit}) (\* ~mk_tuple:mk_tuple_print *\) *)
-(*     ~base:"printbase" ~class_name:"print" *)
-(*     ~names:["fmt"]  ~mk_record:Gen_print.mk_record *)
-(*     ~mk_variant:Gen_print.mk_variant ();; *)
-
-(* let () = *)
-(*   begin *)
-    
-
-(*     [ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register; *)
-(*   end *)
 
 
 
@@ -491,6 +464,7 @@ let mk_record_iter cols =
 let () =
   Derive_obj.register
     {
+     builtin_tbl = [];
      kind = Iter;
      base = "iterbase";
      class_name = "iter";
@@ -502,16 +476,6 @@ let () =
      excludes = [];
      plugin_name = "OIter" 
    }
-(* let gen_iter = *)
-(*   Derive_obj.mk ~kind:Iter *)
-(*     ~base:"iterbase" *)
-(*     ~class_name:"iter" *)
-(*     ~names:[]  *)
-(*     ~mk_record:mk_record_iter *)
-(*     ~mk_variant:mk_variant_iter *)
-(*     ();; *)
-
-(* ("OIter",some gen_iter) |> Typehook.register;; *)
 
 (*******************************)
 (* [Locof] generator           *) 

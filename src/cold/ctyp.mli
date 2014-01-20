@@ -134,11 +134,11 @@ val list_of_record : Astfn.name_ctyp -> col list
   ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
   ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
   'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result]} *)
-val mk_method_type :
-    number:int ->
-      id:ident -> 
-        prefix:int ->
-      int -> destination -> (ctyp*ctyp)
+(* val mk_method_type : *)
+(*     number:int -> *)
+(*       id:ident ->  *)
+(*         prefix:int -> *)
+(*       int -> destination -> (ctyp*ctyp) *)
 
 
       

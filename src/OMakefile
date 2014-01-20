@@ -151,7 +151,6 @@ FAN_FILES = \
     builtin\
     id \
     compile_lex compile_stream ctyp \
-    derive \
     derive_obj \
     derive_stru \
     dyn_load \

@@ -24,6 +24,7 @@ type param =
   default: default option;
   excludes: string list;
   kind: Ctyp.kind;
+  builtin_tbl: (ctyp* exp) list;
   base: string;
   class_name: string} 
 module type S = sig val p : param end
@@ -33,6 +34,7 @@ module Make(U:S) =
     open U
     let (arity,names,plugin_name,base,class_name) =
       ((p.arity), (p.names), (p.plugin_name), (p.base), (p.class_name))
+    let builtin_tbl = Hashtblf.of_list p.builtin_tbl
     let mk_variant =
       lazy
         (match p.mk_variant with
@@ -67,40 +69,44 @@ module Make(U:S) =
                 (Astfn_print.dump_ctyp ty)) : exp )
     and exp_of_ctyp ty =
       (let rec aux (x : ctyp) =
-         match x with
-         | `Lid x -> (`Send ((`Lid "self"), (`Lid x)) :>Astfn.exp)
-         | #ident' as id ->
-             let s = Idn_util.map_to_string (Idn_util.to_vid id) in
-             (`Send ((`Lid "self"), (`Lid s)) :>Astfn.exp)
-         | `Quote (_,`Lid v) ->
-             (`App ((`Lid (tyvar_trans v)), (`Lid "self")) :>Astfn.exp)
-         | `App _ as ty ->
-             (match Ast_basic.N.list_of_app ty [] with
-              | (#ident' as tctor)::ls ->
-                  appl_of_list ((aux tctor) ::
-                    (ls |>
-                       (List.map
-                          (function
-                           | `Quote (_,`Lid s) ->
-                               (`Lid (tyvar_trans s) :>Astfn.exp)
-                           | t ->
-                               (`Fun
-                                  (`Case ((`Lid "self"), (aux t :>Astfn.exp))) :>
-                               Astfn.exp)))))
-              | _ ->
-                  failwith
-                    ("Derive_obj.Make.exp_of_ctyp.aux" ^
-                       (Astfn_print.dump_ctyp ty)))
-         | `Arrow (t1,t2) ->
-             aux
-               (`App
-                  ((`App ((`Lid "arrow"), (t1 :>Astfn.ctyp))),
-                    (t2 :>Astfn.ctyp)) :>Astfn.ctyp)
-         | `Par _ as ty -> exp_of_tuple_ctyp ty
-         | ty ->
-             failwith
-               ("Derive_obj.Make.exp_of_ctyp.aux" ^
-                  (Astfn_print.dump_ctyp ty)) in
+         if Hashtbl.mem builtin_tbl x
+         then Hashtbl.find builtin_tbl x
+         else
+           (match x with
+            | `Lid x -> (`Send ((`Lid "self"), (`Lid x)) :>Astfn.exp)
+            | #ident' as id ->
+                let s = Idn_util.map_to_string (Idn_util.to_vid id) in
+                (`Send ((`Lid "self"), (`Lid s)) :>Astfn.exp)
+            | `Quote (_,`Lid v) ->
+                (`App ((`Lid (tyvar_trans v)), (`Lid "self")) :>Astfn.exp)
+            | `App _ as ty ->
+                (match Ast_basic.N.list_of_app ty [] with
+                 | (#ident' as tctor)::ls ->
+                     appl_of_list ((aux tctor) ::
+                       (ls |>
+                          (List.map
+                             (function
+                              | `Quote (_,`Lid s) ->
+                                  (`Lid (tyvar_trans s) :>Astfn.exp)
+                              | t ->
+                                  (`Fun
+                                     (`Case
+                                        ((`Lid "self"), (aux t :>Astfn.exp))) :>
+                                  Astfn.exp)))))
+                 | _ ->
+                     failwith
+                       ("Derive_obj.Make.exp_of_ctyp.aux" ^
+                          (Astfn_print.dump_ctyp ty)))
+            | `Arrow (t1,t2) ->
+                aux
+                  (`App
+                     ((`App ((`Lid "arrow"), (t1 :>Astfn.ctyp))),
+                       (t2 :>Astfn.ctyp)) :>Astfn.ctyp)
+            | `Par _ as ty -> exp_of_tuple_ctyp ty
+            | ty ->
+                failwith
+                  ("Derive_obj.Make.exp_of_ctyp.aux" ^
+                     (Astfn_print.dump_ctyp ty))) in
        aux ty : exp )
     and mapi_exp (i : int) (ty : ctyp) =
       let name_exp = exp_of_ctyp ty in
@@ -220,7 +226,7 @@ module Make(U:S) =
                 (match repr with
                  | `Record t ->
                      let cols = Ctyp.list_of_record t in
-                     let pat = (Ctyp.mk_record ~arity cols :>pat) in
+                     let pat = Ctyp.mk_record ~arity cols in
                      let info =
                        List.mapi
                          (fun i  x  ->
@@ -249,8 +255,7 @@ module Make(U:S) =
                        (Expn_util.eta_expand
                           (Astn_util.apply_args (exp_of_ctyp x) names) arity)
                  | `PolyEq t|`PolySup t|`PolyInf t|`PolyInfSup (t,_) ->
-                     let case = exp_of_poly_variant ~result t in
-                     mk_prefix tyvars case
+                     mk_prefix tyvars (exp_of_poly_variant ~result t)
                  | t ->
                      failwith
                        ("Derive_obj.Make.fun_of_tydcl" ^
@@ -351,14 +356,11 @@ module Make(U:S) =
               | None  -> mk_clfield named_type) : clfield ) in
       let (extras,lst) = Sigs_util.transform_mtyps lst in
       let body = List.map fs lst in
-      let prefix = List.length names in
       let body: clfield =
         let items =
           List.map
             (fun (dest,src,len)  ->
-               let (ty,_dest) =
-                 Ctyp.mk_method_type ~number:arity ~prefix ~id:src len
-                   (Obj kind) in
+               let (ty,_dest) = mk_method_type (src, len) kind in
                let () = Hashtbl.add tbl dest (Qualified dest) in
                (`CrMth
                   ((`Lid dest), `Negative, `Negative,
