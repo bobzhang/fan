@@ -293,6 +293,45 @@ module Make (U:S) = struct
 
 
 
+  let mk_method_type (id, len) (k:Ctyp.kind) : (ctyp * ctyp) =
+    let prefix = List.length names in
+    let a_var_lens =
+      Listf.init len (fun _ -> %ctyp-{'$lid{%fresh{all_}}}) in
+    let b_var_lens =
+      Listf.init len (fun _ -> %ctyp-{'$lid{%fresh{all_}}}) in
+    let a_names = appl_of_list ((id:>ctyp) :: a_var_lens) in
+    let b_names = appl_of_list ((id:>ctyp) :: b_var_lens) in
+    let prefix = Listf.init prefix (const %ctyp-{_}) in
+
+    let result_type = %ctyp-{_} in
+    let self_type = %ctyp-{'__THIS_OBJ_TYPE__}  in
+    let (quant,dst) =
+      match k with
+      | Map -> (a_var_lens @ b_var_lens, b_names)
+      | Iter -> (a_var_lens, result_type)
+      | Fold -> (a_var_lens, self_type)
+      | (Concrete c ) -> (a_var_lens, c)
+    in
+    let base =
+      List.fold_right arrow (prefix @ Listf.init arity (const  a_names)) dst in
+    if len = 0 then
+      ( `TyPolEnd  base,dst)
+    else
+      let quantifiers = appl_of_list quant in
+      let params =
+        Listf.init len 
+          (fun i ->
+            let ith_b = List.nth b_var_lens i in
+            let dst =
+              match  k with
+              | Map -> ith_b
+              | Iter -> result_type
+              | Concrete c -> c
+              | Fold-> self_type  in
+            List.fold_right arrow (self_type::prefix) dst )
+      in
+      (%ctyp-{!$quantifiers . ${List.fold_right arrow params  base}},dst)
+      
           
   let obj_of_mtyps
     (lst:Sigs_util.mtyps)  = 
@@ -308,10 +347,8 @@ module Make (U:S) = struct
           | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
       | tydcl ->
           failwith (__BIND__ ^ Astfn_print.dump_decl tydcl) in
-    let prefix = List.length names in
     let (ty,result_type) =
-      Ctyp.mk_method_type ~number:arity ~prefix ~id:%ident-{ $lid:name } len 
-        (Obj kind) in
+      mk_method_type (%ident-{ $lid:name }, len) kind in
     (ty,result_type) in
   
   let mk_clfield (name,tydcl) : clfield =

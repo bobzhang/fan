@@ -263,6 +263,52 @@ module Make(U:S) =
            failwith
              ("Derive_obj.Make.fun_of_tydcl" ^ (Astfn_print.dump_decl t)) : 
       exp )
+    let mk_method_type (id,len) (k : Ctyp.kind) =
+      (let prefix = List.length names in
+       let a_var_lens =
+         Listf.init len
+           (fun _  ->
+              (`Quote (`Normal, (`Lid (Gensym.fresh ~prefix:"all_" ()))) :>
+              Astfn.ctyp)) in
+       let b_var_lens =
+         Listf.init len
+           (fun _  ->
+              (`Quote (`Normal, (`Lid (Gensym.fresh ~prefix:"all_" ()))) :>
+              Astfn.ctyp)) in
+       let a_names = appl_of_list ((id :>ctyp) :: a_var_lens) in
+       let b_names = appl_of_list ((id :>ctyp) :: b_var_lens) in
+       let prefix = Listf.init prefix (const (`Any :>Astfn.ctyp)) in
+       let result_type = (`Any :>Astfn.ctyp) in
+       let self_type =
+         (`Quote (`Normal, (`Lid "__THIS_OBJ_TYPE__")) :>Astfn.ctyp) in
+       let (quant,dst) =
+         match k with
+         | Map  -> ((a_var_lens @ b_var_lens), b_names)
+         | Iter  -> (a_var_lens, result_type)
+         | Fold  -> (a_var_lens, self_type)
+         | Concrete c -> (a_var_lens, c) in
+       let base =
+         List.fold_right arrow (prefix @ (Listf.init arity (const a_names)))
+           dst in
+       if len = 0
+       then ((`TyPolEnd base), dst)
+       else
+         (let quantifiers = appl_of_list quant in
+          let params =
+            Listf.init len
+              (fun i  ->
+                 let ith_b = List.nth b_var_lens i in
+                 let dst =
+                   match k with
+                   | Map  -> ith_b
+                   | Iter  -> result_type
+                   | Concrete c -> c
+                   | Fold  -> self_type in
+                 List.fold_right arrow (self_type :: prefix) dst) in
+          ((`TyPol
+              ((quantifiers :>Astfn.ctyp),
+                (List.fold_right arrow params base :>Astfn.ctyp)) :>Astfn.ctyp),
+            dst)) : (ctyp* ctyp) )
     let obj_of_mtyps (lst : Sigs_util.mtyps) =
       let tbl = Hashtbl.create 50 in
       let f tydcl result = (fun_of_tydcl ~result tydcl : exp ) in
@@ -279,10 +325,8 @@ module Make(U:S) =
               failwith
                 ("Derive_obj.Make.obj_of_mtyps.mk_type" ^
                    (Astfn_print.dump_decl tydcl)) in
-        let prefix = List.length names in
         let (ty,result_type) =
-          Ctyp.mk_method_type ~number:arity ~prefix
-            ~id:(`Lid name :>Astfn.ident) len (Obj kind) in
+          mk_method_type ((`Lid name :>Astfn.ident), len) kind in
         (ty, result_type) in
       let mk_clfield (name,tydcl) =
         (let (ty,result_type) = mk_type tydcl in
