@@ -6,8 +6,6 @@ open Sigs_util
 
 
 
-(* let () = *)
-(*   ignore eq_u  *)
 
 (************************************) 
 (* Eq generator                     *)

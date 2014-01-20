@@ -19,6 +19,7 @@ let show_code =  ref false
 let print_collect_mtyps = ref false
   
 let register  ?filter ?position (name,transform) =
+  let name = Stringf.lowercase name in
   if Hashtbl.mem filters name then
     eprintf "Warning:%s filter already exists!@." name
   else 
@@ -38,6 +39,7 @@ let show_modules () =
 
 
 let plugin_add plugin =
+  let plugin = Stringf.lowercase plugin in
   let try v = Hashtbl.find filters plugin in 
     if not @@
       List.exists (fun (n,_) -> n=plugin) !State.current_filters
@@ -185,7 +187,7 @@ let genenrate_type_code _loc tdl (ns:Astf.strings) : Astf.stru =
   let filters =
     List.map (function
       |`Str(sloc,n) ->
-          let n = String.capitalize n in
+          let n = Stringf.lowercase n in
           (match Hashtblf.find_opt filters n with
           | None -> Locf.failf sloc "%s not found" n
           | Some p -> (n,p))

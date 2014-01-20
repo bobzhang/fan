@@ -8,6 +8,7 @@ let filters: (Sigs_util.plugin_name,Sigs_util.plugin) Hashtbl.t =
 let show_code = ref false
 let print_collect_mtyps = ref false
 let register ?filter  ?position  (name,transform) =
+  let name = Stringf.lowercase name in
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else Hashtbl.add filters name { transform; position; filter }
@@ -15,6 +16,7 @@ let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
   print_newline ()
 let plugin_add plugin =
+  let plugin = Stringf.lowercase plugin in
   (try
      let v = Hashtbl.find filters plugin in
      fun ()  ->
@@ -140,7 +142,7 @@ let genenrate_type_code _loc tdl (ns : Astf.strings) =
      List.map
        (function
         | `Str (sloc,n) ->
-            let n = String.capitalize n in
+            let n = Stringf.lowercase n in
             (match Hashtblf.find_opt filters n with
              | None  -> Locf.failf sloc "%s not found" n
              | Some p -> (n, p))

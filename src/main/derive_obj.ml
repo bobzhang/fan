@@ -3,7 +3,7 @@
 open Util
 open Astn_util
 open Astfn
-(* open Ctyp *)
+
 type default =
   | Atom of exp
   | Invalid_argument
@@ -39,6 +39,10 @@ let transform default =
 type param = {
     arity: int;
     names: string list;
+    (* we need names here. 
+       So the user could write plugin easier,
+       otherwise how could the user refer to the argument 
+     *)
     plugin_name:  string;
     mk_record: (Ctyp.record_col list -> exp) option;
     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ;
@@ -48,20 +52,8 @@ type param = {
     kind : Ctyp.kind;
     base : string;
     class_name : string;
-  }
-(* type param = { *)
-(*     arity: int; *)
-(*     names: string list; *)
-(*     plugin_name:  string; *)
-(*     id: fn ; *)
-(*     default: default option; *)
-(*     (\* ?(default= %exp-{ failwith "arity >= 2 in other branches" } )*\) *)
-(*     mk_record: (Ctyp.record_col list -> exp) option; *)
-(*     mk_variant: (string option -> Ctyp.ty_info list -> exp) option ; *)
-(*     annot: (string -> (ctyp*ctyp)) option; *)
-(*     builtin_tbl: ( ctyp * exp) list; *)
-(*     excludes : string list; *)
-(*   } (\* with print *\) *)
+  } 
+
 
       
 module type S = sig

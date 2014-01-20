@@ -135,11 +135,32 @@ module Make(U:S) =
          let e = mk (cons, tyargs) in
          (`Case ((p :>Astfn.pat), (e :>Astfn.exp)) :>Astfn.case) : case ) in
       let simple (lid : ident) =
-        (let e = (exp_of_ctyp (lid :>ctyp)) +> names in
+        (let e = apply_args (exp_of_ctyp (lid :>ctyp)) names in
          let (f,a) = Ast_basic.N.view_app [] result in
          let annot = appl_of_list (f :: (List.map (fun _  -> `Any) a)) in
-         Ctyp.gen_tuple_abbrev ~arity ~annot ~destination:(Obj kind) lid e : 
-        case ) in
+         let pat =
+           tuple_com
+             (Listf.init arity
+                (fun i  ->
+                   (`Alias
+                      ((`ClassPath (lid :>Astfn.ident)),
+                        (`Lid (Id.x ~off:i 0))) :>Astfn.pat))) in
+         let e =
+           appl_of_list (e ::
+             (Listf.init arity
+                (fun i  -> ((Id.xid ~off:i 0 :>Astfn.vid) :>Astfn.exp)))) in
+         match kind with
+         | Map  ->
+             (`Case
+                ((pat :>Astfn.pat),
+                  (`Coercion
+                     ((e :>Astfn.exp), (lid :>Astfn.ctyp),
+                       (annot :>Astfn.ctyp)))) :>Astfn.case)
+         | _ ->
+             (`Case
+                ((pat :>Astfn.pat),
+                  (`Subtype ((e :>Astfn.exp), (annot :>Astfn.ctyp)))) :>
+             Astfn.case) : case ) in
       let ls = Ctyp.view_variant ty in
       let res =
         let res =
@@ -216,9 +237,7 @@ module Make(U:S) =
                               ((pat :>Astfn.pat),
                                 (Lazy.force mk_record info :>Astfn.exp)) :>
                           Astfn.case)])
-                 | `Sum ctyp ->
-                     let funct = exp_of_or_ctyp ctyp in
-                     mk_prefix tyvars funct
+                 | `Sum ctyp -> mk_prefix tyvars (exp_of_or_ctyp ctyp)
                  | t ->
                      failwith
                        ("Derive_obj.Make.fun_of_tydcl" ^
