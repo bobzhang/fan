@@ -64,12 +64,14 @@ let _ =
     List.iter (make_key exp 30 ~left:false) ["or"; "||"];
     List.iter (make_key exp 40 ~left:false) ["&";"&&"];
     List.iter (make_key exp 50 ~left:true) ["==";"=";"<";">"];
-    List.iter (make_key exp 80 ~left:true) ["+";"-";"-."];
+    List.iter (make_key exp 80 ~left:true) ["+";"-";"-.";"+."];
+    List.iter (make_key exp 90 ~left:true) ["*";"/";"%"];
+    List.iter (make_key exp 100 ~left:false) ["**"];
     make_infix exp transform 0;
     make_infix ~left:false exp transform 1;
     make_infix  exp transform 2;
     make_infix  exp transform 3;
-    make_infix  exp transform 4;
+    make_infix ~left:false exp transform 4;
   end
     
 let make_case exp pat =
@@ -627,6 +629,7 @@ let apply () = begin
         ]
        exp : 120  
         [ ("-"|"-." as x); S as e %{ Fan_ops.mkumin _loc x e} (* Delayed into Dump *)
+        | ("+"|"+."); S as e %{ e}
         ]
        exp : 130  
         [ S as e1; S as e2 %{ `App(_loc,e1,e2)}
