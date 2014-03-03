@@ -126,11 +126,13 @@ let _ =
   List.iter (make_key exp 40 ~left:false) ["&"; "&&"];
   List.iter (make_key exp 50 ~left:true) ["=="; "="; "<"; ">"];
   List.iter (make_key exp 80 ~left:true) ["+"; "-"; "-."];
+  List.iter (make_key exp 90 ~left:true) ["*"; "/"; "%"];
+  List.iter (make_key exp 100 ~left:false) ["**"];
   make_infix exp transform 0;
   make_infix ~left:false exp transform 1;
   make_infix exp transform 2;
   make_infix exp transform 3;
-  make_infix exp transform 4
+  make_infix ~left:false exp transform 4
 let make_case exp pat =
   let pat_as_pat_opt: 'pat_as_pat_opt Gramf.t = Gramf.mk "pat_as_pat_opt" in
   Gramf.extend_single
