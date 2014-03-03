@@ -52,7 +52,7 @@ let make_key ?(left=true) ?action exp i op =
       ]}
         
 let _ =
-  let transform i =
+  let transform i = (* operator precedence and grammar precedence *)
     List.assoc i [(0,50);(1,60);(2,80);(3,90);(4,100)] in
   begin
     make_key exp 20 ~left:true
@@ -65,11 +65,13 @@ let _ =
     List.iter (make_key exp 40 ~left:false) ["&";"&&"];
     List.iter (make_key exp 50 ~left:true) ["==";"=";"<";">"];
     List.iter (make_key exp 80 ~left:true) ["+";"-";"-."];
+    List.iter (make_key exp 90 ~left:true) ["*";"/";"%"];
+    List.iter (make_key exp 100 ~left:false) ["**"];
     make_infix exp transform 0;
     make_infix ~left:false exp transform 1;
     make_infix  exp transform 2;
     make_infix  exp transform 3;
-    make_infix  exp transform 4;
+    make_infix  ~left:false exp transform 4;
   end
     
 let make_case exp pat =
