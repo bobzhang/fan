@@ -19,7 +19,7 @@ type param = {
     excludes: string list;
     kind : Ctyp.kind;
     builtin_tbl : (ctyp * exp) list;
-    base : string;
+    base : string option;
     class_name : string;
   }
 

@@ -1,0 +1,168 @@
+
+
+
+https://bitbucket.org/camlspotter/pa_ovisitor
+
+
+ovisit provides visitor pattern, iterates over nodes. You can use it
+for generic folding, adding a mutable state from the inheritance of
+generated class.
+
+ofold provides generic fold. The methods take the accumulator argument
+to be pure.
+
+omap provides generic map. It has also an accumulator for folding.
+
+#+BEGIN_SRC ocaml
+  type t =
+    | Foo of int list
+    | Bar of int * int
+  with ovisit
+  
+  
+  class virtual ovisit_t =
+    object (self)
+      method virtual list : 'a1. ('a1 -> unit) -> 'a1 list -> unit
+      method virtual int : int -> unit
+      method t : t -> unit =
+        fun __value ->
+          match __value with
+          | Foo __x1 -> (self#list self#int __x1; ())
+          | Bar (__x1, __x2) -> (self#int __x1; self#int __x2; ())
+    end
+  
+#+END_SRC
+
+
+This ovisit_t is a skelton class for the visitor pattern of the data
+type.
+
+It has methods of the same names as the data types appear in the type
+definition: list, int and t. They are visitors for those types. The
+visitor method t, for example, has type t -> unit: it takes a value of
+type t and visit its internal components.
+
+
+There are two ways of this: auto-generate underlying visitor methods
+by attaching with ovisit to the definitions of the underlying types,
+or hand writing them. Since int and list are primitive types without
+type deinitions, we implement them by ourselves:
+
+#+BEGIN_SRC ocaml
+class c = object
+  inherit ovisit_t
+
+  (* the state *)
+  val mutable st = 0
+  method st = st
+
+  (* visitor *)
+  method int n = st <- st + n
+  method list = List.iter
+end
+#+END_SRC
+
+
+Here, the visitor methods for int and list are defined, inheriting the
+skelton class ovisit_t. Note that the class also has a state st. The
+int visitor accumulates the value to the states, and the list visitor
+iterates the visitor function for the parameter type over the list
+elements. (See the type of the method list for details.)
+
+
+#+BEGIN_SRC ocaml
+type u = { t : t; children : u list } with ovisit
+#+END_SRC
+
+
+
+The visitor skelton class ovisit_u has a virtual method t for the
+visitor of t. We can use the visitor class c (or c_pure) we have
+created above. The composition is done by inheritance:
+
+#+BEGIN_SRC ocaml
+class c_u = object
+  inherit c
+  inherit ovisit_u
+end
+#+END_SRC
+
+
+
+---
+how to handle 
+
+type t = F.t list 
+--
+
+
+* folder 
+
+with ofold auto-generates folder: a functional version of visitor. It
+is like the relationship between List.iter and List.fold: a folder
+method takes an accumulator argument and traverses data modifying the
+accumulator value and
+ returns it as the result:
+
+
+#+BEGIN_SRC ocaml
+  type t =
+    | Foo of int list
+    | Bar of int * int
+  with ofold
+  
+  class c = object
+    inherit [int] ofold_t (* requires the accumulator type *)
+  
+    method int st n = st + n
+    method list = List.fold_left
+  end
+  
+  let () =
+    let o = new c in (* folder is pure, so we only need one o *)
+    assert ( o#t 0 (Foo [1;2;3;4;5]) = 15 );
+    assert ( o#t 0 (Bar (1,2)) = 3 )
+  
+#+END_SRC
+
+
+with omap auto-generates mapper skelton class. It is also an extension of ofold:
+type t =
+  | Foo of int list
+  | Bar of int * int
+with omap
+
+class c = object
+  inherit [int] omap_t (* requires the accumulator type *)
+
+  method int st n = st + n, n + 1
+  method list f st xs =
+    List.fold_left (fun (st,xs) x ->
+      let st, x = f st x in st, x :: xs) (st, []) (List.rev xs)
+end
+
+let () =
+  let o = new c in (* folder is pure, so we only need one o *)
+  assert ( o#t 0 (Foo [1;2;3;4;5]) = (15, Foo [2;3;4;5;6]) );
+  assert ( o#t 0 (Bar (1,2)) = (3, Bar (2,3)) )
+
+
+
+There is another way. Declaring data type names which should not be visited by NO_VISIT(...) toplevel expression. The data types in NO_VISIT(...) are excluded from the next with ovisit/ofold/omap auto-generation and it creates classes without the corresponding methods. Those data types are simply skipped in visiting process:
+NO_VISIT(bool, list)
+
+#+BEGIN_SRC ocaml
+type t = ... bool ... list ... with ovisit
+#+END_SRC
+
+
+
+
+The class ovisit_t does not have method bool and list. Booleans and
+any list element in data type t is not visited by ovisit_t.
+NO_VISIT(...) also applies to with ofold and with omap. For ofold no
+visit data types are just skiped as ovisit no visits. For omap, the
+values of no visit data types are kept as they are.  The effect of
+NO_VISIT(...) is only available at the next pa_ovisitor annotation. At
+each with ovisit/ofold/omap, the set of no visit data types are reset
+to the empty.

@@ -38,16 +38,9 @@ let gen_eqobj =
   excludes = [];
   builtin_tbl = [];
   kind = Iter;
-  base = "eqbase";
+  base = Some "eqbase";
   class_name = "eq";
  }
-  (*       List.iter Typehook.register *)
-  (*   [ ("OEq", some gen_eqobj ) ] *)
-
-  (* Derive_obj.mk ~kind:Iter  ~mk_record *)
-  (*    ~base:"eqbase" ~class_name:"eq" *)
-  (*    ~mk_variant:mk_variant *)
-  (*    ~arity:2 ~default:%exp-{false} () ;; *)
 
 let some f  = fun x -> Some (f x)
 
@@ -144,7 +137,7 @@ let () =
     default = None;
     excludes = [];
     builtin_tbl = [];
-    base = "foldbase";
+    base = Some "foldbase";
     class_name = "fold";
     plugin_name = "Fold" ;
     arity = 1;
@@ -157,7 +150,7 @@ let () =
     mk_variant = Some mk_variant;
     default = Some (Atom %exp-{invalid_arg "fold2 failure" });
     excludes = [];
-    base = "foldbase";
+    base = Some "foldbase";
     class_name = "fold";
     plugin_name = "Fold2" ;
     arity = 2;
@@ -207,7 +200,7 @@ let () =
        kind = Map ;
        mk_record = Some mk_record;
        mk_variant = Some mk_variant;
-       base = "mapbase";
+       base = Some "mapbase";
        class_name = "map";
        default = None ;
        excludes = [];
@@ -221,7 +214,7 @@ let () =
      kind = Map ;
      mk_record = Some mk_record;
      mk_variant = Some mk_variant;
-     base = "mapbase";
+     base = Some "mapbase";
      class_name = "map2";
      default = None ;
      excludes = [];
@@ -403,7 +396,7 @@ let gen_meta =
        kind = Concrete %ctyp-{Astf.ep};
        mk_record = Some mk_record;
        mk_variant = Some mk_variant;
-       base = "primitive";
+       base = Some "primitive";
        class_name = "meta";
        names = ["_loc"];
        default = None;
@@ -421,11 +414,21 @@ let () =
   begin 
     Derive_obj.register
       {
-       builtin_tbl = [];
+       builtin_tbl = [
+       (%ctyp-{int}, %exp-{Format.pp_print_int});
+       (%ctyp-{int32}, %exp-{fun fmt -> Format.fprintf "%ld"});
+       (%ctyp-{int64}, %exp-{fun fmt -> Format.fprintf "%Ld"});
+       (%ctyp-{nativeint}, %exp-{fun fmt -> Format.fprintf "%nd"});
+       (%ctyp-{float}, %exp-{Format.pp_print_float});
+       (%ctyp-{string}, %exp-{fun fmt -> Format.fprintf fmt "%S"});
+       (%ctyp-{bool}, %exp-{Format.pp_print_bool});
+       (%ctyp-{char}, %exp-{Format.pp_print_char});
+       (%ctyp-{unit}, %exp-{fun fmt (_:unit)-> Format.fprintf fmt "()"});
+     ];
        kind =   Concrete %ctyp-{unit};
        mk_record = Some Gen_print.mk_record;
        mk_variant = Some Gen_print.mk_variant;
-       base = "printbase";
+       base = Some "printbase";
        class_name = "print";
        arity = 1 ;
        names = ["fmt"];
@@ -466,7 +469,7 @@ let () =
     {
      builtin_tbl = [];
      kind = Iter;
-     base = "iterbase";
+     base = Some "iterbase";
      class_name = "iter";
      names = [];
      mk_record = Some mk_record_iter;

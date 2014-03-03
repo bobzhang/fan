@@ -21,20 +21,6 @@ let transform default =
 
 (** types below are used to tell fan how to produce
     function of type [ident -> ident] *)
-(* type fn  = *)
-(*     [ `Pre of string *)
-(*     | `Post of string *)
-(*     | `Fun of (string->string) *)
-(*     | `Same ] with print *)
-
-
-(* let trans (x:fn) = *)
-(*   match x with  *)
-(*   | `Pre pre -> (fun x -> pre ^ x) *)
-(*   | `Post post -> (fun x -> x ^ post) *)
-(*   | `Same  -> (fun x -> x) *)
-(*   | `Fun f -> f  *)
-(* let trans_to_id f x = lid (trans f  x ) *)
 
 type param = {
     arity: int;
@@ -51,7 +37,7 @@ type param = {
     excludes : string list;
     kind : Ctyp.kind;
     builtin_tbl : (ctyp * exp) list;
-    base : string;
+    base : string option;
     class_name : string;
   } 
 
@@ -382,8 +368,23 @@ module Make (U:S) = struct
         mk_method_type (src,len) kind in
       let () = Hashtbl.add tbl dest (Qualified dest) in
       %clfield-{ method $lid:dest : $ty = ${Expn_util.unknown len} } ) extras in
-    sem_of_list (body @ items) in 
-  let v = Ctyp.mk_obj class_name  base body in
+    sem_of_list (body @ items) in
+  let v =
+    match base with
+    | None ->
+        %stru-{
+        class $lid:class_name = object (self)
+            $body;
+        end
+      }
+    | Some base -> 
+          %stru-{
+        class $lid:class_name = object (self)
+          inherit $lid:base ;
+          $body;
+        end } in
+      
+  (* let v = Ctyp.mk_obj class_name  base body in *)
   begin
     Hashtbl.iter
       (fun _ v ->

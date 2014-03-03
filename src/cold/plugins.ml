@@ -862,7 +862,56 @@ let gen_meta =
 let () =
   Derive_obj.register
     {
-      builtin_tbl = [];
+      builtin_tbl =
+        [((`Lid "int" :>Astfn.ctyp),
+           (`Dot ((`Uid "Format"), (`Lid "pp_print_int")) :>Astfn.exp));
+        ((`Lid "int32" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%ld"))))) :>Astfn.exp));
+        ((`Lid "int64" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%Ld"))))) :>Astfn.exp));
+        ((`Lid "nativeint" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                       (`Str "%nd"))))) :>Astfn.exp));
+        ((`Lid "float" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_float")) :>Astfn.exp));
+        ((`Lid "string" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`App
+                     ((`App
+                         ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                           (`Lid "fmt"))), (`Str "%S"))))) :>Astfn.exp));
+        ((`Lid "bool" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_bool")) :>Astfn.exp));
+        ((`Lid "char" :>Astfn.ctyp),
+          (`Dot ((`Uid "Format"), (`Lid "pp_print_char")) :>Astfn.exp));
+        ((`Lid "unit" :>Astfn.ctyp),
+          (`Fun
+             (`Case
+                ((`Lid "fmt"),
+                  (`Fun
+                     (`Case
+                        ((`Constraint (`Any, (`Lid "unit"))),
+                          (`App
+                             ((`App
+                                 ((`Dot ((`Uid "Format"), (`Lid "fprintf"))),
+                                   (`Lid "fmt"))), (`Str "()")))))))) :>
+          Astfn.exp))];
       kind = (Concrete (`Lid "unit" :>Astfn.ctyp));
       mk_record = (Some Gen_print.mk_record);
       mk_variant = (Some Gen_print.mk_variant);
