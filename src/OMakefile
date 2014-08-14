@@ -127,7 +127,7 @@ HOT_ANNOT_INCLUDES[]=
 
     
 NATIVE_ENABLED = true
-
+BYTE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_LEX_LIB_FILES = \
@@ -185,18 +185,17 @@ FAN_FILES = \
     # lang_pos \
     # loc_meta
     # parse_grammar2
-    
+
 FAN_EXP_FILES = \
     # parse_grammar2
     # parse_lex2 fan_lex2
-    
+
 # driver files also need to be synced up with 
 DRIVER_FILES = fan fan_top
 ##################################################################
 
 
 ##################################################################
-    
 # FAN_DRIVER= fan
 FILES[] =
     # fan
@@ -214,10 +213,12 @@ OCAML_LIBS[] =
     $(LIB_UTILS)
     $(LIB_COMMON)
     $(LIB_PARSER_RT)
+
 OCAML_LINK_FLAGS += -I +compiler-libs -linkall    
 
 
 #####################
+# TARGET fan #######
 # cold binary -> fan
 section
     OCAML_OTHER_LIBS += dynlink ocamlcommon
@@ -225,7 +226,12 @@ section
     .SUBDIRS: utils common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
-    
+
+coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
+
+ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+
 #####################
 # fan -> fan0
 section
@@ -431,12 +437,7 @@ snapshot: :exists: fan0
 .PHONY: coldtop hottop
 
 hottop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma main_annot/liblex.cma main_annot/libmain_top.cma
-    
-coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
 
-ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
-    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
-    
 .DEFAULT: fan coldtop ftop    
 clean:
     rm -rf $(OCAMLBIN_EXT)

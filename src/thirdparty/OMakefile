@@ -1,14 +1,13 @@
 
 
 USE_FAN = true
-
+FAN = $(dir ../fan)
 
 NATIVE_ENABLED=true
 NATIVEPLUGIN_ENABLED = true 
 
 section:
     .SUBDIRS: plc ounit arith utop
-    
 # local variables:
 # compile-command: "cd .. && pmake test_hot"
 # end:
