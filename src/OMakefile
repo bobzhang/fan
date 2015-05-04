@@ -24,17 +24,9 @@ DIR_MAIN       = $(dir main)
 
 # public.PREFIXED_OCAMLINCLUDES = $`(mapprefix -I, $(OCAMLINCLUDES))
 
-# USE_OCAMLFIND=true
-# we don't depend on ocamlfind here
-
-# OMakeFlags(--verbose)
 
 ## compile flags
 OCAMLFLAGS = 
-BYTE_ENABLED = true
-NATIVE_ENABLED = true
-OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree \
-   *.omc
 
 
 
@@ -56,8 +48,6 @@ HOT_ANNOT_INCLUDES[]=
     $(DIR_MAIN_ANNOT)
     $(TREEPARSER_INCLUDES)
 
-NATIVE_ENABLED = true
-BYTE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_LEX_LIB_FILES = \
@@ -138,43 +128,23 @@ LIB_COLD = $(file cold/libmain)
 
 
 
-OCAML_LIBS[] =
+OCAML_LIBS[] +=
     $(LIB_UTILS)
     $(LIB_COMMON)
     $(LIB_PARSER_RT)
 
 OCAML_LINK_FLAGS += -I +compiler-libs -linkall    
 
-OCAMLCFLAGS += -annot 
 
-#####################
-# TARGET fan #######
-# cold binary -> fan
-section
-    OCAML_OTHER_LIBS += dynlink ocamlcommon
-    .SUBDIRS: utils common treeparser cold 
-    OCAML_LIBS[] += $(LIB_COLD)
-    OCamlProgram (fan, $(DIR_COLD)/fan)
+
 
 coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
 
 ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
 
-# #####################
-# # fan -> fan0
-# section
-#     OCAML_OTHER_LIBS += dynlink ocamlcommon
-#     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
-#     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-#     USE_FAN = true 
-#     FAN = $(file fan)
-#     OCamlAdditionalDigestDependency($(FAN))
-#     # AdditionalDependency($(PP_FAN))
-#     # weaker dependency require snapshot from time to time however
-#     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
-#     .SUBDIRS: $(VMOUNTDIR)
-#     OCamlProgram(fan0, $(VMOUNTDIR)/fan)
+
+.SUBDIRS: utils common treeparser cold main
 
 # MakeFix(mountdir,pp,exe) =
 #     OCAML_OTHER_LIBS += dynlink ocamlcommon

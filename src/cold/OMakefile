@@ -11,7 +11,9 @@ lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fan_top)
 # %.dparsetree:%.ml
 #     $(PP_FAN) -printer dparsetree $< > $@
 
-
+OCAML_LIBS[] += libmain
+OCAML_OTHER_LIBS += dynlink ocamlcommon
+OCamlProgram (fan, fan)
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

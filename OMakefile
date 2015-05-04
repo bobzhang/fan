@@ -1,4 +1,16 @@
 CREATE_SUBDIRS = true
+NATIVE_ENABLED = true
+BYTE_ENABLED = true
+OCAMLCFLAGS += -annot 
+
+#####################
+# TARGET fan #######
+# cold binary -> fan
+
+
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree *.omc
+
+
 section
 	vmount(-l, src, build/src)
 	.SUBDIRS: build/src

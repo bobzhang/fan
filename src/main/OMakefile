@@ -6,14 +6,32 @@ OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 
 .PHONY: lib clean
-    
+
+# OCamlLibrary(libexp, $(EXP_FILES))
+
+
+
+# fan -> fan0
+
+OCAML_OTHER_LIBS += dynlink ocamlcommon
+# VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
+# vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+USE_FAN = true 
+FAN = $(file ../cold/fan)
+OCamlAdditionalDigestDependency($(FAN))
+
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
 OCamlLibrary(libmain, $(FAN_FILES))
 
 lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fan_top)
 
 
-# OCamlLibrary(libexp, $(EXP_FILES))
+    # AdditionalDependency($(PP_FAN))
+    # weaker dependency require snapshot from time to time however
+OCAML_LIBS[] += libmain
+# .SUBDIRS: $(VMOUNTDIR)
+# OCamlProgram(fan, $(VMOUNTDIR)/fan)
+OCamlProgram(fan, fan)
 
 clean:
     rm -rf $(OCAMLBIN_EXT)
