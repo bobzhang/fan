@@ -1,5 +1,5 @@
 
-let ocaml_standard_library = "/usr/local/lib/ocaml"
+let ocaml_standard_library = "/Users/hongbozhang/.opam/4.01.0/lib/ocaml"
 
 (* WARNING, WARNING, WARNING
    make sure to update for each compiler release *)

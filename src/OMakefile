@@ -1,72 +1,27 @@
+CREATE_SUBDIRS = true
 
-.STATIC:
-    if $(not $(test -d main_annot))
-        mkdir main_annot
-    # This direcotry is preprocessed by cold
-    # The develop is mainly here
-    # produce fan0 
-    DIR_MAIN_ANNOT  = $(dir main_annot)        
-    
-    ####################################
-    # preprocessed by fan0
-    # produce fan1
-    if $(not $(test -d hot1))
-        mkdir hot1 
-    DIR_HOT1 = $(dir hot1)
+# This direcotry is preprocessed by cold
+# The develop is mainly here
 
-    if $(not $(test -d hot2))
-        mkdir hot2 
-    # fan1 -> fan2
-    DIR_HOT2 = $(dir hot2)
+DIR_MAIN_ANNOT  = $(dir main_annot)# produce fan0  
+DIR_HOT1 = $(dir hot1) # preprocessed by fan0
+DIR_HOT2 = $(dir hot2) # fan1 -> fan2
+DIR_HOT3 = $(dir hot3)# fan2 -> fan3 
+DIR_WEAK1 = w1
+DIR_WEAK2 = w2
+DIR_WEAK3 = w3 
+DIR_UNIT_ANNOT  = $(dir unitest_annot)
+DIR_UNIT1       = $(dir unitest1)
+DIR_UNIT2       = $(dir unitest2)
+DIR_UNIT3       = $(dir unitest3)
+DIR_DPARSETREE  = $(dir dparsetree)
+DIR_UTILS      = $(dir utils)
+DIR_COMMON     = $(dir common)
+DIR_TREEPARSER = $(dir treeparser)
+DIR_COLD       = $(dir cold)  
+DIR_MAIN       = $(dir main)
 
-    if $(not $(test -d hot3))
-        mkdir hot3 
-    # fan2 -> fan3 
-    DIR_HOT3 = $(dir hot3)
-    if $(not $(test -d w1))
-        mkdir w1
-    DIR_WEAK1 = w1
-    if $(not $(test -d w2))
-        mkdir w2
-    DIR_WEAK2 = w2
-    if $(not $(test -d w3))
-        mkdir w3 
-    DIR_WEAK3 = w3 
-    if $(not $(test -d unitest_annot))
-        mkdir unitest_annot
-    DIR_UNIT_ANNOT  = $(dir unitest_annot)
-    if $(not $(test -d unitest1))
-        mkdir unitest1 
-    DIR_UNIT1       = $(dir unitest1)
-    if $(not $(test -d unitest2))
-        mkdir unitest2
-    DIR_UNIT2       = $(dir unitest2)
-    if $(not $(test -d unitest3))
-        mkdir unitest3
-    DIR_UNIT3       = $(dir unitest3)
 
-    if $(not $(test -d dparsetree))
-        mkdir dparsetree
-    DIR_DPARSETREE  = $(dir dparsetree)
-
-    if $(not $(test -d unitest_annot/main))
-        mkdir unitest_annot/main
-
-    if $(not $(test -d unitest1/main))
-        mkdir unitest1/main
-
-    if $(not $(test -d unitest_annot/plc))
-        mkdir unitest_annot/plc
-        
-    if $(not $(test -d unitest1/plc))
-        mkdir unitest1/plc
-
-    if $(not $(test -d unitest1/cmd))
-        mkdir unitest1/cmd
-
-    if $(not $(test -d unitest_annot/cmd))
-        mkdir unitest_annot/cmd
-        
 # public.PREFIXED_OCAMLINCLUDES = $`(mapprefix -I, $(OCAMLINCLUDES))
 
 # USE_OCAMLFIND=true
@@ -81,21 +36,7 @@ NATIVE_ENABLED = true
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree \
    *.omc
 
-######################################
 
-
-
-
-
-
-####################################
-
-
-DIR_UTILS      = $(dir utils)
-DIR_COMMON     = $(dir common)
-DIR_TREEPARSER = $(dir treeparser)
-DIR_COLD       = $(dir cold)  
-DIR_MAIN       = $(dir main)
 
 UTILS_INCLUDES[] =
     $(DIR_UTILS)
@@ -115,17 +56,6 @@ HOT_ANNOT_INCLUDES[]=
     $(DIR_MAIN_ANNOT)
     $(TREEPARSER_INCLUDES)
 
-# CreateDirIfNotExist(dir) =
-#     if $(not $(file-exists $(dir)))
-#         println($"--- creating directory $(dir) ---")
-#         mkdir $(dir)
-#         export
-# static.=
-#     foreach(dir => ..., $(DIR_MAIN_ANNOT) $(DIR_HOT1) $(DIR_HOT2) $(DIR_HOT3))
-#         CreateDirIfNotExist($(dir))
-    
-
-    
 NATIVE_ENABLED = true
 BYTE_ENABLED = true
 ##############
@@ -134,7 +64,6 @@ FAN_LEX_LIB_FILES = \
     lexing_util   lex_lex \
     lex_fan \
 
-    
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
     ast_basic \
@@ -216,13 +145,13 @@ OCAML_LIBS[] =
 
 OCAML_LINK_FLAGS += -I +compiler-libs -linkall    
 
+OCAMLCFLAGS += -annot 
 
 #####################
 # TARGET fan #######
 # cold binary -> fan
 section
     OCAML_OTHER_LIBS += dynlink ocamlcommon
-    OCAMLCFLAGS += -annot 
     .SUBDIRS: utils common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
@@ -236,7 +165,6 @@ ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold
 # fan -> fan0
 section
     OCAML_OTHER_LIBS += dynlink ocamlcommon
-    OCAMLCFLAGS += -annot
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     USE_FAN = true 
@@ -365,7 +293,6 @@ DIR_THIRDPARTY  = $(dir thirdparty)
 
 
 MakeThirdParty(maindir,pp) =
-    OCAMLCFLAGS += -annot
     PP_FAN = $(pp)
     OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
     OCAMLINCLUDES += $(maindir)
