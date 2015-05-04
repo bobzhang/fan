@@ -1,3 +1,4 @@
+CREATE_SUBDIRS = true
 section
 	vmount(-l, src, build/src)
 	.SUBDIRS: build/src

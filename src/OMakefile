@@ -1,4 +1,4 @@
-CREATE_SUBDIRS = true
+
 
 # This direcotry is preprocessed by cold
 # The develop is mainly here
