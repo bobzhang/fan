@@ -5,6 +5,15 @@ superset of [OCaml](http://caml.inria.fr/) with Lispy
 
 Homepage: http://bobzhang.github.io/Fan/
 
-See install.org 
+
+* Requirements
+  ocaml (==4.00.1)
+  ocamlfind (optional)
 
 
+* Install
+
+  `make world`
+
+  if you have ocamlfind installed, try
+  `make metainstall` to install the META file

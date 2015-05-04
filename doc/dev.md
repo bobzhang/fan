@@ -1,6 +1,270 @@
 
 
 
+# Get started
+
+## build scripts
+   - Root.om
+   - Configure.om
+   - OMakeroot
+   - OCaml.om
+     Add a general rule to support Fan
+
+     ```
+     public.USE_FAN       = false
+     public.FAN_PLUGINS   =
+     public.FAN           = fan
+     public.FAN_PLUGIN_OPTIONS  = $`(mapprefix -plugin, $(FAN_PLUGINS))
+     ```
+   - OMakefile
+
+   - ./pmake
+    a simple omake wrapper with parallel
+
+## targets
+
+   - fan(.run)
+     cold start, build fan from preprocessed files
+   - coldtop
+     fan toplevel
+     FIXME
+   - ftop
+     fan toplevel with utop support
+   - fan0(.run)
+   - fan1
+   - fan2
+   - snapshot
+
+# Test its correctness
+
+## when to bootstrapp?
+
+
+## how to test changes is right
+
+   - at least
+     --> hotbuild -> snapshot(source 1)
+     --> cold build --> hot build
+     --> snapshot (source 2)
+
+     source(1,2) should reach a fix point, it means we can keep the loop
+   - unittest
+
+# Troubleshooting
+  When you add a new file , and the build system can not track the dependency correctly, fore example
+
+``` ocaml
+     Unbound module Ast_gen
+```
+
+  Try to `pmake clean` and build it again.
+
+
+# contracts
+
+## dependency
+
+## family lang quasiquot
+
+# Challenges
+
+
+## regexp
+
+
+{:?\([-a-z_\.']*\)\(@[a-z_]+\)?|\(.*?\)|}
+
+
+problem
+->% lexing
+|%
+[%
+{'
+=%
+%exp-{ %exp'{ { $$x } } }
+
+
+``` ocaml
+  %lexer{
+  let a = ghosgho in
+  3
+
+  }@{
+     let b  = 3
+   }
+
+  match x, y with
+  | %exp{ 3 + 3 }@loc, %exp{ 1 + 4 }@loc
+  |
+
+  %yy{
+    %xx{
+       (* gshog *)
+    }@{
+       (* ghosg *)
+     }
+  }@{
+     monad law....
+   }
+
+
+  type t = {
+    foo: int; [@default 42]
+    bar: float
+  } [@@sexp]
+
+
+  [%lexer
+    match foo with
+    (Range ('a','z') | Range(1000,1500)), 65 -> Foo
+    | Star (Range('a','z')) -> Bar
+  ]
+
+  let html =
+    %html[
+    <h1>Hello $str:world$!</h1>
+  ]
+```
+
+``` ocaml
+%x{ ghso
+
+}@{
+ghsogh
+}
+```
+
+
+
+`Field  could be refined
+
+| Pexp_field of expression * Longident.t loc                 |
+| Pexp_setfield of expression * Longident.t loc * expression |
+
+# Gram
+
+simple -> Gram_gen.token_of_simple_pat
+
+Gram_def.symbol
+{
+  text : text;
+  styp : styp;
+  (* the inferred type of the result parsed by the current symbol *)
+  pattern : pat option
+}
+
+----
+
+psymbol -> mk_rule
+{prod : symbol list;
+action: exp option
+}
+
+text_of_functorial_extend is the real
+
+The meta explosion is done in gram_gen/make_exp
+
+# monad
+
+let! a = b in
+cont
+
+
+==>
+M.bind b (fun a -> cont )
+
+
+
+let! a = b
+and c = d in
+cont
+==>
+
+
+try! a with
+case
+
+==>
+
+
+
+
+for!
+
+----
+
+while!
+
+----
+
+match! a with
+case
+==>
+M.bind a (fun case)
+
+# parser
+
+
+
+Based on the tree structure, in the module *Gparser* there are two  functions *start_parser_of_entry* and *continue_parser_of_entry*
+
+```ocaml
+val start_parser_of_entry :  entry ->  int -> Gaction.t Tokenf.parse
+val continue_parser_of_entry :  entry -> int -> Gaction.t cont_parse
+```
+Note that the parser building process is very fast, there is not too much work involved, for simplicity, currently,
+everytime we call *extend_single* by *extend* DDSL, such building process is done immediately as follows:
+
+```ocaml
+let extend_single entry
+    (lb  : Gdefs.single_extend_statement) =
+  let olevel = scan_olevel entry lb in
+  let elev = insert_olevel entry lb.label olevel in
+  (entry.levels <-  elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
+```
+
+The parsing behavior is driven by *action_parse* , which is essentially:
+
+```ocaml
+entry.start 0 stream
+```
+
+------
+
+there is a trade-off here, everytime we do the insertion, and rebuild  the parser is a bit wasteful, if not working this way, the user has to finalize the parser -- which is a burdern to the user
+
+# poc
+
+1. indentation is  a mess :-(
+
+2. location for each token --(todo next )
+
+3. keywords table .... all unsafe_extend????
+
+# TODO
+```ocaml
+(** It could also import regex in the future
+    {:import|
+    Lexing_util:
+    with_curr_loc
+    update_loc ;
+   Location_util:
+    (--)
+    from_lexbuf as  (!!)
+    lex_antiquot : %{ a -> b -> c}  as xx ;
+   Buffer:
+    add_string -> (++)
+    add_char -> (+>) ;
+   |}  *)
+```
+
+# Tracker
+
+
+
+
 * DONE 01 lexer
   How to handle strings in quotation?
 
@@ -36,7 +300,7 @@
                  parse quotation c
                end
          | (extra_quot as p)? "|}" ->
-       ... |}     
+       ... |}
      #+END_SRC
 
    The current solution is ad-hoc:
@@ -66,11 +330,11 @@
   ghost a horrible error message.
 
   FIX
-  
 
 
 
-  
+
+
 * 03 paser merge
 
   #+BEGIN_SRC caml
@@ -84,10 +348,10 @@
       It's better to bring refine STree in the future,
       get rid of Action.t in most cases
      *)
-  
+
   #+END_SRC
 
-  
+
 * DONE 04 class parser error
 
   This is not a bug :-), it's a build script bug in Fan, fixed now.
@@ -113,7 +377,7 @@
 
   #+BEGIN_SRC ocaml
     {| $vrn:cons of $par:t |}
-    
+
     (* make `C to Vrn *)  
     `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
   #+END_SRC
@@ -122,7 +386,7 @@
   open Stream is dangerous...
   our ocamllex engine raises Failrue...
   solution: ==> failwith instead of Failure
-  
+
 
 * 08 generate fold type and map type in ml file and write them in mli file
 
@@ -149,8 +413,8 @@
   #+BEGIN_SRC ocaml
     pat_as_pat_opt:
       [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
-      | pat{p} -> p ] 
-    
+      | pat{p} -> p ]
+
     case0:
        [ `Ant (("case"|"" as n),s) -> mk_anti _loc ~c:"case" n s
        | pat_as_pat_opt{p}; "when"; exp{w};  "->"; exp{e} ->
@@ -165,23 +429,23 @@
   with ident- is not parsed, the problem is the lexer.
 
 
-* 13 a even light weight syntax 
+* 13 a even light weight syntax
   #+BEGIN_SRC ocaml
   | $a . $b => ghsog
   | ($a $b) => "ghos"
   | $lid:x =>
   | $uid:x => ....
   #+END_SRC
-  
+
 
 * 14 ctyp can parse uid
-  
+
 
   #+BEGIN_SRC caml
     {:ctyp| A |}
     `Uid "A"
   #+END_SRC
-  It's not easy to fix currently due to this grammar 
+  It's not easy to fix currently due to this grammar
 
   #+BEGIN_SRC caml
            "." LA
@@ -189,7 +453,7 @@
                 try
                   `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
                 with Invalid_argument s -> raise (XStream.Error s) ]
-      
+
   #+END_SRC
 
 
@@ -198,7 +462,7 @@
 
 
 * 16 keep the code generation close with dumping
-  make it easy to debug 
+  make it easy to debug
 
 
 * DONE 17 a lesson while debug
@@ -222,11 +486,11 @@
   core has a nice trick, but it requires c stubs..
 
 
-  
+
 * 22 synthesize the
   meta_int,.. in the compile time? to get rid of the dependency ?
 
-  
+
 * DONE 23 relax ipat
 
   now fan accepts such function
@@ -238,17 +502,17 @@
           FanUtil.pp_print_anti_cxt _a1
   #+END_SRC
 
-  
+
 * 24 include fans location problem
 
   How to avoid the location caused by include combined with filter
-  
+
 
 * DONE 25 get rid of dependency on ocamlfind
   ocamlfind should not appear in fan, we could split it into a sub
   package fan_utop which depends on ocamlfind
 
-  
+
 * 26 standard rts ?
   =FanUtil.float_reprs= needs to put some where or
   generated each time?
@@ -259,7 +523,7 @@
   OCamlbuild bug?
 
 * 28 how to get ocamldoc API for astLib
-  
+
 * DONE 29 avoid linking dependency on compiler libs
   This is helpful for creating stand-alone binaries and toplevel
 
@@ -269,20 +533,20 @@
 
   #+BEGIN_SRC ocaml
     {:exp| f x |}@loc
-    
+
     vs
-    
+
     {:exp@loc| f x |}
-    
+
     vs
-    
+
     {exp|f $x|}@loc
   #+END_SRC
 
 * 32 gadt any type variable fails
   file:tests/gadt_32.ml
 
-  
+
 * DONE 33 illegal pattern constructed
 
   #+BEGIN_SRC ocaml
@@ -303,7 +567,7 @@
   #+BEGIN_SRC ocaml
       {:pat|`a (a,b,c)|}  
   #+END_SRC
-  
+
 
 
 * 34 Ident mixed with field access.
@@ -340,7 +604,7 @@
     # a.b.c.d;;
     Error: Unbound value a
   #+END_SRC
-  
+
 * 35 mask rule better error message
 
 * 36 always lexing $
@@ -348,7 +612,7 @@
   of Ant node, that said, we need not handle antiquot node any more?
   no lexing antiquot in the toplevel?
 
-  
+
 * 37 with language
 
   #+BEGIN_SRC ocaml
@@ -359,22 +623,22 @@
        {:loctype|
          in-module : N;
          with : [ {:print| |} ];
-           
+
        |},  
      ]  
   #+END_SRC
-  
+
 * 38 Fold needs super
 
   #+BEGIN_SRC ocaml
     inherit foldbase
     self#string
-    
+
     inherit foldbase as super
-    super#          
+    super#
   #+END_SRC
 
-  
+
 * 39 remove all XStream.Error ""
 
 * 40 bug keyword
@@ -384,7 +648,7 @@
      let kwd:
            [`KEYWORD("DEFINE"|"UNDEF"|"IN"){x} -> x]
      |}
-    
+
     Fgram.extend_single (kwd : 'kwd Fgram.t )
           (None,
             (None, None,
@@ -411,18 +675,18 @@
 
   {:map| "row_field"
    fun [ {|$vrn:x of loc|} -> {|$vrn:x|}
-   | $vrn:x of (loc * $y) -> 
+   | $vrn:x of (loc * $y) ->
       match y with
       [{:ctyp| $_ * $_ |} -> {|$vrn:x of $tup:y |}
       |_ -> {|$vrn:x of $y|}]   ]
-   
+
   |}
-  
+
 
 
 * COMMENT
   benchmark
-  20s ~ 16s 
+  20s ~ 16s
 
 ** Diffierence compile time runtime and runtime runtime
   compile time runtime
@@ -439,11 +703,11 @@
       mee_of_str "A" = {| {| A |}|};
       - : bool = true
       ]}
-     *)   
+     *)
     let mee_of_str s =
       let u = {| {:ident| $(uid:$str:s) |} |} in
       {| {| $(id:$u) |} |};
-    
+
     (*
       Examples:
       {[
@@ -451,9 +715,9 @@
       ]}
      *)
     let meee_of_str s =
-      let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in 
+      let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in
       {| {| {| $(id:$($u))|}|}|};
-      
+
   #+END_SRC
 ** introducing a family of two diffierent languages
 
@@ -462,11 +726,11 @@
 
    Some macros are not used as libraries (textual replacement)
 
-   Some could 
+   Some could
 
 ** {:inject.expr||}
 ** {:inject.str_item||}
-   
+
 ** macro taxnomy
 
   #+BEGIN_SRC ocaml
@@ -486,18 +750,18 @@
 
    swich to a slightly different lexer
    which could recogize #, ##
-** staging macros 
+** staging macros
 ** change to diffieren lexers
   like the macros above it needs to switch to diffierent lexers?
 
 ** c11 constexpr
   #+BEGIN_SRC c++
   constexpr bool is_prime_recursive(size_t number, size_t c){
-  return (c*c > number) ? true : 
-           (number % c == 0) ? false : 
+  return (c*c > number) ? true :
+           (number % c == 0) ? false :
               is_prime_recursive(number, c+1);
 }
- 
+
 constexpr bool is_prime_func(size_t number){
   return (number <= 1) ? false : is_prime_recursive(number, 2);
 }
@@ -510,12 +774,12 @@ constexpr bool is_prime_func(size_t number){
   null statements and a single return statement. There must exist
   argument values such that, after argument substitution, the
   expression in the return statement produces a constant expression.
-  
+
 
 
 
 * BUGS
-** PR001  ! is a keyword, behaves weird 
+** PR001  ! is a keyword, behaves weird
   #+BEGIN_SRC ocaml
       let (!) = Sys.command;;
     val ( ! ) : string -> int = <fun>
@@ -525,5 +789,5 @@ constexpr bool is_prime_func(size_t number){
         ^^^^^
     Error: This expression has type string but an expression was expected of type
              'a ref
-      
+
   #+END_SRC
