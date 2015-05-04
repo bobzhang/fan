@@ -161,51 +161,51 @@ coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma col
 ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
 
-#####################
-# fan -> fan0
-section
-    OCAML_OTHER_LIBS += dynlink ocamlcommon
-    VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
-    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    USE_FAN = true 
-    FAN = $(file fan)
-    OCamlAdditionalDigestDependency($(FAN))
-    # AdditionalDependency($(PP_FAN))
-    # weaker dependency require snapshot from time to time however
-    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
-    .SUBDIRS: $(VMOUNTDIR)
-    OCamlProgram(fan0, $(VMOUNTDIR)/fan)
+# #####################
+# # fan -> fan0
+# section
+#     OCAML_OTHER_LIBS += dynlink ocamlcommon
+#     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
+#     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+#     USE_FAN = true 
+#     FAN = $(file fan)
+#     OCamlAdditionalDigestDependency($(FAN))
+#     # AdditionalDependency($(PP_FAN))
+#     # weaker dependency require snapshot from time to time however
+#     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
+#     .SUBDIRS: $(VMOUNTDIR)
+#     OCamlProgram(fan0, $(VMOUNTDIR)/fan)
 
-MakeFix(mountdir,pp,exe) =
-    OCAML_OTHER_LIBS += dynlink ocamlcommon
-    VMOUNTDIR = $(mountdir)
-    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    USE_FAN = true
-    FAN = $(pp) # use hot to preprocess hot
-    AdditionalDependency($(pp))
-    .SUBDIRS: $(VMOUNTDIR)
-    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
-    OCamlProgram($(exe), $(VMOUNTDIR)/fan)
+# MakeFix(mountdir,pp,exe) =
+#     OCAML_OTHER_LIBS += dynlink ocamlcommon
+#     VMOUNTDIR = $(mountdir)
+#     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+#     USE_FAN = true
+#     FAN = $(pp) # use hot to preprocess hot
+#     AdditionalDependency($(pp))
+#     .SUBDIRS: $(VMOUNTDIR)
+#     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
+#     OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
-MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
-MakeFix($(DIR_HOT2),$(file fan1), $(file fan2))
-MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
+# MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
+# MakeFix($(DIR_HOT2),$(file fan1), $(file fan2))
+# MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 
-MakeWeakFix(mountdir,pp,exe) =
-    OCAML_OTHER_LIBS += dynlink ocamlcommon
-    VMOUNTDIR = $(mountdir)
-    USE_FAN = true
-    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
-    FAN = $(pp) # use hot to preprocess hot
-    OCamlAdditionalDigestDependency($(pp))
-    # AdditionalDependency($(pp))
-    .SUBDIRS: $(VMOUNTDIR)
-    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
-    OCamlProgram($(exe), $(VMOUNTDIR)/fan)
+# MakeWeakFix(mountdir,pp,exe) =
+#     OCAML_OTHER_LIBS += dynlink ocamlcommon
+#     VMOUNTDIR = $(mountdir)
+#     USE_FAN = true
+#     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+#     FAN = $(pp) # use hot to preprocess hot
+#     OCamlAdditionalDigestDependency($(pp))
+#     # AdditionalDependency($(pp))
+#     .SUBDIRS: $(VMOUNTDIR)
+#     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
+#     OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
-MakeWeakFix($(DIR_WEAK1),$(file fan0), $(file weak1))
-MakeWeakFix($(DIR_WEAK2),$(file weak1), $(file weak2))
-MakeWeakFix($(DIR_WEAK3),$(file weak2), $(file weak3))
+# MakeWeakFix($(DIR_WEAK1),$(file fan0), $(file weak1))
+# MakeWeakFix($(DIR_WEAK2),$(file weak1), $(file weak2))
+# MakeWeakFix($(DIR_WEAK3),$(file weak2), $(file weak3))
 
 #########################
 # fix point and snapshot 
@@ -308,28 +308,29 @@ FAN_FLAG =
 ########################
 # test
 
-MakeTest(maindir,mountdir,pp) =
-    OCAMLCFLAGS += -annot
-    OCAML_OTHER_LIBS += dynlink ocamlcommon
-    NATIVE_ENABLED = false
-    BYTE_ENABLED = true
-    PP_FAN = $(pp)
-    MAINDIR = $(maindir)
-    OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-    OCAMLINCLUDES += $(MAINDIR)
-    vmount(-l, $(DIR_UNIT), $(mountdir))
-    AdditionalDependency($(pp))
+# MakeTest(maindir,mountdir,pp) =
+#     OCAMLCFLAGS += -annot
+#     OCAML_OTHER_LIBS += dynlink ocamlcommon
+#     NATIVE_ENABLED = false
+#     BYTE_ENABLED = true
+#     PP_FAN = $(pp)
+#     MAINDIR = $(maindir)
+#     OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
+#     OCAMLINCLUDES += $(MAINDIR)
+#     vmount(-l, $(DIR_UNIT), $(mountdir))
+#     AdditionalDependency($(pp))
 
-    # OCAML_LIBS[]+= $(MAINDIR)/libmain
-    .SUBDIRS: $(mountdir)
+#     # OCAML_LIBS[]+= $(MAINDIR)/libmain
+#     .SUBDIRS: $(mountdir)
 
-MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
-MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
+# MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
+# MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
 
 
 section
     OCAML_LIBS = 
     .SUBDIRS: tools
+
 .PHONY: test_hot test_cold
 
 
