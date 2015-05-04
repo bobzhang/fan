@@ -263,7 +263,6 @@ FAN0_ML_FILES_P =
 FAN1_ML_FILES_P =
     MakeDParseFiles(fan1)
 
-    
 fixpoint:  $(FAN_ML_FILES_P) $(FAN0_ML_FILES_P)
     foreach(f=> ..., $(FAN_ML_FILES))
         private.X = dparsetree/$(basename $f).fan.dparsetree
@@ -331,7 +330,6 @@ MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
 section
     OCAML_LIBS = 
     .SUBDIRS: tools
-        
 .PHONY: test_hot test_cold
 
 
