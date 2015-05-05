@@ -170,6 +170,8 @@ val directive : exp -> Parsetree.directive_argument
 val phrase               : stru -> Parsetree.toplevel_phrase
     
 
+(** Filled by [Ast_gen] module *)
+val meta_here : (Location.t -> Location.t -> Astf.ep) ref 
 (** Filled by [typehook] module *)  
 val generate_type_code   : (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref
 (** Filled by [Objs] module *)    

@@ -164,6 +164,10 @@ let generate_type_code:
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
          "generate_type_code")
+let meta_here: (Location.t -> Location.t -> Astf.ep) ref =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "meta_here")
 let module_path: string list ref = ref []
 let current_top_bind: string list ref = ref []
 let mk_constant_exp _loc (x : Astf.literal) =
@@ -698,7 +702,7 @@ let rec exp_desc _loc (x : Astf.exp) =
        let s = Filename.dirname (Locf.file_name _loc) in
        Pexp_constant (Const_string s)
    | (`Lid (_loc,"__LOCATION__") : Astf.exp) ->
-       exp_desc _loc (Ast_gen.meta_here _loc _loc :>Astf.exp)
+       exp_desc _loc (! meta_here _loc _loc : Astf.ep  :>Astf.exp)
    | #Astf.vid as x ->
        let (b,id) = normalize_vid x in
        if b then Pexp_construct (id, None, false) else Pexp_ident id

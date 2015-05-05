@@ -28,7 +28,7 @@ FILES = \
     fan_util \
     fan_warnings\
     token_stream \
-    ast_basic
+    ast_basic 
 
 
 .PHONY: clean lib
