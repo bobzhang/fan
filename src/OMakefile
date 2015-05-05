@@ -27,7 +27,6 @@ DIR_MAIN       = $(dir main)
 # USE_OCAMLFIND=true
 # we don't depend on ocamlfind here
 
-# OMakeFlags(--verbose)
 
 ## compile flags
 OCAMLFLAGS = 
@@ -66,7 +65,6 @@ FAN_LEX_LIB_FILES = \
 
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
-    ast_basic \
     ast2pt \
     ast_gen \
     ast_loc  ast_inject  astn_util \

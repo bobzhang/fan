@@ -27,8 +27,10 @@ FILES = \
     translate_lex\
     fan_util \
     fan_warnings\
-    token_stream
-    
+    token_stream \
+    ast_basic
+
+
 .PHONY: clean lib
 lib: $(OCamlLibrary libcommon, $(FILES))
 

@@ -16,7 +16,7 @@
   Note that [com_of_list] and other utilities  is making use of [of_listr] *)
 let rec of_listr f xs =
   match xs with
-  | [] -> invalid_arg __BIND__
+  | [] -> invalid_arg "of_listr" (* __BIND__ *)
   | [t] -> t
   | t :: ts -> f t (of_listr f ts)
 
@@ -31,7 +31,7 @@ let rec of_listr f xs =
  *)
 let rec of_listl f xs =
   match xs with
-  | [] -> invalid_arg __BIND__
+  | [] -> invalid_arg "of_listl" (* __BIND__ *)
   | [t] -> t
   | x::y::xs -> of_listl f (f x y :: xs)
 
