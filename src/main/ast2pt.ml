@@ -7,7 +7,7 @@
 
 open Util
 open Parsetree_util
-open Astf (* FIXME later*)
+(* open Astf (\* FIXME later*\) *)
 open Ast_basic
 
 
@@ -81,7 +81,7 @@ let current_top_bind : string list ref = ref []
 (*****************************)
 (* Util functions            *)    
 (*****************************)
-let mk_constant_exp _loc (x:literal) : Parsetree.expression_desc =
+let mk_constant_exp _loc (x: Astf.literal) : Parsetree.expression_desc =
   match x with 
   | `Chr (_,s) -> Pexp_constant (Const_char (Escape.char_of_char_token _loc s))
   | `Int (_,s) ->
@@ -118,7 +118,7 @@ let mk_constant_exp _loc (x:literal) : Parsetree.expression_desc =
   | `Unit _ ->
       Pexp_construct ({txt = Lident"()";loc=_loc},None,false)
 
-let mk_constant_pat _loc (x:literal) : Parsetree.pattern_desc =
+let mk_constant_pat _loc ( x : Astf.literal) : Parsetree.pattern_desc =
   match x with 
   | `Chr (_,s) -> Ppat_constant (Const_char (Escape.char_of_char_token _loc s))
   | `Int (_,s) ->
@@ -283,7 +283,7 @@ let mktype loc tl cl ~type_kind ~priv ~manifest =
     ptype_loc =  loc;
     ptype_variance = variance} 
 
-let mkprivate (x:flag) : Asttypes.private_flag =
+let mkprivate (x : Astf.flag) : Asttypes.private_flag =
   match x with 
   | `Positive _ -> Private
   | `Negative _ -> Public
@@ -394,16 +394,16 @@ and package_type (x : Astf.mtyp) :
   (Longident.t Asttypes.loc *
     (Longident.t Asttypes.loc * Parsetree.core_type) list)  =
   match x with 
-  | `With(_loc,(#ident' as i),wc) ->
+  | `With(_loc,(# Astf.ident' as i),wc) ->
     (long_uident i, package_type_constraints wc [])
-  | #ident' as i  -> (long_uident i, [])
+  | #Astf.ident' as i  -> (long_uident i, [])
   | mt -> Locf.failf (unsafe_loc_of mt) "unexpected package type: %s" @@ !dump_mtyp mt
 
 (*************************************)
 (***    Utils                        *)
 (*************************************)                                                                           
-let mktrecord (x: name_ctyp) :
-  (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc)=
+let mktrecord (x: Astf.name_ctyp) :
+  (string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  Astf.loc)=
   match x with 
   |`TyColMut(_loc,`Lid(sloc,s),t) ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
@@ -412,7 +412,7 @@ let mktrecord (x: name_ctyp) :
   | t -> Locf.failf (unsafe_loc_of t) "mktrecord %s "
            (!dump_name_ctyp t)
 
-let mkvariant (x:or_ctyp) :
+let mkvariant (x : Astf.or_ctyp) :
   (string Location.loc * Parsetree.core_type list *  Parsetree.core_type option * Locf.t) =
   let _loc = unsafe_loc_of x in
   match x with
@@ -432,7 +432,7 @@ let mkvariant (x:or_ctyp) :
 
                                                                            
 
-let type_kind (x:type_repr) : Parsetree.type_kind  =
+let type_kind (x : Astf.type_repr) : Parsetree.type_kind  =
   match x with
   | `Record (_,t) ->
     Parsetree.Ptype_record (List.map mktrecord (list_of_sem t []))
@@ -442,7 +442,7 @@ let type_kind (x:type_repr) : Parsetree.type_kind  =
 
 
 
-let mkvalue_desc loc t (p:  strings list) : Parsetree.value_description =
+let mkvalue_desc loc t (p:  Astf.strings list) : Parsetree.value_description =
   {pval_type = ctyp t;
    pval_prim =
    List.map (fun p ->
@@ -452,13 +452,13 @@ let mkvalue_desc loc t (p:  strings list) : Parsetree.value_description =
    pval_loc =  loc}
 
 
-let mkmutable (x:flag) : Asttypes.mutable_flag =
+let mkmutable (x : Astf.flag) : Asttypes.mutable_flag =
   match x with
   |`Positive _ -> Mutable
   | `Negative _ -> Immutable
   | `Ant(_loc,_) -> ant_error _loc 
 
-let paolab (lab:string) (p:pat) : string =
+let paolab (lab : string) (p : Astf.pat) : string =
   match (lab, p) with
   | ("",
      (`Lid(_loc,i) | `Constraint(_loc,`Lid(_,i),_))) -> i
@@ -488,27 +488,27 @@ let quote_map x =
   | _ ->
     Locf.failf (unsafe_loc_of x) "quote_map %s" (!dump_ctyp x)
 
-let optional_type_parameters (t:ctyp) = 
+let optional_type_parameters (t : Astf.ctyp) = 
   List.map quote_map (list_of_app t [])
 
-let mk_type_parameters (tl:opt_decl_params)
+let mk_type_parameters (tl : Astf.opt_decl_params)
   :  ( (string Asttypes.loc ) option   * (bool * bool))list  =
   match tl with
   | `None _ -> []
   | `Some(_,x) ->
     List.map
       (function
-        | #decl_param as x ->
-          quote_map (x:>ctyp)
+        | #Astf.decl_param as x ->
+          quote_map (x :> Astf.ctyp)
         |  _ -> assert false) @@ list_of_com x []
 
 
 
 (* ['a,'b,'c']*)
-let  class_parameters (t:type_parameters) =
+let  class_parameters (t : Astf.type_parameters) =
   let _loc = unsafe_loc_of t in
   Listf.filter_map
-    (fun (y:type_parameters) ->
+    (fun (y : Astf.type_parameters) ->
        match y with 
       |`Ctyp(_, x) ->
         begin match quote_map x with
@@ -520,12 +520,12 @@ let  class_parameters (t:type_parameters) =
     (list_of_com t [])
 
 
-let type_parameters_and_type_name (t:ctyp)  =
-  let rec aux (t:ctyp) acc = 
+let type_parameters_and_type_name (t : Astf.ctyp)  =
+  let rec aux (t : Astf.ctyp) acc = 
     match t with
     |`App(_,t1,t2) ->
-      aux (t1:>ctyp) (optional_type_parameters (t2:>ctyp) @ acc)
-    | #ident' as i  -> (ident i, acc)
+      aux (t1 :> Astf.ctyp) (optional_type_parameters (t2 :> Astf.ctyp) @ acc)
+    | #Astf.ident' as i  -> (ident i, acc)
     | x ->
       Locf.failf (unsafe_loc_of x) "type_parameters_and_type_name %s"
       @@ !dump_ctyp x  in
@@ -558,20 +558,20 @@ let rec mkrangepat loc c1 c2 : Parsetree.pattern_desc =
 (* [exp] and [pat] Transformation    *)      
 (*************************************)
         
-let  pat_literal _loc (x:literal) : Parsetree.pattern =
+let  pat_literal _loc (x: Astf.literal) : Parsetree.pattern =
   mkpat _loc (mk_constant_pat _loc x)
 
 
-let exp_literal _loc (x:literal) : Parsetree.expression =
+let exp_literal _loc (x : Astf.literal) : Parsetree.expression =
   mkexp _loc (mk_constant_exp _loc x )
     
-let rec pat_desc _loc (x:pat) : Parsetree.pattern_desc =
+let rec pat_desc _loc (x : Astf.pat) : Parsetree.pattern_desc =
   match x with
-  | #literal as x -> mk_constant_pat _loc x 
+  | #Astf.literal as x -> mk_constant_pat _loc x 
   | `Lid (_,s) ->
       Ppat_var (with_loc s _loc)
   | `Uid _ |`Dot _ as i ->
-      Ppat_construct ((long_uident (i : vid  :>ident)), None, false)
+      Ppat_construct ((long_uident (i : Astf.vid  :> Astf.ident)), None, false)
   | `Vrn (_,s)  -> Ppat_variant (s, None)                    
   | `Alias (_,p1,`Lid(sloc,s)) -> Ppat_alias (pat p1, with_loc s sloc)
   | `Any _  ->  Ppat_any
@@ -601,9 +601,9 @@ let rec pat_desc _loc (x:pat) : Parsetree.pattern_desc =
       let ps = list_of_sem p [] in
       let (wildcards,ps) =
         List.partition (function | `Any _ -> true | _ -> false) ps in
-      let mklabpat (p : rec_pat) =
+      let mklabpat (p : Astf.rec_pat) =
         match p with
-        | `RecBind (_loc,i,p) -> (ident (i:>ident), pat p)
+        | `RecBind (_loc, i, p) -> (ident (i :> Astf.ident), pat p)
         | p -> error (unsafe_loc_of p) "invalid pattern" in
       Ppat_record
         (List.map mklabpat ps,
@@ -618,7 +618,7 @@ let rec pat_desc _loc (x:pat) : Parsetree.pattern_desc =
         Ppat_constraint (mkpat sloc (Ppat_unpack (with_loc m sloc)), ctyp ty)
   | p -> Locf.failf _loc "invalid pattern %s" @@ !dump_pat p
 
-and pat (x : pat) : Parsetree.pattern =
+and pat (x : Astf.pat) : Parsetree.pattern =
   let _loc = unsafe_loc_of x in
   {ppat_desc =  pat_desc _loc x ; ppat_loc = _loc} 
 
@@ -635,7 +635,7 @@ and pat (x : pat) : Parsetree.pattern =
 (**
    return value [true] means constructor otherwise identifier
  *)                                                   
-let normalize_vid (x:vid) =
+let normalize_vid (x : Astf.vid) =
   let _loc = unsafe_loc_of x in
   match x with 
   | `Dot (loc,_,_)  -> (* FIXME *)
@@ -663,9 +663,9 @@ let normalize_vid (x:vid) =
   | `Lid (loc,i) -> (false,mkli loc i [] )
   | `Ant _ -> assert false
                                                    
-let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
+let rec exp_desc _loc (x : Astf.exp) : Parsetree.expression_desc =
   match x with
-  | #literal as x ->  mk_constant_exp _loc x 
+  | #Astf.literal as x ->  mk_constant_exp _loc x 
   | `Uid(_,s) -> Pexp_construct ({loc = _loc; txt = Lident s}, None, true)
   | `Lid(_, "__FILE__")  ->
       exp_desc _loc  %exp{$str'{Locf.file_name _loc}}
@@ -685,8 +685,8 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
       let s =  Filename.dirname (Locf.file_name _loc) in
       Pexp_constant (Const_string s)
   | %exp{ __LOCATION__ } ->
-      exp_desc _loc (Ast_gen.meta_here _loc _loc :> exp)
-  | #vid as x ->
+      exp_desc _loc (Ast_gen.meta_here _loc _loc :> Astf.exp)
+  | #Astf.vid as x ->
       let (b,id) = normalize_vid x  in
       if b then Pexp_construct (id,None,false)
       else Pexp_ident id
@@ -784,7 +784,7 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `LetIn (_,rf,bi,e) -> Pexp_let (mkrf rf, top_bind bi , exp e)
   | `LetTryInWith(_,rf,bi,e,cas) ->
     let cas =
-      let rec f (x:case)  : case=
+      let rec f (x : Astf.case)  : Astf.case=
         match x with
         | `Case (_loc,p,e)  ->
           `Case (_loc, p, `Fun (_loc, (`Case (_loc, `Unit _loc, e))))
@@ -808,7 +808,7 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `ObjPat (_,p,cfl) -> Pexp_object { pcstr_pat = pat p; pcstr_fields = clfield cfl [] }
   | `OvrInstEmpty _ -> Pexp_override []
   | `OvrInst (_,iel) ->
-    let rec mkideexp (x:rec_exp) acc  = 
+    let rec mkideexp (x : Astf.rec_exp) acc  = 
       match x with 
       |`Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
       | `RecBind(_,`Lid(sloc,s),e) -> (with_loc s sloc, exp e) :: acc
@@ -849,10 +849,10 @@ let rec exp_desc _loc (x:exp) : Parsetree.expression_desc =
   | `LocalTypeFun (_,`Lid(_,i),e) -> Pexp_newtype (i, exp e)
   | x -> Locf.failf _loc "Panic: invalid exp:%s" @@ !dump_exp x 
 
-and exp (x : exp) : Parsetree.expression =
+and exp (x : Astf.exp) : Parsetree.expression =
   let _loc = unsafe_loc_of x in
   mkexp _loc (exp_desc _loc x)
-and label_exp (x : exp) =
+and label_exp (x : Astf.exp) =
   match x with 
   | `Label (_,`Lid(_,lab),eo) -> (lab,  exp eo)
   | `LabelS(_,`Lid(sloc,lab)) -> (lab,exp (`Lid(sloc,lab)))
@@ -861,15 +861,15 @@ and label_exp (x : exp) =
   | e -> ("", exp e) 
 
 
-and top_bind (x:bind)  =
-  let  rec aux (x:bind) acc =
+and top_bind (x : Astf.bind)  =
+  let  rec aux (x : Astf.bind) acc =
   match x with
   | `And (_loc,x,y) -> aux x (aux y acc)
   | `Bind(_loc,`Lid(sloc,bind_name), e ) ->
       Ref.protect current_top_bind (bind_name :: !current_top_bind) (fun _ -> 
       begin match e with
       | `Constraint(_,e,`TyTypePol(_,vs,ty)) ->
-          let rec id_to_string (x : ctyp) =
+          let rec id_to_string (x : Astf.ctyp) =
             match x with
             | `Lid (_,x) -> [x]
             | `App (_loc,x,y) -> id_to_string x @ id_to_string y
@@ -902,10 +902,10 @@ and top_bind (x:bind)  =
   | _ -> assert false in
   aux x []
 (** transoform [case], used by [exp] transformation *)        
-and case (x:case) = 
+and case (x : Astf.case) = 
   let cases = list_of_bar x [] in
   Listf.filter_map 
-    (fun (x:case) ->
+    (fun (x : Astf.case) ->
        let _loc = unsafe_loc_of x in
        match x with 
        | `Case (_,p,e) -> Some (pat p, exp e)
@@ -915,16 +915,16 @@ and case (x:case) =
        | x -> Locf.failf _loc "case %s" @@ !dump_case x)
     cases
 (** utility, used by [exp] transoformation *)
-and mklabexp (x:rec_exp)  =
+and mklabexp (x : Astf.rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
-      | (`RecBind (_loc,i,e) : Astf.rec_exp) -> Some (ident (i : vid :>ident), exp e)
+      | (`RecBind (_loc,i,e) : Astf.rec_exp) -> Some (ident (i : Astf.vid :> Astf.ident), exp e)
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 (** used by [sigi] and [stru] transoformation *)
-and mktype_decl (x:typedecl)  =
-  let type_decl tl cl loc (x:type_info) =
+and mktype_decl (x : Astf.typedecl)  =
+  let type_decl tl cl loc (x : Astf.type_info) =
     match x with
     |`TyMan(_,t1,p,t2) ->
       mktype loc tl cl ~type_kind:(type_kind t2) ~priv:(mkprivate p) ~manifest:(Some (ctyp t1))
@@ -967,11 +967,11 @@ and mktype_decl (x:typedecl)  =
            (mk_type_parameters tl) cl
            ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
 
-      | (t:typedecl) ->
+      | (t : Astf.typedecl) ->
         Locf.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
 
 (** utility , used by [mtyp] transoformation *)    
-and  mkwithc (wc:constr)  =
+and  mkwithc (wc : Astf.constr)  =
   let mkwithtyp (pwith_type: Parsetree.type_declaration -> Parsetree.with_constraint)
       loc priv id_tpl ct =
     let (id, tpl) = type_parameters_and_type_name id_tpl in
@@ -998,7 +998,7 @@ and  mkwithc (wc:constr)  =
 
 and mtyp_desc loc (x:Astf.mtyp) : Parsetree.module_type_desc =
   match x with 
-  | #ident' as i  -> Pmty_ident (long_uident i)
+  | #Astf.ident' as i  -> Pmty_ident (long_uident i)
   | `Functor(_,`Uid(sloc,n),nt,mt) ->
       Pmty_functor ({loc = sloc; txt = n},mtyp nt,mtyp mt)
   | `Sig(_,sl) -> Pmty_signature (sigi sl [])
@@ -1010,7 +1010,7 @@ and mtyp_desc loc (x:Astf.mtyp) : Parsetree.module_type_desc =
 and mtyp  (x:Astf.mtyp) : Parsetree.module_type =
   let loc = unsafe_loc_of x in mkmty loc (mtyp_desc loc x)
 
-and sigi_item_desc _loc (s:sigi)  : Parsetree.signature_item_desc =
+and sigi_item_desc _loc (s : Astf.sigi)  : Parsetree.signature_item_desc =
   match s with 
   | `Class (_,cd) ->  Psig_class (List.map class_info_cltyp (list_of_and cd []))
   | `ClassType (_,ctd) -> Psig_class_type (List.map class_info_cltyp (list_of_and ctd []))
@@ -1035,13 +1035,13 @@ and sigi_item_desc _loc (s:sigi)  : Parsetree.signature_item_desc =
   | t -> Locf.failf (unsafe_loc_of t) "sigi: %s" (!dump_sigi t)
 (* and module_sig_bind (x:mbind)  *)
 
-and sigi (s:sigi) (l :Parsetree.signature) : Parsetree.signature =
+and sigi (s : Astf.sigi) (l :Parsetree.signature) : Parsetree.signature =
   match s with
   | `Sem(_,sg1,sg2) -> sigi sg1 (sigi sg2 l)
   | `Directive _ | `DirectiveSimple _  -> l
   | _ -> let _loc = unsafe_loc_of s in mksig _loc (sigi_item_desc _loc s ) :: l
 
-and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
+and stru_item_desc _loc (s : Astf.stru) : Parsetree.structure_item_desc =
   match s with 
   | `Class (_,cd) ->
       Pstr_class (List.map class_info_clexp (list_of_and cd []))
@@ -1075,7 +1075,7 @@ and stru_item_desc _loc (s:stru) : Parsetree.structure_item_desc =
   | `Value (_,rf,bi) ->
     Pstr_value (mkrf rf, top_bind bi)
   | x-> Locf.failf _loc "stru : %s" (!dump_stru x)
-and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
+and stru (s : Astf.stru) (l : Parsetree.structure) : Parsetree.structure =
   match s with
   (* ad-hoc removing the empty statement, a more elegant way is in need*)
   | (`StExp (_, `Unit _)) -> l
@@ -1087,8 +1087,8 @@ and stru (s:stru) (l:Parsetree.structure) : Parsetree.structure =
 
   | _ ->   let loc = unsafe_loc_of s in
      mkstr loc (stru_item_desc loc s) :: l               
-and module_sig_bind (x:mbind) 
-    (acc: (string Asttypes.loc * Parsetree.module_type) list )  =
+and module_sig_bind (x : Astf.mbind) 
+    (acc : (string Asttypes.loc * Parsetree.module_type) list )  =
   match x with 
   | `And(_,x,y) -> module_sig_bind x (module_sig_bind y acc)
   | `Constraint(_loc,`Uid(loc,s),mt) ->
@@ -1103,8 +1103,8 @@ and module_str_bind (x:Astf.mbind) acc =
 
 and mexp_desc loc (x:Astf.mexp) : Parsetree.module_expr_desc =
   match x with 
-  | #vid'  as i ->
-      Pmod_ident (long_uident (i:vid':>ident))
+  | #Astf.vid'  as i ->
+      Pmod_ident (long_uident (i : Astf.vid' :> Astf.ident))
   | `App(_,me1,me2) -> Pmod_apply (mexp me1,mexp me2)
   | `Functor(_,`Uid(sloc,n),mt,me) ->
       Pmod_functor (with_loc n sloc,mtyp mt,mexp me)
@@ -1128,11 +1128,11 @@ and cltyp_desc loc (x:Astf.cltyp) : Parsetree.class_type_desc =
   match x with
   | `ClApply(_, id, tl) -> 
       Pcty_constr
-         (long_class_ident (id:>ident),
+         (long_class_ident (id :> Astf.ident),
           List.map (function
               | `Ctyp (_loc,x) -> ctyp x | _ -> assert false) (list_of_com tl []))
-  | #vid' as id ->
-      Pcty_constr (long_class_ident (id:vid' :> ident), [])
+  | #Astf.vid' as id ->
+      Pcty_constr (long_class_ident (id : Astf.vid' :> Astf.ident), [])
   | `CtFun (_, (`Label (_, `Lid(_,lab), t)), ct) ->
       Pcty_fun (lab, ctyp t, cltyp ct)
   | `CtFun (_, (`OptLabl (loc1, `Lid(_,lab), t)), ct) ->
@@ -1151,9 +1151,9 @@ and cltyp_desc loc (x:Astf.cltyp) : Parsetree.class_type_desc =
 and cltyp (x:Astf.cltyp) =
   let loc = unsafe_loc_of x  in
   mkcty loc (cltyp_desc loc x )
-and class_info_clexp (ci:cldecl) =
+and class_info_clexp (ci : Astf.cldecl) =
   match ci with 
-  | (`ClDecl(loc,vir,`Lid(nloc,name),params,ce) : cldecl) -> 
+  | (`ClDecl(loc,vir,`Lid(nloc,name),params,ce) : Astf.cldecl) -> 
     let (loc_params, (params, variance)) =
       (unsafe_loc_of params, List.split (class_parameters params)) in
     {pci_virt = mkvirtual vir;
@@ -1170,9 +1170,9 @@ and class_info_clexp (ci:cldecl) =
      pci_loc =  loc;
      pci_variance = []}
   | ce -> Locf.failf  (unsafe_loc_of ce) "class_info_clexp: %s" (!dump_cldecl ce) 
-and class_info_cltyp (ci:cltdecl)  =
+and class_info_cltyp (ci : Astf.cltdecl)  =
   match ci with 
-  | (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) :cltdecl) ->
+  | (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) : Astf.cltdecl) ->
     let (loc_params, (params, variance)) =
       (unsafe_loc_of params, List.split (class_parameters params)) in
     {pci_virt = mkvirtual vir;
@@ -1181,7 +1181,7 @@ and class_info_cltyp (ci:cltdecl)  =
      pci_expr = cltyp ct;
      pci_loc =  loc;
      pci_variance = variance}
-  | (`CtDeclS (loc,vir,`Lid(nloc,name),ct) : cltdecl) -> 
+  | (`CtDeclS (loc,vir,`Lid(nloc,name),ct) : Astf.cltdecl) -> 
     {pci_virt = mkvirtual vir;
      pci_params = ([],  loc);
      pci_name = with_loc name nloc;
@@ -1189,7 +1189,7 @@ and class_info_cltyp (ci:cltdecl)  =
      pci_loc =  loc;
      pci_variance = []}
   | ct -> Locf.failf (unsafe_loc_of ct) "bad class/class type declaration/definition %s " (!dump_cltdecl ct)
-and clsigi_desc loc (c:clsigi) : Parsetree.class_type_field_desc = 
+and clsigi_desc loc (c : Astf.clsigi) : Parsetree.class_type_field_desc = 
   match c with 
   |`Eq (_, t1, t2) -> Pctf_cstr (ctyp t1, ctyp t2)
   | `SigInherit (_,ct) -> Pctf_inher (cltyp ct)
@@ -1201,27 +1201,27 @@ and clsigi_desc loc (c:clsigi) : Parsetree.class_type_field_desc =
       Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))
   | t -> Locf.failf loc "clsigi :%s" (!dump_clsigi t) 
          
-and clsigi (c:clsigi) (l:  Parsetree.class_type_field list) : Parsetree.class_type_field list =
+and clsigi (c : Astf.clsigi) (l:  Parsetree.class_type_field list) : Parsetree.class_type_field list =
   match c with 
   | `Sem(_,csg1,csg2) -> clsigi csg1 (clsigi csg2 l)
   | _ -> let loc = unsafe_loc_of c in mkctf loc (clsigi_desc loc c) :: l
 and clexp_desc loc (x:Astf.clexp) : Parsetree.class_expr_desc =
   match x with 
   | `CeApp _ ->
-    let rec view_app acc (x:clexp)  =
+    let rec view_app acc (x : Astf.clexp)  =
       match x  with 
-      | `CeApp (_loc,ce,(a:exp)) -> view_app (a :: acc) ce
+      | `CeApp (_loc,ce,(a : Astf.exp)) -> view_app (a :: acc) ce
       | ce -> (ce, acc) in
     let (ce, el) = view_app [] x in
     let el = List.map label_exp el in
     Pcl_apply (clexp ce, el)
 
   | `ClApply (_,id,tl) ->
-      Pcl_constr (long_class_ident (id:>ident),
+      Pcl_constr (long_class_ident (id :> Astf.ident),
                   (List.map (function |`Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                        (list_of_com tl [])))
-  | #vid' as id  ->
-      Pcl_constr (long_class_ident (id : vid' :>ident), [])
+  | #Astf.vid' as id  ->
+      Pcl_constr (long_class_ident (id : Astf.vid' :> Astf.ident), [])
   | `CeFun (_, (`Label (_,`Lid(_,lab), po)), ce) ->
       Pcl_fun (lab, None, pat po , clexp ce)
   | `CeFun(_,`OptLablExpr(_,`Lid(_loc,lab),p,e),ce) ->
@@ -1272,15 +1272,15 @@ and clfield_desc loc (c:Astf.clfield) : Parsetree.class_field_desc =
       Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)
   | x  -> Locf.failf  loc "clfield: %s" @@ !dump_clfield x
   
-and clfield (c:clfield) l =
+and clfield (c : Astf.clfield) l =
   let loc = unsafe_loc_of c in
   match c with
   | `Sem(_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
   | _ ->  mkcf loc (clfield_desc loc c) :: l
-let sigi (ast:sigi) : Parsetree.signature = sigi ast []
+let sigi (ast : Astf.sigi) : Parsetree.signature = sigi ast []
 let stru ast = stru ast []
 
-let directive (x:exp) : Parsetree.directive_argument =
+let directive (x : Astf.exp) : Parsetree.directive_argument =
   match x with 
   |`Str(_,s) -> Pdir_string s
   |`Int(_,i) -> Pdir_int (int_of_string i)
@@ -1291,21 +1291,21 @@ let directive (x:exp) : Parsetree.directive_argument =
   | e ->
     let ident_of_exp : Astf.exp -> Astf.ident =
       let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
-      let rec self (x:Astf.exp) : ident =
+      let rec self (x : Astf.exp) : Astf.ident =
         let _loc = unsafe_loc_of x in
         match x with 
         | `App(_,e1,e2) -> `Apply(_loc,self e1, self e2)
-        | `Field(_,e1,e2) -> `Dot(_loc,self e1, (e2 :>ident))
+        | `Field(_,e1,e2) -> `Dot(_loc,self e1, (e2 :> Astf.ident))
         | `Lid _  -> error ()
-        | `Uid _ | `Dot _ as i -> (i:vid:>ident)
+        | `Uid _ | `Dot _ as i -> (i: Astf.vid :> Astf.ident)
         | _ -> error ()  in 
       function
-      | #vid as i ->  (i:vid :>ident)
+      | #Astf.vid as i ->  (i: Astf.vid :> Astf.ident)
       | `App _ -> error ()
       | t -> self t  in
     Pdir_ident (ident_noloc (ident_of_exp e)) 
 
-let phrase (x: stru) : Parsetree.toplevel_phrase =
+let phrase (x: Astf.stru) : Parsetree.toplevel_phrase =
   match x with 
   | `Directive (_, `Lid(_,d),dp) -> Ptop_dir (d ,directive dp)
   | `DirectiveSimple(_,`Lid(_,d)) -> Ptop_dir (d, Pdir_none)
