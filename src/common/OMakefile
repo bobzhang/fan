@@ -28,6 +28,7 @@ FILES = \
     fan_util \
     fan_warnings\
     token_stream \
+    ast2pt \
     ast_basic 
 
 
