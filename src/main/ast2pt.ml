@@ -185,6 +185,14 @@ let dump_clfield =
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
          "dump_clfield")
 
+let generate_type_code :
+  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "generate_type_code")
+
+
 (*********************************************************************)
 
 (** the module path -- recorded during dumping  *)
@@ -270,9 +278,6 @@ let mk_constant_pat _loc ( x : Astf.literal) : Parsetree.pattern_desc =
     
                                      
     
-let generate_type_code :
-  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
-  %undef{}
 
 
 let ant_error loc = error loc "antiquotation not expected here"
@@ -780,7 +785,9 @@ let rec exp_desc _loc (x : Astf.exp) : Parsetree.expression_desc =
   | #Astf.literal as x ->  mk_constant_exp _loc x 
   | `Uid(_,s) -> Pexp_construct ({loc = _loc; txt = Lident s}, None, true)
   | `Lid(_, "__FILE__")  ->
-      exp_desc _loc  %exp{$str'{Locf.file_name _loc}}
+      exp_desc _loc  
+        (`Str (_loc, (String.escaped (Locf.file_name _loc))) :>Astf.exp)
+        (* %exp{$str'{Locf.file_name _loc}}  *)
     (* TODO -- what's the case for lazy expansion
        and %exp{__FILE__} *)
   | `Lid(_,"__MODULE__") ->
@@ -793,12 +800,14 @@ let rec exp_desc _loc (x : Astf.exp) : Parsetree.expression_desc =
       let s =
           String.concat "." (List.rev !current_top_bind) in
       Pexp_constant (Const_string s )
-  | %exp{ __PWD__ } ->
+   | (`Lid (_loc,"__PWD__") : Astf.exp) ->
+  (* | %exp{ __PWD__ } -> *)
       let s =  Filename.dirname (Locf.file_name _loc) in
       Pexp_constant (Const_string s)
-  | %exp{ __LOCATION__ } ->
+  (* | %exp{ __LOCATION__ } -> *)
+   | (`Lid (_loc,"__LOCATION__") : Astf.exp) ->
       exp_desc _loc (Ast_gen.meta_here _loc _loc :> Astf.exp)
-  | #Astf.vid as x ->
+   | #Astf.vid as x ->
       let (b,id) = normalize_vid x  in
       if b then Pexp_construct (id,None,false)
       else Pexp_ident id
@@ -908,7 +917,17 @@ let rec exp_desc _loc (x : Astf.exp) : Parsetree.expression_desc =
         | `Ant (_loc,_) -> ant_error _loc in
       f cas in
     exp_desc _loc 
-      %exp{(try let $rec:rf $bi in fun () -> $e with | $cas  ) () }
+      (`App
+            (_loc,
+              (`Try
+                 (_loc,
+                   (`LetIn
+                      (_loc, (rf :>Astf.flag), (bi :>Astf.bind),
+                        (`Fun
+                           (_loc,
+                             (`Case (_loc, (`Unit _loc), (e :>Astf.exp))))))),
+                   cas)), (`Unit _loc)) :> Astf.exp)
+      (* %exp{(try let $rec:rf $bi in fun () -> $e with | $cas  ) () } *)
 
   | `LetModule (_,`Uid(sloc,i),me,e) -> Pexp_letmodule (with_loc i sloc,mexp me,exp e)
   | `Match (_,e,a) -> Pexp_match (exp e,case a )

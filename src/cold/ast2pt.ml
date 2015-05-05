@@ -158,6 +158,12 @@ let dump_clfield =
     (fun _  ->
        Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
          "dump_clfield")
+let generate_type_code:
+  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "generate_type_code")
 let module_path: string list ref = ref []
 let current_top_bind: string list ref = ref []
 let mk_constant_exp _loc (x : Astf.literal) =
@@ -248,12 +254,6 @@ let mk_constant_pat _loc (x : Astf.literal) =
    | `Unit _ ->
        Ppat_construct ({ txt = (Lident "()"); loc = _loc }, None, false) : 
   Parsetree.pattern_desc )
-let generate_type_code:
-  (Astf.loc -> Astf.typedecl -> Astf.strings -> Astf.stru) ref =
-  ref
-    (fun _  ->
-       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
-         "generate_type_code")
 let ant_error loc = error loc "antiquotation not expected here"
 let mkvirtual (x : Astf.flag) =
   (match x with
