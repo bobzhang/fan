@@ -5,11 +5,36 @@
 
 
 
-open Util
-open Parsetree_util
-(* open Astf (\* FIXME later*\) *)
-open Ast_basic
+let view_app = Ast_basic.view_app
+let list_of_star = Ast_basic.list_of_star
+let listr_of_arrow = Ast_basic.listr_of_arrow
+let list_of_sem = Ast_basic.list_of_sem
+let list_of_bar = Ast_basic.list_of_bar
+let list_of_app = Ast_basic.list_of_app
+let list_of_com = Ast_basic.list_of_com
+let list_of_and = Ast_basic.list_of_and
 
+let failwithf  = Util.failwithf
+let error = Parsetree_util.error 
+let lident = Parsetree_util.lident
+let with_loc = Parsetree_util.with_loc
+let ldot = Parsetree_util.ldot
+let mktyp = Parsetree_util.mktyp
+let mkfield = Parsetree_util.mkfield
+let mkpolytype = Parsetree_util.mkpolytype
+let mkghpat = Parsetree_util.mkghpat
+let mkpat  = Parsetree_util.mkpat
+let mkexp = Parsetree_util.mkexp
+let mkli = Parsetree_util.mkli
+let array_function = Parsetree_util.array_function
+let varify_constructors = Parsetree_util.varify_constructors
+let mkmty = Parsetree_util.mkmty
+let mksig = Parsetree_util.mksig
+let mkstr = Parsetree_util.mkstr
+let mkcty = Parsetree_util.mkcty
+let mkctf = Parsetree_util.mkctf
+let mkcl = Parsetree_util.mkcl
+let mkcf = Parsetree_util.mkcf
 
 (** An unsafe version introduced is mainly for reducing
     unnecessary dependency when bootstrapping
