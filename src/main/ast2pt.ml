@@ -67,38 +67,125 @@ let remove_underscores s =
   Buffer.contents buf 
 
 
-(** Forward declarations *)
-let dump_ident =  %undef{}
+(** Forward declarations FIXME, should find a easy way to get rid of such duplications *)
+let dump_ident =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_ident")
+let dump_ctyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+let dump_row_field =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_row_field")
+let dump_name_ctyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_name_ctyp")
+let dump_constr =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_constr")
+let dump_mtyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mtyp")
+let dump_ctyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_ctyp")
+let dump_or_ctyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_or_ctyp")
+let dump_pat =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_pat")
+let dump_type_parameters =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_type_parameters")
+let dump_exp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_exp")
+let dump_case =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_case")
+let dump_rec_exp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_rec_exp")
+let dump_type_constr =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_type_constr")
+let dump_typedecl =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_typedecl")
+let dump_sigi =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_sigi")
+let dump_mbind =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_mbind")
+let dump_mexp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_mexp")
+let dump_stru =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt" "dump_stru")
+let dump_cltyp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cltyp")
+let dump_cldecl =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cldecl")
+let dump_cltdecl =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_cltdecl")
+let dump_clsigi =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clsigi")
+let dump_clexp =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clexp")
+let dump_clfield =
+  ref
+    (fun _  ->
+       Format.ksprintf failwith "%s.%s not implemented " "Ast2pt"
+         "dump_clfield")
 
-let dump_ctyp =  %undef{}
-
-let dump_row_field = %undef{}
-
-let dump_name_ctyp = %undef{}
-
-let dump_constr = %undef{}
-let dump_mtyp = %undef{}
-let dump_ctyp = %undef{}
-
-let dump_or_ctyp = %undef{}
-let dump_pat = %undef{}
-let dump_type_parameters = %undef{}
-let dump_exp = %undef{}
-let dump_case = %undef{}
-let dump_rec_exp =  %undef{}
-let dump_type_constr = %undef{}
-let dump_typedecl = %undef{} 
-let dump_sigi = %undef{}  
-let dump_mbind =  %undef{}
-let dump_mexp = %undef{}
-let dump_stru =  %undef{}
-let dump_cltyp = %undef{}
-let dump_cldecl = %undef{}
-let dump_cltdecl = %undef{}
-let dump_clsigi = %undef{}
-let dump_clexp = %undef{}
-let dump_clfield = %undef{}
-
+(*********************************************************************)
 
 (** the module path -- recorded during dumping  *)
 let module_path :  string list ref = ref []
