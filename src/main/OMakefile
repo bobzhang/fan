@@ -2,11 +2,11 @@
 
 #########################################################################
 ### shared with cold
-OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel 
+
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 
 .PHONY: lib clean
-    
+
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
 OCamlLibrary(libmain, $(FAN_FILES))
 

@@ -1,8 +1,14 @@
 
 
-(* type toplevel_phrase = Parsetree.toplevel_phrase *)
+
 
 open Parsetree
+
+type toplevel_phrase = Parsetree.toplevel_phrase
+
+val print_interface : Format.formatter -> signature_item list -> unit
+
+val print_implementation : Format.formatter -> structure_item list -> unit
 
 val with_loc : 'a -> Location.t -> 'a Location.loc
 

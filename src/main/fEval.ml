@@ -2,7 +2,7 @@
 
 (** eval the ast, only for byte code *)
 
-let s2s s : Parsetree.toplevel_phrase =
+let s2s s : Parsetree_util.toplevel_phrase =
   Ast2pt.phrase s
     
 let eval_ast fmt ast =

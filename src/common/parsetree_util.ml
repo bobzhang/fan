@@ -1,8 +1,11 @@
 open Parsetree
 open Longident
 open Location
+
 type toplevel_phrase = Parsetree.toplevel_phrase
 
+let print_interface = Printast.interface
+let print_implementation  = Printast.implementation
 let mkloc txt loc = { txt ; loc }
     
 let with_loc  txt loc = mkloc txt  loc

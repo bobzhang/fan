@@ -71,9 +71,9 @@ val wrap :
     'a Tokenf.parse  -> print_location:(Format.formatter -> Locf.t -> unit) ->
         Lexing.lexbuf -> 'a    
 
-val toplevel_phrase : Parsetree.toplevel_phrase Tokenf.parse
+val toplevel_phrase : Parsetree_util.toplevel_phrase Tokenf.parse
 
 
 (** Here we only *intercept* directives [at the beginning] of the file. 
     toplevel has a differen semantics for [use_file] *)
-val use_file : Parsetree.toplevel_phrase list Tokenf.parse
+val use_file : Parsetree_util.toplevel_phrase list Tokenf.parse

@@ -105,7 +105,7 @@ let () =
       with_open_out_file output_file @@
       fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
-        Printast.interface fmt pt in
+        Parsetree_util.print_interface fmt pt in
   let print_implem ?input_file:(_) ?output_file ast =
     let pt =
       match ast with
@@ -114,7 +114,7 @@ let () =
     with_open_out_file output_file @@
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
-      Printast.implementation fmt pt in
+      Parsetree_util.print_implementation fmt pt in
   Hashtbl.add backends "dparsetree" {
   descr =  "Compiles to parsetree decorated with location";
   implem = print_implem;
