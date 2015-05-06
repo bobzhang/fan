@@ -14,7 +14,7 @@ class map :
   object
     method ant : Astf.ant -> Astf.ant
     method lident : lident -> lident
-    method loc : Location.t -> Location.t
+    method loc : Locf.t -> Locf.t
     method t : t -> t
     method string : string -> string
   end

@@ -89,7 +89,7 @@ val of_exp :
     -> unit -> unit
         
 val of_ep :
-  ?lexer:(Location.t -> char Streamf.t -> Tokenf.stream) ->
+  ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream) ->
   name:Tokenf.name -> entry:Astf.ep Gramf.t ->
     unit -> unit
 

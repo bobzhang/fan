@@ -1,3 +1,7 @@
+
+
+(* type toplevel_phrase = Parsetree.toplevel_phrase *)
+
 open Parsetree
 
 val with_loc : 'a -> Location.t -> 'a Location.loc
@@ -19,6 +23,7 @@ val mksig :
 val mkmod : Location.t -> module_expr_desc -> module_expr
 
 val mkexp : Location.t -> expression_desc -> expression
+
 
 val mkstr :
   Location.t -> structure_item_desc -> structure_item

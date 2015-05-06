@@ -1,6 +1,7 @@
 open Parsetree
 open Longident
 open Location
+type toplevel_phrase = Parsetree.toplevel_phrase
 
 let mkloc txt loc = { txt ; loc }
     
