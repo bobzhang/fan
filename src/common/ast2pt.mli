@@ -60,9 +60,9 @@ val ctyp : ctyp -> Parsetree.core_type
 
 val row_field :  row_field -> Parsetree.row_field list -> Parsetree.row_field list
 
-val meth_list :
-    name_ctyp ->
-      Parsetree.core_field_type list -> Parsetree.core_field_type list
+(* val meth_list : *)
+(*     name_ctyp -> *)
+(*       Parsetree.core_field_type list -> Parsetree.core_field_type list *)
 
 val package_type_constraints :
   constr ->
@@ -106,11 +106,11 @@ val label_exp : exp -> Asttypes.label * Parsetree.expression
 
 val top_bind :
   bind ->
-  (Parsetree.pattern * Parsetree.expression) list
+  Parsetree.value_binding list
       
 val case :
   case ->
-  (Parsetree.pattern * Parsetree.expression) list
+  Parsetree.case list
 
 val mklabexp :
   rec_exp ->
@@ -127,19 +127,18 @@ val mklabexp :
       
 val mktype_decl :
   typedecl ->
-  (string Asttypes.loc * Parsetree.type_declaration) list
+  Parsetree.type_declaration list
 
 val mtyp : mtyp -> Parsetree.module_type
 
 val module_sig_bind :
-  mbind ->
-  (string Asttypes.loc * Parsetree.module_type) list ->
-  (string Asttypes.loc * Parsetree.module_type) list
+    mbind ->
+      Parsetree.module_declaration list ->
+        Parsetree.module_declaration list 
+
       
 val module_str_bind :
-  mbind ->
-  (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list ->
-  (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list
+  mbind -> Parsetree.module_binding list -> Parsetree.module_binding list 
       
 val mexp : mexp -> Parsetree.module_expr
 
@@ -200,3 +199,5 @@ val dump_clsigi          : (Astf.clsigi -> string) ref
 val dump_clexp           : (Astf.clexp -> string) ref
 val dump_clfield         : (Astf.clfield -> string) ref
     
+val empty_signature : Parsetree.signature
+val empty_structure : Parsetree.structure

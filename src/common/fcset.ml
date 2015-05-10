@@ -73,7 +73,7 @@ let env_to_array env =
   match env with
   | []         -> assert false
   | (_,x)::rem ->
-      let res = Array.create 257 x in
+      let res = Array.make 257 x in
       (List.iter
          (fun (c,y) ->
            List.iter

@@ -1,9 +1,9 @@
 
-let ocaml_standard_library = "/Users/hongbozhang/.opam/4.01.0/lib/ocaml"
+let ocaml_standard_library = "/Users/hongbozhang/.opam/4.02.1/lib/ocaml"
 
 (* WARNING, WARNING, WARNING
    make sure to update for each compiler release *)
-let cmi_magic_number = "Caml1999I015"
+let cmi_magic_number = "Caml1999I017"
 
 let ocaml_ast_impl_magic_number = "Caml1999M016"
 
@@ -13,7 +13,7 @@ let impl_magic_number = "FAN2013M002"
 
 let intf_magic_number = "FAN2013N002"
 
-let version = "4.01.0"
+let version = "4.02.1"
 
 let unsafe             = ref false;;
 

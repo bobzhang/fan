@@ -26,7 +26,7 @@ val error : Locf.t -> string -> 'a
 
 val mksig :
   Location.t -> signature_item_desc -> signature_item
-val mkmod : Location.t -> module_expr_desc -> module_expr
+(* val mkmod : Location.t -> module_expr_desc -> module_expr *)
 
 val mkexp : Location.t -> expression_desc -> expression
 
@@ -34,8 +34,8 @@ val mkexp : Location.t -> expression_desc -> expression
 val mkstr :
   Location.t -> structure_item_desc -> structure_item
 
-val mkfield :
-    Location.t -> core_field_desc -> core_field_type
+(* val mkfield : *)
+(*     Location.t -> core_field_desc -> core_field_type *)
 val mkcty : Location.t -> class_type_desc -> class_type
 
 val mkcl : Location.t -> class_expr_desc -> class_expr

@@ -1,6 +1,6 @@
 #########################################################################
 ### shared with cold
-
+OCAMLINCLUDES += +compiler-libs
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
