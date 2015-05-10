@@ -1,5 +1,5 @@
 open Astf
-type 'a t =  
+type 'a t =
   | Literal
   | Flag
   | Position_flag
@@ -51,7 +51,7 @@ type 'a t =
   | Clexp
   | Clfield
   | Ep
-  | Rec_bind 
+  | Rec_bind
 let to_string =
   function
   | Literal  -> "literal"
@@ -213,18 +213,24 @@ let clexp: clexp t = Clexp
 let clfield: clfield t = Clfield
 let ep: ep t = Ep
 let rec_bind: rec_bind t = Rec_bind
-type dyn  
+type dyn
 external dyn_tag : 'a t -> dyn t = "%identity"
-module Pack(X:sig type 'a t   end) =
+module Pack(X:sig type 'a t end) =
   struct
-    type pack = (dyn t* Obj.t) 
+    type pack = (dyn t* Obj.t)
     exception Pack_error
-    let pack tag (v : 'a X.t) = ((dyn_tag tag), (Obj.repr v))
+    let pack =
+      function
+      | tag -> (function | (v : 'a X.t) -> ((dyn_tag tag), (Obj.repr v)))
     let unpack: 'a t -> pack -> 'a X.t =
-      fun tag  (tag',obj)  ->
-        if (dyn_tag tag) = tag'
-        then (Obj.obj obj : 'a X.t )
-        else raise Pack_error
+      function
+      | tag ->
+          (function
+           | (tag',obj) ->
+               if (dyn_tag tag) = tag'
+               then (Obj.obj obj : 'a X.t)
+               else raise Pack_error)
     let print_tag: Format.formatter -> pack -> unit =
-      fun f  (tag,_)  -> Format.pp_print_string f (to_string tag)
+      function
+      | f -> (function | (tag,_) -> Format.pp_print_string f (to_string tag))
   end

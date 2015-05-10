@@ -1,5 +1,5 @@
 open Astf
-let ant x = x
+let ant = function | x -> x
 let literal: Astf.literal -> Astfn.literal =
   function
   | `Chr (_a0,_a1) -> `Chr _a1
@@ -15,51 +15,52 @@ let flag: Astf.flag -> Astfn.flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
-  | #ant as _a0 -> (ant _a0 :>Astfn.flag)
+  | #ant as _a0 -> (ant _a0 :> Astfn.flag)
 let position_flag: Astf.position_flag -> Astfn.position_flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
   | `Normal _a0 -> `Normal
-  | #ant as _a0 -> (ant _a0 :>Astfn.position_flag)
+  | #ant as _a0 -> (ant _a0 :> Astfn.position_flag)
 let rec strings: Astf.strings -> Astfn.strings =
   function
   | `App (_a0,_a1,_a2) ->
       let _a1 = strings _a1 in let _a2 = strings _a2 in `App (_a1, _a2)
   | `Str (_a0,_a1) -> `Str _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.strings)
-let lident: Astf.lident -> Astfn.lident = fun (`Lid (_a0,_a1))  -> `Lid _a1
+  | #ant as _a0 -> (ant _a0 :> Astfn.strings)
+let lident: Astf.lident -> Astfn.lident =
+  function | `Lid (_a0,_a1) -> `Lid _a1
 let alident: Astf.alident -> Astfn.alident =
   function
   | `Lid (_a0,_a1) -> `Lid _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.alident)
+  | #ant as _a0 -> (ant _a0 :> Astfn.alident)
 let auident: Astf.auident -> Astfn.auident =
   function
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.auident)
+  | #ant as _a0 -> (ant _a0 :> Astfn.auident)
 let aident: Astf.aident -> Astfn.aident =
   function
-  | #alident as _a0 -> (alident _a0 :>Astfn.aident)
-  | #auident as _a0 -> (auident _a0 :>Astfn.aident)
+  | #alident as _a0 -> (alident _a0 :> Astfn.aident)
+  | #auident as _a0 -> (auident _a0 :> Astfn.aident)
 let astring: Astf.astring -> Astfn.astring =
   function
   | `C (_a0,_a1) -> `C _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.astring)
+  | #ant as _a0 -> (ant _a0 :> Astfn.astring)
 let rec uident: Astf.uident -> Astfn.uident =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = uident _a1 in let _a2 = uident _a2 in `Dot (_a1, _a2)
   | `App (_a0,_a1,_a2) ->
       let _a1 = uident _a1 in let _a2 = uident _a2 in `App (_a1, _a2)
-  | #auident as _a0 -> (auident _a0 :>Astfn.uident)
+  | #auident as _a0 -> (auident _a0 :> Astfn.uident)
 let rec ident: Astf.ident -> Astfn.ident =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = ident _a1 in let _a2 = ident _a2 in `Dot (_a1, _a2)
   | `Apply (_a0,_a1,_a2) ->
       let _a1 = ident _a1 in let _a2 = ident _a2 in `Apply (_a1, _a2)
-  | #alident as _a0 -> (alident _a0 :>Astfn.ident)
-  | #auident as _a0 -> (auident _a0 :>Astfn.ident)
+  | #alident as _a0 -> (alident _a0 :> Astfn.ident)
+  | #auident as _a0 -> (auident _a0 :> Astfn.ident)
 let ident': Astf.ident' -> Astfn.ident' =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -74,7 +75,7 @@ let rec vid: Astf.vid -> Astfn.vid =
       let _a1 = vid _a1 in let _a2 = vid _a2 in `Dot (_a1, _a2)
   | `Lid (_a0,_a1) -> `Lid _a1
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.vid)
+  | #ant as _a0 -> (ant _a0 :> Astfn.vid)
 let vid': Astf.vid' -> Astfn.vid' =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -85,18 +86,18 @@ let rec dupath: Astf.dupath -> Astfn.dupath =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = dupath _a1 in let _a2 = dupath _a2 in `Dot (_a1, _a2)
-  | #auident as _a0 -> (auident _a0 :>Astfn.dupath)
+  | #auident as _a0 -> (auident _a0 :> Astfn.dupath)
 let dlpath: Astf.dlpath -> Astfn.dlpath =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = dupath _a1 in let _a2 = alident _a2 in `Dot (_a1, _a2)
-  | #alident as _a0 -> (alident _a0 :>Astfn.dlpath)
-let any: Astf.any -> Astfn.any = fun (`Any _a0)  -> `Any
+  | #alident as _a0 -> (alident _a0 :> Astfn.dlpath)
+let any: Astf.any -> Astfn.any = function | `Any _a0 -> `Any
 let rec ctyp: Astf.ctyp -> Astfn.ctyp =
   function
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = ctyp _a1 in let _a2 = alident _a2 in `Alias (_a1, _a2)
-  | #any as _a0 -> (any _a0 :>Astfn.ctyp)
+  | #any as _a0 -> (any _a0 :> Astfn.ctyp)
   | `App (_a0,_a1,_a2) ->
       let _a1 = ctyp _a1 in let _a2 = ctyp _a2 in `App (_a1, _a2)
   | `Arrow (_a0,_a1,_a2) ->
@@ -106,7 +107,7 @@ let rec ctyp: Astf.ctyp -> Astfn.ctyp =
       let _a1 = alident _a1 in let _a2 = ctyp _a2 in `Label (_a1, _a2)
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = alident _a1 in let _a2 = ctyp _a2 in `OptLabl (_a1, _a2)
-  | #ident' as _a0 -> (ident' _a0 :>Astfn.ctyp)
+  | #ident' as _a0 -> (ident' _a0 :> Astfn.ctyp)
   | `TyObj (_a0,_a1,_a2) ->
       let _a1 = name_ctyp _a1 in let _a2 = flag _a2 in `TyObj (_a1, _a2)
   | `TyObjEnd (_a0,_a1) -> let _a1 = flag _a1 in `TyObjEnd _a1
@@ -131,17 +132,17 @@ let rec ctyp: Astf.ctyp -> Astfn.ctyp =
       let _a1 = row_field _a1 in
       let _a2 = tag_names _a2 in `PolyInfSup (_a1, _a2)
   | `Package (_a0,_a1) -> let _a1 = mtyp _a1 in `Package _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.ctyp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.ctyp)
 and type_parameters: Astf.type_parameters -> Astfn.type_parameters =
   function
   | `Com (_a0,_a1,_a2) ->
       let _a1 = type_parameters _a1 in
       let _a2 = type_parameters _a2 in `Com (_a1, _a2)
   | `Ctyp (_a0,_a1) -> let _a1 = ctyp _a1 in `Ctyp _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.type_parameters)
+  | #ant as _a0 -> (ant _a0 :> Astfn.type_parameters)
 and row_field: Astf.row_field -> Astfn.row_field =
   function
-  | #ant as _a0 -> (ant _a0 :>Astfn.row_field)
+  | #ant as _a0 -> (ant _a0 :> Astfn.row_field)
   | `Bar (_a0,_a1,_a2) ->
       let _a1 = row_field _a1 in let _a2 = row_field _a2 in `Bar (_a1, _a2)
   | `TyVrn (_a0,_a1) -> let _a1 = astring _a1 in `TyVrn _a1
@@ -150,7 +151,7 @@ and row_field: Astf.row_field -> Astfn.row_field =
   | `Ctyp (_a0,_a1) -> let _a1 = ctyp _a1 in `Ctyp _a1
 and tag_names: Astf.tag_names -> Astfn.tag_names =
   function
-  | #ant as _a0 -> (ant _a0 :>Astfn.tag_names)
+  | #ant as _a0 -> (ant _a0 :> Astfn.tag_names)
   | `App (_a0,_a1,_a2) ->
       let _a1 = tag_names _a1 in let _a2 = tag_names _a2 in `App (_a1, _a2)
   | `TyVrn (_a0,_a1) -> let _a1 = astring _a1 in `TyVrn _a1
@@ -167,7 +168,7 @@ and typedecl: Astf.typedecl -> Astfn.typedecl =
       let _a3 = opt_type_constr _a3 in `TyAbstr (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
       let _a1 = typedecl _a1 in let _a2 = typedecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.typedecl)
+  | #ant as _a0 -> (ant _a0 :> Astfn.typedecl)
 and type_constr: Astf.type_constr -> Astfn.type_constr =
   function
   | `And (_a0,_a1,_a2) ->
@@ -175,7 +176,7 @@ and type_constr: Astf.type_constr -> Astfn.type_constr =
       let _a2 = type_constr _a2 in `And (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = ctyp _a1 in let _a2 = ctyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.type_constr)
+  | #ant as _a0 -> (ant _a0 :> Astfn.type_constr)
 and opt_type_constr: Astf.opt_type_constr -> Astfn.opt_type_constr =
   function
   | `Some (_a0,_a1) -> let _a1 = type_constr _a1 in `Some _a1
@@ -187,7 +188,7 @@ and decl_param: Astf.decl_param -> Astfn.decl_param =
       let _a2 = alident _a2 in `Quote (_a1, _a2)
   | `QuoteAny (_a0,_a1) -> let _a1 = position_flag _a1 in `QuoteAny _a1
   | `Any _a0 -> `Any
-  | #ant as _a0 -> (ant _a0 :>Astfn.decl_param)
+  | #ant as _a0 -> (ant _a0 :> Astfn.decl_param)
 and decl_params: Astf.decl_params -> Astfn.decl_params =
   function
   | `Quote (_a0,_a1,_a2) ->
@@ -198,7 +199,7 @@ and decl_params: Astf.decl_params -> Astfn.decl_params =
   | `Com (_a0,_a1,_a2) ->
       let _a1 = decl_params _a1 in
       let _a2 = decl_params _a2 in `Com (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.decl_params)
+  | #ant as _a0 -> (ant _a0 :> Astfn.decl_params)
 and opt_decl_params: Astf.opt_decl_params -> Astfn.opt_decl_params =
   function
   | `Some (_a0,_a1) -> let _a1 = decl_params _a1 in `Some _a1
@@ -212,12 +213,12 @@ and type_info: Astf.type_info -> Astfn.type_info =
       let _a1 = flag _a1 in let _a2 = type_repr _a2 in `TyRepr (_a1, _a2)
   | `TyEq (_a0,_a1,_a2) ->
       let _a1 = flag _a1 in let _a2 = ctyp _a2 in `TyEq (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.type_info)
+  | #ant as _a0 -> (ant _a0 :> Astfn.type_info)
 and type_repr: Astf.type_repr -> Astfn.type_repr =
   function
   | `Record (_a0,_a1) -> let _a1 = name_ctyp _a1 in `Record _a1
   | `Sum (_a0,_a1) -> let _a1 = or_ctyp _a1 in `Sum _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.type_repr)
+  | #ant as _a0 -> (ant _a0 :> Astfn.type_repr)
 and name_ctyp: Astf.name_ctyp -> Astfn.name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -226,7 +227,7 @@ and name_ctyp: Astf.name_ctyp -> Astfn.name_ctyp =
       let _a1 = alident _a1 in let _a2 = ctyp _a2 in `TyCol (_a1, _a2)
   | `TyColMut (_a0,_a1,_a2) ->
       let _a1 = alident _a1 in let _a2 = ctyp _a2 in `TyColMut (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.name_ctyp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.name_ctyp)
 and or_ctyp: Astf.or_ctyp -> Astfn.or_ctyp =
   function
   | `Bar (_a0,_a1,_a2) ->
@@ -235,16 +236,16 @@ and or_ctyp: Astf.or_ctyp -> Astfn.or_ctyp =
       let _a1 = auident _a1 in let _a2 = ctyp _a2 in `TyCol (_a1, _a2)
   | `Of (_a0,_a1,_a2) ->
       let _a1 = auident _a1 in let _a2 = ctyp _a2 in `Of (_a1, _a2)
-  | #auident as _a0 -> (auident _a0 :>Astfn.or_ctyp)
+  | #auident as _a0 -> (auident _a0 :> Astfn.or_ctyp)
 and of_ctyp: Astf.of_ctyp -> Astfn.of_ctyp =
   function
   | `Of (_a0,_a1,_a2) ->
       let _a1 = vid _a1 in let _a2 = ctyp _a2 in `Of (_a1, _a2)
-  | #vid' as _a0 -> (vid' _a0 :>Astfn.of_ctyp)
-  | #ant as _a0 -> (ant _a0 :>Astfn.of_ctyp)
+  | #vid' as _a0 -> (vid' _a0 :> Astfn.of_ctyp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.of_ctyp)
 and pat: Astf.pat -> Astfn.pat =
   function
-  | #vid as _a0 -> (vid _a0 :>Astfn.pat)
+  | #vid as _a0 -> (vid _a0 :> Astfn.pat)
   | `App (_a0,_a1,_a2) ->
       let _a1 = pat _a1 in let _a2 = pat _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
@@ -253,9 +254,9 @@ and pat: Astf.pat -> Astfn.pat =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = pat _a1 in let _a2 = pat _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = pat _a1 in `Par _a1
-  | #any as _a0 -> (any _a0 :>Astfn.pat)
+  | #any as _a0 -> (any _a0 :> Astfn.pat)
   | `Record (_a0,_a1) -> let _a1 = rec_pat _a1 in `Record _a1
-  | #literal as _a0 -> (literal _a0 :>Astfn.pat)
+  | #literal as _a0 -> (literal _a0 :> Astfn.pat)
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = pat _a1 in let _a2 = alident _a2 in `Alias (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
@@ -287,11 +288,11 @@ and rec_pat: Astf.rec_pat -> Astfn.rec_pat =
       let _a1 = vid _a1 in let _a2 = pat _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = rec_pat _a1 in let _a2 = rec_pat _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (any _a0 :>Astfn.rec_pat)
-  | #ant as _a0 -> (ant _a0 :>Astfn.rec_pat)
+  | #any as _a0 -> (any _a0 :> Astfn.rec_pat)
+  | #ant as _a0 -> (ant _a0 :> Astfn.rec_pat)
 and exp: Astf.exp -> Astfn.exp =
   function
-  | #vid as _a0 -> (vid _a0 :>Astfn.exp)
+  | #vid as _a0 -> (vid _a0 :> Astfn.exp)
   | `App (_a0,_a1,_a2) ->
       let _a1 = exp _a1 in let _a2 = exp _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
@@ -300,9 +301,9 @@ and exp: Astf.exp -> Astfn.exp =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = exp _a1 in let _a2 = exp _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = exp _a1 in `Par _a1
-  | #any as _a0 -> (any _a0 :>Astfn.exp)
+  | #any as _a0 -> (any _a0 :> Astfn.exp)
   | `Record (_a0,_a1) -> let _a1 = rec_exp _a1 in `Record _a1
-  | #literal as _a0 -> (literal _a0 :>Astfn.exp)
+  | #literal as _a0 -> (literal _a0 :> Astfn.exp)
   | `RecordWith (_a0,_a1,_a2) ->
       let _a1 = rec_exp _a1 in let _a2 = exp _a2 in `RecordWith (_a1, _a2)
   | `Field (_a0,_a1,_a2) ->
@@ -382,11 +383,11 @@ and rec_exp: Astf.rec_exp -> Astfn.rec_exp =
       let _a1 = rec_exp _a1 in let _a2 = rec_exp _a2 in `Sem (_a1, _a2)
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = vid _a1 in let _a2 = exp _a2 in `RecBind (_a1, _a2)
-  | #any as _a0 -> (any _a0 :>Astfn.rec_exp)
-  | #ant as _a0 -> (ant _a0 :>Astfn.rec_exp)
+  | #any as _a0 -> (any _a0 :> Astfn.rec_exp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.rec_exp)
 and mtyp: Astf.mtyp -> Astfn.mtyp =
   function
-  | #ident' as _a0 -> (ident' _a0 :>Astfn.mtyp)
+  | #ident' as _a0 -> (ident' _a0 :> Astfn.mtyp)
   | `Sig (_a0,_a1) -> let _a1 = sigi _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
   | `Functor (_a0,_a1,_a2,_a3) ->
@@ -395,7 +396,7 @@ and mtyp: Astf.mtyp -> Astfn.mtyp =
   | `With (_a0,_a1,_a2) ->
       let _a1 = mtyp _a1 in let _a2 = constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) -> let _a1 = mexp _a1 in `ModuleTypeOf _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.mtyp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.mtyp)
 and sigi: Astf.sigi -> Astfn.sigi =
   function
   | `Val (_a0,_a1,_a2) ->
@@ -423,7 +424,7 @@ and sigi: Astf.sigi -> Astfn.sigi =
       let _a1 = flag _a1 in let _a2 = ident _a2 in `Open (_a1, _a2)
   | `Include (_a0,_a1) -> let _a1 = mtyp _a1 in `Include _a1
   | `RecModule (_a0,_a1) -> let _a1 = mbind _a1 in `RecModule _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.sigi)
+  | #ant as _a0 -> (ant _a0 :> Astfn.sigi)
 and mbind: Astf.mbind -> Astfn.mbind =
   function
   | `And (_a0,_a1,_a2) ->
@@ -433,7 +434,7 @@ and mbind: Astf.mbind -> Astfn.mbind =
       let _a2 = mtyp _a2 in let _a3 = mexp _a3 in `ModuleBind (_a1, _a2, _a3)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = auident _a1 in let _a2 = mtyp _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.mbind)
+  | #ant as _a0 -> (ant _a0 :> Astfn.mbind)
 and constr: Astf.constr -> Astfn.constr =
   function
   | `TypeEq (_a0,_a1,_a2) ->
@@ -448,14 +449,14 @@ and constr: Astf.constr -> Astfn.constr =
       let _a1 = ident _a1 in let _a2 = ident _a2 in `ModuleSubst (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
       let _a1 = constr _a1 in let _a2 = constr _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.constr)
+  | #ant as _a0 -> (ant _a0 :> Astfn.constr)
 and bind: Astf.bind -> Astfn.bind =
   function
   | `And (_a0,_a1,_a2) ->
       let _a1 = bind _a1 in let _a2 = bind _a2 in `And (_a1, _a2)
   | `Bind (_a0,_a1,_a2) ->
       let _a1 = pat _a1 in let _a2 = exp _a2 in `Bind (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.bind)
+  | #ant as _a0 -> (ant _a0 :> Astfn.bind)
 and case: Astf.case -> Astfn.case =
   function
   | `Bar (_a0,_a1,_a2) ->
@@ -465,10 +466,10 @@ and case: Astf.case -> Astfn.case =
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
       let _a1 = pat _a1 in
       let _a2 = exp _a2 in let _a3 = exp _a3 in `CaseWhen (_a1, _a2, _a3)
-  | #ant as _a0 -> (ant _a0 :>Astfn.case)
+  | #ant as _a0 -> (ant _a0 :> Astfn.case)
 and mexp: Astf.mexp -> Astfn.mexp =
   function
-  | #vid' as _a0 -> (vid' _a0 :>Astfn.mexp)
+  | #vid' as _a0 -> (vid' _a0 :> Astfn.mexp)
   | `App (_a0,_a1,_a2) ->
       let _a1 = mexp _a1 in let _a2 = mexp _a2 in `App (_a1, _a2)
   | `Functor (_a0,_a1,_a2,_a3) ->
@@ -479,7 +480,7 @@ and mexp: Astf.mexp -> Astfn.mexp =
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = mexp _a1 in let _a2 = mtyp _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) -> let _a1 = exp _a1 in `PackageModule _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.mexp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.mexp)
 and stru: Astf.stru -> Astfn.stru =
   function
   | `Class (_a0,_a1) -> let _a1 = cldecl _a1 in `Class _a1
@@ -509,7 +510,7 @@ and stru: Astf.stru -> Astfn.stru =
       let _a1 = typedecl _a1 in let _a2 = strings _a2 in `TypeWith (_a1, _a2)
   | `Value (_a0,_a1,_a2) ->
       let _a1 = flag _a1 in let _a2 = bind _a2 in `Value (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.stru)
+  | #ant as _a0 -> (ant _a0 :> Astfn.stru)
 and cltdecl: Astf.cltdecl -> Astfn.cltdecl =
   function
   | `And (_a0,_a1,_a2) ->
@@ -522,10 +523,10 @@ and cltdecl: Astf.cltdecl -> Astfn.cltdecl =
   | `CtDeclS (_a0,_a1,_a2,_a3) ->
       let _a1 = flag _a1 in
       let _a2 = ident _a2 in let _a3 = cltyp _a3 in `CtDeclS (_a1, _a2, _a3)
-  | #ant as _a0 -> (ant _a0 :>Astfn.cltdecl)
+  | #ant as _a0 -> (ant _a0 :> Astfn.cltdecl)
 and cltyp: Astf.cltyp -> Astfn.cltyp =
   function
-  | #vid' as _a0 -> (vid' _a0 :>Astfn.cltyp)
+  | #vid' as _a0 -> (vid' _a0 :> Astfn.cltyp)
   | `ClApply (_a0,_a1,_a2) ->
       let _a1 = vid _a1 in
       let _a2 = type_parameters _a2 in `ClApply (_a1, _a2)
@@ -538,7 +539,7 @@ and cltyp: Astf.cltyp -> Astfn.cltyp =
   | `ObjEnd _a0 -> `ObjEnd
   | `And (_a0,_a1,_a2) ->
       let _a1 = cltyp _a1 in let _a2 = cltyp _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.cltyp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.cltyp)
 and clsigi: Astf.clsigi -> Astfn.clsigi =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -556,7 +557,7 @@ and clsigi: Astf.clsigi -> Astfn.clsigi =
       let _a2 = flag _a2 in let _a3 = ctyp _a3 in `VirMeth (_a1, _a2, _a3)
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = ctyp _a1 in let _a2 = ctyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.clsigi)
+  | #ant as _a0 -> (ant _a0 :> Astfn.clsigi)
 and cldecl: Astf.cldecl -> Astfn.cldecl =
   function
   | `ClDecl (_a0,_a1,_a2,_a3,_a4) ->
@@ -569,12 +570,12 @@ and cldecl: Astf.cldecl -> Astfn.cldecl =
       let _a2 = ident _a2 in let _a3 = clexp _a3 in `ClDeclS (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
       let _a1 = cldecl _a1 in let _a2 = cldecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.cldecl)
+  | #ant as _a0 -> (ant _a0 :> Astfn.cldecl)
 and clexp: Astf.clexp -> Astfn.clexp =
   function
   | `CeApp (_a0,_a1,_a2) ->
       let _a1 = clexp _a1 in let _a2 = exp _a2 in `CeApp (_a1, _a2)
-  | #vid' as _a0 -> (vid' _a0 :>Astfn.clexp)
+  | #vid' as _a0 -> (vid' _a0 :> Astfn.clexp)
   | `ClApply (_a0,_a1,_a2) ->
       let _a1 = vid _a1 in
       let _a2 = type_parameters _a2 in `ClApply (_a1, _a2)
@@ -590,7 +591,7 @@ and clexp: Astf.clexp -> Astfn.clexp =
   | `ObjPatEnd (_a0,_a1) -> let _a1 = pat _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = clexp _a1 in let _a2 = cltyp _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (ant _a0 :>Astfn.clexp)
+  | #ant as _a0 -> (ant _a0 :> Astfn.clexp)
 and clfield: Astf.clfield -> Astfn.clfield =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -624,10 +625,10 @@ and clfield: Astf.clfield -> Astfn.clfield =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = ctyp _a1 in let _a2 = ctyp _a2 in `Eq (_a1, _a2)
   | `Initializer (_a0,_a1) -> let _a1 = exp _a1 in `Initializer _a1
-  | #ant as _a0 -> (ant _a0 :>Astfn.clfield)
+  | #ant as _a0 -> (ant _a0 :> Astfn.clfield)
 let rec ep: Astf.ep -> Astfn.ep =
   function
-  | #vid as _a0 -> (vid _a0 :>Astfn.ep)
+  | #vid as _a0 -> (vid _a0 :> Astfn.ep)
   | `App (_a0,_a1,_a2) ->
       let _a1 = ep _a1 in let _a2 = ep _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
@@ -638,16 +639,16 @@ let rec ep: Astf.ep -> Astfn.ep =
   | `Par (_a0,_a1) -> let _a1 = ep _a1 in `Par _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = ep _a1 in let _a2 = ctyp _a2 in `Constraint (_a1, _a2)
-  | #any as _a0 -> (any _a0 :>Astfn.ep)
+  | #any as _a0 -> (any _a0 :> Astfn.ep)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = ep _a1 in `Array _a1
   | `Record (_a0,_a1) -> let _a1 = rec_bind _a1 in `Record _a1
-  | #literal as _a0 -> (literal _a0 :>Astfn.ep)
+  | #literal as _a0 -> (literal _a0 :> Astfn.ep)
 and rec_bind: Astf.rec_bind -> Astfn.rec_bind =
   function
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = vid _a1 in let _a2 = ep _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = rec_bind _a1 in let _a2 = rec_bind _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (any _a0 :>Astfn.rec_bind)
-  | #ant as _a0 -> (ant _a0 :>Astfn.rec_bind)
+  | #any as _a0 -> (any _a0 :> Astfn.rec_bind)
+  | #ant as _a0 -> (ant _a0 :> Astfn.rec_bind)

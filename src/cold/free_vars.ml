@@ -1,6 +1,6 @@
 open Astf
-class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
-  object 
+class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu)  init =
+  object
     inherit  Objs.fold as super
     val acc = init
     method acc : 'accu= acc
@@ -10,25 +10,38 @@ class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
         |(`OptLablS (_loc,`Lid (_,s)) : Astf.pat) -> {<acc = f s acc>}
       | p -> super#pat p
   end
-let fold_pattern_vars f p init =
-  (((new c_fold_pattern_vars) f init)#pat p)#acc
-let rec fold_bind_vars f bi acc =
-  match bi with
-  | (`And (_loc,bi1,bi2) : Astf.bind) ->
-      fold_bind_vars f bi1 (fold_bind_vars f bi2 acc)
-  | (`Bind (_loc,p,_) : Astf.bind) -> fold_pattern_vars f p acc
-  | `Ant _ -> assert false
-class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
-  Setf.String.empty) free_init =
+let fold_pattern_vars =
+  function
+  | f ->
+      (function
+       | p ->
+           (function | init -> (((new c_fold_pattern_vars) f init)#pat p)#acc))
+let rec fold_bind_vars =
+  function
+  | f ->
+      (function
+       | bi ->
+           (function
+            | acc ->
+                (match bi with
+                 | (`And (_loc,bi1,bi2) : Astf.bind) ->
+                     fold_bind_vars f bi1 (fold_bind_vars f bi2 acc)
+                 | (`Bind (_loc,p,_) : Astf.bind) ->
+                     fold_pattern_vars f p acc
+                 | `Ant _ -> assert false)))
+class ['accu] fold_free_vars (f : string -> 'accu -> 'accu)  ?(env_init=
+  Setf.String.empty)  free_init =
   object (o)
     inherit  Objs.fold as super
-    val free = (free_init : 'accu )
-    val env = (env_init : Setf.String.t )
+    val free = (free_init : 'accu)
+    val env = (env_init : Setf.String.t)
     method free = free
-    method set_env env = {<env = env>}
-    method add_atom s = {<env = Setf.String.add s env>}
-    method add_pat p = {<env = fold_pattern_vars Setf.String.add p env>}
-    method add_bind bi = {<env = fold_bind_vars Setf.String.add bi env>}
+    method set_env = function | env -> {<env = env>}
+    method add_atom = function | s -> {<env = Setf.String.add s env>}
+    method add_pat =
+      function | p -> {<env = fold_pattern_vars Setf.String.add p env>}
+    method add_bind =
+      function | bi -> {<env = fold_bind_vars Setf.String.add bi env>}
     method! exp =
       function
       | (`Lid (_loc,s) : Astf.exp)|(`LabelS (_loc,`Lid (_,s)) : Astf.exp)
@@ -82,6 +95,11 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | (`Struct (_loc,st) : Astf.mexp) -> (o#stru st)#set_env env
       | me -> super#mexp me
   end
-let free_vars env_init e =
-  let fold = (new fold_free_vars) Setf.String.add ~env_init Setf.String.empty in
-  (fold#exp e)#free
+let free_vars =
+  function
+  | env_init ->
+      (function
+       | e ->
+           let fold =
+             (new fold_free_vars) Setf.String.add ~env_init Setf.String.empty in
+           (fold#exp e)#free)
