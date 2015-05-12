@@ -30,17 +30,17 @@ begin
   Fan_warnings.current :=
     (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
-        (Warnings.Camlp4 txt));
+        (Warnings.Preprocessor txt));
   Ast_parsers.use_parsers ["fan"]
 end;;
 
-
+(*
 begin
   Topdirs.dir_install_printer
     Format.std_formatter (Longident.parse "Gramf.dump") ;
   fan ()
 end;;
-
+*)
 
 
 

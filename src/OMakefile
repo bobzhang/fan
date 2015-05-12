@@ -154,6 +154,9 @@ section
 
 coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
 
+fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
+     ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
+
 ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
 
