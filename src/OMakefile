@@ -152,7 +152,7 @@ section
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
 
-coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
+# coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
 
 fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
      ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
