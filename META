@@ -1,40 +1,47 @@
 # -*- mode:sh -*-
-name="fan"
-
+# name="fan_top"
 version = "0.1"
+# directory= "+fan"
 
 description= "metaprogramming tool for OCaml"
-directory= "+fan"
+requires="dynlink"
 
-requires=""
-
-package "rts" (
-  requires = ""
+# package "top" (
+#     requires = ""
+#     version = "0.1"
+#     description = "fan toplevel"
+#     archive(byte) = "libutils.cma"
+# )
+package "utils" (
+  requires = "fan"
   version="0.1"
   description="basic runtime support for Fan, it's mainly an enhancement for stdlib"
-  archive(byte)="rts.cma"
-  archive(byte,plugin)="rts.cma"
-  archive(native,plugin)="rts.cmxs"
-  archive(native)="rts.cmxa"
+  archive(byte)="libutils.cma"
+  archive(byte,plugin)="libutils.cma"
+  archive(native,plugin)="libutils.cmxs"
+  archive(native)="libutils.cmxa"
 )
 
-package "fgram" (
-  requires = "fan.rts"
+package "common" (
+  requires = "fan.utils"
   version = "0.1"
-  archive(byte)="fgram.cma"
-  archive(byte,plugin)="fgram.cma"
-  archive(native)="fgram.cmxa"
-  archive(native,plugin)="fgram.cmxs"
+  archive(byte)="libcommon.cma"
+  archive(byte,plugin)="libcommon.cma"
+  archive(native)="libcommon.cmxa"
+  archive(native,plugin)="libcommon.cmxs"
 )
-package "top" (
+package "treeparser" (
     version="0.1"
     description="fan toplevel"
-    archive(byte)="fanTop.cma"
+    requires = "fan.common"
+    archive(byte)="libtreeparser.cma"
 )
+
 package "toplib" (
     version="0.1"
     description="the toplevel lib"
-    archive(byte)="mktop.cma"
+    requires="fan.treeparser"
+    archive(byte)="libmain_top.cma"
 )
 
 # package "full" (
@@ -54,3 +61,5 @@ package "toplib" (
 
 
 
+# version="dev"
+# archive(byte) = "libutils.cma "
