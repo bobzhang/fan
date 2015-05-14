@@ -1,6 +1,7 @@
 
 .PHONY:un-install
-
+all:
+	cd src ; pmake fan_top
 un-install:
 	ocamlfind remove fan
 install:
