@@ -20,6 +20,9 @@ let fan ()  = begin
     Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location
 end;;
 
+(** For fan's js toplevel *)
+(* let () = fan();; *)
+
 begin
   Hashtbl.replace Toploop.directive_table "fan"
     (Toploop.Directive_none (fun () -> fan ()));

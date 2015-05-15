@@ -2,7 +2,7 @@
 
 %fans{keep off; derive (LocType);};;
 
-%ocaml{ %include{ "../common/astf.mli"};; };;
+%ocaml{ %include{ "../common/astf.ml"};; };;
 
 
 

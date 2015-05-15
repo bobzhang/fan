@@ -623,5 +623,5 @@ and rec_bind =
   | ant] 
       
       
-(* let _loc = Locf.ghost; *)
+
 (* #filter "serialize";; *)
