@@ -1,0 +1,30 @@
++TITLE: Fan: metaprogrammingfor OCaml
+=====================================
+
++OPTIONS: toc:nil html-postamble:nil html-preamble:nil
+======================================================
+
++HTML\_HEAD: 
+=============
+
+Fan is a successor to
+[[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]], which was
+mainly developed by [[http://pauillac.inria.fr/~ddr/][Daniel de
+Rauglaudre]] and [[http://michel.mauny.net/index.en.php][Michel Mauny]],
+and later was largely renovated by
+[[http://nicolaspouillard.fr/][Nicolas Pouillard]].
+
+In the fall semester of 2011, I had an indepedent study with
+[[http://www.cis.upenn.edu/~sweirich/][Stephanie Weirich]] on "generic
+programming in Haskell", later I ported it into OCaml using Camlp4 in
+the spring semester of 2012.
+
+Later, I found Camlp4 too slow and verbose, and it's very hard to write
+a plugin for it, then I started Fan as a research project under the
+guidance of [[http://www.cis.upenn.edu/~stevez/][Steve Zdancewic]], from
+July 2012.
+
+Special thanks to
+[[http://en.wikipedia.org/wiki/John\_McCarthy\_(computer\_scientist)][John
+McCarthy]] and [[http://gallium.inria.fr/~xleroy/][Xavier Leory]] for
+their contribution to language design.
