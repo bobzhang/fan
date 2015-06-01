@@ -6,17 +6,11 @@
 Welcome to Fan's documentation!
 ===============================
 
-Contents:
+.. contents::
 
 .. toctree::
    :maxdepth: 2
 
 
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 

@@ -1,0 +1,7 @@
+[
+    "trigger", ".", {
+        "name": "docbuild",
+        "expression": ["pcre", "\\.(rst|html|py|json)$"],
+        "command": ["./builddoc"]
+    }
+]
