@@ -12,7 +12,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees  $(SPHINXOPTS) docs
 clean:
 	rm -rf $(BUILDDIR)/*
 pub:
-	ghp-import  build/html
+	ghp-import  -p build/html
 html:
 	sphinx-build -b html -d build/doctrees docs build/html
 	touch build/html/.nojekyll
