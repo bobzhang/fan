@@ -1,0 +1,33 @@
+.. -*- mode:rst -*-
+
+.. _Fan: https://github.com/bobzhang/Fan
+
+.. _OCaml: http://caml.inria.fr/
+
+.. _Camlp4: http://brion.inria.fr/gallium/index.php/Camlp4
+
+.. _Lispy Macros: http://letoverlambda.com/
+
+.. _Fan's Documentation: https://github.com/bobzhang/Fan/tree/gh-pages
+
+.. _Daniel de Rauglaudre: http://pauillac.inria.fr/~ddr/
+
+.. _Michel Mauny: http://michel.mauny.net/index.en.php
+
+.. _Nicolas Pouillard: http://nicolaspouillard.fr/
+
+.. _Stephanie Weirich: http://www.cis.upenn.edu/~sweirich/
+
+.. _Steve Zdancewic: http://www.cis.upenn.edu/~stevez/
+
+.. _John McCarthy: http://en.wikipedia.org/wiki/John\_McCarthy\_(computer\_scientist)
+
+.. _Xavier Leory: http://gallium.inria.fr/~xleroy/
+
+.. _ReST: http://docutils.sourceforge.net/rst.html
+
+.. _Sphinx: http://sphinx-doc.org/contents.html
+
+.. _OCaml tutorial: http://ocaml.org/
+
+.. _OCamlfind: http://projects.camlcity.org/projects/findlib.html
