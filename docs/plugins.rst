@@ -1,17 +1,7 @@
-+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
-======================================================
-
-+HTML\_HEAD: 
+=============
+Fan's plugins
 =============
 
-+TITLE: Fan's plugins
-=====================
-
-+OPTIONS: ^:
-============
-
-+OPTIONS: toc:nil
-=================
 
 -  A native example
 

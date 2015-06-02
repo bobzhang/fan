@@ -5,6 +5,15 @@ Fan: metaprogramming for OCaml
 .. toctree::
 
    start
+   philosophy
+   compilation
+   ddsl
+   lexer
+   toplevel
+   plugins
+   parser
+   quotation_system
+   browser
    credits
 
 `Fan`_ is a compile-time metaprogramming system for `OCaml`_,

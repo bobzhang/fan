@@ -31,3 +31,13 @@
 .. _OCaml tutorial: http://ocaml.org/
 
 .. _OCamlfind: http://projects.camlcity.org/projects/findlib.html
+
+.. _DSL: http://en.wikipedia.org/wiki/Domain-specific\_language
+
+.. _Utop: https://github.com/diml/utop
+
+.. _Haxe: http://haxe.org/
+
+.. _Cfront: http://en.wikipedia.org/wiki/Cfront
+
+.. _Altjs: http://altjs.org/

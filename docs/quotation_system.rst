@@ -1,20 +1,7 @@
-+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
-======================================================
+=====================
+Fan's quosi-quotation
+=====================
 
-+HTML\_HEAD: 
-=============
-
-+TITLE: Fan's quotation system
-==============================
-
-+OPTIONS: ^:
-============
-
-+OPTIONS: toc:nil
-=================
-
-+TOC:headines 2
-===============
 
 -  Fan's quotation system
 

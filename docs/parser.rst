@@ -1,20 +1,7 @@
-+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
-======================================================
+===========
+Parser DDSL
+===========
 
-+HTML\_HEAD: 
-=============
-
-+TITLE: Parser DDSL
-===================
-
-+OPTIONS: ^:
-============
-
-+OPTIONS: toc:nil
-=================
-
-+TOC:headines 2
-===============
 
 Fan's parser DDSL is fully self-explainable, its runtime has enough
 meta-data to reconstruct itself.
