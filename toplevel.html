@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parser DDSL &mdash; Fan 0.2 documentation</title>
+  <title>Toplevel support &mdash; Fan 0.2 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
     <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
         <link rel="next" title="Fan in browser" href="browser.html"/>
-        <link rel="prev" title="Fan’s plugins" href="plugins.html"/> 
+        <link rel="prev" title="Lexer DDSL" href="lexer.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -72,9 +72,7 @@
 <li class="toctree-l1"><a class="reference internal" href="compilation.html">Command Line compilation Using Fan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ddsl.html">DDSLs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer DDSL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="toplevel.html">Toplevel support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plugins.html">Fan&#8217;s plugins</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Parser DDSL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Toplevel support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
 </ul>
@@ -101,10 +99,10 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Parser DDSL</li>
+    <li>Toplevel support</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/parser.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/toplevel.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -112,45 +110,65 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="parser-ddsl">
-<h1>Parser DDSL<a class="headerlink" href="#parser-ddsl" title="Permalink to this headline">¶</a></h1>
-<p>Fan&#8217;s parser DDSL is fully self-explainable, its runtime has enough
-meta-data to reconstruct itself.</p>
-<ul class="simple">
-<li>Learn the syntax by yourself</li>
-</ul>
-<p>suppose you have toplevel installed successfully ( see
-<a class="reference external" href="file:./toplevel_support.org">file:./toplevel_support.org</a>).</p>
-<div class="line-block">
-<div class="line">#+BEGIN_SRC ocaml $ #directory &#8220;+fan&#8221;;; $ #load &#8220;fanTop.cma&#8221;;;</div>
-<div class="line-block">
-<div class="line">#+END_SRC</div>
-</div>
-</div>
-<p>Now if you want to understand what&#8217;s the definition for the syntactic
-category case</p>
-<div class="line-block">
-<div class="line">#+BEGIN_SRC ocaml Fgram.print Format.std_formatter Fsyntax.case ;;</div>
-<div class="line-block">
-<div class="line">#+END_SRC</div>
-</div>
-</div>
-<p>The output is something like this: #+BEGIN_EXAMPLE case: [ LA [ &#8220;|&#8221;;
-L1 case0 SEP &#8220;|&#8221; -&gt; bar_of_list l</p>
-<div class="highlight-python"><div class="highlight"><pre>  | pat; &quot;-&gt;&quot;; exp -&gt; `Case (_loc, p, e)
-]]
+  <div class="section" id="toplevel-support">
+<h1>Toplevel support<a class="headerlink" href="#toplevel-support" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">Playing with toplevel</p>
+<p>If you have Fan installed successfully, start your toplevel, and try the
+next phrase:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre>#directory &quot;+fan&quot;;;
+# #load &quot;fanTop.cma&quot;;;
+# let a = %exp-{|3 };;
+val a : FAstN.exp = \`Int &quot;3&quot;
 </pre></div>
 </div>
-<p>#+END_EXAMPLE</p>
-<p>Unlike Camlp4, such grammar printer is the original grammar which is
-100% honest to the user&#8217;s input, no computation involved.</p>
-<p>So you can install the printer in the toplevel and explore different
-non-terminals by your self.</p>
-<p>#+BEGIN_SRC ocaml #install_printer Fgram.print;; #+END_SRC</p>
-<ul class="simple">
-<li>How the parser works</li>
-<li>Where is the lexer?</li>
-<li>TODO Functional generation</li>
+<p>Here <code class="docutils literal"><span class="pre">exp-</span></code> is a built-in DDSL for quasiquotation, it&#8217;s the same as <code class="docutils literal"><span class="pre">exp</span></code>
+DDSL except without locations, see <a class="reference internal" href="quotation_system.html"><em>Fan&#8217;s quosi-quotation</em></a></p>
+<p>There are two directives added:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">normal</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">#</span><span class="n">normal</span><span class="o">;;</span>
+</pre></div>
+</div>
+<p>This directive would restore the toplevel to the default
+behavior, it&#8217;s useful sometimes, for examlpe, you want to load a
+normal ocaml file instead of file pre-processed by Fan.</p>
+</li>
+<li><p class="first">fan</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">#</span><span class="n">fan</span><span class="o">;;</span>
+</pre></div>
+</div>
+<p>It will turn on the features of fan.</p>
+</li>
+</ol>
+</div></blockquote>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Don&#8217;t fire the toplevel in the sourceree, as you may notice,
+there&#8217;s a <code class="docutils literal"><span class="pre">.ocamlinit</span></code> file there which requires a customized
+toplevel, so fire the toplevel in any other place you like.</p>
+</div>
+</li>
+<li><p class="first">Playing with <a class="reference external" href="https://github.com/diml/utop">Utop</a></p>
+<p>Utop is a toplevel with nice auto-completion support, it&#8217;s very helpful for
+explore some libraries which the user is not familiar with.</p>
+<p>There is adapter for fan, namely ftop, available here: <a class="reference external" href="https://github.com/bobzhang/ftop">https://github.com/bobzhang/ftop</a></p>
+<p>To install ftop:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>make clean
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make install
+</pre></div>
+</div>
+<p>Then you would have <code class="docutils literal"><span class="pre">ftop</span></code> in your path. Since ftop already linked fan in,
+so it works out of the box.</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="n">ftop</span><span class="o">$</span> <span class="k">let</span> <span class="n">a</span> <span class="o">=</span> <span class="o">%</span><span class="n">exp</span><span class="o">-{</span> <span class="mi">3</span> <span class="o">};;</span>
+<span class="k">val</span> <span class="n">a</span><span class="o">:</span> <span class="nn">FAstN</span><span class="p">.</span><span class="n">exp</span> <span class="o">=</span> <span class="o">`</span><span class="nc">Int</span> <span class="s2">&quot;3&quot;</span>
+</pre></div>
+</div>
+<p>However, you still have to type <code class="code docutils literal"><span class="pre">&quot;#directory</span> <span class="pre">&quot;+fan&quot;</span></code> to get
+access to Fan&#8217;s typing environment /i.e./ cmi files.</p>
+</li>
 </ul>
 </div>
 
@@ -163,7 +181,7 @@ non-terminals by your self.</p>
         <a href="browser.html" class="btn btn-neutral float-right" title="Fan in browser">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plugins.html" class="btn btn-neutral" title="Fan’s plugins"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="lexer.html" class="btn btn-neutral" title="Lexer DDSL"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

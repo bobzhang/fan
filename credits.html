@@ -1,163 +1,192 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Fan: metaprogrammingfor OCaml</title>
-<!-- 2013-05-31 Fri 18:29 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="bobzhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fan’s history &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
+        <link rel="prev" title="Fan in browser" href="browser.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Fan: metaprogrammingfor OCaml</h1>
-<p>
-Fan is a successor to <a href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, which was mainly developed by
-<a href="http://pauillac.inria.fr/~ddr/">Daniel de Rauglaudre</a> and <a href="http://michel.mauny.net/index.en.php">Michel Mauny</a>, and later was largely
-renovated by <a href="http://nicolaspouillard.fr/">Nicolas Pouillard</a>.
-</p>
 
-<p>
-In the fall semester of 2011, I had an indepedent study with <a href="http://www.cis.upenn.edu/~sweirich/">Stephanie Weirich</a> on
-"generic programming in Haskell", later I ported it into OCaml using
-Camlp4 in the spring semester of 2012.
-</p>
+<body class="wy-body-for-nav" role="document">
 
-<p>
-Later, I found Camlp4 too slow and verbose, and it's very hard to write a plugin
-for it, then I started Fan as a research project under the guidance
-of <a href="http://www.cis.upenn.edu/~stevez/">Steve Zdancewic</a>, from July 2012.
-</p>
+  <div class="wy-grid-for-nav">
 
-<p>
-Special thanks to <a href="http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)">John McCarthy</a> and <a href="http://gallium.inria.fr/~xleroy/">Xavier Leory</a> for their
-contribution to language design.
-</p>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Command Line compilation Using Fan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddsl.html">DDSLs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer DDSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toplevel.html">Toplevel support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Fan&#8217;s history</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Fan&#8217;s history</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/credits.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="fan-s-history">
+<h1>Fan&#8217;s history<a class="headerlink" href="#fan-s-history" title="Permalink to this headline">¶</a></h1>
+<p>Fan is a successor to
+<a class="reference external" href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, which was
+mainly developed by <a class="reference external" href="http://pauillac.inria.fr/~ddr/">Daniel de Rauglaudre</a> and <a class="reference external" href="http://michel.mauny.net/index.en.php">Michel Mauny</a>,
+and later was largely renovated by <a class="reference external" href="http://nicolaspouillard.fr/">Nicolas Pouillard</a>.</p>
+<p>In the fall semester of 2011, I had an indepedent study with
+<a class="reference external" href="http://www.cis.upenn.edu/~sweirich/">Stephanie Weirich</a> on <code class="docutils literal"><span class="pre">Generic</span> <span class="pre">programming</span> <span class="pre">in</span> <span class="pre">Haskell</span></code>, later I
+ported it into <a class="reference external" href="http://caml.inria.fr/">OCaml</a> using <a class="reference external" href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a> in the spring semester
+of 2012.</p>
+<p>Later, I found <a class="reference external" href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a> too slow and verbose, and it&#8217;s very hard to
+write a plugin for it, then I started <a class="reference external" href="https://github.com/bobzhang/Fan">Fan</a> as a research project
+under the guidance of <a class="reference external" href="http://www.cis.upenn.edu/~stevez/">Steve Zdancewic</a>, from July 2012.</p>
+<p>Special thanks to <a class="reference external" href="http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)">John McCarthy</a>  and <a class="reference external" href="http://gallium.inria.fr/~xleroy/">Xavier Leory</a> for their contribution to proramming language design.</p>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="browser.html" class="btn btn-neutral" title="Fan in browser"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

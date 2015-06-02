@@ -1,231 +1,239 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Lexer DDSL</title>
-<!-- 2013-05-31 Fri 18:29 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="bobzhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lexer DDSL &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Fan’s history" href="credits.html"/>
+        <link rel="prev" title="Command Line compilation Using Fan" href="compilation.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Lexer DDSL</h1>
-<p>
-<i>lexer</i> DDSL is just another backend for ocamllex, the nice <a href="http://pllab.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial/index.html">tutorial</a>
-about ocamllex would also help understand lexer DDSL.
-</p>
 
+<body class="wy-body-for-nav" role="document">
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">Usage</h2>
-<div class="outline-text-2" id="text-1">
-</div><div id="outline-container-sec-1-1" class="outline-3">
-<h3 id="sec-1-1">Syntax</h3>
-<div class="outline-text-3" id="text-1-1">
-<p>
-lexer DDSL's syntax is similar to ocamllex.
-</p>
-<div class="org-src-container">
+  <div class="wy-grid-for-nav">
 
-<pre class="src src-ocaml"><span style="color: #a52a2a;">{:</span><span style="color: #228b22;">regexp</span><span style="color: #a52a2a;">|</span>
- <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">name1 </span><span style="color: #a52a2a;">=</span> r1
- <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">name2 </span><span style="color: #a52a2a;">=</span> r2
- <span style="color: #a52a2a;">...</span>             
- <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #0000ff;">name</span><span style="color: #a0522d;"> n </span><span style="color: #a52a2a;">=</span> rn  
- <span style="color: #a52a2a;">|};;</span>
-<span style="color: #8b2252;">(** shortest = false*)</span>  
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">lexer</span><span style="color: #a52a2a;">|</span>
- <span style="color: #a52a2a;">|</span> r1 <span style="color: #a52a2a;">-&gt;</span> e1
- <span style="color: #a52a2a;">|</span> r2 <span style="color: #a52a2a;">-&gt;</span> e2
- <span style="color: #a52a2a;">|</span> r3 <span style="color: #a52a2a;">-&gt;</span> e3 
- <span style="color: #a52a2a;">|};;</span>
-
-<span style="color: #8b2252;">(** shortest = true *)</span>
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">lexer</span><span style="color: #a52a2a;">|</span>
- <span style="color: #a52a2a;">&lt;</span> r1 <span style="color: #a52a2a;">-&gt;</span> e1
- <span style="color: #a52a2a;">|</span> r2 <span style="color: #a52a2a;">-&gt;</span>e2
- <span style="color: #a52a2a;">|</span> r3 <span style="color: #a52a2a;">-&gt;</span> e3
- <span style="color: #a52a2a;">|}</span>
-</pre>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+      </div>
 
-<p>
-Here r<sub>n</sub> stands for regex expression, e<sub>n</sub> means Fan's
-expression, different lexer DDSLs are guaranteed to be independent.
-</p>
-
-<p>
-Similar to ocamllex, <i>lexbuf</i> is available to actions.
-</p>
-
-<p>
-Keep in mind, <i>lexer</i> DDSL is simply an expression, it works with
-any feature provided by OCaml. That said, in the action, you can
-start another lexer as you want or you may put the lexer DDSL as a
-body of a method definition.
-</p>
-
-<p>
-The syntax for regex is the same as ocamllex, it supports all
-features provided by ocamllex except two aspects:
-</p>
-
-<ol class="org-ol">
-<li>"!" stands end of file instead of "eof" in ocamllex
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+</ul>
 </li>
-<li>lexer DDSL's lexing convention is more restrict.
+<li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Command Line compilation Using Fan</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Lexer DDSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
+</ul>
 
-<div class="org-src-container">
+          
+        
+      </div>
+      &nbsp;
+    </nav>
 
-<pre class="src src-ocaml"><span style="color: #a52a2a;">{:</span><span style="color: #228b22;">regexp</span><span style="color: #a52a2a;">|</span>
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">ident </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">[</span>a<span style="color: #a52a2a;">-</span>z<span style="color: #a52a2a;">]+</span>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">v </span><span style="color: #a52a2a;">=</span> ident<span style="color: #a52a2a;">*|</span><span style="color: #8b2252;">'A'</span>
-<span style="color: #b22222;">(* </span><span style="color: #b22222;">error *| will be parsed as single token </span><span style="color: #b22222;">*)</span>                 
-<span style="color: #a52a2a;">|}</span>
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
 
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">regexp</span><span style="color: #a52a2a;">|</span>
 
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">ident </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">[</span>a<span style="color: #a52a2a;">-</span>z<span style="color: #a52a2a;">]+</span>
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">v </span><span style="color: #a52a2a;">=</span> ident<span style="color: #a52a2a;">*</span> <span style="color: #a52a2a;">|</span><span style="color: #8b2252;">'A'</span>
-<span style="color: #b22222;">(* </span><span style="color: #b22222;">correct </span><span style="color: #b22222;">*)</span>                    
- <span style="color: #a52a2a;">|}</span>
-</pre>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Lexer DDSL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/lexer.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
 </div>
-<p>
-This may be considered as a defect which may be fixed in next release
-</p>
+          <div role="main" class="document">
+            
+  <div class="section" id="lexer-ddsl">
+<h1>Lexer DDSL<a class="headerlink" href="#lexer-ddsl" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">lexer</span> <span class="pre">DDSL</span></code> is just another backend for ocamllex, the nice
+<a class="reference external" href="http://pllab.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial/index.html">ocamllex tutorial</a>
+would also help understand lexer DDSL.</p>
+<ul>
+<li><p class="first">Syntax</p>
+<p>lexer DDSL&#8217;s syntax is similar to ocamllex.</p>
+<div class="highlight-ocaml"><div class="highlight"><pre> <span class="o">#</span><span class="n">regexp</span><span class="o">{</span>
+ <span class="k">let</span> <span class="n">name1</span> <span class="o">=</span> <span class="n">r1</span> <span class="k">let</span> <span class="n">name2</span> <span class="o">=</span> <span class="n">r2</span> <span class="o">...</span>
+ <span class="k">let</span> <span class="n">name</span> <span class="n">n</span> <span class="o">=</span> <span class="n">rn</span>
+ <span class="o">};;</span>
+
+ <span class="o">%</span><span class="n">lexer</span><span class="o">{</span>
+ <span class="o">|</span> <span class="n">r1</span> <span class="o">-&gt;</span> <span class="n">e1</span>
+ <span class="o">|</span> <span class="n">r2</span> <span class="o">-&gt;</span> <span class="n">e2</span>
+ <span class="o">|</span> <span class="n">r3</span> <span class="o">-&gt;</span> <span class="n">e3</span>
+ <span class="o">}</span> <span class="c">(* shortest = false *)</span>
+
+
+<span class="o">%</span><span class="n">lexer</span><span class="o">{</span>
+ <span class="o">&lt;</span> <span class="n">r1</span> <span class="o">-&gt;</span> <span class="n">e1</span>
+ <span class="o">|</span> <span class="n">r2</span> <span class="o">-&gt;</span><span class="n">e2</span>
+ <span class="o">|</span> <span class="n">r3</span> <span class="o">-&gt;</span> <span class="n">e3</span>
+ <span class="o">|}</span> <span class="c">(* shortest = true *)</span>
+</pre></div>
+</div>
 </li>
+</ul>
+<p>Here r<sub>n</sub> stands for regex expression, e:sub`n` means Fan&#8217;s
+expression, different lexer DDSLs are guaranteed to be independent.</p>
+<p>Similar to ocamllex, /lexbuf/ is available and captured in <code class="docutils literal"><span class="pre">actions</span></code></p>
+<p>Keep in mind, <code class="docutils literal"><span class="pre">lexer</span> <span class="pre">DDSL</span></code> is simply an expression, it works with any
+feature provided by OCaml. That said, in the action, you can start
+another lexer as you want or you may put the lexer DDSL as a body of a
+method definition.</p>
+<p>The syntax for regex is the same as ocamllex, it supports all features
+provided by ocamllex except two aspects:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">!</span></code> stands end of file instead of <code class="docutils literal"><span class="pre">eof</span></code> in ocamllex</li>
+<li>lexer DDSL&#8217;s lexing convention is more restrict.</li>
 </ol>
+</div></blockquote>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>There is a minor bug currently for example:</p>
+<div class="last highlight-ocaml"><div class="highlight"><pre><span class="o">#</span><span class="n">regexp</span><span class="o">{</span>
+<span class="k">let</span> <span class="n">ident</span> <span class="o">=</span> <span class="o">[</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="o">]+</span>
+<span class="k">let</span> <span class="n">v</span> <span class="o">=</span> <span class="n">ident</span><span class="o">*|</span><span class="sc">&#39;A&#39;</span>
+<span class="o">};;</span>
+<span class="c">(* ERROR *| will be parsed as single token *)</span>
+
+
+<span class="o">#</span><span class="n">regexp</span><span class="o">{</span>
+<span class="k">let</span> <span class="n">ident</span> <span class="o">=</span> <span class="o">[</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="o">]+</span>
+<span class="k">let</span> <span class="n">v</span> <span class="o">=</span> <span class="n">ident</span><span class="o">*</span> <span class="o">|</span><span class="sc">&#39;A&#39;</span>
+<span class="o">};;</span>
+</pre></div>
 </div>
 </div>
 </div>
-</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="credits.html" class="btn btn-neutral float-right" title="Fan’s history">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="compilation.html" class="btn btn-neutral" title="Command Line compilation Using Fan"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

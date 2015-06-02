@@ -1,253 +1,249 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Command Line compilation Using Fan</title>
-<!-- 2013-05-31 Fri 18:29 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="bobzhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Command Line compilation Using Fan &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Fan’s history" href="credits.html"/>
+        <link rel="prev" title="Overview of Fan’s architecture" href="philosophy.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Command Line compilation Using Fan</h1>
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">Hello world <a id="hello" name="hello"></a></h2>
-<div class="outline-text-2" id="text-1">
-<p>
-Create a file <a href="code/hello.ml">hello.ml</a> as follows:
-</p>
+<body class="wy-body-for-nav" role="document">
 
-<div class="org-src-container">
+  <div class="wy-grid-for-nav">
 
-<pre class="src src-ocaml">print_endline <span style="color: #8b2252;">"hello, Fan"</span>
-</pre>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+      </div>
 
-<p>
-The compile is quite simple, make sure <code>fan.byte</code> or <code>fan.native</code> is
-in your search path.
-</p>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Command Line compilation Using Fan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
+</ul>
 
-<div class="org-src-container">
+          
+        
+      </div>
+      &nbsp;
+    </nav>
 
-<pre class="src src-sh">$ ocamlc -pp <span style="color: #8b2252;">'fan.native'</span> hello.ml -o test
-$ ./test
-</pre>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Command Line compilation Using Fan</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/compilation.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
 </div>
-
-<p>
-As you may notice, adding ~-pp 'fan.native'~ flag is enough to
-switching to Fan. Using <code>fan.byte</code> or <code>fan.native</code> is up to you,
-for the time being, only the performance matters here. So,
-compiling with the following command line does also work.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-sh">$ ocamlc -pp <span style="color: #8b2252;">'fan.native'</span> hello.ml -o test
-</pre>
+          <div role="main" class="document">
+            
+  <div class="section" id="command-line-compilation-using-fan">
+<h1>Command Line compilation Using Fan<a class="headerlink" href="#command-line-compilation-using-fan" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">Hello world</p>
+<p>Create a file <code class="docutils literal"><span class="pre">hello.ml</span></code> as follows:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="n">print_endline</span> <span class="s2">&quot;hello, Fan&quot;</span>
+</pre></div>
 </div>
+<p>The compile is quite simple, make sure <code class="docutils literal"><span class="pre">fan.byte</span></code> or
+<code class="docutils literal"><span class="pre">fan.native</span></code> is in your search path:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>ocamlc -pp <span class="s1">&#39;fan.native&#39;</span> hello.ml -o <span class="nb">test</span> <span class="nv">$ </span>./test
+</pre></div>
 </div>
+<p>As you may notice, adding <code class="docutils literal"><span class="pre">-pp</span> <span class="pre">'fan.native'</span></code> flag is enough to
+switching to <code class="docutils literal"><span class="pre">Fan</span></code>. Using <code class="docutils literal"><span class="pre">fan.byte</span></code> or <code class="docutils literal"><span class="pre">fan.native</span></code> is up to
+you, for the time being, only the performance matters here. So,
+compiling with the following command line does also work:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>ocamlc -pp <span class="s1">&#39;fan.native&#39;</span> hello.ml -o <span class="nb">test</span>
+</pre></div>
 </div>
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2">First class lexer</h2>
-<div class="outline-text-2" id="text-2">
-<p>
-Writing hello world is not very interesting, for the following
+</li>
+<li><p class="first">First class lexer</p>
+<p>Writing hello world is not very interesting, for the following
 example, we show you how DDSL fits into Fan. Suppose we want to
 write a lexical analyzier to filter nested comments in OCaml, the
 traditional way is to write a complex regex expression, or start a
-new file to write a lexer. The first way is hackish, inefficient,
+new file to write a lexer.  The first way is hackish, inefficient,
 unmaintainable in the long run while the second way is too heavy
-weight, since lexer generator is a standard alone external DDSL which
-introduces another staging phase.
-</p>
+weight, since lexer generator is a standard alone external DDSL
+which introduces another staging phase.</p>
+<p>Within Fan, we show how easy it is now:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="k">let</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">0</span>
 
-<p>
-Within Fan,  we show how easy it is now:
-</p>
-<div class="org-src-container">
+<span class="k">let</span> <span class="k">rec</span> <span class="n">f</span>  <span class="o">=</span> <span class="o">%</span><span class="n">lex</span><span class="o">{</span>
+ <span class="o">|</span> <span class="s2">&quot;(*&quot;</span> <span class="o">-&gt;</span> <span class="n">comment</span> <span class="n">lexbuf</span>
+ <span class="o">|</span> <span class="sc">&#39;&quot;&#39;</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">print_char</span> <span class="sc">&#39;&quot;&#39;</span><span class="o">;</span> <span class="kt">string</span> <span class="n">lexbuf</span><span class="o">)</span>
+ <span class="o">|</span> <span class="o">_</span> <span class="k">as</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">print_char</span> <span class="n">c</span><span class="o">;</span> <span class="n">f</span> <span class="n">lexbuf</span><span class="o">)</span>
+ <span class="o">|</span> <span class="o">!</span> <span class="o">-&gt;</span> <span class="n">exit</span> <span class="mi">0</span>
+<span class="o">}</span>
+<span class="ow">and</span> <span class="n">comment</span>  <span class="o">=</span> <span class="o">%</span><span class="n">lex</span><span class="o">{</span>
+ <span class="o">|</span> <span class="s2">&quot;*)&quot;</span> <span class="o">-&gt;</span>
+     <span class="k">if</span> <span class="o">!</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">f</span> <span class="n">lexbuf</span>
+     <span class="k">else</span> <span class="k">begin</span>
+       <span class="n">decr</span> <span class="n">depth</span><span class="o">;</span>
+       <span class="n">comment</span> <span class="n">lexbuf</span>
+     <span class="k">end</span>
+ <span class="o">|</span> <span class="s2">&quot;(*&quot;</span> <span class="o">-&gt;</span> <span class="n">incr</span> <span class="n">depth</span>
+ <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">comment</span> <span class="n">lexbuf</span>
+ <span class="o">|</span> <span class="o">!</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">&quot;unterminated comment&quot;</span>
+<span class="o">}</span>
+<span class="ow">and</span> <span class="kt">string</span> <span class="o">=</span> <span class="o">%</span><span class="n">lex</span><span class="o">{</span>
+ <span class="o">|</span> <span class="sc">&#39;&quot;&#39;</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">print_char</span> <span class="sc">&#39;&quot;&#39;</span><span class="o">;</span> <span class="n">f</span> <span class="n">lexbuf</span><span class="o">)</span>
+ <span class="o">|</span> <span class="o">_</span> <span class="k">as</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">print_char</span> <span class="n">c</span><span class="o">;</span> <span class="kt">string</span> <span class="n">lexbuf</span><span class="o">)</span>
+ <span class="o">|</span> <span class="o">!</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">&quot;unterminated string&quot;</span>
+<span class="o">}</span>
 
-<pre class="src src-ocaml"><span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">depth </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">ref</span> 0
-
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #0000ff; font-weight: bold;">rec</span> <span style="color: #a0522d;">f  </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">lexer</span><span style="color: #a52a2a;">|</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #8b2252;">"(*"</span> <span style="color: #a52a2a;">-&gt;</span> comment lexbuf
- <span style="color: #a52a2a;">|</span> <span style="color: #8b2252;">'"'</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>print_char <span style="color: #8b2252;">'"'</span><span style="color: #a52a2a;">;</span> string lexbuf<span style="color: #a52a2a;">)</span>
- <span style="color: #a52a2a;">|</span> _ <span style="color: #a020f0;">as</span> c <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>print_char c<span style="color: #a52a2a;">;</span> f lexbuf<span style="color: #a52a2a;">)</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #a52a2a;">!</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a020f0;">exit</span> 0
-<span style="color: #a52a2a;">|}</span>
-<span style="color: #0000ff; font-weight: bold;">and</span> <span style="color: #a0522d;">comment  </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">lexer</span><span style="color: #a52a2a;">|</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #8b2252;">"*)"</span> <span style="color: #a52a2a;">-&gt;</span>
-     <span style="color: #a020f0;">if</span> <span style="color: #a52a2a;">!</span>depth <span style="color: #a52a2a;">=</span> 0 <span style="color: #a020f0;">then</span> f lexbuf
-     <span style="color: #a020f0;">else</span> <span style="color: #0000ff; font-weight: bold;">begin</span>
-       decr depth<span style="color: #a52a2a;">;</span>
-       comment lexbuf
-     <span style="color: #0000ff; font-weight: bold;">end</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #8b2252;">"(*"</span> <span style="color: #a52a2a;">-&gt;</span> incr depth
- <span style="color: #a52a2a;">|</span> _ <span style="color: #a52a2a;">-&gt;</span> comment lexbuf
- <span style="color: #a52a2a;">|</span> <span style="color: #a52a2a;">!</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a020f0;">failwith</span> <span style="color: #8b2252;">"unterminated comment"</span>
-<span style="color: #a52a2a;">|}</span>
-<span style="color: #0000ff; font-weight: bold;">and</span> <span style="color: #a0522d;">string </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">lexer</span><span style="color: #a52a2a;">|</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #8b2252;">'"'</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>print_char <span style="color: #8b2252;">'"'</span><span style="color: #a52a2a;">;</span> f lexbuf<span style="color: #a52a2a;">)</span>
- <span style="color: #a52a2a;">|</span> _ <span style="color: #a020f0;">as</span> c <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a52a2a;">(</span>print_char c<span style="color: #a52a2a;">;</span> string lexbuf<span style="color: #a52a2a;">)</span>
- <span style="color: #a52a2a;">|</span> <span style="color: #a52a2a;">!</span> <span style="color: #a52a2a;">-&gt;</span> <span style="color: #a020f0;">failwith</span> <span style="color: #8b2252;">"unterminated string"</span>
-<span style="color: #a52a2a;">|}</span>
-
-<span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">_ </span><span style="color: #a52a2a;">=</span> f <span style="color: #a52a2a;">(</span><span style="color: #228b22;">Lexing</span>.from_channel <span style="color: #a52a2a;">(</span>open_in <span style="color: #8b2252;">"comment.ml"</span><span style="color: #a52a2a;">));;</span>
-</pre>
+<span class="k">let</span> <span class="o">_</span> <span class="o">=</span> <span class="n">f</span> <span class="o">(</span><span class="nn">Lexing</span><span class="p">.</span><span class="n">from_channel</span> <span class="o">(</span><span class="n">open_in</span> <span class="s2">&quot;comment.ml&quot;</span><span class="o">));;</span>
+</pre></div>
+</div>
+<p>Compiling is the same as the previous example <code class="docutils literal"><span class="pre">hello</span></code>:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>ocamlc -pp <span class="s1">&#39;fan.native&#39;</span> comment.ml -o comment
+</pre></div>
+</div>
+<p>Here we see the lexer DDSL is first class construct in Fan, the
+user don&#8217;t need to create a new file to isolate their lexer,
+it&#8217;s as convenient as regex expression in perl. So it works in
+<code class="docutils literal"><span class="pre">toplevel</span></code>, it works with module system, and objects, that
+said, the user could make lexer reusable by using <a class="reference external" href="http://caml.inria.fr/pub/docs/manual-ocaml/manual005.html">objects</a>
+instead of functions.</p>
+<p>Abot the internal of <code class="docutils literal"><span class="pre">lexer</span> <span class="pre">DDSL</span></code>, see <a class="reference internal" href="lexer.html"><em>Lexer DDSL</em></a></p>
+</li>
+</ul>
 </div>
 
-<p>
-Compiling is the same as the previous example <a href="#hello">1</a>
-</p>
 
-<div class="org-src-container">
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="credits.html" class="btn btn-neutral float-right" title="Fan’s history">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="philosophy.html" class="btn btn-neutral" title="Overview of Fan’s architecture"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-<pre class="src src-sh">ocamlc -annot -pp <span style="color: #8b2252;">'fan.native'</span> comment.ml -o comment
-</pre>
-</div>
+  <hr/>
 
-<p>
-Here we see the lexer DDSL is first class construct in Fan, the
-user don't need to create a new file to isolate their lexer, it's
-as convenient as regex expression in perl. So it works in
-toplevel, it works with module system, and objects, that said, the
-user could make lexer reusable by using <a href="http://caml.inria.fr/pub/docs/manual-ocaml/manual005.html">objects</a> instead of
-functions.
-</p>
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
 
-<p>
-Abot the internal of <i>lexer</i> DDSL, see <a href="ddsl/lexer.html">DDSL:lexer</a>.
-</p>
-</div>
-</div>
-</div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

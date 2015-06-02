@@ -1,335 +1,301 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Fan's quotation system</title>
-<!-- 2013-05-31 Fri 18:29 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="bobzhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fan’s quosi-quotation &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Fan's quotation system</h1>
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">Fan's quotation system</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-Fan's metaprogramming has a quotation system <a href="http://brion.inria.fr/gallium/index.php/Quotation">similar to Camlp4</a>.
-</p>
+<body class="wy-body-for-nav" role="document">
 
-<p>
-The differences lie in serveral following aspects
-</p>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+      </div>
 
-
-<ul class="org-ul"><li>Concrete Syntax<br/><div class="outline-text-4" id="text-1-0-1">
-<ul class="org-ul">
-<li>For quotation, Fan uses <code>{:quot@loc| |}</code>, while Camlp4 uses <code>&lt;:quot@&lt; &gt;&gt;</code>
-</li>
-<li>For antiquotation, Fan uses a single <code>$</code> or <code>$(&#x2026;)</code>, while Camlp4 uses <code>$$</code>
-</li>
-<li>Fan supports nested quasiquotation, while Camlp4 does not.
-The following quotation is legal  in Fan.
-<div class="org-src-container">
-
-<pre class="src src-ocaml"><span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">|{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">|</span> <span style="color: #a52a2a;">$($</span>x<span style="color: #a52a2a;">)</span> <span style="color: #a52a2a;">|}|}</span>
-</pre>
-</div>
-<p>
-Which is simliar to Common Lisp style macros.
-</p>
-<div class="org-src-container">
-
-<pre class="src src-lisp">``(,,x)
-</pre>
-</div>
-</li>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
 </ul>
-</div>
 </li>
-<li>Abstract Syntax<br/><div class="outline-text-4" id="text-1-0-2">
-<p>
-The definition of Fan's abstract syntax is available here
-<a href="fansrc/fAst.mli.html">fansrc/fAst.mli.html</a>
-Fan adopts polymorphic variants for encoding abstract syntax,
-there are several major benefits
-</p>
-
-<ul class="org-ul">
-<li>subtyping
-For user who wants to reuse part of Fan, the subtyping provides
-much more refined types
-</li>
-<li>constructor overloading
-There's no need to add a prefix for each type
-</li>
-<li>polymorphisim
-For example, in Fan, to get a location of an ast node, the user
-only need to write <code>loc_of</code>, without writing <code>loc_of_exp</code>,
-<code>loc_of_pat</code>, <i>etc.</i> Other ast processing libraries are also
-more generic compared with Camlp4.
-</li>
-<li>unqualified, easier to use.
-</li>
+<li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Command Line compilation Using Fan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer DDSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="toplevel.html">Toplevel support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
 </ul>
 
-<p>
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Fan&#8217;s quosi-quotation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/quotation_system.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="fan-s-quosi-quotation">
+<h1>Fan&#8217;s quosi-quotation<a class="headerlink" href="#fan-s-quosi-quotation" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Fan&#8217;s quotation system</li>
+</ul>
+<p>Fan&#8217;s metaprogramming has a quotation system
+[[<a class="reference external" href="http://brion.inria.fr/gallium/index.php/Quotation][similar">http://brion.inria.fr/gallium/index.php/Quotation][similar</a> to
+Camlp4]].</p>
+<p>The differences lie in serveral following aspects</p>
+<p>*** Concrete Syntax</p>
+<div class="highlight-python"><div class="highlight"><pre>- For quotation, Fan uses ~{:quot@loc| |}~, while Camlp4 uses ~&lt;:quot@&lt; &gt;&gt;~
+- For antiquotation, Fan uses a single ~$~ or ~$(...)~, while Camlp4 uses ~$$~
+- Fan supports nested quasiquotation, while Camlp4 does not.
+  The following quotation is legal  in Fan.
+  #+BEGIN_SRC ocaml
+  {:exp|{:exp| $($x) |}|}
+  #+END_SRC
+  Which is simliar to Common Lisp style macros.
+  #+BEGIN_SRC lisp
+    ``(,,x)
+  #+END_SRC
+</pre></div>
+</div>
+<p>*** Abstract Syntax The definition of Fan&#8217;s abstract syntax is
+available here <a class="reference external" href="file:fansrc/fAst.mli.html">file:fansrc/fAst.mli.html</a> Fan adopts polymorphic variants
+for encoding abstract syntax, there are several major benefits</p>
+<div class="highlight-python"><div class="highlight"><pre>- subtyping
+  For user who wants to reuse part of Fan, the subtyping provides
+  much more refined types
+- constructor overloading
+  There&#39;s no need to add a prefix for each type
+- polymorphisim
+  For example, in Fan, to get a location of an ast node, the user
+  only need to write ~loc_of~, without writing ~loc_of_exp~,
+  ~loc_of_pat~, /etc./ Other ast processing libraries are also
+  more generic compared with Camlp4.
+- unqualified, easier to use.
+
 The disadvantage:
 Error message is sometimes a problem, however, in Fan, the
 default quasiquotation will add type annotation automatically for
 the user, we have an optional quasiquotation without type
 annotations for advanced user.
-</p>
 
-<p>
 For example:
-</p>
 
-<div class="org-src-container">
-
-<pre class="src src-ocaml"><span style="color: #8b2252;">(** with annotations *)</span>
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">|</span>3<span style="color: #a52a2a;">|}</span>
-<span style="color: #8b2252;">(** after expansion *)</span>
-<span style="color: #a52a2a;">(</span>`Int <span style="color: #a52a2a;">(</span>_loc<span style="color: #a52a2a;">,</span> <span style="color: #8b2252;">"3"</span><span style="color: #a52a2a;">)</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAst.exp </span><span style="color: #a52a2a;">)</span>
-<span style="color: #8b2252;">(** without annotations *)</span>
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">'|</span>3<span style="color: #a52a2a;">|}</span>
-<span style="color: #8b2252;">(** after expansion *)</span>
-`Int <span style="color: #a52a2a;">(</span>_loc<span style="color: #a52a2a;">,</span> <span style="color: #8b2252;">"3"</span><span style="color: #a52a2a;">)</span>
-</pre>
+#+BEGIN_SRC ocaml
+  (** with annotations *)
+  {:exp|3|}
+  (** after expansion *)
+  (`Int (_loc, &quot;3&quot;) : FAst.exp )
+  (** without annotations *)
+  {:exp&#39;|3|}
+  (** after expansion *)
+  `Int (_loc, &quot;3&quot;)
+#+END_SRC
+</pre></div>
 </div>
-</div>
+<p>**** location handling From the user&#8217;s point of view, Fan has two
+abstract syntax representations, with or without locations. They have
+exactly the same semantics except handling locations. The abstract
+syntax without location is derived from abstract syntax with location.</p>
+<div class="highlight-python"><div class="highlight"><pre>For example, the definition of ~literal~ (see [[file:fansrc/fAst.mli.html][fAst]]) are as follows:
 
-<ul class="org-ul"><li>location handling<br/><div class="outline-text-5" id="text-1-0-2-1">
-<p>
-From the user's point of view, Fan has two
-abstract syntax representations, with or without locations. They
-have exactly the same semantics except handling locations. The
-abstract syntax without location is derived from abstract syntax
-with location.
-</p>
-
-<p>
-For example, the definition of <code>literal</code> (see <a href="fansrc/fAst.mli.html">fAst</a>) are as follows:
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-ocaml"><span style="color: #8b2252;">(** literal with locations [FAst]*)</span>
-<span style="color: #0000ff; font-weight: bold;">type</span> <span style="color: #228b22;">literal </span><span style="color: #a52a2a;">=</span>
-  <span style="color: #a52a2a;">[</span> `Chr <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Int <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Int32 <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Int64 <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Flo <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Nativeint <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)</span>
-  <span style="color: #a52a2a;">|</span> `Str <span style="color: #a020f0;">of</span> <span style="color: #a52a2a;">(</span>loc <span style="color: #a52a2a;">*</span> string<span style="color: #a52a2a;">)]</span>   
+#+BEGIN_SRC ocaml
+  (** literal with locations [FAst]*)
+  type literal =
+    [ `Chr of (loc * string)
+    | `Int of (loc * string)
+    | `Int32 of (loc * string)
+    | `Int64 of (loc * string)
+    | `Flo of (loc * string)
+    | `Nativeint of (loc * string)
+    | `Str of (loc * string)]
 
 
-<span style="color: #8b2252;">(** literal without locations [FAstN]*)</span>
-<span style="color: #0000ff; font-weight: bold;">type</span> <span style="color: #228b22;">literal </span><span style="color: #a52a2a;">=</span>
-  <span style="color: #a52a2a;">[</span> `Chr <span style="color: #a020f0;">of</span> string
-  <span style="color: #a52a2a;">|</span> `Int <span style="color: #a020f0;">of</span>  string
-  <span style="color: #a52a2a;">|</span> `Int32 <span style="color: #a020f0;">of</span>  string
-  <span style="color: #a52a2a;">|</span> `Int64 <span style="color: #a020f0;">of</span> string
-  <span style="color: #a52a2a;">|</span> `Flo <span style="color: #a020f0;">of</span> string
-  <span style="color: #a52a2a;">|</span> `Nativeint <span style="color: #a020f0;">of</span> string
-  <span style="color: #a52a2a;">|</span> `Str <span style="color: #a020f0;">of</span> string<span style="color: #a52a2a;">]</span>
-</pre>
-</div>
-<p>
-For ast without locations, the naming convention is a <code>N</code> postfix.
+  (** literal without locations [FAstN]*)
+  type literal =
+    [ `Chr of string
+    | `Int of  string
+    | `Int32 of  string
+    | `Int64 of string
+    | `Flo of string
+    | `Nativeint of string
+    | `Str of string]
+  #+END_SRC
+For ast without locations, the naming convention is a ~N~ postfix.
 Programming abstract syntax without caring about locations is way
 more easier. Location is important for debugging and meaningful
 error message, however, some scenarios, for example, code
-generation, don't need precise location.
-</p>
+generation, don&#39;t need precise location.
 
-<p>
 There are serveral helpful functions for location handling
-</p>
 
-<ol class="org-ol">
-<li><code>loc_of</code>
-it would fetch location from any type in module FAst
-</li>
-<li>Objs.strip_[type]
+1. ~loc_of~
+   it would fetch location from any type in module FAst
+2. Objs.strip_[type]
 
-<p>
-For example, Objs.strip_ctyp would strip the location for
-ctyp, their type signature are as follows: (<a href="https://github.com/bobzhang/ftop">ftop</a> would help!)
-</p>
+   For example, Objs.strip_ctyp would strip the location for
+   ctyp, their type signature are as follows: ([[https://github.com/bobzhang/ftop][ftop]] would help!)
 
-<div class="org-src-container">
+   #+BEGIN_SRC ocaml
+     utop $ Objs.strip_case;;
+     - : FAst.case -&gt; FAstN.case = &lt;fun&gt;
+     utop $ Objs.strip_exp;;
+     - : FAst.exp -&gt; FAstN.exp = &lt;fun&gt;
+   #+END_SRC
+3. FanAstN.fill_[type]
+   It&#39;s opposite to strip
+   #+BEGIN_SRC ocaml
+     utop $ FanAstN.fill_exp;;
+     - : FLoc.t -&gt; FAstN.exp -&gt; FAst.exp = &lt;fun&gt;
+     utop $ FanAstN.fill_case;;
+     - : FLoc.t -&gt; FAstN.case -&gt; FAst.case = &lt;fun&gt;
+   #+END_SRC
 
-<pre class="src src-ocaml">utop <span style="color: #a52a2a;">$</span> <span style="color: #228b22;">Objs</span>.strip_case<span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAst.case </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAstN.case </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #a020f0;">fun</span><span style="color: #a52a2a;">&gt;</span>
-utop <span style="color: #a52a2a;">$</span> <span style="color: #228b22;">Objs</span>.strip_exp<span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAst.exp </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAstN.exp </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #a020f0;">fun</span><span style="color: #a52a2a;">&gt;</span>
-</pre>
-</div>
-</li>
-<li>FanAstN.fill_[type]
-It's opposite to strip
-<div class="org-src-container">
-
-<pre class="src src-ocaml">utop <span style="color: #a52a2a;">$</span> <span style="color: #228b22;">FanAstN</span>.fill_exp<span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FLoc.t </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAstN.exp </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAst.exp </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #a020f0;">fun</span><span style="color: #a52a2a;">&gt;</span>
-utop <span style="color: #a52a2a;">$</span> <span style="color: #228b22;">FanAstN</span>.fill_case<span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">-</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FLoc.t </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAstN.case </span><span style="color: #a52a2a;">-&gt;</span><span style="color: #228b22;"> FAst.case </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">&lt;</span><span style="color: #a020f0;">fun</span><span style="color: #a52a2a;">&gt;</span>
-</pre>
-</div>
-</li>
-</ol>
-
-<p>
 There is also a suite of quasiquotation for ast without locations.
-</p>
 
-<div class="org-src-container">
+#+BEGIN_SRC ocaml
 
-<pre class="src src-ocaml"><span style="color: #8b2252;">(** with annotations, [-] means minus locations *)</span>
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|}</span>
-<span style="color: #8b2252;">(** after expansion *)</span>
-<span style="color: #a52a2a;">(</span>`Int  <span style="color: #8b2252;">"3"</span> <span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">)</span>
+  (** with annotations, [-] means minus locations *)
+  {:exp-|3|}
+  (** after expansion *)
+  (`Int  &quot;3&quot; : FAstN.exp )
 
-<span style="color: #8b2252;">(** without annotations *)</span>
-<span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-'|</span>3<span style="color: #a52a2a;">|}</span>
-<span style="color: #8b2252;">(** after expansion *)</span>
-`Int  <span style="color: #8b2252;">"3"</span>
-</pre>
+  (** without annotations *)
+  {:exp-&#39;|3|}
+  (** after expansion *)
+  `Int  &quot;3&quot;
+#+END_SRC
+</pre></div>
 </div>
 </div>
-</li></ul>
-</li></ul>
-</div>
-</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

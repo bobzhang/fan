@@ -1,184 +1,207 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Overview of Fan</title>
-<!-- 2013-05-31 Fri 18:29 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="bobzhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Overview of Fan</h1>
-<p>
-There is a paper, which gives a high-level priciple about how Fan
-works, available here <a href="pdf/metaprogramming_for_ocaml.pdf">pdf/metaprogramming_for_ocaml.pdf</a>
-</p>
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">The philosophy</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-Unlike traditional programming languages, Fan is <i>a set of
-languages</i> which can <i>evolve</i> itself incrementally. It gets
-started from the vanilla OCaml language as Fan<sub>0</sub>, with more and
-more new languages added for each version.
-</p>
+<body class="wy-body-for-nav" role="document">
 
-<p>
-For example, to add a new <a href="http://en.wikipedia.org/wiki/Domain-specific_language">DSL</a> into Fan<sub>n</sub>, we would supply a
-front-end and a back-end targeted at Fan<sub>n</sub>, upon being integrated,
-Fan<sub>n</sub> becomes Fan<sub>n+1</sub>.
-</p>
+  <div class="wy-grid-for-nav">
 
-<p>
-We can grow Fan endlessly in such a way, however, the main
-interesting part for Fan is not that I, the main developer of Fan
-can keep adding features to it, its interesting point lies in
-the following two aspects:
-</p>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
 
-<ol class="org-ol">
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="options-toc-nil-html-postamble-nil-html-preamble-nil">
+<h1>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil<a class="headerlink" href="#options-toc-nil-html-postamble-nil-html-preamble-nil" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="html-head">
+<h1>+HTML_HEAD:<a class="headerlink" href="#html-head" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="title-overview-of-fan">
+<h1>+TITLE: Overview of Fan<a class="headerlink" href="#title-overview-of-fan" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="options">
+<h1>+OPTIONS: ^:<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="options-toc-nil">
+<h1>+OPTIONS: toc:nil<a class="headerlink" href="#options-toc-nil" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="toc-headines-2">
+<h1>+TOC:headines 2<a class="headerlink" href="#toc-headines-2" title="Permalink to this headline">¶</a></h1>
+<p>There is a paper, which gives a high-level priciple about how Fan works,
+available here [[<a class="reference external" href="file:pdf/metaprogramming_for_ocaml.pdf">file:pdf/metaprogramming_for_ocaml.pdf</a>]]</p>
+<ul class="simple">
+<li>The philosophy</li>
+</ul>
+<p>Unlike traditional programming languages, Fan is /a set of languages/
+which can /evolve/ itself incrementally. It gets started from the
+vanilla OCaml language as Fan_{0}, with more and more new languages
+added for each version.</p>
+<p>For example, to add a new
+[[<a class="reference external" href="http://en.wikipedia.org/wiki/Domain-specific_language][DSL">http://en.wikipedia.org/wiki/Domain-specific_language][DSL</a>]] into
+Fan_{n}, we would supply a front-end and a back-end targeted at
+Fan_{n}, upon being integrated, Fan_{n} becomes Fan_{n+1}.</p>
+<p>We can grow Fan endlessly in such a way, however, the main interesting
+part for Fan is not that I, the main developer of Fan can keep adding
+features to it, its interesting point lies in the following two aspects:</p>
+<ol class="arabic simple">
 <li>It encourages the programmer to think about programming in a
-bottom-up way.  Unlike the traditional problem-oriented approach,
+bottom-up way. Unlike the traditional problem-oriented approach,
 language-oriented programming is encouraged: delimited domain
-specific language(<a href="ddsl.html">DDSL</a>) is the best abstraction for a specific
-domain.
-</li>
-
-<li>Everyone, including you: the reader,  can join and develop a
-mini-compiler and share with other people. Fan servers as a
-platform to glue them tegether.
-</li>
+specific language([[<a class="reference external" href="file:ddsl.org][DDSL">file:ddsl.org][DDSL</a>]]) is the best abstraction
+for a specific domain.</li>
+<li>Everyone, including you: the reader, can join and develop a
+mini-compiler and share with other people. Fan servers as a platform
+to glue them tegether.</li>
 </ol>
 </div>
-</div>
-</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

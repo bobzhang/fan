@@ -1,245 +1,224 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<title>Toplevel support</title>
-<!-- 2013-06-01 Sat 22:47 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<meta name="generator" content="Org-mode"/>
-<meta name="author" content="Hongbo Zhang"/>
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil &mdash; Fan 0.2 documentation</title>
+  
 
-  table { border-collapse:collapse; }
-  td, th { vertical-align:top;  }
-  th.right  { text-align: center;  }
-  th.left   { text-align: center;   }
-  th.center { text-align: center; }
-  td.right  { text-align: right;  }
-  td.left   { text-align: left;   }
-  td.center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara:nth-child(2) { display: inline; }
-  .footpara { display: block; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+  
+  
 
-Copyright (C) 2012  Free Software Foundation, Inc.
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+  
+  
+    
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
+  
+
+  
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
 </head>
-<body>
-<div id="content">
-<h1 class="title">Toplevel support</h1>
 
+<body class="wy-body-for-nav" role="document">
 
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">Playing with toplevel</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-If you have fan installed successfully, start your toplevel, and
-try the next phrase
-</p>
+  <div class="wy-grid-for-nav">
 
-<div class="org-src-container">
-
-<pre class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>directory <span style="color: #8b2252;">"+fan"</span><span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>load <span style="color: #8b2252;">"fanTop.cma"</span><span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">#</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|};;</span>
-<span style="color: #0000ff; font-weight: bold;">val</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">=</span> `Int <span style="color: #8b2252;">"3"</span>
-</pre>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Fan</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+      </div>
 
-<p>
-Here "exp-" is a built-in DDSL for quasiquotation, it's the same as
-exp DDSL except without locations, see <a href="ddsl/quotation.html">DDSL:quotation</a>
-</p>
-
-<p>
-There are two  directives added,
-</p>
-
-<ol class="org-ol">
-<li>normal
-<div class="org-src-container">
-
-<pre class="src src-ocaml"><span style="color: #7a378b;">#normal</span><span style="color: #a52a2a;">;;</span>
-</pre>
-</div>
-<p>
-This directive would restore the toplevel to the default
-behavior, it's useful sometimes, for examlpe, you want to load
-a normal ocaml file instead of file pre-processed by Fan.
-</p>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+</ul>
 </li>
-<li>fan
-<div class="org-src-container">
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
+</ul>
 
-<pre class="src src-ocaml"><span style="color: #7a378b;">#fan</span><span style="color: #a52a2a;">;;</span>
-</pre>
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Fan</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/toplevel_support.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
 </div>
-<p>
-It will turn on the featurs of fan.
-</p>
-
-<p>
-<b>Note</b>: Don't fire the toplevel in the sourceree, as you may
-  notice, there's a <code>.ocamlinit</code> file there which requires a
-  customized toplevel, so fire the toplevel in any other place
-  you like. 
-</p>
+          <div role="main" class="document">
+            
+  <div class="section" id="options-toc-nil-html-postamble-nil-html-preamble-nil">
+<h1>+OPTIONS: toc:nil html-postamble:nil html-preamble:nil<a class="headerlink" href="#options-toc-nil-html-postamble-nil-html-preamble-nil" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="html-head">
+<h1>+HTML_HEAD:<a class="headerlink" href="#html-head" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="title-toplevel-support">
+<h1>+TITLE: Toplevel support<a class="headerlink" href="#title-toplevel-support" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="options">
+<h1>+OPTIONS: ^:<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="options-toc-nil">
+<h1>+OPTIONS: toc:nil<a class="headerlink" href="#options-toc-nil" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="toc-headines-2">
+<h1>+TOC:headines 2<a class="headerlink" href="#toc-headines-2" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Playing with toplevel</li>
+</ul>
+<p>If you have fan installed successfully, start your toplevel, and try the
+next phrase</p>
+<p>#+BEGIN_SRC ocaml # #directory &#8220;+fan&#8221;;; # #load &#8220;fanTop.cma&#8221;;; # let a
+= {:exp-|3|};; val a : FAstN.exp = `Int &#8220;3&#8221; #+END_SRC</p>
+<p>Here &#8220;exp-&#8221; is a built-in DDSL for quasiquotation, it&#8217;s the same as exp
+DDSL except without locations, see
+[[<a class="reference external" href="file:ddsl/quotation.org][DDSL:quotation">file:ddsl/quotation.org][DDSL:quotation</a>]]</p>
+<p>There are two directives added,</p>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>normal #+BEGIN_SRC ocaml #normal;;</dt>
+<dd><p class="first last">#+END_SRC This directive would restore the toplevel to the default</p>
+</dd>
+</dl>
+<p>behavior, it&#8217;s useful sometimes, for examlpe, you want to load a
+normal ocaml file instead of file pre-processed by Fan.</p>
+</li>
+<li><p class="first">fan #+BEGIN_SRC ocaml #fan;; #+END_SRC It will turn on the featurs
+of fan.</p>
+<p><em>Note</em>: Don&#8217;t fire the toplevel in the sourceree, as you may notice,
+there&#8217;s a <sub>.ocamlinit</sub> file there which requires a customized
+toplevel, so fire the toplevel in any other place you like.</p>
 </li>
 </ol>
+<ul class="simple">
+<li>Playing with utop [[<a class="reference external" href="https://github.com/diml/utop][Utop">https://github.com/diml/utop][Utop</a>]] is a
+toplevel with nice auto-completion support, it&#8217;s very helpful for
+explore some libraries which the user is not familiar with.</li>
+</ul>
+<p>There is adapter for fan, namely ftop, available here:
+<a class="reference external" href="https://github.com/bobzhang/ftop">https://github.com/bobzhang/ftop</a></p>
+<p>To install ftop #+BEGIN_SRC sh make clean make make install #+END_SRC</p>
+<p>Then you would have ftop in your path. Since ftop already linked fan in,
+so it works out of the box.</p>
+<div class="line-block">
+<div class="line">#+BEGIN_SRC ocaml ftop$ let a = {:exp-|3|};; val a: FAstN.exp =</div>
 </div>
-</div>
-
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2">Playing with utop</h2>
-<div class="outline-text-2" id="text-2">
-<p>
-<a href="https://github.com/diml/utop">Utop</a> is a toplevel with nice auto-completion support, it's very
-helpful for explore some libraries which the user is not familiar
-with.
-</p>
-
-<p>
-There is adapter for fan, namely ftop, available here:
-<a href="https://github.com/bobzhang/ftop">https://github.com/bobzhang/ftop</a>
-</p>
-
-<p>
-To install ftop
-</p>
-<div class="org-src-container">
-
-<pre class="src src-sh">make clean
-make
-make install
-</pre>
+<p>`Int &#8220;3&#8221;
+|  #+END_SRC However, you still have to type &#8220;#directory &#8220;+fan&#8221;&#8221; to get
+access to Fan&#8217;s typing environment /i.e./ cmi files.</p>
 </div>
 
-<p>
-Then you would have ftop in your path.
-Since ftop already linked fan in, so it works out of the box.
-</p>
 
-<div class="org-src-container">
+          </div>
+          <footer>
+  
 
-<pre class="src src-ocaml">ftop<span style="color: #a52a2a;">$</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|};;</span>
-<span style="color: #0000ff; font-weight: bold;">val</span> <span style="color: #a0522d;">a</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">=</span> `Int <span style="color: #8b2252;">"3"</span>
-</pre>
-</div>
-<p>
-However, you still have to type "#directory "+fan"" to get access
-to Fan's typing environment <i>i.e.</i> cmi files.
-</p>
-</div>
-</div>
-</div>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Hongbo Zhang.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
 </body>
 </html>

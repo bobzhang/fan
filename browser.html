@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DDSLs &mdash; Fan 0.2 documentation</title>
+  <title>Fan in browser &mdash; Fan 0.2 documentation</title>
   
 
   
@@ -31,8 +31,8 @@
 
   
     <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
-        <link rel="next" title="Lexer DDSL" href="lexer.html"/>
-        <link rel="prev" title="Command Line compilation Using Fan" href="compilation.html"/> 
+        <link rel="next" title="Fan’s history" href="credits.html"/>
+        <link rel="prev" title="Lexer DDSL" href="lexer.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -70,10 +70,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compilation.html">Command Line compilation Using Fan</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">DDSLs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer DDSL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="toplevel.html">Toplevel support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Fan in browser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
 </ul>
 
@@ -99,10 +97,10 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>DDSLs</li>
+    <li>Fan in browser</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ddsl.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/browser.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -110,44 +108,8 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="ddsls">
-<h1>DDSLs<a class="headerlink" href="#ddsls" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li>Category of Domain Specific Languages</li>
-</ul>
-<p>According to wiki:</p>
-<div class="highlight-python"><div class="highlight"><pre>A domain-specific language (DSL) is a type of programming language
-or specification language in software development and domain
-engineering dedicated to a particular problem domain, a particular
-problem representation technique, and/or a particular solution
-technique.
-</pre></div>
-</div>
-<p>There are mainly three kinds of DSLs <em>e.g.</em>, embeded DSL, external DSL
-and delimited DSL:</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference external" href="http://www.haskell.org/haskellwiki/Embedded_domain_specific_language">Embeded DSL</a>
-are essentially normal functions, its functionality is inherently
-limited, due to lacking staging, program analysis and optimization, yet
-it&#8217;s easy to implement in some expressive languages.</li>
-<li>External DSL are real languages targeted at a small domain, like other full blown
-programming languages, <em>i.e.</em> C, C++, it may include the whole pipeline
-of the compiler, from the front-end to back-end. It&#8217;s more powerful
-compared with embeded DSL, yet much more difficult to build an efficient
-compiler, and more importantly, it brings problem: language
-inter-operation.</li>
-<li>Delimited DSL. DDSL stands between embeded DSL and external DSL, it
-needs a front-end and backend. Since its backend is the host
-language, compared with external DSL, language inter-operation is
-much easier, learning curve is relatively low.</li>
-</ul>
-</div></blockquote>
-<p>Fan advocates Delimited DSL, it adopts OCaml as backend, all DDSLs are compiled
-into OCaml, since OCaml is a highly portable langauge, which means Fan
-is cross-platform for free.</p>
-<p>Adopting a high-level language as backend is popular nowadays, some
-famous examples includes: <a class="reference external" href="http://haxe.org/">Haxe</a>, <a class="reference external" href="http://en.wikipedia.org/wiki/Cfront">Cfront</a>  and numerous <a class="reference external" href="http://altjs.org/">Altjs</a></p>
+  <div class="section" id="fan-in-browser">
+<h1>Fan in browser<a class="headerlink" href="#fan-in-browser" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -156,10 +118,10 @@ famous examples includes: <a class="reference external" href="http://haxe.org/">
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lexer.html" class="btn btn-neutral float-right" title="Lexer DDSL">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="credits.html" class="btn btn-neutral float-right" title="Fan’s history">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="compilation.html" class="btn btn-neutral" title="Command Line compilation Using Fan"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="lexer.html" class="btn btn-neutral" title="Lexer DDSL"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
