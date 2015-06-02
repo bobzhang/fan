@@ -1,0 +1,37 @@
++TITLE: Installation
+====================
+
++OPTIONS: toc:nil html-postamble:nil
+====================================
+
++HTML\_HEAD: 
+=============
+
+-  Requirements
+-  [[http://caml.inria.fr/ocaml/release.en.html][OCaml (version >=4)]]
+
+-  [[http://projects.camlcity.org/projects/findlib.html][OCamlfind]]
+   (optional)
+
+-  Install for users
+
+#+BEGIN\_SRC sh $make world #+END\_SRC If you have ocamlfind installed,
+it will install a META file will be installed to the corresponding
+place, otherwise no META file installed
+
+\*\* What it installed? It installed three exectuables: =fan.byte=,
+=fan.native=, =fane.byte= into the path: :sub:```ocamlc -where``/bin`.
+
+All the library files are installed into :sub:```ocamlc -where``/fan`.
+
+FAst.cmi and FAstN.cmi two signature files are installed to the path of
+standard library.
+
+Please read META file for more details.
+
+fan.byte, fan.native have exactly the same functionality, they are stand
+alone without linking any external libraries (no compiler-libs linked,
+no dynlink).
+
+fane.byte links the whole byte-code compiler and toplevel, it provides
+*eval* functionality, which we will talk about later.

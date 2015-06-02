@@ -1,0 +1,23 @@
++TITLE: Sitemap for project fan-org
+===================================
+
+-  build
+
+   -  [[file:build/start.org][]]
+   -  [[file:build/install.org][]]
+   -  [[file:build/index.org][Fan: growing languags for OCaml]]
+
+-  [[file:ddsl.org][A brief category of domain specific languages]]
+-  [[file:compilation.org][Command Line compilation Using Fan]]
+-  [[file:plugins.org][Fan's plugins]]
+-  [[file:quotation\_system.org][Fan's quotation system]]
+-  [[file:syntax.org][Fan's syntax]]
+-  [[file:index.org][Fan: metaprogramming for OCaml]]
+-  [[file:credits.org][Fan: metaprogrammingfor OCaml]]
+-  [[file:start.org][Getting started]]
+-  [[file:install.org][Installation]]
+-  [[file:lexer.org][Lexer DDSL]]
+-  [[file:overview.org][Overview of Fan]]
+-  [[file:parser.org][Parser DDSL]]
+-  [[file:toplevel\_support.org][Toplevel support]]
+
