@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
-        <link rel="next" title="Fan in browser" href="browser.html"/>
+        <link rel="next" title="Fan’s quosi-quotation" href="quotation_system.html"/>
         <link rel="prev" title="Fan’s plugins" href="plugins.html"/> 
 
   
@@ -75,6 +75,7 @@
 <li class="toctree-l1"><a class="reference internal" href="toplevel.html">Toplevel support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plugins.html">Fan&#8217;s plugins</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Parser DDSL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quotation_system.html">Fan&#8217;s quosi-quotation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
 </ul>
@@ -116,42 +117,32 @@
 <h1>Parser DDSL<a class="headerlink" href="#parser-ddsl" title="Permalink to this headline">¶</a></h1>
 <p>Fan&#8217;s parser DDSL is fully self-explainable, its runtime has enough
 meta-data to reconstruct itself.</p>
-<ul class="simple">
-<li>Learn the syntax by yourself</li>
-</ul>
-<p>suppose you have toplevel installed successfully ( see
-<a class="reference external" href="file:./toplevel_support.org">file:./toplevel_support.org</a>).</p>
-<div class="line-block">
-<div class="line">#+BEGIN_SRC ocaml $ #directory &#8220;+fan&#8221;;; $ #load &#8220;fanTop.cma&#8221;;;</div>
-<div class="line-block">
-<div class="line">#+END_SRC</div>
-</div>
+<ul>
+<li><p class="first">Learn the syntax by yourself</p>
+<p>Suppose you have toplevel installed successfully (see <a class="reference internal" href="toplevel.html"><em>Toplevel support</em></a>).</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">$</span> <span class="o">#</span><span class="n">directory</span> <span class="s2">&quot;+fan&quot;</span><span class="o">;;</span>
+<span class="o">$</span> <span class="o">#</span><span class="n">load</span> <span class="s2">&quot;fanTop.cma&quot;</span><span class="o">;;</span>
+</pre></div>
 </div>
 <p>Now if you want to understand what&#8217;s the definition for the syntactic
 category case</p>
-<div class="line-block">
-<div class="line">#+BEGIN_SRC ocaml Fgram.print Format.std_formatter Fsyntax.case ;;</div>
-<div class="line-block">
-<div class="line">#+END_SRC</div>
-</div>
-</div>
-<p>The output is something like this: #+BEGIN_EXAMPLE case: [ LA [ &#8220;|&#8221;;
-L1 case0 SEP &#8220;|&#8221; -&gt; bar_of_list l</p>
-<div class="highlight-python"><div class="highlight"><pre>  | pat; &quot;-&gt;&quot;; exp -&gt; `Case (_loc, p, e)
-]]
-</pre></div>
-</div>
-<p>#+END_EXAMPLE</p>
-<p>Unlike Camlp4, such grammar printer is the original grammar which is
+<p>The output is something like this:</p>
+<p>Unlike <a class="reference external" href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, such grammar printer is the original grammar which is
 100% honest to the user&#8217;s input, no computation involved.</p>
 <p>So you can install the printer in the toplevel and explore different
 non-terminals by your self.</p>
-<p>#+BEGIN_SRC ocaml #install_printer Fgram.print;; #+END_SRC</p>
-<ul class="simple">
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">$</span> <span class="o">#</span><span class="n">install_printer</span> <span class="nn">Fgram</span><span class="p">.</span><span class="n">print</span><span class="o">;;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
 <li>How the parser works</li>
 <li>Where is the lexer?</li>
-<li>TODO Functional generation</li>
 </ul>
+</div>
 </div>
 
 
@@ -160,7 +151,7 @@ non-terminals by your self.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="browser.html" class="btn btn-neutral float-right" title="Fan in browser">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="quotation_system.html" class="btn btn-neutral float-right" title="Fan’s quosi-quotation">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="plugins.html" class="btn btn-neutral" title="Fan’s plugins"><span class="fa fa-arrow-circle-left"></span> Previous</a>
