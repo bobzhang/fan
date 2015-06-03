@@ -134,7 +134,6 @@ LIB_PARSER_RT = $(file treeparser/libtreeparser)
 LIB_COLD = $(file cold/libmain)
 
 
-
 OCAML_LIBS[] =
     $(LIB_UTILS)
     $(LIB_COMMON)
@@ -153,7 +152,10 @@ section
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
 
-coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
+# coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
+
+fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
+     ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
 
 ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma

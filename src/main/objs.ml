@@ -8,7 +8,7 @@ derive((* Map2 Fold2 OIter   OEq *)
 };;
 
 
-%ocaml{%include{ "../common/astf.mli"};;  };;
+%ocaml{%include{ "../common/astf.ml"};;  };;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

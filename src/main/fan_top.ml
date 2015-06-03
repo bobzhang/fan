@@ -20,6 +20,9 @@ let fan ()  = begin
     Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location
 end;;
 
+(** For fan's js toplevel *)
+(* let () = fan();; *)
+
 begin
   Hashtbl.replace Toploop.directive_table "fan"
     (Toploop.Directive_none (fun () -> fan ()));
@@ -30,17 +33,17 @@ begin
   Fan_warnings.current :=
     (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
-        (Warnings.Camlp4 txt));
+        (Warnings.Preprocessor txt));
   Ast_parsers.use_parsers ["fan"]
 end;;
 
-
+(*
 begin
   Topdirs.dir_install_printer
     Format.std_formatter (Longident.parse "Gramf.dump") ;
   fan ()
 end;;
-
+*)
 
 
 

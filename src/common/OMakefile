@@ -12,6 +12,7 @@ $(LocalFiles): configf.mlp
         $< > $@
 
 FILES = \
+    astf \
     configf \
     ast_print \
     id_set\
