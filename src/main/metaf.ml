@@ -25,7 +25,7 @@ end;;
 
 
 %fans{keep off; derive (MetaObj); };;
-%ocaml{%include{ "../common/astf.mli"};; };;
+%ocaml{%include{ "../common/astf.ml"};; };;
 
   
 
