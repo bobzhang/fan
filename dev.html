@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Fan 0.2 documentation</title>
+  <title>Fan’s development guide &mdash; Fan 0.2 documentation</title>
   
 
   
@@ -30,7 +30,9 @@
   
 
   
-    <link rel="top" title="Fan 0.2 documentation" href="index.html"/> 
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Fan’s history" href="credits.html"/>
+        <link rel="prev" title="Relevant papers" href="papers.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -55,7 +57,7 @@
 
         
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -69,7 +71,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="start.html#what-it-installed">What it installed?</a></li>
@@ -88,13 +90,13 @@
 <li class="toctree-l1"><a class="reference internal" href="quotation_system.html">Fan&#8217;s quosi-quotation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="browser.html">Fan in browser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="papers.html">Relevant papers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev.html">Fan&#8217;s development guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dev.html#build-system">Build system</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev.html#targets">Targets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev.html#known-issues">Known issues</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Fan&#8217;s development guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-system">Build system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#targets">Targets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#known-issues">Known issues</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dev.html#test-its-correctness">Test its correctness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-its-correctness">Test its correctness</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
@@ -122,8 +124,12 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li></li>
+    <li>Fan&#8217;s development guide</li>
       <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/dev.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
@@ -131,22 +137,86 @@
 </div>
           <div role="main" class="document">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="fan-s-development-guide">
+<h1>Fan&#8217;s development guide<a class="headerlink" href="#fan-s-development-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="build-system">
+<h2>Build system<a class="headerlink" href="#build-system" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Fan currently use <a class="reference external" href="http://omake.metaprl.org/manual/omake-doc.html">omake</a> , there are several relevant omakefiles:</dt>
+<dd><ul class="first last">
+<li><p class="first">Root.om</p>
+</li>
+<li><p class="first">Configure.om</p>
+</li>
+<li><p class="first">OMakeroot</p>
+</li>
+<li><p class="first">OCaml.om Add a general rule to support Fan</p>
+<div class="highlight-python"><div class="highlight"><pre>public.USE_FAN       = false
+public.FAN_PLUGINS   =
+public.FAN           = fan
+public.FAN_PLUGIN_OPTIONS  = $`(mapprefix -plugin, $(FAN_PLUGINS))
+</pre></div>
+</div>
+</li>
+<li><p class="first">OMakefile</p>
+</li>
+<li><p class="first">./pmake a simple omake wrapper with parallel</p>
+</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="targets">
+<h3>Targets<a class="headerlink" href="#targets" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>fan(.run) cold start, build fan from preprocessed files</li>
+<li>coldtop fan toplevel FIXME</li>
+<li>ftop fan toplevel with utop support</li>
+<li>fan0(.run)</li>
+<li>fan1</li>
+<li>fan2</li>
+<li>snapshot</li>
+</ul>
+</div>
+<div class="section" id="known-issues">
+<h3>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<p>When you add a new file , and the build system can not track the
+dependency correctly, fore example</p>
+<div class="code ocaml highlight-python"><div class="highlight"><pre>Unbound module Ast_gen
+</pre></div>
+</div>
+<p>Try to <code class="docutils literal"><span class="pre">pmake</span> <span class="pre">clean</span></code> and build it again.</p>
+</div>
+</div>
+<div class="section" id="test-its-correctness">
+<h2>Test its correctness<a class="headerlink" href="#test-its-correctness" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p>when to bootstrapp?</p>
+<p>how to test changes is right</p>
+<ul class="last">
+<li><p class="first">at least &#8211;&gt; hotbuild -&gt; snapshot(source 1) &#8211;&gt; cold build &#8211;&gt; hot
+build &#8211;&gt; snapshot (source 2)</p>
+<p>source(1,2) should reach a fix point, it means we can keep the loop</p>
+</li>
+<li><p class="first">unittest</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="credits.html" class="btn btn-neutral float-right" title="Fan’s history" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="papers.html" class="btn btn-neutral" title="Relevant papers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -183,7 +253,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
 
@@ -199,14 +268,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
