@@ -98,7 +98,26 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+# github_user    = 'bobzhang'
+# github_repo    = 'fan'
+# github_version = 'master'
+# conf_py_path   = 'docs'
+# pagename       = 
+
+# {%- set github_user = bobzhang %}
+# {%- set github_repo = fan %}
+# {%- set github_version = master %}
+# {%- set conf_py_path = docs %}
+# {%- set display_github = true %}
+
+
+# html_theme_options = {
+#     "display_github" : "true"
+# }
+
+# http://sphinx-doc.org/theming.html
+# http://docs.readthedocs.org/en/latest/vcs.html
+html_theme     = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

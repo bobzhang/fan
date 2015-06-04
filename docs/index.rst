@@ -3,6 +3,7 @@ Fan: metaprogramming for OCaml
 
 
 .. toctree::
+   :maxdepth: 1
 
    start
    philosophy
