@@ -8,39 +8,51 @@ meta-data to reconstruct itself.
 
 -  Learn the syntax by yourself
 
-suppose you have toplevel installed successfully ( see
-file:./toplevel\_support.org).
+   Suppose you have toplevel installed successfully ( see :doc:`toplevel`).
 
-| #+BEGIN\_SRC ocaml $ #directory "+fan";; $ #load "fanTop.cma";;
-|  #+END\_SRC
+   .. code-block:: ocaml
 
-Now if you want to understand what's the definition for the syntactic
-category case
-
-| #+BEGIN\_SRC ocaml Fgram.print Format.std\_formatter Fsyntax.case ;;
-|  #+END\_SRC
-
-The output is something like this: #+BEGIN\_EXAMPLE case: [ LA [ "\|";
-L1 case0 SEP "\|" -> bar\_of\_list l
-
-::
-
-       | pat; "->"; exp -> `Case (_loc, p, e)
-     ]]
-
-#+END\_EXAMPLE
-
-Unlike Camlp4, such grammar printer is the original grammar which is
-100% honest to the user's input, no computation involved.
-
-So you can install the printer in the toplevel and explore different
-non-terminals by your self.
-
-#+BEGIN\_SRC ocaml #install\_printer Fgram.print;; #+END\_SRC
-
--  How the parser works
-
--  Where is the lexer?
--  TODO Functional generation
+      $ #directory "+fan";; 
+      $ #load "fanTop.cma";;
 
 
+   Now if you want to understand what's the definition for the syntactic
+   category case
+   
+   .. code-block:: ocaml
+                   
+      Fgram.print Format.std_formatter Fsyntax.case ;;
+
+
+   The output is something like this:
+
+   .. code-block:: ocaml
+
+      case: 
+        [ LA 
+        [ "|"; L1 case0 SEP "|" -> bar_of_list l
+        | pat; "->"; exp -> `Case (_loc, p, e)]
+        ]
+
+
+
+   Unlike `Camlp4`_, such grammar printer is the original grammar which is
+   100% honest to the user's input, no computation involved.
+
+   So you can install the printer in the toplevel and explore different
+   non-terminals by your self.
+
+   .. code-block:: ocaml
+      
+      $ #install_printer Fgram.print;;
+     
+
+.. todo::
+   
+   -  How the parser works
+
+   -  Where is the lexer?
+   -  TODO Functional generation
+
+
+.. include:: ./link_names.txt
