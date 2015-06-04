@@ -177,4 +177,18 @@ though, the major differences is that Fan is more strict than OCaml.
 
 
 
+
+
+
+-  Fan for toplevel See [[file:toplevel\_support.org][Toplevel support]]
+
+-  Fan's quotation system see [[file:quotation\_system.org][Fan's
+   quasiquotation]]
+
+-  Fan's parsing scheme see [[file:parser.org][parser DDSL]]
+-  Fan's lexing scheme see [[file:lexer.org][lexer DDSL]]
+
+-  Writing plugins for Fan see [[file:plugins.org][Plugins]]
+
+
 .. include:: ./link_names.txt

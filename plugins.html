@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Fan’s plugins &mdash; Fan 0.2 documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -35,7 +35,7 @@
         <link rel="prev" title="Toplevel support" href="toplevel.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -47,8 +47,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
         
-          <a href="index.html" class="fa fa-home"> Fan</a>
+
         
+          <a href="index.html" class="icon icon-home"> Fan
+        
+
+        
+        </a>
+
         
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,6 +63,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+        
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
@@ -65,7 +73,11 @@
           
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="start.html#what-it-installed">What it installed?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="start.html#what-language-does-fan-speak">What language does Fan speak?</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
@@ -105,7 +117,9 @@
     <li>Fan&#8217;s plugins</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/plugins.txt" rel="nofollow"> View page source</a>
+          
+            <a href="_sources/plugins.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
@@ -115,32 +129,70 @@
             
   <div class="section" id="fan-s-plugins">
 <h1>Fan&#8217;s plugins<a class="headerlink" href="#fan-s-plugins" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li>A native example</li>
-</ul>
+<ul>
+<li><p class="first">A native example</p>
 <p>Suppose we want a new syntax for expressions,</p>
-<p>#+BEGIN_SRC ocaml (matches ) or (matches when ), #+END_SRC that
-desugars into a test function returning a boolean:</p>
-<p>#+BEGIN_SRC ocaml (function | when -&gt; true | _ -&gt; false) #+END_SRC</p>
-<p>Then we could create a file [[<a class="reference external" href="file:code/testq.ml][testq">file:code/testq.ml][testq</a>]]</p>
-<p>First, we need to create a new entry =p= for this DDSL</p>
-<p>#+INCLUDE:&#8221;./code/testq.ml&#8221; src ocaml :lines &#8220;2-3&#8221;</p>
-<p>After that we write the grammar for the new DDSL</p>
-<p>#+INCLUDE:&#8221;./code/testq.ml&#8221; src ocaml :lines &#8220;4-8&#8221;</p>
-<p>Then we start to register the new DDSL</p>
-<p>#+INCLUDE:&#8221;./code/testq.ml&#8221; src ocaml :lines &#8220;10-12&#8221;</p>
-<p>Yes, we are finished, we register a language named q, in the namespace
-Tutorial.</p>
-<p>To compile the file</p>
-<p>#+BEGIN_SRC sh ocamlc -pp &#8216;fan.native&#8217; testq.ml #+END_SRC</p>
-<p>** Test on the fly</p>
-<p>we can eval the code on the fly without installing the plugins using the
-preprocessor =fane.byte=</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">(</span><span class="n">matches</span> <span class="o">&lt;</span><span class="n">pattern</span><span class="o">&gt;</span> <span class="o">)</span> <span class="ow">or</span> <span class="o">(</span><span class="n">matches</span> <span class="k">when</span> <span class="o">&lt;</span><span class="n">pattern</span><span class="o">&gt;</span> <span class="k">when</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;))</span>
+</pre></div>
+</div>
+<p>that desugars into a test function returning a boolean:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">(</span><span class="k">function</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">pattern</span><span class="o">&gt;</span> <span class="k">when</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="o">-&gt;</span> <span class="bp">true</span> <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Then we could create a file  as follows:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">%</span><span class="n">create</span><span class="o">{</span> <span class="n">p</span><span class="o">};;</span>
+
+<span class="o">%</span><span class="n">extend</span><span class="o">{</span>
+  <span class="n">p</span><span class="o">:</span>
+  <span class="o">[</span> <span class="n">pat</span><span class="o">{</span><span class="n">p</span><span class="o">};</span><span class="s2">&quot;when&quot;</span><span class="o">;</span> <span class="n">exp</span><span class="o">{</span><span class="n">e</span><span class="o">}</span> <span class="o">-&gt;</span>
+     <span class="o">%</span><span class="n">exp</span><span class="o">{</span> <span class="k">function</span> <span class="o">|</span> <span class="o">$</span><span class="n">p</span> <span class="k">when</span> <span class="o">$</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="bp">true</span> <span class="o">|_</span> <span class="o">-&gt;</span> <span class="bp">false</span> <span class="o">}</span>
+  <span class="o">|</span> <span class="n">pat</span><span class="o">{</span><span class="n">p</span><span class="o">}</span> <span class="o">-&gt;</span> <span class="o">%</span><span class="n">exp</span><span class="o">{</span> <span class="k">function</span> <span class="o">|</span> <span class="o">$</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="bp">true</span> <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span> <span class="o">}</span> <span class="o">]</span>
+<span class="o">};;</span>
+
+<span class="k">let</span> <span class="n">d</span> <span class="o">=</span> <span class="o">`</span><span class="nc">Absolute</span><span class="o">[</span><span class="s2">&quot;Tutorial&quot;</span><span class="o">];;</span>
+<span class="nn">AstQuotation</span><span class="p">.</span><span class="n">of_exp</span> <span class="o">~</span><span class="n">name</span><span class="o">:(</span><span class="n">d</span><span class="o">,</span><span class="s2">&quot;q&quot;</span><span class="o">)</span> <span class="o">~</span><span class="n">entry</span><span class="o">:</span><span class="n">p</span><span class="o">;;</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>Create a new entry <code class="docutils literal"><span class="pre">p</span></code> for this DDSL</li>
+<li>Write the grammar for the new DDSL</li>
+<li>Register the new DDSL  named q, in the namespace <code class="docutils literal"><span class="pre">Tutorial</span></code>.</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p class="first">Test on the fly</p>
+<p>We can eval the code on the fly without installing the plugins using the
+preprocessor <code class="docutils literal"><span class="pre">fane.byte</span></code></p>
 <p>As follows:</p>
-<p>#+INCLUDE:&#8221;./code/langQ.ml&#8221; src ocaml :lines &#8220;1-22&#8221;</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="o">#{:</span><span class="n">eval</span><span class="o">|</span>
+<span class="k">open</span>  <span class="nc">Fsyntax</span>
+<span class="o">{:</span><span class="n">create</span><span class="o">|</span> <span class="nc">Fgram</span> <span class="n">p</span><span class="o">|};;</span>
+
+<span class="o">{:</span><span class="n">extend</span><span class="o">|</span>
+  <span class="n">p</span><span class="o">:</span>
+  <span class="o">[</span><span class="n">pat</span><span class="o">{</span><span class="n">p</span><span class="o">};</span><span class="s2">&quot;when&quot;</span><span class="o">;</span> <span class="n">exp</span><span class="o">{</span><span class="n">e</span><span class="o">}</span> <span class="o">-&gt;</span> <span class="o">{:</span><span class="n">exp</span><span class="o">|</span> <span class="k">function</span> <span class="o">|</span> <span class="o">$</span><span class="n">pat</span><span class="o">:</span><span class="n">p</span> <span class="k">when</span> <span class="o">$</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+  <span class="o">|_</span> <span class="o">-&gt;</span> <span class="bp">false</span> <span class="o">|}</span>
+  <span class="o">|</span><span class="n">pat</span><span class="o">{</span><span class="n">p</span><span class="o">}</span> <span class="o">-&gt;</span> <span class="o">{:</span><span class="n">exp</span><span class="o">|</span> <span class="k">function</span> <span class="o">|</span> <span class="o">$</span><span class="n">pat</span><span class="o">:</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="bp">true</span> <span class="o">|</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="bp">false</span> <span class="o">|}</span> <span class="o">]</span>
+<span class="o">|};;</span>
+<span class="k">let</span> <span class="n">d</span> <span class="o">=</span> <span class="o">`</span><span class="nc">Absolute</span><span class="o">[</span><span class="s2">&quot;Tutorial&quot;</span><span class="o">];;</span>
+<span class="nn">AstQuotation</span><span class="p">.</span><span class="n">of_exp</span> <span class="o">~</span><span class="n">name</span><span class="o">:(</span><span class="n">d</span><span class="o">,</span><span class="s2">&quot;q&quot;</span><span class="o">)</span> <span class="o">~</span><span class="n">entry</span><span class="o">:</span><span class="n">p</span><span class="o">;;</span>
+<span class="o">|}</span>
+
+
+<span class="o">#{:</span><span class="n">control</span><span class="o">|</span> <span class="n">import</span> <span class="nc">Tutorial</span> <span class="o">;</span> <span class="o">|}</span>
+<span class="k">if</span> <span class="o">{:</span><span class="n">q</span><span class="o">|</span> <span class="o">{:</span><span class="n">exp</span><span class="o">-|</span> <span class="o">$</span><span class="n">a</span><span class="o">+$</span><span class="n">b</span><span class="o">|}|}</span> <span class="o">{:</span><span class="n">exp</span><span class="o">-|</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="o">|}</span> <span class="k">then</span>
+    <span class="n">print_endline</span> <span class="s2">&quot;yes!&quot;</span>
+<span class="k">else</span> <span class="n">print_endline</span> <span class="s2">&quot;no&quot;</span>
+</pre></div>
+</div>
 <p>To compile the file, you only need to switch from the preprocessor
-fan.byte to fane.byte</p>
-<p>#+BEGIN_SRC sh ocamlc -pp &#8216;fane.byte &#8216; langQ.ml &amp;&amp; ./a.out #+END_SRC</p>
+<code class="docutils literal"><span class="pre">fan.byte</span></code> to <code class="docutils literal"><span class="pre">fane.byte</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ocamlc -pp &#39;fane.byte &#39; langQ.ml &amp;&amp; ./a.out
+</pre></div>
+</div>
+</li>
+</ul>
 </div>
 
 
@@ -149,10 +201,10 @@ fan.byte to fane.byte</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="parser.html" class="btn btn-neutral float-right" title="Parser DDSL">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="parser.html" class="btn btn-neutral float-right" title="Parser DDSL" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="toplevel.html" class="btn btn-neutral" title="Toplevel support"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="toplevel.html" class="btn btn-neutral" title="Toplevel support" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -164,10 +216,10 @@ fan.byte to fane.byte</p>
         &copy; Copyright 2015, Hongbo Zhang.
     </p>
   </div>
-
   Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
+
 </footer>
+
         </div>
       </div>
 

@@ -5,44 +5,78 @@ Fan's plugins
 
 -  A native example
 
-Suppose we want a new syntax for expressions,
+   Suppose we want a new syntax for expressions,
+   
+   .. code-block:: ocaml
 
-#+BEGIN\_SRC ocaml (matches ) or (matches when ), #+END\_SRC that
-desugars into a test function returning a boolean:
+      (matches <pattern> ) or (matches when <pattern> when <expr>))
+   
+   that desugars into a test function returning a boolean:
 
-#+BEGIN\_SRC ocaml (function \| when -> true \| \_ -> false) #+END\_SRC
+   .. code-block:: ocaml
+                   
+      (function | <pattern> when <expr> -> true | _ -> false)
 
-Then we could create a file [[file:code/testq.ml][testq]]
 
-First, we need to create a new entry =p= for this DDSL
+   Then we could create a file  as follows:
+   
+   .. code-block:: ocaml
 
-#+INCLUDE:"./code/testq.ml" src ocaml :lines "2-3"
+      %create{ p};;
 
-After that we write the grammar for the new DDSL
+      %extend{
+        p:
+        [ pat{p};"when"; exp{e} ->
+           %exp{ function | $p when $e -> true |_ -> false }
+        | pat{p} -> %exp{ function | $p -> true | _ -> false } ]
+      };;
 
-#+INCLUDE:"./code/testq.ml" src ocaml :lines "4-8"
+      let d = `Absolute["Tutorial"];;
+      AstQuotation.of_exp ~name:(d,"q") ~entry:p;;
 
-Then we start to register the new DDSL
 
-#+INCLUDE:"./code/testq.ml" src ocaml :lines "10-12"
+   #. Create a new entry ``p`` for this DDSL
+   #. Write the grammar for the new DDSL
+   #. Register the new DDSL  named q, in the namespace ``Tutorial``.
 
-Yes, we are finished, we register a language named q, in the namespace
-Tutorial.
+.. highlight:: sh
 
-To compile the file
+   To compile the file::
 
-#+BEGIN\_SRC sh ocamlc -pp 'fan.native' testq.ml #+END\_SRC
+     $ ocamlc -pp 'fan.native' testq.ml
 
-\*\* Test on the fly
+- Test on the fly
 
-we can eval the code on the fly without installing the plugins using the
-preprocessor =fane.byte=
+  We can eval the code on the fly without installing the plugins using the
+  preprocessor ``fane.byte``
 
-As follows:
+  As follows:
 
-#+INCLUDE:"./code/langQ.ml" src ocaml :lines "1-22"
+  .. code-block:: ocaml
 
-To compile the file, you only need to switch from the preprocessor
-fan.byte to fane.byte
+     #{:eval|
+     open  Fsyntax
+     {:create| Fgram p|};;
 
-#+BEGIN\_SRC sh ocamlc -pp 'fane.byte ' langQ.ml && ./a.out #+END\_SRC
+     {:extend|
+       p:
+       [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true
+       |_ -> false |}
+       |pat{p} -> {:exp| function | $pat:p -> true | _ -> false |} ]
+     |};;
+     let d = `Absolute["Tutorial"];;
+     AstQuotation.of_exp ~name:(d,"q") ~entry:p;;
+     |}  
+
+
+     #{:control| import Tutorial ; |}
+     if {:q| {:exp-| $a+$b|}|} {:exp-| 3 + 4|} then
+         print_endline "yes!"
+     else print_endline "no"
+
+
+
+  To compile the file, you only need to switch from the preprocessor
+  ``fan.byte`` to ``fane.byte``::
+
+    $ ocamlc -pp 'fane.byte ' langQ.ml && ./a.out

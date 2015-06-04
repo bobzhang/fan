@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Parser DDSL &mdash; Fan 0.2 documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -35,7 +35,7 @@
         <link rel="prev" title="Fan’s plugins" href="plugins.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -47,8 +47,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
         
-          <a href="index.html" class="fa fa-home"> Fan</a>
+
         
+          <a href="index.html" class="icon icon-home"> Fan
+        
+
+        
+        </a>
+
         
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,6 +63,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+        
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
@@ -65,7 +73,11 @@
           
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="start.html#what-it-installed">What it installed?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="start.html#what-language-does-fan-speak">What language does Fan speak?</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="philosophy.html">Overview of Fan&#8217;s architecture</a></li>
@@ -105,7 +117,9 @@
     <li>Parser DDSL</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/parser.txt" rel="nofollow"> View page source</a>
+          
+            <a href="_sources/parser.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
@@ -119,14 +133,24 @@
 meta-data to reconstruct itself.</p>
 <ul>
 <li><p class="first">Learn the syntax by yourself</p>
-<p>Suppose you have toplevel installed successfully (see <a class="reference internal" href="toplevel.html"><em>Toplevel support</em></a>).</p>
+<p>Suppose you have toplevel installed successfully ( see <a class="reference internal" href="toplevel.html"><em>Toplevel support</em></a>).</p>
 <div class="highlight-ocaml"><div class="highlight"><pre><span class="o">$</span> <span class="o">#</span><span class="n">directory</span> <span class="s2">&quot;+fan&quot;</span><span class="o">;;</span>
 <span class="o">$</span> <span class="o">#</span><span class="n">load</span> <span class="s2">&quot;fanTop.cma&quot;</span><span class="o">;;</span>
 </pre></div>
 </div>
 <p>Now if you want to understand what&#8217;s the definition for the syntactic
 category case</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="nn">Fgram</span><span class="p">.</span><span class="n">print</span> <span class="nn">Format</span><span class="p">.</span><span class="n">std_formatter</span> <span class="nn">Fsyntax</span><span class="p">.</span><span class="n">case</span> <span class="o">;;</span>
+</pre></div>
+</div>
 <p>The output is something like this:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="n">case</span><span class="o">:</span>
+  <span class="o">[</span> <span class="nc">LA</span>
+  <span class="o">[</span> <span class="s2">&quot;|&quot;</span><span class="o">;</span> <span class="nc">L1</span> <span class="n">case0</span> <span class="nc">SEP</span> <span class="s2">&quot;|&quot;</span> <span class="o">-&gt;</span> <span class="n">bar_of_list</span> <span class="n">l</span>
+  <span class="o">|</span> <span class="n">pat</span><span class="o">;</span> <span class="s2">&quot;-&gt;&quot;</span><span class="o">;</span> <span class="n">exp</span> <span class="o">-&gt;</span> <span class="o">`</span><span class="nc">Case</span> <span class="o">(_</span><span class="n">loc</span><span class="o">,</span> <span class="n">p</span><span class="o">,</span> <span class="n">e</span><span class="o">)]</span>
+  <span class="o">]</span>
+</pre></div>
+</div>
 <p>Unlike <a class="reference external" href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, such grammar printer is the original grammar which is
 100% honest to the user&#8217;s input, no computation involved.</p>
 <p>So you can install the printer in the toplevel and explore different
@@ -141,6 +165,7 @@ non-terminals by your self.</p>
 <ul class="last simple">
 <li>How the parser works</li>
 <li>Where is the lexer?</li>
+<li>TODO Functional generation</li>
 </ul>
 </div>
 </div>
@@ -151,10 +176,10 @@ non-terminals by your self.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="quotation_system.html" class="btn btn-neutral float-right" title="Fan’s quosi-quotation">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="quotation_system.html" class="btn btn-neutral float-right" title="Fan’s quosi-quotation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plugins.html" class="btn btn-neutral" title="Fan’s plugins"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plugins.html" class="btn btn-neutral" title="Fan’s plugins" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -166,10 +191,10 @@ non-terminals by your self.</p>
         &copy; Copyright 2015, Hongbo Zhang.
     </p>
   </div>
-
   Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
+
 </footer>
+
         </div>
       </div>
 
