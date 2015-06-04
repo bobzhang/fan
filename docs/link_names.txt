@@ -41,3 +41,5 @@
 .. _Cfront: http://en.wikipedia.org/wiki/Cfront
 
 .. _Altjs: http://altjs.org/
+
+.. _omake: http://omake.metaprl.org/manual/omake-doc.html

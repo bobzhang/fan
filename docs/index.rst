@@ -14,6 +14,8 @@ Fan: metaprogramming for OCaml
    parser
    quotation_system
    browser
+   papers
+   dev
    credits
 
 `Fan`_ is a compile-time metaprogramming system for `OCaml`_,
