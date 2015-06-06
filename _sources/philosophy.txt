@@ -12,7 +12,7 @@ which can *evolve* itself incrementally. It gets started from the
 vanilla OCaml language as Fan\ :sub:`0`, with more and more new languages
 added for each version.
 
-For example, to add a new `DSL`_ into Fan\ :sub:`n`, we would supply a
+For example, to add a new DSL into Fan\ :sub:`n`, we would supply a
 front-end and a back-end targeted at Fan\ :sub:`n`, upon being
 integrated, Fan\ :sub:`n` becomes Fan\ :sub:`n+1`.
 

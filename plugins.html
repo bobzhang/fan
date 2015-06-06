@@ -170,6 +170,10 @@
 </ol>
 </li>
 </ul>
+<p>To compile the file:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>ocamlc -pp <span class="s1">&#39;fan.native&#39;</span> testq.ml
+</pre></div>
+</div>
 <ul>
 <li><p class="first">Test on the fly</p>
 <p>We can eval the code on the fly without installing the plugins using the
@@ -198,7 +202,7 @@ preprocessor <code class="docutils literal"><span class="pre">fane.byte</span></
 </div>
 <p>To compile the file, you only need to switch from the preprocessor
 <code class="docutils literal"><span class="pre">fan.byte</span></code> to <code class="docutils literal"><span class="pre">fane.byte</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ ocamlc -pp &#39;fane.byte &#39; langQ.ml &amp;&amp; ./a.out
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>ocamlc -pp <span class="s1">&#39;fane.byte &#39;</span> langQ.ml <span class="o">&amp;&amp;</span> ./a.out
 </pre></div>
 </div>
 </li>

@@ -159,7 +159,7 @@ the following quotation is legal  in Fan.</p>
 </pre></div>
 </div>
 <p>Which is simliar to Common Lisp style macros.</p>
-<div class="highlight-lisp"><div class="highlight"><pre>``(,,x)
+<div class="highlight-elisp"><div class="highlight"><pre>``(,,x)
 </pre></div>
 </div>
 </li>
@@ -272,6 +272,17 @@ ctyp, their type signature are as follows:</p>
 </li>
 </ul>
 <p>There is also a suite of quasiquotation for ast without locations.</p>
+<div class="code ocaml highlight-python"><div class="highlight"><pre>(** with annotations, [-] means minus locations *)
+%exp-{ 3}
+(** after expansion *)
+(`Int  &quot;3&quot; : FAstN.exp )
+
+(** without annotations *)
+%exp-&#39;{ 3 }
+(** after expansion *)
+`Int  &quot;3&quot;
+</pre></div>
+</div>
 </div></blockquote>
 </li>
 </ul>
