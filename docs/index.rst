@@ -19,8 +19,8 @@ Fan: metaprogramming for OCaml
    dev
    credits
 
-`Fan`_ is a compile-time metaprogramming system for `OCaml`_,
-originally inspired from `Camlp4`_. It's a combination of OCaml and
+Fan_ is a compile-time metaprogramming system for OCaml_,
+originally inspired from Camlp4_. It's a combination of OCaml and
 `Lispy Macros`_. It shares the same concrete syntax with OCaml.
 
 

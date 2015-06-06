@@ -26,7 +26,7 @@ The differences lie in serveral following aspects
 
     Which is simliar to Common Lisp style macros.
     
-    .. code-block:: lisp
+    .. code-block:: elisp
 
        ``(,,x)       
 
@@ -139,7 +139,7 @@ The differences lie in serveral following aspects
        
     There is also a suite of quasiquotation for ast without locations.
 
-    .. code-block::
+    .. code:: ocaml
       
       (** with annotations, [-] means minus locations *)
       %exp-{ 3}

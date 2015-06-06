@@ -13,7 +13,7 @@ clean:
 pub:
 	ghp-import  -p build/html
 html:
-	sphinx-build -b html -d build/doctrees docs build/html
+	sphinx-build -j8 -b html -d build/doctrees docs build/html
 	touch build/html/.nojekyll
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

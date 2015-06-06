@@ -14,6 +14,7 @@ According to wiki::
 
 There are mainly three kinds of DSLs *e.g.*, embeded DSL, external DSL
 and delimited DSL:
+  
   - `Embeded DSL <http://www.haskell.org/haskellwiki/Embedded_domain_specific_language>`_
     are essentially normal functions, its functionality is inherently
     limited, due to lacking staging, program analysis and optimization, yet

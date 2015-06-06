@@ -104,11 +104,6 @@ pygments_style = 'sphinx'
 # conf_py_path   = 'docs'
 # pagename       = 
 
-# {%- set github_user = bobzhang %}
-# {%- set github_repo = fan %}
-# {%- set github_version = master %}
-# {%- set conf_py_path = docs %}
-# {%- set display_github = true %}
 
 
 # html_theme_options = {

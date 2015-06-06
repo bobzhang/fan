@@ -41,7 +41,7 @@ Fan's plugins
 
 .. highlight:: sh
 
-   To compile the file::
+To compile the file::
 
      $ ocamlc -pp 'fan.native' testq.ml
 

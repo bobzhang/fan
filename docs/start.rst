@@ -158,6 +158,7 @@ though, the major differences is that Fan is more strict than OCaml.
           #eval{
           let v = 3 let b = 3 
           }
+       
        This would help test the syntax extension on-the-fly.
 
        **Attention**: all the compile time DDSL should be put in the beginning,
