@@ -3,8 +3,8 @@ Fan: metaprogramming for OCaml
 
 
 .. toctree::
-   :maxdepth: 1
-
+   :hidden: 
+              
    start
    philosophy
    compilation
@@ -36,11 +36,11 @@ Contributions
 
 Contributions are very welcome
 
-#. Link to `Fan`_
+#. `Link to Fan <Fan>`_
 
-#. Link to `Fan's Documentation`_
+#. `Link to Fan's Documentation <Fan's Documentation>`_
 
-   It's written in `ReST`_ markup language and powered by `Sphinx`_. 
+It's written in `ReST`_ markup language and powered by Sphinx_. 
 
 
 ..
