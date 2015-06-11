@@ -109,60 +109,60 @@ let input_file x =
     e.g. -p -px will cause some problem *)    
 let initial_spec_list : (string * Arg.spec * string) list =
   [
-   ("-I", String (fun x -> input_file (IncludeDir x)),
-    "<directory>  Add directory in search patch for object files.");
+   (* ("-I", String (fun x -> input_file (IncludeDir x)), *)
+   (*  "<directory>  Add directory in search patch for object files."); *)
 
-   ("-intf", String (fun x -> input_file (Intf x)),
-    "<file>  Parse <file> as an interface, whatever its extension.");
+   (* ("-intf", String (fun x -> input_file (Intf x)), *)
+   (*  "<file>  Parse <file> as an interface, whatever its extension."); *)
 
-   ("-impl", String (fun x -> input_file (Impl x)),
-    "<file>  Parse <file> as an implementation, whatever its extension.");
+   (* ("-impl", String (fun x -> input_file (Impl x)), *)
+   (*  "<file>  Parse <file> as an implementation, whatever its extension."); *)
 
-   ("-str", String (fun x -> input_file (Str x)),
-    "<string>  Parse <string> as an implementation.");
+   (* ("-str", String (fun x -> input_file (Str x)), *)
+   (*  "<string>  Parse <string> as an implementation."); *)
 
-   ("-o", String (fun x -> output_file := Some x),
-    "<file> Output on <file> instead of standard output.");
+   (* ("-o", String (fun x -> output_file := Some x), *)
+   (*  "<file> Output on <file> instead of standard output."); *)
 
-   ("-list", Unit Ast_quotation.dump_names_tbl, "list all registered DDSLs");
+   (* ("-list", Unit Ast_quotation.dump_names_tbl, "list all registered DDSLs"); *)
 
-   ("-list_directive", Unit Ast_quotation.dump_directives, "list all registered directives");
+   (* ("-list_directive", Unit Ast_quotation.dump_directives, "list all registered directives"); *)
    
-   ("-unsafe", Set Configf.unsafe,
-    "Generate unsafe accesses to array and strings.");
+   (* ("-unsafe", Set Configf.unsafe, *)
+   (*  "Generate unsafe accesses to array and strings."); *)
 
-   ("-where", Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0))
-      , " Print location of standard library and exit");
-   ("-loc", Set_string Locf.name,
-    "<name>   Name of the location variable (default: " ^ !Locf.name ^ ").");
+   (* ("-where", Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0)) *)
+   (*    , " Print location of standard library and exit"); *)
+   (* ("-loc", Set_string Locf.name, *)
+   (*  "<name>   Name of the location variable (default: " ^ !Locf.name ^ ")."); *)
    
-   ("-v", Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end),
-    "Print Fan version and exit.");
+   (* ("-v", Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end), *)
+   (*  "Print Fan version and exit."); *)
 
-   ("-compilation-unit",
-    Unit (function () -> 
-      ((match !Configf.compilation_unit with
-      | Some v -> printf "%s@." v
-      | None -> printf "null");
-       exit 0)), 
-    "Print the current compilation unit");
+   (* ("-compilation-unit", *)
+   (*  Unit (function () ->  *)
+   (*    ((match !Configf.compilation_unit with *)
+   (*    | Some v -> printf "%s@." v *)
+   (*    | None -> printf "null"); *)
+   (*     exit 0)),  *)
+   (*  "Print the current compilation unit"); *)
 
    ("-plugin", String Control_require.add , "load plugin cma or cmxs files");
 
-   ("-loaded-modules", Set print_loaded_modules, "Print the list of loaded modules.");
+   (* ("-loaded-modules", Set print_loaded_modules, "Print the list of loaded modules."); *)
    
-   ("-loaded-filters", Unit just_print_filters, "Print the registered filters.");
+   (* ("-loaded-filters", Unit just_print_filters, "Print the registered filters."); *)
    
-   ("-loaded-parsers", Unit just_print_parsers, "Print the loaded parsers.");
+   (* ("-loaded-parsers", Unit just_print_parsers, "Print the loaded parsers."); *)
    
-   ("-used-parsers", Unit just_print_applied_parsers, "Print the applied parsers.");
+   (* ("-used-parsers", Unit just_print_applied_parsers, "Print the applied parsers."); *)
 
-   ("-dlang",
-       (String
-          (fun s  ->
-            Ast_quotation.default :=
-              (Ast_quotation.resolve_name {domain = `Sub []; name =  s}))),
-       " Set the default language");
+   (* ("-dlang", *)
+   (*     (String *)
+   (*        (fun s  -> *)
+   (*          Ast_quotation.default := *)
+   (*            (Ast_quotation.resolve_name {domain = `Sub []; name =  s}))), *)
+   (*     " Set the default language"); *)
    ("-printer",
     (String (fun s ->
 
@@ -173,13 +173,13 @@ let initial_spec_list : (string * Arg.spec * string) list =
           Prelude.sigi_printer := x.interf ;
           Prelude.stru_printer := x.implem
         end)) , " Set the backend");
-   ("-printers",
-    Unit (fun _ ->
-      Prelude.backends
-      |> Hashtbl.iter
-          (fun k (x:Prelude.backend) ->
-            Format.eprintf "@[-printer %s, %s@]@\n" k x.descr)),
-    " List the backends available")
+   (* ("-printers", *)
+   (*  Unit (fun _ -> *)
+   (*    Prelude.backends *)
+   (*    |> Hashtbl.iter *)
+   (*        (fun k (x:Prelude.backend) -> *)
+   (*          Format.eprintf "@[-printer %s, %s@]@\n" k x.descr)), *)
+   (*  " List the backends available") *)
  ];;
       
 
