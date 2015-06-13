@@ -3,7 +3,9 @@
 
 
 
-
+(*
+Entry point
+*)
 let _ =
   begin
     Options.adds Fan_args.initial_spec_list;

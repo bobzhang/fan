@@ -31,8 +31,8 @@ FILES = \
     token_stream \
     ast2pt \
     ast_basic \
-    cmdliner
-
+    cmdliner \
+    main_spec
 .PHONY: clean lib
 lib: $(OCamlLibrary libcommon, $(FILES))
 

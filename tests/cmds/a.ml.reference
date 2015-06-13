@@ -1,0 +1,3 @@
+fan a.ml
+File "a.ml", line 2, characters 0-1:
+Streamf.Error [fun_bind] expected after [pat] (in [bind])
