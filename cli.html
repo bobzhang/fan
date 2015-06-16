@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>+TITLE: Sitemap for project fan-org &mdash; Fan 0.2 documentation</title>
+  <title>options &mdash; Fan 0.2 documentation</title>
   
 
   
@@ -29,7 +29,9 @@
   
 
   
-    <link rel="top" title="Fan 0.2 documentation" href="index.html"/> 
+    <link rel="top" title="Fan 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Fan’s history" href="credits.html"/>
+        <link rel="prev" title="Fan’s development guide" href="dev.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -68,7 +70,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="start.html#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="start.html#what-it-installed">What it installed?</a></li>
@@ -96,6 +98,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev.html#test-its-correctness">Test its correctness</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Fan command line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Fan&#8217;s history</a></li>
 </ul>
 
@@ -121,11 +124,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>+TITLE: Sitemap for project fan-org</li>
+    <li>options</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="https://github.com/bobzhang/fan/blob/master/docs/sitemap.rst" class="fa fa-github"> Edit on GitHub</a>
+            <a href="https://github.com/bobzhang/fan/blob/master/docs/cli.rst" class="fa fa-github"> Edit on GitHub</a>
           
         
       </li>
@@ -135,35 +138,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="title-sitemap-for-project-fan-org">
-<h1>+TITLE: Sitemap for project fan-org<a class="headerlink" href="#title-sitemap-for-project-fan-org" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li>build<ul>
-<li>[[<a class="reference external" href="file:build/start.org">file:build/start.org</a>][]]</li>
-<li>[[<a class="reference external" href="file:build/install.org">file:build/install.org</a>][]]</li>
-<li>[[<a class="reference external" href="file:build/index.org][Fan">file:build/index.org][Fan</a>: growing languags for OCaml]]</li>
-</ul>
-</li>
-<li>[[<a class="reference external" href="file:ddsl.org][A">file:ddsl.org][A</a> brief category of domain specific languages]]</li>
-<li>[[<a class="reference external" href="file:compilation.org][Command">file:compilation.org][Command</a> Line compilation Using Fan]]</li>
-<li>[[<a class="reference external" href="file:plugins.org][Fan's">file:plugins.org][Fan&#8217;s</a> plugins]]</li>
-<li>[[<a class="reference external" href="file:quotation_system.org][Fan's">file:quotation_system.org][Fan&#8217;s</a> quotation system]]</li>
-<li>[[<a class="reference external" href="file:syntax.org][Fan's">file:syntax.org][Fan&#8217;s</a> syntax]]</li>
-<li>[[<a class="reference external" href="file:index.org][Fan">file:index.org][Fan</a>: metaprogramming for OCaml]]</li>
-<li>[[<a class="reference external" href="file:credits.org][Fan">file:credits.org][Fan</a>: metaprogrammingfor OCaml]]</li>
-<li>[[<a class="reference external" href="file:start.org][Getting">file:start.org][Getting</a> started]]</li>
-<li>[[<a class="reference external" href="file:install.org][Installation">file:install.org][Installation</a>]]</li>
-<li>[[<a class="reference external" href="file:lexer.org][Lexer">file:lexer.org][Lexer</a> DDSL]]</li>
-<li>[[<a class="reference external" href="file:overview.org][Overview">file:overview.org][Overview</a> of Fan]]</li>
-<li>[[<a class="reference external" href="file:parser.org][Parser">file:parser.org][Parser</a> DDSL]]</li>
-<li>[[<a class="reference external" href="file:toplevel_support.org][Toplevel">file:toplevel_support.org][Toplevel</a> support]]</li>
-</ul>
+  <div class="section" id="options">
+<h1>options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
+<p>-I</p>
+<p>-intf</p>
+<p>-impl</p>
+<p>-str</p>
+<p>-o</p>
+<p>-list</p>
+<p>-list_directive</p>
+<p>-unsafe</p>
+<p>-where</p>
+<p>-loc</p>
+<p>-v</p>
+<p>-plugin investigate <a class="reference external" href="https://github.com/janestreet/ocaml_plugin">https://github.com/janestreet/ocaml_plugin</a></p>
+<p>-loaded-modules
+-loaded-parsers
+-used-parsers</p>
+<p>-dlang</p>
+<p>-printer</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>rinters</var></span></kbd></td>
+<td>Options used in bootstrapping</td></tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>public.FAN_PLUGIN_OPTIONS  = $`(mapprefix -plugin, $(FAN_PLUGINS))
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>../fan0 -printer o $f.ml &gt; ../cold/$f.ml
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Can plugins change options?</p>
+</div>
 </div>
 
 
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="credits.html" class="btn btn-neutral float-right" title="Fan’s history" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev.html" class="btn btn-neutral" title="Fan’s development guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
