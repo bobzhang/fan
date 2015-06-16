@@ -17,6 +17,7 @@ Fan: metaprogramming for OCaml
    browser
    papers
    dev
+   Fan command line interface<cli>
    credits
 
 .. note::

@@ -30,8 +30,8 @@ FILES = \
     fan_warnings\
     token_stream \
     ast2pt \
-    ast_basic 
-
+    ast_basic \
+    cmdliner
 
 .PHONY: clean lib
 lib: $(OCamlLibrary libcommon, $(FILES))
