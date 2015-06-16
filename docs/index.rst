@@ -19,9 +19,20 @@ Fan: metaprogramming for OCaml
    dev
    credits
 
+.. note::
+
+   Documentation of Fan is a bit out-of-date, it will be updated
+   recently.
+
+
+
+
+
 Fan_ is a compile-time metaprogramming system for OCaml_,
 originally inspired from Camlp4_. It's a combination of OCaml and
 `Lispy Macros`_. It shares the same concrete syntax with OCaml.
+
+There is an online REPL that user can play with iFan_
 
 
 Status
@@ -38,7 +49,7 @@ Contributions are very welcome
 
 #. `Link to Fan <Fan>`_
 
-#. `Link to Fan's Documentation <Fan's Documentation>`_
+#. `Link to Fan's Documentation <Fan Documentation>`_
 
 It's written in `ReST`_ markup language and powered by Sphinx_. 
 
