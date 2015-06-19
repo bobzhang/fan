@@ -220,7 +220,7 @@ TARGET2 = $(DIR_HOT2)/libmain.cma
 
 
 FAN_ML_FILES =
-    value $(filter-exists $(addprefix main/, $(addsuffix .ml,  $(FAN_FILES) $(DRIVER_FILES))))
+    value $(filter-exists $(addprefix main/, $(addsuffix .ml,  $(FAN_FILES) )))
 
 
 
