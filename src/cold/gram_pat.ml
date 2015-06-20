@@ -12,12 +12,11 @@ class mapbase =
     method string = function | (x : string) -> x
     method ant = function | (x : ant) -> x
   end
-type lident = [ `Lid of (loc* string)]
+type lident = [ `Lid of (loc* string) ]
 and t =
-  [ `Vrn of (loc* string) | `App of (loc* t* t) | `Lid of (loc* string) | 
-    ant
-  | `Com of (loc* t* t) | `Alias of (loc* t* lident) | `Str of (loc* string)
-  | `Any of loc]
+  [ `Vrn of (loc* string)  | `App of (loc* t* t)  | `Lid of (loc* string) 
+  | ant | `Com of (loc* t* t)  | `Alias of (loc* t* lident) 
+  | `Str of (loc* string)  | `Any of loc ]
 class map =
   object (self : 'self_type)
     inherit  mapbase

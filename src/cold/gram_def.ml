@@ -4,8 +4,9 @@ type name = {
   tvar: string;
   loc: loc;}
 type styp =
-  [ vid' | `App of (loc* styp* styp)
-  | `Quote of (loc* position_flag* alident) | `Self of loc | `Type of ctyp]
+  [ vid' | `App of (loc* styp* styp) 
+  | `Quote of (loc* position_flag* alident)  | `Self of loc 
+  | `Type of ctyp ]
 type entry = {
   name: name;
   pos: exp option;

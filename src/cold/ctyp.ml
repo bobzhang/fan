@@ -21,8 +21,8 @@ type ty_info =
   id_ep: ep;
   id_eps: ep list;
   ty: ctyp;}
-type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident]
-type branch = [ `branch of (string* ctyp list)]
+type vbranch = [ `variant of (string* ctyp list)  | `abbrev of ident ]
+type branch = [ `branch of (string* ctyp list) ]
 type destination =
   | Obj of kind
   | Str_item
@@ -49,11 +49,11 @@ type record_col = {
   info: ty_info;}
 type record_info = record_col list
 type basic_id_transform =
-  [ `Pre of string | `Post of string | `Fun of string -> string]
-type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp]
+  [ `Pre of string  | `Post of string  | `Fun of string -> string ]
+type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp ]
 type full_id_transform =
-  [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
-  | `Last of string -> vid | `Obj of string -> string]
+  [ basic_id_transform | `Idents of vid list -> vid  | `Id of vid -> vid 
+  | `Last of string -> vid  | `Obj of string -> string ]
 let arrow_of_list = function | f -> Listf.reduce_right arrow f
 let app_arrow =
   function | lst -> (function | acc -> List.fold_right arrow lst acc)

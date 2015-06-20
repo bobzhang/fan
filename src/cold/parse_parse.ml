@@ -30,7 +30,7 @@ let qualuid: vid Gramf.t = Gramf.mk "qualuid"
 let qualid: vid Gramf.t = Gramf.mk "qualid"
 let t_qualid: vid Gramf.t = Gramf.mk "t_qualid"
 let entry_name:
-  ([ `name of Tokenf.name option | `non]* Gram_def.name) Gramf.t =
+  ([ `name of Tokenf.name option  | `non ]* Gram_def.name) Gramf.t =
   Gramf.mk "entry_name"
 let position = Gramf.mk "position"
 let assoc = Gramf.mk "assoc"

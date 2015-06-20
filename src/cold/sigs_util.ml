@@ -4,7 +4,7 @@ open StdFan
 let pp_print_typedecl = ObjsN.pp_print_typedecl
 type named_type = (string* typedecl)
 and and_types = named_type list
-and types = [ `Mutual of and_types | `Single of named_type]
+and types = [ `Mutual of and_types  | `Single of named_type ]
 and mtyps = types list
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
   function
