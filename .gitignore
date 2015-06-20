@@ -85,6 +85,7 @@ ulex/
 ############### possible generated files ########################
 common/oconfig.ml
 common/configf.ml
+src/common/configf.ml
 *.opt
 fan
 src/ftop
