@@ -1,17 +1,21 @@
+(** TODO: add an unit test  for import DDSL *)
+(* %import{ *)
+(* Prelude: *)
+(*   parse_file *)
+(*   parse_interf *)
+(*   parse_implem *)
+(*   ; *)
+(* Format: *)
+(*   eprintf *)
+(*   fprintf *)
+(*   printf *)
+(*   ; *)
+(* };; *)
 
-%import{
-Prelude:
-  parse_file
-  parse_interf
-  parse_implem
-  ;
-Format:
-  eprintf
-  fprintf
-  printf
-  ;
-};;
-
+let parse_file  = Prelude.parse_file
+let eprintf = Format.eprintf 
+let fprintf = Format.fprintf
+let printf = Format.printf
 open Util
 
     
@@ -57,7 +61,7 @@ let output_file = ref None
 let process_intf  name =
   let v =
     Option.map Ast_filters.apply_interf_filters
-    @@ parse_file name parse_interf in
+    @@ parse_file name Prelude.parse_interf in
   Prelude.CurrentPrinter.print_interf
     ?input_file:(Some name)
     ?output_file:(!output_file) v 
@@ -66,7 +70,7 @@ let process_intf  name =
 let process_impl name =
   let v =
     Option.map Ast_filters.apply_implem_filters
-    @@ parse_file name parse_implem in
+    @@ parse_file name Prelude.parse_implem in
   Prelude.CurrentPrinter.print_implem
     ~input_file:name
     ?output_file:(!output_file) v 
@@ -203,5 +207,5 @@ let anon_fun name =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fan_args.cmo" *)
+(* compile-command: "cd .. && omake main_annot/fan_args.cmo" *)
 (* end: *)
