@@ -8,12 +8,12 @@ Entry point
 *)
 let _ =
   begin
-    Options.add
-    ("-keep",
-     (Arg.Set State.keep), "Keep the included type definitions") ;
-  Options.add
-    ("-loaded-plugins",
-     (Arg.Unit Typehook.show_modules), "Show plugins");
+    (* Options.add *)
+    (*   ("-keep", *)
+    (*    (Arg.Set State.keep), "Keep the included type definitions") ; *)
+    (* Options.add *)
+    (*   ("-loaded-plugins", *)
+    (*    (Arg.Unit Typehook.show_modules), "Show plugins"); *)
 
     Options.adds Fan_args.initial_spec_list;
     Ast_parsers.use_parsers [ "fan"];
