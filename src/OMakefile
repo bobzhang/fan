@@ -80,7 +80,7 @@ FAN_FILES = \
     sigs_util  \
     gfold gramlib\
     idN  ns \
-    fan_args mktop \
+    mktop \
     strip\
     objs objsN \
     parse_fan \
@@ -117,7 +117,7 @@ FAN_EXP_FILES = \
     # parse_lex2 fan_lex2
 
 # driver files also need to be synced up with 
-DRIVER_FILES = fan fan_top
+DRIVER_FILES = fan_args fan fan_top
 ##################################################################
 
 
