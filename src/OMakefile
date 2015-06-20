@@ -67,7 +67,7 @@ FAN_FILES = \
     $(FAN_LEX_LIB_FILES)\
     ast_gen \
     ast_loc  ast_inject  astn_util \
-    ast_filters ast_macros\
+    ast_macros\
     ast_parsers ast_quotation \
     fid \
     compile_lex compile_stream ctyp \
