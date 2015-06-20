@@ -5,9 +5,16 @@
 
 
   
-val initial_spec_list : (string * Arg.spec * string) list
 
-(** The first argument is file name
-    we dispatch different functions based on the filename extension
- *)
-val anon_fun : string -> unit
+
+
+
+
+type file_kind =
+  | Intf of string
+  | Impl of string
+  | Str of string
+  | ModuleImpl of string
+  | IncludeDir of string 
+
+val input_file : file_kind -> unit
