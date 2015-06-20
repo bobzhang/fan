@@ -1023,9 +1023,5 @@ let _ =
      } : _ Gramf.single_extend_statement)
 let lexer = Lexing_util.adapt_to_stream token
 let _ =
-  Options.add
-    ("-keep", (Arg.Set State.keep), "Keep the included type definitions");
-  Options.add
-    ("-loaded-plugins", (Arg.Unit Typehook.show_modules), "Show plugins");
   Ast_quotation.of_exp ~name:{ domain = Ns.lang; name = "fans" }
     ~entry:fan_quots ~lexer ()
