@@ -43,11 +43,11 @@ UTILS_INCLUDES[] =
 COMMON_INCLUDES[] =
     $(UTILS_INCLUDES)
     $(DIR_COMMON)
-    
+
 TREEPARSER_INCLUDES[]=
     $(DIR_TREEPARSER)
     $(COMMON_INCLUDES)
-    
+
 COLD_INCLUDES[]=
     $(DIR_COLD)
     $(TREEPARSER_INCLUDES)
@@ -152,14 +152,6 @@ section
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
 
-# coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
-
-fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
-     ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
-
-ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
-    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
-
 #####################
 # fan -> fan0
 section
@@ -189,6 +181,15 @@ MakeFix(mountdir,pp,exe) =
 MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
 MakeFix($(DIR_HOT2),$(file fan1), $(file fan2))
 MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
+
+# coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
+
+fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
+     ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
+
+ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+
 
 MakeWeakFix(mountdir,pp,exe) =
     OCAML_OTHER_LIBS += dynlink ocamlcommon
