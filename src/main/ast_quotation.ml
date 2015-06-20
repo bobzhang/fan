@@ -1,6 +1,6 @@
 
 
-
+(*
 %import{
 Format:
   pp_print_string
@@ -8,7 +8,10 @@ Format:
   fprintf
   ;
 };;
-
+*)
+let pp_print_string = Format.pp_print_string 
+let bprintf = Format.bprintf
+let fprintf = Format.fprintf
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
 
