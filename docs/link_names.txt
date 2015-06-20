@@ -1,5 +1,7 @@
 .. -*- mode:rst -*-
 
+.. _iFan: https://bobzhang.github.io/ifan
+
 .. _Fan: https://github.com/bobzhang/Fan
 
 .. _OCaml: http://caml.inria.fr/
@@ -8,7 +10,7 @@
 
 .. _Lispy Macros: http://letoverlambda.com/
 
-.. _Fan's Documentation: https://github.com/bobzhang/Fan/tree/gh-pages
+.. _Fan Documentation: https://github.com/bobzhang/Fan/tree/gh-pages
 
 .. _Daniel de Rauglaudre: http://pauillac.inria.fr/~ddr/
 

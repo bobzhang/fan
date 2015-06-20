@@ -40,12 +40,6 @@ with exp
 
 let lexer = Lexing_util.adapt_to_stream token ;;
 begin 
-  (* Options.add *)
-  (*   ("-keep", *)
-  (*    (Arg.Set State.keep), "Keep the included type definitions") ; *)
-  (* Options.add *)
-  (*   ("-loaded-plugins", *)
-  (*    (Arg.Unit Typehook.show_modules), "Show plugins"); *)
   %register{
     name: fans;
     lexer:lexer ;

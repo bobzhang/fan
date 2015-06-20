@@ -1,1 +1,1 @@
-(** Moudle Fan  *)
+../cold/fan.mli

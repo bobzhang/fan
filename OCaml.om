@@ -137,8 +137,8 @@ public.FAN_PLUGIN_OPTIONS  = $`(mapprefix -plugin, $(FAN_PLUGINS))
 public.OCAMLPPFLAGS  = 
 public.OCAMLFLAGS    = 
 # FIXME: check more warnings
-public.OCAMLCFLAGS   =  -w +a-3-4-32-30-42-40-41 -short-paths
-public.OCAMLOPTFLAGS =  -w +a-3-4-32-30-42-40-41 -short-paths
+public.OCAMLCFLAGS   =  -w +a-3-4-32-30-42-40-41-50 -short-paths
+public.OCAMLOPTFLAGS =  -w +a-3-4-32-30-42-40-41-50 -short-paths
 public.OCAMLCPPFLAGS =
 public.OCAML_LINK_FLAGS = $`(if $(and $(USE_OCAMLFIND) $(gt $(length $(OCAMLPACKS)), 0)), -linkpkg, $(EMPTY))
 public.OCAML_BYTE_LINK_FLAGS = -custom
