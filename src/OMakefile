@@ -71,7 +71,7 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     fid \
     compile_lex compile_stream ctyp \
-    derive dyn_load epN \
+    derive  epN \
     expN astfn control control_require \
     metaf \
     metafn \
@@ -106,8 +106,7 @@ FAN_FILES = \
     lang_monad \
     lang_register\
     quasiquot\
-    fill\
-    dump
+    fill
     # lang_pos \
     # loc_meta
     # parse_grammar2

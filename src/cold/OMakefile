@@ -4,7 +4,7 @@ OCAMLINCLUDES += +compiler-libs
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
-OCamlLibrary(libmain, $(FAN_FILES) fan_args)
+OCamlLibrary(libmain, $(FAN_FILES) dyn_load dump fan_args)
 .PHONY: lib
 lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fan_top)
 
