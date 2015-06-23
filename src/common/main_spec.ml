@@ -11,7 +11,7 @@ For byte code', it's plugins like `cma'
 
 (* a  bug in cmdliner, when no doc for printer, help==plain will be weird *)
 let printer : string option Term.t = 
-  Arg.(value & opt (some string) None & info ["printer","p"]  ~docv:"PRINTER" 
+  Arg.(value & opt (some string) None & info ["printer";"p"]  ~docv:"PRINTER" 
          ~doc:"Set printer of Fan")
 
 let version="0.8.0.0" 
