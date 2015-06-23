@@ -25,13 +25,9 @@
    (* ("-unsafe", Set Configf.unsafe, *)
    (*  "Generate unsafe accesses to array and strings."); *)
 
-   (* ("-where", Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0)) *)
-   (*    , " Print location of standard library and exit"); *)
    (* ("-loc", Set_string Locf.name, *)
    (*  "<name>   Name of the location variable (default: " ^ !Locf.name ^ ")."); *)
    
-   (* ("-v", Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end), *)
-   (*  "Print Fan version and exit."); *)
 
    (* ("-compilation-unit", *)
    (*  Unit (function () ->  *)
@@ -41,7 +37,7 @@
    (*     exit 0)),  *)
    (*  "Print the current compilation unit"); *)
 
-   (* ("-plugin", String Control_require.add , "load plugin cma or cmxs files"); *)
+
 
    (* ("-loaded-modules", Set print_loaded_modules, "Print the list of loaded modules."); *)
    
@@ -57,23 +53,6 @@
    (*          Ast_quotation.default := *)
    (*            (Ast_quotation.resolve_name {domain = `Sub []; name =  s}))), *)
    (*     " Set the default language"); *)
-   (* ("-printer", *)
-   (*  (String (fun s -> *)
-
-   (*      let x  = *)
-   (*        try Hashtbl.find Prelude.backends s with *)
-   (*          Not_found -> Util.failwithf "%s backend not found" s in *)
-   (*      begin *)
-   (*        Prelude.sigi_printer := x.interf ; *)
-   (*        Prelude.stru_printer := x.implem *)
-   (*      end)) , " Set the backend"); *)
-   (* ("-printers", *)
-   (*  Unit (fun _ -> *)
-   (*    Prelude.backends *)
-   (*    |> Hashtbl.iter *)
-   (*        (fun k (x:Prelude.backend) -> *)
-   (*          Format.eprintf "@[-printer %s, %s@]@\n" k x.descr)), *)
-   (*  " List the backends available") *)
  (* ];; *)
       
 
@@ -81,20 +60,26 @@
     we dispatch different functions based on the filename extension
     handle the file name 
  *)
-let anon_fun name =
-  let check = Filename.check_suffix name in
-  Fan_args.input_file
-  (
-   (* if name = "-" then *)
-   if check ".mli" then Intf name
-   else if check ".ml" then Impl name
-   else if check Dyn_load.objext then ModuleImpl name
-   else if check Dyn_load.libext then ModuleImpl name
-   else raise (Arg.Bad ("don't know what to do with " ^ name)));;
 
-let compile  (x : Main_spec.compile_info) : unit = 
-  let () = 
-    match x.printer with 
+let compile  (( { file=name ; _} as x) : Main_spec.compile_info) : unit = 
+  begin
+
+    if x.show_where then 
+      (print_endline Configf.fan_plugins_library;exit 0)
+    else ();
+
+    List.iter (fun dir ->Ref.modify Configf.dynload_dirs (Util.cons dir)) x.include_dirs; 
+    List.iter Control_require.add x.plugins ;
+
+    if x.show_printers then 
+      begin 
+        Prelude.backends
+        |> Hashtbl.iter (fun k (x:Prelude.backend) ->
+            Format.eprintf "@[-printer %s: %s@]@\n" k x.descr);
+        exit 0
+      end
+    else ();
+    (match x.printer with 
     | None -> ()
     | Some s -> 
         let x  =
@@ -103,10 +88,20 @@ let compile  (x : Main_spec.compile_info) : unit =
         begin
           Prelude.sigi_printer := x.interf ;
           Prelude.stru_printer := x.implem
-        end in
-  let () = List.iter Control_require.add x.plugins in
-  anon_fun x.file 
+        end );
 
+    
+    let check = Filename.check_suffix name in
+    (** TODO: error check when [name=""] *)
+    Fan_args.input_file
+      (
+       (* if name = "-" then *)
+       if check ".mli" then Intf name
+       else if check ".ml" then Impl name
+       else if check Dyn_load.objext then ModuleImpl name
+       else if check Dyn_load.libext then ModuleImpl name
+       else raise (Arg.Bad ("don't know what to do with " ^ name)))
+  end
 
 
 (*
