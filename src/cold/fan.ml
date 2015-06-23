@@ -3,8 +3,6 @@
     e.g. -p -px will cause some problem *)    
 (* let initial_spec_list : (string * Arg.spec * string) list = *)
 (*   [ *)
-   (* ("-I", String (fun x -> input_file (IncludeDir x)), *)
-   (*  "<directory>  Add directory in search patch for object files."); *)
 
    (* ("-intf", String (fun x -> input_file (Intf x)), *)
    (*  "<file>  Parse <file> as an interface, whatever its extension."); *)
