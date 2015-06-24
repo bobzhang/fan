@@ -22,5 +22,5 @@ let () =
   let () = filter Format.std_formatter lex_buf in
   close_in in_chan
 (* local variables: *)
-(* compile-command: "ocamlbuild  -cflags '-w -40'  -pp fan  diff_filter.byte " *)
+(* compile-command: "ocamlbuild  -cflags '-dsource -w -40'  -pp fan  diff_filter.byte " *)
 (* end: *)

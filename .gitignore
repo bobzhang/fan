@@ -12,7 +12,6 @@
 *.out
 *.txt
 *.plg
-*.diff
 *.stat
 *~
 *_archive

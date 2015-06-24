@@ -1,0 +1,22 @@
+[
+  structure_item (xx.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "a" (xx.ml[]..[]) (xx.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (xx.ml[]..[])
+                "B" (xx.ml[]..[])
+                []
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+]

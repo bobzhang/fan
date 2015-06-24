@@ -1,0 +1,22 @@
+[
+  structure_item (xx.ml[1,0+0]..[1,0+12])
+    Pstr_type
+    [
+      type_declaration "a" (xx.ml[1,0+5]..[1,0+6]) (xx.ml[1,0+5]..[1,0+12])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (xx.ml[1,0+11]..[1,0+12])
+                "B" (xx.ml[1,0+11]..[1,0+12])
+                []
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+]

@@ -1,0 +1,11 @@
+[
+  structure_item (let_def.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (let_def.ml[]..[])
+          Ppat_var "a" (let_def.ml[]..[])
+        expression (let_def.ml[]..[])
+          Pexp_constant Const_int 3
+    ]
+]

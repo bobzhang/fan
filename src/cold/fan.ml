@@ -76,7 +76,7 @@ let compile  (( { file=name ; _} as x) : Main_spec.compile_info) : unit =
       begin 
         Prelude.backends
         |> Hashtbl.iter (fun k (x:Prelude.backend) ->
-            Format.eprintf "@[-printer %s: %s@]@\n" k x.descr);
+            Format.eprintf "@[%s: %s@]@\n" k x.descr);
         exit 0
       end
     else ();

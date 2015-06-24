@@ -1,0 +1,11 @@
+[
+  structure_item (let_def.ml[1,0+0]..[1,0+9])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (let_def.ml[1,0+4]..[1,0+5])
+          Ppat_var "a" (let_def.ml[1,0+4]..[1,0+5])
+        expression (let_def.ml[1,0+8]..[1,0+9])
+          Pexp_constant Const_int 3
+    ]
+]
