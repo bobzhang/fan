@@ -6,6 +6,7 @@ type compile_info =
      include_dirs : string list;
      show_where : bool;
      show_printers : bool;
+     output_file : string option;
    }
 
 val compile_info_arg : compile_info Cmdliner.Term.t 

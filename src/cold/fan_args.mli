@@ -18,3 +18,5 @@ type file_kind =
   | IncludeDir of string 
 
 val input_file : file_kind -> unit
+
+val output_file : string option ref

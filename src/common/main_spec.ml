@@ -31,6 +31,11 @@ let include_dirs : string list Term.t
     = Arg.(value & opt_all dir [] & info ["I"]
              ~docv:"DIR"
              ~doc:" Add $(docv) in search patch for object files.")
+
+let output_file : string option Term.t 
+    = Arg.(value & opt (some string ) None & info ["o";"outptu"] 
+             ~docv:"OUTPUT"
+             ~doc:"Output on $(docv) instead of standard output")
 (* let show_parsers : bool Term.t *)
 (*        = Arg.(value & flag & info ["list-printers"] *)
 (*              ~doc:" List the backends available, and exit") *)
@@ -54,6 +59,7 @@ type compile_info =
      include_dirs : string list;
      show_where : bool;
      show_printers : bool;
+     output_file : string option;
    }
 
 (* let compile_command  (info : compile_info) =  *)
@@ -63,8 +69,26 @@ let compile_info_arg : compile_info Term.t =
       include_dirs
       show_where
       show_printers 
-      = { printer; plugins; file; show_where; show_printers; include_dirs} in
-  Term.(pure compile_info $ printer $ plugins $ file $ include_dirs $ show_where $ show_printers)
+      output_file
+      = 
+    { 
+      printer;
+      plugins;
+      file;
+      show_where;
+      show_printers; 
+      include_dirs;
+      output_file
+    } in
+  Term.(pure compile_info 
+          $ printer
+          $ plugins
+          $ file
+          $ include_dirs
+          $ show_where 
+          $ show_printers
+          $ output_file
+       )
 
 let compile_command : compile_info Term.t * Term.info= (compile_info_arg, info)
 

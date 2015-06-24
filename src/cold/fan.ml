@@ -13,8 +13,6 @@
    (* ("-str", String (fun x -> input_file (Str x)), *)
    (*  "<string>  Parse <string> as an implementation."); *)
 
-   (* ("-o", String (fun x -> output_file := Some x), *)
-   (*  "<file> Output on <file> instead of standard output."); *)
 
    (* ("-list", Unit Ast_quotation.dump_names_tbl, "list all registered DDSLs"); *)
 
@@ -62,9 +60,14 @@
 let compile  (( { file=name ; _} as x) : Main_spec.compile_info) : unit = 
   begin
 
-    if x.show_where then 
-      (print_endline Configf.fan_plugins_library;exit 0)
-    else ();
+    (if x.show_where then 
+      (print_endline Configf.fan_plugins_library;exit 0))
+      ;
+
+    (match x.output_file with 
+    | Some _ -> Fan_args.output_file := x.output_file
+    | _ -> ());
+
 
     List.iter (fun dir ->Ref.modify Configf.dynload_dirs (Util.cons dir)) x.include_dirs; 
     List.iter Control_require.add x.plugins ;
