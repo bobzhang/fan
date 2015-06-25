@@ -126,9 +126,12 @@ let _ =
     (*     Options.init_spec_list *)
     (*     anon_fun "fan <options> <file>\nOptions are:" *)
     (* with exc -> begin Format.eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end *)
-    Term.eval (Term.(app 
-                       (pure  compile)
-                       Main_spec.compile_info_arg), Main_spec.info)
+    match Term.eval ~catch:false
+        (Term.(app 
+                 (pure  compile)
+                 Main_spec.compile_info_arg), Main_spec.info) with
+    | `Error _ -> exit 2
+    | _ -> exit 0
   end
 
 
