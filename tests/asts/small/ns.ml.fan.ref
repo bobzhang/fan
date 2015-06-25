@@ -1,0 +1,104 @@
+[
+  structure_item (ns.ml[1,0+0]..[1,0+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ns.ml[1,0+4]..[1,0+8])
+          Ppat_var "lang" (ns.ml[1,0+4]..[1,0+8])
+        expression (ns.ml[1,0+11]..[1,0+36])
+          Pexp_variant "Absolute"
+          Some
+            expression (ns.ml[1,0+22]..[1,0+35])
+              Pexp_construct "::" (ns.ml[1,0+22]..[1,0+35])
+              Some
+                expression (ns.ml[1,0+22]..[1,0+35])
+                  Pexp_tuple
+                  [
+                    expression (ns.ml[1,0+22]..[1,0+27])
+                      Pexp_constant Const_string("Fan",None)
+                    expression (ns.ml[1,0+29]..[1,0+35])
+                      Pexp_construct "::" (ns.ml[1,0+29]..[1,0+35])
+                      Some
+                        expression (ns.ml[1,0+29]..[1,0+35])
+                          Pexp_tuple
+                          [
+                            expression (ns.ml[1,0+29]..[1,0+35])
+                              Pexp_constant Const_string("Lang",None)
+                            expression (ns.ml[1,0+29]..[1,0+35])
+                              Pexp_construct "[]" (ns.ml[1,0+29]..[1,0+35])
+                              None
+                          ]
+                  ]
+    ]
+  structure_item (ns.ml[2,37+0]..[2,37+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ns.ml[2,37+4]..[2,37+9])
+          Ppat_var "macro" (ns.ml[2,37+4]..[2,37+9])
+        expression (ns.ml[2,37+12]..[2,37+46])
+          Pexp_variant "Absolute"
+          Some
+            expression (ns.ml[2,37+23]..[2,37+45])
+              Pexp_construct "::" (ns.ml[2,37+23]..[2,37+45])
+              Some
+                expression (ns.ml[2,37+23]..[2,37+45])
+                  Pexp_tuple
+                  [
+                    expression (ns.ml[2,37+23]..[2,37+28])
+                      Pexp_constant Const_string("Fan",None)
+                    expression (ns.ml[2,37+30]..[2,37+45])
+                      Pexp_construct "::" (ns.ml[2,37+30]..[2,37+45])
+                      Some
+                        expression (ns.ml[2,37+30]..[2,37+45])
+                          Pexp_tuple
+                          [
+                            expression (ns.ml[2,37+30]..[2,37+36])
+                              Pexp_constant Const_string("Lang",None)
+                            expression (ns.ml[2,37+38]..[2,37+45])
+                              Pexp_construct "::" (ns.ml[2,37+38]..[2,37+45])
+                              Some
+                                expression (ns.ml[2,37+38]..[2,37+45])
+                                  Pexp_tuple
+                                  [
+                                    expression (ns.ml[2,37+38]..[2,37+45])
+                                      Pexp_constant Const_string("Macro",None)
+                                    expression (ns.ml[2,37+38]..[2,37+45])
+                                      Pexp_construct "[]" (ns.ml[2,37+38]..[2,37+45])
+                                      None
+                                  ]
+                          ]
+                  ]
+    ]
+  structure_item (ns.ml[3,84+0]..[3,84+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ns.ml[3,84+4]..[3,84+10])
+          Ppat_var "inject" (ns.ml[3,84+4]..[3,84+10])
+        expression (ns.ml[3,84+13]..[3,84+40])
+          Pexp_variant "Absolute"
+          Some
+            expression (ns.ml[3,84+24]..[3,84+39])
+              Pexp_construct "::" (ns.ml[3,84+24]..[3,84+39])
+              Some
+                expression (ns.ml[3,84+24]..[3,84+39])
+                  Pexp_tuple
+                  [
+                    expression (ns.ml[3,84+24]..[3,84+29])
+                      Pexp_constant Const_string("Fan",None)
+                    expression (ns.ml[3,84+31]..[3,84+39])
+                      Pexp_construct "::" (ns.ml[3,84+31]..[3,84+39])
+                      Some
+                        expression (ns.ml[3,84+31]..[3,84+39])
+                          Pexp_tuple
+                          [
+                            expression (ns.ml[3,84+31]..[3,84+39])
+                              Pexp_constant Const_string("Inject",None)
+                            expression (ns.ml[3,84+31]..[3,84+39])
+                              Pexp_construct "[]" (ns.ml[3,84+31]..[3,84+39])
+                              None
+                          ]
+                  ]
+    ]
+]

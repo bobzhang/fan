@@ -1,0 +1,427 @@
+[
+  structure_item (lang_not_implement.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_not_implement.ml[]..[])
+          Ppat_construct "()" (lang_not_implement.ml[]..[])
+          None
+        expression (lang_not_implement.ml[]..[])
+          Pexp_let Nonrec
+          [
+            <def>
+              pattern (lang_not_implement.ml[]..[])
+                Ppat_var "d" (lang_not_implement.ml[]..[])
+              expression (lang_not_implement.ml[]..[])
+                Pexp_ident "Ns.lang" (lang_not_implement.ml[]..[])
+          ]
+          expression (lang_not_implement.ml[]..[])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (lang_not_implement.ml[]..[])
+                  Ppat_var "f" (lang_not_implement.ml[]..[])
+                expression (lang_not_implement.ml[]..[])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (lang_not_implement.ml[]..[])
+                        Ppat_constraint
+                        pattern (lang_not_implement.ml[]..[])
+                          Ppat_var "loc" (lang_not_implement.ml[]..[])
+                        core_type (lang_not_implement.ml[]..[])
+                          Ptyp_constr "Locf.t" (lang_not_implement.ml[]..[])
+                          []
+                      expression (lang_not_implement.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (lang_not_implement.ml[]..[])
+                              Ppat_var "_meta" (lang_not_implement.ml[]..[])
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (lang_not_implement.ml[]..[])
+                                    Ppat_var "_content" (lang_not_implement.ml[]..[])
+                                  expression (lang_not_implement.ml[]..[])
+                                    Pexp_coerce
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_variant "App"
+                                      Some
+                                        expression (lang_not_implement.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (lang_not_implement.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_constant Const_string("ref",None)
+                                                  ]
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_variant "Fun"
+                                              Some
+                                                expression (lang_not_implement.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_variant "Case"
+                                                      Some
+                                                        expression (lang_not_implement.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "Any"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "App"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_variant "App"
+                                                                      Some
+expression (lang_not_implement.ml[]..[])
+  Pexp_tuple
+  [
+    expression (lang_not_implement.ml[]..[])
+      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+    expression (lang_not_implement.ml[]..[])
+      Pexp_variant "App"
+      Some
+        expression (lang_not_implement.ml[]..[])
+          Pexp_tuple
+          [
+            expression (lang_not_implement.ml[]..[])
+              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+            expression (lang_not_implement.ml[]..[])
+              Pexp_variant "App"
+              Some
+                expression (lang_not_implement.ml[]..[])
+                  Pexp_tuple
+                  [
+                    expression (lang_not_implement.ml[]..[])
+                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                    expression (lang_not_implement.ml[]..[])
+                      Pexp_variant "Dot"
+                      Some
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_variant "Uid"
+                              Some
+                                expression (lang_not_implement.ml[]..[])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_constant Const_string("Format",None)
+                                  ]
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_variant "Lid"
+                              Some
+                                expression (lang_not_implement.ml[]..[])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_constant Const_string("ksprintf",None)
+                                  ]
+                          ]
+                    expression (lang_not_implement.ml[]..[])
+                      Pexp_variant "Lid"
+                      Some
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_constant Const_string("failwith",None)
+                          ]
+                  ]
+            expression (lang_not_implement.ml[]..[])
+              Pexp_variant "Str"
+              Some
+                expression (lang_not_implement.ml[]..[])
+                  Pexp_tuple
+                  [
+                    expression (lang_not_implement.ml[]..[])
+                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                    expression (lang_not_implement.ml[]..[])
+                      Pexp_constant Const_string("%s.%s not implemented ",None)
+                  ]
+          ]
+    expression (lang_not_implement.ml[]..[])
+      Pexp_variant "Lid"
+      Some
+        expression (lang_not_implement.ml[]..[])
+          Pexp_tuple
+          [
+            expression (lang_not_implement.ml[]..[])
+              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+            expression (lang_not_implement.ml[]..[])
+              Pexp_constant Const_string("__MODULE__",None)
+          ]
+  ]
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_variant "Lid"
+                                                                      Some
+expression (lang_not_implement.ml[]..[])
+  Pexp_tuple
+  [
+    expression (lang_not_implement.ml[]..[])
+      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+    expression (lang_not_implement.ml[]..[])
+      Pexp_constant Const_string("__BIND__",None)
+  ]
+                                                                  ]
+                                                          ]
+                                                  ]
+                                          ]
+                                    None
+                                    core_type (lang_not_implement.ml[]..[])
+                                      Ptyp_constr "Astf.exp" (lang_not_implement.ml[]..[])
+                                      []
+                              ]
+                        ]
+                  ]
+            ]
+            expression (lang_not_implement.ml[]..[])
+              Pexp_apply
+              expression (lang_not_implement.ml[]..[])
+                Pexp_ident "Ast_quotation.add" (lang_not_implement.ml[]..[])
+              [
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_record
+                    [
+                      "domain" (lang_not_implement.ml[]..[])
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_ident "d" (lang_not_implement.ml[]..[])
+                      "name" (lang_not_implement.ml[]..[])
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_constant Const_string("undef",None)
+                    ]
+                    None
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_ident "Dyn_tag.exp" (lang_not_implement.ml[]..[])
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_ident "f" (lang_not_implement.ml[]..[])
+              ]
+    ]
+  structure_item (lang_not_implement.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_not_implement.ml[]..[])
+          Ppat_construct "()" (lang_not_implement.ml[]..[])
+          None
+        expression (lang_not_implement.ml[]..[])
+          Pexp_let Nonrec
+          [
+            <def>
+              pattern (lang_not_implement.ml[]..[])
+                Ppat_var "d" (lang_not_implement.ml[]..[])
+              expression (lang_not_implement.ml[]..[])
+                Pexp_ident "Ns.lang" (lang_not_implement.ml[]..[])
+          ]
+          expression (lang_not_implement.ml[]..[])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (lang_not_implement.ml[]..[])
+                  Ppat_var "f" (lang_not_implement.ml[]..[])
+                expression (lang_not_implement.ml[]..[])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (lang_not_implement.ml[]..[])
+                        Ppat_constraint
+                        pattern (lang_not_implement.ml[]..[])
+                          Ppat_var "loc" (lang_not_implement.ml[]..[])
+                        core_type (lang_not_implement.ml[]..[])
+                          Ptyp_constr "Locf.t" (lang_not_implement.ml[]..[])
+                          []
+                      expression (lang_not_implement.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (lang_not_implement.ml[]..[])
+                              Ppat_var "_meta" (lang_not_implement.ml[]..[])
+                            expression (lang_not_implement.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (lang_not_implement.ml[]..[])
+                                    Ppat_var "_content" (lang_not_implement.ml[]..[])
+                                  expression (lang_not_implement.ml[]..[])
+                                    Pexp_coerce
+                                    expression (lang_not_implement.ml[]..[])
+                                      Pexp_variant "App"
+                                      Some
+                                        expression (lang_not_implement.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (lang_not_implement.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_constant Const_string("invalid_arg",None)
+                                                  ]
+                                            expression (lang_not_implement.ml[]..[])
+                                              Pexp_variant "App"
+                                              Some
+                                                expression (lang_not_implement.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_variant "App"
+                                                      Some
+                                                        expression (lang_not_implement.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_constant Const_string("^",None)
+                                                                  ]
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_constant Const_string("__MODULE__",None)
+                                                                  ]
+                                                          ]
+                                                    expression (lang_not_implement.ml[]..[])
+                                                      Pexp_variant "App"
+                                                      Some
+                                                        expression (lang_not_implement.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "App"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_variant "Lid"
+                                                                      Some
+expression (lang_not_implement.ml[]..[])
+  Pexp_tuple
+  [
+    expression (lang_not_implement.ml[]..[])
+      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+    expression (lang_not_implement.ml[]..[])
+      Pexp_constant Const_string("^",None)
+  ]
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_variant "Str"
+                                                                      Some
+expression (lang_not_implement.ml[]..[])
+  Pexp_tuple
+  [
+    expression (lang_not_implement.ml[]..[])
+      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+    expression (lang_not_implement.ml[]..[])
+      Pexp_constant Const_string(".",None)
+  ]
+                                                                  ]
+                                                            expression (lang_not_implement.ml[]..[])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (lang_not_implement.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_ident "loc" (lang_not_implement.ml[]..[])
+                                                                    expression (lang_not_implement.ml[]..[])
+                                                                      Pexp_constant Const_string("__BIND__",None)
+                                                                  ]
+                                                          ]
+                                                  ]
+                                          ]
+                                    None
+                                    core_type (lang_not_implement.ml[]..[])
+                                      Ptyp_constr "Astf.exp" (lang_not_implement.ml[]..[])
+                                      []
+                              ]
+                        ]
+                  ]
+            ]
+            expression (lang_not_implement.ml[]..[])
+              Pexp_apply
+              expression (lang_not_implement.ml[]..[])
+                Pexp_ident "Ast_quotation.add" (lang_not_implement.ml[]..[])
+              [
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_record
+                    [
+                      "domain" (lang_not_implement.ml[]..[])
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_ident "d" (lang_not_implement.ml[]..[])
+                      "name" (lang_not_implement.ml[]..[])
+                        expression (lang_not_implement.ml[]..[])
+                          Pexp_constant Const_string("invalid_arg",None)
+                    ]
+                    None
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_ident "Dyn_tag.exp" (lang_not_implement.ml[]..[])
+                <label> ""
+                  expression (lang_not_implement.ml[]..[])
+                    Pexp_ident "f" (lang_not_implement.ml[]..[])
+              ]
+    ]
+]

@@ -1,0 +1,36 @@
+7c7
+<       type_declaration "key" (ast_parsers.ml[2,10+5]..[2,10+8]) (ast_parsers.ml[2,10+5]..[2,10+17])
+---
+>       type_declaration "key" (ast_parsers.ml[2,10+5]..[2,10+8]) (ast_parsers.ml[2,10+0]..[2,10+17])
+24c24
+<       type_declaration "effect" (ast_parsers.ml[3,28+5]..[3,28+11]) (ast_parsers.ml[3,28+5]..[3,28+26])
+---
+>       type_declaration "effect" (ast_parsers.ml[3,28+5]..[3,28+11]) (ast_parsers.ml[3,28+0]..[3,28+26])
+50c50
+<         expression (ast_parsers.ml[4,55+19]..[4,55+63])
+---
+>         expression (ast_parsers.ml[4,55+19]..[4,55+63]) ghost
+65c65
+<               core_type (ast_parsers.ml[4,55+21]..[4,55+37])
+---
+>               core_type (ast_parsers.ml[4,55+22]..[4,55+36])
+83c83
+<         expression (ast_parsers.ml[5,119+22]..[5,119+66])
+---
+>         expression (ast_parsers.ml[5,119+22]..[5,119+66]) ghost
+94c94
+<           core_type (ast_parsers.ml[5,119+25]..[5,119+46])
+---
+>           core_type (ast_parsers.ml[5,119+24]..[5,119+46])
+123c123
+<                     expression (ast_parsers.ml[10,241+9]..[19,536+75])
+---
+>                     expression (ast_parsers.ml[10,241+8]..[19,536+76])
+131c131
+<                             expression (ast_parsers.ml[12,275+15]..[19,536+70])
+---
+>                             expression (ast_parsers.ml[12,275+13]..[19,536+72])
+200c200
+<                                   expression (ast_parsers.ml[18,507+20]..[19,536+69])
+---
+>                                   expression (ast_parsers.ml[18,507+19]..[19,536+70])

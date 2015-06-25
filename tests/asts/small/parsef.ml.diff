@@ -1,0 +1,112 @@
+20c20
+<   structure_item (parsef.ml[3,33+4]..[29,915+41])
+---
+>   structure_item (parsef.ml[3,33+0]..[29,915+41])
+28c28
+<           expression (parsef.ml[5,63+4]..[29,915+41])
+---
+>           expression (parsef.ml[5,63+4]..[29,915+41]) ghost
+34c34
+<                   expression (parsef.ml[6,70+15]..[6,70+33])
+---
+>                   expression (parsef.ml[6,70+15]..[6,70+33]) ghost
+45c45
+<                   expression (parsef.ml[8,121+9]..[28,887+27])
+---
+>                   expression (parsef.ml[8,121+9]..[28,887+27]) ghost
+59,60c59,60
+<                           expression (parsef.ml[12,212+15]..[27,869+16])
+<                             Pexp_construct "::" (parsef.ml[12,212+15]..[27,869+16])
+---
+>                           expression (parsef.ml[12,212+14]..[27,869+17])
+>                             Pexp_construct "::" (parsef.ml[12,212+15]..[27,869+17]) ghost
+62c62
+<                               expression (parsef.ml[12,212+15]..[27,869+16])
+---
+>                               expression (parsef.ml[12,212+15]..[27,869+17]) ghost
+69,70c69,70
+<                                         expression (parsef.ml[14,256+20]..[16,360+42])
+<                                           Pexp_construct "::" (parsef.ml[14,256+20]..[16,360+42])
+---
+>                                         expression (parsef.ml[14,256+19]..[16,360+43])
+>                                           Pexp_construct "::" (parsef.ml[14,256+20]..[16,360+43]) ghost
+72c72
+<                                             expression (parsef.ml[14,256+20]..[16,360+42])
+---
+>                                             expression (parsef.ml[14,256+20]..[16,360+43]) ghost
+78c78
+<                                                     expression (parsef.ml[15,282+22]..[16,360+42])
+---
+>                                                     expression (parsef.ml[15,282+22]..[16,360+42]) ghost
+105,106c105,106
+<                                                 expression (parsef.ml[14,256+20]..[16,360+42])
+<                                                   Pexp_construct "[]" (parsef.ml[14,256+20]..[16,360+42])
+---
+>                                                 expression (parsef.ml[16,360+42]..[16,360+43]) ghost
+>                                                   Pexp_construct "[]" (parsef.ml[16,360+42]..[16,360+43]) ghost
+113c113
+<                                         expression (parsef.ml[19,485+20]..[26,817+50])
+---
+>                                         expression (parsef.ml[19,485+19]..[26,817+51])
+119c119
+<                                               expression (parsef.ml[20,521+22]..[26,817+50])
+---
+>                                               expression (parsef.ml[20,521+22]..[26,817+50]) ghost
+132c132
+<                                                       expression (parsef.ml[22,604+28]..[25,745+67])
+---
+>                                                       expression (parsef.ml[22,604+27]..[25,745+68])
+155c155
+<                                                               expression (parsef.ml[25,745+32]..[25,745+67])
+---
+>                                                               expression (parsef.ml[25,745+32]..[25,745+67]) ghost
+157c157
+<                                                                 expression (parsef.ml[25,745+33]..[25,745+60])
+---
+>                                                                 expression (parsef.ml[25,745+33]..[25,745+60]) ghost
+195,196c195,196
+<                                   expression (parsef.ml[12,212+15]..[27,869+16])
+<                                     Pexp_construct "[]" (parsef.ml[12,212+15]..[27,869+16])
+---
+>                                   expression (parsef.ml[27,869+16]..[27,869+17]) ghost
+>                                     Pexp_construct "[]" (parsef.ml[27,869+16]..[27,869+17]) ghost
+225c225
+<               expression (parsef.ml[32,978+12]..[32,978+75])
+---
+>               expression (parsef.ml[32,978+11]..[32,978+76])
+261c261
+<               expression (parsef.ml[35,1076+12]..[35,1076+75])
+---
+>               expression (parsef.ml[35,1076+11]..[35,1076+76])
+297c297
+<               expression (parsef.ml[38,1175+12]..[38,1175+76])
+---
+>               expression (parsef.ml[38,1175+11]..[38,1175+77])
+333c333
+<               expression (parsef.ml[41,1273+12]..[41,1273+73])
+---
+>               expression (parsef.ml[41,1273+11]..[41,1273+74])
+339c339
+<                     expression (parsef.ml[41,1273+30]..[41,1273+73])
+---
+>                     expression (parsef.ml[41,1273+30]..[41,1273+73]) ghost
+374c374
+<               expression (parsef.ml[45,1382+7]..[45,1382+72])
+---
+>               expression (parsef.ml[45,1382+6]..[45,1382+73])
+444c444
+<                             expression (parsef.ml[52,1579+29]..[52,1579+72])
+---
+>                             expression (parsef.ml[52,1579+28]..[52,1579+73])
+450c450
+<                                   expression (parsef.ml[52,1579+46]..[52,1579+71])
+---
+>                                   expression (parsef.ml[52,1579+45]..[52,1579+72])
+545c545
+<                             expression (parsef.ml[61,1864+29]..[61,1864+73])
+---
+>                             expression (parsef.ml[61,1864+28]..[61,1864+74])
+551c551
+<                                   expression (parsef.ml[61,1864+46]..[61,1864+72])
+---
+>                                   expression (parsef.ml[61,1864+45]..[61,1864+73])

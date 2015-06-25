@@ -1,0 +1,184 @@
+17,20c17,19
+<         expression (dump.ml[6,28+11]..[7,46+53])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (dump.ml[6,28+11]..[7,46+53]) ghost
+>           Pexp_fun ""
+>           None
+23,26c22,24
+<               expression (dump.ml[6,28+14]..[7,46+53])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (dump.ml[6,28+14]..[7,46+53]) ghost
+>             Pexp_fun ""
+>             None
+44c42
+<                           expression (dump.ml[7,46+40]..[7,46+52])
+---
+>                   expression (dump.ml[7,46+39]..[7,46+53])
+55,56d52
+<           ]
+<     ]
+63,66c59,61
+<         expression (dump.ml[12,104+11]..[13,121+50])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (dump.ml[12,104+11]..[13,121+50]) ghost
+>           Pexp_fun ""
+>           None
+69,72c64,66
+<               expression (dump.ml[12,104+13]..[13,121+50])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (dump.ml[12,104+13]..[13,121+50]) ghost
+>             Pexp_fun ""
+>             None
+90c84
+<                           expression (dump.ml[13,121+37]..[13,121+49])
+---
+>                   expression (dump.ml[13,121+36]..[13,121+50])
+101,102d94
+<           ]
+<     ]
+109,112c101,103
+<         expression (dump.ml[15,173+12]..[16,191+53])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (dump.ml[15,173+12]..[16,191+53]) ghost
+>           Pexp_fun ""
+>           None
+115,118c106,108
+<               expression (dump.ml[15,173+14]..[16,191+53])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (dump.ml[15,173+14]..[16,191+53]) ghost
+>             Pexp_fun ""
+>             None
+136c126
+<                           expression (dump.ml[16,191+39]..[16,191+52])
+---
+>                   expression (dump.ml[16,191+38]..[16,191+53])
+147,148d136
+<           ]
+<     ]
+155,158c143,145
+<         expression (dump.ml[18,246+12]..[19,264+53])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (dump.ml[18,246+12]..[19,264+53]) ghost
+>           Pexp_fun ""
+>           None
+161,164c148,150
+<               expression (dump.ml[18,246+14]..[19,264+53])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (dump.ml[18,246+14]..[19,264+53]) ghost
+>             Pexp_fun ""
+>             None
+182c168
+<                           expression (dump.ml[19,264+39]..[19,264+52])
+---
+>                   expression (dump.ml[19,264+38]..[19,264+53])
+193,194d178
+<           ]
+<     ]
+223,226c207,209
+<                 expression (dump.ml[24,384+13]..[25,404+40])
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                 expression (dump.ml[24,384+13]..[25,404+40]) ghost
+>                   Pexp_fun ""
+>                   None
+229,232c212,214
+<                       expression (dump.ml[24,384+15]..[25,404+40])
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                   expression (dump.ml[24,384+15]..[25,404+40]) ghost
+>                     Pexp_fun ""
+>                     None
+272,273d253
+<                   ]
+<             ]
+280,283c260,262
+<                 expression (dump.ml[26,446+13]..[27,465+40])
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                 expression (dump.ml[26,446+13]..[27,465+40]) ghost
+>                   Pexp_fun ""
+>                   None
+286,289c265,267
+<                       expression (dump.ml[26,446+15]..[27,465+40])
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                   expression (dump.ml[26,446+15]..[27,465+40]) ghost
+>                     Pexp_fun ""
+>                     None
+329,330d306
+<                   ]
+<             ]
+337,340c313,315
+<                 expression (dump.ml[28,507+14]..[29,528+42])
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                 expression (dump.ml[28,507+14]..[29,528+42]) ghost
+>                   Pexp_fun ""
+>                   None
+343,346c318,320
+<                       expression (dump.ml[28,507+16]..[29,528+42])
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                   expression (dump.ml[28,507+16]..[29,528+42]) ghost
+>                     Pexp_fun ""
+>                     None
+386,387d359
+<                   ]
+<             ]
+394,397c366,368
+<                 expression (dump.ml[30,572+14]..[31,593+42])
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                 expression (dump.ml[30,572+14]..[31,593+42]) ghost
+>                   Pexp_fun ""
+>                   None
+400,403c371,373
+<                       expression (dump.ml[30,572+16]..[31,593+42])
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                   expression (dump.ml[30,572+16]..[31,593+42]) ghost
+>                     Pexp_fun ""
+>                     None
+444,445d413
+<             ]
+<         ]

@@ -1,0 +1,3905 @@
+[
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "loc" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_constr "Locf.t" (astfn.ml[]..[])
+              []
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "ant" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Ant" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "loc" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "Tokenf.ant" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "literal" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Chr" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Int" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Int32" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Int64" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Flo" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Nativeint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Str" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Bool" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "bool" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Unit" true
+                  []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "flag" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Positive" true
+                  []
+                Rtag "Negative" true
+                  []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "position_flag" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Positive" true
+                  []
+                Rtag "Negative" true
+                  []
+                Rtag "Normal" true
+                  []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "strings" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "strings" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "strings" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Str" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "lident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Lid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "alident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Lid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "auident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Uid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "aident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "alident" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "auident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "astring" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "C" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "uident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "uident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "uident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "uident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "uident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "auident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "ident" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Apply" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "alident" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "auident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "ident'" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Apply" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Lid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Uid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "vid" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Lid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Uid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "vid'" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Lid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Uid" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "dupath" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "dupath" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "dupath" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "auident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "dlpath" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Dot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "dupath" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "alident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "any" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Any" true
+                  []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "ctyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Alias" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Arrow" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ClassPath" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Label" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "OptLabl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ident'" (astfn.ml[]..[])
+                    []
+                Rtag "TyObj" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "name_ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyObjEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "flag" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "TyPol" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyPolEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "TyTypePol" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Quote" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "position_flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "QuoteAny" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "position_flag" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Par" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Sta" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "PolyEq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "row_field" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "PolySup" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "row_field" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "PolyInf" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "row_field" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "PolyInfSup" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "row_field" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "tag_names" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Package" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mtyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "type_parameters" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Ctyp" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "row_field" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+                Rtag "Bar" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "row_field" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "row_field" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyVrn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "astring" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "TyVrnOf" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "astring" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Ctyp" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+      type_declaration "tag_names" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "tag_names" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "tag_names" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyVrn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "astring" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+      type_declaration "typedecl" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "TyDcl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "opt_decl_params" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_info" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "opt_type_constr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyAbstr" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "opt_decl_params" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "opt_type_constr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "typedecl" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "typedecl" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "type_constr" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_constr" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_constr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Eq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "opt_type_constr" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Some" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "type_constr" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "None" true
+                  []
+              ]
+              None
+      type_declaration "decl_param" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Quote" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "position_flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "QuoteAny" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "position_flag" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Any" true
+                  []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "decl_params" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Quote" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "position_flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "QuoteAny" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "position_flag" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Any" true
+                  []
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "decl_params" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "decl_params" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "opt_decl_params" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Some" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "decl_params" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "None" true
+                  []
+              ]
+              None
+      type_declaration "type_info" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "TyMan" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_repr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyRepr" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_repr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyEq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "type_repr" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Record" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "name_ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Sum" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "or_ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "name_ctyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "name_ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "name_ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyCol" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyColMut" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "or_ctyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Bar" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "or_ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "or_ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TyCol" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Of" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "auident" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "of_ctyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Of" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid'" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "pat" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Vrn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Par" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rtag "Record" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "rec_pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "literal" (astfn.ml[]..[])
+                    []
+                Rtag "Alias" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ArrayEmpty" true
+                  []
+                Rtag "Array" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "LabelS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Label" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "OptLabl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "OptLablS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "OptLablExpr" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Bar" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "PaRng" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ClassPath" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Lazy" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ModuleUnpack" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "auident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ModuleConstraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+              ]
+              None
+      type_declaration "rec_pat" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "RecBind" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_pat" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "exp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Vrn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Par" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rtag "Record" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "rec_exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "literal" (astfn.ml[]..[])
+                    []
+                Rtag "RecordWith" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Field" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ArrayDot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ArrayEmpty" true
+                  []
+                Rtag "Array" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Assert" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Assign" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "For" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Fun" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "case" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "IfThenElse" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "IfThen" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LabelS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Label" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Lazy" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "LetIn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LetTryInWith" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "case" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LetModule" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Match" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "case" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "New" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Obj" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "clfield" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ObjEnd" true
+                  []
+                Rtag "ObjPat" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clfield" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ObjPatEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "OptLabl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "OptLablS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "OvrInst" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "rec_exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "OvrInstEmpty" true
+                  []
+                Rtag "Seq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Send" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "StringDot" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Try" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "case" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Coercion" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Subtype" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "While" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LetOpen" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LocalTypeFun" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Package_exp" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mexp" (astfn.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+      type_declaration "rec_exp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "RecBind" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "mtyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ident'" (astfn.ml[]..[])
+                    []
+                Rtag "Sig" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "sigi" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "SigEnd" true
+                  []
+                Rtag "Functor" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "With" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "constr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ModuleTypeOf" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mexp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "sigi" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Val" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "External" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "strings" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Type" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "typedecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Exception" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "of_ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Class" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "cltdecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ClassType" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "cltdecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Module" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ModuleTypeEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "auident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ModuleType" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "sigi" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "sigi" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "DirectiveSimple" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Directive" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Open" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Include" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mtyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "RecModule" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mbind" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "mbind" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mbind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mbind" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ModuleBind" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "constr" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "TypeEq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ModuleEq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TypeEqPriv" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "TypeSubst" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ModuleSubst" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "constr" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "constr" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "bind" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Bind" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "case" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Bar" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "case" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "case" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Case" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CaseWhen" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "mexp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid'" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Functor" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Struct" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "stru" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "StructEnd" true
+                  []
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "PackageModule" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "stru" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Class" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "cldecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ClassType" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "cltdecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "stru" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "stru" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "DirectiveSimple" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "alident" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Directive" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Exception" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "of_ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "StExp" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "External" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "strings" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Include" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mexp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Module" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "RecModule" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "mbind" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ModuleType" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "auident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "mtyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Open" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Type" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "typedecl" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "TypeWith" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "typedecl" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "strings" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Value" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "cltdecl" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltdecl" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltdecl" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CtDecl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CtDeclS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "cltyp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid'" (astfn.ml[]..[])
+                    []
+                Rtag "ClApply" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CtFun" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ObjTy" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clsigi" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ObjTyEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ctyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Obj" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "clsigi" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ObjEnd" true
+                  []
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "clsigi" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clsigi" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clsigi" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "SigInherit" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "cltyp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "CgVal" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Method" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "VirMeth" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Eq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "cldecl" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "ClDecl" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ClDeclS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "And" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cldecl" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cldecl" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "clexp" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "CeApp" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid'" (astfn.ml[]..[])
+                    []
+                Rtag "ClApply" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "type_parameters" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CeFun" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "LetIn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "bind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Obj" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "clfield" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "ObjEnd" true
+                  []
+                Rtag "ObjPat" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "pat" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clfield" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "ObjPatEnd" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "pat" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "cltyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "clfield" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clfield" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clfield" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Inherit" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "InheritAs" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "clexp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CrVal" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "VirVal" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CrMth" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "CrMthS" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "exp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "VirMeth" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "alident" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "flag" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Eq" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Initializer" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "exp" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+  structure_item (astfn.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "ep" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "vid" (astfn.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Vrn" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "string" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Com" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Par" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ep" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Constraint" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ctyp" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rtag "ArrayEmpty" true
+                  []
+                Rtag "Array" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "ep" (astfn.ml[]..[])
+                      []
+                  ]
+                Rtag "Record" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_constr "rec_bind" (astfn.ml[]..[])
+                      []
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "literal" (astfn.ml[]..[])
+                    []
+              ]
+              None
+      type_declaration "rec_bind" (astfn.ml[]..[]) (astfn.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (astfn.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "RecBind" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "vid" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "ep" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Sem" false
+                  [
+                    core_type (astfn.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_bind" (astfn.ml[]..[])
+                          []
+                        core_type (astfn.ml[]..[])
+                          Ptyp_constr "rec_bind" (astfn.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "any" (astfn.ml[]..[])
+                    []
+                Rinherit
+                  core_type (astfn.ml[]..[])
+                    Ptyp_constr "ant" (astfn.ml[]..[])
+                    []
+              ]
+              None
+    ]
+]

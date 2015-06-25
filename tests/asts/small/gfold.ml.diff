@@ -1,0 +1,248 @@
+14c14
+<               expression (gfold.ml[4,33+7]..[23,809+81])
+---
+>               expression (gfold.ml[4,33+6]..[23,809+82])
+20c20
+<                     expression (gfold.ml[6,63+12]..[23,809+80])
+---
+>                     expression (gfold.ml[6,63+11]..[23,809+81])
+26c26
+<                           expression (gfold.ml[8,108+17]..[23,809+79])
+---
+>                           expression (gfold.ml[8,108+16]..[23,809+80])
+32c32
+<                                 expression (gfold.ml[10,163+22]..[23,809+78])
+---
+>                                 expression (gfold.ml[10,163+21]..[23,809+79])
+50c50
+<                                                   expression (gfold.ml[15,343+33]..[22,754+50])
+---
+>                                                   expression (gfold.ml[15,343+32]..[22,754+51])
+64c64
+<                                                         expression (gfold.ml[17,446+38]..[22,754+49])
+---
+>                                                         expression (gfold.ml[17,446+37]..[22,754+50])
+71c71
+<                                                                 expression (gfold.ml[17,446+54]..[17,446+66])
+---
+>                                                                 expression (gfold.ml[17,446+53]..[17,446+67])
+102c102
+<                                                                     expression (gfold.ml[21,681+56]..[21,681+64])
+---
+>                                                                     expression (gfold.ml[21,681+55]..[21,681+65])
+127c127
+<                                         expression (gfold.ml[23,809+27]..[23,809+77])
+---
+>                                         expression (gfold.ml[23,809+26]..[23,809+78])
+172c172
+<               expression (gfold.ml[27,925+7]..[52,1998+65])
+---
+>               expression (gfold.ml[27,925+6]..[52,1998+66])
+178c178
+<                     expression (gfold.ml[29,955+12]..[52,1998+64])
+---
+>                     expression (gfold.ml[29,955+11]..[52,1998+65])
+184c184
+<                           expression (gfold.ml[31,1000+17]..[52,1998+63])
+---
+>                           expression (gfold.ml[31,1000+16]..[52,1998+64])
+190c190
+<                                 expression (gfold.ml[33,1055+22]..[52,1998+62])
+---
+>                                 expression (gfold.ml[33,1055+21]..[52,1998+63])
+208c208
+<                                                   expression (gfold.ml[38,1235+33]..[45,1646+50])
+---
+>                                                   expression (gfold.ml[38,1235+32]..[45,1646+51])
+222c222
+<                                                         expression (gfold.ml[40,1338+38]..[45,1646+49])
+---
+>                                                         expression (gfold.ml[40,1338+37]..[45,1646+50])
+229c229
+<                                                                 expression (gfold.ml[40,1338+54]..[40,1338+66])
+---
+>                                                                 expression (gfold.ml[40,1338+53]..[40,1338+67])
+260c260
+<                                                                     expression (gfold.ml[44,1573+56]..[44,1573+64])
+---
+>                                                                     expression (gfold.ml[44,1573+55]..[44,1573+65])
+285c285
+<                                         expression (gfold.ml[46,1701+27]..[52,1998+61])
+---
+>                                         expression (gfold.ml[46,1701+26]..[52,1998+62])
+315c315
+<                                                 expression (gfold.ml[49,1847+32]..[52,1998+60])
+---
+>                                                 expression (gfold.ml[49,1847+31]..[52,1998+61])
+323c323
+<                                                         expression (gfold.ml[49,1847+42]..[49,1847+47])
+---
+>                                                         expression (gfold.ml[49,1847+41]..[49,1847+48])
+350c350
+<                                                             expression (gfold.ml[52,1998+43]..[52,1998+59])
+---
+>                                                             expression (gfold.ml[52,1998+42]..[52,1998+60])
+376c376
+<               expression (gfold.ml[56,2101+7]..[98,4229+51])
+---
+>               expression (gfold.ml[56,2101+6]..[98,4229+52])
+382c382
+<                     expression (gfold.ml[58,2131+12]..[98,4229+50])
+---
+>                     expression (gfold.ml[58,2131+11]..[98,4229+51])
+388c388
+<                           expression (gfold.ml[60,2175+17]..[98,4229+49])
+---
+>                           expression (gfold.ml[60,2175+16]..[98,4229+50])
+394c394
+<                                 expression (gfold.ml[62,2229+22]..[98,4229+48])
+---
+>                                 expression (gfold.ml[62,2229+21]..[98,4229+49])
+400c400
+<                                       expression (gfold.ml[64,2293+27]..[98,4229+47])
+---
+>                                       expression (gfold.ml[64,2293+26]..[98,4229+48])
+417c417
+<                                                           Ppat_construct "::" (gfold.ml[68,2452+35]..[68,2452+48])
+---
+>                                                           Ppat_construct "::" (gfold.ml[68,2452+39]..[68,2452+41])
+419c419
+<                                                             pattern (gfold.ml[68,2452+35]..[68,2452+48])
+---
+>                                                             pattern (gfold.ml[68,2452+35]..[68,2452+48]) ghost
+425c425
+<                                                                   Ppat_construct "::" (gfold.ml[68,2452+41]..[68,2452+48])
+---
+>                                                                   Ppat_construct "::" (gfold.ml[68,2452+44]..[68,2452+46])
+427c427
+<                                                                     pattern (gfold.ml[68,2452+41]..[68,2452+48])
+---
+>                                                                     pattern (gfold.ml[68,2452+41]..[68,2452+48]) ghost
+474c474
+<                                                           expression (gfold.ml[74,2766+38]..[90,3768+55])
+---
+>                                                           expression (gfold.ml[74,2766+37]..[90,3768+56])
+488c488
+<                                                                 expression (gfold.ml[76,2879+43]..[90,3768+54])
+---
+>                                                                 expression (gfold.ml[76,2879+42]..[90,3768+55])
+495c495
+< expression (gfold.ml[76,2879+59]..[76,2879+70])
+---
+> expression (gfold.ml[76,2879+58]..[76,2879+71])
+549c549
+<                 expression (gfold.ml[87,3551+56]..[88,3621+72])
+---
+>                 expression (gfold.ml[87,3551+55]..[88,3621+73])
+552c552
+<                     expression (gfold.ml[88,3621+59]..[88,3621+71])
+---
+>                     expression (gfold.ml[88,3621+58]..[88,3621+72])
+570c570
+<       expression (gfold.ml[89,3698+53]..[89,3698+61])
+---
+>       expression (gfold.ml[89,3698+52]..[89,3698+62])
+595c595
+<                                                 expression (gfold.ml[91,3828+32]..[98,4229+46])
+---
+>                                                 expression (gfold.ml[91,3828+31]..[98,4229+47])
+609c609
+<                                                       expression (gfold.ml[93,3929+37]..[98,4229+45])
+---
+>                                                       expression (gfold.ml[93,3929+36]..[98,4229+46])
+616c616
+<                                                               expression (gfold.ml[93,3929+53]..[93,3929+65])
+---
+>                                                               expression (gfold.ml[93,3929+52]..[93,3929+66])
+647c647
+<                                                                   expression (gfold.ml[97,4160+55]..[97,4160+60])
+---
+>                                                                   expression (gfold.ml[97,4160+54]..[97,4160+61])
+689c689
+<               expression (gfold.ml[102,4318+7]..[158,7387+60])
+---
+>               expression (gfold.ml[102,4318+6]..[158,7387+61])
+695c695
+<                     expression (gfold.ml[104,4348+12]..[158,7387+59])
+---
+>                     expression (gfold.ml[104,4348+11]..[158,7387+60])
+701c701
+<                           expression (gfold.ml[106,4392+17]..[158,7387+58])
+---
+>                           expression (gfold.ml[106,4392+16]..[158,7387+59])
+707c707
+<                                 expression (gfold.ml[108,4446+22]..[158,7387+57])
+---
+>                                 expression (gfold.ml[108,4446+21]..[158,7387+58])
+713c713
+<                                       expression (gfold.ml[110,4510+27]..[158,7387+56])
+---
+>                                       expression (gfold.ml[110,4510+26]..[158,7387+57])
+730c730
+<                                                           Ppat_construct "::" (gfold.ml[114,4669+35]..[114,4669+48])
+---
+>                                                           Ppat_construct "::" (gfold.ml[114,4669+39]..[114,4669+41])
+732c732
+<                                                             pattern (gfold.ml[114,4669+35]..[114,4669+48])
+---
+>                                                             pattern (gfold.ml[114,4669+35]..[114,4669+48]) ghost
+738c738
+<                                                                   Ppat_construct "::" (gfold.ml[114,4669+41]..[114,4669+48])
+---
+>                                                                   Ppat_construct "::" (gfold.ml[114,4669+44]..[114,4669+46])
+740c740
+<                                                                     pattern (gfold.ml[114,4669+41]..[114,4669+48])
+---
+>                                                                     pattern (gfold.ml[114,4669+41]..[114,4669+48]) ghost
+786c786
+<                                                             Ppat_construct "::" (gfold.ml[119,4941+35]..[119,4941+46])
+---
+>                                                             Ppat_construct "::" (gfold.ml[119,4941+39]..[119,4941+41])
+788c788
+<                                                               pattern (gfold.ml[119,4941+35]..[119,4941+46])
+---
+>                                                               pattern (gfold.ml[119,4941+35]..[119,4941+46]) ghost
+794c794
+<                                                                     Ppat_construct "::" (gfold.ml[119,4941+41]..[119,4941+46])
+---
+>                                                                     Ppat_construct "::" (gfold.ml[119,4941+42]..[119,4941+44])
+796c796
+<                                                                       pattern (gfold.ml[119,4941+41]..[119,4941+46])
+---
+>                                                                       pattern (gfold.ml[119,4941+41]..[119,4941+46]) ghost
+845c845
+<                                                             expression (gfold.ml[125,5263+38]..[154,7166+55])
+---
+>                                                             expression (gfold.ml[125,5263+37]..[154,7166+56])
+859c859
+<                                                                   expression (gfold.ml[127,5376+43]..[154,7166+54])
+---
+>                                                                   expression (gfold.ml[127,5376+42]..[154,7166+55])
+866c866
+<   expression (gfold.ml[127,5376+59]..[127,5376+70])
+---
+>   expression (gfold.ml[127,5376+58]..[127,5376+71])
+947c947
+<                                 expression (gfold.ml[146,6588+64]..[148,6740+74])
+---
+>                                 expression (gfold.ml[146,6588+63]..[148,6740+75])
+950c950
+<                                     expression (gfold.ml[147,6666+67]..[148,6740+73])
+---
+>                                     expression (gfold.ml[147,6666+66]..[148,6740+74])
+983c983
+<                   expression (gfold.ml[152,7015+60]..[152,7015+76])
+---
+>                   expression (gfold.ml[152,7015+59]..[152,7015+77])
+997c997
+<         expression (gfold.ml[153,7096+53]..[153,7096+61])
+---
+>         expression (gfold.ml[153,7096+52]..[153,7096+62])
+1022c1022
+<                                                   expression (gfold.ml[155,7226+32]..[158,7387+55])
+---
+>                                                   expression (gfold.ml[155,7226+31]..[158,7387+56])
+1058c1058
+<                                                                 expression (gfold.ml[158,7387+42]..[158,7387+47])
+---
+>                                                                 expression (gfold.ml[158,7387+41]..[158,7387+48])

@@ -1,0 +1,976 @@
+[
+  structure_item (ast_inject.ml[1,0+0]..[1,0+9])
+    Pstr_open Fresh "Astf" (ast_inject.ml[1,0+5]..[1,0+9])
+  structure_item (ast_inject.ml[2,10+0]..[2,10+9])
+    Pstr_open Fresh "Util" (ast_inject.ml[2,10+5]..[2,10+9])
+  structure_item (ast_inject.ml[3,20+0]..[3,20+17])
+    Pstr_type
+    [
+      type_declaration "key" (ast_inject.ml[3,20+5]..[3,20+8]) (ast_inject.ml[3,20+0]..[3,20+17])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_inject.ml[3,20+11]..[3,20+17])
+              Ptyp_constr "string" (ast_inject.ml[3,20+11]..[3,20+17])
+              []
+    ]
+  structure_item (ast_inject.ml[4,38+0]..[4,38+59])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[4,38+4]..[4,38+18])
+          Ppat_var "inject_exp_tbl" (ast_inject.ml[4,38+4]..[4,38+18])
+        expression (ast_inject.ml[4,38+18]..[4,38+59]) ghost
+          Pexp_constraint
+          expression (ast_inject.ml[4,38+42]..[4,38+59])
+            Pexp_apply
+            expression (ast_inject.ml[4,38+42]..[4,38+56])
+              Pexp_ident "Hashtbl.create" (ast_inject.ml[4,38+42]..[4,38+56])
+            [
+              <label> ""
+                expression (ast_inject.ml[4,38+57]..[4,38+59])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_inject.ml[4,38+20]..[4,38+39])
+            Ptyp_constr "Hashtbl.t" (ast_inject.ml[4,38+30]..[4,38+39])
+            [
+              core_type (ast_inject.ml[4,38+21]..[4,38+24])
+                Ptyp_constr "key" (ast_inject.ml[4,38+21]..[4,38+24])
+                []
+              core_type (ast_inject.ml[4,38+25]..[4,38+28])
+                Ptyp_constr "exp" (ast_inject.ml[4,38+25]..[4,38+28])
+                []
+            ]
+    ]
+  structure_item (ast_inject.ml[5,98+0]..[5,98+61])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[5,98+4]..[5,98+19])
+          Ppat_var "inject_stru_tbl" (ast_inject.ml[5,98+4]..[5,98+19])
+        expression (ast_inject.ml[5,98+19]..[5,98+61]) ghost
+          Pexp_constraint
+          expression (ast_inject.ml[5,98+44]..[5,98+61])
+            Pexp_apply
+            expression (ast_inject.ml[5,98+44]..[5,98+58])
+              Pexp_ident "Hashtbl.create" (ast_inject.ml[5,98+44]..[5,98+58])
+            [
+              <label> ""
+                expression (ast_inject.ml[5,98+59]..[5,98+61])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_inject.ml[5,98+21]..[5,98+41])
+            Ptyp_constr "Hashtbl.t" (ast_inject.ml[5,98+32]..[5,98+41])
+            [
+              core_type (ast_inject.ml[5,98+22]..[5,98+25])
+                Ptyp_constr "key" (ast_inject.ml[5,98+22]..[5,98+25])
+                []
+              core_type (ast_inject.ml[5,98+26]..[5,98+30])
+                Ptyp_constr "stru" (ast_inject.ml[5,98+26]..[5,98+30])
+                []
+            ]
+    ]
+  structure_item (ast_inject.ml[6,160+0]..[6,160+67])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[6,160+4]..[6,160+22])
+          Ppat_var "inject_clfield_tbl" (ast_inject.ml[6,160+4]..[6,160+22])
+        expression (ast_inject.ml[6,160+22]..[6,160+67]) ghost
+          Pexp_constraint
+          expression (ast_inject.ml[6,160+50]..[6,160+67])
+            Pexp_apply
+            expression (ast_inject.ml[6,160+50]..[6,160+64])
+              Pexp_ident "Hashtbl.create" (ast_inject.ml[6,160+50]..[6,160+64])
+            [
+              <label> ""
+                expression (ast_inject.ml[6,160+65]..[6,160+67])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_inject.ml[6,160+24]..[6,160+47])
+            Ptyp_constr "Hashtbl.t" (ast_inject.ml[6,160+38]..[6,160+47])
+            [
+              core_type (ast_inject.ml[6,160+25]..[6,160+28])
+                Ptyp_constr "key" (ast_inject.ml[6,160+25]..[6,160+28])
+                []
+              core_type (ast_inject.ml[6,160+29]..[6,160+36])
+                Ptyp_constr "clfield" (ast_inject.ml[6,160+29]..[6,160+36])
+                []
+            ]
+    ]
+  structure_item (ast_inject.ml[7,228+0]..[8,254+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[7,228+4]..[7,228+23])
+          Ppat_var "register_inject_exp" (ast_inject.ml[7,228+4]..[7,228+23])
+        expression (ast_inject.ml[8,254+2]..[8,254+56])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_inject.ml[8,254+13]..[8,254+18])
+                Ppat_tuple
+                [
+                  pattern (ast_inject.ml[8,254+14]..[8,254+15])
+                    Ppat_var "k" (ast_inject.ml[8,254+14]..[8,254+15])
+                  pattern (ast_inject.ml[8,254+16]..[8,254+17])
+                    Ppat_var "f" (ast_inject.ml[8,254+16]..[8,254+17])
+                ]
+              expression (ast_inject.ml[8,254+22]..[8,254+56])
+                Pexp_apply
+                expression (ast_inject.ml[8,254+22]..[8,254+37])
+                  Pexp_ident "Hashtbl.replace" (ast_inject.ml[8,254+22]..[8,254+37])
+                [
+                  <label> ""
+                    expression (ast_inject.ml[8,254+38]..[8,254+52])
+                      Pexp_ident "inject_exp_tbl" (ast_inject.ml[8,254+38]..[8,254+52])
+                  <label> ""
+                    expression (ast_inject.ml[8,254+53]..[8,254+54])
+                      Pexp_ident "k" (ast_inject.ml[8,254+53]..[8,254+54])
+                  <label> ""
+                    expression (ast_inject.ml[8,254+55]..[8,254+56])
+                      Pexp_ident "f" (ast_inject.ml[8,254+55]..[8,254+56])
+                ]
+          ]
+    ]
+  structure_item (ast_inject.ml[9,311+0]..[10,338+57])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[9,311+4]..[9,311+24])
+          Ppat_var "register_inject_stru" (ast_inject.ml[9,311+4]..[9,311+24])
+        expression (ast_inject.ml[10,338+2]..[10,338+57])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_inject.ml[10,338+13]..[10,338+18])
+                Ppat_tuple
+                [
+                  pattern (ast_inject.ml[10,338+14]..[10,338+15])
+                    Ppat_var "k" (ast_inject.ml[10,338+14]..[10,338+15])
+                  pattern (ast_inject.ml[10,338+16]..[10,338+17])
+                    Ppat_var "f" (ast_inject.ml[10,338+16]..[10,338+17])
+                ]
+              expression (ast_inject.ml[10,338+22]..[10,338+57])
+                Pexp_apply
+                expression (ast_inject.ml[10,338+22]..[10,338+37])
+                  Pexp_ident "Hashtbl.replace" (ast_inject.ml[10,338+22]..[10,338+37])
+                [
+                  <label> ""
+                    expression (ast_inject.ml[10,338+38]..[10,338+53])
+                      Pexp_ident "inject_stru_tbl" (ast_inject.ml[10,338+38]..[10,338+53])
+                  <label> ""
+                    expression (ast_inject.ml[10,338+54]..[10,338+55])
+                      Pexp_ident "k" (ast_inject.ml[10,338+54]..[10,338+55])
+                  <label> ""
+                    expression (ast_inject.ml[10,338+56]..[10,338+57])
+                      Pexp_ident "f" (ast_inject.ml[10,338+56]..[10,338+57])
+                ]
+          ]
+    ]
+  structure_item (ast_inject.ml[11,396+0]..[12,426+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[11,396+4]..[11,396+27])
+          Ppat_var "register_inject_clfield" (ast_inject.ml[11,396+4]..[11,396+27])
+        expression (ast_inject.ml[12,426+2]..[12,426+60])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_inject.ml[12,426+13]..[12,426+18])
+                Ppat_tuple
+                [
+                  pattern (ast_inject.ml[12,426+14]..[12,426+15])
+                    Ppat_var "k" (ast_inject.ml[12,426+14]..[12,426+15])
+                  pattern (ast_inject.ml[12,426+16]..[12,426+17])
+                    Ppat_var "f" (ast_inject.ml[12,426+16]..[12,426+17])
+                ]
+              expression (ast_inject.ml[12,426+22]..[12,426+60])
+                Pexp_apply
+                expression (ast_inject.ml[12,426+22]..[12,426+37])
+                  Pexp_ident "Hashtbl.replace" (ast_inject.ml[12,426+22]..[12,426+37])
+                [
+                  <label> ""
+                    expression (ast_inject.ml[12,426+38]..[12,426+56])
+                      Pexp_ident "inject_clfield_tbl" (ast_inject.ml[12,426+38]..[12,426+56])
+                  <label> ""
+                    expression (ast_inject.ml[12,426+57]..[12,426+58])
+                      Pexp_ident "k" (ast_inject.ml[12,426+57]..[12,426+58])
+                  <label> ""
+                    expression (ast_inject.ml[12,426+59]..[12,426+60])
+                      Pexp_ident "f" (ast_inject.ml[12,426+59]..[12,426+60])
+                ]
+          ]
+    ]
+  structure_item (ast_inject.ml[13,487+0]..[13,487+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[13,487+4]..[13,487+14])
+          Ppat_var "inject_exp" (ast_inject.ml[13,487+4]..[13,487+14])
+        expression (ast_inject.ml[13,487+17]..[13,487+38])
+          Pexp_apply
+          expression (ast_inject.ml[13,487+17]..[13,487+25])
+            Pexp_ident "Gramf.mk" (ast_inject.ml[13,487+17]..[13,487+25])
+          [
+            <label> ""
+              expression (ast_inject.ml[13,487+26]..[13,487+38])
+                Pexp_constant Const_string("inject_exp",None)
+          ]
+    ]
+  structure_item (ast_inject.ml[14,526+0]..[14,526+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[14,526+4]..[14,526+15])
+          Ppat_var "inject_stru" (ast_inject.ml[14,526+4]..[14,526+15])
+        expression (ast_inject.ml[14,526+18]..[14,526+40])
+          Pexp_apply
+          expression (ast_inject.ml[14,526+18]..[14,526+26])
+            Pexp_ident "Gramf.mk" (ast_inject.ml[14,526+18]..[14,526+26])
+          [
+            <label> ""
+              expression (ast_inject.ml[14,526+27]..[14,526+40])
+                Pexp_constant Const_string("inject_stru",None)
+          ]
+    ]
+  structure_item (ast_inject.ml[15,567+0]..[15,567+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_inject.ml[15,567+4]..[15,567+18])
+          Ppat_var "inject_clfield" (ast_inject.ml[15,567+4]..[15,567+18])
+        expression (ast_inject.ml[15,567+21]..[15,567+46])
+          Pexp_apply
+          expression (ast_inject.ml[15,567+21]..[15,567+29])
+            Pexp_ident "Gramf.mk" (ast_inject.ml[15,567+21]..[15,567+29])
+          [
+            <label> ""
+              expression (ast_inject.ml[15,567+30]..[15,567+46])
+                Pexp_constant Const_string("inject_clfield",None)
+          ]
+    ]
+  structure_item (ast_inject.ml[16,614+0]..[110,4491+41])
+    Pstr_eval
+    expression (ast_inject.ml[17,622+2]..[110,4491+41])
+      Pexp_sequence
+      expression (ast_inject.ml[17,622+2]..[47,1852+41])
+        Pexp_apply
+        expression (ast_inject.ml[17,622+2]..[17,622+21])
+          Pexp_ident "Gramf.extend_single" (ast_inject.ml[17,622+2]..[17,622+21])
+        [
+          <label> ""
+            expression (ast_inject.ml[18,644+4]..[47,1852+41]) ghost
+              Pexp_constraint
+              expression (ast_inject.ml[18,644+5]..[47,1852+6])
+                Pexp_record
+                [
+                  "entry" (ast_inject.ml[19,651+7]..[19,651+12])
+                    expression (ast_inject.ml[19,651+15]..[19,651+49]) ghost
+                      Pexp_constraint
+                      expression (ast_inject.ml[19,651+16]..[19,651+26])
+                        Pexp_ident "inject_exp" (ast_inject.ml[19,651+16]..[19,651+26])
+                      core_type (ast_inject.ml[19,651+29]..[19,651+48])
+                        Ptyp_constr "Gramf.t" (ast_inject.ml[19,651+41]..[19,651+48])
+                        [
+                          core_type (ast_inject.ml[19,651+29]..[19,651+40])
+                            Ptyp_var inject_exp
+                        ]
+                  "olevel" (ast_inject.ml[20,702+7]..[20,702+13])
+                    expression (ast_inject.ml[21,718+9]..[46,1824+27]) ghost
+                      Pexp_constraint
+                      expression (ast_inject.ml[21,718+10]..[46,1824+11])
+                        Pexp_record
+                        [
+                          "label" (ast_inject.ml[22,730+12]..[22,730+17])
+                            expression (ast_inject.ml[22,730+20]..[22,730+24])
+                              Pexp_construct "None" (ast_inject.ml[22,730+20]..[22,730+24])
+                              None
+                          "lassoc" (ast_inject.ml[23,756+12]..[23,756+18])
+                            expression (ast_inject.ml[23,756+21]..[23,756+25])
+                              Pexp_construct "true" (ast_inject.ml[23,756+21]..[23,756+25])
+                              None
+                          "productions" (ast_inject.ml[24,783+12]..[24,783+23])
+                            expression (ast_inject.ml[25,809+14]..[45,1806+17])
+                              Pexp_construct "::" (ast_inject.ml[25,809+15]..[45,1806+17]) ghost
+                              Some
+                                expression (ast_inject.ml[25,809+15]..[45,1806+17]) ghost
+                                  Pexp_tuple
+                                  [
+                                    expression (ast_inject.ml[25,809+15]..[45,1806+16])
+                                      Pexp_record
+                                      [
+                                        "symbols" (ast_inject.ml[26,826+17]..[26,826+24])
+                                          expression (ast_inject.ml[27,853+19]..[29,957+43])
+                                            Pexp_construct "::" (ast_inject.ml[27,853+20]..[29,957+43]) ghost
+                                            Some
+                                              expression (ast_inject.ml[27,853+20]..[29,957+43]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (ast_inject.ml[27,853+20]..[29,957+42])
+                                                    Pexp_construct "Token" (ast_inject.ml[27,853+20]..[27,853+25])
+                                                    Some
+                                                      expression (ast_inject.ml[28,879+22]..[29,957+42]) ghost
+                                                        Pexp_constraint
+                                                        expression (ast_inject.ml[28,879+23]..[29,957+24])
+                                                          Pexp_record
+                                                          [
+                                                            "descr" (ast_inject.ml[28,879+25]..[28,879+30])
+                                                              expression (ast_inject.ml[28,879+33]..[28,879+77])
+                                                                Pexp_record
+                                                                [
+                                                                  "tag" (ast_inject.ml[28,879+35]..[28,879+38])
+                                                                    expression (ast_inject.ml[28,879+41]..[28,879+45])
+                                                                      Pexp_variant "Lid"
+                                                                      None
+                                                                  "word" (ast_inject.ml[28,879+47]..[28,879+51])
+                                                                    expression (ast_inject.ml[28,879+54]..[28,879+57])
+                                                                      Pexp_construct "Any" (ast_inject.ml[28,879+54]..[28,879+57])
+                                                                      None
+                                                                  "tag_name" (ast_inject.ml[28,879+59]..[28,879+67])
+                                                                    expression (ast_inject.ml[28,879+70]..[28,879+75])
+                                                                      Pexp_constant Const_string("Lid",None)
+                                                                ]
+                                                                None
+                                                          ]
+                                                          None
+                                                        core_type (ast_inject.ml[29,957+27]..[29,957+41])
+                                                          Ptyp_constr "Tokenf.pattern" (ast_inject.ml[29,957+27]..[29,957+41])
+                                                          []
+                                                  expression (ast_inject.ml[29,957+42]..[29,957+43]) ghost
+                                                    Pexp_construct "[]" (ast_inject.ml[29,957+42]..[29,957+43]) ghost
+                                                    None
+                                                ]
+                                        "annot" (ast_inject.ml[30,1002+17]..[30,1002+22])
+                                          expression (ast_inject.ml[31,1027+19]..[31,1027+118])
+                                            Pexp_constant Const_string("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",None)
+                                        "fn" (ast_inject.ml[32,1147+17]..[32,1147+19])
+                                          expression (ast_inject.ml[33,1169+19]..[44,1730+75])
+                                            Pexp_apply
+                                            expression (ast_inject.ml[33,1169+20]..[33,1169+35])
+                                              Pexp_ident "Gramf.mk_action" (ast_inject.ml[33,1169+20]..[33,1169+35])
+                                            [
+                                              <label> ""
+                                                expression (ast_inject.ml[34,1205+22]..[44,1730+74]) ghost
+                                                  Pexp_constraint
+                                                  expression (ast_inject.ml[34,1205+23]..[43,1666+47])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (ast_inject.ml[35,1237+25]..[35,1237+47])
+                                                          Ppat_constraint
+                                                          pattern (ast_inject.ml[35,1237+26]..[35,1237+33])
+                                                            Ppat_var "__fan_0" (ast_inject.ml[35,1237+26]..[35,1237+33])
+                                                          core_type (ast_inject.ml[35,1237+36]..[35,1237+46])
+                                                            Ptyp_constr "Tokenf.txt" (ast_inject.ml[35,1237+36]..[35,1237+46])
+                                                            []
+                                                        expression (ast_inject.ml[36,1288+27]..[43,1666+47])
+                                                          Pexp_function
+                                                          [
+                                                            <case>
+                                                              pattern (ast_inject.ml[37,1325+30]..[37,1325+45])
+                                                                Ppat_constraint
+                                                                pattern (ast_inject.ml[37,1325+31]..[37,1325+35])
+                                                                  Ppat_var "_loc" (ast_inject.ml[37,1325+31]..[37,1325+35])
+                                                                core_type (ast_inject.ml[37,1325+38]..[37,1325+44])
+                                                                  Ptyp_constr "Locf.t" (ast_inject.ml[37,1325+38]..[37,1325+44])
+                                                                  []
+                                                              expression (ast_inject.ml[38,1374+32]..[43,1666+46])
+                                                                Pexp_let Nonrec
+                                                                [
+                                                                  <def>
+                                                                    pattern (ast_inject.ml[38,1374+36]..[38,1374+37])
+                                                                      Ppat_var "x" (ast_inject.ml[38,1374+36]..[38,1374+37])
+                                                                    expression (ast_inject.ml[38,1374+40]..[38,1374+51])
+                                                                      Pexp_field
+                                                                      expression (ast_inject.ml[38,1374+40]..[38,1374+47])
+Pexp_ident "__fan_0" (ast_inject.ml[38,1374+40]..[38,1374+47])
+                                                                      "txt" (ast_inject.ml[38,1374+48]..[38,1374+51])
+                                                                ]
+                                                                expression (ast_inject.ml[39,1429+32]..[43,1666+46]) ghost
+                                                                  Pexp_constraint
+                                                                  expression (ast_inject.ml[39,1429+33]..[42,1586+76])
+                                                                    Pexp_try
+                                                                    expression (ast_inject.ml[39,1429+38]..[39,1429+67])
+                                                                      Pexp_apply
+                                                                      expression (ast_inject.ml[39,1429+38]..[39,1429+50])
+Pexp_ident "Hashtbl.find" (ast_inject.ml[39,1429+38]..[39,1429+50])
+                                                                      [
+<label> ""
+  expression (ast_inject.ml[39,1429+51]..[39,1429+65])
+    Pexp_ident "inject_exp_tbl" (ast_inject.ml[39,1429+51]..[39,1429+65])
+<label> ""
+  expression (ast_inject.ml[39,1429+66]..[39,1429+67])
+    Pexp_ident "x" (ast_inject.ml[39,1429+66]..[39,1429+67])
+                                                                      ]
+                                                                    [
+                                                                      <case>
+pattern (ast_inject.ml[41,1536+36]..[41,1536+45])
+  Ppat_construct "Not_found" (ast_inject.ml[41,1536+36]..[41,1536+45])
+  None
+expression (ast_inject.ml[42,1586+38]..[42,1586+75])
+  Pexp_apply
+  expression (ast_inject.ml[42,1586+38]..[42,1586+47])
+    Pexp_ident "failwithf" (ast_inject.ml[42,1586+38]..[42,1586+47])
+  [
+    <label> ""
+      expression (ast_inject.ml[42,1586+48]..[42,1586+73])
+        Pexp_constant Const_string("inject.exp %s not found",None)
+    <label> ""
+      expression (ast_inject.ml[42,1586+74]..[42,1586+75])
+        Pexp_ident "x" (ast_inject.ml[42,1586+74]..[42,1586+75])
+  ]
+                                                                    ]
+                                                                  core_type (ast_inject.ml[43,1666+34]..[43,1666+45])
+                                                                    Ptyp_var inject_exp
+                                                          ]
+                                                    ]
+                                                  core_type (ast_inject.ml[43,1666+50]..[44,1730+73])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (ast_inject.ml[43,1666+50]..[43,1666+60])
+                                                      Ptyp_constr "Tokenf.txt" (ast_inject.ml[43,1666+50]..[43,1666+60])
+                                                      []
+                                                    core_type (ast_inject.ml[44,1730+52]..[44,1730+73])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (ast_inject.ml[44,1730+52]..[44,1730+58])
+                                                        Ptyp_constr "Locf.t" (ast_inject.ml[44,1730+52]..[44,1730+58])
+                                                        []
+                                                      core_type (ast_inject.ml[44,1730+62]..[44,1730+73])
+                                                        Ptyp_var inject_exp
+                                            ]
+                                      ]
+                                      None
+                                    expression (ast_inject.ml[45,1806+16]..[45,1806+17]) ghost
+                                      Pexp_construct "[]" (ast_inject.ml[45,1806+16]..[45,1806+17]) ghost
+                                      None
+                                  ]
+                        ]
+                        None
+                      core_type (ast_inject.ml[46,1824+14]..[46,1824+26])
+                        Ptyp_constr "Gramf.olevel" (ast_inject.ml[46,1824+14]..[46,1824+26])
+                        []
+                ]
+                None
+              core_type (ast_inject.ml[47,1852+9]..[47,1852+40])
+                Ptyp_constr "Gramf.single_extend_statement" (ast_inject.ml[47,1852+11]..[47,1852+40])
+                [
+                  core_type (ast_inject.ml[47,1852+9]..[47,1852+10])
+                    Ptyp_any
+                ]
+        ]
+      expression (ast_inject.ml[48,1895+2]..[110,4491+41])
+        Pexp_sequence
+        expression (ast_inject.ml[48,1895+2]..[78,3132+41])
+          Pexp_apply
+          expression (ast_inject.ml[48,1895+2]..[48,1895+21])
+            Pexp_ident "Gramf.extend_single" (ast_inject.ml[48,1895+2]..[48,1895+21])
+          [
+            <label> ""
+              expression (ast_inject.ml[49,1917+4]..[78,3132+41]) ghost
+                Pexp_constraint
+                expression (ast_inject.ml[49,1917+5]..[78,3132+6])
+                  Pexp_record
+                  [
+                    "entry" (ast_inject.ml[50,1924+7]..[50,1924+12])
+                      expression (ast_inject.ml[50,1924+15]..[50,1924+51]) ghost
+                        Pexp_constraint
+                        expression (ast_inject.ml[50,1924+16]..[50,1924+27])
+                          Pexp_ident "inject_stru" (ast_inject.ml[50,1924+16]..[50,1924+27])
+                        core_type (ast_inject.ml[50,1924+30]..[50,1924+50])
+                          Ptyp_constr "Gramf.t" (ast_inject.ml[50,1924+43]..[50,1924+50])
+                          [
+                            core_type (ast_inject.ml[50,1924+30]..[50,1924+42])
+                              Ptyp_var inject_stru
+                          ]
+                    "olevel" (ast_inject.ml[51,1977+7]..[51,1977+13])
+                      expression (ast_inject.ml[52,1993+9]..[77,3104+27]) ghost
+                        Pexp_constraint
+                        expression (ast_inject.ml[52,1993+10]..[77,3104+11])
+                          Pexp_record
+                          [
+                            "label" (ast_inject.ml[53,2005+12]..[53,2005+17])
+                              expression (ast_inject.ml[53,2005+20]..[53,2005+24])
+                                Pexp_construct "None" (ast_inject.ml[53,2005+20]..[53,2005+24])
+                                None
+                            "lassoc" (ast_inject.ml[54,2031+12]..[54,2031+18])
+                              expression (ast_inject.ml[54,2031+21]..[54,2031+25])
+                                Pexp_construct "true" (ast_inject.ml[54,2031+21]..[54,2031+25])
+                                None
+                            "productions" (ast_inject.ml[55,2058+12]..[55,2058+23])
+                              expression (ast_inject.ml[56,2084+14]..[76,3086+17])
+                                Pexp_construct "::" (ast_inject.ml[56,2084+15]..[76,3086+17]) ghost
+                                Some
+                                  expression (ast_inject.ml[56,2084+15]..[76,3086+17]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (ast_inject.ml[56,2084+15]..[76,3086+16])
+                                        Pexp_record
+                                        [
+                                          "symbols" (ast_inject.ml[57,2101+17]..[57,2101+24])
+                                            expression (ast_inject.ml[58,2128+19]..[60,2232+43])
+                                              Pexp_construct "::" (ast_inject.ml[58,2128+20]..[60,2232+43]) ghost
+                                              Some
+                                                expression (ast_inject.ml[58,2128+20]..[60,2232+43]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (ast_inject.ml[58,2128+20]..[60,2232+42])
+                                                      Pexp_construct "Token" (ast_inject.ml[58,2128+20]..[58,2128+25])
+                                                      Some
+                                                        expression (ast_inject.ml[59,2154+22]..[60,2232+42]) ghost
+                                                          Pexp_constraint
+                                                          expression (ast_inject.ml[59,2154+23]..[60,2232+24])
+                                                            Pexp_record
+                                                            [
+                                                              "descr" (ast_inject.ml[59,2154+25]..[59,2154+30])
+                                                                expression (ast_inject.ml[59,2154+33]..[59,2154+77])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "tag" (ast_inject.ml[59,2154+35]..[59,2154+38])
+                                                                      expression (ast_inject.ml[59,2154+41]..[59,2154+45])
+Pexp_variant "Lid"
+None
+                                                                    "word" (ast_inject.ml[59,2154+47]..[59,2154+51])
+                                                                      expression (ast_inject.ml[59,2154+54]..[59,2154+57])
+Pexp_construct "Any" (ast_inject.ml[59,2154+54]..[59,2154+57])
+None
+                                                                    "tag_name" (ast_inject.ml[59,2154+59]..[59,2154+67])
+                                                                      expression (ast_inject.ml[59,2154+70]..[59,2154+75])
+Pexp_constant Const_string("Lid",None)
+                                                                  ]
+                                                                  None
+                                                            ]
+                                                            None
+                                                          core_type (ast_inject.ml[60,2232+27]..[60,2232+41])
+                                                            Ptyp_constr "Tokenf.pattern" (ast_inject.ml[60,2232+27]..[60,2232+41])
+                                                            []
+                                                    expression (ast_inject.ml[60,2232+42]..[60,2232+43]) ghost
+                                                      Pexp_construct "[]" (ast_inject.ml[60,2232+42]..[60,2232+43]) ghost
+                                                      None
+                                                  ]
+                                          "annot" (ast_inject.ml[61,2277+17]..[61,2277+22])
+                                            expression (ast_inject.ml[62,2302+19]..[62,2302+119])
+                                              Pexp_constant Const_string("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",None)
+                                          "fn" (ast_inject.ml[63,2423+17]..[63,2423+19])
+                                            expression (ast_inject.ml[64,2445+19]..[75,3008+77])
+                                              Pexp_apply
+                                              expression (ast_inject.ml[64,2445+20]..[64,2445+35])
+                                                Pexp_ident "Gramf.mk_action" (ast_inject.ml[64,2445+20]..[64,2445+35])
+                                              [
+                                                <label> ""
+                                                  expression (ast_inject.ml[65,2481+22]..[75,3008+76]) ghost
+                                                    Pexp_constraint
+                                                    expression (ast_inject.ml[65,2481+23]..[74,2943+48])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (ast_inject.ml[66,2513+25]..[66,2513+47])
+                                                            Ppat_constraint
+                                                            pattern (ast_inject.ml[66,2513+26]..[66,2513+33])
+                                                              Ppat_var "__fan_0" (ast_inject.ml[66,2513+26]..[66,2513+33])
+                                                            core_type (ast_inject.ml[66,2513+36]..[66,2513+46])
+                                                              Ptyp_constr "Tokenf.txt" (ast_inject.ml[66,2513+36]..[66,2513+46])
+                                                              []
+                                                          expression (ast_inject.ml[67,2564+27]..[74,2943+48])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (ast_inject.ml[68,2601+30]..[68,2601+45])
+                                                                  Ppat_constraint
+                                                                  pattern (ast_inject.ml[68,2601+31]..[68,2601+35])
+                                                                    Ppat_var "_loc" (ast_inject.ml[68,2601+31]..[68,2601+35])
+                                                                  core_type (ast_inject.ml[68,2601+38]..[68,2601+44])
+                                                                    Ptyp_constr "Locf.t" (ast_inject.ml[68,2601+38]..[68,2601+44])
+                                                                    []
+                                                                expression (ast_inject.ml[69,2650+32]..[74,2943+47])
+                                                                  Pexp_let Nonrec
+                                                                  [
+                                                                    <def>
+                                                                      pattern (ast_inject.ml[69,2650+36]..[69,2650+37])
+Ppat_var "x" (ast_inject.ml[69,2650+36]..[69,2650+37])
+                                                                      expression (ast_inject.ml[69,2650+40]..[69,2650+51])
+Pexp_field
+expression (ast_inject.ml[69,2650+40]..[69,2650+47])
+  Pexp_ident "__fan_0" (ast_inject.ml[69,2650+40]..[69,2650+47])
+"txt" (ast_inject.ml[69,2650+48]..[69,2650+51])
+                                                                  ]
+                                                                  expression (ast_inject.ml[70,2705+32]..[74,2943+47]) ghost
+                                                                    Pexp_constraint
+                                                                    expression (ast_inject.ml[70,2705+33]..[73,2863+76])
+                                                                      Pexp_try
+                                                                      expression (ast_inject.ml[70,2705+38]..[70,2705+68])
+Pexp_apply
+expression (ast_inject.ml[70,2705+38]..[70,2705+50])
+  Pexp_ident "Hashtbl.find" (ast_inject.ml[70,2705+38]..[70,2705+50])
+[
+  <label> ""
+    expression (ast_inject.ml[70,2705+51]..[70,2705+66])
+      Pexp_ident "inject_stru_tbl" (ast_inject.ml[70,2705+51]..[70,2705+66])
+  <label> ""
+    expression (ast_inject.ml[70,2705+67]..[70,2705+68])
+      Pexp_ident "x" (ast_inject.ml[70,2705+67]..[70,2705+68])
+]
+                                                                      [
+<case>
+  pattern (ast_inject.ml[72,2813+36]..[72,2813+45])
+    Ppat_construct "Not_found" (ast_inject.ml[72,2813+36]..[72,2813+45])
+    None
+  expression (ast_inject.ml[73,2863+38]..[73,2863+75])
+    Pexp_apply
+    expression (ast_inject.ml[73,2863+38]..[73,2863+47])
+      Pexp_ident "failwithf" (ast_inject.ml[73,2863+38]..[73,2863+47])
+    [
+      <label> ""
+        expression (ast_inject.ml[73,2863+48]..[73,2863+73])
+          Pexp_constant Const_string("inject.exp %s not found",None)
+      <label> ""
+        expression (ast_inject.ml[73,2863+74]..[73,2863+75])
+          Pexp_ident "x" (ast_inject.ml[73,2863+74]..[73,2863+75])
+    ]
+                                                                      ]
+                                                                    core_type (ast_inject.ml[74,2943+34]..[74,2943+46])
+                                                                      Ptyp_var inject_stru
+                                                            ]
+                                                      ]
+                                                    core_type (ast_inject.ml[74,2943+51]..[75,3008+75])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (ast_inject.ml[74,2943+51]..[74,2943+61])
+                                                        Ptyp_constr "Tokenf.txt" (ast_inject.ml[74,2943+51]..[74,2943+61])
+                                                        []
+                                                      core_type (ast_inject.ml[75,3008+53]..[75,3008+75])
+                                                        Ptyp_arrow
+                                                        ""
+                                                        core_type (ast_inject.ml[75,3008+53]..[75,3008+59])
+                                                          Ptyp_constr "Locf.t" (ast_inject.ml[75,3008+53]..[75,3008+59])
+                                                          []
+                                                        core_type (ast_inject.ml[75,3008+63]..[75,3008+75])
+                                                          Ptyp_var inject_stru
+                                              ]
+                                        ]
+                                        None
+                                      expression (ast_inject.ml[76,3086+16]..[76,3086+17]) ghost
+                                        Pexp_construct "[]" (ast_inject.ml[76,3086+16]..[76,3086+17]) ghost
+                                        None
+                                    ]
+                          ]
+                          None
+                        core_type (ast_inject.ml[77,3104+14]..[77,3104+26])
+                          Ptyp_constr "Gramf.olevel" (ast_inject.ml[77,3104+14]..[77,3104+26])
+                          []
+                  ]
+                  None
+                core_type (ast_inject.ml[78,3132+9]..[78,3132+40])
+                  Ptyp_constr "Gramf.single_extend_statement" (ast_inject.ml[78,3132+11]..[78,3132+40])
+                  [
+                    core_type (ast_inject.ml[78,3132+9]..[78,3132+10])
+                      Ptyp_any
+                  ]
+          ]
+        expression (ast_inject.ml[79,3175+2]..[110,4491+41])
+          Pexp_apply
+          expression (ast_inject.ml[79,3175+2]..[79,3175+21])
+            Pexp_ident "Gramf.extend_single" (ast_inject.ml[79,3175+2]..[79,3175+21])
+          [
+            <label> ""
+              expression (ast_inject.ml[80,3197+4]..[110,4491+41]) ghost
+                Pexp_constraint
+                expression (ast_inject.ml[80,3197+5]..[110,4491+6])
+                  Pexp_record
+                  [
+                    "entry" (ast_inject.ml[81,3204+7]..[81,3204+12])
+                      expression (ast_inject.ml[81,3204+15]..[81,3204+57]) ghost
+                        Pexp_constraint
+                        expression (ast_inject.ml[81,3204+16]..[81,3204+30])
+                          Pexp_ident "inject_clfield" (ast_inject.ml[81,3204+16]..[81,3204+30])
+                        core_type (ast_inject.ml[81,3204+33]..[81,3204+56])
+                          Ptyp_constr "Gramf.t" (ast_inject.ml[81,3204+49]..[81,3204+56])
+                          [
+                            core_type (ast_inject.ml[81,3204+33]..[81,3204+48])
+                              Ptyp_var inject_clfield
+                          ]
+                    "olevel" (ast_inject.ml[82,3263+7]..[82,3263+13])
+                      expression (ast_inject.ml[83,3279+9]..[109,4463+27]) ghost
+                        Pexp_constraint
+                        expression (ast_inject.ml[83,3279+10]..[109,4463+11])
+                          Pexp_record
+                          [
+                            "label" (ast_inject.ml[84,3291+12]..[84,3291+17])
+                              expression (ast_inject.ml[84,3291+20]..[84,3291+24])
+                                Pexp_construct "None" (ast_inject.ml[84,3291+20]..[84,3291+24])
+                                None
+                            "lassoc" (ast_inject.ml[85,3317+12]..[85,3317+18])
+                              expression (ast_inject.ml[85,3317+21]..[85,3317+25])
+                                Pexp_construct "true" (ast_inject.ml[85,3317+21]..[85,3317+25])
+                                None
+                            "productions" (ast_inject.ml[86,3344+12]..[86,3344+23])
+                              expression (ast_inject.ml[87,3370+14]..[108,4445+17])
+                                Pexp_construct "::" (ast_inject.ml[87,3370+15]..[108,4445+17]) ghost
+                                Some
+                                  expression (ast_inject.ml[87,3370+15]..[108,4445+17]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (ast_inject.ml[87,3370+15]..[108,4445+16])
+                                        Pexp_record
+                                        [
+                                          "symbols" (ast_inject.ml[88,3387+17]..[88,3387+24])
+                                            expression (ast_inject.ml[89,3414+19]..[91,3518+43])
+                                              Pexp_construct "::" (ast_inject.ml[89,3414+20]..[91,3518+43]) ghost
+                                              Some
+                                                expression (ast_inject.ml[89,3414+20]..[91,3518+43]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (ast_inject.ml[89,3414+20]..[91,3518+42])
+                                                      Pexp_construct "Token" (ast_inject.ml[89,3414+20]..[89,3414+25])
+                                                      Some
+                                                        expression (ast_inject.ml[90,3440+22]..[91,3518+42]) ghost
+                                                          Pexp_constraint
+                                                          expression (ast_inject.ml[90,3440+23]..[91,3518+24])
+                                                            Pexp_record
+                                                            [
+                                                              "descr" (ast_inject.ml[90,3440+25]..[90,3440+30])
+                                                                expression (ast_inject.ml[90,3440+33]..[90,3440+77])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "tag" (ast_inject.ml[90,3440+35]..[90,3440+38])
+                                                                      expression (ast_inject.ml[90,3440+41]..[90,3440+45])
+Pexp_variant "Lid"
+None
+                                                                    "word" (ast_inject.ml[90,3440+47]..[90,3440+51])
+                                                                      expression (ast_inject.ml[90,3440+54]..[90,3440+57])
+Pexp_construct "Any" (ast_inject.ml[90,3440+54]..[90,3440+57])
+None
+                                                                    "tag_name" (ast_inject.ml[90,3440+59]..[90,3440+67])
+                                                                      expression (ast_inject.ml[90,3440+70]..[90,3440+75])
+Pexp_constant Const_string("Lid",None)
+                                                                  ]
+                                                                  None
+                                                            ]
+                                                            None
+                                                          core_type (ast_inject.ml[91,3518+27]..[91,3518+41])
+                                                            Ptyp_constr "Tokenf.pattern" (ast_inject.ml[91,3518+27]..[91,3518+41])
+                                                            []
+                                                    expression (ast_inject.ml[91,3518+42]..[91,3518+43]) ghost
+                                                      Pexp_construct "[]" (ast_inject.ml[91,3518+42]..[91,3518+43]) ghost
+                                                      None
+                                                  ]
+                                          "annot" (ast_inject.ml[92,3563+17]..[92,3563+22])
+                                            expression (ast_inject.ml[93,3588+19]..[93,3588+122])
+                                              Pexp_constant Const_string("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",None)
+                                          "fn" (ast_inject.ml[94,3712+17]..[94,3712+19])
+                                            expression (ast_inject.ml[95,3734+19]..[107,4369+75])
+                                              Pexp_apply
+                                              expression (ast_inject.ml[95,3734+20]..[95,3734+35])
+                                                Pexp_ident "Gramf.mk_action" (ast_inject.ml[95,3734+20]..[95,3734+35])
+                                              [
+                                                <label> ""
+                                                  expression (ast_inject.ml[96,3770+22]..[107,4369+74]) ghost
+                                                    Pexp_constraint
+                                                    expression (ast_inject.ml[96,3770+23]..[105,4235+51])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (ast_inject.ml[97,3802+25]..[97,3802+47])
+                                                            Ppat_constraint
+                                                            pattern (ast_inject.ml[97,3802+26]..[97,3802+33])
+                                                              Ppat_var "__fan_0" (ast_inject.ml[97,3802+26]..[97,3802+33])
+                                                            core_type (ast_inject.ml[97,3802+36]..[97,3802+46])
+                                                              Ptyp_constr "Tokenf.txt" (ast_inject.ml[97,3802+36]..[97,3802+46])
+                                                              []
+                                                          expression (ast_inject.ml[98,3853+27]..[105,4235+51])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (ast_inject.ml[99,3890+30]..[99,3890+45])
+                                                                  Ppat_constraint
+                                                                  pattern (ast_inject.ml[99,3890+31]..[99,3890+35])
+                                                                    Ppat_var "_loc" (ast_inject.ml[99,3890+31]..[99,3890+35])
+                                                                  core_type (ast_inject.ml[99,3890+38]..[99,3890+44])
+                                                                    Ptyp_constr "Locf.t" (ast_inject.ml[99,3890+38]..[99,3890+44])
+                                                                    []
+                                                                expression (ast_inject.ml[100,3939+32]..[105,4235+50])
+                                                                  Pexp_let Nonrec
+                                                                  [
+                                                                    <def>
+                                                                      pattern (ast_inject.ml[100,3939+36]..[100,3939+37])
+Ppat_var "x" (ast_inject.ml[100,3939+36]..[100,3939+37])
+                                                                      expression (ast_inject.ml[100,3939+40]..[100,3939+51])
+Pexp_field
+expression (ast_inject.ml[100,3939+40]..[100,3939+47])
+  Pexp_ident "__fan_0" (ast_inject.ml[100,3939+40]..[100,3939+47])
+"txt" (ast_inject.ml[100,3939+48]..[100,3939+51])
+                                                                  ]
+                                                                  expression (ast_inject.ml[101,3994+32]..[105,4235+50]) ghost
+                                                                    Pexp_constraint
+                                                                    expression (ast_inject.ml[101,3994+33]..[104,4155+76])
+                                                                      Pexp_try
+                                                                      expression (ast_inject.ml[101,3994+38]..[101,3994+71])
+Pexp_apply
+expression (ast_inject.ml[101,3994+38]..[101,3994+50])
+  Pexp_ident "Hashtbl.find" (ast_inject.ml[101,3994+38]..[101,3994+50])
+[
+  <label> ""
+    expression (ast_inject.ml[101,3994+51]..[101,3994+69])
+      Pexp_ident "inject_clfield_tbl" (ast_inject.ml[101,3994+51]..[101,3994+69])
+  <label> ""
+    expression (ast_inject.ml[101,3994+70]..[101,3994+71])
+      Pexp_ident "x" (ast_inject.ml[101,3994+70]..[101,3994+71])
+]
+                                                                      [
+<case>
+  pattern (ast_inject.ml[103,4105+36]..[103,4105+45])
+    Ppat_construct "Not_found" (ast_inject.ml[103,4105+36]..[103,4105+45])
+    None
+  expression (ast_inject.ml[104,4155+38]..[104,4155+75])
+    Pexp_apply
+    expression (ast_inject.ml[104,4155+38]..[104,4155+47])
+      Pexp_ident "failwithf" (ast_inject.ml[104,4155+38]..[104,4155+47])
+    [
+      <label> ""
+        expression (ast_inject.ml[104,4155+48]..[104,4155+73])
+          Pexp_constant Const_string("inject.exp %s not found",None)
+      <label> ""
+        expression (ast_inject.ml[104,4155+74]..[104,4155+75])
+          Pexp_ident "x" (ast_inject.ml[104,4155+74]..[104,4155+75])
+    ]
+                                                                      ]
+                                                                    core_type (ast_inject.ml[105,4235+34]..[105,4235+49])
+                                                                      Ptyp_var inject_clfield
+                                                            ]
+                                                      ]
+                                                    core_type (ast_inject.ml[105,4235+54]..[107,4369+73])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (ast_inject.ml[105,4235+54]..[105,4235+64])
+                                                        Ptyp_constr "Tokenf.txt" (ast_inject.ml[105,4235+54]..[105,4235+64])
+                                                        []
+                                                      core_type (ast_inject.ml[106,4303+56]..[107,4369+73])
+                                                        Ptyp_arrow
+                                                        ""
+                                                        core_type (ast_inject.ml[106,4303+56]..[106,4303+62])
+                                                          Ptyp_constr "Locf.t" (ast_inject.ml[106,4303+56]..[106,4303+62])
+                                                          []
+                                                        core_type (ast_inject.ml[107,4369+58]..[107,4369+73])
+                                                          Ptyp_var inject_clfield
+                                              ]
+                                        ]
+                                        None
+                                      expression (ast_inject.ml[108,4445+16]..[108,4445+17]) ghost
+                                        Pexp_construct "[]" (ast_inject.ml[108,4445+16]..[108,4445+17]) ghost
+                                        None
+                                    ]
+                          ]
+                          None
+                        core_type (ast_inject.ml[109,4463+14]..[109,4463+26])
+                          Ptyp_constr "Gramf.olevel" (ast_inject.ml[109,4463+14]..[109,4463+26])
+                          []
+                  ]
+                  None
+                core_type (ast_inject.ml[110,4491+9]..[110,4491+40])
+                  Ptyp_constr "Gramf.single_extend_statement" (ast_inject.ml[110,4491+11]..[110,4491+40])
+                  [
+                    core_type (ast_inject.ml[110,4491+9]..[110,4491+10])
+                      Ptyp_any
+                  ]
+          ]
+  structure_item (ast_inject.ml[111,4533+0]..[116,4730+74])
+    Pstr_eval
+    expression (ast_inject.ml[112,4541+2]..[116,4730+74])
+      Pexp_open Fresh ""Ast_quotation" (ast_inject.ml[112,4541+11]..[112,4541+24])"
+      expression (ast_inject.ml[113,4569+4]..[116,4730+74])
+        Pexp_let Nonrec
+        [
+          <def>
+            pattern (ast_inject.ml[113,4569+8]..[113,4569+14])
+              Ppat_var "domain" (ast_inject.ml[113,4569+8]..[113,4569+14])
+            expression (ast_inject.ml[113,4569+17]..[113,4569+26])
+              Pexp_ident "Ns.inject" (ast_inject.ml[113,4569+17]..[113,4569+26])
+        ]
+        expression (ast_inject.ml[114,4599+4]..[116,4730+74])
+          Pexp_sequence
+          expression (ast_inject.ml[114,4599+4]..[114,4599+62])
+            Pexp_apply
+            expression (ast_inject.ml[114,4599+4]..[114,4599+10])
+              Pexp_ident "of_exp" (ast_inject.ml[114,4599+4]..[114,4599+10])
+            [
+              <label> "name"
+                expression (ast_inject.ml[114,4599+17]..[114,4599+41])
+                  Pexp_record
+                  [
+                    "domain" (ast_inject.ml[114,4599+19]..[114,4599+25])
+                      expression (ast_inject.ml[114,4599+19]..[114,4599+25])
+                        Pexp_ident "domain" (ast_inject.ml[114,4599+19]..[114,4599+25])
+                    "name" (ast_inject.ml[114,4599+27]..[114,4599+31])
+                      expression (ast_inject.ml[114,4599+34]..[114,4599+39])
+                        Pexp_constant Const_string("exp",None)
+                  ]
+                  None
+              <label> "entry"
+                expression (ast_inject.ml[114,4599+49]..[114,4599+59])
+                  Pexp_ident "inject_exp" (ast_inject.ml[114,4599+49]..[114,4599+59])
+              <label> ""
+                expression (ast_inject.ml[114,4599+60]..[114,4599+62])
+                  Pexp_construct "()" (ast_inject.ml[114,4599+60]..[114,4599+62])
+                  None
+            ]
+          expression (ast_inject.ml[115,4663+4]..[116,4730+74])
+            Pexp_sequence
+            expression (ast_inject.ml[115,4663+4]..[115,4663+65])
+              Pexp_apply
+              expression (ast_inject.ml[115,4663+4]..[115,4663+11])
+                Pexp_ident "of_stru" (ast_inject.ml[115,4663+4]..[115,4663+11])
+              [
+                <label> "name"
+                  expression (ast_inject.ml[115,4663+18]..[115,4663+43])
+                    Pexp_record
+                    [
+                      "domain" (ast_inject.ml[115,4663+20]..[115,4663+26])
+                        expression (ast_inject.ml[115,4663+20]..[115,4663+26])
+                          Pexp_ident "domain" (ast_inject.ml[115,4663+20]..[115,4663+26])
+                      "name" (ast_inject.ml[115,4663+28]..[115,4663+32])
+                        expression (ast_inject.ml[115,4663+35]..[115,4663+41])
+                          Pexp_constant Const_string("stru",None)
+                    ]
+                    None
+                <label> "entry"
+                  expression (ast_inject.ml[115,4663+51]..[115,4663+62])
+                    Pexp_ident "inject_stru" (ast_inject.ml[115,4663+51]..[115,4663+62])
+                <label> ""
+                  expression (ast_inject.ml[115,4663+63]..[115,4663+65])
+                    Pexp_construct "()" (ast_inject.ml[115,4663+63]..[115,4663+65])
+                    None
+              ]
+            expression (ast_inject.ml[116,4730+4]..[116,4730+74])
+              Pexp_apply
+              expression (ast_inject.ml[116,4730+4]..[116,4730+14])
+                Pexp_ident "of_clfield" (ast_inject.ml[116,4730+4]..[116,4730+14])
+              [
+                <label> "name"
+                  expression (ast_inject.ml[116,4730+21]..[116,4730+49])
+                    Pexp_record
+                    [
+                      "domain" (ast_inject.ml[116,4730+23]..[116,4730+29])
+                        expression (ast_inject.ml[116,4730+23]..[116,4730+29])
+                          Pexp_ident "domain" (ast_inject.ml[116,4730+23]..[116,4730+29])
+                      "name" (ast_inject.ml[116,4730+31]..[116,4730+35])
+                        expression (ast_inject.ml[116,4730+38]..[116,4730+47])
+                          Pexp_constant Const_string("clfield",None)
+                    ]
+                    None
+                <label> "entry"
+                  expression (ast_inject.ml[116,4730+57]..[116,4730+71])
+                    Pexp_ident "inject_clfield" (ast_inject.ml[116,4730+57]..[116,4730+71])
+                <label> ""
+                  expression (ast_inject.ml[116,4730+72]..[116,4730+74])
+                    Pexp_construct "()" (ast_inject.ml[116,4730+72]..[116,4730+74])
+                    None
+              ]
+]

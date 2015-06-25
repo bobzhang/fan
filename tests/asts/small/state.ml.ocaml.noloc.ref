@@ -1,0 +1,252 @@
+[
+  structure_item (state.ml[]..[])
+    Pstr_open Fresh "Sigs_util" (state.ml[]..[])
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "current_filters" (state.ml[]..[])
+        expression (state.ml[]..[]) 
+          Pexp_constraint
+          expression (state.ml[]..[])
+            Pexp_apply
+            expression (state.ml[]..[])
+              Pexp_ident "ref" (state.ml[]..[])
+            [
+              <label> ""
+                expression (state.ml[]..[])
+                  Pexp_construct "[]" (state.ml[]..[])
+                  None
+            ]
+          core_type (state.ml[]..[])
+            Ptyp_constr "ref" (state.ml[]..[])
+            [
+              core_type (state.ml[]..[])
+                Ptyp_constr "list" (state.ml[]..[])
+                [
+                  core_type (state.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (state.ml[]..[])
+                        Ptyp_constr "plugin_name" (state.ml[]..[])
+                        []
+                      core_type (state.ml[]..[])
+                        Ptyp_constr "plugin" (state.ml[]..[])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "reset_current_filters" (state.ml[]..[])
+        expression (state.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (state.ml[]..[])
+                Ppat_construct "()" (state.ml[]..[])
+                None
+              expression (state.ml[]..[])
+                Pexp_apply
+                expression (state.ml[]..[])
+                  Pexp_ident ":=" (state.ml[]..[])
+                [
+                  <label> ""
+                    expression (state.ml[]..[])
+                      Pexp_ident "current_filters" (state.ml[]..[])
+                  <label> ""
+                    expression (state.ml[]..[])
+                      Pexp_construct "[]" (state.ml[]..[])
+                      None
+                ]
+          ]
+    ]
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "keep" (state.ml[]..[])
+        expression (state.ml[]..[])
+          Pexp_apply
+          expression (state.ml[]..[])
+            Pexp_ident "ref" (state.ml[]..[])
+          [
+            <label> ""
+              expression (state.ml[]..[])
+                Pexp_construct "true" (state.ml[]..[])
+                None
+          ]
+    ]
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "id" (state.ml[]..[])
+        expression (state.ml[]..[])
+          Pexp_apply
+          expression (state.ml[]..[])
+            Pexp_ident "ref" (state.ml[]..[])
+          [
+            <label> ""
+              expression (state.ml[]..[])
+                Pexp_constant Const_int 0
+          ]
+    ]
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "reset" (state.ml[]..[])
+        expression (state.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (state.ml[]..[])
+                Ppat_construct "()" (state.ml[]..[])
+                None
+              expression (state.ml[]..[])
+                Pexp_sequence
+                expression (state.ml[]..[])
+                  Pexp_apply
+                  expression (state.ml[]..[])
+                    Pexp_ident ":=" (state.ml[]..[])
+                  [
+                    <label> ""
+                      expression (state.ml[]..[])
+                        Pexp_ident "keep" (state.ml[]..[])
+                    <label> ""
+                      expression (state.ml[]..[])
+                        Pexp_construct "true" (state.ml[]..[])
+                        None
+                  ]
+                expression (state.ml[]..[])
+                  Pexp_apply
+                  expression (state.ml[]..[])
+                    Pexp_ident ":=" (state.ml[]..[])
+                  [
+                    <label> ""
+                      expression (state.ml[]..[])
+                        Pexp_ident "current_filters" (state.ml[]..[])
+                    <label> ""
+                      expression (state.ml[]..[])
+                        Pexp_construct "[]" (state.ml[]..[])
+                        None
+                  ]
+          ]
+    ]
+  structure_item (state.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[]..[])
+          Ppat_var "gensym" (state.ml[]..[])
+        expression (state.ml[]..[]) 
+          Pexp_fun "?pkg"
+          Some
+            expression (state.ml[]..[])
+              Pexp_constant Const_string("",None)
+          pattern (state.ml[]..[])
+            Ppat_var "pkg" (state.ml[]..[])
+          expression (state.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (state.ml[]..[])
+                  Ppat_var "prefix" (state.ml[]..[])
+                expression (state.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (state.ml[]..[])
+                        Ppat_var "res" (state.ml[]..[])
+                      expression (state.ml[]..[])
+                        Pexp_apply
+                        expression (state.ml[]..[])
+                          Pexp_ident "^" (state.ml[]..[])
+                        [
+                          <label> ""
+                            expression (state.ml[]..[])
+                              Pexp_constant Const_string("fan_",None)
+                          <label> ""
+                            expression (state.ml[]..[])
+                              Pexp_apply
+                              expression (state.ml[]..[])
+                                Pexp_ident "^" (state.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (state.ml[]..[])
+                                    Pexp_ident "prefix" (state.ml[]..[])
+                                <label> ""
+                                  expression (state.ml[]..[])
+                                    Pexp_apply
+                                    expression (state.ml[]..[])
+                                      Pexp_ident "^" (state.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (state.ml[]..[])
+                                          Pexp_constant Const_string("_",None)
+                                      <label> ""
+                                        expression (state.ml[]..[])
+                                          Pexp_apply
+                                          expression (state.ml[]..[])
+                                            Pexp_ident "^" (state.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (state.ml[]..[])
+                                                Pexp_ident "pkg" (state.ml[]..[])
+                                            <label> ""
+                                              expression (state.ml[]..[])
+                                                Pexp_apply
+                                                expression (state.ml[]..[])
+                                                  Pexp_ident "^" (state.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (state.ml[]..[])
+                                                      Pexp_constant Const_string("_",None)
+                                                  <label> ""
+                                                    expression (state.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (state.ml[]..[])
+                                                        Pexp_ident "string_of_int" (state.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (state.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (state.ml[]..[])
+                                                              Pexp_ident "!" (state.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (state.ml[]..[])
+                                                                  Pexp_ident "id" (state.ml[]..[])
+                                                            ]
+                                                      ]
+                                                ]
+                                          ]
+                                    ]
+                              ]
+                        ]
+                  ]
+                  expression (state.ml[]..[])
+                    Pexp_sequence
+                    expression (state.ml[]..[])
+                      Pexp_apply
+                      expression (state.ml[]..[])
+                        Pexp_ident "incr" (state.ml[]..[])
+                      [
+                        <label> ""
+                          expression (state.ml[]..[])
+                            Pexp_ident "id" (state.ml[]..[])
+                      ]
+                    expression (state.ml[]..[])
+                      Pexp_ident "res" (state.ml[]..[])
+            ]
+    ]
+]

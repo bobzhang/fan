@@ -1,0 +1,1177 @@
+[
+  structure_item (lang_monad.ml[1,0+0]..[1,0+13])
+    Pstr_open Override "Syntaxf" (lang_monad.ml[1,0+6]..[1,0+13])
+  structure_item (lang_monad.ml[2,14+0]..[2,14+9])
+    Pstr_open Fresh "Astf" (lang_monad.ml[2,14+5]..[2,14+9])
+  structure_item (lang_monad.ml[3,24+0]..[5,49+12])
+    Pstr_type
+    [
+      type_declaration "t" (lang_monad.ml[3,24+5]..[3,24+6]) (lang_monad.ml[3,24+0]..[5,49+12])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (lang_monad.ml[4,35+2]..[4,35+13])
+                Immutable
+                "bind" (lang_monad.ml[4,35+2]..[4,35+6])                core_type (lang_monad.ml[4,35+8]..[4,35+12])
+                  Ptyp_constr "bind" (lang_monad.ml[4,35+8]..[4,35+12])
+                  []
+              (lang_monad.ml[5,49+2]..[5,49+11])
+                Immutable
+                "exp" (lang_monad.ml[5,49+2]..[5,49+5])                core_type (lang_monad.ml[5,49+7]..[5,49+10])
+                  Ptyp_constr "exp" (lang_monad.ml[5,49+7]..[5,49+10])
+                  []
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (lang_monad.ml[6,62+0]..[6,62+63])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_monad.ml[6,62+4]..[6,62+15])
+          Ppat_var "specializer" (lang_monad.ml[6,62+4]..[6,62+15])
+        expression (lang_monad.ml[6,62+15]..[6,62+63]) ghost
+          Pexp_constraint
+          expression (lang_monad.ml[6,62+47]..[6,62+63])
+            Pexp_apply
+            expression (lang_monad.ml[6,62+47]..[6,62+61])
+              Pexp_ident "Hashtbl.create" (lang_monad.ml[6,62+47]..[6,62+61])
+            [
+              <label> ""
+                expression (lang_monad.ml[6,62+62]..[6,62+63])
+                  Pexp_constant Const_int 0
+            ]
+          core_type (lang_monad.ml[6,62+17]..[6,62+44])
+            Ptyp_constr "Hashtbl.t" (lang_monad.ml[6,62+35]..[6,62+44])
+            [
+              core_type (lang_monad.ml[6,62+18]..[6,62+24])
+                Ptyp_constr "string" (lang_monad.ml[6,62+18]..[6,62+24])
+                []
+              core_type (lang_monad.ml[6,62+25]..[6,62+33])
+                Ptyp_arrow
+                ""
+                core_type (lang_monad.ml[6,62+25]..[6,62+26])
+                  Ptyp_constr "t" (lang_monad.ml[6,62+25]..[6,62+26])
+                  []
+                core_type (lang_monad.ml[6,62+30]..[6,62+33])
+                  Ptyp_constr "exp" (lang_monad.ml[6,62+30]..[6,62+33])
+                  []
+            ]
+    ]
+  structure_item (lang_monad.ml[7,126+0]..[38,1417+58])
+    Pstr_eval
+    expression (lang_monad.ml[8,134+2]..[38,1417+58])
+      Pexp_let Nonrec
+      [
+        <def>
+          pattern (lang_monad.ml[8,134+6]..[8,134+10])
+            Ppat_var "+>" (lang_monad.ml[8,134+6]..[8,134+10])
+          expression (lang_monad.ml[8,134+13]..[8,134+36])
+            Pexp_apply
+            expression (lang_monad.ml[8,134+13]..[8,134+24])
+              Pexp_ident "Hashtbl.add" (lang_monad.ml[8,134+13]..[8,134+24])
+            [
+              <label> ""
+                expression (lang_monad.ml[8,134+25]..[8,134+36])
+                  Pexp_ident "specializer" (lang_monad.ml[8,134+25]..[8,134+36])
+            ]
+      ]
+      expression (lang_monad.ml[9,174+2]..[38,1417+58])
+        Pexp_apply
+        expression (lang_monad.ml[9,174+11]..[9,174+13])
+          Pexp_ident "+>" (lang_monad.ml[9,174+11]..[9,174+13])
+        [
+          <label> ""
+            expression (lang_monad.ml[9,174+2]..[9,174+10])
+              Pexp_constant Const_string("Option",None)
+          <label> ""
+            expression (lang_monad.ml[10,188+4]..[38,1417+58])
+              Pexp_function
+              [
+                <case>
+                  pattern (lang_monad.ml[11,202+7]..[11,202+8])
+                    Ppat_var "t" (lang_monad.ml[11,202+7]..[11,202+8])
+                  expression (lang_monad.ml[12,214+9]..[38,1417+57])
+                    Pexp_apply
+                    expression (lang_monad.ml[12,214+9]..[12,214+33])
+                      Pexp_ident "Ast_basic.fold_and_right" (lang_monad.ml[12,214+9]..[12,214+33])
+                    [
+                      <label> ""
+                        expression (lang_monad.ml[13,248+11]..[38,1417+44])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (lang_monad.ml[14,269+14]..[14,269+18])
+                                Ppat_var "bind" (lang_monad.ml[14,269+14]..[14,269+18])
+                              expression (lang_monad.ml[15,291+16]..[38,1417+43])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (lang_monad.ml[16,317+19]..[16,317+22])
+                                      Ppat_var "acc" (lang_monad.ml[16,317+19]..[16,317+22])
+                                    expression (lang_monad.ml[17,343+21]..[38,1417+42])
+                                      Pexp_match
+                                      expression (lang_monad.ml[17,343+28]..[17,343+32])
+                                        Pexp_ident "bind" (lang_monad.ml[17,343+28]..[17,343+32])
+                                      [
+                                        <case>
+                                          pattern (lang_monad.ml[18,381+24]..[18,381+54])
+                                            Ppat_constraint
+                                            pattern (lang_monad.ml[18,381+25]..[18,381+41])
+                                              Ppat_variant "Bind"
+                                              Some
+                                                pattern (lang_monad.ml[18,381+31]..[18,381+41])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (lang_monad.ml[18,381+32]..[18,381+36])
+                                                      Ppat_var "_loc" (lang_monad.ml[18,381+32]..[18,381+36])
+                                                    pattern (lang_monad.ml[18,381+37]..[18,381+38])
+                                                      Ppat_var "p" (lang_monad.ml[18,381+37]..[18,381+38])
+                                                    pattern (lang_monad.ml[18,381+39]..[18,381+40])
+                                                      Ppat_var "e" (lang_monad.ml[18,381+39]..[18,381+40])
+                                                  ]
+                                            core_type (lang_monad.ml[18,381+44]..[18,381+53])
+                                              Ptyp_constr "Astf.bind" (lang_monad.ml[18,381+44]..[18,381+53])
+                                              []
+                                          expression (lang_monad.ml[19,439+26]..[37,1381+35]) ghost
+                                            Pexp_coerce
+                                            expression (lang_monad.ml[19,439+27]..[36,1309+67])
+                                              Pexp_variant "Match"
+                                              Some
+                                                expression (lang_monad.ml[20,473+29]..[36,1309+67])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_monad.ml[20,473+30]..[20,473+34])
+                                                      Pexp_ident "_loc" (lang_monad.ml[20,473+30]..[20,473+34])
+                                                    expression (lang_monad.ml[21,509+31]..[25,724+56])
+                                                      Pexp_variant "Constraint"
+                                                      Some
+                                                        expression (lang_monad.ml[22,553+34]..[25,724+55])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_monad.ml[22,553+35]..[22,553+39])
+                                                              Pexp_ident "_loc" (lang_monad.ml[22,553+35]..[22,553+39])
+                                                            expression (lang_monad.ml[22,553+41]..[22,553+56]) ghost
+                                                              Pexp_coerce
+                                                              expression (lang_monad.ml[22,553+42]..[22,553+43])
+                                                                Pexp_ident "e" (lang_monad.ml[22,553+42]..[22,553+43])
+                                                              None
+                                                              core_type (lang_monad.ml[22,553+47]..[22,553+55])
+                                                                Ptyp_constr "Astf.exp" (lang_monad.ml[22,553+47]..[22,553+55])
+                                                                []
+                                                            expression (lang_monad.ml[23,611+36]..[25,724+54])
+                                                              Pexp_variant "App"
+                                                              Some
+                                                                expression (lang_monad.ml[24,653+39]..[25,724+53])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_monad.ml[24,653+40]..[24,653+44])
+                                                                      Pexp_ident "_loc" (lang_monad.ml[24,653+40]..[24,653+44])
+                                                                    expression (lang_monad.ml[24,653+46]..[24,653+69])
+                                                                      Pexp_variant "Lid"
+                                                                      Some
+expression (lang_monad.ml[24,653+52]..[24,653+68])
+  Pexp_tuple
+  [
+    expression (lang_monad.ml[24,653+53]..[24,653+57])
+      Pexp_ident "_loc" (lang_monad.ml[24,653+53]..[24,653+57])
+    expression (lang_monad.ml[24,653+59]..[24,653+67])
+      Pexp_constant Const_string("option",None)
+  ]
+                                                                    expression (lang_monad.ml[25,724+41]..[25,724+52])
+                                                                      Pexp_variant "Any"
+                                                                      Some
+expression (lang_monad.ml[25,724+47]..[25,724+51])
+  Pexp_ident "_loc" (lang_monad.ml[25,724+47]..[25,724+51])
+                                                                  ]
+                                                          ]
+                                                    expression (lang_monad.ml[26,782+31]..[36,1309+66])
+                                                      Pexp_variant "Bar"
+                                                      Some
+                                                        expression (lang_monad.ml[27,819+34]..[36,1309+65])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_monad.ml[27,819+35]..[27,819+39])
+                                                              Pexp_ident "_loc" (lang_monad.ml[27,819+35]..[27,819+39])
+                                                            expression (lang_monad.ml[28,860+36]..[33,1135+60])
+                                                              Pexp_variant "Case"
+                                                              Some
+                                                                expression (lang_monad.ml[29,903+39]..[33,1135+59])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_monad.ml[29,903+40]..[29,903+44])
+                                                                      Pexp_ident "_loc" (lang_monad.ml[29,903+40]..[29,903+44])
+                                                                    expression (lang_monad.ml[30,949+41]..[32,1070+63])
+                                                                      Pexp_variant "App"
+                                                                      Some
+expression (lang_monad.ml[31,996+44]..[32,1070+62])
+  Pexp_tuple
+  [
+    expression (lang_monad.ml[31,996+45]..[31,996+49])
+      Pexp_ident "_loc" (lang_monad.ml[31,996+45]..[31,996+49])
+    expression (lang_monad.ml[31,996+51]..[31,996+72])
+      Pexp_variant "Uid"
+      Some
+        expression (lang_monad.ml[31,996+57]..[31,996+71])
+          Pexp_tuple
+          [
+            expression (lang_monad.ml[31,996+58]..[31,996+62])
+              Pexp_ident "_loc" (lang_monad.ml[31,996+58]..[31,996+62])
+            expression (lang_monad.ml[31,996+64]..[31,996+70])
+              Pexp_constant Const_string("Some",None)
+          ]
+    expression (lang_monad.ml[32,1070+46]..[32,1070+61]) ghost
+      Pexp_coerce
+      expression (lang_monad.ml[32,1070+47]..[32,1070+48])
+        Pexp_ident "p" (lang_monad.ml[32,1070+47]..[32,1070+48])
+      None
+      core_type (lang_monad.ml[32,1070+52]..[32,1070+60])
+        Ptyp_constr "Astf.pat" (lang_monad.ml[32,1070+52]..[32,1070+60])
+        []
+  ]
+                                                                    expression (lang_monad.ml[33,1135+41]..[33,1135+58]) ghost
+                                                                      Pexp_coerce
+                                                                      expression (lang_monad.ml[33,1135+42]..[33,1135+45])
+Pexp_ident "acc" (lang_monad.ml[33,1135+42]..[33,1135+45])
+                                                                      None
+                                                                      core_type (lang_monad.ml[33,1135+49]..[33,1135+57])
+Ptyp_constr "Astf.exp" (lang_monad.ml[33,1135+49]..[33,1135+57])
+[]
+                                                                  ]
+                                                            expression (lang_monad.ml[34,1197+36]..[36,1309+64])
+                                                              Pexp_variant "Case"
+                                                              Some
+                                                                expression (lang_monad.ml[35,1240+39]..[36,1309+63])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_monad.ml[35,1240+40]..[35,1240+44])
+                                                                      Pexp_ident "_loc" (lang_monad.ml[35,1240+40]..[35,1240+44])
+                                                                    expression (lang_monad.ml[35,1240+46]..[35,1240+67])
+                                                                      Pexp_variant "Uid"
+                                                                      Some
+expression (lang_monad.ml[35,1240+52]..[35,1240+66])
+  Pexp_tuple
+  [
+    expression (lang_monad.ml[35,1240+53]..[35,1240+57])
+      Pexp_ident "_loc" (lang_monad.ml[35,1240+53]..[35,1240+57])
+    expression (lang_monad.ml[35,1240+59]..[35,1240+65])
+      Pexp_constant Const_string("None",None)
+  ]
+                                                                    expression (lang_monad.ml[36,1309+41]..[36,1309+62])
+                                                                      Pexp_variant "Uid"
+                                                                      Some
+expression (lang_monad.ml[36,1309+47]..[36,1309+61])
+  Pexp_tuple
+  [
+    expression (lang_monad.ml[36,1309+48]..[36,1309+52])
+      Pexp_ident "_loc" (lang_monad.ml[36,1309+48]..[36,1309+52])
+    expression (lang_monad.ml[36,1309+54]..[36,1309+60])
+      Pexp_constant Const_string("None",None)
+  ]
+                                                                  ]
+                                                          ]
+                                                  ]
+                                            None
+                                            core_type (lang_monad.ml[37,1381+26]..[37,1381+34])
+                                              Ptyp_constr "Astf.exp" (lang_monad.ml[37,1381+26]..[37,1381+34])
+                                              []
+                                        <case>
+                                          pattern (lang_monad.ml[38,1417+24]..[38,1417+25])
+                                            Ppat_any
+                                          expression (lang_monad.ml[38,1417+29]..[38,1417+41])
+                                            Pexp_assert
+                                            expression (lang_monad.ml[38,1417+36]..[38,1417+41])
+                                              Pexp_construct "false" (lang_monad.ml[38,1417+36]..[38,1417+41])
+                                              None
+                                      ]
+                                ]
+                          ]
+                      <label> ""
+                        expression (lang_monad.ml[38,1417+45]..[38,1417+51])
+                          Pexp_field
+                          expression (lang_monad.ml[38,1417+45]..[38,1417+46])
+                            Pexp_ident "t" (lang_monad.ml[38,1417+45]..[38,1417+46])
+                          "bind" (lang_monad.ml[38,1417+47]..[38,1417+51])
+                      <label> ""
+                        expression (lang_monad.ml[38,1417+52]..[38,1417+57])
+                          Pexp_field
+                          expression (lang_monad.ml[38,1417+52]..[38,1417+53])
+                            Pexp_ident "t" (lang_monad.ml[38,1417+52]..[38,1417+53])
+                          "exp" (lang_monad.ml[38,1417+54]..[38,1417+57])
+                    ]
+              ]
+        ]
+  structure_item (lang_monad.ml[39,1476+0]..[188,11599+78])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_monad.ml[39,1476+4]..[39,1476+5])
+          Ppat_var "f" (lang_monad.ml[39,1476+4]..[39,1476+5])
+        expression (lang_monad.ml[40,1484+2]..[188,11599+78])
+          Pexp_function
+          [
+            <case>
+              pattern (lang_monad.ml[41,1495+4]..[41,1495+18])
+                Ppat_constraint
+                pattern (lang_monad.ml[41,1495+5]..[41,1495+8])
+                  Ppat_var "loc" (lang_monad.ml[41,1495+5]..[41,1495+8])
+                core_type (lang_monad.ml[41,1495+11]..[41,1495+17])
+                  Ptyp_constr "Locf.t" (lang_monad.ml[41,1495+11]..[41,1495+17])
+                  []
+              expression (lang_monad.ml[42,1517+6]..[188,11599+78])
+                Pexp_function
+                [
+                  <case>
+                    pattern (lang_monad.ml[43,1533+9]..[43,1533+13])
+                      Ppat_var "meta" (lang_monad.ml[43,1533+9]..[43,1533+13])
+                    expression (lang_monad.ml[44,1550+11]..[188,11599+77])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (lang_monad.ml[45,1571+14]..[45,1571+21])
+                            Ppat_var "content" (lang_monad.ml[45,1571+14]..[45,1571+21])
+                          expression (lang_monad.ml[46,1596+16]..[188,11599+76])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (lang_monad.ml[46,1596+20]..[46,1596+31])
+                                  Ppat_var "module_name" (lang_monad.ml[46,1596+20]..[46,1596+31])
+                                expression (lang_monad.ml[47,1630+18]..[51,1799+49])
+                                  Pexp_match
+                                  expression (lang_monad.ml[47,1630+24]..[47,1630+28])
+                                    Pexp_ident "meta" (lang_monad.ml[47,1630+24]..[47,1630+28])
+                                  [
+                                    <case>
+                                      pattern (lang_monad.ml[48,1664+20]..[48,1664+24])
+                                        Ppat_construct "None" (lang_monad.ml[48,1664+20]..[48,1664+24])
+                                        None
+                                      expression (lang_monad.ml[49,1693+22]..[50,1730+68])
+                                        Pexp_apply
+                                        expression (lang_monad.ml[49,1693+22]..[49,1693+32])
+                                          Pexp_ident "Locf.failf" (lang_monad.ml[49,1693+22]..[49,1693+32])
+                                        [
+                                          <label> ""
+                                            expression (lang_monad.ml[49,1693+33]..[49,1693+36])
+                                              Pexp_ident "loc" (lang_monad.ml[49,1693+33]..[49,1693+36])
+                                          <label> ""
+                                            expression (lang_monad.ml[50,1730+24]..[50,1730+68])
+                                              Pexp_constant Const_string("cexp module name must be specified via \\@",None)
+                                        ]
+                                    <case>
+                                      pattern (lang_monad.ml[51,1799+20]..[51,1799+26])
+                                        Ppat_construct "Some" (lang_monad.ml[51,1799+20]..[51,1799+24])
+                                        Some
+                                          pattern (lang_monad.ml[51,1799+25]..[51,1799+26])
+                                            Ppat_var "x" (lang_monad.ml[51,1799+25]..[51,1799+26])
+                                      expression (lang_monad.ml[51,1799+30]..[51,1799+49])
+                                        Pexp_apply
+                                        expression (lang_monad.ml[51,1799+30]..[51,1799+47])
+                                          Pexp_ident "String.capitalize" (lang_monad.ml[51,1799+30]..[51,1799+47])
+                                        [
+                                          <label> ""
+                                            expression (lang_monad.ml[51,1799+48]..[51,1799+49])
+                                              Pexp_ident "x" (lang_monad.ml[51,1799+48]..[51,1799+49])
+                                        ]
+                                  ]
+                            ]
+                            expression (lang_monad.ml[52,1852+16]..[188,11599+76])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (lang_monad.ml[52,1852+20]..[52,1852+35])
+                                    Ppat_var "tmp_entry__001_" (lang_monad.ml[52,1852+20]..[52,1852+35])
+                                  expression (lang_monad.ml[52,1852+38]..[52,1852+58])
+                                    Pexp_apply
+                                    expression (lang_monad.ml[52,1852+38]..[52,1852+54])
+                                      Pexp_ident "Gramf.get_levels" (lang_monad.ml[52,1852+38]..[52,1852+54])
+                                    [
+                                      <label> ""
+                                        expression (lang_monad.ml[52,1852+55]..[52,1852+58])
+                                          Pexp_ident "exp" (lang_monad.ml[52,1852+55]..[52,1852+58])
+                                    ]
+                              ]
+                              expression (lang_monad.ml[53,1914+16]..[188,11599+76])
+                                Pexp_try
+                                expression (lang_monad.ml[54,1935+19]..[185,11480+72])
+                                  Pexp_sequence
+                                  expression (lang_monad.ml[54,1935+19]..[183,11342+58])
+                                    Pexp_apply
+                                    expression (lang_monad.ml[54,1935+19]..[54,1935+38])
+                                      Pexp_ident "Gramf.extend_single" (lang_monad.ml[54,1935+19]..[54,1935+38])
+                                    [
+                                      <label> ""
+                                        expression (lang_monad.ml[55,1974+21]..[183,11342+58]) ghost
+                                          Pexp_constraint
+                                          expression (lang_monad.ml[55,1974+22]..[183,11342+23])
+                                            Pexp_record
+                                            [
+                                              "entry" (lang_monad.ml[56,1998+24]..[56,1998+29])
+                                                expression (lang_monad.ml[56,1998+32]..[56,1998+52]) ghost
+                                                  Pexp_constraint
+                                                  expression (lang_monad.ml[56,1998+33]..[56,1998+36])
+                                                    Pexp_ident "exp" (lang_monad.ml[56,1998+33]..[56,1998+36])
+                                                  core_type (lang_monad.ml[56,1998+39]..[56,1998+51])
+                                                    Ptyp_constr "Gramf.t" (lang_monad.ml[56,1998+44]..[56,1998+51])
+                                                    [
+                                                      core_type (lang_monad.ml[56,1998+39]..[56,1998+43])
+                                                        Ptyp_var exp
+                                                    ]
+                                              "olevel" (lang_monad.ml[57,2052+24]..[57,2052+30])
+                                                expression (lang_monad.ml[58,2085+26]..[182,11297+44]) ghost
+                                                  Pexp_constraint
+                                                  expression (lang_monad.ml[58,2085+27]..[182,11297+28])
+                                                    Pexp_record
+                                                    [
+                                                      "label" (lang_monad.ml[59,2114+29]..[59,2114+34])
+                                                        expression (lang_monad.ml[59,2114+37]..[59,2114+46])
+                                                          Pexp_construct "Some" (lang_monad.ml[59,2114+38]..[59,2114+42])
+                                                          Some
+                                                            expression (lang_monad.ml[59,2114+43]..[59,2114+45])
+                                                              Pexp_constant Const_int 10
+                                                      "lassoc" (lang_monad.ml[60,2162+29]..[60,2162+35])
+                                                        expression (lang_monad.ml[60,2162+38]..[60,2162+43])
+                                                          Pexp_construct "false" (lang_monad.ml[60,2162+38]..[60,2162+43])
+                                                          None
+                                                      "productions" (lang_monad.ml[61,2207+29]..[61,2207+40])
+                                                        expression (lang_monad.ml[62,2250+31]..[181,11262+34])
+                                                          Pexp_construct "::" (lang_monad.ml[62,2250+32]..[181,11262+34]) ghost
+                                                          Some
+                                                            expression (lang_monad.ml[62,2250+32]..[181,11262+34]) ghost
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (lang_monad.ml[62,2250+32]..[181,11262+33])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "symbols" (lang_monad.ml[63,2284+34]..[63,2284+41])
+                                                                      expression (lang_monad.ml[64,2328+36]..[92,3804+41])
+Pexp_construct "::" (lang_monad.ml[64,2328+37]..[92,3804+41]) ghost
+Some
+  expression (lang_monad.ml[64,2328+37]..[92,3804+41]) ghost
+    Pexp_tuple
+    [
+      expression (lang_monad.ml[64,2328+37]..[72,2740+59])
+        Pexp_construct "Token" (lang_monad.ml[64,2328+37]..[64,2328+42])
+        Some
+          expression (lang_monad.ml[65,2371+39]..[72,2740+59]) ghost
+            Pexp_constraint
+            expression (lang_monad.ml[65,2371+40]..[72,2740+41])
+              Pexp_record
+              [
+                "descr" (lang_monad.ml[66,2413+42]..[66,2413+47])
+                  expression (lang_monad.ml[67,2463+44]..[71,2694+45])
+                    Pexp_record
+                    [
+                      "tag" (lang_monad.ml[68,2509+46]..[68,2509+49])
+                        expression (lang_monad.ml[68,2509+52]..[68,2509+56])
+                          Pexp_variant "Key"
+                          None
+                      "word" (lang_monad.ml[69,2567+46]..[69,2567+50])
+                        expression (lang_monad.ml[69,2567+53]..[69,2567+62])
+                          Pexp_construct "A" (lang_monad.ml[69,2567+54]..[69,2567+55])
+                          Some
+                            expression (lang_monad.ml[69,2567+56]..[69,2567+61])
+                              Pexp_constant Const_string("let",None)
+                      "tag_name" (lang_monad.ml[70,2631+46]..[70,2631+54])
+                        expression (lang_monad.ml[70,2631+57]..[70,2631+62])
+                          Pexp_constant Const_string("Key",None)
+                    ]
+                    None
+              ]
+              None
+            core_type (lang_monad.ml[72,2740+44]..[72,2740+58])
+              Ptyp_constr "Tokenf.pattern" (lang_monad.ml[72,2740+44]..[72,2740+58])
+              []
+      expression (lang_monad.ml[73,2801+36]..[92,3804+41]) ghost
+        Pexp_construct "::" (lang_monad.ml[73,2801+36]..[92,3804+41]) ghost
+        Some
+          expression (lang_monad.ml[73,2801+36]..[92,3804+41]) ghost
+            Pexp_tuple
+            [
+              expression (lang_monad.ml[73,2801+36]..[81,3203+58])
+                Pexp_construct "Token" (lang_monad.ml[73,2801+36]..[73,2801+41])
+                Some
+                  expression (lang_monad.ml[74,2843+38]..[81,3203+58]) ghost
+                    Pexp_constraint
+                    expression (lang_monad.ml[74,2843+39]..[81,3203+40])
+                      Pexp_record
+                      [
+                        "descr" (lang_monad.ml[75,2884+41]..[75,2884+46])
+                          expression (lang_monad.ml[76,2933+43]..[80,3158+44])
+                            Pexp_record
+                            [
+                              "tag" (lang_monad.ml[77,2978+45]..[77,2978+48])
+                                expression (lang_monad.ml[77,2978+51]..[77,2978+55])
+                                  Pexp_variant "Key"
+                                  None
+                              "word" (lang_monad.ml[78,3035+45]..[78,3035+49])
+                                expression (lang_monad.ml[78,3035+52]..[78,3035+59])
+                                  Pexp_construct "A" (lang_monad.ml[78,3035+53]..[78,3035+54])
+                                  Some
+                                    expression (lang_monad.ml[78,3035+55]..[78,3035+58])
+                                      Pexp_constant Const_string("!",None)
+                              "tag_name" (lang_monad.ml[79,3096+45]..[79,3096+53])
+                                expression (lang_monad.ml[79,3096+56]..[79,3096+61])
+                                  Pexp_constant Const_string("Key",None)
+                            ]
+                            None
+                      ]
+                      None
+                    core_type (lang_monad.ml[81,3203+43]..[81,3203+57])
+                      Ptyp_constr "Tokenf.pattern" (lang_monad.ml[81,3203+43]..[81,3203+57])
+                      []
+              expression (lang_monad.ml[82,3263+36]..[92,3804+41]) ghost
+                Pexp_construct "::" (lang_monad.ml[82,3263+36]..[92,3804+41]) ghost
+                Some
+                  expression (lang_monad.ml[82,3263+36]..[92,3804+41]) ghost
+                    Pexp_tuple
+                    [
+                      expression (lang_monad.ml[82,3263+36]..[82,3263+76])
+                        Pexp_construct "Nterm" (lang_monad.ml[82,3263+36]..[82,3263+41])
+                        Some
+                          expression (lang_monad.ml[82,3263+42]..[82,3263+76])
+                            Pexp_apply
+                            expression (lang_monad.ml[82,3263+43]..[82,3263+52])
+                              Pexp_ident "Gramf.obj" (lang_monad.ml[82,3263+43]..[82,3263+52])
+                            [
+                              <label> ""
+                                expression (lang_monad.ml[82,3263+53]..[82,3263+75]) ghost
+                                  Pexp_constraint
+                                  expression (lang_monad.ml[82,3263+54]..[82,3263+58])
+                                    Pexp_ident "bind" (lang_monad.ml[82,3263+54]..[82,3263+58])
+                                  core_type (lang_monad.ml[82,3263+61]..[82,3263+74])
+                                    Ptyp_constr "Gramf.t" (lang_monad.ml[82,3263+67]..[82,3263+74])
+                                    [
+                                      core_type (lang_monad.ml[82,3263+61]..[82,3263+66])
+                                        Ptyp_var bind
+                                    ]
+                            ]
+                      expression (lang_monad.ml[83,3341+36]..[92,3804+41]) ghost
+                        Pexp_construct "::" (lang_monad.ml[83,3341+36]..[92,3804+41]) ghost
+                        Some
+                          expression (lang_monad.ml[83,3341+36]..[92,3804+41]) ghost
+                            Pexp_tuple
+                            [
+                              expression (lang_monad.ml[83,3341+36]..[91,3744+58])
+                                Pexp_construct "Token" (lang_monad.ml[83,3341+36]..[83,3341+41])
+                                Some
+                                  expression (lang_monad.ml[84,3383+38]..[91,3744+58]) ghost
+                                    Pexp_constraint
+                                    expression (lang_monad.ml[84,3383+39]..[91,3744+40])
+                                      Pexp_record
+                                      [
+                                        "descr" (lang_monad.ml[85,3424+41]..[85,3424+46])
+                                          expression (lang_monad.ml[86,3473+43]..[90,3699+44])
+                                            Pexp_record
+                                            [
+                                              "tag" (lang_monad.ml[87,3518+45]..[87,3518+48])
+                                                expression (lang_monad.ml[87,3518+51]..[87,3518+55])
+                                                  Pexp_variant "Key"
+                                                  None
+                                              "word" (lang_monad.ml[88,3575+45]..[88,3575+49])
+                                                expression (lang_monad.ml[88,3575+52]..[88,3575+60])
+                                                  Pexp_construct "A" (lang_monad.ml[88,3575+53]..[88,3575+54])
+                                                  Some
+                                                    expression (lang_monad.ml[88,3575+55]..[88,3575+59])
+                                                      Pexp_constant Const_string("in",None)
+                                              "tag_name" (lang_monad.ml[89,3637+45]..[89,3637+53])
+                                                expression (lang_monad.ml[89,3637+56]..[89,3637+61])
+                                                  Pexp_constant Const_string("Key",None)
+                                            ]
+                                            None
+                                      ]
+                                      None
+                                    core_type (lang_monad.ml[91,3744+43]..[91,3744+57])
+                                      Ptyp_constr "Tokenf.pattern" (lang_monad.ml[91,3744+43]..[91,3744+57])
+                                      []
+                              expression (lang_monad.ml[92,3804+36]..[92,3804+41]) ghost
+                                Pexp_construct "::" (lang_monad.ml[92,3804+36]..[92,3804+41]) ghost
+                                Some
+                                  expression (lang_monad.ml[92,3804+36]..[92,3804+41]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_monad.ml[92,3804+36]..[92,3804+40])
+                                        Pexp_construct "Self" (lang_monad.ml[92,3804+36]..[92,3804+40])
+                                        None
+                                      expression (lang_monad.ml[92,3804+40]..[92,3804+41]) ghost
+                                        Pexp_construct "[]" (lang_monad.ml[92,3804+40]..[92,3804+41]) ghost
+                                        None
+                                    ]
+                            ]
+                    ]
+            ]
+    ]
+                                                                    "annot" (lang_monad.ml[93,3847+34]..[93,3847+39])
+                                                                      expression (lang_monad.ml[94,3889+36]..[94,3889+1166])
+Pexp_constant Const_string("(try\n   let f = Hashtbl.find specializer module_name in\n   function | () -> f { bind = bi; exp = x }\n with\n | Not_found  ->\n     (function\n      | () ->\n          Ast_basic.fold_and_right\n            (function\n             | bind ->\n                 (function\n                  | acc ->\n                      (match bind with\n                       | (`Bind (_loc,p,e) : Astf.bind) ->\n                           (`App\n                              (_loc,\n                                (`App\n                                   (_loc,\n                                     (`Dot\n                                        (_loc, (`Uid (_loc, module_name)),\n                                          (`Lid (_loc, \"bind\")))),\n                                     (e :> Astf.exp))),\n                                (`Fun\n                                   (_loc,\n                                     (`Case\n                                        (_loc, (p :> Astf.pat),\n                                          (acc :> Astf.exp)))))) :> Astf.exp)\n                       | _ -> assert false))) bi x)) ()\n",None)
+                                                                    "fn" (lang_monad.ml[95,5057+34]..[95,5057+36])
+                                                                      expression (lang_monad.ml[96,5096+36]..[180,11184+77])
+Pexp_apply
+expression (lang_monad.ml[96,5096+37]..[96,5096+52])
+  Pexp_ident "Gramf.mk_action" (lang_monad.ml[96,5096+37]..[96,5096+52])
+[
+  <label> ""
+    expression (lang_monad.ml[97,5149+39]..[180,11184+76]) ghost
+      Pexp_constraint
+      expression (lang_monad.ml[97,5149+40]..[175,10889+78])
+        Pexp_function
+        [
+          <case>
+            pattern (lang_monad.ml[98,5198+42]..[98,5198+52])
+              Ppat_constraint
+              pattern (lang_monad.ml[98,5198+43]..[98,5198+44])
+                Ppat_var "x" (lang_monad.ml[98,5198+43]..[98,5198+44])
+              core_type (lang_monad.ml[98,5198+47]..[98,5198+51])
+                Ptyp_var exp
+            expression (lang_monad.ml[99,5254+44]..[175,10889+78])
+              Pexp_function
+              [
+                <case>
+                  pattern (lang_monad.ml[100,5308+47]..[100,5308+48])
+                    Ppat_any
+                  expression (lang_monad.ml[101,5360+49]..[175,10889+77])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (lang_monad.ml[102,5419+52]..[102,5419+64])
+                          Ppat_constraint
+                          pattern (lang_monad.ml[102,5419+53]..[102,5419+55])
+                            Ppat_var "bi" (lang_monad.ml[102,5419+53]..[102,5419+55])
+                          core_type (lang_monad.ml[102,5419+58]..[102,5419+63])
+                            Ptyp_var bind
+                        expression (lang_monad.ml[103,5487+54]..[175,10889+76])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (lang_monad.ml[104,5551+57]..[104,5551+58])
+                                Ppat_any
+                              expression (lang_monad.ml[105,5613+59]..[175,10889+75])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (lang_monad.ml[106,5682+62]..[106,5682+63])
+                                      Ppat_any
+                                    expression (lang_monad.ml[107,5749+64]..[175,10889+74])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (lang_monad.ml[108,5823+67]..[109,5898+75])
+                                            Ppat_constraint
+                                            pattern (lang_monad.ml[108,5823+68]..[108,5823+72])
+                                              Ppat_var "_loc" (lang_monad.ml[108,5823+68]..[108,5823+72])
+                                            core_type (lang_monad.ml[109,5898+68]..[109,5898+74])
+                                              Ptyp_constr "Locf.t" (lang_monad.ml[109,5898+68]..[109,5898+74])
+                                              []
+                                          expression (lang_monad.ml[111,6045+68]..[175,10889+73]) ghost
+                                            Pexp_constraint
+                                            expression (lang_monad.ml[111,6045+69]..[174,10815+70])
+                                              Pexp_apply
+                                              expression (lang_monad.ml[111,6045+69]..[173,10739+75])
+                                                Pexp_try
+                                                expression (lang_monad.ml[112,6120+68]..[123,6957+69])
+                                                  Pexp_let Nonrec
+                                                  [
+                                                    <def>
+                                                      pattern (lang_monad.ml[112,6120+72]..[112,6120+73])
+                                                        Ppat_var "f" (lang_monad.ml[112,6120+72]..[112,6120+73])
+                                                      expression (lang_monad.ml[113,6196+68]..[115,6357+79])
+                                                        Pexp_apply
+                                                        expression (lang_monad.ml[113,6196+68]..[113,6196+80])
+                                                          Pexp_ident "Hashtbl.find" (lang_monad.ml[113,6196+68]..[113,6196+80])
+                                                        [
+                                                          <label> ""
+                                                            expression (lang_monad.ml[114,6277+68]..[114,6277+79])
+                                                              Pexp_ident "specializer" (lang_monad.ml[114,6277+68]..[114,6277+79])
+                                                          <label> ""
+                                                            expression (lang_monad.ml[115,6357+68]..[115,6357+79])
+                                                              Pexp_ident "module_name" (lang_monad.ml[115,6357+68]..[115,6357+79])
+                                                        ]
+                                                  ]
+                                                  expression (lang_monad.ml[116,6440+68]..[123,6957+69])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (lang_monad.ml[118,6588+68]..[118,6588+70])
+                                                          Ppat_construct "()" (lang_monad.ml[118,6588+68]..[118,6588+70])
+                                                          None
+                                                        expression (lang_monad.ml[119,6662+68]..[123,6957+69])
+                                                          Pexp_apply
+                                                          expression (lang_monad.ml[119,6662+68]..[119,6662+69])
+                                                            Pexp_ident "f" (lang_monad.ml[119,6662+68]..[119,6662+69])
+                                                          [
+                                                            <label> ""
+                                                              expression (lang_monad.ml[120,6732+68]..[123,6957+69])
+                                                                Pexp_record
+                                                                [
+                                                                  "bind" (lang_monad.ml[121,6802+68]..[121,6802+72])
+                                                                    expression (lang_monad.ml[121,6802+75]..[121,6802+77])
+                                                                      Pexp_ident "bi" (lang_monad.ml[121,6802+75]..[121,6802+77])
+                                                                  "exp" (lang_monad.ml[122,6881+68]..[122,6881+71])
+                                                                    expression (lang_monad.ml[122,6881+74]..[122,6881+75])
+                                                                      Pexp_ident "x" (lang_monad.ml[122,6881+74]..[122,6881+75])
+                                                                ]
+                                                                None
+                                                          ]
+                                                    ]
+                                                [
+                                                  <case>
+                                                    pattern (lang_monad.ml[126,7171+68]..[126,7171+77])
+                                                      Ppat_construct "Not_found" (lang_monad.ml[126,7171+68]..[126,7171+77])
+                                                      None
+                                                    expression (lang_monad.ml[128,7321+68]..[173,10739+73])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (lang_monad.ml[130,7470+68]..[130,7470+70])
+                                                            Ppat_construct "()" (lang_monad.ml[130,7470+68]..[130,7470+70])
+                                                            None
+                                                          expression (lang_monad.ml[131,7544+68]..[173,10739+72])
+                                                            Pexp_apply
+                                                            expression (lang_monad.ml[131,7544+68]..[131,7544+92])
+                                                              Pexp_ident "Ast_basic.fold_and_right" (lang_monad.ml[131,7544+68]..[131,7544+92])
+                                                            [
+                                                              <label> ""
+                                                                expression (lang_monad.ml[132,7637+68]..[172,10662+76])
+                                                                  Pexp_function
+                                                                  [
+                                                                    <case>
+                                                                      pattern (lang_monad.ml[134,7786+68]..[134,7786+72])
+Ppat_var "bind" (lang_monad.ml[134,7786+68]..[134,7786+72])
+                                                                      expression (lang_monad.ml[135,7862+68]..[172,10662+75])
+Pexp_function
+[
+  <case>
+    pattern (lang_monad.ml[137,8011+68]..[137,8011+71])
+      Ppat_var "acc" (lang_monad.ml[137,8011+68]..[137,8011+71])
+    expression (lang_monad.ml[138,8086+68]..[172,10662+74])
+      Pexp_match
+      expression (lang_monad.ml[138,8086+75]..[138,8086+79])
+        Pexp_ident "bind" (lang_monad.ml[138,8086+75]..[138,8086+79])
+      [
+        <case>
+          pattern (lang_monad.ml[141,8310+68]..[144,8534+78])
+            Ppat_constraint
+            pattern (lang_monad.ml[141,8310+69]..[142,8385+78])
+              Ppat_variant "Bind"
+              Some
+                pattern (lang_monad.ml[142,8385+68]..[142,8385+78])
+                  Ppat_tuple
+                  [
+                    pattern (lang_monad.ml[142,8385+69]..[142,8385+73])
+                      Ppat_var "_loc" (lang_monad.ml[142,8385+69]..[142,8385+73])
+                    pattern (lang_monad.ml[142,8385+74]..[142,8385+75])
+                      Ppat_var "p" (lang_monad.ml[142,8385+74]..[142,8385+75])
+                    pattern (lang_monad.ml[142,8385+76]..[142,8385+77])
+                      Ppat_var "e" (lang_monad.ml[142,8385+76]..[142,8385+77])
+                  ]
+            core_type (lang_monad.ml[144,8534+68]..[144,8534+77])
+              Ptyp_constr "Astf.bind" (lang_monad.ml[144,8534+68]..[144,8534+77])
+              []
+          expression (lang_monad.ml[146,8684+68]..[168,10365+77]) ghost
+            Pexp_coerce
+            expression (lang_monad.ml[146,8684+69]..[167,10278+82])
+              Pexp_variant "App"
+              Some
+                expression (lang_monad.ml[147,8758+68]..[167,10278+82])
+                  Pexp_tuple
+                  [
+                    expression (lang_monad.ml[147,8758+69]..[147,8758+73])
+                      Pexp_ident "_loc" (lang_monad.ml[147,8758+69]..[147,8758+73])
+                    expression (lang_monad.ml[148,8833+68]..[159,9667+79])
+                      Pexp_variant "App"
+                      Some
+                        expression (lang_monad.ml[149,8907+68]..[159,9667+78])
+                          Pexp_tuple
+                          [
+                            expression (lang_monad.ml[149,8907+69]..[149,8907+73])
+                              Pexp_ident "_loc" (lang_monad.ml[149,8907+69]..[149,8907+73])
+                            expression (lang_monad.ml[150,8982+68]..[157,9512+78])
+                              Pexp_variant "Dot"
+                              Some
+                                expression (lang_monad.ml[151,9056+68]..[157,9512+77])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_monad.ml[151,9056+69]..[151,9056+73])
+                                      Pexp_ident "_loc" (lang_monad.ml[151,9056+69]..[151,9056+73])
+                                    expression (lang_monad.ml[152,9131+68]..[154,9280+81])
+                                      Pexp_variant "Uid"
+                                      Some
+                                        expression (lang_monad.ml[153,9205+68]..[154,9280+80])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_monad.ml[153,9205+69]..[153,9205+73])
+                                              Pexp_ident "_loc" (lang_monad.ml[153,9205+69]..[153,9205+73])
+                                            expression (lang_monad.ml[154,9280+68]..[154,9280+79])
+                                              Pexp_ident "module_name" (lang_monad.ml[154,9280+68]..[154,9280+79])
+                                          ]
+                                    expression (lang_monad.ml[155,9363+68]..[157,9512+76])
+                                      Pexp_variant "Lid"
+                                      Some
+                                        expression (lang_monad.ml[156,9437+68]..[157,9512+75])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_monad.ml[156,9437+69]..[156,9437+73])
+                                              Pexp_ident "_loc" (lang_monad.ml[156,9437+69]..[156,9437+73])
+                                            expression (lang_monad.ml[157,9512+68]..[157,9512+74])
+                                              Pexp_constant Const_string("bind",None)
+                                          ]
+                                  ]
+                            expression (lang_monad.ml[158,9592+68]..[159,9667+77]) ghost
+                              Pexp_coerce
+                              expression (lang_monad.ml[158,9592+69]..[158,9592+70])
+                                Pexp_ident "e" (lang_monad.ml[158,9592+69]..[158,9592+70])
+                              None
+                              core_type (lang_monad.ml[159,9667+68]..[159,9667+76])
+                                Ptyp_constr "Astf.exp" (lang_monad.ml[159,9667+68]..[159,9667+76])
+                                []
+                          ]
+                    expression (lang_monad.ml[160,9748+68]..[167,10278+81])
+                      Pexp_variant "Fun"
+                      Some
+                        expression (lang_monad.ml[161,9822+68]..[167,10278+80])
+                          Pexp_tuple
+                          [
+                            expression (lang_monad.ml[161,9822+69]..[161,9822+73])
+                              Pexp_ident "_loc" (lang_monad.ml[161,9822+69]..[161,9822+73])
+                            expression (lang_monad.ml[162,9897+68]..[167,10278+79])
+                              Pexp_variant "Case"
+                              Some
+                                expression (lang_monad.ml[163,9972+68]..[167,10278+78])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_monad.ml[163,9972+69]..[163,9972+73])
+                                      Pexp_ident "_loc" (lang_monad.ml[163,9972+69]..[163,9972+73])
+                                    expression (lang_monad.ml[164,10047+68]..[165,10122+77]) ghost
+                                      Pexp_coerce
+                                      expression (lang_monad.ml[164,10047+69]..[164,10047+70])
+                                        Pexp_ident "p" (lang_monad.ml[164,10047+69]..[164,10047+70])
+                                      None
+                                      core_type (lang_monad.ml[165,10122+68]..[165,10122+76])
+                                        Ptyp_constr "Astf.pat" (lang_monad.ml[165,10122+68]..[165,10122+76])
+                                        []
+                                    expression (lang_monad.ml[166,10201+68]..[167,10278+77]) ghost
+                                      Pexp_coerce
+                                      expression (lang_monad.ml[166,10201+69]..[166,10201+72])
+                                        Pexp_ident "acc" (lang_monad.ml[166,10201+69]..[166,10201+72])
+                                      None
+                                      core_type (lang_monad.ml[167,10278+68]..[167,10278+76])
+                                        Ptyp_constr "Astf.exp" (lang_monad.ml[167,10278+68]..[167,10278+76])
+                                        []
+                                  ]
+                          ]
+                  ]
+            None
+            core_type (lang_monad.ml[168,10365+68]..[168,10365+76])
+              Ptyp_constr "Astf.exp" (lang_monad.ml[168,10365+68]..[168,10365+76])
+              []
+        <case>
+          pattern (lang_monad.ml[170,10514+68]..[170,10514+69])
+            Ppat_any
+          expression (lang_monad.ml[171,10587+68]..[172,10662+73])
+            Pexp_assert
+            expression (lang_monad.ml[172,10662+68]..[172,10662+73])
+              Pexp_construct "false" (lang_monad.ml[172,10662+68]..[172,10662+73])
+              None
+      ]
+]
+                                                                  ]
+                                                              <label> ""
+                                                                expression (lang_monad.ml[173,10739+68]..[173,10739+70])
+                                                                  Pexp_ident "bi" (lang_monad.ml[173,10739+68]..[173,10739+70])
+                                                              <label> ""
+                                                                expression (lang_monad.ml[173,10739+71]..[173,10739+72])
+                                                                  Pexp_ident "x" (lang_monad.ml[173,10739+71]..[173,10739+72])
+                                                            ]
+                                                      ]
+                                                ]
+                                              [
+                                                <label> ""
+                                                  expression (lang_monad.ml[174,10815+68]..[174,10815+70])
+                                                    Pexp_construct "()" (lang_monad.ml[174,10815+68]..[174,10815+70])
+                                                    None
+                                              ]
+                                            core_type (lang_monad.ml[175,10889+68]..[175,10889+72])
+                                              Ptyp_var exp
+                                      ]
+                                ]
+                          ]
+                    ]
+              ]
+        ]
+      core_type (lang_monad.ml[176,10971+39]..[180,11184+75])
+        Ptyp_arrow
+        ""
+        core_type (lang_monad.ml[176,10971+39]..[176,10971+43])
+          Ptyp_var exp
+        core_type (lang_monad.ml[177,11018+41]..[180,11184+75])
+          Ptyp_arrow
+          ""
+          core_type (lang_monad.ml[177,11018+41]..[177,11018+51])
+            Ptyp_constr "Tokenf.txt" (lang_monad.ml[177,11018+41]..[177,11018+51])
+            []
+          core_type (lang_monad.ml[178,11073+43]..[180,11184+75])
+            Ptyp_arrow
+            ""
+            core_type (lang_monad.ml[178,11073+43]..[178,11073+48])
+              Ptyp_var bind
+            core_type (lang_monad.ml[179,11125+45]..[180,11184+75])
+              Ptyp_arrow
+              ""
+              core_type (lang_monad.ml[179,11125+45]..[179,11125+55])
+                Ptyp_constr "Tokenf.txt" (lang_monad.ml[179,11125+45]..[179,11125+55])
+                []
+              core_type (lang_monad.ml[180,11184+47]..[180,11184+75])
+                Ptyp_arrow
+                ""
+                core_type (lang_monad.ml[180,11184+47]..[180,11184+57])
+                  Ptyp_constr "Tokenf.txt" (lang_monad.ml[180,11184+47]..[180,11184+57])
+                  []
+                core_type (lang_monad.ml[180,11184+61]..[180,11184+75])
+                  Ptyp_arrow
+                  ""
+                  core_type (lang_monad.ml[180,11184+61]..[180,11184+67])
+                    Ptyp_constr "Locf.t" (lang_monad.ml[180,11184+61]..[180,11184+67])
+                    []
+                  core_type (lang_monad.ml[180,11184+71]..[180,11184+75])
+                    Ptyp_var exp
+]
+                                                                  ]
+                                                                  None
+                                                                expression (lang_monad.ml[181,11262+33]..[181,11262+34]) ghost
+                                                                  Pexp_construct "[]" (lang_monad.ml[181,11262+33]..[181,11262+34]) ghost
+                                                                  None
+                                                              ]
+                                                    ]
+                                                    None
+                                                  core_type (lang_monad.ml[182,11297+31]..[182,11297+43])
+                                                    Ptyp_constr "Gramf.olevel" (lang_monad.ml[182,11297+31]..[182,11297+43])
+                                                    []
+                                            ]
+                                            None
+                                          core_type (lang_monad.ml[183,11342+26]..[183,11342+57])
+                                            Ptyp_constr "Gramf.single_extend_statement" (lang_monad.ml[183,11342+28]..[183,11342+57])
+                                            [
+                                              core_type (lang_monad.ml[183,11342+26]..[183,11342+27])
+                                                Ptyp_any
+                                            ]
+                                    ]
+                                  expression (lang_monad.ml[184,11402+19]..[185,11480+72])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (lang_monad.ml[184,11402+24]..[184,11402+30])
+                                          Ppat_var "result" (lang_monad.ml[184,11402+24]..[184,11402+30])
+                                        expression (lang_monad.ml[184,11402+33]..[184,11402+74])
+                                          Pexp_apply
+                                          expression (lang_monad.ml[184,11402+33]..[184,11402+57])
+                                            Pexp_ident "Gramlib.parse_string_eoi" (lang_monad.ml[184,11402+33]..[184,11402+57])
+                                          [
+                                            <label> ""
+                                              expression (lang_monad.ml[184,11402+58]..[184,11402+61])
+                                                Pexp_ident "exp" (lang_monad.ml[184,11402+58]..[184,11402+61])
+                                            <label> "loc"
+                                              expression (lang_monad.ml[184,11402+63]..[184,11402+66])
+                                                Pexp_ident "loc" (lang_monad.ml[184,11402+63]..[184,11402+66])
+                                            <label> ""
+                                              expression (lang_monad.ml[184,11402+67]..[184,11402+74])
+                                                Pexp_ident "content" (lang_monad.ml[184,11402+67]..[184,11402+74])
+                                          ]
+                                    ]
+                                    expression (lang_monad.ml[185,11480+20]..[185,11480+71])
+                                      Pexp_sequence
+                                      expression (lang_monad.ml[185,11480+20]..[185,11480+63])
+                                        Pexp_apply
+                                        expression (lang_monad.ml[185,11480+20]..[185,11480+43])
+                                          Pexp_ident "Gramf.fresh_with_levels" (lang_monad.ml[185,11480+20]..[185,11480+43])
+                                        [
+                                          <label> ""
+                                            expression (lang_monad.ml[185,11480+44]..[185,11480+47])
+                                              Pexp_ident "exp" (lang_monad.ml[185,11480+44]..[185,11480+47])
+                                          <label> ""
+                                            expression (lang_monad.ml[185,11480+48]..[185,11480+63])
+                                              Pexp_ident "tmp_entry__001_" (lang_monad.ml[185,11480+48]..[185,11480+63])
+                                        ]
+                                      expression (lang_monad.ml[185,11480+65]..[185,11480+71])
+                                        Pexp_ident "result" (lang_monad.ml[185,11480+65]..[185,11480+71])
+                                [
+                                  <case>
+                                    pattern (lang_monad.ml[187,11575+19]..[187,11575+20])
+                                      Ppat_var "x" (lang_monad.ml[187,11575+19]..[187,11575+20])
+                                    expression (lang_monad.ml[188,11599+21]..[188,11599+75])
+                                      Pexp_sequence
+                                      expression (lang_monad.ml[188,11599+22]..[188,11599+65])
+                                        Pexp_apply
+                                        expression (lang_monad.ml[188,11599+22]..[188,11599+45])
+                                          Pexp_ident "Gramf.fresh_with_levels" (lang_monad.ml[188,11599+22]..[188,11599+45])
+                                        [
+                                          <label> ""
+                                            expression (lang_monad.ml[188,11599+46]..[188,11599+49])
+                                              Pexp_ident "exp" (lang_monad.ml[188,11599+46]..[188,11599+49])
+                                          <label> ""
+                                            expression (lang_monad.ml[188,11599+50]..[188,11599+65])
+                                              Pexp_ident "tmp_entry__001_" (lang_monad.ml[188,11599+50]..[188,11599+65])
+                                        ]
+                                      expression (lang_monad.ml[188,11599+67]..[188,11599+74])
+                                        Pexp_apply
+                                        expression (lang_monad.ml[188,11599+67]..[188,11599+72])
+                                          Pexp_ident "raise" (lang_monad.ml[188,11599+67]..[188,11599+72])
+                                        [
+                                          <label> ""
+                                            expression (lang_monad.ml[188,11599+73]..[188,11599+74])
+                                              Pexp_ident "x" (lang_monad.ml[188,11599+73]..[188,11599+74])
+                                        ]
+                                ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (lang_monad.ml[189,11678+0]..[197,11851+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_monad.ml[189,11678+4]..[189,11678+6])
+          Ppat_var "f2" (lang_monad.ml[189,11678+4]..[189,11678+6])
+        expression (lang_monad.ml[190,11687+2]..[197,11851+65])
+          Pexp_function
+          [
+            <case>
+              pattern (lang_monad.ml[191,11698+4]..[191,11698+19])
+                Ppat_constraint
+                pattern (lang_monad.ml[191,11698+5]..[191,11698+9])
+                  Ppat_var "_loc" (lang_monad.ml[191,11698+5]..[191,11698+9])
+                core_type (lang_monad.ml[191,11698+12]..[191,11698+18])
+                  Ptyp_constr "Locf.t" (lang_monad.ml[191,11698+12]..[191,11698+18])
+                  []
+              expression (lang_monad.ml[192,11721+6]..[197,11851+65])
+                Pexp_function
+                [
+                  <case>
+                    pattern (lang_monad.ml[193,11737+9]..[193,11737+14])
+                      Ppat_var "_meta" (lang_monad.ml[193,11737+9]..[193,11737+14])
+                    expression (lang_monad.ml[194,11755+11]..[197,11851+64])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (lang_monad.ml[195,11776+14]..[195,11776+21])
+                            Ppat_var "content" (lang_monad.ml[195,11776+14]..[195,11776+21])
+                          expression (lang_monad.ml[196,11801+16]..[197,11851+63])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (lang_monad.ml[196,11801+20]..[196,11801+23])
+                                  Ppat_var "res" (lang_monad.ml[196,11801+20]..[196,11801+23])
+                                expression (lang_monad.ml[196,11801+26]..[196,11801+46])
+                                  Pexp_apply
+                                  expression (lang_monad.ml[196,11801+26]..[196,11801+27])
+                                    Pexp_ident "f" (lang_monad.ml[196,11801+26]..[196,11801+27])
+                                  [
+                                    <label> ""
+                                      expression (lang_monad.ml[196,11801+28]..[196,11801+32])
+                                        Pexp_ident "_loc" (lang_monad.ml[196,11801+28]..[196,11801+32])
+                                    <label> ""
+                                      expression (lang_monad.ml[196,11801+33]..[196,11801+38])
+                                        Pexp_ident "_meta" (lang_monad.ml[196,11801+33]..[196,11801+38])
+                                    <label> ""
+                                      expression (lang_monad.ml[196,11801+39]..[196,11801+46])
+                                        Pexp_ident "content" (lang_monad.ml[196,11801+39]..[196,11801+46])
+                                  ]
+                            ]
+                            expression (lang_monad.ml[197,11851+16]..[197,11851+63]) ghost
+                              Pexp_coerce
+                              expression (lang_monad.ml[197,11851+17]..[197,11851+49])
+                                Pexp_variant "StExp"
+                                Some
+                                  expression (lang_monad.ml[197,11851+24]..[197,11851+49])
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_monad.ml[197,11851+25]..[197,11851+29])
+                                        Pexp_ident "_loc" (lang_monad.ml[197,11851+25]..[197,11851+29])
+                                      expression (lang_monad.ml[197,11851+31]..[197,11851+48]) ghost
+                                        Pexp_coerce
+                                        expression (lang_monad.ml[197,11851+32]..[197,11851+35])
+                                          Pexp_ident "res" (lang_monad.ml[197,11851+32]..[197,11851+35])
+                                        None
+                                        core_type (lang_monad.ml[197,11851+39]..[197,11851+47])
+                                          Ptyp_constr "Astf.exp" (lang_monad.ml[197,11851+39]..[197,11851+47])
+                                          []
+                                    ]
+                              None
+                              core_type (lang_monad.ml[197,11851+53]..[197,11851+62])
+                                Ptyp_constr "Astf.stru" (lang_monad.ml[197,11851+53]..[197,11851+62])
+                                []
+                      ]
+                ]
+          ]
+    ]
+  structure_item (lang_monad.ml[198,11917+0]..[201,12012+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_monad.ml[198,11917+4]..[198,11917+6])
+          Ppat_construct "()" (lang_monad.ml[198,11917+4]..[198,11917+6])
+          None
+        expression (lang_monad.ml[199,11926+2]..[201,12012+65])
+          Pexp_let Nonrec
+          [
+            <def>
+              pattern (lang_monad.ml[199,11926+6]..[199,11926+7])
+                Ppat_var "d" (lang_monad.ml[199,11926+6]..[199,11926+7])
+              expression (lang_monad.ml[199,11926+10]..[199,11926+17])
+                Pexp_ident "Ns.lang" (lang_monad.ml[199,11926+10]..[199,11926+17])
+          ]
+          expression (lang_monad.ml[200,11947+2]..[201,12012+65])
+            Pexp_sequence
+            expression (lang_monad.ml[200,11947+2]..[200,11947+63])
+              Pexp_apply
+              expression (lang_monad.ml[200,11947+2]..[200,11947+19])
+                Pexp_ident "Ast_quotation.add" (lang_monad.ml[200,11947+2]..[200,11947+19])
+              [
+                <label> ""
+                  expression (lang_monad.ml[200,11947+20]..[200,11947+49])
+                    Pexp_record
+                    [
+                      "domain" (lang_monad.ml[200,11947+22]..[200,11947+28])
+                        expression (lang_monad.ml[200,11947+31]..[200,11947+32])
+                          Pexp_ident "d" (lang_monad.ml[200,11947+31]..[200,11947+32])
+                      "name" (lang_monad.ml[200,11947+34]..[200,11947+38])
+                        expression (lang_monad.ml[200,11947+41]..[200,11947+47])
+                          Pexp_constant Const_string("cexp",None)
+                    ]
+                    None
+                <label> ""
+                  expression (lang_monad.ml[200,11947+50]..[200,11947+61])
+                    Pexp_ident "Dyn_tag.exp" (lang_monad.ml[200,11947+50]..[200,11947+61])
+                <label> ""
+                  expression (lang_monad.ml[200,11947+62]..[200,11947+63])
+                    Pexp_ident "f" (lang_monad.ml[200,11947+62]..[200,11947+63])
+              ]
+            expression (lang_monad.ml[201,12012+2]..[201,12012+65])
+              Pexp_apply
+              expression (lang_monad.ml[201,12012+2]..[201,12012+19])
+                Pexp_ident "Ast_quotation.add" (lang_monad.ml[201,12012+2]..[201,12012+19])
+              [
+                <label> ""
+                  expression (lang_monad.ml[201,12012+20]..[201,12012+49])
+                    Pexp_record
+                    [
+                      "domain" (lang_monad.ml[201,12012+22]..[201,12012+28])
+                        expression (lang_monad.ml[201,12012+31]..[201,12012+32])
+                          Pexp_ident "d" (lang_monad.ml[201,12012+31]..[201,12012+32])
+                      "name" (lang_monad.ml[201,12012+34]..[201,12012+38])
+                        expression (lang_monad.ml[201,12012+41]..[201,12012+47])
+                          Pexp_constant Const_string("cexp",None)
+                    ]
+                    None
+                <label> ""
+                  expression (lang_monad.ml[201,12012+50]..[201,12012+62])
+                    Pexp_ident "Dyn_tag.stru" (lang_monad.ml[201,12012+50]..[201,12012+62])
+                <label> ""
+                  expression (lang_monad.ml[201,12012+63]..[201,12012+65])
+                    Pexp_ident "f2" (lang_monad.ml[201,12012+63]..[201,12012+65])
+              ]
+    ]
+]

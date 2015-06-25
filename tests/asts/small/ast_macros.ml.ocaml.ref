@@ -1,0 +1,537 @@
+[
+  structure_item (ast_macros.ml[1,0+0]..[1,0+9])
+    Pstr_open Fresh "Astf" (ast_macros.ml[1,0+5]..[1,0+9])
+  structure_item (ast_macros.ml[2,10+0]..[2,10+12])
+    Pstr_open Fresh "Ast_gen" (ast_macros.ml[2,10+5]..[2,10+12])
+  structure_item (ast_macros.ml[3,23+0]..[3,23+17])
+    Pstr_type
+    [
+      type_declaration "key" (ast_macros.ml[3,23+5]..[3,23+8]) (ast_macros.ml[3,23+0]..[3,23+17])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_macros.ml[3,23+11]..[3,23+17])
+              Ptyp_constr "string" (ast_macros.ml[3,23+11]..[3,23+17])
+              []
+    ]
+  structure_item (ast_macros.ml[4,41+0]..[4,41+26])
+    Pstr_type
+    [
+      type_declaration "expander" (ast_macros.ml[4,41+5]..[4,41+13]) (ast_macros.ml[4,41+0]..[4,41+26])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_macros.ml[4,41+16]..[4,41+26])
+              Ptyp_arrow
+              ""
+              core_type (ast_macros.ml[4,41+16]..[4,41+19])
+                Ptyp_constr "exp" (ast_macros.ml[4,41+16]..[4,41+19])
+                []
+              core_type (ast_macros.ml[4,41+23]..[4,41+26])
+                Ptyp_constr "exp" (ast_macros.ml[4,41+23]..[4,41+26])
+                []
+    ]
+  structure_item (ast_macros.ml[5,68+0]..[5,68+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[5,68+4]..[5,68+19])
+          Ppat_var "macro_expanders" (ast_macros.ml[5,68+4]..[5,68+19])
+        expression (ast_macros.ml[5,68+19]..[5,68+65]) ghost
+          Pexp_constraint
+          expression (ast_macros.ml[5,68+48]..[5,68+65])
+            Pexp_apply
+            expression (ast_macros.ml[5,68+48]..[5,68+62])
+              Pexp_ident "Hashtbl.create" (ast_macros.ml[5,68+48]..[5,68+62])
+            [
+              <label> ""
+                expression (ast_macros.ml[5,68+63]..[5,68+65])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_macros.ml[5,68+21]..[5,68+45])
+            Ptyp_constr "Hashtbl.t" (ast_macros.ml[5,68+36]..[5,68+45])
+            [
+              core_type (ast_macros.ml[5,68+22]..[5,68+25])
+                Ptyp_constr "key" (ast_macros.ml[5,68+22]..[5,68+25])
+                []
+              core_type (ast_macros.ml[5,68+26]..[5,68+34])
+                Ptyp_constr "expander" (ast_macros.ml[5,68+26]..[5,68+34])
+                []
+            ]
+    ]
+  structure_item (ast_macros.ml[6,134+0]..[6,134+76])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[6,134+4]..[6,134+18])
+          Ppat_var "register_macro" (ast_macros.ml[6,134+4]..[6,134+18])
+        expression (ast_macros.ml[6,134+21]..[6,134+76])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[6,134+32]..[6,134+37])
+                Ppat_tuple
+                [
+                  pattern (ast_macros.ml[6,134+33]..[6,134+34])
+                    Ppat_var "k" (ast_macros.ml[6,134+33]..[6,134+34])
+                  pattern (ast_macros.ml[6,134+35]..[6,134+36])
+                    Ppat_var "f" (ast_macros.ml[6,134+35]..[6,134+36])
+                ]
+              expression (ast_macros.ml[6,134+41]..[6,134+76])
+                Pexp_apply
+                expression (ast_macros.ml[6,134+41]..[6,134+56])
+                  Pexp_ident "Hashtbl.replace" (ast_macros.ml[6,134+41]..[6,134+56])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[6,134+57]..[6,134+72])
+                      Pexp_ident "macro_expanders" (ast_macros.ml[6,134+57]..[6,134+72])
+                  <label> ""
+                    expression (ast_macros.ml[6,134+73]..[6,134+74])
+                      Pexp_ident "k" (ast_macros.ml[6,134+73]..[6,134+74])
+                  <label> ""
+                    expression (ast_macros.ml[6,134+75]..[6,134+76])
+                      Pexp_ident "f" (ast_macros.ml[6,134+75]..[6,134+76])
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[7,211+0]..[11,299+26])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (ast_macros.ml[7,211+8]..[7,211+11])
+          Ppat_var "fib" (ast_macros.ml[7,211+8]..[7,211+11])
+        expression (ast_macros.ml[8,225+2]..[11,299+26])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[9,236+4]..[9,236+7])
+                Ppat_or
+                pattern (ast_macros.ml[9,236+4]..[9,236+5])
+                  Ppat_constant Const_int 0
+                pattern (ast_macros.ml[9,236+6]..[9,236+7])
+                  Ppat_constant Const_int 1
+              expression (ast_macros.ml[9,236+11]..[9,236+12])
+                Pexp_constant Const_int 1
+            <case>
+              pattern (ast_macros.ml[10,249+4]..[10,249+5])
+                Ppat_var "n" (ast_macros.ml[10,249+4]..[10,249+5])
+              <when>
+                expression (ast_macros.ml[10,249+11]..[10,249+16])
+                  Pexp_apply
+                  expression (ast_macros.ml[10,249+13]..[10,249+14])
+                    Pexp_ident ">" (ast_macros.ml[10,249+13]..[10,249+14])
+                  [
+                    <label> ""
+                      expression (ast_macros.ml[10,249+11]..[10,249+12])
+                        Pexp_ident "n" (ast_macros.ml[10,249+11]..[10,249+12])
+                    <label> ""
+                      expression (ast_macros.ml[10,249+15]..[10,249+16])
+                        Pexp_constant Const_int 0
+                  ]
+              expression (ast_macros.ml[10,249+20]..[10,249+49])
+                Pexp_apply
+                expression (ast_macros.ml[10,249+34]..[10,249+35])
+                  Pexp_ident "+" (ast_macros.ml[10,249+34]..[10,249+35])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[10,249+20]..[10,249+33])
+                      Pexp_apply
+                      expression (ast_macros.ml[10,249+21]..[10,249+24])
+                        Pexp_ident "fib" (ast_macros.ml[10,249+21]..[10,249+24])
+                      [
+                        <label> ""
+                          expression (ast_macros.ml[10,249+25]..[10,249+32])
+                            Pexp_apply
+                            expression (ast_macros.ml[10,249+28]..[10,249+29])
+                              Pexp_ident "-" (ast_macros.ml[10,249+28]..[10,249+29])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[10,249+26]..[10,249+27])
+                                  Pexp_ident "n" (ast_macros.ml[10,249+26]..[10,249+27])
+                              <label> ""
+                                expression (ast_macros.ml[10,249+30]..[10,249+31])
+                                  Pexp_constant Const_int 1
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_macros.ml[10,249+36]..[10,249+49])
+                      Pexp_apply
+                      expression (ast_macros.ml[10,249+37]..[10,249+40])
+                        Pexp_ident "fib" (ast_macros.ml[10,249+37]..[10,249+40])
+                      [
+                        <label> ""
+                          expression (ast_macros.ml[10,249+41]..[10,249+48])
+                            Pexp_apply
+                            expression (ast_macros.ml[10,249+44]..[10,249+45])
+                              Pexp_ident "-" (ast_macros.ml[10,249+44]..[10,249+45])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[10,249+42]..[10,249+43])
+                                  Pexp_ident "n" (ast_macros.ml[10,249+42]..[10,249+43])
+                              <label> ""
+                                expression (ast_macros.ml[10,249+46]..[10,249+47])
+                                  Pexp_constant Const_int 2
+                            ]
+                      ]
+                ]
+            <case>
+              pattern (ast_macros.ml[11,299+4]..[11,299+5])
+                Ppat_any
+              expression (ast_macros.ml[11,299+9]..[11,299+26])
+                Pexp_apply
+                expression (ast_macros.ml[11,299+9]..[11,299+20])
+                  Pexp_ident "invalid_arg" (ast_macros.ml[11,299+9]..[11,299+20])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[11,299+21]..[11,299+26])
+                      Pexp_constant Const_string("fib",None)
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[12,326+0]..[21,557+76])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[12,326+4]..[12,326+8])
+          Ppat_var "fibm" (ast_macros.ml[12,326+4]..[12,326+8])
+        expression (ast_macros.ml[13,337+2]..[21,557+76])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[14,348+4]..[14,348+5])
+                Ppat_var "y" (ast_macros.ml[14,348+4]..[14,348+5])
+              expression (ast_macros.ml[15,357+6]..[21,557+76])
+                Pexp_match
+                expression (ast_macros.ml[15,357+13]..[15,357+14])
+                  Pexp_ident "y" (ast_macros.ml[15,357+13]..[15,357+14])
+                [
+                  <case>
+                    pattern (ast_macros.ml[16,377+9]..[16,377+35])
+                      Ppat_constraint
+                      pattern (ast_macros.ml[16,377+10]..[16,377+23])
+                        Ppat_variant "Int"
+                        Some
+                          pattern (ast_macros.ml[16,377+15]..[16,377+23])
+                            Ppat_tuple
+                            [
+                              pattern (ast_macros.ml[16,377+16]..[16,377+20])
+                                Ppat_var "_loc" (ast_macros.ml[16,377+16]..[16,377+20])
+                              pattern (ast_macros.ml[16,377+21]..[16,377+22])
+                                Ppat_var "x" (ast_macros.ml[16,377+21]..[16,377+22])
+                            ]
+                      core_type (ast_macros.ml[16,377+26]..[16,377+34])
+                        Ptyp_constr "Astf.exp" (ast_macros.ml[16,377+26]..[16,377+34])
+                        []
+                    expression (ast_macros.ml[17,416+11]..[18,488+20]) ghost
+                      Pexp_coerce
+                      expression (ast_macros.ml[17,416+12]..[17,416+67])
+                        Pexp_variant "Int"
+                        Some
+                          expression (ast_macros.ml[17,416+17]..[17,416+67])
+                            Pexp_tuple
+                            [
+                              expression (ast_macros.ml[17,416+18]..[17,416+22])
+                                Pexp_ident "_loc" (ast_macros.ml[17,416+18]..[17,416+22])
+                              expression (ast_macros.ml[17,416+24]..[17,416+66])
+                                Pexp_apply
+                                expression (ast_macros.ml[17,416+25]..[17,416+38])
+                                  Pexp_ident "string_of_int" (ast_macros.ml[17,416+25]..[17,416+38])
+                                [
+                                  <label> ""
+                                    expression (ast_macros.ml[17,416+39]..[17,416+65])
+                                      Pexp_apply
+                                      expression (ast_macros.ml[17,416+44]..[17,416+46])
+                                        Pexp_ident "@@" (ast_macros.ml[17,416+44]..[17,416+46])
+                                      [
+                                        <label> ""
+                                          expression (ast_macros.ml[17,416+40]..[17,416+43])
+                                            Pexp_ident "fib" (ast_macros.ml[17,416+40]..[17,416+43])
+                                        <label> ""
+                                          expression (ast_macros.ml[17,416+47]..[17,416+64])
+                                            Pexp_apply
+                                            expression (ast_macros.ml[17,416+48]..[17,416+61])
+                                              Pexp_ident "int_of_string" (ast_macros.ml[17,416+48]..[17,416+61])
+                                            [
+                                              <label> ""
+                                                expression (ast_macros.ml[17,416+62]..[17,416+63])
+                                                  Pexp_ident "x" (ast_macros.ml[17,416+62]..[17,416+63])
+                                            ]
+                                      ]
+                                ]
+                            ]
+                      None
+                      core_type (ast_macros.ml[18,488+11]..[18,488+19])
+                        Ptyp_constr "Astf.exp" (ast_macros.ml[18,488+11]..[18,488+19])
+                        []
+                  <case>
+                    pattern (ast_macros.ml[19,509+9]..[19,509+10])
+                      Ppat_var "x" (ast_macros.ml[19,509+9]..[19,509+10])
+                    expression (ast_macros.ml[20,523+11]..[21,557+75])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_macros.ml[20,523+15]..[20,523+19])
+                            Ppat_var "_loc" (ast_macros.ml[20,523+15]..[20,523+19])
+                          expression (ast_macros.ml[20,523+22]..[20,523+30])
+                            Pexp_apply
+                            expression (ast_macros.ml[20,523+22]..[20,523+28])
+                              Pexp_ident "loc_of" (ast_macros.ml[20,523+22]..[20,523+28])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[20,523+29]..[20,523+30])
+                                  Pexp_ident "x" (ast_macros.ml[20,523+29]..[20,523+30])
+                            ]
+                      ]
+                      expression (ast_macros.ml[21,557+11]..[21,557+75]) ghost
+                        Pexp_coerce
+                        expression (ast_macros.ml[21,557+12]..[21,557+62])
+                          Pexp_variant "App"
+                          Some
+                            expression (ast_macros.ml[21,557+17]..[21,557+62])
+                              Pexp_tuple
+                              [
+                                expression (ast_macros.ml[21,557+18]..[21,557+22])
+                                  Pexp_ident "_loc" (ast_macros.ml[21,557+18]..[21,557+22])
+                                expression (ast_macros.ml[21,557+24]..[21,557+44])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (ast_macros.ml[21,557+30]..[21,557+43])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_macros.ml[21,557+31]..[21,557+35])
+                                          Pexp_ident "_loc" (ast_macros.ml[21,557+31]..[21,557+35])
+                                        expression (ast_macros.ml[21,557+37]..[21,557+42])
+                                          Pexp_constant Const_string("fib",None)
+                                      ]
+                                expression (ast_macros.ml[21,557+46]..[21,557+61]) ghost
+                                  Pexp_coerce
+                                  expression (ast_macros.ml[21,557+47]..[21,557+48])
+                                    Pexp_ident "x" (ast_macros.ml[21,557+47]..[21,557+48])
+                                  None
+                                  core_type (ast_macros.ml[21,557+52]..[21,557+60])
+                                    Ptyp_constr "Astf.exp" (ast_macros.ml[21,557+52]..[21,557+60])
+                                    []
+                              ]
+                        None
+                        core_type (ast_macros.ml[21,557+66]..[21,557+74])
+                          Ptyp_constr "Astf.exp" (ast_macros.ml[21,557+66]..[21,557+74])
+                          []
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[22,634+0]..[22,634+36])
+    Pstr_eval
+    expression (ast_macros.ml[22,634+8]..[22,634+36])
+      Pexp_apply
+      expression (ast_macros.ml[22,634+8]..[22,634+22])
+        Pexp_ident "register_macro" (ast_macros.ml[22,634+8]..[22,634+22])
+      [
+        <label> ""
+          expression (ast_macros.ml[22,634+23]..[22,634+36])
+            Pexp_tuple
+            [
+              expression (ast_macros.ml[22,634+24]..[22,634+29])
+                Pexp_constant Const_string("FIB",None)
+              expression (ast_macros.ml[22,634+31]..[22,634+35])
+                Pexp_ident "fibm" (ast_macros.ml[22,634+31]..[22,634+35])
+            ]
+      ]
+  structure_item (ast_macros.ml[23,671+0]..[39,1179+5])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[23,671+4]..[23,671+18])
+          Ppat_var "macro_expander" (ast_macros.ml[23,671+4]..[23,671+18])
+        expression (ast_macros.ml[24,692+2]..[39,1179+5])
+          Pexp_object
+          class_structure
+            pattern (ast_macros.ml[24,692+9]..[24,692+15])
+              Ppat_var "self" (ast_macros.ml[24,692+10]..[24,692+14])
+            [
+              class_field (ast_macros.ml[25,708+4]..[25,708+30])
+                Pcf_inherit Fresh
+                  class_expr (ast_macros.ml[25,708+13]..[25,708+21])
+                    Pcl_constr "Objs.map" (ast_macros.ml[25,708+13]..[25,708+21])
+                    []
+                  Some
+                    "super"
+              class_field (ast_macros.ml[26,739+4]..[38,1154+24])
+                Pcf_method Public
+                  "exp" (ast_macros.ml[26,739+12]..[26,739+15])
+                  Concrete Override
+                  expression (ast_macros.ml[26,739+10]..[38,1154+24]) ghost
+                    Pexp_poly
+                    expression (ast_macros.ml[27,757+6]..[38,1154+24])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_macros.ml[28,772+8]..[28,772+45])
+                            Ppat_constraint
+                            pattern (ast_macros.ml[28,772+9]..[28,772+33])
+                              Ppat_variant "App"
+                              Some
+                                pattern (ast_macros.ml[28,772+14]..[28,772+33])
+                                  Ppat_tuple
+                                  [
+                                    pattern (ast_macros.ml[28,772+15]..[28,772+19])
+                                      Ppat_var "_loc" (ast_macros.ml[28,772+15]..[28,772+19])
+                                    pattern (ast_macros.ml[28,772+20]..[28,772+30])
+                                      Ppat_variant "Uid"
+                                      Some
+                                        pattern (ast_macros.ml[28,772+25]..[28,772+30])
+                                          Ppat_tuple
+                                          [
+                                            pattern (ast_macros.ml[28,772+26]..[28,772+27])
+                                              Ppat_any
+                                            pattern (ast_macros.ml[28,772+28]..[28,772+29])
+                                              Ppat_var "a" (ast_macros.ml[28,772+28]..[28,772+29])
+                                          ]
+                                    pattern (ast_macros.ml[28,772+31]..[28,772+32])
+                                      Ppat_var "y" (ast_macros.ml[28,772+31]..[28,772+32])
+                                  ]
+                            core_type (ast_macros.ml[28,772+36]..[28,772+44])
+                              Ptyp_constr "Astf.exp" (ast_macros.ml[28,772+36]..[28,772+44])
+                              []
+                          expression (ast_macros.ml[29,821+10]..[37,1117+36])
+                            Pexp_apply
+                            expression (ast_macros.ml[29,821+10]..[37,1117+33])
+                              Pexp_try
+                              expression (ast_macros.ml[30,837+14]..[31,893+45])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (ast_macros.ml[30,837+18]..[30,837+19])
+                                      Ppat_var "f" (ast_macros.ml[30,837+18]..[30,837+19])
+                                    expression (ast_macros.ml[30,837+22]..[30,837+52])
+                                      Pexp_apply
+                                      expression (ast_macros.ml[30,837+22]..[30,837+34])
+                                        Pexp_ident "Hashtbl.find" (ast_macros.ml[30,837+22]..[30,837+34])
+                                      [
+                                        <label> ""
+                                          expression (ast_macros.ml[30,837+35]..[30,837+50])
+                                            Pexp_ident "macro_expanders" (ast_macros.ml[30,837+35]..[30,837+50])
+                                        <label> ""
+                                          expression (ast_macros.ml[30,837+51]..[30,837+52])
+                                            Pexp_ident "a" (ast_macros.ml[30,837+51]..[30,837+52])
+                                      ]
+                                ]
+                                expression (ast_macros.ml[31,893+14]..[31,893+45])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (ast_macros.ml[31,893+25]..[31,893+27])
+                                        Ppat_construct "()" (ast_macros.ml[31,893+25]..[31,893+27])
+                                        None
+                                      expression (ast_macros.ml[31,893+31]..[31,893+45])
+                                        Pexp_apply
+                                        expression (ast_macros.ml[31,893+31]..[31,893+39])
+                                          Pexp_send "exp"
+                                          expression (ast_macros.ml[31,893+31]..[31,893+35])
+                                            Pexp_ident "self" (ast_macros.ml[31,893+31]..[31,893+35])
+                                        [
+                                          <label> ""
+                                            expression (ast_macros.ml[31,893+40]..[31,893+45])
+                                              Pexp_apply
+                                              expression (ast_macros.ml[31,893+41]..[31,893+42])
+                                                Pexp_ident "f" (ast_macros.ml[31,893+41]..[31,893+42])
+                                              [
+                                                <label> ""
+                                                  expression (ast_macros.ml[31,893+43]..[31,893+44])
+                                                    Pexp_ident "y" (ast_macros.ml[31,893+43]..[31,893+44])
+                                              ]
+                                        ]
+                                  ]
+                              [
+                                <case>
+                                  pattern (ast_macros.ml[33,956+14]..[33,956+23])
+                                    Ppat_construct "Not_found" (ast_macros.ml[33,956+14]..[33,956+23])
+                                    None
+                                  expression (ast_macros.ml[34,984+16]..[37,1117+31])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (ast_macros.ml[35,1010+19]..[35,1010+21])
+                                          Ppat_construct "()" (ast_macros.ml[35,1010+19]..[35,1010+21])
+                                          None
+                                        expression (ast_macros.ml[36,1035+21]..[37,1117+30]) ghost
+                                          Pexp_coerce
+                                          expression (ast_macros.ml[36,1035+22]..[36,1035+77])
+                                            Pexp_variant "App"
+                                            Some
+                                              expression (ast_macros.ml[36,1035+27]..[36,1035+77])
+                                                Pexp_tuple
+                                                [
+                                                  expression (ast_macros.ml[36,1035+28]..[36,1035+32])
+                                                    Pexp_ident "_loc" (ast_macros.ml[36,1035+28]..[36,1035+32])
+                                                  expression (ast_macros.ml[36,1035+34]..[36,1035+50])
+                                                    Pexp_variant "Uid"
+                                                    Some
+                                                      expression (ast_macros.ml[36,1035+40]..[36,1035+49])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (ast_macros.ml[36,1035+41]..[36,1035+45])
+                                                            Pexp_ident "_loc" (ast_macros.ml[36,1035+41]..[36,1035+45])
+                                                          expression (ast_macros.ml[36,1035+47]..[36,1035+48])
+                                                            Pexp_ident "a" (ast_macros.ml[36,1035+47]..[36,1035+48])
+                                                        ]
+                                                  expression (ast_macros.ml[36,1035+52]..[36,1035+76]) ghost
+                                                    Pexp_coerce
+                                                    expression (ast_macros.ml[36,1035+53]..[36,1035+63])
+                                                      Pexp_apply
+                                                      expression (ast_macros.ml[36,1035+53]..[36,1035+61])
+                                                        Pexp_send "exp"
+                                                        expression (ast_macros.ml[36,1035+53]..[36,1035+57])
+                                                          Pexp_ident "self" (ast_macros.ml[36,1035+53]..[36,1035+57])
+                                                      [
+                                                        <label> ""
+                                                          expression (ast_macros.ml[36,1035+62]..[36,1035+63])
+                                                            Pexp_ident "y" (ast_macros.ml[36,1035+62]..[36,1035+63])
+                                                      ]
+                                                    None
+                                                    core_type (ast_macros.ml[36,1035+67]..[36,1035+75])
+                                                      Ptyp_constr "Astf.exp" (ast_macros.ml[36,1035+67]..[36,1035+75])
+                                                      []
+                                                ]
+                                          None
+                                          core_type (ast_macros.ml[37,1117+21]..[37,1117+29])
+                                            Ptyp_constr "Astf.exp" (ast_macros.ml[37,1117+21]..[37,1117+29])
+                                            []
+                                    ]
+                              ]
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[37,1117+34]..[37,1117+36])
+                                  Pexp_construct "()" (ast_macros.ml[37,1117+34]..[37,1117+36])
+                                  None
+                            ]
+                        <case>
+                          pattern (ast_macros.ml[38,1154+8]..[38,1154+9])
+                            Ppat_var "e" (ast_macros.ml[38,1154+8]..[38,1154+9])
+                          expression (ast_macros.ml[38,1154+13]..[38,1154+24])
+                            Pexp_apply
+                            expression (ast_macros.ml[38,1154+13]..[38,1154+22])
+                              Pexp_send "exp"
+                              expression (ast_macros.ml[38,1154+13]..[38,1154+18])
+                                Pexp_ident "super" (ast_macros.ml[38,1154+13]..[38,1154+18])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[38,1154+23]..[38,1154+24])
+                                  Pexp_ident "e" (ast_macros.ml[38,1154+23]..[38,1154+24])
+                            ]
+                      ]
+                    None
+            ]
+    ]
+]

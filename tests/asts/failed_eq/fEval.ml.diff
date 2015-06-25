@@ -1,0 +1,48 @@
+8,11c8,10
+<         expression (fEval.ml[1,0+8]..[1,0+58])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (fEval.ml[1,0+8]..[1,0+58]) ghost
+>           Pexp_fun ""
+>           None
+14c13
+<               expression (fEval.ml[1,0+12]..[1,0+58])
+---
+>           expression (fEval.ml[1,0+12]..[1,0+58]) ghost
+29d27
+<     ]
+36,39c34,36
+<         expression (fEval.ml[2,59+13]..[4,140+49])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (fEval.ml[2,59+13]..[4,140+49]) ghost
+>           Pexp_fun ""
+>           None
+42,45c39,41
+<               expression (fEval.ml[2,59+17]..[4,140+49])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (fEval.ml[2,59+17]..[4,140+49]) ghost
+>             Pexp_fun ""
+>             None
+56c52
+<                             expression (fEval.ml[3,82+14]..[3,82+56])
+---
+>                     expression (fEval.ml[3,82+13]..[3,82+57])
+69c65
+<                                   expression (fEval.ml[3,82+48]..[3,82+55])
+---
+>                           expression (fEval.ml[3,82+47]..[3,82+56])
+98c94
+<                             expression (fEval.ml[4,140+14]..[4,140+49])
+---
+>                     expression (fEval.ml[4,140+42]..[4,140+48])
+109,110d104
+<           ]
+<     ]

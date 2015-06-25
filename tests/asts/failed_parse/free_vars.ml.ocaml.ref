@@ -1,0 +1,1799 @@
+[
+  structure_item (free_vars.ml[1,0+0]..[1,0+9])
+    Pstr_open Fresh "Astf" (free_vars.ml[1,0+5]..[1,0+9])
+  structure_item (free_vars.ml[2,10+0]..[12,374+5])
+    Pstr_class
+    [
+      class_declaration (free_vars.ml[2,10+0]..[12,374+5])
+        pci_virt = Concrete
+        pci_params =
+          [
+            core_type (free_vars.ml[2,10+7]..[2,10+12])
+              Ptyp_var accu
+          ]
+        pci_name = "c_fold_pattern_vars" (free_vars.ml[2,10+14]..[2,10+33])
+        pci_expr =
+          class_expr (free_vars.ml[2,10+34]..[12,374+5])
+            Pcl_fun
+            label=""
+            None
+            pattern (free_vars.ml[2,10+34]..[2,10+64])
+              Ppat_constraint
+              pattern (free_vars.ml[2,10+35]..[2,10+36])
+                Ppat_var "f" (free_vars.ml[2,10+35]..[2,10+36])
+              core_type (free_vars.ml[2,10+39]..[2,10+63])
+                Ptyp_arrow
+                ""
+                core_type (free_vars.ml[2,10+39]..[2,10+45])
+                  Ptyp_constr "string" (free_vars.ml[2,10+39]..[2,10+45])
+                  []
+                core_type (free_vars.ml[2,10+49]..[2,10+63])
+                  Ptyp_arrow
+                  ""
+                  core_type (free_vars.ml[2,10+49]..[2,10+54])
+                    Ptyp_var accu
+                  core_type (free_vars.ml[2,10+58]..[2,10+63])
+                    Ptyp_var accu
+            class_expr (free_vars.ml[2,10+66]..[12,374+5])
+              Pcl_fun
+              label=""
+              None
+              pattern (free_vars.ml[2,10+66]..[2,10+70])
+                Ppat_var "init" (free_vars.ml[2,10+66]..[2,10+70])
+              class_expr (free_vars.ml[3,83+2]..[12,374+5])
+                Pcl_structure
+                class_structure
+                  pattern (free_vars.ml[3,83+8]..[3,83+8]) ghost
+                    Ppat_any
+                  [
+                    class_field (free_vars.ml[4,92+4]..[4,92+31])
+                      Pcf_inherit Fresh
+                        class_expr (free_vars.ml[4,92+13]..[4,92+22])
+                          Pcl_constr "Objs.fold" (free_vars.ml[4,92+13]..[4,92+22])
+                          []
+                        Some
+                          "super"
+                    class_field (free_vars.ml[5,124+4]..[5,124+18])
+                      Pcf_val Immutable
+                        "acc" (free_vars.ml[5,124+8]..[5,124+11])
+                        Concrete Fresh
+                        expression (free_vars.ml[5,124+14]..[5,124+18])
+                          Pexp_ident "init" (free_vars.ml[5,124+14]..[5,124+18])
+                    class_field (free_vars.ml[6,143+4]..[6,143+27])
+                      Pcf_method Public
+                        "acc" (free_vars.ml[6,143+11]..[6,143+14])
+                        Concrete Fresh
+                        expression (free_vars.ml[6,143+11]..[6,143+27]) ghost
+                          Pexp_poly
+                          expression (free_vars.ml[6,143+24]..[6,143+27])
+                            Pexp_ident "acc" (free_vars.ml[6,143+24]..[6,143+27])
+                          Some
+                            core_type (free_vars.ml[6,143+17]..[6,143+22])
+                              Ptyp_var accu
+                    class_field (free_vars.ml[7,171+4]..[11,349+24])
+                      Pcf_method Public
+                        "pat" (free_vars.ml[7,171+12]..[7,171+15])
+                        Concrete Override
+                        expression (free_vars.ml[7,171+10]..[11,349+24]) ghost
+                          Pexp_poly
+                          expression (free_vars.ml[8,189+6]..[11,349+24])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (free_vars.ml[9,204+8]..[10,278+49])
+                                  Ppat_or
+                                  pattern (free_vars.ml[9,204+8]..[9,204+73])
+                                    Ppat_or
+                                    pattern (free_vars.ml[9,204+8]..[9,204+34])
+                                      Ppat_constraint
+                                      pattern (free_vars.ml[9,204+9]..[9,204+22])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (free_vars.ml[9,204+14]..[9,204+22])
+                                            Ppat_tuple
+                                            [
+                                              pattern (free_vars.ml[9,204+15]..[9,204+19])
+                                                Ppat_var "_loc" (free_vars.ml[9,204+15]..[9,204+19])
+                                              pattern (free_vars.ml[9,204+20]..[9,204+21])
+                                                Ppat_var "s" (free_vars.ml[9,204+20]..[9,204+21])
+                                            ]
+                                      core_type (free_vars.ml[9,204+25]..[9,204+33])
+                                        Ptyp_constr "Astf.pat" (free_vars.ml[9,204+25]..[9,204+33])
+                                        []
+                                    pattern (free_vars.ml[9,204+35]..[9,204+73])
+                                      Ppat_constraint
+                                      pattern (free_vars.ml[9,204+36]..[9,204+61])
+                                        Ppat_variant "LabelS"
+                                        Some
+                                          pattern (free_vars.ml[9,204+44]..[9,204+61])
+                                            Ppat_tuple
+                                            [
+                                              pattern (free_vars.ml[9,204+45]..[9,204+49])
+                                                Ppat_var "_loc" (free_vars.ml[9,204+45]..[9,204+49])
+                                              pattern (free_vars.ml[9,204+50]..[9,204+60])
+                                                Ppat_variant "Lid"
+                                                Some
+                                                  pattern (free_vars.ml[9,204+55]..[9,204+60])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (free_vars.ml[9,204+56]..[9,204+57])
+                                                        Ppat_any
+                                                      pattern (free_vars.ml[9,204+58]..[9,204+59])
+                                                        Ppat_var "s" (free_vars.ml[9,204+58]..[9,204+59])
+                                                    ]
+                                            ]
+                                      core_type (free_vars.ml[9,204+64]..[9,204+72])
+                                        Ptyp_constr "Astf.pat" (free_vars.ml[9,204+64]..[9,204+72])
+                                        []
+                                  pattern (free_vars.ml[10,278+9]..[10,278+49])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[10,278+10]..[10,278+37])
+                                      Ppat_variant "OptLablS"
+                                      Some
+                                        pattern (free_vars.ml[10,278+20]..[10,278+37])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[10,278+21]..[10,278+25])
+                                              Ppat_var "_loc" (free_vars.ml[10,278+21]..[10,278+25])
+                                            pattern (free_vars.ml[10,278+26]..[10,278+36])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[10,278+31]..[10,278+36])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[10,278+32]..[10,278+33])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[10,278+34]..[10,278+35])
+                                                      Ppat_var "s" (free_vars.ml[10,278+34]..[10,278+35])
+                                                  ]
+                                          ]
+                                    core_type (free_vars.ml[10,278+40]..[10,278+48])
+                                      Ptyp_constr "Astf.pat" (free_vars.ml[10,278+40]..[10,278+48])
+                                      []
+                                expression (free_vars.ml[10,278+53]..[10,278+70])
+                                  Pexp_override
+                                  [
+                                    <override> "acc" (free_vars.ml[10,278+55]..[10,278+58])
+                                      expression (free_vars.ml[10,278+61]..[10,278+68])
+                                        Pexp_apply
+                                        expression (free_vars.ml[10,278+61]..[10,278+62])
+                                          Pexp_ident "f" (free_vars.ml[10,278+61]..[10,278+62])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[10,278+63]..[10,278+64])
+                                              Pexp_ident "s" (free_vars.ml[10,278+63]..[10,278+64])
+                                          <label> ""
+                                            expression (free_vars.ml[10,278+65]..[10,278+68])
+                                              Pexp_ident "acc" (free_vars.ml[10,278+65]..[10,278+68])
+                                        ]
+                                  ]
+                              <case>
+                                pattern (free_vars.ml[11,349+8]..[11,349+9])
+                                  Ppat_var "p" (free_vars.ml[11,349+8]..[11,349+9])
+                                expression (free_vars.ml[11,349+13]..[11,349+24])
+                                  Pexp_apply
+                                  expression (free_vars.ml[11,349+13]..[11,349+22])
+                                    Pexp_send "pat"
+                                    expression (free_vars.ml[11,349+13]..[11,349+18])
+                                      Pexp_ident "super" (free_vars.ml[11,349+13]..[11,349+18])
+                                  [
+                                    <label> ""
+                                      expression (free_vars.ml[11,349+23]..[11,349+24])
+                                        Pexp_ident "p" (free_vars.ml[11,349+23]..[11,349+24])
+                                  ]
+                            ]
+                          None
+                  ]
+    ]
+  structure_item (free_vars.ml[13,380+0]..[18,454+79])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (free_vars.ml[13,380+4]..[13,380+21])
+          Ppat_var "fold_pattern_vars" (free_vars.ml[13,380+4]..[13,380+21])
+        expression (free_vars.ml[14,404+2]..[18,454+79])
+          Pexp_function
+          [
+            <case>
+              pattern (free_vars.ml[15,415+4]..[15,415+5])
+                Ppat_var "f" (free_vars.ml[15,415+4]..[15,415+5])
+              expression (free_vars.ml[16,424+6]..[18,454+79])
+                Pexp_function
+                [
+                  <case>
+                    pattern (free_vars.ml[17,440+9]..[17,440+10])
+                      Ppat_var "p" (free_vars.ml[17,440+9]..[17,440+10])
+                    expression (free_vars.ml[18,454+11]..[18,454+78])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (free_vars.ml[18,454+23]..[18,454+27])
+                            Ppat_var "init" (free_vars.ml[18,454+23]..[18,454+27])
+                          expression (free_vars.ml[18,454+31]..[18,454+77])
+                            Pexp_send "acc"
+                            expression (free_vars.ml[18,454+31]..[18,454+73])
+                              Pexp_apply
+                              expression (free_vars.ml[18,454+32]..[18,454+70])
+                                Pexp_send "pat"
+                                expression (free_vars.ml[18,454+32]..[18,454+66])
+                                  Pexp_apply
+                                  expression (free_vars.ml[18,454+33]..[18,454+58])
+                                    Pexp_new "c_fold_pattern_vars" (free_vars.ml[18,454+38]..[18,454+57])
+                                  [
+                                    <label> ""
+                                      expression (free_vars.ml[18,454+59]..[18,454+60])
+                                        Pexp_ident "f" (free_vars.ml[18,454+59]..[18,454+60])
+                                    <label> ""
+                                      expression (free_vars.ml[18,454+61]..[18,454+65])
+                                        Pexp_ident "init" (free_vars.ml[18,454+61]..[18,454+65])
+                                  ]
+                              [
+                                <label> ""
+                                  expression (free_vars.ml[18,454+71]..[18,454+72])
+                                    Pexp_ident "p" (free_vars.ml[18,454+71]..[18,454+72])
+                              ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (free_vars.ml[19,534+0]..[31,908+44])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (free_vars.ml[19,534+8]..[19,534+22])
+          Ppat_var "fold_bind_vars" (free_vars.ml[19,534+8]..[19,534+22])
+        expression (free_vars.ml[20,559+2]..[31,908+44])
+          Pexp_function
+          [
+            <case>
+              pattern (free_vars.ml[21,570+4]..[21,570+5])
+                Ppat_var "f" (free_vars.ml[21,570+4]..[21,570+5])
+              expression (free_vars.ml[22,579+6]..[31,908+44])
+                Pexp_function
+                [
+                  <case>
+                    pattern (free_vars.ml[23,595+9]..[23,595+11])
+                      Ppat_var "bi" (free_vars.ml[23,595+9]..[23,595+11])
+                    expression (free_vars.ml[24,610+11]..[31,908+43])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (free_vars.ml[25,631+14]..[25,631+17])
+                            Ppat_var "acc" (free_vars.ml[25,631+14]..[25,631+17])
+                          expression (free_vars.ml[26,652+16]..[31,908+42])
+                            Pexp_match
+                            expression (free_vars.ml[26,652+23]..[26,652+25])
+                              Pexp_ident "bi" (free_vars.ml[26,652+23]..[26,652+25])
+                            [
+                              <case>
+                                pattern (free_vars.ml[27,683+19]..[27,683+52])
+                                  Ppat_constraint
+                                  pattern (free_vars.ml[27,683+20]..[27,683+39])
+                                    Ppat_variant "And"
+                                    Some
+                                      pattern (free_vars.ml[27,683+25]..[27,683+39])
+                                        Ppat_tuple
+                                        [
+                                          pattern (free_vars.ml[27,683+26]..[27,683+30])
+                                            Ppat_var "_loc" (free_vars.ml[27,683+26]..[27,683+30])
+                                          pattern (free_vars.ml[27,683+31]..[27,683+34])
+                                            Ppat_var "bi1" (free_vars.ml[27,683+31]..[27,683+34])
+                                          pattern (free_vars.ml[27,683+35]..[27,683+38])
+                                            Ppat_var "bi2" (free_vars.ml[27,683+35]..[27,683+38])
+                                        ]
+                                  core_type (free_vars.ml[27,683+42]..[27,683+51])
+                                    Ptyp_constr "Astf.bind" (free_vars.ml[27,683+42]..[27,683+51])
+                                    []
+                                expression (free_vars.ml[28,739+21]..[28,739+68])
+                                  Pexp_apply
+                                  expression (free_vars.ml[28,739+21]..[28,739+35])
+                                    Pexp_ident "fold_bind_vars" (free_vars.ml[28,739+21]..[28,739+35])
+                                  [
+                                    <label> ""
+                                      expression (free_vars.ml[28,739+36]..[28,739+37])
+                                        Pexp_ident "f" (free_vars.ml[28,739+36]..[28,739+37])
+                                    <label> ""
+                                      expression (free_vars.ml[28,739+38]..[28,739+41])
+                                        Pexp_ident "bi1" (free_vars.ml[28,739+38]..[28,739+41])
+                                    <label> ""
+                                      expression (free_vars.ml[28,739+42]..[28,739+68])
+                                        Pexp_apply
+                                        expression (free_vars.ml[28,739+43]..[28,739+57])
+                                          Pexp_ident "fold_bind_vars" (free_vars.ml[28,739+43]..[28,739+57])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[28,739+58]..[28,739+59])
+                                              Pexp_ident "f" (free_vars.ml[28,739+58]..[28,739+59])
+                                          <label> ""
+                                            expression (free_vars.ml[28,739+60]..[28,739+63])
+                                              Pexp_ident "bi2" (free_vars.ml[28,739+60]..[28,739+63])
+                                          <label> ""
+                                            expression (free_vars.ml[28,739+64]..[28,739+67])
+                                              Pexp_ident "acc" (free_vars.ml[28,739+64]..[28,739+67])
+                                        ]
+                                  ]
+                              <case>
+                                pattern (free_vars.ml[29,808+19]..[29,808+49])
+                                  Ppat_constraint
+                                  pattern (free_vars.ml[29,808+20]..[29,808+36])
+                                    Ppat_variant "Bind"
+                                    Some
+                                      pattern (free_vars.ml[29,808+26]..[29,808+36])
+                                        Ppat_tuple
+                                        [
+                                          pattern (free_vars.ml[29,808+27]..[29,808+31])
+                                            Ppat_var "_loc" (free_vars.ml[29,808+27]..[29,808+31])
+                                          pattern (free_vars.ml[29,808+32]..[29,808+33])
+                                            Ppat_var "p" (free_vars.ml[29,808+32]..[29,808+33])
+                                          pattern (free_vars.ml[29,808+34]..[29,808+35])
+                                            Ppat_any
+                                        ]
+                                  core_type (free_vars.ml[29,808+39]..[29,808+48])
+                                    Ptyp_constr "Astf.bind" (free_vars.ml[29,808+39]..[29,808+48])
+                                    []
+                                expression (free_vars.ml[30,861+21]..[30,861+46])
+                                  Pexp_apply
+                                  expression (free_vars.ml[30,861+21]..[30,861+38])
+                                    Pexp_ident "fold_pattern_vars" (free_vars.ml[30,861+21]..[30,861+38])
+                                  [
+                                    <label> ""
+                                      expression (free_vars.ml[30,861+39]..[30,861+40])
+                                        Pexp_ident "f" (free_vars.ml[30,861+39]..[30,861+40])
+                                    <label> ""
+                                      expression (free_vars.ml[30,861+41]..[30,861+42])
+                                        Pexp_ident "p" (free_vars.ml[30,861+41]..[30,861+42])
+                                    <label> ""
+                                      expression (free_vars.ml[30,861+43]..[30,861+46])
+                                        Pexp_ident "acc" (free_vars.ml[30,861+43]..[30,861+46])
+                                  ]
+                              <case>
+                                pattern (free_vars.ml[31,908+19]..[31,908+25])
+                                  Ppat_variant "Ant"
+                                  Some
+                                    pattern (free_vars.ml[31,908+24]..[31,908+25])
+                                      Ppat_any
+                                expression (free_vars.ml[31,908+29]..[31,908+41])
+                                  Pexp_assert
+                                  expression (free_vars.ml[31,908+36]..[31,908+41])
+                                    Pexp_construct "false" (free_vars.ml[31,908+36]..[31,908+41])
+                                    None
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (free_vars.ml[32,953+0]..[97,3753+5])
+    Pstr_class
+    [
+      class_declaration (free_vars.ml[32,953+0]..[97,3753+5])
+        pci_virt = Concrete
+        pci_params =
+          [
+            core_type (free_vars.ml[32,953+7]..[32,953+12])
+              Ptyp_var accu
+          ]
+        pci_name = "fold_free_vars" (free_vars.ml[32,953+14]..[32,953+28])
+        pci_expr =
+          class_expr (free_vars.ml[32,953+29]..[97,3753+5])
+            Pcl_fun
+            label=""
+            None
+            pattern (free_vars.ml[32,953+29]..[32,953+59])
+              Ppat_constraint
+              pattern (free_vars.ml[32,953+30]..[32,953+31])
+                Ppat_var "f" (free_vars.ml[32,953+30]..[32,953+31])
+              core_type (free_vars.ml[32,953+34]..[32,953+58])
+                Ptyp_arrow
+                ""
+                core_type (free_vars.ml[32,953+34]..[32,953+40])
+                  Ptyp_constr "string" (free_vars.ml[32,953+34]..[32,953+40])
+                  []
+                core_type (free_vars.ml[32,953+44]..[32,953+58])
+                  Ptyp_arrow
+                  ""
+                  core_type (free_vars.ml[32,953+44]..[32,953+49])
+                    Ptyp_var accu
+                  core_type (free_vars.ml[32,953+53]..[32,953+58])
+                    Ptyp_var accu
+            class_expr (free_vars.ml[32,953+61]..[97,3753+5])
+              Pcl_fun
+              label="?env_init"
+              Some
+                expression (free_vars.ml[33,1026+2]..[33,1026+19])
+                  Pexp_ident "Setf.String.empty" (free_vars.ml[33,1026+2]..[33,1026+19])
+              pattern (free_vars.ml[32,953+63]..[32,953+71])
+                Ppat_var "env_init" (free_vars.ml[32,953+63]..[32,953+71])
+              class_expr (free_vars.ml[33,1026+22]..[97,3753+5])
+                Pcl_fun
+                label=""
+                None
+                pattern (free_vars.ml[33,1026+22]..[33,1026+31])
+                  Ppat_var "free_init" (free_vars.ml[33,1026+22]..[33,1026+31])
+                class_expr (free_vars.ml[34,1060+2]..[97,3753+5])
+                  Pcl_structure
+                  class_structure
+                    pattern (free_vars.ml[34,1060+9]..[34,1060+12])
+                      Ppat_var "o" (free_vars.ml[34,1060+10]..[34,1060+11])
+                    [
+                      class_field (free_vars.ml[35,1073+4]..[35,1073+31])
+                        Pcf_inherit Fresh
+                          class_expr (free_vars.ml[35,1073+13]..[35,1073+22])
+                            Pcl_constr "Objs.fold" (free_vars.ml[35,1073+13]..[35,1073+22])
+                            []
+                          Some
+                            "super"
+                      class_field (free_vars.ml[36,1105+4]..[36,1105+34])
+                        Pcf_val Immutable
+                          "free" (free_vars.ml[36,1105+8]..[36,1105+12])
+                          Concrete Fresh
+                          expression (free_vars.ml[36,1105+15]..[36,1105+34]) ghost
+                            Pexp_constraint
+                            expression (free_vars.ml[36,1105+16]..[36,1105+25])
+                              Pexp_ident "free_init" (free_vars.ml[36,1105+16]..[36,1105+25])
+                            core_type (free_vars.ml[36,1105+28]..[36,1105+33])
+                              Ptyp_var accu
+                      class_field (free_vars.ml[37,1140+4]..[37,1140+40])
+                        Pcf_val Immutable
+                          "env" (free_vars.ml[37,1140+8]..[37,1140+11])
+                          Concrete Fresh
+                          expression (free_vars.ml[37,1140+14]..[37,1140+40]) ghost
+                            Pexp_constraint
+                            expression (free_vars.ml[37,1140+15]..[37,1140+23])
+                              Pexp_ident "env_init" (free_vars.ml[37,1140+15]..[37,1140+23])
+                            core_type (free_vars.ml[37,1140+26]..[37,1140+39])
+                              Ptyp_constr "Setf.String.t" (free_vars.ml[37,1140+26]..[37,1140+39])
+                              []
+                      class_field (free_vars.ml[38,1181+4]..[38,1181+22])
+                        Pcf_method Public
+                          "free" (free_vars.ml[38,1181+11]..[38,1181+15])
+                          Concrete Fresh
+                          expression (free_vars.ml[38,1181+11]..[38,1181+22]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[38,1181+18]..[38,1181+22])
+                              Pexp_ident "free" (free_vars.ml[38,1181+18]..[38,1181+22])
+                            None
+                      class_field (free_vars.ml[39,1204+4]..[39,1204+52])
+                        Pcf_method Public
+                          "set_env" (free_vars.ml[39,1204+11]..[39,1204+18])
+                          Concrete Fresh
+                          expression (free_vars.ml[39,1204+11]..[39,1204+52]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[39,1204+21]..[39,1204+52])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[39,1204+32]..[39,1204+35])
+                                    Ppat_var "env" (free_vars.ml[39,1204+32]..[39,1204+35])
+                                  expression (free_vars.ml[39,1204+39]..[39,1204+52])
+                                    Pexp_override
+                                    [
+                                      <override> "env" (free_vars.ml[39,1204+41]..[39,1204+44])
+                                        expression (free_vars.ml[39,1204+47]..[39,1204+50])
+                                          Pexp_ident "env" (free_vars.ml[39,1204+47]..[39,1204+50])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[40,1257+4]..[40,1257+69])
+                        Pcf_method Public
+                          "add_atom" (free_vars.ml[40,1257+11]..[40,1257+19])
+                          Concrete Fresh
+                          expression (free_vars.ml[40,1257+11]..[40,1257+69]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[40,1257+22]..[40,1257+69])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[40,1257+33]..[40,1257+34])
+                                    Ppat_var "s" (free_vars.ml[40,1257+33]..[40,1257+34])
+                                  expression (free_vars.ml[40,1257+38]..[40,1257+69])
+                                    Pexp_override
+                                    [
+                                      <override> "env" (free_vars.ml[40,1257+40]..[40,1257+43])
+                                        expression (free_vars.ml[40,1257+46]..[40,1257+67])
+                                          Pexp_apply
+                                          expression (free_vars.ml[40,1257+46]..[40,1257+61])
+                                            Pexp_ident "Setf.String.add" (free_vars.ml[40,1257+46]..[40,1257+61])
+                                          [
+                                            <label> ""
+                                              expression (free_vars.ml[40,1257+62]..[40,1257+63])
+                                                Pexp_ident "s" (free_vars.ml[40,1257+62]..[40,1257+63])
+                                            <label> ""
+                                              expression (free_vars.ml[40,1257+64]..[40,1257+67])
+                                                Pexp_ident "env" (free_vars.ml[40,1257+64]..[40,1257+67])
+                                          ]
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[41,1327+4]..[42,1348+71])
+                        Pcf_method Public
+                          "add_pat" (free_vars.ml[41,1327+11]..[41,1327+18])
+                          Concrete Fresh
+                          expression (free_vars.ml[41,1327+11]..[42,1348+71]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[42,1348+6]..[42,1348+71])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[42,1348+17]..[42,1348+18])
+                                    Ppat_var "p" (free_vars.ml[42,1348+17]..[42,1348+18])
+                                  expression (free_vars.ml[42,1348+22]..[42,1348+71])
+                                    Pexp_override
+                                    [
+                                      <override> "env" (free_vars.ml[42,1348+24]..[42,1348+27])
+                                        expression (free_vars.ml[42,1348+30]..[42,1348+69])
+                                          Pexp_apply
+                                          expression (free_vars.ml[42,1348+30]..[42,1348+47])
+                                            Pexp_ident "fold_pattern_vars" (free_vars.ml[42,1348+30]..[42,1348+47])
+                                          [
+                                            <label> ""
+                                              expression (free_vars.ml[42,1348+48]..[42,1348+63])
+                                                Pexp_ident "Setf.String.add" (free_vars.ml[42,1348+48]..[42,1348+63])
+                                            <label> ""
+                                              expression (free_vars.ml[42,1348+64]..[42,1348+65])
+                                                Pexp_ident "p" (free_vars.ml[42,1348+64]..[42,1348+65])
+                                            <label> ""
+                                              expression (free_vars.ml[42,1348+66]..[42,1348+69])
+                                                Pexp_ident "env" (free_vars.ml[42,1348+66]..[42,1348+69])
+                                          ]
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[43,1420+4]..[44,1442+70])
+                        Pcf_method Public
+                          "add_bind" (free_vars.ml[43,1420+11]..[43,1420+19])
+                          Concrete Fresh
+                          expression (free_vars.ml[43,1420+11]..[44,1442+70]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[44,1442+6]..[44,1442+70])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[44,1442+17]..[44,1442+19])
+                                    Ppat_var "bi" (free_vars.ml[44,1442+17]..[44,1442+19])
+                                  expression (free_vars.ml[44,1442+23]..[44,1442+70])
+                                    Pexp_override
+                                    [
+                                      <override> "env" (free_vars.ml[44,1442+25]..[44,1442+28])
+                                        expression (free_vars.ml[44,1442+31]..[44,1442+68])
+                                          Pexp_apply
+                                          expression (free_vars.ml[44,1442+31]..[44,1442+45])
+                                            Pexp_ident "fold_bind_vars" (free_vars.ml[44,1442+31]..[44,1442+45])
+                                          [
+                                            <label> ""
+                                              expression (free_vars.ml[44,1442+46]..[44,1442+61])
+                                                Pexp_ident "Setf.String.add" (free_vars.ml[44,1442+46]..[44,1442+61])
+                                            <label> ""
+                                              expression (free_vars.ml[44,1442+62]..[44,1442+64])
+                                                Pexp_ident "bi" (free_vars.ml[44,1442+62]..[44,1442+64])
+                                            <label> ""
+                                              expression (free_vars.ml[44,1442+65]..[44,1442+68])
+                                                Pexp_ident "env" (free_vars.ml[44,1442+65]..[44,1442+68])
+                                          ]
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[45,1513+4]..[59,2222+24])
+                        Pcf_method Public
+                          "exp" (free_vars.ml[45,1513+12]..[45,1513+15])
+                          Concrete Override
+                          expression (free_vars.ml[45,1513+10]..[59,2222+24]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[46,1531+6]..[59,2222+24])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[47,1546+8]..[48,1620+49])
+                                    Ppat_or
+                                    pattern (free_vars.ml[47,1546+8]..[47,1546+73])
+                                      Ppat_or
+                                      pattern (free_vars.ml[47,1546+8]..[47,1546+34])
+                                        Ppat_constraint
+                                        pattern (free_vars.ml[47,1546+9]..[47,1546+22])
+                                          Ppat_variant "Lid"
+                                          Some
+                                            pattern (free_vars.ml[47,1546+14]..[47,1546+22])
+                                              Ppat_tuple
+                                              [
+                                                pattern (free_vars.ml[47,1546+15]..[47,1546+19])
+                                                  Ppat_var "_loc" (free_vars.ml[47,1546+15]..[47,1546+19])
+                                                pattern (free_vars.ml[47,1546+20]..[47,1546+21])
+                                                  Ppat_var "s" (free_vars.ml[47,1546+20]..[47,1546+21])
+                                              ]
+                                        core_type (free_vars.ml[47,1546+25]..[47,1546+33])
+                                          Ptyp_constr "Astf.exp" (free_vars.ml[47,1546+25]..[47,1546+33])
+                                          []
+                                      pattern (free_vars.ml[47,1546+35]..[47,1546+73])
+                                        Ppat_constraint
+                                        pattern (free_vars.ml[47,1546+36]..[47,1546+61])
+                                          Ppat_variant "LabelS"
+                                          Some
+                                            pattern (free_vars.ml[47,1546+44]..[47,1546+61])
+                                              Ppat_tuple
+                                              [
+                                                pattern (free_vars.ml[47,1546+45]..[47,1546+49])
+                                                  Ppat_var "_loc" (free_vars.ml[47,1546+45]..[47,1546+49])
+                                                pattern (free_vars.ml[47,1546+50]..[47,1546+60])
+                                                  Ppat_variant "Lid"
+                                                  Some
+                                                    pattern (free_vars.ml[47,1546+55]..[47,1546+60])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (free_vars.ml[47,1546+56]..[47,1546+57])
+                                                          Ppat_any
+                                                        pattern (free_vars.ml[47,1546+58]..[47,1546+59])
+                                                          Ppat_var "s" (free_vars.ml[47,1546+58]..[47,1546+59])
+                                                      ]
+                                              ]
+                                        core_type (free_vars.ml[47,1546+64]..[47,1546+72])
+                                          Ptyp_constr "Astf.exp" (free_vars.ml[47,1546+64]..[47,1546+72])
+                                          []
+                                    pattern (free_vars.ml[48,1620+9]..[48,1620+49])
+                                      Ppat_constraint
+                                      pattern (free_vars.ml[48,1620+10]..[48,1620+37])
+                                        Ppat_variant "OptLablS"
+                                        Some
+                                          pattern (free_vars.ml[48,1620+20]..[48,1620+37])
+                                            Ppat_tuple
+                                            [
+                                              pattern (free_vars.ml[48,1620+21]..[48,1620+25])
+                                                Ppat_var "_loc" (free_vars.ml[48,1620+21]..[48,1620+25])
+                                              pattern (free_vars.ml[48,1620+26]..[48,1620+36])
+                                                Ppat_variant "Lid"
+                                                Some
+                                                  pattern (free_vars.ml[48,1620+31]..[48,1620+36])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (free_vars.ml[48,1620+32]..[48,1620+33])
+                                                        Ppat_any
+                                                      pattern (free_vars.ml[48,1620+34]..[48,1620+35])
+                                                        Ppat_var "s" (free_vars.ml[48,1620+34]..[48,1620+35])
+                                                    ]
+                                            ]
+                                      core_type (free_vars.ml[48,1620+40]..[48,1620+48])
+                                        Ptyp_constr "Astf.exp" (free_vars.ml[48,1620+40]..[48,1620+48])
+                                        []
+                                  expression (free_vars.ml[49,1673+10]..[49,1673+66])
+                                    Pexp_ifthenelse
+                                    expression (free_vars.ml[49,1673+13]..[49,1673+34])
+                                      Pexp_apply
+                                      expression (free_vars.ml[49,1673+13]..[49,1673+28])
+                                        Pexp_ident "Setf.String.mem" (free_vars.ml[49,1673+13]..[49,1673+28])
+                                      [
+                                        <label> ""
+                                          expression (free_vars.ml[49,1673+29]..[49,1673+30])
+                                            Pexp_ident "s" (free_vars.ml[49,1673+29]..[49,1673+30])
+                                        <label> ""
+                                          expression (free_vars.ml[49,1673+31]..[49,1673+34])
+                                            Pexp_ident "env" (free_vars.ml[49,1673+31]..[49,1673+34])
+                                      ]
+                                    expression (free_vars.ml[49,1673+40]..[49,1673+41])
+                                      Pexp_ident "o" (free_vars.ml[49,1673+40]..[49,1673+41])
+                                    Some
+                                      expression (free_vars.ml[49,1673+47]..[49,1673+66])
+                                        Pexp_override
+                                        [
+                                          <override> "free" (free_vars.ml[49,1673+49]..[49,1673+53])
+                                            expression (free_vars.ml[49,1673+56]..[49,1673+64])
+                                              Pexp_apply
+                                              expression (free_vars.ml[49,1673+56]..[49,1673+57])
+                                                Pexp_ident "f" (free_vars.ml[49,1673+56]..[49,1673+57])
+                                              [
+                                                <label> ""
+                                                  expression (free_vars.ml[49,1673+58]..[49,1673+59])
+                                                    Pexp_ident "s" (free_vars.ml[49,1673+58]..[49,1673+59])
+                                                <label> ""
+                                                  expression (free_vars.ml[49,1673+60]..[49,1673+64])
+                                                    Pexp_ident "free" (free_vars.ml[49,1673+60]..[49,1673+64])
+                                              ]
+                                        ]
+                                <case>
+                                  pattern (free_vars.ml[50,1740+8]..[50,1740+51])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[50,1740+9]..[50,1740+39])
+                                      Ppat_variant "LetIn"
+                                      Some
+                                        pattern (free_vars.ml[50,1740+16]..[50,1740+39])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[50,1740+17]..[50,1740+21])
+                                              Ppat_var "_loc" (free_vars.ml[50,1740+17]..[50,1740+21])
+                                            pattern (free_vars.ml[50,1740+22]..[50,1740+33])
+                                              Ppat_variant "Negative"
+                                              Some
+                                                pattern (free_vars.ml[50,1740+32]..[50,1740+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[50,1740+34]..[50,1740+36])
+                                              Ppat_var "bi" (free_vars.ml[50,1740+34]..[50,1740+36])
+                                            pattern (free_vars.ml[50,1740+37]..[50,1740+38])
+                                              Ppat_var "e" (free_vars.ml[50,1740+37]..[50,1740+38])
+                                          ]
+                                    core_type (free_vars.ml[50,1740+42]..[50,1740+50])
+                                      Ptyp_constr "Astf.exp" (free_vars.ml[50,1740+42]..[50,1740+50])
+                                      []
+                                  expression (free_vars.ml[51,1795+10]..[51,1795+55])
+                                    Pexp_apply
+                                    expression (free_vars.ml[51,1795+10]..[51,1795+52])
+                                      Pexp_send "bind"
+                                      expression (free_vars.ml[51,1795+10]..[51,1795+47])
+                                        Pexp_apply
+                                        expression (free_vars.ml[51,1795+11]..[51,1795+42])
+                                          Pexp_send "set_env"
+                                          expression (free_vars.ml[51,1795+11]..[51,1795+34])
+                                            Pexp_apply
+                                            expression (free_vars.ml[51,1795+12]..[51,1795+31])
+                                              Pexp_send "exp"
+                                              expression (free_vars.ml[51,1795+12]..[51,1795+27])
+                                                Pexp_apply
+                                                expression (free_vars.ml[51,1795+13]..[51,1795+23])
+                                                  Pexp_send "add_bind"
+                                                  expression (free_vars.ml[51,1795+13]..[51,1795+14])
+                                                    Pexp_ident "o" (free_vars.ml[51,1795+13]..[51,1795+14])
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[51,1795+24]..[51,1795+26])
+                                                      Pexp_ident "bi" (free_vars.ml[51,1795+24]..[51,1795+26])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[51,1795+32]..[51,1795+33])
+                                                  Pexp_ident "e" (free_vars.ml[51,1795+32]..[51,1795+33])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[51,1795+43]..[51,1795+46])
+                                              Pexp_ident "env" (free_vars.ml[51,1795+43]..[51,1795+46])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[51,1795+53]..[51,1795+55])
+                                          Pexp_ident "bi" (free_vars.ml[51,1795+53]..[51,1795+55])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[52,1851+8]..[52,1851+51])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[52,1851+9]..[52,1851+39])
+                                      Ppat_variant "LetIn"
+                                      Some
+                                        pattern (free_vars.ml[52,1851+16]..[52,1851+39])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[52,1851+17]..[52,1851+21])
+                                              Ppat_var "_loc" (free_vars.ml[52,1851+17]..[52,1851+21])
+                                            pattern (free_vars.ml[52,1851+22]..[52,1851+33])
+                                              Ppat_variant "Positive"
+                                              Some
+                                                pattern (free_vars.ml[52,1851+32]..[52,1851+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[52,1851+34]..[52,1851+36])
+                                              Ppat_var "bi" (free_vars.ml[52,1851+34]..[52,1851+36])
+                                            pattern (free_vars.ml[52,1851+37]..[52,1851+38])
+                                              Ppat_var "e" (free_vars.ml[52,1851+37]..[52,1851+38])
+                                          ]
+                                    core_type (free_vars.ml[52,1851+42]..[52,1851+50])
+                                      Ptyp_constr "Astf.exp" (free_vars.ml[52,1851+42]..[52,1851+50])
+                                      []
+                                  expression (free_vars.ml[53,1906+10]..[53,1906+55])
+                                    Pexp_apply
+                                    expression (free_vars.ml[53,1906+10]..[53,1906+51])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[53,1906+10]..[53,1906+43])
+                                        Pexp_apply
+                                        expression (free_vars.ml[53,1906+11]..[53,1906+39])
+                                          Pexp_send "bind"
+                                          expression (free_vars.ml[53,1906+11]..[53,1906+34])
+                                            Pexp_apply
+                                            expression (free_vars.ml[53,1906+12]..[53,1906+31])
+                                              Pexp_send "exp"
+                                              expression (free_vars.ml[53,1906+12]..[53,1906+27])
+                                                Pexp_apply
+                                                expression (free_vars.ml[53,1906+13]..[53,1906+23])
+                                                  Pexp_send "add_bind"
+                                                  expression (free_vars.ml[53,1906+13]..[53,1906+14])
+                                                    Pexp_ident "o" (free_vars.ml[53,1906+13]..[53,1906+14])
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[53,1906+24]..[53,1906+26])
+                                                      Pexp_ident "bi" (free_vars.ml[53,1906+24]..[53,1906+26])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[53,1906+32]..[53,1906+33])
+                                                  Pexp_ident "e" (free_vars.ml[53,1906+32]..[53,1906+33])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[53,1906+40]..[53,1906+42])
+                                              Pexp_ident "bi" (free_vars.ml[53,1906+40]..[53,1906+42])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[53,1906+52]..[53,1906+55])
+                                          Pexp_ident "env" (free_vars.ml[53,1906+52]..[53,1906+55])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[54,1962+8]..[54,1962+54])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[54,1962+9]..[54,1962+42])
+                                      Ppat_variant "For"
+                                      Some
+                                        pattern (free_vars.ml[54,1962+14]..[54,1962+42])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[54,1962+15]..[54,1962+19])
+                                              Ppat_var "_loc" (free_vars.ml[54,1962+15]..[54,1962+19])
+                                            pattern (free_vars.ml[54,1962+20]..[54,1962+30])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[54,1962+25]..[54,1962+30])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[54,1962+26]..[54,1962+27])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[54,1962+28]..[54,1962+29])
+                                                      Ppat_var "s" (free_vars.ml[54,1962+28]..[54,1962+29])
+                                                  ]
+                                            pattern (free_vars.ml[54,1962+31]..[54,1962+33])
+                                              Ppat_var "e1" (free_vars.ml[54,1962+31]..[54,1962+33])
+                                            pattern (free_vars.ml[54,1962+34]..[54,1962+36])
+                                              Ppat_var "e2" (free_vars.ml[54,1962+34]..[54,1962+36])
+                                            pattern (free_vars.ml[54,1962+37]..[54,1962+38])
+                                              Ppat_any
+                                            pattern (free_vars.ml[54,1962+39]..[54,1962+41])
+                                              Ppat_var "e3" (free_vars.ml[54,1962+39]..[54,1962+41])
+                                          ]
+                                    core_type (free_vars.ml[54,1962+45]..[54,1962+53])
+                                      Ptyp_constr "Astf.exp" (free_vars.ml[54,1962+45]..[54,1962+53])
+                                      []
+                                  expression (free_vars.ml[55,2020+10]..[55,2020+63])
+                                    Pexp_apply
+                                    expression (free_vars.ml[55,2020+10]..[55,2020+59])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[55,2020+10]..[55,2020+51])
+                                        Pexp_apply
+                                        expression (free_vars.ml[55,2020+11]..[55,2020+47])
+                                          Pexp_send "exp"
+                                          expression (free_vars.ml[55,2020+11]..[55,2020+43])
+                                            Pexp_apply
+                                            expression (free_vars.ml[55,2020+12]..[55,2020+40])
+                                              Pexp_send "add_atom"
+                                              expression (free_vars.ml[55,2020+12]..[55,2020+31])
+                                                Pexp_apply
+                                                expression (free_vars.ml[55,2020+13]..[55,2020+27])
+                                                  Pexp_send "exp"
+                                                  expression (free_vars.ml[55,2020+13]..[55,2020+23])
+                                                    Pexp_apply
+                                                    expression (free_vars.ml[55,2020+14]..[55,2020+19])
+                                                      Pexp_send "exp"
+                                                      expression (free_vars.ml[55,2020+14]..[55,2020+15])
+                                                        Pexp_ident "o" (free_vars.ml[55,2020+14]..[55,2020+15])
+                                                    [
+                                                      <label> ""
+                                                        expression (free_vars.ml[55,2020+20]..[55,2020+22])
+                                                          Pexp_ident "e1" (free_vars.ml[55,2020+20]..[55,2020+22])
+                                                    ]
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[55,2020+28]..[55,2020+30])
+                                                      Pexp_ident "e2" (free_vars.ml[55,2020+28]..[55,2020+30])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[55,2020+41]..[55,2020+42])
+                                                  Pexp_ident "s" (free_vars.ml[55,2020+41]..[55,2020+42])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[55,2020+48]..[55,2020+50])
+                                              Pexp_ident "e3" (free_vars.ml[55,2020+48]..[55,2020+50])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[55,2020+60]..[55,2020+63])
+                                          Pexp_ident "env" (free_vars.ml[55,2020+60]..[55,2020+63])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[56,2084+8]..[56,2084+37])
+                                    Ppat_or
+                                    pattern (free_vars.ml[56,2084+8]..[56,2084+13])
+                                      Ppat_type
+                                      "vid'" (free_vars.ml[56,2084+9]..[56,2084+13])
+                                    pattern (free_vars.ml[56,2084+14]..[56,2084+37])
+                                      Ppat_constraint
+                                      pattern (free_vars.ml[56,2084+15]..[56,2084+25])
+                                        Ppat_variant "New"
+                                        Some
+                                          pattern (free_vars.ml[56,2084+20]..[56,2084+25])
+                                            Ppat_tuple
+                                            [
+                                              pattern (free_vars.ml[56,2084+21]..[56,2084+22])
+                                                Ppat_any
+                                              pattern (free_vars.ml[56,2084+23]..[56,2084+24])
+                                                Ppat_any
+                                            ]
+                                      core_type (free_vars.ml[56,2084+28]..[56,2084+36])
+                                        Ptyp_constr "Astf.exp" (free_vars.ml[56,2084+28]..[56,2084+36])
+                                        []
+                                  expression (free_vars.ml[56,2084+41]..[56,2084+42])
+                                    Pexp_ident "o" (free_vars.ml[56,2084+41]..[56,2084+42])
+                                <case>
+                                  pattern (free_vars.ml[57,2127+8]..[57,2127+41])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[57,2127+9]..[57,2127+29])
+                                      Ppat_variant "ObjPat"
+                                      Some
+                                        pattern (free_vars.ml[57,2127+17]..[57,2127+29])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[57,2127+18]..[57,2127+22])
+                                              Ppat_var "_loc" (free_vars.ml[57,2127+18]..[57,2127+22])
+                                            pattern (free_vars.ml[57,2127+23]..[57,2127+24])
+                                              Ppat_var "p" (free_vars.ml[57,2127+23]..[57,2127+24])
+                                            pattern (free_vars.ml[57,2127+25]..[57,2127+28])
+                                              Ppat_var "cst" (free_vars.ml[57,2127+25]..[57,2127+28])
+                                          ]
+                                    core_type (free_vars.ml[57,2127+32]..[57,2127+40])
+                                      Ptyp_constr "Astf.exp" (free_vars.ml[57,2127+32]..[57,2127+40])
+                                      []
+                                  expression (free_vars.ml[58,2172+10]..[58,2172+49])
+                                    Pexp_apply
+                                    expression (free_vars.ml[58,2172+10]..[58,2172+45])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[58,2172+10]..[58,2172+37])
+                                        Pexp_apply
+                                        expression (free_vars.ml[58,2172+11]..[58,2172+32])
+                                          Pexp_send "clfield"
+                                          expression (free_vars.ml[58,2172+11]..[58,2172+24])
+                                            Pexp_apply
+                                            expression (free_vars.ml[58,2172+12]..[58,2172+21])
+                                              Pexp_send "add_pat"
+                                              expression (free_vars.ml[58,2172+12]..[58,2172+13])
+                                                Pexp_ident "o" (free_vars.ml[58,2172+12]..[58,2172+13])
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[58,2172+22]..[58,2172+23])
+                                                  Pexp_ident "p" (free_vars.ml[58,2172+22]..[58,2172+23])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[58,2172+33]..[58,2172+36])
+                                              Pexp_ident "cst" (free_vars.ml[58,2172+33]..[58,2172+36])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[58,2172+46]..[58,2172+49])
+                                          Pexp_ident "env" (free_vars.ml[58,2172+46]..[58,2172+49])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[59,2222+8]..[59,2222+9])
+                                    Ppat_var "e" (free_vars.ml[59,2222+8]..[59,2222+9])
+                                  expression (free_vars.ml[59,2222+13]..[59,2222+24])
+                                    Pexp_apply
+                                    expression (free_vars.ml[59,2222+13]..[59,2222+22])
+                                      Pexp_send "exp"
+                                      expression (free_vars.ml[59,2222+13]..[59,2222+18])
+                                        Pexp_ident "super" (free_vars.ml[59,2222+13]..[59,2222+18])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[59,2222+23]..[59,2222+24])
+                                          Pexp_ident "e" (free_vars.ml[59,2222+23]..[59,2222+24])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[60,2247+4]..[64,2385+25])
+                        Pcf_method Public
+                          "case" (free_vars.ml[60,2247+12]..[60,2247+16])
+                          Concrete Override
+                          expression (free_vars.ml[60,2247+10]..[64,2385+25]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[61,2266+6]..[64,2385+25])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[62,2281+8]..[62,2281+46])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[62,2281+9]..[62,2281+33])
+                                      Ppat_variant "CaseWhen"
+                                      Some
+                                        pattern (free_vars.ml[62,2281+19]..[62,2281+33])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[62,2281+20]..[62,2281+24])
+                                              Ppat_var "_loc" (free_vars.ml[62,2281+20]..[62,2281+24])
+                                            pattern (free_vars.ml[62,2281+25]..[62,2281+26])
+                                              Ppat_var "p" (free_vars.ml[62,2281+25]..[62,2281+26])
+                                            pattern (free_vars.ml[62,2281+27]..[62,2281+29])
+                                              Ppat_var "e1" (free_vars.ml[62,2281+27]..[62,2281+29])
+                                            pattern (free_vars.ml[62,2281+30]..[62,2281+32])
+                                              Ppat_var "e2" (free_vars.ml[62,2281+30]..[62,2281+32])
+                                          ]
+                                    core_type (free_vars.ml[62,2281+36]..[62,2281+45])
+                                      Ptyp_constr "Astf.case" (free_vars.ml[62,2281+36]..[62,2281+45])
+                                      []
+                                  expression (free_vars.ml[63,2331+10]..[63,2331+53])
+                                    Pexp_apply
+                                    expression (free_vars.ml[63,2331+10]..[63,2331+49])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[63,2331+10]..[63,2331+41])
+                                        Pexp_apply
+                                        expression (free_vars.ml[63,2331+11]..[63,2331+37])
+                                          Pexp_send "exp"
+                                          expression (free_vars.ml[63,2331+11]..[63,2331+33])
+                                            Pexp_apply
+                                            expression (free_vars.ml[63,2331+12]..[63,2331+29])
+                                              Pexp_send "exp"
+                                              expression (free_vars.ml[63,2331+12]..[63,2331+25])
+                                                Pexp_apply
+                                                expression (free_vars.ml[63,2331+13]..[63,2331+22])
+                                                  Pexp_send "add_pat"
+                                                  expression (free_vars.ml[63,2331+13]..[63,2331+14])
+                                                    Pexp_ident "o" (free_vars.ml[63,2331+13]..[63,2331+14])
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[63,2331+23]..[63,2331+24])
+                                                      Pexp_ident "p" (free_vars.ml[63,2331+23]..[63,2331+24])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[63,2331+30]..[63,2331+32])
+                                                  Pexp_ident "e1" (free_vars.ml[63,2331+30]..[63,2331+32])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[63,2331+38]..[63,2331+40])
+                                              Pexp_ident "e2" (free_vars.ml[63,2331+38]..[63,2331+40])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[63,2331+50]..[63,2331+53])
+                                          Pexp_ident "env" (free_vars.ml[63,2331+50]..[63,2331+53])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[64,2385+8]..[64,2385+9])
+                                    Ppat_var "m" (free_vars.ml[64,2385+8]..[64,2385+9])
+                                  expression (free_vars.ml[64,2385+13]..[64,2385+25])
+                                    Pexp_apply
+                                    expression (free_vars.ml[64,2385+13]..[64,2385+23])
+                                      Pexp_send "case"
+                                      expression (free_vars.ml[64,2385+13]..[64,2385+18])
+                                        Pexp_ident "super" (free_vars.ml[64,2385+13]..[64,2385+18])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[64,2385+24]..[64,2385+25])
+                                          Pexp_ident "m" (free_vars.ml[64,2385+24]..[64,2385+25])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[65,2411+4]..[71,2690+27])
+                        Pcf_method Public
+                          "stru" (free_vars.ml[65,2411+12]..[65,2411+16])
+                          Concrete Override
+                          expression (free_vars.ml[65,2411+10]..[71,2690+27]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[66,2430+6]..[71,2690+27])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[67,2445+8]..[67,2445+53])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[67,2445+9]..[67,2445+40])
+                                      Ppat_variant "External"
+                                      Some
+                                        pattern (free_vars.ml[67,2445+19]..[67,2445+40])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[67,2445+20]..[67,2445+24])
+                                              Ppat_var "_loc" (free_vars.ml[67,2445+20]..[67,2445+24])
+                                            pattern (free_vars.ml[67,2445+25]..[67,2445+35])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[67,2445+30]..[67,2445+35])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[67,2445+31]..[67,2445+32])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[67,2445+33]..[67,2445+34])
+                                                      Ppat_var "s" (free_vars.ml[67,2445+33]..[67,2445+34])
+                                                  ]
+                                            pattern (free_vars.ml[67,2445+36]..[67,2445+37])
+                                              Ppat_var "t" (free_vars.ml[67,2445+36]..[67,2445+37])
+                                            pattern (free_vars.ml[67,2445+38]..[67,2445+39])
+                                              Ppat_any
+                                          ]
+                                    core_type (free_vars.ml[67,2445+43]..[67,2445+52])
+                                      Ptyp_constr "Astf.stru" (free_vars.ml[67,2445+43]..[67,2445+52])
+                                      []
+                                  expression (free_vars.ml[68,2502+10]..[68,2502+31])
+                                    Pexp_apply
+                                    expression (free_vars.ml[68,2502+10]..[68,2502+29])
+                                      Pexp_send "add_atom"
+                                      expression (free_vars.ml[68,2502+10]..[68,2502+20])
+                                        Pexp_apply
+                                        expression (free_vars.ml[68,2502+11]..[68,2502+17])
+                                          Pexp_send "ctyp"
+                                          expression (free_vars.ml[68,2502+11]..[68,2502+12])
+                                            Pexp_ident "o" (free_vars.ml[68,2502+11]..[68,2502+12])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[68,2502+18]..[68,2502+19])
+                                              Pexp_ident "t" (free_vars.ml[68,2502+18]..[68,2502+19])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[68,2502+30]..[68,2502+31])
+                                          Pexp_ident "s" (free_vars.ml[68,2502+30]..[68,2502+31])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[69,2534+8]..[69,2534+50])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[69,2534+9]..[69,2534+37])
+                                      Ppat_variant "Value"
+                                      Some
+                                        pattern (free_vars.ml[69,2534+16]..[69,2534+37])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[69,2534+17]..[69,2534+21])
+                                              Ppat_var "_loc" (free_vars.ml[69,2534+17]..[69,2534+21])
+                                            pattern (free_vars.ml[69,2534+22]..[69,2534+33])
+                                              Ppat_variant "Negative"
+                                              Some
+                                                pattern (free_vars.ml[69,2534+32]..[69,2534+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[69,2534+34]..[69,2534+36])
+                                              Ppat_var "bi" (free_vars.ml[69,2534+34]..[69,2534+36])
+                                          ]
+                                    core_type (free_vars.ml[69,2534+40]..[69,2534+49])
+                                      Ptyp_constr "Astf.stru" (free_vars.ml[69,2534+40]..[69,2534+49])
+                                      []
+                                  expression (free_vars.ml[69,2534+54]..[69,2534+77])
+                                    Pexp_apply
+                                    expression (free_vars.ml[69,2534+54]..[69,2534+74])
+                                      Pexp_send "add_bind"
+                                      expression (free_vars.ml[69,2534+54]..[69,2534+65])
+                                        Pexp_apply
+                                        expression (free_vars.ml[69,2534+55]..[69,2534+61])
+                                          Pexp_send "bind"
+                                          expression (free_vars.ml[69,2534+55]..[69,2534+56])
+                                            Pexp_ident "o" (free_vars.ml[69,2534+55]..[69,2534+56])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[69,2534+62]..[69,2534+64])
+                                              Pexp_ident "bi" (free_vars.ml[69,2534+62]..[69,2534+64])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[69,2534+75]..[69,2534+77])
+                                          Pexp_ident "bi" (free_vars.ml[69,2534+75]..[69,2534+77])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[70,2612+8]..[70,2612+50])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[70,2612+9]..[70,2612+37])
+                                      Ppat_variant "Value"
+                                      Some
+                                        pattern (free_vars.ml[70,2612+16]..[70,2612+37])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[70,2612+17]..[70,2612+21])
+                                              Ppat_var "_loc" (free_vars.ml[70,2612+17]..[70,2612+21])
+                                            pattern (free_vars.ml[70,2612+22]..[70,2612+33])
+                                              Ppat_variant "Positive"
+                                              Some
+                                                pattern (free_vars.ml[70,2612+32]..[70,2612+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[70,2612+34]..[70,2612+36])
+                                              Ppat_var "bi" (free_vars.ml[70,2612+34]..[70,2612+36])
+                                          ]
+                                    core_type (free_vars.ml[70,2612+40]..[70,2612+49])
+                                      Ptyp_constr "Astf.stru" (free_vars.ml[70,2612+40]..[70,2612+49])
+                                      []
+                                  expression (free_vars.ml[70,2612+54]..[70,2612+77])
+                                    Pexp_apply
+                                    expression (free_vars.ml[70,2612+54]..[70,2612+74])
+                                      Pexp_send "bind"
+                                      expression (free_vars.ml[70,2612+54]..[70,2612+69])
+                                        Pexp_apply
+                                        expression (free_vars.ml[70,2612+55]..[70,2612+65])
+                                          Pexp_send "add_bind"
+                                          expression (free_vars.ml[70,2612+55]..[70,2612+56])
+                                            Pexp_ident "o" (free_vars.ml[70,2612+55]..[70,2612+56])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[70,2612+66]..[70,2612+68])
+                                              Pexp_ident "bi" (free_vars.ml[70,2612+66]..[70,2612+68])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[70,2612+75]..[70,2612+77])
+                                          Pexp_ident "bi" (free_vars.ml[70,2612+75]..[70,2612+77])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[71,2690+8]..[71,2690+10])
+                                    Ppat_var "st" (free_vars.ml[71,2690+8]..[71,2690+10])
+                                  expression (free_vars.ml[71,2690+14]..[71,2690+27])
+                                    Pexp_apply
+                                    expression (free_vars.ml[71,2690+14]..[71,2690+24])
+                                      Pexp_send "stru"
+                                      expression (free_vars.ml[71,2690+14]..[71,2690+19])
+                                        Pexp_ident "super" (free_vars.ml[71,2690+14]..[71,2690+19])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[71,2690+25]..[71,2690+27])
+                                          Pexp_ident "st" (free_vars.ml[71,2690+25]..[71,2690+27])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[72,2718+4]..[82,3176+28])
+                        Pcf_method Public
+                          "clexp" (free_vars.ml[72,2718+12]..[72,2718+17])
+                          Concrete Override
+                          expression (free_vars.ml[72,2718+10]..[82,3176+28]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[73,2738+6]..[82,3176+28])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[74,2753+8]..[74,2753+41])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[74,2753+9]..[74,2753+27])
+                                      Ppat_variant "CeFun"
+                                      Some
+                                        pattern (free_vars.ml[74,2753+16]..[74,2753+27])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[74,2753+17]..[74,2753+21])
+                                              Ppat_var "_loc" (free_vars.ml[74,2753+17]..[74,2753+21])
+                                            pattern (free_vars.ml[74,2753+22]..[74,2753+23])
+                                              Ppat_var "p" (free_vars.ml[74,2753+22]..[74,2753+23])
+                                            pattern (free_vars.ml[74,2753+24]..[74,2753+26])
+                                              Ppat_var "ce" (free_vars.ml[74,2753+24]..[74,2753+26])
+                                          ]
+                                    core_type (free_vars.ml[74,2753+30]..[74,2753+40])
+                                      Ptyp_constr "Astf.clexp" (free_vars.ml[74,2753+30]..[74,2753+40])
+                                      []
+                                  expression (free_vars.ml[75,2798+10]..[75,2798+46])
+                                    Pexp_apply
+                                    expression (free_vars.ml[75,2798+10]..[75,2798+42])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[75,2798+10]..[75,2798+34])
+                                        Pexp_apply
+                                        expression (free_vars.ml[75,2798+11]..[75,2798+30])
+                                          Pexp_send "clexp"
+                                          expression (free_vars.ml[75,2798+11]..[75,2798+24])
+                                            Pexp_apply
+                                            expression (free_vars.ml[75,2798+12]..[75,2798+21])
+                                              Pexp_send "add_pat"
+                                              expression (free_vars.ml[75,2798+12]..[75,2798+13])
+                                                Pexp_ident "o" (free_vars.ml[75,2798+12]..[75,2798+13])
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[75,2798+22]..[75,2798+23])
+                                                  Pexp_ident "p" (free_vars.ml[75,2798+22]..[75,2798+23])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[75,2798+31]..[75,2798+33])
+                                              Pexp_ident "ce" (free_vars.ml[75,2798+31]..[75,2798+33])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[75,2798+43]..[75,2798+46])
+                                          Pexp_ident "env" (free_vars.ml[75,2798+43]..[75,2798+46])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[76,2845+8]..[76,2845+54])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[76,2845+9]..[76,2845+40])
+                                      Ppat_variant "LetIn"
+                                      Some
+                                        pattern (free_vars.ml[76,2845+16]..[76,2845+40])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[76,2845+17]..[76,2845+21])
+                                              Ppat_var "_loc" (free_vars.ml[76,2845+17]..[76,2845+21])
+                                            pattern (free_vars.ml[76,2845+22]..[76,2845+33])
+                                              Ppat_variant "Negative"
+                                              Some
+                                                pattern (free_vars.ml[76,2845+32]..[76,2845+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[76,2845+34]..[76,2845+36])
+                                              Ppat_var "bi" (free_vars.ml[76,2845+34]..[76,2845+36])
+                                            pattern (free_vars.ml[76,2845+37]..[76,2845+39])
+                                              Ppat_var "ce" (free_vars.ml[76,2845+37]..[76,2845+39])
+                                          ]
+                                    core_type (free_vars.ml[76,2845+43]..[76,2845+53])
+                                      Ptyp_constr "Astf.clexp" (free_vars.ml[76,2845+43]..[76,2845+53])
+                                      []
+                                  expression (free_vars.ml[77,2903+10]..[77,2903+58])
+                                    Pexp_apply
+                                    expression (free_vars.ml[77,2903+10]..[77,2903+54])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[77,2903+10]..[77,2903+46])
+                                        Pexp_apply
+                                        expression (free_vars.ml[77,2903+11]..[77,2903+42])
+                                          Pexp_send "clexp"
+                                          expression (free_vars.ml[77,2903+11]..[77,2903+36])
+                                            Pexp_apply
+                                            expression (free_vars.ml[77,2903+12]..[77,2903+32])
+                                              Pexp_send "add_bind"
+                                              expression (free_vars.ml[77,2903+12]..[77,2903+23])
+                                                Pexp_apply
+                                                expression (free_vars.ml[77,2903+13]..[77,2903+19])
+                                                  Pexp_send "bind"
+                                                  expression (free_vars.ml[77,2903+13]..[77,2903+14])
+                                                    Pexp_ident "o" (free_vars.ml[77,2903+13]..[77,2903+14])
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[77,2903+20]..[77,2903+22])
+                                                      Pexp_ident "bi" (free_vars.ml[77,2903+20]..[77,2903+22])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[77,2903+33]..[77,2903+35])
+                                                  Pexp_ident "bi" (free_vars.ml[77,2903+33]..[77,2903+35])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[77,2903+43]..[77,2903+45])
+                                              Pexp_ident "ce" (free_vars.ml[77,2903+43]..[77,2903+45])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[77,2903+55]..[77,2903+58])
+                                          Pexp_ident "env" (free_vars.ml[77,2903+55]..[77,2903+58])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[78,2962+8]..[78,2962+54])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[78,2962+9]..[78,2962+40])
+                                      Ppat_variant "LetIn"
+                                      Some
+                                        pattern (free_vars.ml[78,2962+16]..[78,2962+40])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[78,2962+17]..[78,2962+21])
+                                              Ppat_var "_loc" (free_vars.ml[78,2962+17]..[78,2962+21])
+                                            pattern (free_vars.ml[78,2962+22]..[78,2962+33])
+                                              Ppat_variant "Positive"
+                                              Some
+                                                pattern (free_vars.ml[78,2962+32]..[78,2962+33])
+                                                  Ppat_any
+                                            pattern (free_vars.ml[78,2962+34]..[78,2962+36])
+                                              Ppat_var "bi" (free_vars.ml[78,2962+34]..[78,2962+36])
+                                            pattern (free_vars.ml[78,2962+37]..[78,2962+39])
+                                              Ppat_var "ce" (free_vars.ml[78,2962+37]..[78,2962+39])
+                                          ]
+                                    core_type (free_vars.ml[78,2962+43]..[78,2962+53])
+                                      Ptyp_constr "Astf.clexp" (free_vars.ml[78,2962+43]..[78,2962+53])
+                                      []
+                                  expression (free_vars.ml[79,3020+10]..[79,3020+58])
+                                    Pexp_apply
+                                    expression (free_vars.ml[79,3020+10]..[79,3020+54])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[79,3020+10]..[79,3020+46])
+                                        Pexp_apply
+                                        expression (free_vars.ml[79,3020+11]..[79,3020+42])
+                                          Pexp_send "clexp"
+                                          expression (free_vars.ml[79,3020+11]..[79,3020+36])
+                                            Pexp_apply
+                                            expression (free_vars.ml[79,3020+12]..[79,3020+32])
+                                              Pexp_send "bind"
+                                              expression (free_vars.ml[79,3020+12]..[79,3020+27])
+                                                Pexp_apply
+                                                expression (free_vars.ml[79,3020+13]..[79,3020+23])
+                                                  Pexp_send "add_bind"
+                                                  expression (free_vars.ml[79,3020+13]..[79,3020+14])
+                                                    Pexp_ident "o" (free_vars.ml[79,3020+13]..[79,3020+14])
+                                                [
+                                                  <label> ""
+                                                    expression (free_vars.ml[79,3020+24]..[79,3020+26])
+                                                      Pexp_ident "bi" (free_vars.ml[79,3020+24]..[79,3020+26])
+                                                ]
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[79,3020+33]..[79,3020+35])
+                                                  Pexp_ident "bi" (free_vars.ml[79,3020+33]..[79,3020+35])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[79,3020+43]..[79,3020+45])
+                                              Pexp_ident "ce" (free_vars.ml[79,3020+43]..[79,3020+45])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[79,3020+55]..[79,3020+58])
+                                          Pexp_ident "env" (free_vars.ml[79,3020+55]..[79,3020+58])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[80,3079+8]..[80,3079+43])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[80,3079+9]..[80,3079+29])
+                                      Ppat_variant "ObjPat"
+                                      Some
+                                        pattern (free_vars.ml[80,3079+17]..[80,3079+29])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[80,3079+18]..[80,3079+22])
+                                              Ppat_var "_loc" (free_vars.ml[80,3079+18]..[80,3079+22])
+                                            pattern (free_vars.ml[80,3079+23]..[80,3079+24])
+                                              Ppat_var "p" (free_vars.ml[80,3079+23]..[80,3079+24])
+                                            pattern (free_vars.ml[80,3079+25]..[80,3079+28])
+                                              Ppat_var "cst" (free_vars.ml[80,3079+25]..[80,3079+28])
+                                          ]
+                                    core_type (free_vars.ml[80,3079+32]..[80,3079+42])
+                                      Ptyp_constr "Astf.clexp" (free_vars.ml[80,3079+32]..[80,3079+42])
+                                      []
+                                  expression (free_vars.ml[81,3126+10]..[81,3126+49])
+                                    Pexp_apply
+                                    expression (free_vars.ml[81,3126+10]..[81,3126+45])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[81,3126+10]..[81,3126+37])
+                                        Pexp_apply
+                                        expression (free_vars.ml[81,3126+11]..[81,3126+32])
+                                          Pexp_send "clfield"
+                                          expression (free_vars.ml[81,3126+11]..[81,3126+24])
+                                            Pexp_apply
+                                            expression (free_vars.ml[81,3126+12]..[81,3126+21])
+                                              Pexp_send "add_pat"
+                                              expression (free_vars.ml[81,3126+12]..[81,3126+13])
+                                                Pexp_ident "o" (free_vars.ml[81,3126+12]..[81,3126+13])
+                                            [
+                                              <label> ""
+                                                expression (free_vars.ml[81,3126+22]..[81,3126+23])
+                                                  Pexp_ident "p" (free_vars.ml[81,3126+22]..[81,3126+23])
+                                            ]
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[81,3126+33]..[81,3126+36])
+                                              Pexp_ident "cst" (free_vars.ml[81,3126+33]..[81,3126+36])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[81,3126+46]..[81,3126+49])
+                                          Pexp_ident "env" (free_vars.ml[81,3126+46]..[81,3126+49])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[82,3176+8]..[82,3176+10])
+                                    Ppat_var "ce" (free_vars.ml[82,3176+8]..[82,3176+10])
+                                  expression (free_vars.ml[82,3176+14]..[82,3176+28])
+                                    Pexp_apply
+                                    expression (free_vars.ml[82,3176+14]..[82,3176+25])
+                                      Pexp_send "clexp"
+                                      expression (free_vars.ml[82,3176+14]..[82,3176+19])
+                                        Pexp_ident "super" (free_vars.ml[82,3176+14]..[82,3176+19])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[82,3176+26]..[82,3176+28])
+                                          Pexp_ident "ce" (free_vars.ml[82,3176+26]..[82,3176+28])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[83,3205+4]..[92,3591+32])
+                        Pcf_method Public
+                          "clfield" (free_vars.ml[83,3205+12]..[83,3205+19])
+                          Concrete Override
+                          expression (free_vars.ml[83,3205+10]..[92,3591+32]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[84,3227+6]..[92,3591+32])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[85,3242+8]..[85,3242+51])
+                                    Ppat_alias "cst" (free_vars.ml[85,3242+48]..[85,3242+51])
+                                    pattern (free_vars.ml[85,3242+8]..[85,3242+44])
+                                      Ppat_constraint
+                                      pattern (free_vars.ml[85,3242+9]..[85,3242+28])
+                                        Ppat_variant "Inherit"
+                                        Some
+                                          pattern (free_vars.ml[85,3242+18]..[85,3242+28])
+                                            Ppat_tuple
+                                            [
+                                              pattern (free_vars.ml[85,3242+19]..[85,3242+23])
+                                                Ppat_var "_loc" (free_vars.ml[85,3242+19]..[85,3242+23])
+                                              pattern (free_vars.ml[85,3242+24]..[85,3242+25])
+                                                Ppat_any
+                                              pattern (free_vars.ml[85,3242+26]..[85,3242+27])
+                                                Ppat_any
+                                            ]
+                                      core_type (free_vars.ml[85,3242+31]..[85,3242+43])
+                                        Ptyp_constr "Astf.clfield" (free_vars.ml[85,3242+31]..[85,3242+43])
+                                        []
+                                  expression (free_vars.ml[85,3242+55]..[85,3242+72])
+                                    Pexp_apply
+                                    expression (free_vars.ml[85,3242+55]..[85,3242+68])
+                                      Pexp_send "clfield"
+                                      expression (free_vars.ml[85,3242+55]..[85,3242+60])
+                                        Pexp_ident "super" (free_vars.ml[85,3242+55]..[85,3242+60])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[85,3242+69]..[85,3242+72])
+                                          Pexp_ident "cst" (free_vars.ml[85,3242+69]..[85,3242+72])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[86,3315+8]..[86,3315+58])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[86,3315+9]..[86,3315+42])
+                                      Ppat_variant "InheritAs"
+                                      Some
+                                        pattern (free_vars.ml[86,3315+20]..[86,3315+42])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[86,3315+21]..[86,3315+25])
+                                              Ppat_var "_loc" (free_vars.ml[86,3315+21]..[86,3315+25])
+                                            pattern (free_vars.ml[86,3315+26]..[86,3315+27])
+                                              Ppat_any
+                                            pattern (free_vars.ml[86,3315+28]..[86,3315+30])
+                                              Ppat_var "ce" (free_vars.ml[86,3315+28]..[86,3315+30])
+                                            pattern (free_vars.ml[86,3315+31]..[86,3315+41])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[86,3315+36]..[86,3315+41])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[86,3315+37]..[86,3315+38])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[86,3315+39]..[86,3315+40])
+                                                      Ppat_var "s" (free_vars.ml[86,3315+39]..[86,3315+40])
+                                                  ]
+                                          ]
+                                    core_type (free_vars.ml[86,3315+45]..[86,3315+57])
+                                      Ptyp_constr "Astf.clfield" (free_vars.ml[86,3315+45]..[86,3315+57])
+                                      []
+                                  expression (free_vars.ml[87,3377+10]..[87,3377+33])
+                                    Pexp_apply
+                                    expression (free_vars.ml[87,3377+10]..[87,3377+31])
+                                      Pexp_send "add_atom"
+                                      expression (free_vars.ml[87,3377+10]..[87,3377+22])
+                                        Pexp_apply
+                                        expression (free_vars.ml[87,3377+11]..[87,3377+18])
+                                          Pexp_send "clexp"
+                                          expression (free_vars.ml[87,3377+11]..[87,3377+12])
+                                            Pexp_ident "o" (free_vars.ml[87,3377+11]..[87,3377+12])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[87,3377+19]..[87,3377+21])
+                                              Pexp_ident "ce" (free_vars.ml[87,3377+19]..[87,3377+21])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[87,3377+32]..[87,3377+33])
+                                          Pexp_ident "s" (free_vars.ml[87,3377+32]..[87,3377+33])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[88,3411+8]..[88,3411+55])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[88,3411+9]..[88,3411+39])
+                                      Ppat_variant "CrVal"
+                                      Some
+                                        pattern (free_vars.ml[88,3411+16]..[88,3411+39])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[88,3411+17]..[88,3411+21])
+                                              Ppat_var "_loc" (free_vars.ml[88,3411+17]..[88,3411+21])
+                                            pattern (free_vars.ml[88,3411+22]..[88,3411+32])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[88,3411+27]..[88,3411+32])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[88,3411+28]..[88,3411+29])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[88,3411+30]..[88,3411+31])
+                                                      Ppat_var "s" (free_vars.ml[88,3411+30]..[88,3411+31])
+                                                  ]
+                                            pattern (free_vars.ml[88,3411+33]..[88,3411+34])
+                                              Ppat_any
+                                            pattern (free_vars.ml[88,3411+35]..[88,3411+36])
+                                              Ppat_any
+                                            pattern (free_vars.ml[88,3411+37]..[88,3411+38])
+                                              Ppat_var "e" (free_vars.ml[88,3411+37]..[88,3411+38])
+                                          ]
+                                    core_type (free_vars.ml[88,3411+42]..[88,3411+54])
+                                      Ptyp_constr "Astf.clfield" (free_vars.ml[88,3411+42]..[88,3411+54])
+                                      []
+                                  expression (free_vars.ml[89,3470+10]..[89,3470+30])
+                                    Pexp_apply
+                                    expression (free_vars.ml[89,3470+10]..[89,3470+28])
+                                      Pexp_send "add_atom"
+                                      expression (free_vars.ml[89,3470+10]..[89,3470+19])
+                                        Pexp_apply
+                                        expression (free_vars.ml[89,3470+11]..[89,3470+16])
+                                          Pexp_send "exp"
+                                          expression (free_vars.ml[89,3470+11]..[89,3470+12])
+                                            Pexp_ident "o" (free_vars.ml[89,3470+11]..[89,3470+12])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[89,3470+17]..[89,3470+18])
+                                              Pexp_ident "e" (free_vars.ml[89,3470+17]..[89,3470+18])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[89,3470+29]..[89,3470+30])
+                                          Pexp_ident "s" (free_vars.ml[89,3470+29]..[89,3470+30])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[90,3501+8]..[90,3501+54])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[90,3501+9]..[90,3501+38])
+                                      Ppat_variant "VirVal"
+                                      Some
+                                        pattern (free_vars.ml[90,3501+17]..[90,3501+38])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[90,3501+18]..[90,3501+22])
+                                              Ppat_var "_loc" (free_vars.ml[90,3501+18]..[90,3501+22])
+                                            pattern (free_vars.ml[90,3501+23]..[90,3501+33])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (free_vars.ml[90,3501+28]..[90,3501+33])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (free_vars.ml[90,3501+29]..[90,3501+30])
+                                                      Ppat_any
+                                                    pattern (free_vars.ml[90,3501+31]..[90,3501+32])
+                                                      Ppat_var "s" (free_vars.ml[90,3501+31]..[90,3501+32])
+                                                  ]
+                                            pattern (free_vars.ml[90,3501+34]..[90,3501+35])
+                                              Ppat_any
+                                            pattern (free_vars.ml[90,3501+36]..[90,3501+37])
+                                              Ppat_var "t" (free_vars.ml[90,3501+36]..[90,3501+37])
+                                          ]
+                                    core_type (free_vars.ml[90,3501+41]..[90,3501+53])
+                                      Ptyp_constr "Astf.clfield" (free_vars.ml[90,3501+41]..[90,3501+53])
+                                      []
+                                  expression (free_vars.ml[91,3559+10]..[91,3559+31])
+                                    Pexp_apply
+                                    expression (free_vars.ml[91,3559+10]..[91,3559+29])
+                                      Pexp_send "add_atom"
+                                      expression (free_vars.ml[91,3559+10]..[91,3559+20])
+                                        Pexp_apply
+                                        expression (free_vars.ml[91,3559+11]..[91,3559+17])
+                                          Pexp_send "ctyp"
+                                          expression (free_vars.ml[91,3559+11]..[91,3559+12])
+                                            Pexp_ident "o" (free_vars.ml[91,3559+11]..[91,3559+12])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[91,3559+18]..[91,3559+19])
+                                              Pexp_ident "t" (free_vars.ml[91,3559+18]..[91,3559+19])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[91,3559+30]..[91,3559+31])
+                                          Pexp_ident "s" (free_vars.ml[91,3559+30]..[91,3559+31])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[92,3591+8]..[92,3591+11])
+                                    Ppat_var "cst" (free_vars.ml[92,3591+8]..[92,3591+11])
+                                  expression (free_vars.ml[92,3591+15]..[92,3591+32])
+                                    Pexp_apply
+                                    expression (free_vars.ml[92,3591+15]..[92,3591+28])
+                                      Pexp_send "clfield"
+                                      expression (free_vars.ml[92,3591+15]..[92,3591+20])
+                                        Pexp_ident "super" (free_vars.ml[92,3591+15]..[92,3591+20])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[92,3591+29]..[92,3591+32])
+                                          Pexp_ident "cst" (free_vars.ml[92,3591+29]..[92,3591+32])
+                                    ]
+                              ]
+                            None
+                      class_field (free_vars.ml[93,3624+4]..[96,3725+27])
+                        Pcf_method Public
+                          "mexp" (free_vars.ml[93,3624+12]..[93,3624+16])
+                          Concrete Override
+                          expression (free_vars.ml[93,3624+10]..[96,3725+27]) ghost
+                            Pexp_poly
+                            expression (free_vars.ml[94,3643+6]..[96,3725+27])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (free_vars.ml[95,3658+8]..[95,3658+39])
+                                    Ppat_constraint
+                                    pattern (free_vars.ml[95,3658+9]..[95,3658+26])
+                                      Ppat_variant "Struct"
+                                      Some
+                                        pattern (free_vars.ml[95,3658+17]..[95,3658+26])
+                                          Ppat_tuple
+                                          [
+                                            pattern (free_vars.ml[95,3658+18]..[95,3658+22])
+                                              Ppat_var "_loc" (free_vars.ml[95,3658+18]..[95,3658+22])
+                                            pattern (free_vars.ml[95,3658+23]..[95,3658+25])
+                                              Ppat_var "st" (free_vars.ml[95,3658+23]..[95,3658+25])
+                                          ]
+                                    core_type (free_vars.ml[95,3658+29]..[95,3658+38])
+                                      Ptyp_constr "Astf.mexp" (free_vars.ml[95,3658+29]..[95,3658+38])
+                                      []
+                                  expression (free_vars.ml[95,3658+43]..[95,3658+66])
+                                    Pexp_apply
+                                    expression (free_vars.ml[95,3658+43]..[95,3658+62])
+                                      Pexp_send "set_env"
+                                      expression (free_vars.ml[95,3658+43]..[95,3658+54])
+                                        Pexp_apply
+                                        expression (free_vars.ml[95,3658+44]..[95,3658+50])
+                                          Pexp_send "stru"
+                                          expression (free_vars.ml[95,3658+44]..[95,3658+45])
+                                            Pexp_ident "o" (free_vars.ml[95,3658+44]..[95,3658+45])
+                                        [
+                                          <label> ""
+                                            expression (free_vars.ml[95,3658+51]..[95,3658+53])
+                                              Pexp_ident "st" (free_vars.ml[95,3658+51]..[95,3658+53])
+                                        ]
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[95,3658+63]..[95,3658+66])
+                                          Pexp_ident "env" (free_vars.ml[95,3658+63]..[95,3658+66])
+                                    ]
+                                <case>
+                                  pattern (free_vars.ml[96,3725+8]..[96,3725+10])
+                                    Ppat_var "me" (free_vars.ml[96,3725+8]..[96,3725+10])
+                                  expression (free_vars.ml[96,3725+14]..[96,3725+27])
+                                    Pexp_apply
+                                    expression (free_vars.ml[96,3725+14]..[96,3725+24])
+                                      Pexp_send "mexp"
+                                      expression (free_vars.ml[96,3725+14]..[96,3725+19])
+                                        Pexp_ident "super" (free_vars.ml[96,3725+14]..[96,3725+19])
+                                    [
+                                      <label> ""
+                                        expression (free_vars.ml[96,3725+25]..[96,3725+27])
+                                          Pexp_ident "me" (free_vars.ml[96,3725+25]..[96,3725+27])
+                                    ]
+                              ]
+                            None
+                    ]
+    ]
+  structure_item (free_vars.ml[98,3759+0]..[105,3935+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (free_vars.ml[98,3759+4]..[98,3759+13])
+          Ppat_var "free_vars" (free_vars.ml[98,3759+4]..[98,3759+13])
+        expression (free_vars.ml[99,3775+2]..[105,3935+29])
+          Pexp_function
+          [
+            <case>
+              pattern (free_vars.ml[100,3786+4]..[100,3786+12])
+                Ppat_var "env_init" (free_vars.ml[100,3786+4]..[100,3786+12])
+              expression (free_vars.ml[101,3802+6]..[105,3935+29])
+                Pexp_function
+                [
+                  <case>
+                    pattern (free_vars.ml[102,3818+9]..[102,3818+10])
+                      Ppat_var "e" (free_vars.ml[102,3818+9]..[102,3818+10])
+                    expression (free_vars.ml[103,3832+11]..[105,3935+28])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (free_vars.ml[103,3832+15]..[103,3832+19])
+                            Ppat_var "fold" (free_vars.ml[103,3832+15]..[103,3832+19])
+                          expression (free_vars.ml[104,3854+13]..[104,3854+77])
+                            Pexp_apply
+                            expression (free_vars.ml[104,3854+13]..[104,3854+33])
+                              Pexp_new "fold_free_vars" (free_vars.ml[104,3854+18]..[104,3854+32])
+                            [
+                              <label> ""
+                                expression (free_vars.ml[104,3854+34]..[104,3854+49])
+                                  Pexp_ident "Setf.String.add" (free_vars.ml[104,3854+34]..[104,3854+49])
+                              <label> "env_init"
+                                expression (free_vars.ml[104,3854+51]..[104,3854+59])
+                                  Pexp_ident "env_init" (free_vars.ml[104,3854+51]..[104,3854+59])
+                              <label> ""
+                                expression (free_vars.ml[104,3854+60]..[104,3854+77])
+                                  Pexp_ident "Setf.String.empty" (free_vars.ml[104,3854+60]..[104,3854+77])
+                            ]
+                      ]
+                      expression (free_vars.ml[105,3935+11]..[105,3935+28])
+                        Pexp_send "free"
+                        expression (free_vars.ml[105,3935+11]..[105,3935+23])
+                          Pexp_apply
+                          expression (free_vars.ml[105,3935+12]..[105,3935+20])
+                            Pexp_send "exp"
+                            expression (free_vars.ml[105,3935+12]..[105,3935+16])
+                              Pexp_ident "fold" (free_vars.ml[105,3935+12]..[105,3935+16])
+                          [
+                            <label> ""
+                              expression (free_vars.ml[105,3935+21]..[105,3935+22])
+                                Pexp_ident "e" (free_vars.ml[105,3935+21]..[105,3935+22])
+                          ]
+                ]
+          ]
+    ]
+]

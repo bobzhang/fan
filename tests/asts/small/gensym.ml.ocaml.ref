@@ -1,0 +1,73 @@
+[
+  structure_item (gensym.ml[1,0+0]..[4,61+73])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gensym.ml[1,0+4]..[1,0+9])
+          Ppat_var "fresh" (gensym.ml[1,0+4]..[1,0+9])
+        expression (gensym.ml[2,12+2]..[4,61+73])
+          Pexp_let Nonrec
+          [
+            <def>
+              pattern (gensym.ml[2,12+6]..[2,12+9])
+                Ppat_var "cnt" (gensym.ml[2,12+6]..[2,12+9])
+              expression (gensym.ml[2,12+12]..[2,12+17])
+                Pexp_apply
+                expression (gensym.ml[2,12+12]..[2,12+15])
+                  Pexp_ident "ref" (gensym.ml[2,12+12]..[2,12+15])
+                [
+                  <label> ""
+                    expression (gensym.ml[2,12+16]..[2,12+17])
+                      Pexp_constant Const_int 0
+                ]
+          ]
+          expression (gensym.ml[3,33+2]..[4,61+73])
+            Pexp_fun "?prefix"
+            Some
+              expression (gensym.ml[3,33+16]..[3,33+22])
+                Pexp_constant Const_string("_fan",None)
+            pattern (gensym.ml[3,33+8]..[3,33+14])
+              Ppat_var "prefix" (gensym.ml[3,33+8]..[3,33+14])
+            expression (gensym.ml[4,61+4]..[4,61+73])
+              Pexp_function
+              [
+                <case>
+                  pattern (gensym.ml[4,61+15]..[4,61+17])
+                    Ppat_construct "()" (gensym.ml[4,61+15]..[4,61+17])
+                    None
+                  expression (gensym.ml[4,61+21]..[4,61+73])
+                    Pexp_sequence
+                    expression (gensym.ml[4,61+22]..[4,61+30])
+                      Pexp_apply
+                      expression (gensym.ml[4,61+22]..[4,61+26])
+                        Pexp_ident "incr" (gensym.ml[4,61+22]..[4,61+26])
+                      [
+                        <label> ""
+                          expression (gensym.ml[4,61+27]..[4,61+30])
+                            Pexp_ident "cnt" (gensym.ml[4,61+27]..[4,61+30])
+                      ]
+                    expression (gensym.ml[4,61+32]..[4,61+72])
+                      Pexp_apply
+                      expression (gensym.ml[4,61+32]..[4,61+46])
+                        Pexp_ident "Printf.sprintf" (gensym.ml[4,61+32]..[4,61+46])
+                      [
+                        <label> ""
+                          expression (gensym.ml[4,61+47]..[4,61+58])
+                            Pexp_constant Const_string("%s__%03i_",None)
+                        <label> ""
+                          expression (gensym.ml[4,61+59]..[4,61+65])
+                            Pexp_ident "prefix" (gensym.ml[4,61+59]..[4,61+65])
+                        <label> ""
+                          expression (gensym.ml[4,61+66]..[4,61+72])
+                            Pexp_apply
+                            expression (gensym.ml[4,61+67]..[4,61+68])
+                              Pexp_ident "!" (gensym.ml[4,61+67]..[4,61+68])
+                            [
+                              <label> ""
+                                expression (gensym.ml[4,61+68]..[4,61+71])
+                                  Pexp_ident "cnt" (gensym.ml[4,61+68]..[4,61+71])
+                            ]
+                      ]
+              ]
+    ]
+]

@@ -1,0 +1,242 @@
+[
+  structure_item (fState.ml[1,0+0]..[1,0+13])
+    Pstr_open Fresh "Sig_util" (fState.ml[1,0+5]..[1,0+13])
+  structure_item (fState.ml[2,14+0]..[2,14+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[2,14+4]..[2,14+19])
+          Ppat_var "current_filters" (fState.ml[2,14+4]..[2,14+19])
+        expression (fState.ml[2,14+19]..[2,14+60]) ghost
+          Pexp_constraint
+          expression (fState.ml[2,14+54]..[2,14+60])
+            Pexp_apply
+            expression (fState.ml[2,14+54]..[2,14+57])
+              Pexp_ident "ref" (fState.ml[2,14+54]..[2,14+57])
+            [
+              <label> ""
+                expression (fState.ml[2,14+58]..[2,14+60])
+                  Pexp_construct "[]" (fState.ml[2,14+58]..[2,14+60])
+                  None
+            ]
+          core_type (fState.ml[2,14+21]..[2,14+51])
+            Ptyp_constr "ref" (fState.ml[2,14+48]..[2,14+51])
+            [
+              core_type (fState.ml[2,14+21]..[2,14+47])
+                Ptyp_constr "list" (fState.ml[2,14+43]..[2,14+47])
+                [
+                  core_type (fState.ml[2,14+22]..[2,14+41])
+                    Ptyp_tuple
+                    [
+                      core_type (fState.ml[2,14+22]..[2,14+33])
+                        Ptyp_constr "plugin_name" (fState.ml[2,14+22]..[2,14+33])
+                        []
+                      core_type (fState.ml[2,14+35]..[2,14+41])
+                        Ptyp_constr "plugin" (fState.ml[2,14+35]..[2,14+41])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (fState.ml[3,75+0]..[3,75+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[3,75+4]..[3,75+25])
+          Ppat_var "reset_current_filters" (fState.ml[3,75+4]..[3,75+25])
+        expression (fState.ml[3,75+26]..[3,75+52]) ghost
+          Pexp_fun ""
+          None
+          pattern (fState.ml[3,75+26]..[3,75+28])
+            Ppat_construct "()" (fState.ml[3,75+26]..[3,75+28])
+            None
+          expression (fState.ml[3,75+31]..[3,75+52])
+            Pexp_apply
+            expression (fState.ml[3,75+47]..[3,75+49])
+              Pexp_ident ":=" (fState.ml[3,75+47]..[3,75+49])
+            [
+              <label> ""
+                expression (fState.ml[3,75+31]..[3,75+46])
+                  Pexp_ident "current_filters" (fState.ml[3,75+31]..[3,75+46])
+              <label> ""
+                expression (fState.ml[3,75+50]..[3,75+52])
+                  Pexp_construct "[]" (fState.ml[3,75+50]..[3,75+52])
+                  None
+            ]
+    ]
+  structure_item (fState.ml[4,128+0]..[4,128+19])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[4,128+4]..[4,128+8])
+          Ppat_var "keep" (fState.ml[4,128+4]..[4,128+8])
+        expression (fState.ml[4,128+11]..[4,128+19])
+          Pexp_apply
+          expression (fState.ml[4,128+11]..[4,128+14])
+            Pexp_ident "ref" (fState.ml[4,128+11]..[4,128+14])
+          [
+            <label> ""
+              expression (fState.ml[4,128+15]..[4,128+19])
+                Pexp_construct "true" (fState.ml[4,128+15]..[4,128+19])
+                None
+          ]
+    ]
+  structure_item (fState.ml[5,148+0]..[5,148+14])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[5,148+4]..[5,148+6])
+          Ppat_var "id" (fState.ml[5,148+4]..[5,148+6])
+        expression (fState.ml[5,148+9]..[5,148+14])
+          Pexp_apply
+          expression (fState.ml[5,148+9]..[5,148+12])
+            Pexp_ident "ref" (fState.ml[5,148+9]..[5,148+12])
+          [
+            <label> ""
+              expression (fState.ml[5,148+13]..[5,148+14])
+                Pexp_constant Const_int 0
+          ]
+    ]
+  structure_item (fState.ml[6,163+0]..[6,163+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[6,163+4]..[6,163+9])
+          Ppat_var "reset" (fState.ml[6,163+4]..[6,163+9])
+        expression (fState.ml[6,163+10]..[6,163+50]) ghost
+          Pexp_fun ""
+          None
+          pattern (fState.ml[6,163+10]..[6,163+12])
+            Ppat_construct "()" (fState.ml[6,163+10]..[6,163+12])
+            None
+          expression (fState.ml[6,163+15]..[6,163+50])
+            Pexp_sequence
+            expression (fState.ml[6,163+15]..[6,163+27])
+              Pexp_apply
+              expression (fState.ml[6,163+20]..[6,163+22])
+                Pexp_ident ":=" (fState.ml[6,163+20]..[6,163+22])
+              [
+                <label> ""
+                  expression (fState.ml[6,163+15]..[6,163+19])
+                    Pexp_ident "keep" (fState.ml[6,163+15]..[6,163+19])
+                <label> ""
+                  expression (fState.ml[6,163+23]..[6,163+27])
+                    Pexp_construct "true" (fState.ml[6,163+23]..[6,163+27])
+                    None
+              ]
+            expression (fState.ml[6,163+29]..[6,163+50])
+              Pexp_apply
+              expression (fState.ml[6,163+45]..[6,163+47])
+                Pexp_ident ":=" (fState.ml[6,163+45]..[6,163+47])
+              [
+                <label> ""
+                  expression (fState.ml[6,163+29]..[6,163+44])
+                    Pexp_ident "current_filters" (fState.ml[6,163+29]..[6,163+44])
+                <label> ""
+                  expression (fState.ml[6,163+48]..[6,163+50])
+                    Pexp_construct "[]" (fState.ml[6,163+48]..[6,163+50])
+                    None
+              ]
+    ]
+  structure_item (fState.ml[7,214+0]..[10,337+14])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fState.ml[7,214+4]..[7,214+10])
+          Ppat_var "gensym" (fState.ml[7,214+4]..[7,214+10])
+        expression (fState.ml[7,214+11]..[10,337+14]) ghost
+          Pexp_fun "?pkg"
+          Some
+            expression (fState.ml[7,214+18]..[7,214+20])
+              Pexp_constant Const_string("",None)
+          pattern (fState.ml[7,214+13]..[7,214+16])
+            Ppat_var "pkg" (fState.ml[7,214+13]..[7,214+16])
+          expression (fState.ml[7,214+23]..[10,337+14]) ghost
+            Pexp_fun ""
+            None
+            pattern (fState.ml[7,214+23]..[7,214+29])
+              Ppat_var "prefix" (fState.ml[7,214+23]..[7,214+29])
+            expression (fState.ml[8,246+2]..[10,337+14])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (fState.ml[8,246+6]..[8,246+9])
+                    Ppat_var "res" (fState.ml[8,246+6]..[8,246+9])
+                  expression (fState.ml[9,258+4]..[9,258+75])
+                    Pexp_apply
+                    expression (fState.ml[9,258+11]..[9,258+12])
+                      Pexp_ident "^" (fState.ml[9,258+11]..[9,258+12])
+                    [
+                      <label> ""
+                        expression (fState.ml[9,258+4]..[9,258+10])
+                          Pexp_constant Const_string("fan_",None)
+                      <label> ""
+                        expression (fState.ml[9,258+13]..[9,258+75])
+                          Pexp_apply
+                          expression (fState.ml[9,258+21]..[9,258+22])
+                            Pexp_ident "^" (fState.ml[9,258+21]..[9,258+22])
+                          [
+                            <label> ""
+                              expression (fState.ml[9,258+14]..[9,258+20])
+                                Pexp_ident "prefix" (fState.ml[9,258+14]..[9,258+20])
+                            <label> ""
+                              expression (fState.ml[9,258+23]..[9,258+74])
+                                Pexp_apply
+                                expression (fState.ml[9,258+28]..[9,258+29])
+                                  Pexp_ident "^" (fState.ml[9,258+28]..[9,258+29])
+                                [
+                                  <label> ""
+                                    expression (fState.ml[9,258+24]..[9,258+27])
+                                      Pexp_constant Const_string("_",None)
+                                  <label> ""
+                                    expression (fState.ml[9,258+30]..[9,258+73])
+                                      Pexp_apply
+                                      expression (fState.ml[9,258+35]..[9,258+36])
+                                        Pexp_ident "^" (fState.ml[9,258+35]..[9,258+36])
+                                      [
+                                        <label> ""
+                                          expression (fState.ml[9,258+31]..[9,258+34])
+                                            Pexp_ident "pkg" (fState.ml[9,258+31]..[9,258+34])
+                                        <label> ""
+                                          expression (fState.ml[9,258+37]..[9,258+72])
+                                            Pexp_apply
+                                            expression (fState.ml[9,258+42]..[9,258+43])
+                                              Pexp_ident "^" (fState.ml[9,258+42]..[9,258+43])
+                                            [
+                                              <label> ""
+                                                expression (fState.ml[9,258+38]..[9,258+41])
+                                                  Pexp_constant Const_string("_",None)
+                                              <label> ""
+                                                expression (fState.ml[9,258+44]..[9,258+71])
+                                                  Pexp_apply
+                                                  expression (fState.ml[9,258+45]..[9,258+58])
+                                                    Pexp_ident "string_of_int" (fState.ml[9,258+45]..[9,258+58])
+                                                  [
+                                                    <label> ""
+                                                      expression (fState.ml[9,258+59]..[9,258+70])
+                                                        Pexp_field
+                                                        expression (fState.ml[9,258+59]..[9,258+61])
+                                                          Pexp_ident "id" (fState.ml[9,258+59]..[9,258+61])
+                                                        "contents" (fState.ml[9,258+62]..[9,258+70])
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                          ]
+                    ]
+              ]
+              expression (fState.ml[10,337+2]..[10,337+14])
+                Pexp_sequence
+                expression (fState.ml[10,337+2]..[10,337+9])
+                  Pexp_apply
+                  expression (fState.ml[10,337+2]..[10,337+6])
+                    Pexp_ident "incr" (fState.ml[10,337+2]..[10,337+6])
+                  [
+                    <label> ""
+                      expression (fState.ml[10,337+7]..[10,337+9])
+                        Pexp_ident "id" (fState.ml[10,337+7]..[10,337+9])
+                  ]
+                expression (fState.ml[10,337+11]..[10,337+14])
+                  Pexp_ident "res" (fState.ml[10,337+11]..[10,337+14])
+    ]
+]

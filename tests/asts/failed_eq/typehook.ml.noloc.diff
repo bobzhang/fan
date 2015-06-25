@@ -1,0 +1,38 @@
+499,500d498
+<                       Ptyp_poly
+<                       core_type (typehook.ml[]..[])
+506,507d503
+<                       Ptyp_poly
+<                       core_type (typehook.ml[]..[])
+513,514d508
+<                       Ptyp_poly
+<                       core_type (typehook.ml[]..[])
+532,533d525
+<                       Ptyp_poly
+<                       core_type (typehook.ml[]..[])
+1023,1024d1014
+<                                 Ptyp_poly
+<                                 core_type (typehook.ml[]..[])
+1226,1227d1215
+<                                       Pexp_sequence
+<                                       expression (typehook.ml[]..[])
+1356,1359c1344
+< Pexp_ident "sloc" (typehook.ml[]..[])
+<                                                                       expression (typehook.ml[]..[])
+< Pexp_variant "Unit"
+< Some
+---
+>                                                                       Pexp_ident "sloc" (typehook.ml[]..[])
+1360a1346,1348
+>                                                                       Pexp_variant "Unit"
+>                                                                       Some
+> expression (typehook.ml[]..[])
+1369a1358,1359
+>                                               Pexp_sequence
+>                                               expression (typehook.ml[]..[])
+1458,1459d1447
+<                                       Pexp_sequence
+<                                       expression (typehook.ml[]..[])
+1477a1466,1467
+>                                         Pexp_sequence
+>                                         expression (typehook.ml[]..[])

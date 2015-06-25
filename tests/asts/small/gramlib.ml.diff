@@ -1,0 +1,86 @@
+8c8
+<         expression (gramlib.ml[1,0+10]..[8,174+71])
+---
+>         expression (gramlib.ml[1,0+10]..[8,174+71]) ghost
+29c29
+<                 expression (gramlib.ml[4,82+7]..[8,174+70])
+---
+>                 expression (gramlib.ml[4,82+6]..[8,174+71])
+35c35
+<                       expression (gramlib.ml[6,114+12]..[8,174+69])
+---
+>                       expression (gramlib.ml[6,114+11]..[8,174+70])
+56c56
+<                                   expression (gramlib.ml[8,174+17]..[8,174+34])
+---
+>                                   expression (gramlib.ml[8,174+16]..[8,174+35])
+65c65
+<                                         expression (gramlib.ml[8,174+24]..[8,174+33])
+---
+>                                         expression (gramlib.ml[8,174+23]..[8,174+34])
+76c76
+<                                   expression (gramlib.ml[8,174+40]..[8,174+68])
+---
+>                                   expression (gramlib.ml[8,174+39]..[8,174+69])
+96c96
+<         expression (gramlib.ml[9,246+21]..[14,384+66])
+---
+>         expression (gramlib.ml[9,246+21]..[14,384+66]) ghost
+101c101
+<           expression (gramlib.ml[9,246+29]..[14,384+66])
+---
+>           expression (gramlib.ml[9,246+29]..[14,384+66]) ghost
+122c122
+<                   expression (gramlib.ml[12,341+7]..[14,384+65])
+---
+>                   expression (gramlib.ml[12,341+6]..[14,384+66])
+139c139
+<                               expression (gramlib.ml[14,384+12]..[14,384+36])
+---
+>                               expression (gramlib.ml[14,384+11]..[14,384+37])
+152c152
+<                               expression (gramlib.ml[14,384+42]..[14,384+64])
+---
+>                               expression (gramlib.ml[14,384+41]..[14,384+65])
+158,159c158,159
+<                                     expression (gramlib.ml[14,384+48]..[14,384+54])
+<                                       Pexp_ident "lexer" (gramlib.ml[14,384+48]..[14,384+54])
+---
+>                                     expression (gramlib.ml[14,384+49]..[14,384+54])
+>                                       Pexp_ident "lexer" (gramlib.ml[14,384+49]..[14,384+54])
+195c195
+<                           expression (gramlib.ml[19,519+28]..[19,519+74])
+---
+>                           expression (gramlib.ml[19,519+27]..[19,519+75])
+207c207
+<                                       expression (gramlib.ml[19,519+63]..[19,519+73])
+---
+>                                       expression (gramlib.ml[19,519+62]..[19,519+74])
+223c223
+<                 expression (gramlib.ml[20,598+7]..[28,847+74])
+---
+>                 expression (gramlib.ml[20,598+6]..[28,847+75])
+243c243
+<                                     expression (gramlib.ml[24,670+16]..[24,670+73])
+---
+>                                     expression (gramlib.ml[24,670+15]..[24,670+74])
+249c249
+<                                           expression (gramlib.ml[24,670+27]..[24,670+38])
+---
+>                                           expression (gramlib.ml[24,670+26]..[24,670+39])
+259c259
+<                                           expression (gramlib.ml[24,670+41]..[24,670+72])
+---
+>                                           expression (gramlib.ml[24,670+40]..[24,670+73])
+262c262
+<                                               expression (gramlib.ml[24,670+41]..[24,670+72])
+---
+>                                               expression (gramlib.ml[24,670+41]..[24,670+72]) ghost
+267c267
+<                                                   expression (gramlib.ml[24,670+50]..[24,670+71])
+---
+>                                                   expression (gramlib.ml[24,670+49]..[24,670+72])
+332c332
+<                                   expression (gramlib.ml[28,847+58]..[28,847+70])
+---
+>                                   expression (gramlib.ml[28,847+57]..[28,847+71])

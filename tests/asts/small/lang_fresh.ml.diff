@@ -1,0 +1,236 @@
+18c18
+<   structure_item (lang_fresh.ml[2,29+4]..[84,4048+41])
+---
+>   structure_item (lang_fresh.ml[2,29+0]..[84,4048+41])
+26c26
+<           expression (lang_fresh.ml[4,59+4]..[84,4048+41])
+---
+>           expression (lang_fresh.ml[4,59+4]..[84,4048+41]) ghost
+32c32
+<                   expression (lang_fresh.ml[5,66+15]..[5,66+39])
+---
+>                   expression (lang_fresh.ml[5,66+15]..[5,66+39]) ghost
+43c43
+<                   expression (lang_fresh.ml[7,123+9]..[83,4020+27])
+---
+>                   expression (lang_fresh.ml[7,123+9]..[83,4020+27]) ghost
+57,58c57,58
+<                           expression (lang_fresh.ml[11,214+15]..[82,4003+15])
+<                             Pexp_construct "::" (lang_fresh.ml[11,214+15]..[82,4003+15])
+---
+>                           expression (lang_fresh.ml[11,214+14]..[82,4003+16])
+>                             Pexp_construct "::" (lang_fresh.ml[11,214+15]..[82,4003+16]) ghost
+60c60
+<                               expression (lang_fresh.ml[11,214+15]..[82,4003+15])
+---
+>                               expression (lang_fresh.ml[11,214+15]..[82,4003+16]) ghost
+67,68c67,68
+<                                         expression (lang_fresh.ml[13,258+20]..[15,362+42])
+<                                           Pexp_construct "::" (lang_fresh.ml[13,258+20]..[15,362+42])
+---
+>                                         expression (lang_fresh.ml[13,258+19]..[15,362+43])
+>                                           Pexp_construct "::" (lang_fresh.ml[13,258+20]..[15,362+43]) ghost
+70c70
+<                                             expression (lang_fresh.ml[13,258+20]..[15,362+42])
+---
+>                                             expression (lang_fresh.ml[13,258+20]..[15,362+43]) ghost
+76c76
+<                                                     expression (lang_fresh.ml[14,284+22]..[15,362+42])
+---
+>                                                     expression (lang_fresh.ml[14,284+22]..[15,362+42]) ghost
+103,104c103,104
+<                                                 expression (lang_fresh.ml[13,258+20]..[15,362+42])
+<                                                   Pexp_construct "[]" (lang_fresh.ml[13,258+20]..[15,362+42])
+---
+>                                                 expression (lang_fresh.ml[15,362+42]..[15,362+43]) ghost
+>                                                   Pexp_construct "[]" (lang_fresh.ml[15,362+42]..[15,362+43]) ghost
+111c111
+<                                         expression (lang_fresh.ml[19,710+20]..[36,1623+53])
+---
+>                                         expression (lang_fresh.ml[19,710+19]..[36,1623+54])
+117c117
+<                                               expression (lang_fresh.ml[20,746+22]..[36,1623+53])
+---
+>                                               expression (lang_fresh.ml[20,746+22]..[36,1623+53]) ghost
+130c130
+<                                                       expression (lang_fresh.ml[22,829+28]..[35,1544+74])
+---
+>                                                       expression (lang_fresh.ml[22,829+27]..[35,1544+75])
+153c153
+<                                                               expression (lang_fresh.ml[25,970+32]..[35,1544+74])
+---
+>                                                               expression (lang_fresh.ml[25,970+32]..[35,1544+74]) ghost
+155c155
+<                                                                 expression (lang_fresh.ml[25,970+33]..[35,1544+64])
+---
+>                                                                 expression (lang_fresh.ml[25,970+33]..[35,1544+64]) ghost
+165c165
+<   expression (lang_fresh.ml[27,1052+39]..[34,1474+67])
+---
+>   expression (lang_fresh.ml[27,1052+38]..[34,1474+68])
+173c173
+<           expression (lang_fresh.ml[29,1144+44]..[31,1271+71])
+---
+>           expression (lang_fresh.ml[29,1144+43]..[31,1271+72])
+181c181
+<                   expression (lang_fresh.ml[30,1193+54]..[30,1193+75])
+---
+>                   expression (lang_fresh.ml[30,1193+53]..[30,1193+76])
+192c192
+<                   expression (lang_fresh.ml[31,1271+49]..[31,1271+69])
+---
+>                   expression (lang_fresh.ml[31,1271+48]..[31,1271+70])
+204c204
+<           expression (lang_fresh.ml[32,1345+44]..[34,1474+65])
+---
+>           expression (lang_fresh.ml[32,1345+43]..[34,1474+66])
+212c212
+<                   expression (lang_fresh.ml[33,1396+54]..[33,1396+75])
+---
+>                   expression (lang_fresh.ml[33,1396+53]..[33,1396+76])
+223c223
+<                   expression (lang_fresh.ml[34,1474+49]..[34,1474+63])
+---
+>                   expression (lang_fresh.ml[34,1474+48]..[34,1474+64])
+236c236
+<   expression (lang_fresh.ml[35,1544+39]..[35,1544+49])
+---
+>   expression (lang_fresh.ml[35,1544+38]..[35,1544+50])
+267,268c267,268
+<                                   expression (lang_fresh.ml[38,1696+14]..[82,4003+15])
+<                                     Pexp_construct "::" (lang_fresh.ml[38,1696+14]..[82,4003+15])
+---
+>                                   expression (lang_fresh.ml[38,1696+14]..[82,4003+16]) ghost
+>                                     Pexp_construct "::" (lang_fresh.ml[38,1696+14]..[82,4003+16]) ghost
+270c270
+<                                       expression (lang_fresh.ml[38,1696+14]..[82,4003+15])
+---
+>                                       expression (lang_fresh.ml[38,1696+14]..[82,4003+16]) ghost
+277,278c277,278
+<                                                 expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+<                                                   Pexp_construct "::" (lang_fresh.ml[40,1738+19]..[44,1896+41])
+---
+>                                                 expression (lang_fresh.ml[40,1738+18]..[44,1896+42])
+>                                                   Pexp_construct "::" (lang_fresh.ml[40,1738+19]..[44,1896+42]) ghost
+280c280
+<                                                     expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+---
+>                                                     expression (lang_fresh.ml[40,1738+19]..[44,1896+42]) ghost
+286c286
+<                                                             expression (lang_fresh.ml[41,1763+21]..[44,1896+41])
+---
+>                                                             expression (lang_fresh.ml[41,1763+21]..[44,1896+41]) ghost
+300c300
+<   expression (lang_fresh.ml[43,1819+48]..[43,1819+55])
+---
+>   expression (lang_fresh.ml[43,1819+47]..[43,1819+56])
+315,316c315,316
+<                                                         expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+<                                                           Pexp_construct "[]" (lang_fresh.ml[40,1738+19]..[44,1896+41])
+---
+>                                                         expression (lang_fresh.ml[44,1896+41]..[44,1896+42]) ghost
+>                                                           Pexp_construct "[]" (lang_fresh.ml[44,1896+41]..[44,1896+42]) ghost
+323c323
+<                                                 expression (lang_fresh.ml[48,2298+19]..[66,3268+52])
+---
+>                                                 expression (lang_fresh.ml[48,2298+18]..[66,3268+53])
+329c329
+<                                                       expression (lang_fresh.ml[49,2333+21]..[66,3268+52])
+---
+>                                                       expression (lang_fresh.ml[49,2333+21]..[66,3268+52]) ghost
+342c342
+<                                                               expression (lang_fresh.ml[51,2414+27]..[65,3190+73])
+---
+>                                                               expression (lang_fresh.ml[51,2414+26]..[65,3190+74])
+362c362
+<                                                                       expression (lang_fresh.ml[54,2548+31]..[65,3190+73])
+---
+>                                                                       expression (lang_fresh.ml[54,2548+31]..[65,3190+73]) ghost
+364c364
+< expression (lang_fresh.ml[54,2548+32]..[65,3190+63])
+---
+> expression (lang_fresh.ml[54,2548+32]..[65,3190+63]) ghost
+374c374
+<           expression (lang_fresh.ml[56,2628+38]..[64,3120+67])
+---
+>           expression (lang_fresh.ml[56,2628+37]..[64,3120+68])
+382c382
+<                   expression (lang_fresh.ml[58,2718+43]..[60,2843+70])
+---
+>                   expression (lang_fresh.ml[58,2718+42]..[60,2843+71])
+390c390
+<                           expression (lang_fresh.ml[59,2766+53]..[59,2766+74])
+---
+>                           expression (lang_fresh.ml[59,2766+52]..[59,2766+75])
+401c401
+<                           expression (lang_fresh.ml[60,2843+48]..[60,2843+68])
+---
+>                           expression (lang_fresh.ml[60,2843+47]..[60,2843+69])
+413c413
+<                   expression (lang_fresh.ml[61,2916+43]..[64,3120+65])
+---
+>                   expression (lang_fresh.ml[61,2916+42]..[64,3120+66])
+421c421
+<                           expression (lang_fresh.ml[62,2966+53]..[62,2966+74])
+---
+>                           expression (lang_fresh.ml[62,2966+52]..[62,2966+75])
+432c432
+<                           expression (lang_fresh.ml[63,3043+47]..[64,3120+64])
+---
+>                           expression (lang_fresh.ml[63,3043+47]..[64,3120+64]) ghost
+452c452
+<           expression (lang_fresh.ml[65,3190+38]..[65,3190+48])
+---
+>           expression (lang_fresh.ml[65,3190+37]..[65,3190+49])
+483,484c483,484
+<                                           expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+<                                             Pexp_construct "::" (lang_fresh.ml[68,3339+14]..[82,4003+15])
+---
+>                                           expression (lang_fresh.ml[68,3339+14]..[82,4003+16]) ghost
+>                                             Pexp_construct "::" (lang_fresh.ml[68,3339+14]..[82,4003+16]) ghost
+486c486
+<                                               expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+---
+>                                               expression (lang_fresh.ml[68,3339+14]..[82,4003+16]) ghost
+500c500
+<                                                         expression (lang_fresh.ml[73,3571+19]..[81,3936+65])
+---
+>                                                         expression (lang_fresh.ml[73,3571+18]..[81,3936+66])
+506c506
+<                                                               expression (lang_fresh.ml[74,3606+21]..[81,3936+65])
+---
+>                                                               expression (lang_fresh.ml[74,3606+21]..[81,3936+65]) ghost
+519c519
+<                                                                       expression (lang_fresh.ml[76,3680+26]..[81,3936+45])
+---
+>                                                                       expression (lang_fresh.ml[76,3680+26]..[81,3936+45]) ghost
+521c521
+< expression (lang_fresh.ml[76,3680+27]..[81,3936+35])
+---
+> expression (lang_fresh.ml[76,3680+27]..[81,3936+35]) ghost
+531c531
+<           expression (lang_fresh.ml[78,3750+33]..[80,3855+60])
+---
+>           expression (lang_fresh.ml[78,3750+32]..[80,3855+61])
+539c539
+<                   expression (lang_fresh.ml[79,3788+43]..[79,3788+64])
+---
+>                   expression (lang_fresh.ml[79,3788+42]..[79,3788+65])
+550c550
+<                   expression (lang_fresh.ml[80,3855+38]..[80,3855+58])
+---
+>                   expression (lang_fresh.ml[80,3855+37]..[80,3855+59])
+562c562
+<           expression (lang_fresh.ml[80,3855+64]..[80,3855+74])
+---
+>           expression (lang_fresh.ml[80,3855+63]..[80,3855+75])
+586,587c586,587
+<                                                   expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+<                                                     Pexp_construct "[]" (lang_fresh.ml[68,3339+14]..[82,4003+15])
+---
+>                                                   expression (lang_fresh.ml[82,4003+15]..[82,4003+16]) ghost
+>                                                     Pexp_construct "[]" (lang_fresh.ml[82,4003+15]..[82,4003+16]) ghost
+606c606
+<   structure_item (lang_fresh.ml[85,4090+4]..[87,4164+19])
+---
+>   structure_item (lang_fresh.ml[85,4090+0]..[87,4164+19])

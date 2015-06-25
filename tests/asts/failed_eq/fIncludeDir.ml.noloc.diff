@@ -1,0 +1,18 @@
+11,13c11,12
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+103,105c102,103
+<                           Pexp_function
+<                           [
+<                             <case>
+---
+>                       Pexp_fun ""
+>                       None
+121d118
+<                     ]
+124d120
+<     ]

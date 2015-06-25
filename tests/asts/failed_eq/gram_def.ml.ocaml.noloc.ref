@@ -1,0 +1,582 @@
+[
+  structure_item (gram_def.ml[]..[])
+    Pstr_open Fresh "Astf" (gram_def.ml[]..[])
+  structure_item (gram_def.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "name" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "id" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "vid" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "tvar" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "string" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "loc" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "loc" (gram_def.ml[]..[])
+                  []
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (gram_def.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "styp" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (gram_def.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rinherit
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_constr "vid'" (gram_def.ml[]..[])
+                    []
+                Rtag "App" false
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "loc" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "styp" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "styp" (gram_def.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Quote" false
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "loc" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "position_flag" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "alident" (gram_def.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Self" false
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "loc" (gram_def.ml[]..[])
+                      []
+                  ]
+                Rtag "Type" false
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "ctyp" (gram_def.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+    ]
+  structure_item (gram_def.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "entry" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "name" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "name" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "pos" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "option" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "exp" (gram_def.ml[]..[])
+                      []
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "local" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "bool" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "level" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "level" (gram_def.ml[]..[])
+                  []
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "level" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "assoc" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "option" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "exp" (gram_def.ml[]..[])
+                      []
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "rules" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "rule" (gram_def.ml[]..[])
+                      []
+                  ]
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "action" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (gram_def.ml[]..[])
+                "E" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_constr "option" (gram_def.ml[]..[])
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "exp" (gram_def.ml[]..[])
+                        []
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Ant" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_constr "Tokenf.ant" (gram_def.ml[]..[])
+                    []
+                ]
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "rule" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "env" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "locid" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "exp" (gram_def.ml[]..[])
+                          []
+                      ]
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "prod" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "osymbol" (gram_def.ml[]..[])
+                      []
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "action" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "action" (gram_def.ml[]..[])
+                  []
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "label" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (gram_def.ml[]..[])
+              Ptyp_constr "option" (gram_def.ml[]..[])
+              [
+                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "string" (gram_def.ml[]..[])
+                  []
+              ]
+      type_declaration "kind" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (gram_def.ml[]..[])
+                "KNone" (gram_def.ml[]..[])
+                []
+                None
+              (gram_def.ml[]..[])
+                "KSome" (gram_def.ml[]..[])
+                []
+                None
+              (gram_def.ml[]..[])
+                "KNormal" (gram_def.ml[]..[])
+                []
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "locid" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (gram_def.ml[]..[])
+              Ptyp_tuple
+              [
+                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "loc" (gram_def.ml[]..[])
+                  []
+                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "string" (gram_def.ml[]..[])
+                  []
+              ]
+      type_declaration "symbol" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "text" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "text" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "styp" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "styp" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "bounds" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "locid" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "label" (gram_def.ml[]..[])
+                          []
+                      ]
+                  ]
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "decorate" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          [
+            core_type (gram_def.ml[]..[])
+              Ptyp_var a
+          ]
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "kind" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "kind" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "txt" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_var a
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "osymbol" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "text" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "text" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "styp" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "styp" (gram_def.ml[]..[])
+                  []
+              (gram_def.ml[]..[])
+                Immutable
+                "bounds" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "locid" (gram_def.ml[]..[])
+                          []
+                        core_type (gram_def.ml[]..[])
+                          Ptyp_constr "label" (gram_def.ml[]..[])
+                          []
+                      ]
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "outer_pattern" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "option" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "locid" (gram_def.ml[]..[])
+                      []
+                  ]
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+      type_declaration "text" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (gram_def.ml[]..[])
+                "List" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "bool" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "osymbol" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "option" (gram_def.ml[]..[])
+                        [
+                          core_type (gram_def.ml[]..[])
+                            Ptyp_constr "osymbol" (gram_def.ml[]..[])
+                            []
+                        ]
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Nterm" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "name" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "option" (gram_def.ml[]..[])
+                        [
+                          core_type (gram_def.ml[]..[])
+                            Ptyp_constr "int" (gram_def.ml[]..[])
+                            []
+                        ]
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Try" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "text" (gram_def.ml[]..[])
+                        []
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Peek" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "text" (gram_def.ml[]..[])
+                        []
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Self" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_constr "loc" (gram_def.ml[]..[])
+                    []
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Keyword" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "string" (gram_def.ml[]..[])
+                        []
+                    ]
+                ]
+                None
+              (gram_def.ml[]..[])
+                "Token" (gram_def.ml[]..[])
+                [
+                  core_type (gram_def.ml[]..[])
+                    Ptyp_tuple
+                    [
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "loc" (gram_def.ml[]..[])
+                        []
+                      core_type (gram_def.ml[]..[])
+                        Ptyp_constr "exp" (gram_def.ml[]..[])
+                        []
+                    ]
+                ]
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (gram_def.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "entries" (gram_def.ml[]..[]) (gram_def.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (gram_def.ml[]..[])
+                Immutable
+                "items" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "list" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "entry" (gram_def.ml[]..[])
+                      []
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "gram" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "option" (gram_def.ml[]..[])
+                  [
+                    core_type (gram_def.ml[]..[])
+                      Ptyp_constr "vid" (gram_def.ml[]..[])
+                      []
+                  ]
+              (gram_def.ml[]..[])
+                Immutable
+                "safe" (gram_def.ml[]..[])                core_type (gram_def.ml[]..[])
+                  Ptyp_constr "bool" (gram_def.ml[]..[])
+                  []
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+]

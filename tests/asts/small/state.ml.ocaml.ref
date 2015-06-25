@@ -1,0 +1,252 @@
+[
+  structure_item (state.ml[1,0+0]..[1,0+14])
+    Pstr_open Fresh "Sigs_util" (state.ml[1,0+5]..[1,0+14])
+  structure_item (state.ml[2,15+0]..[2,15+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[2,15+4]..[2,15+19])
+          Ppat_var "current_filters" (state.ml[2,15+4]..[2,15+19])
+        expression (state.ml[2,15+19]..[2,15+60]) ghost
+          Pexp_constraint
+          expression (state.ml[2,15+54]..[2,15+60])
+            Pexp_apply
+            expression (state.ml[2,15+54]..[2,15+57])
+              Pexp_ident "ref" (state.ml[2,15+54]..[2,15+57])
+            [
+              <label> ""
+                expression (state.ml[2,15+58]..[2,15+60])
+                  Pexp_construct "[]" (state.ml[2,15+58]..[2,15+60])
+                  None
+            ]
+          core_type (state.ml[2,15+21]..[2,15+51])
+            Ptyp_constr "ref" (state.ml[2,15+48]..[2,15+51])
+            [
+              core_type (state.ml[2,15+21]..[2,15+47])
+                Ptyp_constr "list" (state.ml[2,15+43]..[2,15+47])
+                [
+                  core_type (state.ml[2,15+22]..[2,15+41])
+                    Ptyp_tuple
+                    [
+                      core_type (state.ml[2,15+22]..[2,15+33])
+                        Ptyp_constr "plugin_name" (state.ml[2,15+22]..[2,15+33])
+                        []
+                      core_type (state.ml[2,15+35]..[2,15+41])
+                        Ptyp_constr "plugin" (state.ml[2,15+35]..[2,15+41])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (state.ml[3,76+0]..[3,76+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[3,76+4]..[3,76+25])
+          Ppat_var "reset_current_filters" (state.ml[3,76+4]..[3,76+25])
+        expression (state.ml[3,76+28]..[3,76+66])
+          Pexp_function
+          [
+            <case>
+              pattern (state.ml[3,76+39]..[3,76+41])
+                Ppat_construct "()" (state.ml[3,76+39]..[3,76+41])
+                None
+              expression (state.ml[3,76+45]..[3,76+66])
+                Pexp_apply
+                expression (state.ml[3,76+61]..[3,76+63])
+                  Pexp_ident ":=" (state.ml[3,76+61]..[3,76+63])
+                [
+                  <label> ""
+                    expression (state.ml[3,76+45]..[3,76+60])
+                      Pexp_ident "current_filters" (state.ml[3,76+45]..[3,76+60])
+                  <label> ""
+                    expression (state.ml[3,76+64]..[3,76+66])
+                      Pexp_construct "[]" (state.ml[3,76+64]..[3,76+66])
+                      None
+                ]
+          ]
+    ]
+  structure_item (state.ml[4,143+0]..[4,143+19])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[4,143+4]..[4,143+8])
+          Ppat_var "keep" (state.ml[4,143+4]..[4,143+8])
+        expression (state.ml[4,143+11]..[4,143+19])
+          Pexp_apply
+          expression (state.ml[4,143+11]..[4,143+14])
+            Pexp_ident "ref" (state.ml[4,143+11]..[4,143+14])
+          [
+            <label> ""
+              expression (state.ml[4,143+15]..[4,143+19])
+                Pexp_construct "true" (state.ml[4,143+15]..[4,143+19])
+                None
+          ]
+    ]
+  structure_item (state.ml[5,163+0]..[5,163+14])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[5,163+4]..[5,163+6])
+          Ppat_var "id" (state.ml[5,163+4]..[5,163+6])
+        expression (state.ml[5,163+9]..[5,163+14])
+          Pexp_apply
+          expression (state.ml[5,163+9]..[5,163+12])
+            Pexp_ident "ref" (state.ml[5,163+9]..[5,163+12])
+          [
+            <label> ""
+              expression (state.ml[5,163+13]..[5,163+14])
+                Pexp_constant Const_int 0
+          ]
+    ]
+  structure_item (state.ml[6,178+0]..[6,178+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[6,178+4]..[6,178+9])
+          Ppat_var "reset" (state.ml[6,178+4]..[6,178+9])
+        expression (state.ml[6,178+12]..[6,178+66])
+          Pexp_function
+          [
+            <case>
+              pattern (state.ml[6,178+23]..[6,178+25])
+                Ppat_construct "()" (state.ml[6,178+23]..[6,178+25])
+                None
+              expression (state.ml[6,178+29]..[6,178+66])
+                Pexp_sequence
+                expression (state.ml[6,178+30]..[6,178+42])
+                  Pexp_apply
+                  expression (state.ml[6,178+35]..[6,178+37])
+                    Pexp_ident ":=" (state.ml[6,178+35]..[6,178+37])
+                  [
+                    <label> ""
+                      expression (state.ml[6,178+30]..[6,178+34])
+                        Pexp_ident "keep" (state.ml[6,178+30]..[6,178+34])
+                    <label> ""
+                      expression (state.ml[6,178+38]..[6,178+42])
+                        Pexp_construct "true" (state.ml[6,178+38]..[6,178+42])
+                        None
+                  ]
+                expression (state.ml[6,178+44]..[6,178+65])
+                  Pexp_apply
+                  expression (state.ml[6,178+60]..[6,178+62])
+                    Pexp_ident ":=" (state.ml[6,178+60]..[6,178+62])
+                  [
+                    <label> ""
+                      expression (state.ml[6,178+44]..[6,178+59])
+                        Pexp_ident "current_filters" (state.ml[6,178+44]..[6,178+59])
+                    <label> ""
+                      expression (state.ml[6,178+63]..[6,178+65])
+                        Pexp_construct "[]" (state.ml[6,178+63]..[6,178+65])
+                        None
+                  ]
+          ]
+    ]
+  structure_item (state.ml[7,245+0]..[12,388+20])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (state.ml[7,245+4]..[7,245+10])
+          Ppat_var "gensym" (state.ml[7,245+4]..[7,245+10])
+        expression (state.ml[7,245+11]..[12,388+20]) ghost
+          Pexp_fun "?pkg"
+          Some
+            expression (state.ml[7,245+18]..[7,245+20])
+              Pexp_constant Const_string("",None)
+          pattern (state.ml[7,245+13]..[7,245+16])
+            Ppat_var "pkg" (state.ml[7,245+13]..[7,245+16])
+          expression (state.ml[8,270+2]..[12,388+20])
+            Pexp_function
+            [
+              <case>
+                pattern (state.ml[9,281+4]..[9,281+10])
+                  Ppat_var "prefix" (state.ml[9,281+4]..[9,281+10])
+                expression (state.ml[10,295+6]..[12,388+20])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (state.ml[10,295+10]..[10,295+13])
+                        Ppat_var "res" (state.ml[10,295+10]..[10,295+13])
+                      expression (state.ml[11,311+8]..[11,311+73])
+                        Pexp_apply
+                        expression (state.ml[11,311+15]..[11,311+16])
+                          Pexp_ident "^" (state.ml[11,311+15]..[11,311+16])
+                        [
+                          <label> ""
+                            expression (state.ml[11,311+8]..[11,311+14])
+                              Pexp_constant Const_string("fan_",None)
+                          <label> ""
+                            expression (state.ml[11,311+17]..[11,311+73])
+                              Pexp_apply
+                              expression (state.ml[11,311+25]..[11,311+26])
+                                Pexp_ident "^" (state.ml[11,311+25]..[11,311+26])
+                              [
+                                <label> ""
+                                  expression (state.ml[11,311+18]..[11,311+24])
+                                    Pexp_ident "prefix" (state.ml[11,311+18]..[11,311+24])
+                                <label> ""
+                                  expression (state.ml[11,311+27]..[11,311+72])
+                                    Pexp_apply
+                                    expression (state.ml[11,311+32]..[11,311+33])
+                                      Pexp_ident "^" (state.ml[11,311+32]..[11,311+33])
+                                    [
+                                      <label> ""
+                                        expression (state.ml[11,311+28]..[11,311+31])
+                                          Pexp_constant Const_string("_",None)
+                                      <label> ""
+                                        expression (state.ml[11,311+34]..[11,311+71])
+                                          Pexp_apply
+                                          expression (state.ml[11,311+39]..[11,311+40])
+                                            Pexp_ident "^" (state.ml[11,311+39]..[11,311+40])
+                                          [
+                                            <label> ""
+                                              expression (state.ml[11,311+35]..[11,311+38])
+                                                Pexp_ident "pkg" (state.ml[11,311+35]..[11,311+38])
+                                            <label> ""
+                                              expression (state.ml[11,311+41]..[11,311+70])
+                                                Pexp_apply
+                                                expression (state.ml[11,311+46]..[11,311+47])
+                                                  Pexp_ident "^" (state.ml[11,311+46]..[11,311+47])
+                                                [
+                                                  <label> ""
+                                                    expression (state.ml[11,311+42]..[11,311+45])
+                                                      Pexp_constant Const_string("_",None)
+                                                  <label> ""
+                                                    expression (state.ml[11,311+48]..[11,311+69])
+                                                      Pexp_apply
+                                                      expression (state.ml[11,311+49]..[11,311+62])
+                                                        Pexp_ident "string_of_int" (state.ml[11,311+49]..[11,311+62])
+                                                      [
+                                                        <label> ""
+                                                          expression (state.ml[11,311+63]..[11,311+68])
+                                                            Pexp_apply
+                                                            expression (state.ml[11,311+64]..[11,311+65])
+                                                              Pexp_ident "!" (state.ml[11,311+64]..[11,311+65])
+                                                            [
+                                                              <label> ""
+                                                                expression (state.ml[11,311+65]..[11,311+67])
+                                                                  Pexp_ident "id" (state.ml[11,311+65]..[11,311+67])
+                                                            ]
+                                                      ]
+                                                ]
+                                          ]
+                                    ]
+                              ]
+                        ]
+                  ]
+                  expression (state.ml[12,388+6]..[12,388+20])
+                    Pexp_sequence
+                    expression (state.ml[12,388+7]..[12,388+14])
+                      Pexp_apply
+                      expression (state.ml[12,388+7]..[12,388+11])
+                        Pexp_ident "incr" (state.ml[12,388+7]..[12,388+11])
+                      [
+                        <label> ""
+                          expression (state.ml[12,388+12]..[12,388+14])
+                            Pexp_ident "id" (state.ml[12,388+12]..[12,388+14])
+                      ]
+                    expression (state.ml[12,388+16]..[12,388+19])
+                      Pexp_ident "res" (state.ml[12,388+16]..[12,388+19])
+            ]
+    ]
+]

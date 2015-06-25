@@ -1,0 +1,2212 @@
+[
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_open Fresh "Astf" (dyn_tag.ml[]..[])
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "t" (dyn_tag.ml[]..[]) (dyn_tag.ml[]..[])
+        ptype_params =
+          [
+            core_type (dyn_tag.ml[]..[])
+              Ptyp_var a
+          ]
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (dyn_tag.ml[]..[])
+                "Literal" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Flag" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Position_flag" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Strings" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Lident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Alident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Auident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Aident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Astring" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Uident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Ident" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Ident'" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Vid" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Vid'" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Dupath" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Dlpath" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Any" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Ctyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Type_parameters" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Row_field" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Tag_names" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Typedecl" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Type_constr" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Opt_type_constr" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Decl_param" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Decl_params" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Opt_decl_params" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Type_info" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Type_repr" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Name_ctyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Or_ctyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Of_ctyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Pat" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Rec_pat" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Exp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Rec_exp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Mtyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Sigi" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Mbind" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Constr" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Bind" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Case" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Mexp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Stru" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Cltdecl" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Cltyp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Clsigi" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Cldecl" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Clexp" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Clfield" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Ep" (dyn_tag.ml[]..[])
+                []
+                None
+              (dyn_tag.ml[]..[])
+                "Rec_bind" (dyn_tag.ml[]..[])
+                []
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "to_string" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Literal" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("literal",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Flag" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("flag",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Position_flag" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("position_flag",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Strings" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("strings",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Lident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("lident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Alident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("alident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Auident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("auident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Aident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("aident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Astring" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("astring",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Uident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("uident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Ident" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("ident",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Ident'" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("ident'",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Vid" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("vid",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Vid'" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("vid'",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Dupath" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("dupath",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Dlpath" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("dlpath",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Any" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("any",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Ctyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("ctyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Type_parameters" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("type_parameters",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Row_field" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("row_field",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Tag_names" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("tag_names",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Typedecl" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("typedecl",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Type_constr" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("type_constr",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Opt_type_constr" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("opt_type_constr",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Decl_param" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("decl_param",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Decl_params" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("decl_params",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Opt_decl_params" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("opt_decl_params",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Type_info" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("type_info",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Type_repr" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("type_repr",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Name_ctyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("name_ctyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Or_ctyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("or_ctyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Of_ctyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("of_ctyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Pat" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("pat",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Rec_pat" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("rec_pat",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Exp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("exp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Rec_exp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("rec_exp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Mtyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("mtyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Sigi" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("sigi",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Mbind" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("mbind",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Constr" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("constr",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Bind" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("bind",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Case" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("case",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Mexp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("mexp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Stru" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("stru",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Cltdecl" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("cltdecl",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Cltyp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("cltyp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Clsigi" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("clsigi",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Cldecl" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("cldecl",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Clexp" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("clexp",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Clfield" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("clfield",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Ep" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("ep",None)
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_construct "Rec_bind" (dyn_tag.ml[]..[])
+                None
+              expression (dyn_tag.ml[]..[])
+                Pexp_constant Const_string("rec_bind",None)
+          ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "of_string" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("literal",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Literal" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("flag",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Flag" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("position_flag",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Position_flag" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("strings",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Strings" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("lident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Lident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("alident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Alident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("auident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Auident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("aident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Aident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("astring",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Astring" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("uident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Uident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("ident",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Ident" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("ident'",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Ident'" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("vid",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Vid" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("vid'",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Vid'" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("dupath",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Dupath" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("dlpath",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Dlpath" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("any",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Any" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("ctyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Ctyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("type_parameters",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Type_parameters" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("row_field",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Row_field" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("tag_names",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Tag_names" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("typedecl",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Typedecl" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("type_constr",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Type_constr" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("opt_type_constr",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Opt_type_constr" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("decl_param",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Decl_param" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("decl_params",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Decl_params" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("opt_decl_params",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Opt_decl_params" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("type_info",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Type_info" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("type_repr",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Type_repr" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("name_ctyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Name_ctyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("or_ctyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Or_ctyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("of_ctyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Of_ctyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("pat",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Pat" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("rec_pat",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Rec_pat" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("exp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Exp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("rec_exp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Rec_exp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("mtyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Mtyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("sigi",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Sigi" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("mbind",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Mbind" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("constr",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Constr" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("bind",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Bind" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("case",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Case" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("mexp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Mexp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("stru",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Stru" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("cltdecl",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Cltdecl" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("cltyp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Cltyp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("clsigi",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Clsigi" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("cldecl",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Cldecl" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("clexp",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Clexp" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("clfield",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Clfield" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("ep",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Ep" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_constant Const_string("rec_bind",None)
+              expression (dyn_tag.ml[]..[])
+                Pexp_construct "Rec_bind" (dyn_tag.ml[]..[])
+                None
+            <case>
+              pattern (dyn_tag.ml[]..[])
+                Ppat_any
+              expression (dyn_tag.ml[]..[])
+                Pexp_apply
+                expression (dyn_tag.ml[]..[])
+                  Pexp_ident "failwith" (dyn_tag.ml[]..[])
+                [
+                  <label> ""
+                    expression (dyn_tag.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_tag.ml[]..[])
+                        Pexp_ident "^" (dyn_tag.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_tag.ml[]..[])
+                            Pexp_constant Const_string("Astf",None)
+                        <label> ""
+                          expression (dyn_tag.ml[]..[])
+                            Pexp_apply
+                            expression (dyn_tag.ml[]..[])
+                              Pexp_ident "^" (dyn_tag.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dyn_tag.ml[]..[])
+                                  Pexp_constant Const_string(".",None)
+                              <label> ""
+                                expression (dyn_tag.ml[]..[])
+                                  Pexp_constant Const_string("of_string",None)
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "literal" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Literal" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "literal" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "flag" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Flag" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "flag" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "position_flag" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Position_flag" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "position_flag" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "strings" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Strings" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "strings" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "lident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Lident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "lident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "alident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Alident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "alident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "auident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Auident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "auident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "aident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Aident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "aident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "astring" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Astring" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "astring" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "uident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Uident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "uident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "ident" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Ident" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "ident" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "ident'" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Ident'" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "ident'" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "vid" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Vid" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "vid" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "vid'" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Vid'" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "vid'" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "dupath" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Dupath" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "dupath" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "dlpath" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Dlpath" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "dlpath" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "any" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Any" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "any" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "ctyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Ctyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "ctyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "type_parameters" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Type_parameters" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "type_parameters" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "row_field" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Row_field" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "row_field" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "tag_names" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Tag_names" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "tag_names" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "typedecl" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Typedecl" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "typedecl" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "type_constr" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Type_constr" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "type_constr" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "opt_type_constr" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Opt_type_constr" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "opt_type_constr" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "decl_param" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Decl_param" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "decl_param" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "decl_params" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Decl_params" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "decl_params" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "opt_decl_params" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Opt_decl_params" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "opt_decl_params" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "type_info" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Type_info" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "type_info" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "type_repr" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Type_repr" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "type_repr" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "name_ctyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Name_ctyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "name_ctyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "or_ctyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Or_ctyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "or_ctyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "of_ctyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Of_ctyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "of_ctyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "pat" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Pat" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "pat" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "rec_pat" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Rec_pat" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "rec_pat" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "exp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Exp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "exp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "rec_exp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Rec_exp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "rec_exp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "mtyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Mtyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "mtyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "sigi" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Sigi" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "sigi" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "mbind" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Mbind" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "mbind" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "constr" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Constr" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "constr" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "bind" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Bind" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "bind" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "case" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Case" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "case" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "mexp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Mexp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "mexp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "stru" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Stru" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "stru" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "cltdecl" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Cltdecl" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "cltdecl" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "cltyp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Cltyp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "cltyp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "clsigi" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Clsigi" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "clsigi" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "cldecl" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Cldecl" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "cldecl" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "clexp" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Clexp" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "clexp" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "clfield" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Clfield" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "clfield" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "ep" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Ep" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "ep" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_tag.ml[]..[])
+          Ppat_var "rec_bind" (dyn_tag.ml[]..[])
+        expression (dyn_tag.ml[]..[])
+          Pexp_constraint
+          expression (dyn_tag.ml[]..[])
+            Pexp_construct "Rec_bind" (dyn_tag.ml[]..[])
+            None
+          core_type (dyn_tag.ml[]..[])
+            Ptyp_constr "t" (dyn_tag.ml[]..[])
+            [
+              core_type (dyn_tag.ml[]..[])
+                Ptyp_constr "rec_bind" (dyn_tag.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "dyn" (dyn_tag.ml[]..[]) (dyn_tag.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_primitive
+    value_description "dyn_tag" (dyn_tag.ml[]..[]) (dyn_tag.ml[]..[])
+      core_type (dyn_tag.ml[]..[])
+        Ptyp_arrow
+        ""
+        core_type (dyn_tag.ml[]..[])
+          Ptyp_constr "t" (dyn_tag.ml[]..[])
+          [
+            core_type (dyn_tag.ml[]..[])
+              Ptyp_var a
+          ]
+        core_type (dyn_tag.ml[]..[])
+          Ptyp_constr "t" (dyn_tag.ml[]..[])
+          [
+            core_type (dyn_tag.ml[]..[])
+              Ptyp_constr "dyn" (dyn_tag.ml[]..[])
+              []
+          ]
+      [
+        "%identity"
+      ]
+  structure_item (dyn_tag.ml[]..[])
+    Pstr_module
+    "Pack" (dyn_tag.ml[]..[])
+      module_expr (dyn_tag.ml[]..[])
+        Pmod_functor "X" (dyn_tag.ml[]..[])
+        module_type (dyn_tag.ml[]..[])
+          Pmty_signature
+          [
+            signature_item (dyn_tag.ml[]..[])
+              Psig_type
+              [
+                type_declaration "t" (dyn_tag.ml[]..[]) (dyn_tag.ml[]..[])
+                  ptype_params =
+                    [
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_var a
+                    ]
+                  ptype_cstrs =
+                    []
+                  ptype_kind =
+                    Ptype_abstract
+                  ptype_private = Public
+                  ptype_manifest =
+                    None
+              ]
+          ]
+        module_expr (dyn_tag.ml[]..[])
+          Pmod_structure
+          [
+            structure_item (dyn_tag.ml[]..[])
+              Pstr_type
+              [
+                type_declaration "pack" (dyn_tag.ml[]..[]) (dyn_tag.ml[]..[])
+                  ptype_params =
+                    []
+                  ptype_cstrs =
+                    []
+                  ptype_kind =
+                    Ptype_abstract
+                  ptype_private = Public
+                  ptype_manifest =
+                    Some
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_tuple
+                        [
+                          core_type (dyn_tag.ml[]..[])
+                            Ptyp_constr "t" (dyn_tag.ml[]..[])
+                            [
+                              core_type (dyn_tag.ml[]..[])
+                                Ptyp_constr "dyn" (dyn_tag.ml[]..[])
+                                []
+                            ]
+                          core_type (dyn_tag.ml[]..[])
+                            Ptyp_constr "Obj.t" (dyn_tag.ml[]..[])
+                            []
+                        ]
+              ]
+            structure_item (dyn_tag.ml[]..[])
+              Pstr_exception
+              extension_constructor (dyn_tag.ml[]..[])
+                pext_name = "Pack_error"
+                pext_kind =
+                  Pext_decl
+                    []
+                    None
+            structure_item (dyn_tag.ml[]..[])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (dyn_tag.ml[]..[])
+                    Ppat_var "pack" (dyn_tag.ml[]..[])
+                  expression (dyn_tag.ml[]..[])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (dyn_tag.ml[]..[])
+                          Ppat_var "tag" (dyn_tag.ml[]..[])
+                        expression (dyn_tag.ml[]..[])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (dyn_tag.ml[]..[])
+                                Ppat_constraint
+                                pattern (dyn_tag.ml[]..[])
+                                  Ppat_var "v" (dyn_tag.ml[]..[])
+                                core_type (dyn_tag.ml[]..[])
+                                  Ptyp_constr "X.t" (dyn_tag.ml[]..[])
+                                  [
+                                    core_type (dyn_tag.ml[]..[])
+                                      Ptyp_var a
+                                  ]
+                              expression (dyn_tag.ml[]..[])
+                                Pexp_tuple
+                                [
+                                  expression (dyn_tag.ml[]..[])
+                                    Pexp_apply
+                                    expression (dyn_tag.ml[]..[])
+                                      Pexp_ident "dyn_tag" (dyn_tag.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (dyn_tag.ml[]..[])
+                                          Pexp_ident "tag" (dyn_tag.ml[]..[])
+                                    ]
+                                  expression (dyn_tag.ml[]..[])
+                                    Pexp_apply
+                                    expression (dyn_tag.ml[]..[])
+                                      Pexp_ident "Obj.repr" (dyn_tag.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (dyn_tag.ml[]..[])
+                                          Pexp_ident "v" (dyn_tag.ml[]..[])
+                                    ]
+                                ]
+                          ]
+                    ]
+              ]
+            structure_item (dyn_tag.ml[]..[])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (dyn_tag.ml[]..[])
+                    Ppat_var "unpack" (dyn_tag.ml[]..[])
+                  expression (dyn_tag.ml[]..[])
+                    Pexp_constraint
+                    expression (dyn_tag.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (dyn_tag.ml[]..[])
+                            Ppat_var "tag" (dyn_tag.ml[]..[])
+                          expression (dyn_tag.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (dyn_tag.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (dyn_tag.ml[]..[])
+                                      Ppat_var "tag'" (dyn_tag.ml[]..[])
+                                    pattern (dyn_tag.ml[]..[])
+                                      Ppat_var "obj" (dyn_tag.ml[]..[])
+                                  ]
+                                expression (dyn_tag.ml[]..[])
+                                  Pexp_ifthenelse
+                                  expression (dyn_tag.ml[]..[])
+                                    Pexp_apply
+                                    expression (dyn_tag.ml[]..[])
+                                      Pexp_ident "=" (dyn_tag.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (dyn_tag.ml[]..[])
+                                          Pexp_apply
+                                          expression (dyn_tag.ml[]..[])
+                                            Pexp_ident "dyn_tag" (dyn_tag.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (dyn_tag.ml[]..[])
+                                                Pexp_ident "tag" (dyn_tag.ml[]..[])
+                                          ]
+                                      <label> ""
+                                        expression (dyn_tag.ml[]..[])
+                                          Pexp_ident "tag'" (dyn_tag.ml[]..[])
+                                    ]
+                                  expression (dyn_tag.ml[]..[])
+                                    Pexp_constraint
+                                    expression (dyn_tag.ml[]..[])
+                                      Pexp_apply
+                                      expression (dyn_tag.ml[]..[])
+                                        Pexp_ident "Obj.obj" (dyn_tag.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (dyn_tag.ml[]..[])
+                                            Pexp_ident "obj" (dyn_tag.ml[]..[])
+                                      ]
+                                    core_type (dyn_tag.ml[]..[])
+                                      Ptyp_constr "X.t" (dyn_tag.ml[]..[])
+                                      [
+                                        core_type (dyn_tag.ml[]..[])
+                                          Ptyp_var a
+                                      ]
+                                  Some
+                                    expression (dyn_tag.ml[]..[])
+                                      Pexp_apply
+                                      expression (dyn_tag.ml[]..[])
+                                        Pexp_ident "raise" (dyn_tag.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (dyn_tag.ml[]..[])
+                                            Pexp_construct "Pack_error" (dyn_tag.ml[]..[])
+                                            None
+                                      ]
+                            ]
+                      ]
+                    core_type (dyn_tag.ml[]..[])
+                      Ptyp_arrow
+                      ""
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_constr "t" (dyn_tag.ml[]..[])
+                        [
+                          core_type (dyn_tag.ml[]..[])
+                            Ptyp_var a
+                        ]
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_arrow
+                        ""
+                        core_type (dyn_tag.ml[]..[])
+                          Ptyp_constr "pack" (dyn_tag.ml[]..[])
+                          []
+                        core_type (dyn_tag.ml[]..[])
+                          Ptyp_constr "X.t" (dyn_tag.ml[]..[])
+                          [
+                            core_type (dyn_tag.ml[]..[])
+                              Ptyp_var a
+                          ]
+              ]
+            structure_item (dyn_tag.ml[]..[])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (dyn_tag.ml[]..[])
+                    Ppat_var "print_tag" (dyn_tag.ml[]..[])
+                  expression (dyn_tag.ml[]..[])
+                    Pexp_constraint
+                    expression (dyn_tag.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (dyn_tag.ml[]..[])
+                            Ppat_var "f" (dyn_tag.ml[]..[])
+                          expression (dyn_tag.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (dyn_tag.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (dyn_tag.ml[]..[])
+                                      Ppat_var "tag" (dyn_tag.ml[]..[])
+                                    pattern (dyn_tag.ml[]..[])
+                                      Ppat_any
+                                  ]
+                                expression (dyn_tag.ml[]..[])
+                                  Pexp_apply
+                                  expression (dyn_tag.ml[]..[])
+                                    Pexp_ident "Format.pp_print_string" (dyn_tag.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (dyn_tag.ml[]..[])
+                                        Pexp_ident "f" (dyn_tag.ml[]..[])
+                                    <label> ""
+                                      expression (dyn_tag.ml[]..[])
+                                        Pexp_apply
+                                        expression (dyn_tag.ml[]..[])
+                                          Pexp_ident "to_string" (dyn_tag.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (dyn_tag.ml[]..[])
+                                              Pexp_ident "tag" (dyn_tag.ml[]..[])
+                                        ]
+                                  ]
+                            ]
+                      ]
+                    core_type (dyn_tag.ml[]..[])
+                      Ptyp_arrow
+                      ""
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_constr "Format.formatter" (dyn_tag.ml[]..[])
+                        []
+                      core_type (dyn_tag.ml[]..[])
+                        Ptyp_arrow
+                        ""
+                        core_type (dyn_tag.ml[]..[])
+                          Ptyp_constr "pack" (dyn_tag.ml[]..[])
+                          []
+                        core_type (dyn_tag.ml[]..[])
+                          Ptyp_constr "unit" (dyn_tag.ml[]..[])
+                          []
+              ]
+          ]
+]

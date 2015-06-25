@@ -1,0 +1,812 @@
+[
+  structure_item (fanutop.ml[1,0+0]..[1,0+12])
+    Pstr_open Fresh "LibUtil" (fanutop.ml[1,0+5]..[1,0+12])
+  structure_item (fanutop.ml[2,13+0]..[2,13+10])
+    Pstr_open Fresh "MkFan" (fanutop.ml[2,13+5]..[2,13+10])
+  structure_item (fanutop.ml[3,24+0]..[4,53+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[3,24+4]..[3,24+19])
+          Ppat_var "print_fan_error" (fanutop.ml[3,24+4]..[3,24+19])
+        expression (fanutop.ml[3,24+20]..[4,53+58]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanutop.ml[3,24+20]..[3,24+22])
+            Ppat_var "pp" (fanutop.ml[3,24+20]..[3,24+22])
+          expression (fanutop.ml[3,24+23]..[4,53+58]) ghost
+            Pexp_fun ""
+            None
+            pattern (fanutop.ml[3,24+23]..[3,24+26])
+              Ppat_var "exn" (fanutop.ml[3,24+23]..[3,24+26])
+            expression (fanutop.ml[4,53+2]..[4,53+58])
+              Pexp_apply
+              expression (fanutop.ml[4,53+2]..[4,53+16])
+                Pexp_ident "Format.fprintf" (fanutop.ml[4,53+2]..[4,53+16])
+              [
+                <label> ""
+                  expression (fanutop.ml[4,53+17]..[4,53+19])
+                    Pexp_ident "pp" (fanutop.ml[4,53+17]..[4,53+19])
+                <label> ""
+                  expression (fanutop.ml[4,53+20]..[4,53+33])
+                    Pexp_constant Const_string("@[<0>%s@]@.",None)
+                <label> ""
+                  expression (fanutop.ml[4,53+34]..[4,53+58])
+                    Pexp_apply
+                    expression (fanutop.ml[4,53+35]..[4,53+53])
+                      Pexp_ident "Printexc.to_string" (fanutop.ml[4,53+35]..[4,53+53])
+                    [
+                      <label> ""
+                        expression (fanutop.ml[4,53+54]..[4,53+57])
+                          Pexp_ident "exn" (fanutop.ml[4,53+54]..[4,53+57])
+                    ]
+              ]
+    ]
+  structure_item (fanutop.ml[5,112+0]..[16,579+17])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[5,112+4]..[5,112+25])
+          Ppat_var "get_fan_error_message" (fanutop.ml[5,112+4]..[5,112+25])
+        expression (fanutop.ml[5,112+26]..[16,579+17]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanutop.ml[5,112+26]..[5,112+29])
+            Ppat_var "exn" (fanutop.ml[5,112+26]..[5,112+29])
+          expression (fanutop.ml[6,144+2]..[16,579+17])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fanutop.ml[6,144+6]..[6,144+15])
+                  Ppat_tuple
+                  [
+                    pattern (fanutop.ml[6,144+7]..[6,144+10])
+                      Ppat_var "loc" (fanutop.ml[6,144+7]..[6,144+10])
+                    pattern (fanutop.ml[6,144+11]..[6,144+14])
+                      Ppat_var "exn" (fanutop.ml[6,144+11]..[6,144+14])
+                  ]
+                expression (fanutop.ml[7,162+4]..[10,276+26])
+                  Pexp_match
+                  expression (fanutop.ml[7,162+10]..[7,162+13])
+                    Pexp_ident "exn" (fanutop.ml[7,162+10]..[7,162+13])
+                  [
+                    <case>
+                      pattern (fanutop.ml[8,181+6]..[8,181+32])
+                        Ppat_construct "Locf.Exc_located" (fanutop.ml[8,181+6]..[8,181+22])
+                        Some
+                          pattern (fanutop.ml[8,181+23]..[8,181+32])
+                            Ppat_tuple
+                            [
+                              pattern (fanutop.ml[8,181+24]..[8,181+27])
+                                Ppat_var "loc" (fanutop.ml[8,181+24]..[8,181+27])
+                              pattern (fanutop.ml[8,181+28]..[8,181+31])
+                                Ppat_var "exn" (fanutop.ml[8,181+28]..[8,181+31])
+                            ]
+                      expression (fanutop.ml[9,217+8]..[9,217+58])
+                        Pexp_tuple
+                        [
+                          expression (fanutop.ml[9,217+9]..[9,217+52])
+                            Pexp_tuple
+                            [
+                              expression (fanutop.ml[9,217+10]..[9,217+30])
+                                Pexp_apply
+                                expression (fanutop.ml[9,217+11]..[9,217+25])
+                                  Pexp_ident "Locf.start_off" (fanutop.ml[9,217+11]..[9,217+25])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[9,217+26]..[9,217+29])
+                                      Pexp_ident "loc" (fanutop.ml[9,217+26]..[9,217+29])
+                                ]
+                              expression (fanutop.ml[9,217+32]..[9,217+51])
+                                Pexp_apply
+                                expression (fanutop.ml[9,217+33]..[9,217+46])
+                                  Pexp_ident "Locf.stop_off" (fanutop.ml[9,217+33]..[9,217+46])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[9,217+47]..[9,217+50])
+                                      Pexp_ident "loc" (fanutop.ml[9,217+47]..[9,217+50])
+                                ]
+                            ]
+                          expression (fanutop.ml[9,217+54]..[9,217+57])
+                            Pexp_ident "exn" (fanutop.ml[9,217+54]..[9,217+57])
+                        ]
+                    <case>
+                      pattern (fanutop.ml[10,276+6]..[10,276+9])
+                        Ppat_var "exn" (fanutop.ml[10,276+6]..[10,276+9])
+                      expression (fanutop.ml[10,276+13]..[10,276+26])
+                        Pexp_tuple
+                        [
+                          expression (fanutop.ml[10,276+14]..[10,276+20])
+                            Pexp_tuple
+                            [
+                              expression (fanutop.ml[10,276+15]..[10,276+16])
+                                Pexp_constant Const_int 0
+                              expression (fanutop.ml[10,276+18]..[10,276+19])
+                                Pexp_constant Const_int 0
+                            ]
+                          expression (fanutop.ml[10,276+22]..[10,276+25])
+                            Pexp_ident "exn" (fanutop.ml[10,276+22]..[10,276+25])
+                        ]
+                  ]
+            ]
+            expression (fanutop.ml[11,306+2]..[16,579+17])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (fanutop.ml[11,306+6]..[11,306+9])
+                    Ppat_var "msg" (fanutop.ml[11,306+6]..[11,306+9])
+                  expression (fanutop.ml[11,306+12]..[11,306+48])
+                    Pexp_apply
+                    expression (fanutop.ml[11,306+12]..[11,306+28])
+                      Pexp_ident "UTop.get_message" (fanutop.ml[11,306+12]..[11,306+28])
+                    [
+                      <label> ""
+                        expression (fanutop.ml[11,306+29]..[11,306+44])
+                          Pexp_ident "print_fan_error" (fanutop.ml[11,306+29]..[11,306+44])
+                      <label> ""
+                        expression (fanutop.ml[11,306+45]..[11,306+48])
+                          Pexp_ident "exn" (fanutop.ml[11,306+45]..[11,306+48])
+                    ]
+              ]
+              expression (fanutop.ml[12,358+2]..[16,579+17])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (fanutop.ml[12,358+6]..[12,358+9])
+                      Ppat_var "idx" (fanutop.ml[12,358+6]..[12,358+9])
+                    expression (fanutop.ml[12,358+12]..[12,358+41])
+                      Pexp_apply
+                      expression (fanutop.ml[12,358+12]..[12,358+15])
+                        Pexp_ident "ref" (fanutop.ml[12,358+12]..[12,358+15])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[12,358+16]..[12,358+41])
+                            Pexp_apply
+                            expression (fanutop.ml[12,358+37]..[12,358+38])
+                              Pexp_ident "-" (fanutop.ml[12,358+37]..[12,358+38])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[12,358+17]..[12,358+36])
+                                  Pexp_apply
+                                  expression (fanutop.ml[12,358+18]..[12,358+31])
+                                    Pexp_ident "String.length" (fanutop.ml[12,358+18]..[12,358+31])
+                                  [
+                                    <label> ""
+                                      expression (fanutop.ml[12,358+32]..[12,358+35])
+                                        Pexp_ident "msg" (fanutop.ml[12,358+32]..[12,358+35])
+                                  ]
+                              <label> ""
+                                expression (fanutop.ml[12,358+39]..[12,358+40])
+                                  Pexp_constant Const_int 1
+                            ]
+                      ]
+                ]
+                expression (fanutop.ml[13,403+2]..[16,579+17])
+                  Pexp_sequence
+                  expression (fanutop.ml[13,403+2]..[13,403+76])
+                    Pexp_while
+                    expression (fanutop.ml[13,403+8]..[13,403+59])
+                      Pexp_apply
+                      expression (fanutop.ml[13,403+27]..[13,403+29])
+                        Pexp_ident "&&" (fanutop.ml[13,403+27]..[13,403+29])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[13,403+8]..[13,403+26])
+                            Pexp_apply
+                            expression (fanutop.ml[13,403+22]..[13,403+23])
+                              Pexp_ident ">" (fanutop.ml[13,403+22]..[13,403+23])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[13,403+9]..[13,403+21])
+                                  Pexp_field
+                                  expression (fanutop.ml[13,403+9]..[13,403+12])
+                                    Pexp_ident "idx" (fanutop.ml[13,403+9]..[13,403+12])
+                                  "contents" (fanutop.ml[13,403+13]..[13,403+21])
+                              <label> ""
+                                expression (fanutop.ml[13,403+24]..[13,403+25])
+                                  Pexp_constant Const_int 0
+                            ]
+                        <label> ""
+                          expression (fanutop.ml[13,403+30]..[13,403+59])
+                            Pexp_apply
+                            expression (fanutop.ml[13,403+52]..[13,403+53])
+                              Pexp_ident "=" (fanutop.ml[13,403+52]..[13,403+53])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[13,403+31]..[13,403+51])
+                                  Pexp_apply
+                                  expression (fanutop.ml[13,403+32]..[13,403+50]) ghost
+                                    Pexp_ident "String.get" (fanutop.ml[13,403+32]..[13,403+50]) ghost
+                                  [
+                                    <label> ""
+                                      expression (fanutop.ml[13,403+32]..[13,403+35])
+                                        Pexp_ident "msg" (fanutop.ml[13,403+32]..[13,403+35])
+                                    <label> ""
+                                      expression (fanutop.ml[13,403+37]..[13,403+49])
+                                        Pexp_field
+                                        expression (fanutop.ml[13,403+37]..[13,403+40])
+                                          Pexp_ident "idx" (fanutop.ml[13,403+37]..[13,403+40])
+                                        "contents" (fanutop.ml[13,403+41]..[13,403+49])
+                                  ]
+                              <label> ""
+                                expression (fanutop.ml[13,403+54]..[13,403+58])
+                                  Pexp_constant Const_char 0a
+                            ]
+                      ]
+                    expression (fanutop.ml[13,403+63]..[13,403+71])
+                      Pexp_apply
+                      expression (fanutop.ml[13,403+63]..[13,403+67])
+                        Pexp_ident "decr" (fanutop.ml[13,403+63]..[13,403+67])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[13,403+68]..[13,403+71])
+                            Pexp_ident "idx" (fanutop.ml[13,403+68]..[13,403+71])
+                      ]
+                  expression (fanutop.ml[14,481+2]..[16,579+17])
+                    Pexp_ifthenelse
+                    expression (fanutop.ml[14,481+5]..[14,481+45])
+                      Pexp_apply
+                      expression (fanutop.ml[14,481+24]..[14,481+25])
+                        Pexp_ident "<" (fanutop.ml[14,481+24]..[14,481+25])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[14,481+5]..[14,481+23])
+                            Pexp_apply
+                            expression (fanutop.ml[14,481+19]..[14,481+20])
+                              Pexp_ident "+" (fanutop.ml[14,481+19]..[14,481+20])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[14,481+6]..[14,481+18])
+                                  Pexp_field
+                                  expression (fanutop.ml[14,481+6]..[14,481+9])
+                                    Pexp_ident "idx" (fanutop.ml[14,481+6]..[14,481+9])
+                                  "contents" (fanutop.ml[14,481+10]..[14,481+18])
+                              <label> ""
+                                expression (fanutop.ml[14,481+21]..[14,481+22])
+                                  Pexp_constant Const_int 1
+                            ]
+                        <label> ""
+                          expression (fanutop.ml[14,481+26]..[14,481+45])
+                            Pexp_apply
+                            expression (fanutop.ml[14,481+27]..[14,481+40])
+                              Pexp_ident "String.length" (fanutop.ml[14,481+27]..[14,481+40])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[14,481+41]..[14,481+44])
+                                  Pexp_ident "msg" (fanutop.ml[14,481+41]..[14,481+44])
+                            ]
+                      ]
+                    expression (fanutop.ml[15,527+7]..[15,527+51])
+                      Pexp_tuple
+                      [
+                        expression (fanutop.ml[15,527+8]..[15,527+11])
+                          Pexp_ident "loc" (fanutop.ml[15,527+8]..[15,527+11])
+                        expression (fanutop.ml[15,527+13]..[15,527+50])
+                          Pexp_apply
+                          expression (fanutop.ml[15,527+14]..[15,527+24])
+                            Pexp_ident "String.sub" (fanutop.ml[15,527+14]..[15,527+24])
+                          [
+                            <label> ""
+                              expression (fanutop.ml[15,527+25]..[15,527+28])
+                                Pexp_ident "msg" (fanutop.ml[15,527+25]..[15,527+28])
+                            <label> ""
+                              expression (fanutop.ml[15,527+29]..[15,527+30])
+                                Pexp_constant Const_int 0
+                            <label> ""
+                              expression (fanutop.ml[15,527+31]..[15,527+49])
+                                Pexp_apply
+                                expression (fanutop.ml[15,527+45]..[15,527+46])
+                                  Pexp_ident "+" (fanutop.ml[15,527+45]..[15,527+46])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[15,527+32]..[15,527+44])
+                                      Pexp_field
+                                      expression (fanutop.ml[15,527+32]..[15,527+35])
+                                        Pexp_ident "idx" (fanutop.ml[15,527+32]..[15,527+35])
+                                      "contents" (fanutop.ml[15,527+36]..[15,527+44])
+                                  <label> ""
+                                    expression (fanutop.ml[15,527+47]..[15,527+48])
+                                      Pexp_constant Const_int 1
+                                ]
+                          ]
+                      ]
+                    Some
+                      expression (fanutop.ml[16,579+7]..[16,579+17])
+                        Pexp_tuple
+                        [
+                          expression (fanutop.ml[16,579+8]..[16,579+11])
+                            Pexp_ident "loc" (fanutop.ml[16,579+8]..[16,579+11])
+                          expression (fanutop.ml[16,579+13]..[16,579+16])
+                            Pexp_ident "msg" (fanutop.ml[16,579+13]..[16,579+16])
+                        ]
+    ]
+  structure_item (fanutop.ml[17,597+0]..[30,1138+51])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[17,597+4]..[17,597+17])
+          Ppat_var "revise_parser" (fanutop.ml[17,597+4]..[17,597+17])
+        expression (fanutop.ml[17,597+18]..[30,1138+51]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanutop.ml[17,597+18]..[17,597+21])
+            Ppat_var "str" (fanutop.ml[17,597+18]..[17,597+21])
+          expression (fanutop.ml[17,597+22]..[30,1138+51]) ghost
+            Pexp_fun ""
+            None
+            pattern (fanutop.ml[17,597+22]..[17,597+26])
+              Ppat_var "_bol" (fanutop.ml[17,597+22]..[17,597+26])
+            expression (fanutop.ml[18,626+2]..[30,1138+51])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (fanutop.ml[18,626+6]..[18,626+9])
+                    Ppat_var "eof" (fanutop.ml[18,626+6]..[18,626+9])
+                  expression (fanutop.ml[18,626+12]..[18,626+21])
+                    Pexp_apply
+                    expression (fanutop.ml[18,626+12]..[18,626+15])
+                      Pexp_ident "ref" (fanutop.ml[18,626+12]..[18,626+15])
+                    [
+                      <label> ""
+                        expression (fanutop.ml[18,626+16]..[18,626+21])
+                          Pexp_construct "false" (fanutop.ml[18,626+16]..[18,626+21])
+                          None
+                    ]
+              ]
+              expression (fanutop.ml[19,651+2]..[30,1138+51])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (fanutop.ml[19,651+6]..[19,651+12])
+                      Ppat_var "lexbuf" (fanutop.ml[19,651+6]..[19,651+12])
+                    expression (fanutop.ml[19,651+15]..[19,651+44])
+                      Pexp_apply
+                      expression (fanutop.ml[19,651+15]..[19,651+36])
+                        Pexp_ident "UTop.lexbuf_of_string" (fanutop.ml[19,651+15]..[19,651+36])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[19,651+37]..[19,651+40])
+                            Pexp_ident "eof" (fanutop.ml[19,651+37]..[19,651+40])
+                        <label> ""
+                          expression (fanutop.ml[19,651+41]..[19,651+44])
+                            Pexp_ident "str" (fanutop.ml[19,651+41]..[19,651+44])
+                      ]
+                ]
+                expression (fanutop.ml[20,699+2]..[30,1138+51])
+                  Pexp_try
+                  expression (fanutop.ml[21,705+4]..[25,948+52])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (fanutop.ml[21,705+8]..[21,705+33])
+                          Ppat_var "not_filtered_token_stream" (fanutop.ml[21,705+8]..[21,705+33])
+                        expression (fanutop.ml[21,705+36]..[21,705+63])
+                          Pexp_apply
+                          expression (fanutop.ml[21,705+36]..[21,705+56])
+                            Pexp_ident "Flex_lib.from_lexbuf" (fanutop.ml[21,705+36]..[21,705+56])
+                          [
+                            <label> ""
+                              expression (fanutop.ml[21,705+57]..[21,705+63])
+                                Pexp_ident "lexbuf" (fanutop.ml[21,705+57]..[21,705+63])
+                          ]
+                    ]
+                    expression (fanutop.ml[22,772+4]..[25,948+52])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (fanutop.ml[22,772+8]..[22,772+20])
+                            Ppat_var "token_stream" (fanutop.ml[22,772+8]..[22,772+20])
+                          expression (fanutop.ml[22,772+23]..[22,772+61])
+                            Pexp_apply
+                            expression (fanutop.ml[22,772+23]..[22,772+35])
+                              Pexp_ident "Gramf.filter" (fanutop.ml[22,772+23]..[22,772+35])
+                            [
+                              <label> ""
+                                expression (fanutop.ml[22,772+36]..[22,772+61])
+                                  Pexp_ident "not_filtered_token_stream" (fanutop.ml[22,772+36]..[22,772+61])
+                            ]
+                      ]
+                      expression (fanutop.ml[23,837+4]..[25,948+52])
+                        Pexp_match
+                        expression (fanutop.ml[23,837+10]..[23,837+35])
+                          Pexp_apply
+                          expression (fanutop.ml[23,837+10]..[23,837+22])
+                            Pexp_ident "Fstream.peek" (fanutop.ml[23,837+10]..[23,837+22])
+                          [
+                            <label> ""
+                              expression (fanutop.ml[23,837+23]..[23,837+35])
+                                Pexp_ident "token_stream" (fanutop.ml[23,837+23]..[23,837+35])
+                          ]
+                        [
+                          <case>
+                            pattern (fanutop.ml[24,878+6]..[24,878+19])
+                              Ppat_construct "Some" (fanutop.ml[24,878+6]..[24,878+10])
+                              Some
+                                pattern (fanutop.ml[24,878+11]..[24,878+19])
+                                  Ppat_tuple
+                                  [
+                                    pattern (fanutop.ml[24,878+12]..[24,878+16])
+                                      Ppat_variant "EOI"
+                                      None
+                                    pattern (fanutop.ml[24,878+17]..[24,878+18])
+                                      Ppat_any
+                                  ]
+                            expression (fanutop.ml[24,878+23]..[24,878+69])
+                              Pexp_sequence
+                              expression (fanutop.ml[24,878+24]..[24,878+49])
+                                Pexp_apply
+                                expression (fanutop.ml[24,878+24]..[24,878+36])
+                                  Pexp_ident "Fstream.junk" (fanutop.ml[24,878+24]..[24,878+36])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[24,878+37]..[24,878+49])
+                                      Pexp_ident "token_stream" (fanutop.ml[24,878+37]..[24,878+49])
+                                ]
+                              expression (fanutop.ml[24,878+51]..[24,878+68])
+                                Pexp_apply
+                                expression (fanutop.ml[24,878+51]..[24,878+56])
+                                  Pexp_ident "raise" (fanutop.ml[24,878+51]..[24,878+56])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[24,878+57]..[24,878+68])
+                                      Pexp_construct "End_of_file" (fanutop.ml[24,878+57]..[24,878+68])
+                                      None
+                                ]
+                          <case>
+                            pattern (fanutop.ml[25,948+6]..[25,948+7])
+                              Ppat_any
+                            expression (fanutop.ml[25,948+11]..[25,948+52])
+                              Pexp_construct "UTop.Value" (fanutop.ml[25,948+11]..[25,948+21])
+                              Some
+                                expression (fanutop.ml[25,948+22]..[25,948+52])
+                                  Pexp_apply
+                                  expression (fanutop.ml[25,948+23]..[25,948+38])
+                                    Pexp_ident "toplevel_phrase" (fanutop.ml[25,948+23]..[25,948+38])
+                                  [
+                                    <label> ""
+                                      expression (fanutop.ml[25,948+39]..[25,948+51])
+                                        Pexp_ident "token_stream" (fanutop.ml[25,948+39]..[25,948+51])
+                                  ]
+                        ]
+                  [
+                    <case>
+                      pattern (fanutop.ml[27,1008+4]..[28,1086+7])
+                        Ppat_alias "x" (fanutop.ml[28,1086+6]..[28,1086+7])
+                        pattern (fanutop.ml[27,1008+4]..[27,1008+74])
+                          Ppat_or
+                          pattern (fanutop.ml[27,1008+4]..[27,1008+26])
+                            Ppat_or
+                            pattern (fanutop.ml[27,1008+4]..[27,1008+15])
+                              Ppat_construct "End_of_file" (fanutop.ml[27,1008+4]..[27,1008+15])
+                              None
+                            pattern (fanutop.ml[27,1008+17]..[27,1008+26])
+                              Ppat_construct "Sys.Break" (fanutop.ml[27,1008+17]..[27,1008+26])
+                              None
+                          pattern (fanutop.ml[27,1008+28]..[27,1008+74])
+                            Ppat_construct "Locf.Exc_located" (fanutop.ml[27,1008+28]..[27,1008+44])
+                            Some
+                              pattern (fanutop.ml[27,1008+45]..[27,1008+74])
+                                Ppat_tuple
+                                [
+                                  pattern (fanutop.ml[27,1008+46]..[27,1008+47])
+                                    Ppat_any
+                                  pattern (fanutop.ml[27,1008+48]..[27,1008+73])
+                                    Ppat_or
+                                    pattern (fanutop.ml[27,1008+49]..[27,1008+60])
+                                      Ppat_construct "End_of_file" (fanutop.ml[27,1008+49]..[27,1008+60])
+                                      None
+                                    pattern (fanutop.ml[27,1008+62]..[27,1008+71])
+                                      Ppat_construct "Sys.Break" (fanutop.ml[27,1008+62]..[27,1008+71])
+                                      None
+                                ]
+                      expression (fanutop.ml[28,1086+11]..[28,1086+18])
+                        Pexp_apply
+                        expression (fanutop.ml[28,1086+11]..[28,1086+16])
+                          Pexp_ident "raise" (fanutop.ml[28,1086+11]..[28,1086+16])
+                        [
+                          <label> ""
+                            expression (fanutop.ml[28,1086+17]..[28,1086+18])
+                              Pexp_ident "x" (fanutop.ml[28,1086+17]..[28,1086+18])
+                        ]
+                    <case>
+                      pattern (fanutop.ml[29,1105+4]..[29,1105+29])
+                        Ppat_construct "Locf.Exc_located" (fanutop.ml[29,1105+4]..[29,1105+20])
+                        Some
+                          pattern (fanutop.ml[29,1105+21]..[29,1105+29])
+                            Ppat_tuple
+                            [
+                              pattern (fanutop.ml[29,1105+22]..[29,1105+26])
+                                Ppat_var "_loc" (fanutop.ml[29,1105+22]..[29,1105+26])
+                              pattern (fanutop.ml[29,1105+27]..[29,1105+28])
+                                Ppat_var "y" (fanutop.ml[29,1105+27]..[29,1105+28])
+                            ]
+                      expression (fanutop.ml[30,1138+6]..[30,1138+51])
+                        Pexp_construct "UTop.Error" (fanutop.ml[30,1138+6]..[30,1138+16])
+                        Some
+                          expression (fanutop.ml[30,1138+17]..[30,1138+51])
+                            Pexp_tuple
+                            [
+                              expression (fanutop.ml[30,1138+18]..[30,1138+26])
+                                Pexp_construct "::" (fanutop.ml[30,1138+19]..[30,1138+26]) ghost
+                                Some
+                                  expression (fanutop.ml[30,1138+19]..[30,1138+26]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (fanutop.ml[30,1138+19]..[30,1138+25])
+                                        Pexp_tuple
+                                        [
+                                          expression (fanutop.ml[30,1138+20]..[30,1138+21])
+                                            Pexp_constant Const_int 0
+                                          expression (fanutop.ml[30,1138+23]..[30,1138+24])
+                                            Pexp_constant Const_int 0
+                                        ]
+                                      expression (fanutop.ml[30,1138+25]..[30,1138+26]) ghost
+                                        Pexp_construct "[]" (fanutop.ml[30,1138+25]..[30,1138+26]) ghost
+                                        None
+                                    ]
+                              expression (fanutop.ml[30,1138+28]..[30,1138+50])
+                                Pexp_apply
+                                expression (fanutop.ml[30,1138+29]..[30,1138+47])
+                                  Pexp_ident "Printexc.to_string" (fanutop.ml[30,1138+29]..[30,1138+47])
+                                [
+                                  <label> ""
+                                    expression (fanutop.ml[30,1138+48]..[30,1138+49])
+                                      Pexp_ident "y" (fanutop.ml[30,1138+48]..[30,1138+49])
+                                ]
+                            ]
+                  ]
+    ]
+  structure_item (fanutop.ml[31,1190+0]..[33,1274+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[31,1190+4]..[31,1190+10])
+          Ppat_var "normal" (fanutop.ml[31,1190+4]..[31,1190+10])
+        expression (fanutop.ml[31,1190+11]..[33,1274+42]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanutop.ml[31,1190+11]..[31,1190+13])
+            Ppat_construct "()" (fanutop.ml[31,1190+11]..[31,1190+13])
+            None
+          expression (fanutop.ml[32,1206+2]..[33,1274+42])
+            Pexp_sequence
+            expression (fanutop.ml[32,1206+2]..[32,1206+66])
+              Pexp_apply
+              expression (fanutop.ml[32,1206+29]..[32,1206+31])
+                Pexp_ident ":=" (fanutop.ml[32,1206+29]..[32,1206+31])
+              [
+                <label> ""
+                  expression (fanutop.ml[32,1206+2]..[32,1206+28])
+                    Pexp_ident "UTop.parse_toplevel_phrase" (fanutop.ml[32,1206+2]..[32,1206+28])
+                <label> ""
+                  expression (fanutop.ml[32,1206+32]..[32,1206+66])
+                    Pexp_ident "UTop.parse_toplevel_phrase_default" (fanutop.ml[32,1206+32]..[32,1206+66])
+              ]
+            expression (fanutop.ml[33,1274+2]..[33,1274+42])
+              Pexp_apply
+              expression (fanutop.ml[33,1274+25]..[33,1274+27])
+                Pexp_ident ":=" (fanutop.ml[33,1274+25]..[33,1274+27])
+              [
+                <label> ""
+                  expression (fanutop.ml[33,1274+2]..[33,1274+24])
+                    Pexp_ident "Toploop.parse_use_file" (fanutop.ml[33,1274+2]..[33,1274+24])
+                <label> ""
+                  expression (fanutop.ml[33,1274+28]..[33,1274+42])
+                    Pexp_ident "Parse.use_file" (fanutop.ml[33,1274+28]..[33,1274+42])
+              ]
+    ]
+  structure_item (fanutop.ml[34,1317+0]..[34,1317+61])
+    Pstr_eval
+    expression (fanutop.ml[34,1317+8]..[34,1317+61])
+      Pexp_apply
+      expression (fanutop.ml[34,1317+8]..[34,1317+31])
+        Pexp_ident "Ast_parsers.use_parsers" (fanutop.ml[34,1317+8]..[34,1317+31])
+      [
+        <label> ""
+          expression (fanutop.ml[34,1317+32]..[34,1317+61])
+            Pexp_construct "::" (fanutop.ml[34,1317+33]..[34,1317+61]) ghost
+            Some
+              expression (fanutop.ml[34,1317+33]..[34,1317+61]) ghost
+                Pexp_tuple
+                [
+                  expression (fanutop.ml[34,1317+33]..[34,1317+41])
+                    Pexp_constant Const_string("revise",None)
+                  expression (fanutop.ml[34,1317+43]..[34,1317+61]) ghost
+                    Pexp_construct "::" (fanutop.ml[34,1317+43]..[34,1317+61]) ghost
+                    Some
+                      expression (fanutop.ml[34,1317+43]..[34,1317+61]) ghost
+                        Pexp_tuple
+                        [
+                          expression (fanutop.ml[34,1317+43]..[34,1317+51])
+                            Pexp_constant Const_string("stream",None)
+                          expression (fanutop.ml[34,1317+53]..[34,1317+61]) ghost
+                            Pexp_construct "::" (fanutop.ml[34,1317+53]..[34,1317+61]) ghost
+                            Some
+                              expression (fanutop.ml[34,1317+53]..[34,1317+61]) ghost
+                                Pexp_tuple
+                                [
+                                  expression (fanutop.ml[34,1317+53]..[34,1317+60])
+                                    Pexp_constant Const_string("macro",None)
+                                  expression (fanutop.ml[34,1317+60]..[34,1317+61]) ghost
+                                    Pexp_construct "[]" (fanutop.ml[34,1317+60]..[34,1317+61]) ghost
+                                    None
+                                ]
+                        ]
+                ]
+      ]
+  structure_item (fanutop.ml[35,1379+0]..[35,1379+59])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[35,1379+4]..[35,1379+10])
+          Ppat_var "revise" (fanutop.ml[35,1379+4]..[35,1379+10])
+        expression (fanutop.ml[35,1379+11]..[35,1379+59]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanutop.ml[35,1379+11]..[35,1379+13])
+            Ppat_construct "()" (fanutop.ml[35,1379+11]..[35,1379+13])
+            None
+          expression (fanutop.ml[35,1379+16]..[35,1379+59])
+            Pexp_apply
+            expression (fanutop.ml[35,1379+43]..[35,1379+45])
+              Pexp_ident ":=" (fanutop.ml[35,1379+43]..[35,1379+45])
+            [
+              <label> ""
+                expression (fanutop.ml[35,1379+16]..[35,1379+42])
+                  Pexp_ident "UTop.parse_toplevel_phrase" (fanutop.ml[35,1379+16]..[35,1379+42])
+              <label> ""
+                expression (fanutop.ml[35,1379+46]..[35,1379+59])
+                  Pexp_ident "revise_parser" (fanutop.ml[35,1379+46]..[35,1379+59])
+            ]
+    ]
+  structure_item (fanutop.ml[36,1439+0]..[36,1439+17])
+    Pstr_eval
+    expression (fanutop.ml[36,1439+8]..[36,1439+17])
+      Pexp_apply
+      expression (fanutop.ml[36,1439+8]..[36,1439+14])
+        Pexp_ident "revise" (fanutop.ml[36,1439+8]..[36,1439+14])
+      [
+        <label> ""
+          expression (fanutop.ml[36,1439+15]..[36,1439+17])
+            Pexp_construct "()" (fanutop.ml[36,1439+15]..[36,1439+17])
+            None
+      ]
+  structure_item (fanutop.ml[37,1457+0]..[44,1783+51])
+    Pstr_eval
+    expression (fanutop.ml[38,1465+2]..[44,1783+51])
+      Pexp_sequence
+      expression (fanutop.ml[38,1465+2]..[38,1465+40])
+        Pexp_apply
+        expression (fanutop.ml[38,1465+2]..[38,1465+23])
+          Pexp_ident "Topdirs.dir_directory" (fanutop.ml[38,1465+2]..[38,1465+23])
+        [
+          <label> ""
+            expression (fanutop.ml[38,1465+24]..[38,1465+40])
+              Pexp_constant Const_string("+compiler-libs",None)
+        ]
+      expression (fanutop.ml[39,1507+2]..[44,1783+51])
+        Pexp_sequence
+        expression (fanutop.ml[39,1507+2]..[40,1558+51])
+          Pexp_apply
+          expression (fanutop.ml[39,1507+2]..[39,1507+17])
+            Pexp_ident "Hashtbl.replace" (fanutop.ml[39,1507+2]..[39,1507+17])
+          [
+            <label> ""
+              expression (fanutop.ml[39,1507+18]..[39,1507+41])
+                Pexp_ident "Toploop.directive_table" (fanutop.ml[39,1507+18]..[39,1507+41])
+            <label> ""
+              expression (fanutop.ml[39,1507+42]..[39,1507+50])
+                Pexp_constant Const_string("revise",None)
+            <label> ""
+              expression (fanutop.ml[40,1558+4]..[40,1558+51])
+                Pexp_construct "Toploop.Directive_none" (fanutop.ml[40,1558+5]..[40,1558+27])
+                Some
+                  expression (fanutop.ml[40,1558+28]..[40,1558+50])
+                    Pexp_fun ""
+                    None
+                    pattern (fanutop.ml[40,1558+33]..[40,1558+35])
+                      Ppat_construct "()" (fanutop.ml[40,1558+33]..[40,1558+35])
+                      None
+                    expression (fanutop.ml[40,1558+40]..[40,1558+49])
+                      Pexp_apply
+                      expression (fanutop.ml[40,1558+40]..[40,1558+46])
+                        Pexp_ident "revise" (fanutop.ml[40,1558+40]..[40,1558+46])
+                      [
+                        <label> ""
+                          expression (fanutop.ml[40,1558+47]..[40,1558+49])
+                            Pexp_construct "()" (fanutop.ml[40,1558+47]..[40,1558+49])
+                            None
+                      ]
+          ]
+        expression (fanutop.ml[41,1611+2]..[44,1783+51])
+          Pexp_sequence
+          expression (fanutop.ml[41,1611+2]..[42,1659+71])
+            Pexp_apply
+            expression (fanutop.ml[41,1611+2]..[41,1611+17])
+              Pexp_ident "Hashtbl.replace" (fanutop.ml[41,1611+2]..[41,1611+17])
+            [
+              <label> ""
+                expression (fanutop.ml[41,1611+18]..[41,1611+41])
+                  Pexp_ident "Toploop.directive_table" (fanutop.ml[41,1611+18]..[41,1611+41])
+              <label> ""
+                expression (fanutop.ml[41,1611+42]..[41,1611+47])
+                  Pexp_constant Const_string("pwd",None)
+              <label> ""
+                expression (fanutop.ml[42,1659+4]..[42,1659+71])
+                  Pexp_construct "Toploop.Directive_none" (fanutop.ml[42,1659+5]..[42,1659+27])
+                  Some
+                    expression (fanutop.ml[42,1659+28]..[42,1659+70])
+                      Pexp_fun ""
+                      None
+                      pattern (fanutop.ml[42,1659+33]..[42,1659+35])
+                        Ppat_construct "()" (fanutop.ml[42,1659+33]..[42,1659+35])
+                        None
+                      expression (fanutop.ml[42,1659+40]..[42,1659+69])
+                        Pexp_apply
+                        expression (fanutop.ml[42,1659+40]..[42,1659+53])
+                          Pexp_ident "prerr_endline" (fanutop.ml[42,1659+40]..[42,1659+53])
+                        [
+                          <label> ""
+                            expression (fanutop.ml[42,1659+54]..[42,1659+69])
+                              Pexp_apply
+                              expression (fanutop.ml[42,1659+55]..[42,1659+65])
+                                Pexp_ident "Sys.getcwd" (fanutop.ml[42,1659+55]..[42,1659+65])
+                              [
+                                <label> ""
+                                  expression (fanutop.ml[42,1659+66]..[42,1659+68])
+                                    Pexp_construct "()" (fanutop.ml[42,1659+66]..[42,1659+68])
+                                    None
+                              ]
+                        ]
+            ]
+          expression (fanutop.ml[43,1732+2]..[44,1783+51])
+            Pexp_apply
+            expression (fanutop.ml[43,1732+2]..[43,1732+17])
+              Pexp_ident "Hashtbl.replace" (fanutop.ml[43,1732+2]..[43,1732+17])
+            [
+              <label> ""
+                expression (fanutop.ml[43,1732+18]..[43,1732+41])
+                  Pexp_ident "Toploop.directive_table" (fanutop.ml[43,1732+18]..[43,1732+41])
+              <label> ""
+                expression (fanutop.ml[43,1732+42]..[43,1732+50])
+                  Pexp_constant Const_string("normal",None)
+              <label> ""
+                expression (fanutop.ml[44,1783+4]..[44,1783+51])
+                  Pexp_construct "Toploop.Directive_none" (fanutop.ml[44,1783+5]..[44,1783+27])
+                  Some
+                    expression (fanutop.ml[44,1783+28]..[44,1783+50])
+                      Pexp_fun ""
+                      None
+                      pattern (fanutop.ml[44,1783+33]..[44,1783+35])
+                        Ppat_construct "()" (fanutop.ml[44,1783+33]..[44,1783+35])
+                        None
+                      expression (fanutop.ml[44,1783+40]..[44,1783+49])
+                        Pexp_apply
+                        expression (fanutop.ml[44,1783+40]..[44,1783+46])
+                          Pexp_ident "normal" (fanutop.ml[44,1783+40]..[44,1783+46])
+                        [
+                          <label> ""
+                            expression (fanutop.ml[44,1783+47]..[44,1783+49])
+                              Pexp_construct "()" (fanutop.ml[44,1783+47]..[44,1783+49])
+                              None
+                        ]
+            ]
+  structure_item (fanutop.ml[45,1835+0]..[45,1835+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanutop.ml[45,1835+4]..[45,1835+6])
+          Ppat_construct "()" (fanutop.ml[45,1835+4]..[45,1835+6])
+          None
+        expression (fanutop.ml[45,1835+9]..[45,1835+26])
+          Pexp_apply
+          expression (fanutop.ml[45,1835+9]..[45,1835+23])
+            Pexp_ident "UTop_main.main" (fanutop.ml[45,1835+9]..[45,1835+23])
+          [
+            <label> ""
+              expression (fanutop.ml[45,1835+24]..[45,1835+26])
+                Pexp_construct "()" (fanutop.ml[45,1835+24]..[45,1835+26])
+                None
+          ]
+    ]
+]

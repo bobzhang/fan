@@ -1,0 +1,473 @@
+[
+  structure_item (commentFilter.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "t" (commentFilter.ml[]..[]) (commentFilter.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (commentFilter.ml[]..[])
+              Ptyp_tuple
+              [
+                core_type (commentFilter.ml[]..[])
+                  Ptyp_constr "Fstream.t" (commentFilter.ml[]..[])
+                  [
+                    core_type (commentFilter.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (commentFilter.ml[]..[])
+                          Ptyp_constr "string" (commentFilter.ml[]..[])
+                          []
+                        core_type (commentFilter.ml[]..[])
+                          Ptyp_constr "Locf.t" (commentFilter.ml[]..[])
+                          []
+                      ]
+                  ]
+                core_type (commentFilter.ml[]..[])
+                  Ptyp_constr "Queue.t" (commentFilter.ml[]..[])
+                  [
+                    core_type (commentFilter.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (commentFilter.ml[]..[])
+                          Ptyp_constr "string" (commentFilter.ml[]..[])
+                          []
+                        core_type (commentFilter.ml[]..[])
+                          Ptyp_constr "Locf.t" (commentFilter.ml[]..[])
+                          []
+                      ]
+                  ]
+              ]
+    ]
+  structure_item (commentFilter.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (commentFilter.ml[]..[])
+          Ppat_var "mk" (commentFilter.ml[]..[])
+        expression (commentFilter.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (commentFilter.ml[]..[])
+                Ppat_construct "()" (commentFilter.ml[]..[])
+                None
+              expression (commentFilter.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (commentFilter.ml[]..[])
+                      Ppat_var "q" (commentFilter.ml[]..[])
+                    expression (commentFilter.ml[]..[])
+                      Pexp_apply
+                      expression (commentFilter.ml[]..[])
+                        Pexp_ident "Queue.create" (commentFilter.ml[]..[])
+                      [
+                        <label> ""
+                          expression (commentFilter.ml[]..[])
+                            Pexp_construct "()" (commentFilter.ml[]..[])
+                            None
+                      ]
+                ]
+                expression (commentFilter.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (commentFilter.ml[]..[])
+                        Ppat_var "f" (commentFilter.ml[]..[])
+                      expression (commentFilter.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (commentFilter.ml[]..[])
+                              Ppat_any
+                            expression (commentFilter.ml[]..[])
+                              Pexp_try
+                              expression (commentFilter.ml[]..[])
+                                Pexp_construct "Some" (commentFilter.ml[]..[])
+                                Some
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_apply
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_ident "Queue.take" (commentFilter.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "q" (commentFilter.ml[]..[])
+                                    ]
+                              [
+                                <case>
+                                  pattern (commentFilter.ml[]..[])
+                                    Ppat_construct "Queue.Empty" (commentFilter.ml[]..[])
+                                    None
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_construct "None" (commentFilter.ml[]..[])
+                                    None
+                              ]
+                        ]
+                  ]
+                  expression (commentFilter.ml[]..[])
+                    Pexp_tuple
+                    [
+                      expression (commentFilter.ml[]..[])
+                        Pexp_apply
+                        expression (commentFilter.ml[]..[])
+                          Pexp_ident "Fstream.from" (commentFilter.ml[]..[])
+                        [
+                          <label> ""
+                            expression (commentFilter.ml[]..[])
+                              Pexp_ident "f" (commentFilter.ml[]..[])
+                        ]
+                      expression (commentFilter.ml[]..[])
+                        Pexp_ident "q" (commentFilter.ml[]..[])
+                    ]
+          ]
+    ]
+  structure_item (commentFilter.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (commentFilter.ml[]..[])
+          Ppat_var "filter" (commentFilter.ml[]..[])
+        expression (commentFilter.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (commentFilter.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (commentFilter.ml[]..[])
+                    Ppat_any
+                  pattern (commentFilter.ml[]..[])
+                    Ppat_var "q" (commentFilter.ml[]..[])
+                ]
+              expression (commentFilter.ml[]..[])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (commentFilter.ml[]..[])
+                      Ppat_var "self" (commentFilter.ml[]..[])
+                    expression (commentFilter.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (commentFilter.ml[]..[])
+                            Ppat_constraint
+                            pattern (commentFilter.ml[]..[])
+                              Ppat_var "__strm" (commentFilter.ml[]..[])
+                            core_type (commentFilter.ml[]..[])
+                              Ptyp_constr "Fstream.t" (commentFilter.ml[]..[])
+                              [
+                                core_type (commentFilter.ml[]..[])
+                                  Ptyp_any
+                              ]
+                          expression (commentFilter.ml[]..[])
+                            Pexp_match
+                            expression (commentFilter.ml[]..[])
+                              Pexp_apply
+                              expression (commentFilter.ml[]..[])
+                                Pexp_ident "Fstream.peek" (commentFilter.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_ident "__strm" (commentFilter.ml[]..[])
+                              ]
+                            [
+                              <case>
+                                pattern (commentFilter.ml[]..[])
+                                  Ppat_construct "Some" (commentFilter.ml[]..[])
+                                  Some
+                                    pattern (commentFilter.ml[]..[])
+                                      Ppat_tuple
+                                      [
+                                        pattern (commentFilter.ml[]..[])
+                                          Ppat_variant "Comment"
+                                          Some
+                                            pattern (commentFilter.ml[]..[])
+                                              Ppat_var "x" (commentFilter.ml[]..[])
+                                        pattern (commentFilter.ml[]..[])
+                                          Ppat_var "loc" (commentFilter.ml[]..[])
+                                      ]
+                                expression (commentFilter.ml[]..[])
+                                  Pexp_sequence
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_apply
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_ident "Fstream.junk" (commentFilter.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "__strm" (commentFilter.ml[]..[])
+                                    ]
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_sequence
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_let Nonrec
+                                      [
+                                        <def>
+                                          pattern (commentFilter.ml[]..[])
+                                            Ppat_var "xs" (commentFilter.ml[]..[])
+                                          expression (commentFilter.ml[]..[])
+                                            Pexp_ident "__strm" (commentFilter.ml[]..[])
+                                      ]
+                                      expression (commentFilter.ml[]..[])
+                                        Pexp_apply
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "Queue.add" (commentFilter.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (commentFilter.ml[]..[])
+                                                  Pexp_ident "x" (commentFilter.ml[]..[])
+                                                expression (commentFilter.ml[]..[])
+                                                  Pexp_ident "loc" (commentFilter.ml[]..[])
+                                              ]
+                                          <label> ""
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_ident "q" (commentFilter.ml[]..[])
+                                        ]
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_apply
+                                      expression (commentFilter.ml[]..[])
+                                        Pexp_ident "self" (commentFilter.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (commentFilter.ml[]..[])
+                                            Pexp_ident "xs" (commentFilter.ml[]..[])
+                                      ]
+                              <case>
+                                pattern (commentFilter.ml[]..[])
+                                  Ppat_construct "Some" (commentFilter.ml[]..[])
+                                  Some
+                                    pattern (commentFilter.ml[]..[])
+                                      Ppat_var "x" (commentFilter.ml[]..[])
+                                expression (commentFilter.ml[]..[])
+                                  Pexp_sequence
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_apply
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_ident "Fstream.junk" (commentFilter.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "__strm" (commentFilter.ml[]..[])
+                                    ]
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (commentFilter.ml[]..[])
+                                          Ppat_var "xs" (commentFilter.ml[]..[])
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "__strm" (commentFilter.ml[]..[])
+                                    ]
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_apply
+                                      expression (commentFilter.ml[]..[])
+                                        Pexp_ident "Fstream.icons" (commentFilter.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (commentFilter.ml[]..[])
+                                            Pexp_ident "x" (commentFilter.ml[]..[])
+                                        <label> ""
+                                          expression (commentFilter.ml[]..[])
+                                            Pexp_apply
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_ident "Fstream.slazy" (commentFilter.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (commentFilter.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (commentFilter.ml[]..[])
+                                                        Ppat_any
+                                                      expression (commentFilter.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (commentFilter.ml[]..[])
+                                                          Pexp_ident "self" (commentFilter.ml[]..[])
+                                                        [
+                                                          <label> ""
+                                                            expression (commentFilter.ml[]..[])
+                                                              Pexp_ident "xs" (commentFilter.ml[]..[])
+                                                        ]
+                                                  ]
+                                            ]
+                                      ]
+                              <case>
+                                pattern (commentFilter.ml[]..[])
+                                  Ppat_any
+                                expression (commentFilter.ml[]..[])
+                                  Pexp_ident "Fstream.sempty" (commentFilter.ml[]..[])
+                            ]
+                      ]
+                ]
+                expression (commentFilter.ml[]..[])
+                  Pexp_ident "self" (commentFilter.ml[]..[])
+          ]
+    ]
+  structure_item (commentFilter.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (commentFilter.ml[]..[])
+          Ppat_var "take_list" (commentFilter.ml[]..[])
+        expression (commentFilter.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (commentFilter.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (commentFilter.ml[]..[])
+                    Ppat_any
+                  pattern (commentFilter.ml[]..[])
+                    Ppat_var "q" (commentFilter.ml[]..[])
+                ]
+              expression (commentFilter.ml[]..[])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (commentFilter.ml[]..[])
+                      Ppat_var "self" (commentFilter.ml[]..[])
+                    expression (commentFilter.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (commentFilter.ml[]..[])
+                            Ppat_var "accu" (commentFilter.ml[]..[])
+                          expression (commentFilter.ml[]..[])
+                            Pexp_ifthenelse
+                            expression (commentFilter.ml[]..[])
+                              Pexp_apply
+                              expression (commentFilter.ml[]..[])
+                                Pexp_ident "Queue.is_empty" (commentFilter.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (commentFilter.ml[]..[])
+                                    Pexp_ident "q" (commentFilter.ml[]..[])
+                              ]
+                            expression (commentFilter.ml[]..[])
+                              Pexp_ident "accu" (commentFilter.ml[]..[])
+                            Some
+                              expression (commentFilter.ml[]..[])
+                                Pexp_apply
+                                expression (commentFilter.ml[]..[])
+                                  Pexp_ident "self" (commentFilter.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (commentFilter.ml[]..[])
+                                      Pexp_construct "::" (commentFilter.ml[]..[])
+                                      Some
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_apply
+                                              expression (commentFilter.ml[]..[])
+                                                Pexp_ident "Queue.take" (commentFilter.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (commentFilter.ml[]..[])
+                                                    Pexp_ident "q" (commentFilter.ml[]..[])
+                                              ]
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_ident "accu" (commentFilter.ml[]..[])
+                                          ]
+                                ]
+                      ]
+                ]
+                expression (commentFilter.ml[]..[])
+                  Pexp_apply
+                  expression (commentFilter.ml[]..[])
+                    Pexp_ident "self" (commentFilter.ml[]..[])
+                  [
+                    <label> ""
+                      expression (commentFilter.ml[]..[])
+                        Pexp_construct "[]" (commentFilter.ml[]..[])
+                        None
+                  ]
+          ]
+    ]
+  structure_item (commentFilter.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (commentFilter.ml[]..[])
+          Ppat_var "take_stream" (commentFilter.ml[]..[])
+        expression (commentFilter.ml[]..[])
+          Pexp_ident "fst" (commentFilter.ml[]..[])
+    ]
+  structure_item (commentFilter.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (commentFilter.ml[]..[])
+          Ppat_var "define" (commentFilter.ml[]..[])
+        expression (commentFilter.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (commentFilter.ml[]..[])
+                Ppat_var "token_fiter" (commentFilter.ml[]..[])
+              expression (commentFilter.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (commentFilter.ml[]..[])
+                      Ppat_var "comments_strm" (commentFilter.ml[]..[])
+                    expression (commentFilter.ml[]..[])
+                      Pexp_apply
+                      expression (commentFilter.ml[]..[])
+                        Pexp_ident "FanTokenFilter.set_filter" (commentFilter.ml[]..[])
+                      [
+                        <label> ""
+                          expression (commentFilter.ml[]..[])
+                            Pexp_ident "token_fiter" (commentFilter.ml[]..[])
+                        <label> ""
+                          expression (commentFilter.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (commentFilter.ml[]..[])
+                                  Ppat_var "previous" (commentFilter.ml[]..[])
+                                expression (commentFilter.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (commentFilter.ml[]..[])
+                                        Ppat_var "strm" (commentFilter.ml[]..[])
+                                      expression (commentFilter.ml[]..[])
+                                        Pexp_apply
+                                        expression (commentFilter.ml[]..[])
+                                          Pexp_ident "previous" (commentFilter.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (commentFilter.ml[]..[])
+                                              Pexp_apply
+                                              expression (commentFilter.ml[]..[])
+                                                Pexp_ident "filter" (commentFilter.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (commentFilter.ml[]..[])
+                                                    Pexp_ident "comments_strm" (commentFilter.ml[]..[])
+                                                <label> ""
+                                                  expression (commentFilter.ml[]..[])
+                                                    Pexp_ident "strm" (commentFilter.ml[]..[])
+                                              ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+]

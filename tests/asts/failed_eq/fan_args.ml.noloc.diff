@@ -1,0 +1,174 @@
+2a3,10
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan_args.ml[]..[])
+>         Pstr_eval
+>         expression (fan_args.ml[]..[])
+>           Pexp_constant Const_string(" TODO: add an unit test  for import DDSL ",None)
+>     ]
+>   structure_item (fan_args.ml[]..[])
+47,49c55,56
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+69,71c76,77
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                     Pexp_fun ""
+>                     None
+75,77c81,82
+<                               Pexp_function
+<                               [
+<                                 <case>
+---
+>                       Pexp_fun ""
+>                       None
+87,89c92,93
+<                                           Pexp_function
+<                                           [
+<                                             <case>
+---
+>                               Pexp_fun ""
+>                               None
+93,95c97,98
+<                                                 Pexp_function
+<                                                 [
+<                                                   <case>
+---
+>                                 Pexp_fun ""
+>                                 None
+113,114d115
+<                                                 ]
+<                                           ]
+120,121d120
+<                         ]
+<                   ]
+172d170
+<     ]
+180,182c178,179
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+202,204c199,200
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                     Pexp_fun ""
+>                     None
+208,210c204,205
+<                               Pexp_function
+<                               [
+<                                 <case>
+---
+>                       Pexp_fun ""
+>                       None
+220,222c215,216
+<                                           Pexp_function
+<                                           [
+<                                             <case>
+---
+>                               Pexp_fun ""
+>                               None
+226,228c220,221
+<                                                 Pexp_function
+<                                                 [
+<                                                   <case>
+---
+>                                 Pexp_fun ""
+>                                 None
+246,247d238
+<                                                 ]
+<                                           ]
+253,254d243
+<                         ]
+<                   ]
+271d259
+<     ]
+279,281c267,268
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+304,306c291,292
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                     Pexp_fun ""
+>                     None
+310,312c296,297
+<                               Pexp_function
+<                               [
+<                                 <case>
+---
+>                       Pexp_fun ""
+>                       None
+322,324c307,308
+<                                           Pexp_function
+<                                           [
+<                                             <case>
+---
+>                               Pexp_fun ""
+>                               None
+348d331
+<                                           ]
+353,354d335
+<                               ]
+<                         ]
+360d340
+<     ]
+454a435,441
+>           attribute "ocaml.doc"
+>             [
+>               structure_item (fan_args.ml[]..[])
+>                 Pstr_eval
+>                 expression (fan_args.ml[]..[])
+>                   Pexp_constant Const_string(" parse the file, apply the filter and pipe it to the backend ",None)
+>             ]
+458,460c445,446
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+525d510
+<     ]
+533,535c518,519
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+597d580
+<     ]
+605,607c588,589
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+871,873c853,854
+<                                       Pexp_function
+<                                       [
+<                                         <case>
+---
+>                                   Pexp_fun ""
+>                                   None
+887d867
+<                                 ]
+930d909
+<     ]

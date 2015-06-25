@@ -1,0 +1,2385 @@
+[
+  structure_item (ast_loc.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_loc.ml[]..[])
+          Ppat_var "loc_of" (ast_loc.ml[]..[])
+        expression (ast_loc.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CtDeclS"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Apply"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Any"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Array"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ArrayDot"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Directive"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TypeSubst"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "QuoteAny"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyEq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleBind"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CtDecl"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Sta"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Match"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Obj"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyPol"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Val"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Bool"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "C"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LabelS"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Str"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ClDeclS"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "New"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Value"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PolyInfSup"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Try"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "App"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Assign"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Normal"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Sem"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Send"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Type"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleTypeEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Chr"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "IfThenElse"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ClassType"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleUnpack"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Package"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "While"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CrMth"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Dot"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Struct"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyMan"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "External"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CgVal"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Class"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CrMthS"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LetIn"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Nativeint"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Seq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Quote"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TypeEq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "DirectiveSimple"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "VirVal"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "OptLabl"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Coercion"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ClApply"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CtFun"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Arrow"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ObjEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Bind"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Subtype"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Functor"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "With"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyVrnOf"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyAbstr"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "IfThen"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "RecBind"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Sig"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PolySup"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Ctyp"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Lazy"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Field"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CeFun"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ClassPath"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Par"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Com"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyRepr"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ArrayEmpty"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Int64"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleTypeOf"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyPolEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyCol"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ObjPat"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Initializer"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyColMut"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleEq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Lid"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "OptLablS"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Record"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "InheritAs"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Constraint"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Ant"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Some"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TypeEqPriv"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Label"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyTypePol"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Include"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Flo"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Alias"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Vrn"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "StExp"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Uid"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyObj"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Of"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "OvrInst"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleSubst"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Unit"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Positive"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CrVal"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleConstraint"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyVrn"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Case"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "OvrInstEmpty"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Exception"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "RecordWith"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "And"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "SigEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ObjPatEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ClDecl"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyDcl"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Assert"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "StructEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Int32"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "VirMeth"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PaRng"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "RecModule"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LocalTypeFun"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Package_exp"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CaseWhen"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Int"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Negative"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Fun"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "CeApp"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Eq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LetTryInWith"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LetModule"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "LetOpen"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PolyInf"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "StringDot"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "For"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TypeWith"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "OptLablExpr"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "SigInherit"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ModuleType"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Inherit"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "None"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_var "_loc" (ast_loc.ml[]..[])
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ObjTy"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Method"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Module"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PackageModule"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "PolyEq"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Bar"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Open"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "ObjTyEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "TyObjEnd"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+            <case>
+              pattern (ast_loc.ml[]..[])
+                Ppat_variant "Sum"
+                Some
+                  pattern (ast_loc.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_var "_loc" (ast_loc.ml[]..[])
+                      pattern (ast_loc.ml[]..[])
+                        Ppat_any
+                    ]
+              expression (ast_loc.ml[]..[])
+                Pexp_ident "_loc" (ast_loc.ml[]..[])
+          ]
+    ]
+]

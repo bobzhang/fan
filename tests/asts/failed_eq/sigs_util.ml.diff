@@ -1,0 +1,351 @@
+20c20
+<       type_declaration "named_type" (sigs_util.ml[5,86+5]..[5,86+15]) (sigs_util.ml[5,86+5]..[5,86+36])
+---
+>       type_declaration "named_type" (sigs_util.ml[5,86+5]..[5,86+15]) (sigs_util.ml[5,86+0]..[5,86+36])
+30c30
+<             core_type (sigs_util.ml[5,86+18]..[5,86+36])
+---
+>             core_type (sigs_util.ml[5,86+19]..[5,86+35])
+40c40
+<       type_declaration "and_types" (sigs_util.ml[6,123+4]..[6,123+13]) (sigs_util.ml[6,123+4]..[6,123+31])
+---
+>       type_declaration "and_types" (sigs_util.ml[6,123+4]..[6,123+13]) (sigs_util.ml[6,123+0]..[6,123+31])
+57c57
+<       type_declaration "types" (sigs_util.ml[7,155+4]..[7,155+9]) (sigs_util.ml[7,155+4]..[7,155+61])
+---
+>       type_declaration "types" (sigs_util.ml[7,155+4]..[7,155+9]) (sigs_util.ml[7,155+0]..[7,155+61])
+84c84
+<       type_declaration "mtyps" (sigs_util.ml[8,217+4]..[8,217+9]) (sigs_util.ml[8,217+4]..[8,217+22])
+---
+>       type_declaration "mtyps" (sigs_util.ml[8,217+4]..[8,217+9]) (sigs_util.ml[8,217+0]..[8,217+22])
+108c108
+<         expression (sigs_util.ml[9,240+27]..[19,544+61])
+---
+>         expression (sigs_util.ml[9,240+27]..[19,544+61]) ghost
+116c116
+<                 expression (sigs_util.ml[12,332+7]..[19,544+60])
+---
+>                 expression (sigs_util.ml[12,332+6]..[19,544+61])
+124c124
+<                         expression (sigs_util.ml[14,364+13]..[19,544+50])
+---
+>                         expression (sigs_util.ml[14,364+11]..[19,544+52])
+130c130
+<                               expression (sigs_util.ml[16,408+18]..[19,544+49])
+---
+>                               expression (sigs_util.ml[16,408+17]..[19,544+50])
+196c196
+<         expression (sigs_util.ml[20,606+22]..[22,681+72])
+---
+>         expression (sigs_util.ml[20,606+22]..[22,681+72]) ghost
+204c204
+<                 expression (sigs_util.ml[22,681+12]..[22,681+71])
+---
+>                 expression (sigs_util.ml[22,681+11]..[22,681+72])
+245c245
+<         expression (sigs_util.ml[23,754+18]..[30,972+77])
+---
+>         expression (sigs_util.ml[23,754+18]..[30,972+77]) ghost
+253c253
+<                 expression (sigs_util.ml[26,832+7]..[30,972+76])
+---
+>                 expression (sigs_util.ml[26,832+6]..[30,972+77])
+324c324
+<         expression (sigs_util.ml[31,1050+18]..[32,1106+76])
+---
+>         expression (sigs_util.ml[31,1050+18]..[32,1106+76]) ghost
+332c332
+<                 expression (sigs_util.ml[32,1106+21]..[32,1106+75])
+---
+>                 expression (sigs_util.ml[32,1106+20]..[32,1106+76])
+374c374
+<       type_declaration "plugin_name" (sigs_util.ml[33,1183+5]..[33,1183+16]) (sigs_util.ml[33,1183+5]..[33,1183+25])
+---
+>       type_declaration "plugin_name" (sigs_util.ml[33,1183+5]..[33,1183+16]) (sigs_util.ml[33,1183+0]..[33,1183+25])
+391c391
+<       type_declaration "plugin" (sigs_util.ml[34,1209+5]..[34,1209+11]) (sigs_util.ml[34,1209+5]..[38,1289+35])
+---
+>       type_declaration "plugin" (sigs_util.ml[34,1209+5]..[34,1209+11]) (sigs_util.ml[34,1209+0]..[38,1289+35])
+399c399
+<               (sigs_util.ml[36,1227+2]..[36,1227+33])
+---
+>               (sigs_util.ml[36,1227+2]..[36,1227+34])
+402,403d401
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[36,1227+13]..[36,1227+33])
+416c414
+<               (sigs_util.ml[37,1262+2]..[37,1262+25])
+---
+>               (sigs_util.ml[37,1262+2]..[37,1262+26])
+419,420d416
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[37,1262+12]..[37,1262+25])
+427c423
+<               (sigs_util.ml[38,1289+2]..[38,1289+33])
+---
+>               (sigs_util.ml[38,1289+2]..[38,1289+34])
+430,431d425
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[38,1289+10]..[38,1289+33])
+461c455
+<               expression (sigs_util.ml[42,1364+7]..[56,1871+41])
+---
+>               expression (sigs_util.ml[42,1364+6]..[56,1871+42])
+472c466
+<                     expression (sigs_util.ml[44,1404+11]..[56,1871+41])
+---
+>                     expression (sigs_util.ml[44,1404+11]..[56,1871+41]) ghost
+489c483
+<                                         pattern (sigs_util.ml[46,1447+16]..[46,1447+29])
+---
+>                                         pattern (sigs_util.ml[46,1447+24]..[46,1447+29])
+535c529
+<                                               expression (sigs_util.ml[50,1607+23]..[50,1607+76])
+---
+>                                               expression (sigs_util.ml[50,1607+22]..[50,1607+77])
+575c569
+<                                     expression (sigs_util.ml[52,1713+19]..[55,1824+42])
+---
+>                                     expression (sigs_util.ml[52,1713+18]..[55,1824+43])
+589c583
+<                                             Ppat_construct "::" (sigs_util.ml[54,1777+21]..[54,1777+26])
+---
+>                                             Ppat_construct "::" (sigs_util.ml[54,1777+22]..[54,1777+24])
+591c585
+<                                               pattern (sigs_util.ml[54,1777+21]..[54,1777+26])
+---
+>                                               pattern (sigs_util.ml[54,1777+21]..[54,1777+26]) ghost
+603c597
+<                                               expression (sigs_util.ml[54,1777+36]..[54,1777+45])
+---
+>                                               expression (sigs_util.ml[54,1777+35]..[54,1777+46])
+614c608
+<                                               expression (sigs_util.ml[55,1824+32]..[55,1824+41])
+---
+>                                               expression (sigs_util.ml[55,1824+31]..[55,1824+42])
+646c640
+<         expression (sigs_util.ml[57,1914+20]..[72,2444+49])
+---
+>         expression (sigs_util.ml[57,1914+20]..[72,2444+49]) ghost
+673c667
+<                 expression (sigs_util.ml[60,2001+6]..[72,2444+49])
+---
+>                 expression (sigs_util.ml[60,2001+6]..[72,2444+49]) ghost
+675c669
+<                   expression (sigs_util.ml[60,2001+8]..[72,2444+33])
+---
+>                   expression (sigs_util.ml[60,2001+7]..[72,2444+34])
+696c690
+<                               expression (sigs_util.ml[63,2058+18]..[71,2373+67])
+---
+>                               expression (sigs_util.ml[63,2058+18]..[71,2373+67]) ghost
+704c698
+<                                       expression (sigs_util.ml[65,2113+17]..[71,2373+64])
+---
+>                                       expression (sigs_util.ml[65,2113+16]..[71,2373+65])
+725c719
+<                                                         expression (sigs_util.ml[67,2173+42]..[67,2173+58])
+---
+>                                                         expression (sigs_util.ml[67,2173+41]..[67,2173+59])
+739c733
+<                                               expression (sigs_util.ml[68,2236+21]..[68,2236+64])
+---
+>                                               expression (sigs_util.ml[68,2236+21]..[68,2236+64]) ghost
+744c738
+<                                                     expression (sigs_util.ml[68,2236+28]..[68,2236+49])
+---
+>                                                     expression (sigs_util.ml[68,2236+28]..[68,2236+49]) ghost
+778c772
+<                                               expression (sigs_util.ml[71,2373+21]..[71,2373+64])
+---
+>                                               expression (sigs_util.ml[71,2373+21]..[71,2373+64]) ghost
+783c777
+<                                                     expression (sigs_util.ml[71,2373+28]..[71,2373+49])
+---
+>                                                     expression (sigs_util.ml[71,2373+28]..[71,2373+49]) ghost
+811c805
+<                               expression (sigs_util.ml[72,2444+18]..[72,2444+32])
+---
+>                               expression (sigs_util.ml[72,2444+17]..[72,2444+33])
+836c830
+<         expression (sigs_util.ml[73,2494+17]..[82,2783+43])
+---
+>         expression (sigs_util.ml[73,2494+17]..[82,2783+43]) ghost
+863c857
+<                 expression (sigs_util.ml[76,2568+6]..[82,2783+43])
+---
+>                 expression (sigs_util.ml[76,2568+6]..[82,2783+43]) ghost
+871c865
+<                         expression (sigs_util.ml[76,2568+14]..[81,2742+37])
+---
+>                         expression (sigs_util.ml[76,2568+14]..[81,2742+37]) ghost
+879c873
+<                                 expression (sigs_util.ml[78,2624+12]..[81,2742+34])
+---
+>                                 expression (sigs_util.ml[78,2624+11]..[81,2742+35])
+894c888
+<                                             expression (sigs_util.ml[80,2674+26]..[80,2674+62])
+---
+>                                             expression (sigs_util.ml[80,2674+25]..[80,2674+63])
+922c916
+<                                           pattern (sigs_util.ml[81,2742+14]..[81,2742+27])
+---
+>                                           pattern (sigs_util.ml[81,2742+22]..[81,2742+27])
+930,931c924,925
+<                                       expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+<                                         Pexp_construct "::" (sigs_util.ml[81,2742+32]..[81,2742+33])
+---
+>                                       expression (sigs_util.ml[81,2742+31]..[81,2742+34])
+>                                         Pexp_construct "::" (sigs_util.ml[81,2742+32]..[81,2742+34]) ghost
+933c927
+<                                           expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+---
+>                                           expression (sigs_util.ml[81,2742+32]..[81,2742+34]) ghost
+938,939c932,933
+<                                               expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+<                                                 Pexp_construct "[]" (sigs_util.ml[81,2742+32]..[81,2742+33])
+---
+>                                               expression (sigs_util.ml[81,2742+33]..[81,2742+34]) ghost
+>                                                 Pexp_construct "[]" (sigs_util.ml[81,2742+33]..[81,2742+34]) ghost
+961c955
+<                           expression (sigs_util.ml[82,2783+20]..[82,2783+34])
+---
+>                           expression (sigs_util.ml[82,2783+19]..[82,2783+35])
+995c989
+<                   pattern (sigs_util.ml[86,2875+6]..[132,4733+9])
+---
+>                   pattern (sigs_util.ml[86,2875+13]..[86,2875+32])
+1026c1020
+<                         expression (sigs_util.ml[89,2989+8]..[111,3914+31])
+---
+>                         expression (sigs_util.ml[89,2989+14]..[111,3914+31]) ghost
+1028c1022
+<                           expression (sigs_util.ml[90,3012+11]..[111,3914+30])
+---
+>                           expression (sigs_util.ml[90,3012+10]..[111,3914+31])
+1039c1033
+<                                         pattern (sigs_util.ml[91,3032+21]..[91,3032+47])
+---
+>                                         pattern (sigs_util.ml[91,3032+20]..[91,3032+48])
+1042c1036
+<                                             pattern (sigs_util.ml[91,3032+21]..[91,3032+47])
+---
+>                                             pattern (sigs_util.ml[91,3032+28]..[91,3032+47])
+1072c1066
+<                                                 pattern (sigs_util.ml[94,3159+19]..[94,3159+30])
+---
+>                                                 pattern (sigs_util.ml[94,3159+25]..[94,3159+30])
+1097c1091
+<                                   expression (sigs_util.ml[96,3251+16]..[110,3873+39])
+---
+>                                   expression (sigs_util.ml[96,3251+15]..[110,3873+40])
+1106c1100
+<                                             pattern (sigs_util.ml[97,3280+18]..[97,3280+30])
+---
+>                                             pattern (sigs_util.ml[97,3280+23]..[97,3280+30])
+1161c1155
+<                                                   expression (sigs_util.ml[102,3486+28]..[102,3486+73])
+---
+>                                                   expression (sigs_util.ml[102,3486+27]..[102,3486+74])
+1167c1161
+<                                                         expression (sigs_util.ml[102,3486+28]..[102,3486+67])
+---
+>                                                         expression (sigs_util.ml[102,3486+28]..[102,3486+67]) ghost
+1204,1205d1197
+<                                                 Pexp_sequence
+<                                                 expression (sigs_util.ml[105,3624+23]..[108,3769+49])
+1225a1218,1219
+>                                                 expression (sigs_util.ml[107,3712+23]..[109,3820+51])
+>                                                   Pexp_sequence
+1243c1237
+<                                                             expression (sigs_util.ml[108,3769+32]..[108,3769+47])
+---
+>                                                             expression (sigs_util.ml[108,3769+31]..[108,3769+48])
+1254c1248
+<                                                 expression (sigs_util.ml[105,3624+22]..[109,3820+52])
+---
+>                                                   expression (sigs_util.ml[109,3820+23]..[109,3820+51]) ghost
+1302c1296
+<                         expression (sigs_util.ml[112,3946+8]..[124,4454+41])
+---
+>                         expression (sigs_util.ml[112,3946+14]..[124,4454+41]) ghost
+1304c1298
+<                           expression (sigs_util.ml[113,3969+11]..[124,4454+40])
+---
+>                           expression (sigs_util.ml[113,3969+10]..[124,4454+41])
+1310c1304
+<                                 expression (sigs_util.ml[115,4007+16]..[124,4454+39])
+---
+>                                 expression (sigs_util.ml[115,4007+15]..[124,4454+40])
+1326c1320
+<                                           pattern (sigs_util.ml[116,4060+18]..[116,4060+30])
+---
+>                                           pattern (sigs_util.ml[116,4060+23]..[116,4060+30])
+1346c1340
+<                                                   expression (sigs_util.ml[118,4124+32]..[118,4124+65])
+---
+>                                                   expression (sigs_util.ml[118,4124+31]..[118,4124+66])
+1409c1403
+<                                                       expression (sigs_util.ml[122,4335+30]..[122,4335+45])
+---
+>                                                       expression (sigs_util.ml[122,4335+29]..[122,4335+46])
+1420c1414
+<                                             expression (sigs_util.ml[121,4280+20]..[123,4384+69])
+---
+>                                             expression (sigs_util.ml[123,4384+21]..[123,4384+68])
+1426c1420
+<                                                   expression (sigs_util.ml[123,4384+35]..[123,4384+67])
+---
+>                                                   expression (sigs_util.ml[123,4384+34]..[123,4384+68])
+1429c1423
+<                                                       expression (sigs_util.ml[123,4384+35]..[123,4384+67])
+---
+>                                                       expression (sigs_util.ml[123,4384+35]..[123,4384+67]) ghost
+1432c1426
+<                                                           expression (sigs_util.ml[123,4384+35]..[123,4384+60])
+---
+>                                                           expression (sigs_util.ml[123,4384+35]..[123,4384+60]) ghost
+1469c1463
+<                         expression (sigs_util.ml[125,4496+8]..[131,4705+27])
+---
+>                         expression (sigs_util.ml[125,4496+15]..[131,4705+27]) ghost
+1477c1471
+<                                 expression (sigs_util.ml[127,4554+13]..[130,4626+77])
+---
+>                                 expression (sigs_util.ml[127,4554+12]..[130,4626+78])
+1483c1477
+<                                       expression (sigs_util.ml[129,4599+18]..[130,4626+76])
+---
+>                                       expression (sigs_util.ml[129,4599+17]..[130,4626+77])
+1495c1489
+<                                             expression (sigs_util.ml[130,4626+34]..[130,4626+75])
+---
+>                                             expression (sigs_util.ml[130,4626+33]..[130,4626+76])
+1504c1498
+<                                                       expression (sigs_util.ml[130,4626+52]..[130,4626+75])
+---
+>                                                       expression (sigs_util.ml[130,4626+52]..[130,4626+75]) ghost
+1581c1575
+<                             expression (sigs_util.ml[139,4875+11]..[143,5022+61])
+---
+>                             expression (sigs_util.ml[139,4875+10]..[143,5022+62])
+1593c1587
+<                                       expression (sigs_util.ml[142,4945+18]..[142,4945+75])
+---
+>                                       expression (sigs_util.ml[142,4945+17]..[142,4945+76])
+1599c1593
+<                                             expression (sigs_util.ml[142,4945+28]..[142,4945+71])
+---
+>                                             expression (sigs_util.ml[142,4945+27]..[142,4945+72])
+1616c1610
+<                                                       expression (sigs_util.ml[142,4945+54]..[142,4945+69])
+---
+>                                                       expression (sigs_util.ml[142,4945+53]..[142,4945+70])
+1637c1631
+<                                       pattern (sigs_util.ml[143,5022+13]..[143,5022+27])
+---
+>                                       pattern (sigs_util.ml[143,5022+21]..[143,5022+27])
+1653c1647
+<                                           expression (sigs_util.ml[143,5022+44]..[143,5022+59])
+---
+>                                           expression (sigs_util.ml[143,5022+43]..[143,5022+60])

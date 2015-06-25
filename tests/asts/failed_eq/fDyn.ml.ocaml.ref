@@ -1,0 +1,1845 @@
+[
+  structure_item (fDyn.ml[1,0+0]..[1,0+9])
+    Pstr_open Fresh "Astf" (fDyn.ml[1,0+5]..[1,0+9])
+  structure_item (fDyn.ml[2,10+0]..[54,625+12])
+    Pstr_type
+    [
+      type_declaration "tag" (fDyn.ml[2,10+8]..[2,10+11]) (fDyn.ml[2,10+0]..[54,625+12])
+        ptype_params =
+          [
+            core_type (fDyn.ml[2,10+5]..[2,10+7])
+              Ptyp_var a
+          ]
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (fDyn.ml[3,26+2]..[3,26+11])
+                "Literal" (fDyn.ml[3,26+4]..[3,26+11])
+                []
+                None
+              (fDyn.ml[4,38+2]..[4,38+8])
+                "Flag" (fDyn.ml[4,38+4]..[4,38+8])
+                []
+                None
+              (fDyn.ml[5,47+2]..[5,47+17])
+                "Position_flag" (fDyn.ml[5,47+4]..[5,47+17])
+                []
+                None
+              (fDyn.ml[6,65+2]..[6,65+11])
+                "Strings" (fDyn.ml[6,65+4]..[6,65+11])
+                []
+                None
+              (fDyn.ml[7,77+2]..[7,77+10])
+                "Lident" (fDyn.ml[7,77+4]..[7,77+10])
+                []
+                None
+              (fDyn.ml[8,88+2]..[8,88+11])
+                "Alident" (fDyn.ml[8,88+4]..[8,88+11])
+                []
+                None
+              (fDyn.ml[9,100+2]..[9,100+11])
+                "Auident" (fDyn.ml[9,100+4]..[9,100+11])
+                []
+                None
+              (fDyn.ml[10,112+2]..[10,112+10])
+                "Aident" (fDyn.ml[10,112+4]..[10,112+10])
+                []
+                None
+              (fDyn.ml[11,123+2]..[11,123+11])
+                "Astring" (fDyn.ml[11,123+4]..[11,123+11])
+                []
+                None
+              (fDyn.ml[12,135+2]..[12,135+10])
+                "Uident" (fDyn.ml[12,135+4]..[12,135+10])
+                []
+                None
+              (fDyn.ml[13,146+2]..[13,146+9])
+                "Ident" (fDyn.ml[13,146+4]..[13,146+9])
+                []
+                None
+              (fDyn.ml[14,156+2]..[14,156+10])
+                "Ident'" (fDyn.ml[14,156+4]..[14,156+10])
+                []
+                None
+              (fDyn.ml[15,167+2]..[15,167+7])
+                "Vid" (fDyn.ml[15,167+4]..[15,167+7])
+                []
+                None
+              (fDyn.ml[16,175+2]..[16,175+8])
+                "Vid'" (fDyn.ml[16,175+4]..[16,175+8])
+                []
+                None
+              (fDyn.ml[17,184+2]..[17,184+10])
+                "Dupath" (fDyn.ml[17,184+4]..[17,184+10])
+                []
+                None
+              (fDyn.ml[18,195+2]..[18,195+10])
+                "Dlpath" (fDyn.ml[18,195+4]..[18,195+10])
+                []
+                None
+              (fDyn.ml[19,206+2]..[19,206+7])
+                "Any" (fDyn.ml[19,206+4]..[19,206+7])
+                []
+                None
+              (fDyn.ml[20,214+2]..[20,214+8])
+                "Ctyp" (fDyn.ml[20,214+4]..[20,214+8])
+                []
+                None
+              (fDyn.ml[21,223+2]..[21,223+19])
+                "Type_parameters" (fDyn.ml[21,223+4]..[21,223+19])
+                []
+                None
+              (fDyn.ml[22,243+2]..[22,243+13])
+                "Row_field" (fDyn.ml[22,243+4]..[22,243+13])
+                []
+                None
+              (fDyn.ml[23,257+2]..[23,257+13])
+                "Tag_names" (fDyn.ml[23,257+4]..[23,257+13])
+                []
+                None
+              (fDyn.ml[24,271+2]..[24,271+12])
+                "Typedecl" (fDyn.ml[24,271+4]..[24,271+12])
+                []
+                None
+              (fDyn.ml[25,284+2]..[25,284+15])
+                "Type_constr" (fDyn.ml[25,284+4]..[25,284+15])
+                []
+                None
+              (fDyn.ml[26,300+2]..[26,300+19])
+                "Opt_type_constr" (fDyn.ml[26,300+4]..[26,300+19])
+                []
+                None
+              (fDyn.ml[27,320+2]..[27,320+14])
+                "Decl_param" (fDyn.ml[27,320+4]..[27,320+14])
+                []
+                None
+              (fDyn.ml[28,335+2]..[28,335+15])
+                "Decl_params" (fDyn.ml[28,335+4]..[28,335+15])
+                []
+                None
+              (fDyn.ml[29,351+2]..[29,351+19])
+                "Opt_decl_params" (fDyn.ml[29,351+4]..[29,351+19])
+                []
+                None
+              (fDyn.ml[30,371+2]..[30,371+13])
+                "Type_info" (fDyn.ml[30,371+4]..[30,371+13])
+                []
+                None
+              (fDyn.ml[31,385+2]..[31,385+13])
+                "Type_repr" (fDyn.ml[31,385+4]..[31,385+13])
+                []
+                None
+              (fDyn.ml[32,399+2]..[32,399+13])
+                "Name_ctyp" (fDyn.ml[32,399+4]..[32,399+13])
+                []
+                None
+              (fDyn.ml[33,413+2]..[33,413+11])
+                "Or_ctyp" (fDyn.ml[33,413+4]..[33,413+11])
+                []
+                None
+              (fDyn.ml[34,425+2]..[34,425+11])
+                "Of_ctyp" (fDyn.ml[34,425+4]..[34,425+11])
+                []
+                None
+              (fDyn.ml[35,437+2]..[35,437+7])
+                "Pat" (fDyn.ml[35,437+4]..[35,437+7])
+                []
+                None
+              (fDyn.ml[36,445+2]..[36,445+11])
+                "Rec_pat" (fDyn.ml[36,445+4]..[36,445+11])
+                []
+                None
+              (fDyn.ml[37,457+2]..[37,457+7])
+                "Exp" (fDyn.ml[37,457+4]..[37,457+7])
+                []
+                None
+              (fDyn.ml[38,465+2]..[38,465+11])
+                "Rec_exp" (fDyn.ml[38,465+4]..[38,465+11])
+                []
+                None
+              (fDyn.ml[39,477+2]..[39,477+8])
+                "Mtyp" (fDyn.ml[39,477+4]..[39,477+8])
+                []
+                None
+              (fDyn.ml[40,486+2]..[40,486+8])
+                "Sigi" (fDyn.ml[40,486+4]..[40,486+8])
+                []
+                None
+              (fDyn.ml[41,495+2]..[41,495+9])
+                "Mbind" (fDyn.ml[41,495+4]..[41,495+9])
+                []
+                None
+              (fDyn.ml[42,505+2]..[42,505+10])
+                "Constr" (fDyn.ml[42,505+4]..[42,505+10])
+                []
+                None
+              (fDyn.ml[43,516+2]..[43,516+8])
+                "Bind" (fDyn.ml[43,516+4]..[43,516+8])
+                []
+                None
+              (fDyn.ml[44,525+2]..[44,525+8])
+                "Case" (fDyn.ml[44,525+4]..[44,525+8])
+                []
+                None
+              (fDyn.ml[45,534+2]..[45,534+8])
+                "Mexp" (fDyn.ml[45,534+4]..[45,534+8])
+                []
+                None
+              (fDyn.ml[46,543+2]..[46,543+8])
+                "Stru" (fDyn.ml[46,543+4]..[46,543+8])
+                []
+                None
+              (fDyn.ml[47,552+2]..[47,552+11])
+                "Cltdecl" (fDyn.ml[47,552+4]..[47,552+11])
+                []
+                None
+              (fDyn.ml[48,564+2]..[48,564+9])
+                "Cltyp" (fDyn.ml[48,564+4]..[48,564+9])
+                []
+                None
+              (fDyn.ml[49,574+2]..[49,574+10])
+                "Clsigi" (fDyn.ml[49,574+4]..[49,574+10])
+                []
+                None
+              (fDyn.ml[50,585+2]..[50,585+10])
+                "Cldecl" (fDyn.ml[50,585+4]..[50,585+10])
+                []
+                None
+              (fDyn.ml[51,596+2]..[51,596+9])
+                "Clexp" (fDyn.ml[51,596+4]..[51,596+9])
+                []
+                None
+              (fDyn.ml[52,606+2]..[52,606+11])
+                "Clfield" (fDyn.ml[52,606+4]..[52,606+11])
+                []
+                None
+              (fDyn.ml[53,618+2]..[53,618+6])
+                "Ep" (fDyn.ml[53,618+4]..[53,618+6])
+                []
+                None
+              (fDyn.ml[54,625+2]..[54,625+12])
+                "Rec_bind" (fDyn.ml[54,625+4]..[54,625+12])
+                []
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (fDyn.ml[55,639+0]..[108,1970+27])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[55,639+4]..[55,639+17])
+          Ppat_var "string_of_tag" (fDyn.ml[55,639+4]..[55,639+17])
+        expression (fDyn.ml[56,659+2]..[108,1970+27])
+          Pexp_function
+          [
+            <case>
+              pattern (fDyn.ml[57,670+4]..[57,670+11])
+                Ppat_construct "Literal" (fDyn.ml[57,670+4]..[57,670+11])
+                None
+              expression (fDyn.ml[57,670+16]..[57,670+25])
+                Pexp_constant Const_string("literal",None)
+            <case>
+              pattern (fDyn.ml[58,696+4]..[58,696+8])
+                Ppat_construct "Flag" (fDyn.ml[58,696+4]..[58,696+8])
+                None
+              expression (fDyn.ml[58,696+13]..[58,696+19])
+                Pexp_constant Const_string("flag",None)
+            <case>
+              pattern (fDyn.ml[59,716+4]..[59,716+17])
+                Ppat_construct "Position_flag" (fDyn.ml[59,716+4]..[59,716+17])
+                None
+              expression (fDyn.ml[59,716+22]..[59,716+37])
+                Pexp_constant Const_string("position_flag",None)
+            <case>
+              pattern (fDyn.ml[60,754+4]..[60,754+11])
+                Ppat_construct "Strings" (fDyn.ml[60,754+4]..[60,754+11])
+                None
+              expression (fDyn.ml[60,754+16]..[60,754+25])
+                Pexp_constant Const_string("strings",None)
+            <case>
+              pattern (fDyn.ml[61,780+4]..[61,780+10])
+                Ppat_construct "Lident" (fDyn.ml[61,780+4]..[61,780+10])
+                None
+              expression (fDyn.ml[61,780+15]..[61,780+23])
+                Pexp_constant Const_string("lident",None)
+            <case>
+              pattern (fDyn.ml[62,804+4]..[62,804+11])
+                Ppat_construct "Alident" (fDyn.ml[62,804+4]..[62,804+11])
+                None
+              expression (fDyn.ml[62,804+16]..[62,804+25])
+                Pexp_constant Const_string("alident",None)
+            <case>
+              pattern (fDyn.ml[63,830+4]..[63,830+11])
+                Ppat_construct "Auident" (fDyn.ml[63,830+4]..[63,830+11])
+                None
+              expression (fDyn.ml[63,830+16]..[63,830+25])
+                Pexp_constant Const_string("auident",None)
+            <case>
+              pattern (fDyn.ml[64,856+4]..[64,856+10])
+                Ppat_construct "Aident" (fDyn.ml[64,856+4]..[64,856+10])
+                None
+              expression (fDyn.ml[64,856+15]..[64,856+23])
+                Pexp_constant Const_string("aident",None)
+            <case>
+              pattern (fDyn.ml[65,880+4]..[65,880+11])
+                Ppat_construct "Astring" (fDyn.ml[65,880+4]..[65,880+11])
+                None
+              expression (fDyn.ml[65,880+16]..[65,880+25])
+                Pexp_constant Const_string("astring",None)
+            <case>
+              pattern (fDyn.ml[66,906+4]..[66,906+10])
+                Ppat_construct "Uident" (fDyn.ml[66,906+4]..[66,906+10])
+                None
+              expression (fDyn.ml[66,906+15]..[66,906+23])
+                Pexp_constant Const_string("uident",None)
+            <case>
+              pattern (fDyn.ml[67,930+4]..[67,930+9])
+                Ppat_construct "Ident" (fDyn.ml[67,930+4]..[67,930+9])
+                None
+              expression (fDyn.ml[67,930+14]..[67,930+21])
+                Pexp_constant Const_string("ident",None)
+            <case>
+              pattern (fDyn.ml[68,952+4]..[68,952+10])
+                Ppat_construct "Ident'" (fDyn.ml[68,952+4]..[68,952+10])
+                None
+              expression (fDyn.ml[68,952+15]..[68,952+23])
+                Pexp_constant Const_string("ident'",None)
+            <case>
+              pattern (fDyn.ml[69,976+4]..[69,976+7])
+                Ppat_construct "Vid" (fDyn.ml[69,976+4]..[69,976+7])
+                None
+              expression (fDyn.ml[69,976+12]..[69,976+17])
+                Pexp_constant Const_string("vid",None)
+            <case>
+              pattern (fDyn.ml[70,994+4]..[70,994+8])
+                Ppat_construct "Vid'" (fDyn.ml[70,994+4]..[70,994+8])
+                None
+              expression (fDyn.ml[70,994+13]..[70,994+19])
+                Pexp_constant Const_string("vid'",None)
+            <case>
+              pattern (fDyn.ml[71,1014+4]..[71,1014+10])
+                Ppat_construct "Dupath" (fDyn.ml[71,1014+4]..[71,1014+10])
+                None
+              expression (fDyn.ml[71,1014+15]..[71,1014+23])
+                Pexp_constant Const_string("dupath",None)
+            <case>
+              pattern (fDyn.ml[72,1038+4]..[72,1038+10])
+                Ppat_construct "Dlpath" (fDyn.ml[72,1038+4]..[72,1038+10])
+                None
+              expression (fDyn.ml[72,1038+15]..[72,1038+23])
+                Pexp_constant Const_string("dlpath",None)
+            <case>
+              pattern (fDyn.ml[73,1062+4]..[73,1062+7])
+                Ppat_construct "Any" (fDyn.ml[73,1062+4]..[73,1062+7])
+                None
+              expression (fDyn.ml[73,1062+12]..[73,1062+17])
+                Pexp_constant Const_string("any",None)
+            <case>
+              pattern (fDyn.ml[74,1080+4]..[74,1080+8])
+                Ppat_construct "Ctyp" (fDyn.ml[74,1080+4]..[74,1080+8])
+                None
+              expression (fDyn.ml[74,1080+13]..[74,1080+19])
+                Pexp_constant Const_string("ctyp",None)
+            <case>
+              pattern (fDyn.ml[75,1100+4]..[75,1100+19])
+                Ppat_construct "Type_parameters" (fDyn.ml[75,1100+4]..[75,1100+19])
+                None
+              expression (fDyn.ml[75,1100+24]..[75,1100+41])
+                Pexp_constant Const_string("type_parameters",None)
+            <case>
+              pattern (fDyn.ml[76,1142+4]..[76,1142+13])
+                Ppat_construct "Row_field" (fDyn.ml[76,1142+4]..[76,1142+13])
+                None
+              expression (fDyn.ml[76,1142+18]..[76,1142+29])
+                Pexp_constant Const_string("row_field",None)
+            <case>
+              pattern (fDyn.ml[77,1172+4]..[77,1172+13])
+                Ppat_construct "Tag_names" (fDyn.ml[77,1172+4]..[77,1172+13])
+                None
+              expression (fDyn.ml[77,1172+18]..[77,1172+29])
+                Pexp_constant Const_string("tag_names",None)
+            <case>
+              pattern (fDyn.ml[78,1202+4]..[78,1202+12])
+                Ppat_construct "Typedecl" (fDyn.ml[78,1202+4]..[78,1202+12])
+                None
+              expression (fDyn.ml[78,1202+17]..[78,1202+27])
+                Pexp_constant Const_string("typedecl",None)
+            <case>
+              pattern (fDyn.ml[79,1230+4]..[79,1230+15])
+                Ppat_construct "Type_constr" (fDyn.ml[79,1230+4]..[79,1230+15])
+                None
+              expression (fDyn.ml[79,1230+20]..[79,1230+33])
+                Pexp_constant Const_string("type_constr",None)
+            <case>
+              pattern (fDyn.ml[80,1264+4]..[80,1264+19])
+                Ppat_construct "Opt_type_constr" (fDyn.ml[80,1264+4]..[80,1264+19])
+                None
+              expression (fDyn.ml[80,1264+24]..[80,1264+41])
+                Pexp_constant Const_string("opt_type_constr",None)
+            <case>
+              pattern (fDyn.ml[81,1306+4]..[81,1306+14])
+                Ppat_construct "Decl_param" (fDyn.ml[81,1306+4]..[81,1306+14])
+                None
+              expression (fDyn.ml[81,1306+19]..[81,1306+31])
+                Pexp_constant Const_string("decl_param",None)
+            <case>
+              pattern (fDyn.ml[82,1338+4]..[82,1338+15])
+                Ppat_construct "Decl_params" (fDyn.ml[82,1338+4]..[82,1338+15])
+                None
+              expression (fDyn.ml[82,1338+20]..[82,1338+33])
+                Pexp_constant Const_string("decl_params",None)
+            <case>
+              pattern (fDyn.ml[83,1372+4]..[83,1372+19])
+                Ppat_construct "Opt_decl_params" (fDyn.ml[83,1372+4]..[83,1372+19])
+                None
+              expression (fDyn.ml[83,1372+24]..[83,1372+41])
+                Pexp_constant Const_string("opt_decl_params",None)
+            <case>
+              pattern (fDyn.ml[84,1414+4]..[84,1414+13])
+                Ppat_construct "Type_info" (fDyn.ml[84,1414+4]..[84,1414+13])
+                None
+              expression (fDyn.ml[84,1414+18]..[84,1414+29])
+                Pexp_constant Const_string("type_info",None)
+            <case>
+              pattern (fDyn.ml[85,1444+4]..[85,1444+13])
+                Ppat_construct "Type_repr" (fDyn.ml[85,1444+4]..[85,1444+13])
+                None
+              expression (fDyn.ml[85,1444+18]..[85,1444+29])
+                Pexp_constant Const_string("type_repr",None)
+            <case>
+              pattern (fDyn.ml[86,1474+4]..[86,1474+13])
+                Ppat_construct "Name_ctyp" (fDyn.ml[86,1474+4]..[86,1474+13])
+                None
+              expression (fDyn.ml[86,1474+18]..[86,1474+29])
+                Pexp_constant Const_string("name_ctyp",None)
+            <case>
+              pattern (fDyn.ml[87,1504+4]..[87,1504+11])
+                Ppat_construct "Or_ctyp" (fDyn.ml[87,1504+4]..[87,1504+11])
+                None
+              expression (fDyn.ml[87,1504+16]..[87,1504+25])
+                Pexp_constant Const_string("or_ctyp",None)
+            <case>
+              pattern (fDyn.ml[88,1530+4]..[88,1530+11])
+                Ppat_construct "Of_ctyp" (fDyn.ml[88,1530+4]..[88,1530+11])
+                None
+              expression (fDyn.ml[88,1530+16]..[88,1530+25])
+                Pexp_constant Const_string("of_ctyp",None)
+            <case>
+              pattern (fDyn.ml[89,1556+4]..[89,1556+7])
+                Ppat_construct "Pat" (fDyn.ml[89,1556+4]..[89,1556+7])
+                None
+              expression (fDyn.ml[89,1556+12]..[89,1556+17])
+                Pexp_constant Const_string("pat",None)
+            <case>
+              pattern (fDyn.ml[90,1574+4]..[90,1574+11])
+                Ppat_construct "Rec_pat" (fDyn.ml[90,1574+4]..[90,1574+11])
+                None
+              expression (fDyn.ml[90,1574+16]..[90,1574+25])
+                Pexp_constant Const_string("rec_pat",None)
+            <case>
+              pattern (fDyn.ml[91,1600+4]..[91,1600+7])
+                Ppat_construct "Exp" (fDyn.ml[91,1600+4]..[91,1600+7])
+                None
+              expression (fDyn.ml[91,1600+12]..[91,1600+17])
+                Pexp_constant Const_string("exp",None)
+            <case>
+              pattern (fDyn.ml[92,1618+4]..[92,1618+11])
+                Ppat_construct "Rec_exp" (fDyn.ml[92,1618+4]..[92,1618+11])
+                None
+              expression (fDyn.ml[92,1618+16]..[92,1618+25])
+                Pexp_constant Const_string("rec_exp",None)
+            <case>
+              pattern (fDyn.ml[93,1644+4]..[93,1644+8])
+                Ppat_construct "Mtyp" (fDyn.ml[93,1644+4]..[93,1644+8])
+                None
+              expression (fDyn.ml[93,1644+13]..[93,1644+19])
+                Pexp_constant Const_string("mtyp",None)
+            <case>
+              pattern (fDyn.ml[94,1664+4]..[94,1664+8])
+                Ppat_construct "Sigi" (fDyn.ml[94,1664+4]..[94,1664+8])
+                None
+              expression (fDyn.ml[94,1664+13]..[94,1664+19])
+                Pexp_constant Const_string("sigi",None)
+            <case>
+              pattern (fDyn.ml[95,1684+4]..[95,1684+9])
+                Ppat_construct "Mbind" (fDyn.ml[95,1684+4]..[95,1684+9])
+                None
+              expression (fDyn.ml[95,1684+14]..[95,1684+21])
+                Pexp_constant Const_string("mbind",None)
+            <case>
+              pattern (fDyn.ml[96,1706+4]..[96,1706+10])
+                Ppat_construct "Constr" (fDyn.ml[96,1706+4]..[96,1706+10])
+                None
+              expression (fDyn.ml[96,1706+15]..[96,1706+23])
+                Pexp_constant Const_string("constr",None)
+            <case>
+              pattern (fDyn.ml[97,1730+4]..[97,1730+8])
+                Ppat_construct "Bind" (fDyn.ml[97,1730+4]..[97,1730+8])
+                None
+              expression (fDyn.ml[97,1730+13]..[97,1730+19])
+                Pexp_constant Const_string("bind",None)
+            <case>
+              pattern (fDyn.ml[98,1750+4]..[98,1750+8])
+                Ppat_construct "Case" (fDyn.ml[98,1750+4]..[98,1750+8])
+                None
+              expression (fDyn.ml[98,1750+13]..[98,1750+19])
+                Pexp_constant Const_string("case",None)
+            <case>
+              pattern (fDyn.ml[99,1770+4]..[99,1770+8])
+                Ppat_construct "Mexp" (fDyn.ml[99,1770+4]..[99,1770+8])
+                None
+              expression (fDyn.ml[99,1770+13]..[99,1770+19])
+                Pexp_constant Const_string("mexp",None)
+            <case>
+              pattern (fDyn.ml[100,1790+4]..[100,1790+8])
+                Ppat_construct "Stru" (fDyn.ml[100,1790+4]..[100,1790+8])
+                None
+              expression (fDyn.ml[100,1790+13]..[100,1790+19])
+                Pexp_constant Const_string("stru",None)
+            <case>
+              pattern (fDyn.ml[101,1810+4]..[101,1810+11])
+                Ppat_construct "Cltdecl" (fDyn.ml[101,1810+4]..[101,1810+11])
+                None
+              expression (fDyn.ml[101,1810+16]..[101,1810+25])
+                Pexp_constant Const_string("cltdecl",None)
+            <case>
+              pattern (fDyn.ml[102,1836+4]..[102,1836+9])
+                Ppat_construct "Cltyp" (fDyn.ml[102,1836+4]..[102,1836+9])
+                None
+              expression (fDyn.ml[102,1836+14]..[102,1836+21])
+                Pexp_constant Const_string("cltyp",None)
+            <case>
+              pattern (fDyn.ml[103,1858+4]..[103,1858+10])
+                Ppat_construct "Clsigi" (fDyn.ml[103,1858+4]..[103,1858+10])
+                None
+              expression (fDyn.ml[103,1858+15]..[103,1858+23])
+                Pexp_constant Const_string("clsigi",None)
+            <case>
+              pattern (fDyn.ml[104,1882+4]..[104,1882+10])
+                Ppat_construct "Cldecl" (fDyn.ml[104,1882+4]..[104,1882+10])
+                None
+              expression (fDyn.ml[104,1882+15]..[104,1882+23])
+                Pexp_constant Const_string("cldecl",None)
+            <case>
+              pattern (fDyn.ml[105,1906+4]..[105,1906+9])
+                Ppat_construct "Clexp" (fDyn.ml[105,1906+4]..[105,1906+9])
+                None
+              expression (fDyn.ml[105,1906+14]..[105,1906+21])
+                Pexp_constant Const_string("clexp",None)
+            <case>
+              pattern (fDyn.ml[106,1928+4]..[106,1928+11])
+                Ppat_construct "Clfield" (fDyn.ml[106,1928+4]..[106,1928+11])
+                None
+              expression (fDyn.ml[106,1928+16]..[106,1928+25])
+                Pexp_constant Const_string("clfield",None)
+            <case>
+              pattern (fDyn.ml[107,1954+4]..[107,1954+6])
+                Ppat_construct "Ep" (fDyn.ml[107,1954+4]..[107,1954+6])
+                None
+              expression (fDyn.ml[107,1954+11]..[107,1954+15])
+                Pexp_constant Const_string("ep",None)
+            <case>
+              pattern (fDyn.ml[108,1970+4]..[108,1970+12])
+                Ppat_construct "Rec_bind" (fDyn.ml[108,1970+4]..[108,1970+12])
+                None
+              expression (fDyn.ml[108,1970+17]..[108,1970+27])
+                Pexp_constant Const_string("rec_bind",None)
+          ]
+    ]
+  structure_item (fDyn.ml[109,1998+0]..[109,1998+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[109,1998+4]..[109,1998+15])
+          Ppat_var "literal_tag" (fDyn.ml[109,1998+4]..[109,1998+15])
+        expression (fDyn.ml[109,1998+15]..[109,1998+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[109,1998+31]..[109,1998+38])
+            Pexp_construct "Literal" (fDyn.ml[109,1998+31]..[109,1998+38])
+            None
+          core_type (fDyn.ml[109,1998+17]..[109,1998+28])
+            Ptyp_constr "tag" (fDyn.ml[109,1998+25]..[109,1998+28])
+            [
+              core_type (fDyn.ml[109,1998+17]..[109,1998+24])
+                Ptyp_constr "literal" (fDyn.ml[109,1998+17]..[109,1998+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[110,2037+0]..[110,2037+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[110,2037+4]..[110,2037+12])
+          Ppat_var "flag_tag" (fDyn.ml[110,2037+4]..[110,2037+12])
+        expression (fDyn.ml[110,2037+12]..[110,2037+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[110,2037+25]..[110,2037+29])
+            Pexp_construct "Flag" (fDyn.ml[110,2037+25]..[110,2037+29])
+            None
+          core_type (fDyn.ml[110,2037+14]..[110,2037+22])
+            Ptyp_constr "tag" (fDyn.ml[110,2037+19]..[110,2037+22])
+            [
+              core_type (fDyn.ml[110,2037+14]..[110,2037+18])
+                Ptyp_constr "flag" (fDyn.ml[110,2037+14]..[110,2037+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[111,2067+0]..[111,2067+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[111,2067+4]..[111,2067+21])
+          Ppat_var "position_flag_tag" (fDyn.ml[111,2067+4]..[111,2067+21])
+        expression (fDyn.ml[111,2067+21]..[111,2067+56]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[111,2067+43]..[111,2067+56])
+            Pexp_construct "Position_flag" (fDyn.ml[111,2067+43]..[111,2067+56])
+            None
+          core_type (fDyn.ml[111,2067+23]..[111,2067+40])
+            Ptyp_constr "tag" (fDyn.ml[111,2067+37]..[111,2067+40])
+            [
+              core_type (fDyn.ml[111,2067+23]..[111,2067+36])
+                Ptyp_constr "position_flag" (fDyn.ml[111,2067+23]..[111,2067+36])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[112,2124+0]..[112,2124+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[112,2124+4]..[112,2124+15])
+          Ppat_var "strings_tag" (fDyn.ml[112,2124+4]..[112,2124+15])
+        expression (fDyn.ml[112,2124+15]..[112,2124+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[112,2124+31]..[112,2124+38])
+            Pexp_construct "Strings" (fDyn.ml[112,2124+31]..[112,2124+38])
+            None
+          core_type (fDyn.ml[112,2124+17]..[112,2124+28])
+            Ptyp_constr "tag" (fDyn.ml[112,2124+25]..[112,2124+28])
+            [
+              core_type (fDyn.ml[112,2124+17]..[112,2124+24])
+                Ptyp_constr "strings" (fDyn.ml[112,2124+17]..[112,2124+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[113,2163+0]..[113,2163+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[113,2163+4]..[113,2163+14])
+          Ppat_var "lident_tag" (fDyn.ml[113,2163+4]..[113,2163+14])
+        expression (fDyn.ml[113,2163+14]..[113,2163+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[113,2163+29]..[113,2163+35])
+            Pexp_construct "Lident" (fDyn.ml[113,2163+29]..[113,2163+35])
+            None
+          core_type (fDyn.ml[113,2163+16]..[113,2163+26])
+            Ptyp_constr "tag" (fDyn.ml[113,2163+23]..[113,2163+26])
+            [
+              core_type (fDyn.ml[113,2163+16]..[113,2163+22])
+                Ptyp_constr "lident" (fDyn.ml[113,2163+16]..[113,2163+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[114,2199+0]..[114,2199+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[114,2199+4]..[114,2199+15])
+          Ppat_var "alident_tag" (fDyn.ml[114,2199+4]..[114,2199+15])
+        expression (fDyn.ml[114,2199+15]..[114,2199+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[114,2199+31]..[114,2199+38])
+            Pexp_construct "Alident" (fDyn.ml[114,2199+31]..[114,2199+38])
+            None
+          core_type (fDyn.ml[114,2199+17]..[114,2199+28])
+            Ptyp_constr "tag" (fDyn.ml[114,2199+25]..[114,2199+28])
+            [
+              core_type (fDyn.ml[114,2199+17]..[114,2199+24])
+                Ptyp_constr "alident" (fDyn.ml[114,2199+17]..[114,2199+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[115,2238+0]..[115,2238+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[115,2238+4]..[115,2238+15])
+          Ppat_var "auident_tag" (fDyn.ml[115,2238+4]..[115,2238+15])
+        expression (fDyn.ml[115,2238+15]..[115,2238+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[115,2238+31]..[115,2238+38])
+            Pexp_construct "Auident" (fDyn.ml[115,2238+31]..[115,2238+38])
+            None
+          core_type (fDyn.ml[115,2238+17]..[115,2238+28])
+            Ptyp_constr "tag" (fDyn.ml[115,2238+25]..[115,2238+28])
+            [
+              core_type (fDyn.ml[115,2238+17]..[115,2238+24])
+                Ptyp_constr "auident" (fDyn.ml[115,2238+17]..[115,2238+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[116,2277+0]..[116,2277+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[116,2277+4]..[116,2277+14])
+          Ppat_var "aident_tag" (fDyn.ml[116,2277+4]..[116,2277+14])
+        expression (fDyn.ml[116,2277+14]..[116,2277+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[116,2277+29]..[116,2277+35])
+            Pexp_construct "Aident" (fDyn.ml[116,2277+29]..[116,2277+35])
+            None
+          core_type (fDyn.ml[116,2277+16]..[116,2277+26])
+            Ptyp_constr "tag" (fDyn.ml[116,2277+23]..[116,2277+26])
+            [
+              core_type (fDyn.ml[116,2277+16]..[116,2277+22])
+                Ptyp_constr "aident" (fDyn.ml[116,2277+16]..[116,2277+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[117,2313+0]..[117,2313+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[117,2313+4]..[117,2313+15])
+          Ppat_var "astring_tag" (fDyn.ml[117,2313+4]..[117,2313+15])
+        expression (fDyn.ml[117,2313+15]..[117,2313+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[117,2313+31]..[117,2313+38])
+            Pexp_construct "Astring" (fDyn.ml[117,2313+31]..[117,2313+38])
+            None
+          core_type (fDyn.ml[117,2313+17]..[117,2313+28])
+            Ptyp_constr "tag" (fDyn.ml[117,2313+25]..[117,2313+28])
+            [
+              core_type (fDyn.ml[117,2313+17]..[117,2313+24])
+                Ptyp_constr "astring" (fDyn.ml[117,2313+17]..[117,2313+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[118,2352+0]..[118,2352+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[118,2352+4]..[118,2352+14])
+          Ppat_var "uident_tag" (fDyn.ml[118,2352+4]..[118,2352+14])
+        expression (fDyn.ml[118,2352+14]..[118,2352+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[118,2352+29]..[118,2352+35])
+            Pexp_construct "Uident" (fDyn.ml[118,2352+29]..[118,2352+35])
+            None
+          core_type (fDyn.ml[118,2352+16]..[118,2352+26])
+            Ptyp_constr "tag" (fDyn.ml[118,2352+23]..[118,2352+26])
+            [
+              core_type (fDyn.ml[118,2352+16]..[118,2352+22])
+                Ptyp_constr "uident" (fDyn.ml[118,2352+16]..[118,2352+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[119,2388+0]..[119,2388+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[119,2388+4]..[119,2388+13])
+          Ppat_var "ident_tag" (fDyn.ml[119,2388+4]..[119,2388+13])
+        expression (fDyn.ml[119,2388+13]..[119,2388+32]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[119,2388+27]..[119,2388+32])
+            Pexp_construct "Ident" (fDyn.ml[119,2388+27]..[119,2388+32])
+            None
+          core_type (fDyn.ml[119,2388+15]..[119,2388+24])
+            Ptyp_constr "tag" (fDyn.ml[119,2388+21]..[119,2388+24])
+            [
+              core_type (fDyn.ml[119,2388+15]..[119,2388+20])
+                Ptyp_constr "ident" (fDyn.ml[119,2388+15]..[119,2388+20])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[120,2421+0]..[120,2421+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[120,2421+4]..[120,2421+14])
+          Ppat_var "ident'_tag" (fDyn.ml[120,2421+4]..[120,2421+14])
+        expression (fDyn.ml[120,2421+14]..[120,2421+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[120,2421+29]..[120,2421+35])
+            Pexp_construct "Ident'" (fDyn.ml[120,2421+29]..[120,2421+35])
+            None
+          core_type (fDyn.ml[120,2421+16]..[120,2421+26])
+            Ptyp_constr "tag" (fDyn.ml[120,2421+23]..[120,2421+26])
+            [
+              core_type (fDyn.ml[120,2421+16]..[120,2421+22])
+                Ptyp_constr "ident'" (fDyn.ml[120,2421+16]..[120,2421+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[121,2457+0]..[121,2457+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[121,2457+4]..[121,2457+11])
+          Ppat_var "vid_tag" (fDyn.ml[121,2457+4]..[121,2457+11])
+        expression (fDyn.ml[121,2457+11]..[121,2457+26]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[121,2457+23]..[121,2457+26])
+            Pexp_construct "Vid" (fDyn.ml[121,2457+23]..[121,2457+26])
+            None
+          core_type (fDyn.ml[121,2457+13]..[121,2457+20])
+            Ptyp_constr "tag" (fDyn.ml[121,2457+17]..[121,2457+20])
+            [
+              core_type (fDyn.ml[121,2457+13]..[121,2457+16])
+                Ptyp_constr "vid" (fDyn.ml[121,2457+13]..[121,2457+16])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[122,2484+0]..[122,2484+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[122,2484+4]..[122,2484+12])
+          Ppat_var "vid'_tag" (fDyn.ml[122,2484+4]..[122,2484+12])
+        expression (fDyn.ml[122,2484+12]..[122,2484+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[122,2484+25]..[122,2484+29])
+            Pexp_construct "Vid'" (fDyn.ml[122,2484+25]..[122,2484+29])
+            None
+          core_type (fDyn.ml[122,2484+14]..[122,2484+22])
+            Ptyp_constr "tag" (fDyn.ml[122,2484+19]..[122,2484+22])
+            [
+              core_type (fDyn.ml[122,2484+14]..[122,2484+18])
+                Ptyp_constr "vid'" (fDyn.ml[122,2484+14]..[122,2484+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[123,2514+0]..[123,2514+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[123,2514+4]..[123,2514+14])
+          Ppat_var "dupath_tag" (fDyn.ml[123,2514+4]..[123,2514+14])
+        expression (fDyn.ml[123,2514+14]..[123,2514+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[123,2514+29]..[123,2514+35])
+            Pexp_construct "Dupath" (fDyn.ml[123,2514+29]..[123,2514+35])
+            None
+          core_type (fDyn.ml[123,2514+16]..[123,2514+26])
+            Ptyp_constr "tag" (fDyn.ml[123,2514+23]..[123,2514+26])
+            [
+              core_type (fDyn.ml[123,2514+16]..[123,2514+22])
+                Ptyp_constr "dupath" (fDyn.ml[123,2514+16]..[123,2514+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[124,2550+0]..[124,2550+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[124,2550+4]..[124,2550+14])
+          Ppat_var "dlpath_tag" (fDyn.ml[124,2550+4]..[124,2550+14])
+        expression (fDyn.ml[124,2550+14]..[124,2550+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[124,2550+29]..[124,2550+35])
+            Pexp_construct "Dlpath" (fDyn.ml[124,2550+29]..[124,2550+35])
+            None
+          core_type (fDyn.ml[124,2550+16]..[124,2550+26])
+            Ptyp_constr "tag" (fDyn.ml[124,2550+23]..[124,2550+26])
+            [
+              core_type (fDyn.ml[124,2550+16]..[124,2550+22])
+                Ptyp_constr "dlpath" (fDyn.ml[124,2550+16]..[124,2550+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[125,2586+0]..[125,2586+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[125,2586+4]..[125,2586+11])
+          Ppat_var "any_tag" (fDyn.ml[125,2586+4]..[125,2586+11])
+        expression (fDyn.ml[125,2586+11]..[125,2586+26]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[125,2586+23]..[125,2586+26])
+            Pexp_construct "Any" (fDyn.ml[125,2586+23]..[125,2586+26])
+            None
+          core_type (fDyn.ml[125,2586+13]..[125,2586+20])
+            Ptyp_constr "tag" (fDyn.ml[125,2586+17]..[125,2586+20])
+            [
+              core_type (fDyn.ml[125,2586+13]..[125,2586+16])
+                Ptyp_constr "any" (fDyn.ml[125,2586+13]..[125,2586+16])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[126,2613+0]..[126,2613+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[126,2613+4]..[126,2613+12])
+          Ppat_var "ctyp_tag" (fDyn.ml[126,2613+4]..[126,2613+12])
+        expression (fDyn.ml[126,2613+12]..[126,2613+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[126,2613+25]..[126,2613+29])
+            Pexp_construct "Ctyp" (fDyn.ml[126,2613+25]..[126,2613+29])
+            None
+          core_type (fDyn.ml[126,2613+14]..[126,2613+22])
+            Ptyp_constr "tag" (fDyn.ml[126,2613+19]..[126,2613+22])
+            [
+              core_type (fDyn.ml[126,2613+14]..[126,2613+18])
+                Ptyp_constr "ctyp" (fDyn.ml[126,2613+14]..[126,2613+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[127,2643+0]..[127,2643+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[127,2643+4]..[127,2643+23])
+          Ppat_var "type_parameters_tag" (fDyn.ml[127,2643+4]..[127,2643+23])
+        expression (fDyn.ml[127,2643+23]..[127,2643+62]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[127,2643+47]..[127,2643+62])
+            Pexp_construct "Type_parameters" (fDyn.ml[127,2643+47]..[127,2643+62])
+            None
+          core_type (fDyn.ml[127,2643+25]..[127,2643+44])
+            Ptyp_constr "tag" (fDyn.ml[127,2643+41]..[127,2643+44])
+            [
+              core_type (fDyn.ml[127,2643+25]..[127,2643+40])
+                Ptyp_constr "type_parameters" (fDyn.ml[127,2643+25]..[127,2643+40])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[128,2706+0]..[128,2706+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[128,2706+4]..[128,2706+17])
+          Ppat_var "row_field_tag" (fDyn.ml[128,2706+4]..[128,2706+17])
+        expression (fDyn.ml[128,2706+17]..[128,2706+44]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[128,2706+35]..[128,2706+44])
+            Pexp_construct "Row_field" (fDyn.ml[128,2706+35]..[128,2706+44])
+            None
+          core_type (fDyn.ml[128,2706+19]..[128,2706+32])
+            Ptyp_constr "tag" (fDyn.ml[128,2706+29]..[128,2706+32])
+            [
+              core_type (fDyn.ml[128,2706+19]..[128,2706+28])
+                Ptyp_constr "row_field" (fDyn.ml[128,2706+19]..[128,2706+28])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[129,2751+0]..[129,2751+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[129,2751+4]..[129,2751+17])
+          Ppat_var "tag_names_tag" (fDyn.ml[129,2751+4]..[129,2751+17])
+        expression (fDyn.ml[129,2751+17]..[129,2751+44]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[129,2751+35]..[129,2751+44])
+            Pexp_construct "Tag_names" (fDyn.ml[129,2751+35]..[129,2751+44])
+            None
+          core_type (fDyn.ml[129,2751+19]..[129,2751+32])
+            Ptyp_constr "tag" (fDyn.ml[129,2751+29]..[129,2751+32])
+            [
+              core_type (fDyn.ml[129,2751+19]..[129,2751+28])
+                Ptyp_constr "tag_names" (fDyn.ml[129,2751+19]..[129,2751+28])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[130,2796+0]..[130,2796+41])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[130,2796+4]..[130,2796+16])
+          Ppat_var "typedecl_tag" (fDyn.ml[130,2796+4]..[130,2796+16])
+        expression (fDyn.ml[130,2796+16]..[130,2796+41]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[130,2796+33]..[130,2796+41])
+            Pexp_construct "Typedecl" (fDyn.ml[130,2796+33]..[130,2796+41])
+            None
+          core_type (fDyn.ml[130,2796+18]..[130,2796+30])
+            Ptyp_constr "tag" (fDyn.ml[130,2796+27]..[130,2796+30])
+            [
+              core_type (fDyn.ml[130,2796+18]..[130,2796+26])
+                Ptyp_constr "typedecl" (fDyn.ml[130,2796+18]..[130,2796+26])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[131,2838+0]..[131,2838+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[131,2838+4]..[131,2838+19])
+          Ppat_var "type_constr_tag" (fDyn.ml[131,2838+4]..[131,2838+19])
+        expression (fDyn.ml[131,2838+19]..[131,2838+50]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[131,2838+39]..[131,2838+50])
+            Pexp_construct "Type_constr" (fDyn.ml[131,2838+39]..[131,2838+50])
+            None
+          core_type (fDyn.ml[131,2838+21]..[131,2838+36])
+            Ptyp_constr "tag" (fDyn.ml[131,2838+33]..[131,2838+36])
+            [
+              core_type (fDyn.ml[131,2838+21]..[131,2838+32])
+                Ptyp_constr "type_constr" (fDyn.ml[131,2838+21]..[131,2838+32])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[132,2889+0]..[132,2889+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[132,2889+4]..[132,2889+23])
+          Ppat_var "opt_type_constr_tag" (fDyn.ml[132,2889+4]..[132,2889+23])
+        expression (fDyn.ml[132,2889+23]..[132,2889+62]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[132,2889+47]..[132,2889+62])
+            Pexp_construct "Opt_type_constr" (fDyn.ml[132,2889+47]..[132,2889+62])
+            None
+          core_type (fDyn.ml[132,2889+25]..[132,2889+44])
+            Ptyp_constr "tag" (fDyn.ml[132,2889+41]..[132,2889+44])
+            [
+              core_type (fDyn.ml[132,2889+25]..[132,2889+40])
+                Ptyp_constr "opt_type_constr" (fDyn.ml[132,2889+25]..[132,2889+40])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[133,2952+0]..[133,2952+47])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[133,2952+4]..[133,2952+18])
+          Ppat_var "decl_param_tag" (fDyn.ml[133,2952+4]..[133,2952+18])
+        expression (fDyn.ml[133,2952+18]..[133,2952+47]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[133,2952+37]..[133,2952+47])
+            Pexp_construct "Decl_param" (fDyn.ml[133,2952+37]..[133,2952+47])
+            None
+          core_type (fDyn.ml[133,2952+20]..[133,2952+34])
+            Ptyp_constr "tag" (fDyn.ml[133,2952+31]..[133,2952+34])
+            [
+              core_type (fDyn.ml[133,2952+20]..[133,2952+30])
+                Ptyp_constr "decl_param" (fDyn.ml[133,2952+20]..[133,2952+30])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[134,3000+0]..[134,3000+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[134,3000+4]..[134,3000+19])
+          Ppat_var "decl_params_tag" (fDyn.ml[134,3000+4]..[134,3000+19])
+        expression (fDyn.ml[134,3000+19]..[134,3000+50]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[134,3000+39]..[134,3000+50])
+            Pexp_construct "Decl_params" (fDyn.ml[134,3000+39]..[134,3000+50])
+            None
+          core_type (fDyn.ml[134,3000+21]..[134,3000+36])
+            Ptyp_constr "tag" (fDyn.ml[134,3000+33]..[134,3000+36])
+            [
+              core_type (fDyn.ml[134,3000+21]..[134,3000+32])
+                Ptyp_constr "decl_params" (fDyn.ml[134,3000+21]..[134,3000+32])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[135,3051+0]..[135,3051+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[135,3051+4]..[135,3051+23])
+          Ppat_var "opt_decl_params_tag" (fDyn.ml[135,3051+4]..[135,3051+23])
+        expression (fDyn.ml[135,3051+23]..[135,3051+62]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[135,3051+47]..[135,3051+62])
+            Pexp_construct "Opt_decl_params" (fDyn.ml[135,3051+47]..[135,3051+62])
+            None
+          core_type (fDyn.ml[135,3051+25]..[135,3051+44])
+            Ptyp_constr "tag" (fDyn.ml[135,3051+41]..[135,3051+44])
+            [
+              core_type (fDyn.ml[135,3051+25]..[135,3051+40])
+                Ptyp_constr "opt_decl_params" (fDyn.ml[135,3051+25]..[135,3051+40])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[136,3114+0]..[136,3114+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[136,3114+4]..[136,3114+17])
+          Ppat_var "type_info_tag" (fDyn.ml[136,3114+4]..[136,3114+17])
+        expression (fDyn.ml[136,3114+17]..[136,3114+44]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[136,3114+35]..[136,3114+44])
+            Pexp_construct "Type_info" (fDyn.ml[136,3114+35]..[136,3114+44])
+            None
+          core_type (fDyn.ml[136,3114+19]..[136,3114+32])
+            Ptyp_constr "tag" (fDyn.ml[136,3114+29]..[136,3114+32])
+            [
+              core_type (fDyn.ml[136,3114+19]..[136,3114+28])
+                Ptyp_constr "type_info" (fDyn.ml[136,3114+19]..[136,3114+28])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[137,3159+0]..[137,3159+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[137,3159+4]..[137,3159+17])
+          Ppat_var "type_repr_tag" (fDyn.ml[137,3159+4]..[137,3159+17])
+        expression (fDyn.ml[137,3159+17]..[137,3159+44]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[137,3159+35]..[137,3159+44])
+            Pexp_construct "Type_repr" (fDyn.ml[137,3159+35]..[137,3159+44])
+            None
+          core_type (fDyn.ml[137,3159+19]..[137,3159+32])
+            Ptyp_constr "tag" (fDyn.ml[137,3159+29]..[137,3159+32])
+            [
+              core_type (fDyn.ml[137,3159+19]..[137,3159+28])
+                Ptyp_constr "type_repr" (fDyn.ml[137,3159+19]..[137,3159+28])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[138,3204+0]..[138,3204+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[138,3204+4]..[138,3204+17])
+          Ppat_var "name_ctyp_tag" (fDyn.ml[138,3204+4]..[138,3204+17])
+        expression (fDyn.ml[138,3204+17]..[138,3204+44]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[138,3204+35]..[138,3204+44])
+            Pexp_construct "Name_ctyp" (fDyn.ml[138,3204+35]..[138,3204+44])
+            None
+          core_type (fDyn.ml[138,3204+19]..[138,3204+32])
+            Ptyp_constr "tag" (fDyn.ml[138,3204+29]..[138,3204+32])
+            [
+              core_type (fDyn.ml[138,3204+19]..[138,3204+28])
+                Ptyp_constr "name_ctyp" (fDyn.ml[138,3204+19]..[138,3204+28])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[139,3249+0]..[139,3249+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[139,3249+4]..[139,3249+15])
+          Ppat_var "or_ctyp_tag" (fDyn.ml[139,3249+4]..[139,3249+15])
+        expression (fDyn.ml[139,3249+15]..[139,3249+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[139,3249+31]..[139,3249+38])
+            Pexp_construct "Or_ctyp" (fDyn.ml[139,3249+31]..[139,3249+38])
+            None
+          core_type (fDyn.ml[139,3249+17]..[139,3249+28])
+            Ptyp_constr "tag" (fDyn.ml[139,3249+25]..[139,3249+28])
+            [
+              core_type (fDyn.ml[139,3249+17]..[139,3249+24])
+                Ptyp_constr "or_ctyp" (fDyn.ml[139,3249+17]..[139,3249+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[140,3288+0]..[140,3288+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[140,3288+4]..[140,3288+15])
+          Ppat_var "of_ctyp_tag" (fDyn.ml[140,3288+4]..[140,3288+15])
+        expression (fDyn.ml[140,3288+15]..[140,3288+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[140,3288+31]..[140,3288+38])
+            Pexp_construct "Of_ctyp" (fDyn.ml[140,3288+31]..[140,3288+38])
+            None
+          core_type (fDyn.ml[140,3288+17]..[140,3288+28])
+            Ptyp_constr "tag" (fDyn.ml[140,3288+25]..[140,3288+28])
+            [
+              core_type (fDyn.ml[140,3288+17]..[140,3288+24])
+                Ptyp_constr "of_ctyp" (fDyn.ml[140,3288+17]..[140,3288+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[141,3327+0]..[141,3327+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[141,3327+4]..[141,3327+11])
+          Ppat_var "pat_tag" (fDyn.ml[141,3327+4]..[141,3327+11])
+        expression (fDyn.ml[141,3327+11]..[141,3327+26]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[141,3327+23]..[141,3327+26])
+            Pexp_construct "Pat" (fDyn.ml[141,3327+23]..[141,3327+26])
+            None
+          core_type (fDyn.ml[141,3327+13]..[141,3327+20])
+            Ptyp_constr "tag" (fDyn.ml[141,3327+17]..[141,3327+20])
+            [
+              core_type (fDyn.ml[141,3327+13]..[141,3327+16])
+                Ptyp_constr "pat" (fDyn.ml[141,3327+13]..[141,3327+16])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[142,3354+0]..[142,3354+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[142,3354+4]..[142,3354+15])
+          Ppat_var "rec_pat_tag" (fDyn.ml[142,3354+4]..[142,3354+15])
+        expression (fDyn.ml[142,3354+15]..[142,3354+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[142,3354+31]..[142,3354+38])
+            Pexp_construct "Rec_pat" (fDyn.ml[142,3354+31]..[142,3354+38])
+            None
+          core_type (fDyn.ml[142,3354+17]..[142,3354+28])
+            Ptyp_constr "tag" (fDyn.ml[142,3354+25]..[142,3354+28])
+            [
+              core_type (fDyn.ml[142,3354+17]..[142,3354+24])
+                Ptyp_constr "rec_pat" (fDyn.ml[142,3354+17]..[142,3354+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[143,3393+0]..[143,3393+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[143,3393+4]..[143,3393+11])
+          Ppat_var "exp_tag" (fDyn.ml[143,3393+4]..[143,3393+11])
+        expression (fDyn.ml[143,3393+11]..[143,3393+26]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[143,3393+23]..[143,3393+26])
+            Pexp_construct "Exp" (fDyn.ml[143,3393+23]..[143,3393+26])
+            None
+          core_type (fDyn.ml[143,3393+13]..[143,3393+20])
+            Ptyp_constr "tag" (fDyn.ml[143,3393+17]..[143,3393+20])
+            [
+              core_type (fDyn.ml[143,3393+13]..[143,3393+16])
+                Ptyp_constr "exp" (fDyn.ml[143,3393+13]..[143,3393+16])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[144,3420+0]..[144,3420+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[144,3420+4]..[144,3420+15])
+          Ppat_var "rec_exp_tag" (fDyn.ml[144,3420+4]..[144,3420+15])
+        expression (fDyn.ml[144,3420+15]..[144,3420+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[144,3420+31]..[144,3420+38])
+            Pexp_construct "Rec_exp" (fDyn.ml[144,3420+31]..[144,3420+38])
+            None
+          core_type (fDyn.ml[144,3420+17]..[144,3420+28])
+            Ptyp_constr "tag" (fDyn.ml[144,3420+25]..[144,3420+28])
+            [
+              core_type (fDyn.ml[144,3420+17]..[144,3420+24])
+                Ptyp_constr "rec_exp" (fDyn.ml[144,3420+17]..[144,3420+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[145,3459+0]..[145,3459+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[145,3459+4]..[145,3459+12])
+          Ppat_var "mtyp_tag" (fDyn.ml[145,3459+4]..[145,3459+12])
+        expression (fDyn.ml[145,3459+12]..[145,3459+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[145,3459+25]..[145,3459+29])
+            Pexp_construct "Mtyp" (fDyn.ml[145,3459+25]..[145,3459+29])
+            None
+          core_type (fDyn.ml[145,3459+14]..[145,3459+22])
+            Ptyp_constr "tag" (fDyn.ml[145,3459+19]..[145,3459+22])
+            [
+              core_type (fDyn.ml[145,3459+14]..[145,3459+18])
+                Ptyp_constr "mtyp" (fDyn.ml[145,3459+14]..[145,3459+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[146,3489+0]..[146,3489+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[146,3489+4]..[146,3489+12])
+          Ppat_var "sigi_tag" (fDyn.ml[146,3489+4]..[146,3489+12])
+        expression (fDyn.ml[146,3489+12]..[146,3489+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[146,3489+25]..[146,3489+29])
+            Pexp_construct "Sigi" (fDyn.ml[146,3489+25]..[146,3489+29])
+            None
+          core_type (fDyn.ml[146,3489+14]..[146,3489+22])
+            Ptyp_constr "tag" (fDyn.ml[146,3489+19]..[146,3489+22])
+            [
+              core_type (fDyn.ml[146,3489+14]..[146,3489+18])
+                Ptyp_constr "sigi" (fDyn.ml[146,3489+14]..[146,3489+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[147,3519+0]..[147,3519+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[147,3519+4]..[147,3519+13])
+          Ppat_var "mbind_tag" (fDyn.ml[147,3519+4]..[147,3519+13])
+        expression (fDyn.ml[147,3519+13]..[147,3519+32]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[147,3519+27]..[147,3519+32])
+            Pexp_construct "Mbind" (fDyn.ml[147,3519+27]..[147,3519+32])
+            None
+          core_type (fDyn.ml[147,3519+15]..[147,3519+24])
+            Ptyp_constr "tag" (fDyn.ml[147,3519+21]..[147,3519+24])
+            [
+              core_type (fDyn.ml[147,3519+15]..[147,3519+20])
+                Ptyp_constr "mbind" (fDyn.ml[147,3519+15]..[147,3519+20])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[148,3552+0]..[148,3552+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[148,3552+4]..[148,3552+14])
+          Ppat_var "constr_tag" (fDyn.ml[148,3552+4]..[148,3552+14])
+        expression (fDyn.ml[148,3552+14]..[148,3552+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[148,3552+29]..[148,3552+35])
+            Pexp_construct "Constr" (fDyn.ml[148,3552+29]..[148,3552+35])
+            None
+          core_type (fDyn.ml[148,3552+16]..[148,3552+26])
+            Ptyp_constr "tag" (fDyn.ml[148,3552+23]..[148,3552+26])
+            [
+              core_type (fDyn.ml[148,3552+16]..[148,3552+22])
+                Ptyp_constr "constr" (fDyn.ml[148,3552+16]..[148,3552+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[149,3588+0]..[149,3588+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[149,3588+4]..[149,3588+12])
+          Ppat_var "bind_tag" (fDyn.ml[149,3588+4]..[149,3588+12])
+        expression (fDyn.ml[149,3588+12]..[149,3588+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[149,3588+25]..[149,3588+29])
+            Pexp_construct "Bind" (fDyn.ml[149,3588+25]..[149,3588+29])
+            None
+          core_type (fDyn.ml[149,3588+14]..[149,3588+22])
+            Ptyp_constr "tag" (fDyn.ml[149,3588+19]..[149,3588+22])
+            [
+              core_type (fDyn.ml[149,3588+14]..[149,3588+18])
+                Ptyp_constr "bind" (fDyn.ml[149,3588+14]..[149,3588+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[150,3618+0]..[150,3618+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[150,3618+4]..[150,3618+12])
+          Ppat_var "case_tag" (fDyn.ml[150,3618+4]..[150,3618+12])
+        expression (fDyn.ml[150,3618+12]..[150,3618+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[150,3618+25]..[150,3618+29])
+            Pexp_construct "Case" (fDyn.ml[150,3618+25]..[150,3618+29])
+            None
+          core_type (fDyn.ml[150,3618+14]..[150,3618+22])
+            Ptyp_constr "tag" (fDyn.ml[150,3618+19]..[150,3618+22])
+            [
+              core_type (fDyn.ml[150,3618+14]..[150,3618+18])
+                Ptyp_constr "case" (fDyn.ml[150,3618+14]..[150,3618+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[151,3648+0]..[151,3648+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[151,3648+4]..[151,3648+12])
+          Ppat_var "mexp_tag" (fDyn.ml[151,3648+4]..[151,3648+12])
+        expression (fDyn.ml[151,3648+12]..[151,3648+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[151,3648+25]..[151,3648+29])
+            Pexp_construct "Mexp" (fDyn.ml[151,3648+25]..[151,3648+29])
+            None
+          core_type (fDyn.ml[151,3648+14]..[151,3648+22])
+            Ptyp_constr "tag" (fDyn.ml[151,3648+19]..[151,3648+22])
+            [
+              core_type (fDyn.ml[151,3648+14]..[151,3648+18])
+                Ptyp_constr "mexp" (fDyn.ml[151,3648+14]..[151,3648+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[152,3678+0]..[152,3678+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[152,3678+4]..[152,3678+12])
+          Ppat_var "stru_tag" (fDyn.ml[152,3678+4]..[152,3678+12])
+        expression (fDyn.ml[152,3678+12]..[152,3678+29]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[152,3678+25]..[152,3678+29])
+            Pexp_construct "Stru" (fDyn.ml[152,3678+25]..[152,3678+29])
+            None
+          core_type (fDyn.ml[152,3678+14]..[152,3678+22])
+            Ptyp_constr "tag" (fDyn.ml[152,3678+19]..[152,3678+22])
+            [
+              core_type (fDyn.ml[152,3678+14]..[152,3678+18])
+                Ptyp_constr "stru" (fDyn.ml[152,3678+14]..[152,3678+18])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[153,3708+0]..[153,3708+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[153,3708+4]..[153,3708+15])
+          Ppat_var "cltdecl_tag" (fDyn.ml[153,3708+4]..[153,3708+15])
+        expression (fDyn.ml[153,3708+15]..[153,3708+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[153,3708+31]..[153,3708+38])
+            Pexp_construct "Cltdecl" (fDyn.ml[153,3708+31]..[153,3708+38])
+            None
+          core_type (fDyn.ml[153,3708+17]..[153,3708+28])
+            Ptyp_constr "tag" (fDyn.ml[153,3708+25]..[153,3708+28])
+            [
+              core_type (fDyn.ml[153,3708+17]..[153,3708+24])
+                Ptyp_constr "cltdecl" (fDyn.ml[153,3708+17]..[153,3708+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[154,3747+0]..[154,3747+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[154,3747+4]..[154,3747+13])
+          Ppat_var "cltyp_tag" (fDyn.ml[154,3747+4]..[154,3747+13])
+        expression (fDyn.ml[154,3747+13]..[154,3747+32]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[154,3747+27]..[154,3747+32])
+            Pexp_construct "Cltyp" (fDyn.ml[154,3747+27]..[154,3747+32])
+            None
+          core_type (fDyn.ml[154,3747+15]..[154,3747+24])
+            Ptyp_constr "tag" (fDyn.ml[154,3747+21]..[154,3747+24])
+            [
+              core_type (fDyn.ml[154,3747+15]..[154,3747+20])
+                Ptyp_constr "cltyp" (fDyn.ml[154,3747+15]..[154,3747+20])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[155,3780+0]..[155,3780+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[155,3780+4]..[155,3780+14])
+          Ppat_var "clsigi_tag" (fDyn.ml[155,3780+4]..[155,3780+14])
+        expression (fDyn.ml[155,3780+14]..[155,3780+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[155,3780+29]..[155,3780+35])
+            Pexp_construct "Clsigi" (fDyn.ml[155,3780+29]..[155,3780+35])
+            None
+          core_type (fDyn.ml[155,3780+16]..[155,3780+26])
+            Ptyp_constr "tag" (fDyn.ml[155,3780+23]..[155,3780+26])
+            [
+              core_type (fDyn.ml[155,3780+16]..[155,3780+22])
+                Ptyp_constr "clsigi" (fDyn.ml[155,3780+16]..[155,3780+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[156,3816+0]..[156,3816+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[156,3816+4]..[156,3816+14])
+          Ppat_var "cldecl_tag" (fDyn.ml[156,3816+4]..[156,3816+14])
+        expression (fDyn.ml[156,3816+14]..[156,3816+35]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[156,3816+29]..[156,3816+35])
+            Pexp_construct "Cldecl" (fDyn.ml[156,3816+29]..[156,3816+35])
+            None
+          core_type (fDyn.ml[156,3816+16]..[156,3816+26])
+            Ptyp_constr "tag" (fDyn.ml[156,3816+23]..[156,3816+26])
+            [
+              core_type (fDyn.ml[156,3816+16]..[156,3816+22])
+                Ptyp_constr "cldecl" (fDyn.ml[156,3816+16]..[156,3816+22])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[157,3852+0]..[157,3852+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[157,3852+4]..[157,3852+13])
+          Ppat_var "clexp_tag" (fDyn.ml[157,3852+4]..[157,3852+13])
+        expression (fDyn.ml[157,3852+13]..[157,3852+32]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[157,3852+27]..[157,3852+32])
+            Pexp_construct "Clexp" (fDyn.ml[157,3852+27]..[157,3852+32])
+            None
+          core_type (fDyn.ml[157,3852+15]..[157,3852+24])
+            Ptyp_constr "tag" (fDyn.ml[157,3852+21]..[157,3852+24])
+            [
+              core_type (fDyn.ml[157,3852+15]..[157,3852+20])
+                Ptyp_constr "clexp" (fDyn.ml[157,3852+15]..[157,3852+20])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[158,3885+0]..[158,3885+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[158,3885+4]..[158,3885+15])
+          Ppat_var "clfield_tag" (fDyn.ml[158,3885+4]..[158,3885+15])
+        expression (fDyn.ml[158,3885+15]..[158,3885+38]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[158,3885+31]..[158,3885+38])
+            Pexp_construct "Clfield" (fDyn.ml[158,3885+31]..[158,3885+38])
+            None
+          core_type (fDyn.ml[158,3885+17]..[158,3885+28])
+            Ptyp_constr "tag" (fDyn.ml[158,3885+25]..[158,3885+28])
+            [
+              core_type (fDyn.ml[158,3885+17]..[158,3885+24])
+                Ptyp_constr "clfield" (fDyn.ml[158,3885+17]..[158,3885+24])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[159,3924+0]..[159,3924+23])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[159,3924+4]..[159,3924+10])
+          Ppat_var "ep_tag" (fDyn.ml[159,3924+4]..[159,3924+10])
+        expression (fDyn.ml[159,3924+10]..[159,3924+23]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[159,3924+21]..[159,3924+23])
+            Pexp_construct "Ep" (fDyn.ml[159,3924+21]..[159,3924+23])
+            None
+          core_type (fDyn.ml[159,3924+12]..[159,3924+18])
+            Ptyp_constr "tag" (fDyn.ml[159,3924+15]..[159,3924+18])
+            [
+              core_type (fDyn.ml[159,3924+12]..[159,3924+14])
+                Ptyp_constr "ep" (fDyn.ml[159,3924+12]..[159,3924+14])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[160,3948+0]..[160,3948+41])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fDyn.ml[160,3948+4]..[160,3948+16])
+          Ppat_var "rec_bind_tag" (fDyn.ml[160,3948+4]..[160,3948+16])
+        expression (fDyn.ml[160,3948+16]..[160,3948+41]) ghost
+          Pexp_constraint
+          expression (fDyn.ml[160,3948+33]..[160,3948+41])
+            Pexp_construct "Rec_bind" (fDyn.ml[160,3948+33]..[160,3948+41])
+            None
+          core_type (fDyn.ml[160,3948+18]..[160,3948+30])
+            Ptyp_constr "tag" (fDyn.ml[160,3948+27]..[160,3948+30])
+            [
+              core_type (fDyn.ml[160,3948+18]..[160,3948+26])
+                Ptyp_constr "rec_bind" (fDyn.ml[160,3948+18]..[160,3948+26])
+                []
+            ]
+    ]
+  structure_item (fDyn.ml[161,3990+0]..[161,3990+8])
+    Pstr_type
+    [
+      type_declaration "dyn" (fDyn.ml[161,3990+5]..[161,3990+8]) (fDyn.ml[161,3990+0]..[161,3990+8])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (fDyn.ml[162,4001+0]..[162,4001+50])
+    Pstr_primitive
+    value_description "dyn_tag" (fDyn.ml[162,4001+9]..[162,4001+16]) (fDyn.ml[162,4001+0]..[162,4001+50])
+      core_type (fDyn.ml[162,4001+19]..[162,4001+36])
+        Ptyp_arrow
+        ""
+        core_type (fDyn.ml[162,4001+19]..[162,4001+25])
+          Ptyp_constr "tag" (fDyn.ml[162,4001+22]..[162,4001+25])
+          [
+            core_type (fDyn.ml[162,4001+19]..[162,4001+21])
+              Ptyp_var a
+          ]
+        core_type (fDyn.ml[162,4001+29]..[162,4001+36])
+          Ptyp_constr "tag" (fDyn.ml[162,4001+33]..[162,4001+36])
+          [
+            core_type (fDyn.ml[162,4001+29]..[162,4001+32])
+              Ptyp_constr "dyn" (fDyn.ml[162,4001+29]..[162,4001+32])
+              []
+          ]
+      [
+        "%identity"
+      ]
+  structure_item (fDyn.ml[163,4052+0]..[175,4515+5])
+    Pstr_module
+    "Pack" (fDyn.ml[163,4052+7]..[163,4052+11])
+      module_expr (fDyn.ml[163,4052+11]..[175,4515+5])
+        Pmod_functor "X" (fDyn.ml[163,4052+12]..[163,4052+13])
+        module_type (fDyn.ml[163,4052+14]..[163,4052+33])
+          Pmty_signature
+          [
+            signature_item (fDyn.ml[163,4052+18]..[163,4052+27])
+              Psig_type
+              [
+                type_declaration "t" (fDyn.ml[163,4052+26]..[163,4052+27]) (fDyn.ml[163,4052+18]..[163,4052+27])
+                  ptype_params =
+                    [
+                      core_type (fDyn.ml[163,4052+23]..[163,4052+25])
+                        Ptyp_var a
+                    ]
+                  ptype_cstrs =
+                    []
+                  ptype_kind =
+                    Ptype_abstract
+                  ptype_private = Public
+                  ptype_manifest =
+                    None
+              ]
+          ]
+        module_expr (fDyn.ml[164,4089+2]..[175,4515+5])
+          Pmod_structure
+          [
+            structure_item (fDyn.ml[165,4098+4]..[165,4098+32])
+              Pstr_type
+              [
+                type_declaration "pack" (fDyn.ml[165,4098+9]..[165,4098+13]) (fDyn.ml[165,4098+4]..[165,4098+32])
+                  ptype_params =
+                    []
+                  ptype_cstrs =
+                    []
+                  ptype_kind =
+                    Ptype_abstract
+                  ptype_private = Public
+                  ptype_manifest =
+                    Some
+                      core_type (fDyn.ml[165,4098+17]..[165,4098+31])
+                        Ptyp_tuple
+                        [
+                          core_type (fDyn.ml[165,4098+17]..[165,4098+24])
+                            Ptyp_constr "tag" (fDyn.ml[165,4098+21]..[165,4098+24])
+                            [
+                              core_type (fDyn.ml[165,4098+17]..[165,4098+20])
+                                Ptyp_constr "dyn" (fDyn.ml[165,4098+17]..[165,4098+20])
+                                []
+                            ]
+                          core_type (fDyn.ml[165,4098+26]..[165,4098+31])
+                            Ptyp_constr "Obj.t" (fDyn.ml[165,4098+26]..[165,4098+31])
+                            []
+                        ]
+              ]
+            structure_item (fDyn.ml[166,4132+4]..[166,4132+24])
+              Pstr_exception
+              extension_constructor (fDyn.ml[166,4132+4]..[166,4132+24])
+                pext_name = "Pack_error"
+                pext_kind =
+                  Pext_decl
+                    []
+                    None
+            structure_item (fDyn.ml[167,4157+4]..[167,4157+61])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (fDyn.ml[167,4157+8]..[167,4157+12])
+                    Ppat_var "pack" (fDyn.ml[167,4157+8]..[167,4157+12])
+                  expression (fDyn.ml[167,4157+13]..[167,4157+61]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (fDyn.ml[167,4157+13]..[167,4157+16])
+                      Ppat_var "tag" (fDyn.ml[167,4157+13]..[167,4157+16])
+                    expression (fDyn.ml[167,4157+17]..[167,4157+61]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fDyn.ml[167,4157+17]..[167,4157+29])
+                        Ppat_constraint
+                        pattern (fDyn.ml[167,4157+18]..[167,4157+19])
+                          Ppat_var "v" (fDyn.ml[167,4157+18]..[167,4157+19])
+                        core_type (fDyn.ml[167,4157+22]..[167,4157+28])
+                          Ptyp_constr "X.t" (fDyn.ml[167,4157+25]..[167,4157+28])
+                          [
+                            core_type (fDyn.ml[167,4157+22]..[167,4157+24])
+                              Ptyp_var a
+                          ]
+                      expression (fDyn.ml[167,4157+32]..[167,4157+61])
+                        Pexp_tuple
+                        [
+                          expression (fDyn.ml[167,4157+33]..[167,4157+46])
+                            Pexp_apply
+                            expression (fDyn.ml[167,4157+34]..[167,4157+41])
+                              Pexp_ident "dyn_tag" (fDyn.ml[167,4157+34]..[167,4157+41])
+                            [
+                              <label> ""
+                                expression (fDyn.ml[167,4157+42]..[167,4157+45])
+                                  Pexp_ident "tag" (fDyn.ml[167,4157+42]..[167,4157+45])
+                            ]
+                          expression (fDyn.ml[167,4157+48]..[167,4157+60])
+                            Pexp_apply
+                            expression (fDyn.ml[167,4157+49]..[167,4157+57])
+                              Pexp_ident "Obj.repr" (fDyn.ml[167,4157+49]..[167,4157+57])
+                            [
+                              <label> ""
+                                expression (fDyn.ml[167,4157+58]..[167,4157+59])
+                                  Pexp_ident "v" (fDyn.ml[167,4157+58]..[167,4157+59])
+                            ]
+                        ]
+              ]
+            structure_item (fDyn.ml[168,4219+4]..[172,4361+29])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (fDyn.ml[168,4219+8]..[168,4219+14])
+                    Ppat_var "unpack" (fDyn.ml[168,4219+8]..[168,4219+14])
+                  expression (fDyn.ml[168,4219+14]..[172,4361+29]) ghost
+                    Pexp_constraint
+                    expression (fDyn.ml[169,4262+6]..[172,4361+29])
+                      Pexp_fun ""
+                      None
+                      pattern (fDyn.ml[169,4262+10]..[169,4262+13])
+                        Ppat_var "tag" (fDyn.ml[169,4262+10]..[169,4262+13])
+                      expression (fDyn.ml[169,4262+15]..[172,4361+29]) ghost
+                        Pexp_fun ""
+                        None
+                        pattern (fDyn.ml[169,4262+15]..[169,4262+25])
+                          Ppat_tuple
+                          [
+                            pattern (fDyn.ml[169,4262+16]..[169,4262+20])
+                              Ppat_var "tag'" (fDyn.ml[169,4262+16]..[169,4262+20])
+                            pattern (fDyn.ml[169,4262+21]..[169,4262+24])
+                              Ppat_var "obj" (fDyn.ml[169,4262+21]..[169,4262+24])
+                          ]
+                        expression (fDyn.ml[170,4292+8]..[172,4361+29])
+                          Pexp_ifthenelse
+                          expression (fDyn.ml[170,4292+11]..[170,4292+31])
+                            Pexp_apply
+                            expression (fDyn.ml[170,4292+25]..[170,4292+26])
+                              Pexp_ident "=" (fDyn.ml[170,4292+25]..[170,4292+26])
+                            [
+                              <label> ""
+                                expression (fDyn.ml[170,4292+11]..[170,4292+24])
+                                  Pexp_apply
+                                  expression (fDyn.ml[170,4292+12]..[170,4292+19])
+                                    Pexp_ident "dyn_tag" (fDyn.ml[170,4292+12]..[170,4292+19])
+                                  [
+                                    <label> ""
+                                      expression (fDyn.ml[170,4292+20]..[170,4292+23])
+                                        Pexp_ident "tag" (fDyn.ml[170,4292+20]..[170,4292+23])
+                                  ]
+                              <label> ""
+                                expression (fDyn.ml[170,4292+27]..[170,4292+31])
+                                  Pexp_ident "tag'" (fDyn.ml[170,4292+27]..[170,4292+31])
+                            ]
+                          expression (fDyn.ml[171,4324+13]..[171,4324+36]) ghost
+                            Pexp_constraint
+                            expression (fDyn.ml[171,4324+14]..[171,4324+25])
+                              Pexp_apply
+                              expression (fDyn.ml[171,4324+14]..[171,4324+21])
+                                Pexp_ident "Obj.obj" (fDyn.ml[171,4324+14]..[171,4324+21])
+                              [
+                                <label> ""
+                                  expression (fDyn.ml[171,4324+22]..[171,4324+25])
+                                    Pexp_ident "obj" (fDyn.ml[171,4324+22]..[171,4324+25])
+                              ]
+                            core_type (fDyn.ml[171,4324+28]..[171,4324+34])
+                              Ptyp_constr "X.t" (fDyn.ml[171,4324+31]..[171,4324+34])
+                              [
+                                core_type (fDyn.ml[171,4324+28]..[171,4324+30])
+                                  Ptyp_var a
+                              ]
+                          Some
+                            expression (fDyn.ml[172,4361+13]..[172,4361+29])
+                              Pexp_apply
+                              expression (fDyn.ml[172,4361+13]..[172,4361+18])
+                                Pexp_ident "raise" (fDyn.ml[172,4361+13]..[172,4361+18])
+                              [
+                                <label> ""
+                                  expression (fDyn.ml[172,4361+19]..[172,4361+29])
+                                    Pexp_construct "Pack_error" (fDyn.ml[172,4361+19]..[172,4361+29])
+                                    None
+                              ]
+                    core_type (fDyn.ml[168,4219+16]..[168,4219+40])
+                      Ptyp_arrow
+                      ""
+                      core_type (fDyn.ml[168,4219+16]..[168,4219+22])
+                        Ptyp_constr "tag" (fDyn.ml[168,4219+19]..[168,4219+22])
+                        [
+                          core_type (fDyn.ml[168,4219+16]..[168,4219+18])
+                            Ptyp_var a
+                        ]
+                      core_type (fDyn.ml[168,4219+26]..[168,4219+40])
+                        Ptyp_arrow
+                        ""
+                        core_type (fDyn.ml[168,4219+26]..[168,4219+30])
+                          Ptyp_constr "pack" (fDyn.ml[168,4219+26]..[168,4219+30])
+                          []
+                        core_type (fDyn.ml[168,4219+34]..[168,4219+40])
+                          Ptyp_constr "X.t" (fDyn.ml[168,4219+37]..[168,4219+40])
+                          [
+                            core_type (fDyn.ml[168,4219+34]..[168,4219+36])
+                              Ptyp_var a
+                          ]
+              ]
+            structure_item (fDyn.ml[173,4391+4]..[174,4445+69])
+              Pstr_value Nonrec
+              [
+                <def>
+                  pattern (fDyn.ml[173,4391+8]..[173,4391+17])
+                    Ppat_var "print_tag" (fDyn.ml[173,4391+8]..[173,4391+17])
+                  expression (fDyn.ml[173,4391+17]..[174,4445+69]) ghost
+                    Pexp_constraint
+                    expression (fDyn.ml[174,4445+6]..[174,4445+69])
+                      Pexp_fun ""
+                      None
+                      pattern (fDyn.ml[174,4445+10]..[174,4445+11])
+                        Ppat_var "f" (fDyn.ml[174,4445+10]..[174,4445+11])
+                      expression (fDyn.ml[174,4445+13]..[174,4445+69]) ghost
+                        Pexp_fun ""
+                        None
+                        pattern (fDyn.ml[174,4445+13]..[174,4445+20])
+                          Ppat_tuple
+                          [
+                            pattern (fDyn.ml[174,4445+14]..[174,4445+17])
+                              Ppat_var "tag" (fDyn.ml[174,4445+14]..[174,4445+17])
+                            pattern (fDyn.ml[174,4445+18]..[174,4445+19])
+                              Ppat_any
+                          ]
+                        expression (fDyn.ml[174,4445+25]..[174,4445+69])
+                          Pexp_apply
+                          expression (fDyn.ml[174,4445+25]..[174,4445+47])
+                            Pexp_ident "Format.pp_print_string" (fDyn.ml[174,4445+25]..[174,4445+47])
+                          [
+                            <label> ""
+                              expression (fDyn.ml[174,4445+48]..[174,4445+49])
+                                Pexp_ident "f" (fDyn.ml[174,4445+48]..[174,4445+49])
+                            <label> ""
+                              expression (fDyn.ml[174,4445+50]..[174,4445+69])
+                                Pexp_apply
+                                expression (fDyn.ml[174,4445+51]..[174,4445+64])
+                                  Pexp_ident "string_of_tag" (fDyn.ml[174,4445+51]..[174,4445+64])
+                                [
+                                  <label> ""
+                                    expression (fDyn.ml[174,4445+65]..[174,4445+68])
+                                      Pexp_ident "tag" (fDyn.ml[174,4445+65]..[174,4445+68])
+                                ]
+                          ]
+                    core_type (fDyn.ml[173,4391+19]..[173,4391+51])
+                      Ptyp_arrow
+                      ""
+                      core_type (fDyn.ml[173,4391+19]..[173,4391+35])
+                        Ptyp_constr "Format.formatter" (fDyn.ml[173,4391+19]..[173,4391+35])
+                        []
+                      core_type (fDyn.ml[173,4391+39]..[173,4391+51])
+                        Ptyp_arrow
+                        ""
+                        core_type (fDyn.ml[173,4391+39]..[173,4391+43])
+                          Ptyp_constr "pack" (fDyn.ml[173,4391+39]..[173,4391+43])
+                          []
+                        core_type (fDyn.ml[173,4391+47]..[173,4391+51])
+                          Ptyp_constr "unit" (fDyn.ml[173,4391+47]..[173,4391+51])
+                          []
+              ]
+          ]
+]

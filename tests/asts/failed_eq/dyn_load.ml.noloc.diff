@@ -1,0 +1,17 @@
+41,43c41,42
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+253d251
+<     ]
+257a256,262
+>           attribute "ocaml.doc"
+>             [
+>               structure_item (dyn_load.ml[]..[])
+>                 Pstr_eval
+>                 expression (dyn_load.ml[]..[])
+>                   Pexp_constant Const_string(" no repeat loading\n    FIXME? it can only load [cma] and [cmxs] files? ",None)
+>             ]

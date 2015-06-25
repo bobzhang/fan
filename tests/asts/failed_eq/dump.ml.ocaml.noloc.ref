@@ -1,0 +1,414 @@
+[
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "pp" (dump.ml[]..[])
+        expression (dump.ml[]..[])
+          Pexp_ident "Format.fprintf" (dump.ml[]..[])
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "pp_exp" (dump.ml[]..[])
+        expression (dump.ml[]..[]) 
+          Pexp_fun ""
+          None
+          pattern (dump.ml[]..[])
+            Ppat_var "f" (dump.ml[]..[])
+          expression (dump.ml[]..[]) 
+            Pexp_fun ""
+            None
+            pattern (dump.ml[]..[])
+              Ppat_var "e" (dump.ml[]..[])
+            expression (dump.ml[]..[])
+              Pexp_apply
+              expression (dump.ml[]..[])
+                Pexp_ident "pp" (dump.ml[]..[])
+              [
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "f" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_constant Const_string("@[%a@]@.",None)
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "Ast_print.expression" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_apply
+                    expression (dump.ml[]..[])
+                      Pexp_ident "Ast2pt.exp" (dump.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dump.ml[]..[])
+                          Pexp_ident "e" (dump.ml[]..[])
+                    ]
+              ]
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "pp_pat" (dump.ml[]..[])
+        expression (dump.ml[]..[]) 
+          Pexp_fun ""
+          None
+          pattern (dump.ml[]..[])
+            Ppat_var "f" (dump.ml[]..[])
+          expression (dump.ml[]..[]) 
+            Pexp_fun ""
+            None
+            pattern (dump.ml[]..[])
+              Ppat_var "e" (dump.ml[]..[])
+            expression (dump.ml[]..[])
+              Pexp_apply
+              expression (dump.ml[]..[])
+                Pexp_ident "pp" (dump.ml[]..[])
+              [
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "f" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_constant Const_string("@[%a@]@.",None)
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "Ast_print.pattern" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_apply
+                    expression (dump.ml[]..[])
+                      Pexp_ident "Ast2pt.pat" (dump.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dump.ml[]..[])
+                          Pexp_ident "e" (dump.ml[]..[])
+                    ]
+              ]
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "pp_stru" (dump.ml[]..[])
+        expression (dump.ml[]..[]) 
+          Pexp_fun ""
+          None
+          pattern (dump.ml[]..[])
+            Ppat_var "f" (dump.ml[]..[])
+          expression (dump.ml[]..[]) 
+            Pexp_fun ""
+            None
+            pattern (dump.ml[]..[])
+              Ppat_var "e" (dump.ml[]..[])
+            expression (dump.ml[]..[])
+              Pexp_apply
+              expression (dump.ml[]..[])
+                Pexp_ident "pp" (dump.ml[]..[])
+              [
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "f" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_constant Const_string("@[%a@]@.",None)
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "Ast_print.structure" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_apply
+                    expression (dump.ml[]..[])
+                      Pexp_ident "Ast2pt.stru" (dump.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dump.ml[]..[])
+                          Pexp_ident "e" (dump.ml[]..[])
+                    ]
+              ]
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "pp_ctyp" (dump.ml[]..[])
+        expression (dump.ml[]..[]) 
+          Pexp_fun ""
+          None
+          pattern (dump.ml[]..[])
+            Ppat_var "f" (dump.ml[]..[])
+          expression (dump.ml[]..[]) 
+            Pexp_fun ""
+            None
+            pattern (dump.ml[]..[])
+              Ppat_var "e" (dump.ml[]..[])
+            expression (dump.ml[]..[])
+              Pexp_apply
+              expression (dump.ml[]..[])
+                Pexp_ident "pp" (dump.ml[]..[])
+              [
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "f" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_constant Const_string("@[%a@]@.",None)
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_ident "Ast_print.core_type" (dump.ml[]..[])
+                <label> ""
+                  expression (dump.ml[]..[])
+                    Pexp_apply
+                    expression (dump.ml[]..[])
+                      Pexp_ident "Ast2pt.ctyp" (dump.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dump.ml[]..[])
+                          Pexp_ident "e" (dump.ml[]..[])
+                    ]
+              ]
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dump.ml[]..[])
+          Ppat_var "exp_to_string" (dump.ml[]..[])
+        expression (dump.ml[]..[])
+          Pexp_apply
+          expression (dump.ml[]..[])
+            Pexp_ident "Formatf.to_string" (dump.ml[]..[])
+          [
+            <label> ""
+              expression (dump.ml[]..[])
+                Pexp_ident "pp_exp" (dump.ml[]..[])
+          ]
+    ]
+  structure_item (dump.ml[]..[])
+    Pstr_module
+    "N" (dump.ml[]..[])
+      module_expr (dump.ml[]..[])
+        Pmod_structure
+        [
+          structure_item (dump.ml[]..[])
+            Pstr_value Nonrec
+            [
+              <def>
+                pattern (dump.ml[]..[])
+                  Ppat_var "pp_exp" (dump.ml[]..[])
+                expression (dump.ml[]..[]) 
+                  Pexp_fun ""
+                  None
+                  pattern (dump.ml[]..[])
+                    Ppat_var "f" (dump.ml[]..[])
+                  expression (dump.ml[]..[]) 
+                    Pexp_fun ""
+                    None
+                    pattern (dump.ml[]..[])
+                      Ppat_var "e" (dump.ml[]..[])
+                    expression (dump.ml[]..[])
+                      Pexp_apply
+                      expression (dump.ml[]..[])
+                        Pexp_ident "|>" (dump.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "|>" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "e" (dump.ml[]..[])
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_apply
+                                  expression (dump.ml[]..[])
+                                    Pexp_ident "Fill.exp" (dump.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (dump.ml[]..[])
+                                        Pexp_ident "Locf." (dump.ml[]..[])
+                                  ]
+                            ]
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "pp_exp" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "f" (dump.ml[]..[])
+                            ]
+                      ]
+            ]
+          structure_item (dump.ml[]..[])
+            Pstr_value Nonrec
+            [
+              <def>
+                pattern (dump.ml[]..[])
+                  Ppat_var "pp_pat" (dump.ml[]..[])
+                expression (dump.ml[]..[]) 
+                  Pexp_fun ""
+                  None
+                  pattern (dump.ml[]..[])
+                    Ppat_var "f" (dump.ml[]..[])
+                  expression (dump.ml[]..[]) 
+                    Pexp_fun ""
+                    None
+                    pattern (dump.ml[]..[])
+                      Ppat_var "e" (dump.ml[]..[])
+                    expression (dump.ml[]..[])
+                      Pexp_apply
+                      expression (dump.ml[]..[])
+                        Pexp_ident "|>" (dump.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "|>" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "e" (dump.ml[]..[])
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_apply
+                                  expression (dump.ml[]..[])
+                                    Pexp_ident "Fill.pat" (dump.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (dump.ml[]..[])
+                                        Pexp_ident "Locf." (dump.ml[]..[])
+                                  ]
+                            ]
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "pp_pat" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "f" (dump.ml[]..[])
+                            ]
+                      ]
+            ]
+          structure_item (dump.ml[]..[])
+            Pstr_value Nonrec
+            [
+              <def>
+                pattern (dump.ml[]..[])
+                  Ppat_var "pp_stru" (dump.ml[]..[])
+                expression (dump.ml[]..[]) 
+                  Pexp_fun ""
+                  None
+                  pattern (dump.ml[]..[])
+                    Ppat_var "f" (dump.ml[]..[])
+                  expression (dump.ml[]..[]) 
+                    Pexp_fun ""
+                    None
+                    pattern (dump.ml[]..[])
+                      Ppat_var "e" (dump.ml[]..[])
+                    expression (dump.ml[]..[])
+                      Pexp_apply
+                      expression (dump.ml[]..[])
+                        Pexp_ident "|>" (dump.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "|>" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "e" (dump.ml[]..[])
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_apply
+                                  expression (dump.ml[]..[])
+                                    Pexp_ident "Fill.stru" (dump.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (dump.ml[]..[])
+                                        Pexp_ident "Locf." (dump.ml[]..[])
+                                  ]
+                            ]
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "pp_stru" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "f" (dump.ml[]..[])
+                            ]
+                      ]
+            ]
+          structure_item (dump.ml[]..[])
+            Pstr_value Nonrec
+            [
+              <def>
+                pattern (dump.ml[]..[])
+                  Ppat_var "pp_ctyp" (dump.ml[]..[])
+                expression (dump.ml[]..[]) 
+                  Pexp_fun ""
+                  None
+                  pattern (dump.ml[]..[])
+                    Ppat_var "f" (dump.ml[]..[])
+                  expression (dump.ml[]..[]) 
+                    Pexp_fun ""
+                    None
+                    pattern (dump.ml[]..[])
+                      Ppat_var "e" (dump.ml[]..[])
+                    expression (dump.ml[]..[])
+                      Pexp_apply
+                      expression (dump.ml[]..[])
+                        Pexp_ident "|>" (dump.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "|>" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "e" (dump.ml[]..[])
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_apply
+                                  expression (dump.ml[]..[])
+                                    Pexp_ident "Fill.ctyp" (dump.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (dump.ml[]..[])
+                                        Pexp_ident "Locf." (dump.ml[]..[])
+                                  ]
+                            ]
+                        <label> ""
+                          expression (dump.ml[]..[])
+                            Pexp_apply
+                            expression (dump.ml[]..[])
+                              Pexp_ident "pp_ctyp" (dump.ml[]..[])
+                            [
+                              <label> ""
+                                expression (dump.ml[]..[])
+                                  Pexp_ident "f" (dump.ml[]..[])
+                            ]
+                      ]
+            ]
+        ]
+]

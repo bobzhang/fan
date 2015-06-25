@@ -1,0 +1,910 @@
+[
+  structure_item (fan_args.ml[1,0+0]..[1,0+46])
+    Pstr_attribute "ocaml.text"
+    [
+      structure_item (fan_args.ml[1,0+0]..[1,0+46])
+        Pstr_eval
+        expression (fan_args.ml[1,0+0]..[1,0+46])
+          Pexp_constant Const_string(" TODO: add an unit test  for import DDSL ",None)
+    ]
+  structure_item (fan_args.ml[15,230+0]..[15,230+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[15,230+4]..[15,230+14])
+          Ppat_var "parse_file" (fan_args.ml[15,230+4]..[15,230+14])
+        expression (fan_args.ml[15,230+18]..[15,230+36])
+          Pexp_ident "Prelude.parse_file" (fan_args.ml[15,230+18]..[15,230+36])
+    ]
+  structure_item (fan_args.ml[16,267+0]..[16,267+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[16,267+4]..[16,267+11])
+          Ppat_var "eprintf" (fan_args.ml[16,267+4]..[16,267+11])
+        expression (fan_args.ml[16,267+14]..[16,267+28])
+          Pexp_ident "Format.eprintf" (fan_args.ml[16,267+14]..[16,267+28])
+    ]
+  structure_item (fan_args.ml[17,297+0]..[17,297+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[17,297+4]..[17,297+11])
+          Ppat_var "fprintf" (fan_args.ml[17,297+4]..[17,297+11])
+        expression (fan_args.ml[17,297+14]..[17,297+28])
+          Pexp_ident "Format.fprintf" (fan_args.ml[17,297+14]..[17,297+28])
+    ]
+  structure_item (fan_args.ml[18,326+0]..[18,326+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[18,326+4]..[18,326+10])
+          Ppat_var "printf" (fan_args.ml[18,326+4]..[18,326+10])
+        expression (fan_args.ml[18,326+13]..[18,326+26])
+          Pexp_ident "Format.printf" (fan_args.ml[18,326+13]..[18,326+26])
+    ]
+  structure_item (fan_args.ml[21,355+0]..[21,355+9])
+    Pstr_open Fresh "Util" (fan_args.ml[21,355+5]..[21,355+9])
+  structure_item (fan_args.ml[24,371+0]..[31,735+5])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[24,371+4]..[24,371+22])
+          Ppat_var "just_print_filters" (fan_args.ml[24,371+4]..[24,371+22])
+        expression (fan_args.ml[24,371+23]..[31,735+5]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[24,371+23]..[24,371+25])
+            Ppat_construct "()" (fan_args.ml[24,371+23]..[24,371+25])
+            None
+          expression (fan_args.ml[25,399+2]..[31,735+5])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fan_args.ml[25,399+6]..[25,399+8])
+                  Ppat_var "pp" (fan_args.ml[25,399+6]..[25,399+8])
+                expression (fan_args.ml[25,399+11]..[25,399+18])
+                  Pexp_ident "eprintf" (fan_args.ml[25,399+11]..[25,399+18])
+            ]
+            expression (fan_args.ml[26,423+2]..[31,735+5])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (fan_args.ml[26,423+6]..[26,423+11])
+                    Ppat_var "p_tbl" (fan_args.ml[26,423+6]..[26,423+11])
+                  expression (fan_args.ml[26,423+12]..[26,423+69]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (fan_args.ml[26,423+12]..[26,423+13])
+                      Ppat_var "f" (fan_args.ml[26,423+12]..[26,423+13])
+                    expression (fan_args.ml[26,423+14]..[26,423+69]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fan_args.ml[26,423+14]..[26,423+17])
+                        Ppat_var "tbl" (fan_args.ml[26,423+14]..[26,423+17])
+                      expression (fan_args.ml[26,423+20]..[26,423+69])
+                        Pexp_apply
+                        expression (fan_args.ml[26,423+20]..[26,423+32])
+                          Pexp_ident "Hashtbl.iter" (fan_args.ml[26,423+20]..[26,423+32])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[26,423+33]..[26,423+65])
+                              Pexp_fun ""
+                              None
+                              pattern (fan_args.ml[26,423+38]..[26,423+39])
+                                Ppat_var "k" (fan_args.ml[26,423+38]..[26,423+39])
+                              expression (fan_args.ml[26,423+40]..[26,423+64]) ghost
+                                Pexp_fun ""
+                                None
+                                pattern (fan_args.ml[26,423+40]..[26,423+42])
+                                  Ppat_var "_v" (fan_args.ml[26,423+40]..[26,423+42])
+                                expression (fan_args.ml[26,423+46]..[26,423+64])
+                                  Pexp_apply
+                                  expression (fan_args.ml[26,423+46]..[26,423+53])
+                                    Pexp_ident "fprintf" (fan_args.ml[26,423+46]..[26,423+53])
+                                  [
+                                    <label> ""
+                                      expression (fan_args.ml[26,423+54]..[26,423+55])
+                                        Pexp_ident "f" (fan_args.ml[26,423+54]..[26,423+55])
+                                    <label> ""
+                                      expression (fan_args.ml[26,423+56]..[26,423+62])
+                                        Pexp_constant Const_string("%s@;",None)
+                                    <label> ""
+                                      expression (fan_args.ml[26,423+63]..[26,423+64])
+                                        Pexp_ident "k" (fan_args.ml[26,423+63]..[26,423+64])
+                                  ]
+                          <label> ""
+                            expression (fan_args.ml[26,423+66]..[26,423+69])
+                              Pexp_ident "tbl" (fan_args.ml[26,423+66]..[26,423+69])
+                        ]
+              ]
+              expression (fan_args.ml[27,496+2]..[31,735+5])
+                Pexp_sequence
+                expression (fan_args.ml[28,504+4]..[28,504+74])
+                  Pexp_apply
+                  expression (fan_args.ml[28,504+4]..[28,504+6])
+                    Pexp_ident "pp" (fan_args.ml[28,504+4]..[28,504+6])
+                  [
+                    <label> ""
+                      expression (fan_args.ml[28,504+8]..[28,504+41])
+                        Pexp_constant Const_string("@[for interface:@[<hv2>%a@]@]@.",None)
+                    <label> ""
+                      expression (fan_args.ml[28,504+42]..[28,504+47])
+                        Pexp_ident "p_tbl" (fan_args.ml[28,504+42]..[28,504+47])
+                    <label> ""
+                      expression (fan_args.ml[28,504+48]..[28,504+74])
+                        Pexp_ident "Ast_filters.interf_filters" (fan_args.ml[28,504+48]..[28,504+74])
+                  ]
+                expression (fan_args.ml[29,581+4]..[30,655+78])
+                  Pexp_sequence
+                  expression (fan_args.ml[29,581+4]..[29,581+71])
+                    Pexp_apply
+                    expression (fan_args.ml[29,581+4]..[29,581+6])
+                      Pexp_ident "pp" (fan_args.ml[29,581+4]..[29,581+6])
+                    [
+                      <label> ""
+                        expression (fan_args.ml[29,581+8]..[29,581+38])
+                          Pexp_constant Const_string("@[for phrase:@[<hv2>%a@]@]@.",None)
+                      <label> ""
+                        expression (fan_args.ml[29,581+39]..[29,581+44])
+                          Pexp_ident "p_tbl" (fan_args.ml[29,581+39]..[29,581+44])
+                      <label> ""
+                        expression (fan_args.ml[29,581+45]..[29,581+71])
+                          Pexp_ident "Ast_filters.implem_filters" (fan_args.ml[29,581+45]..[29,581+71])
+                    ]
+                  expression (fan_args.ml[30,655+4]..[30,655+78])
+                    Pexp_apply
+                    expression (fan_args.ml[30,655+4]..[30,655+6])
+                      Pexp_ident "pp" (fan_args.ml[30,655+4]..[30,655+6])
+                    [
+                      <label> ""
+                        expression (fan_args.ml[30,655+8]..[30,655+42])
+                          Pexp_constant Const_string("@[for top_phrase:@[<hv2>%a@]@]@.",None)
+                      <label> ""
+                        expression (fan_args.ml[30,655+43]..[30,655+48])
+                          Pexp_ident "p_tbl" (fan_args.ml[30,655+43]..[30,655+48])
+                      <label> ""
+                        expression (fan_args.ml[30,655+49]..[30,655+78])
+                          Pexp_ident "Ast_filters.topphrase_filters" (fan_args.ml[30,655+49]..[30,655+78])
+                    ]
+    ]
+  structure_item (fan_args.ml[32,741+0]..[36,951+5])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[32,741+4]..[32,741+22])
+          Ppat_var "just_print_parsers" (fan_args.ml[32,741+4]..[32,741+22])
+        expression (fan_args.ml[32,741+23]..[36,951+5]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[32,741+23]..[32,741+25])
+            Ppat_construct "()" (fan_args.ml[32,741+23]..[32,741+25])
+            None
+          expression (fan_args.ml[33,769+2]..[36,951+5])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fan_args.ml[33,769+6]..[33,769+8])
+                  Ppat_var "pp" (fan_args.ml[33,769+6]..[33,769+8])
+                expression (fan_args.ml[33,769+11]..[33,769+18])
+                  Pexp_ident "eprintf" (fan_args.ml[33,769+11]..[33,769+18])
+            ]
+            expression (fan_args.ml[34,791+2]..[36,951+5])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (fan_args.ml[34,791+6]..[34,791+11])
+                    Ppat_var "p_tbl" (fan_args.ml[34,791+6]..[34,791+11])
+                  expression (fan_args.ml[34,791+12]..[34,791+69]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (fan_args.ml[34,791+12]..[34,791+13])
+                      Ppat_var "f" (fan_args.ml[34,791+12]..[34,791+13])
+                    expression (fan_args.ml[34,791+14]..[34,791+69]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fan_args.ml[34,791+14]..[34,791+17])
+                        Ppat_var "tbl" (fan_args.ml[34,791+14]..[34,791+17])
+                      expression (fan_args.ml[34,791+20]..[34,791+69])
+                        Pexp_apply
+                        expression (fan_args.ml[34,791+20]..[34,791+32])
+                          Pexp_ident "Hashtbl.iter" (fan_args.ml[34,791+20]..[34,791+32])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[34,791+33]..[34,791+65])
+                              Pexp_fun ""
+                              None
+                              pattern (fan_args.ml[34,791+38]..[34,791+39])
+                                Ppat_var "k" (fan_args.ml[34,791+38]..[34,791+39])
+                              expression (fan_args.ml[34,791+40]..[34,791+64]) ghost
+                                Pexp_fun ""
+                                None
+                                pattern (fan_args.ml[34,791+40]..[34,791+42])
+                                  Ppat_var "_v" (fan_args.ml[34,791+40]..[34,791+42])
+                                expression (fan_args.ml[34,791+46]..[34,791+64])
+                                  Pexp_apply
+                                  expression (fan_args.ml[34,791+46]..[34,791+53])
+                                    Pexp_ident "fprintf" (fan_args.ml[34,791+46]..[34,791+53])
+                                  [
+                                    <label> ""
+                                      expression (fan_args.ml[34,791+54]..[34,791+55])
+                                        Pexp_ident "f" (fan_args.ml[34,791+54]..[34,791+55])
+                                    <label> ""
+                                      expression (fan_args.ml[34,791+56]..[34,791+62])
+                                        Pexp_constant Const_string("%s@;",None)
+                                    <label> ""
+                                      expression (fan_args.ml[34,791+63]..[34,791+64])
+                                        Pexp_ident "k" (fan_args.ml[34,791+63]..[34,791+64])
+                                  ]
+                          <label> ""
+                            expression (fan_args.ml[34,791+66]..[34,791+69])
+                              Pexp_ident "tbl" (fan_args.ml[34,791+66]..[34,791+69])
+                        ]
+              ]
+              expression (fan_args.ml[34,791+73]..[36,951+5])
+                Pexp_apply
+                expression (fan_args.ml[35,870+4]..[35,870+6])
+                  Pexp_ident "pp" (fan_args.ml[35,870+4]..[35,870+6])
+                [
+                  <label> ""
+                    expression (fan_args.ml[35,870+7]..[35,870+43])
+                      Pexp_constant Const_string("@[Loaded Parsers:@;@[<hv2>%a@]@]@.",None)
+                  <label> ""
+                    expression (fan_args.ml[35,870+44]..[35,870+49])
+                      Pexp_ident "p_tbl" (fan_args.ml[35,870+44]..[35,870+49])
+                  <label> ""
+                    expression (fan_args.ml[35,870+50]..[35,870+80])
+                      Pexp_ident "Ast_parsers.registered_parsers" (fan_args.ml[35,870+50]..[35,870+80])
+                ]
+    ]
+  structure_item (fan_args.ml[38,960+0]..[41,1061+93])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[38,960+4]..[38,960+30])
+          Ppat_var "just_print_applied_parsers" (fan_args.ml[38,960+4]..[38,960+30])
+        expression (fan_args.ml[38,960+31]..[41,1061+93]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[38,960+31]..[38,960+33])
+            Ppat_construct "()" (fan_args.ml[38,960+31]..[38,960+33])
+            None
+          expression (fan_args.ml[39,996+2]..[41,1061+93])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fan_args.ml[39,996+6]..[39,996+8])
+                  Ppat_var "pp" (fan_args.ml[39,996+6]..[39,996+8])
+                expression (fan_args.ml[39,996+11]..[39,996+18])
+                  Pexp_ident "eprintf" (fan_args.ml[39,996+11]..[39,996+18])
+            ]
+            expression (fan_args.ml[40,1018+2]..[41,1061+93])
+              Pexp_apply
+              expression (fan_args.ml[40,1018+2]..[40,1018+4])
+                Pexp_ident "pp" (fan_args.ml[40,1018+2]..[40,1018+4])
+              [
+                <label> ""
+                  expression (fan_args.ml[40,1018+5]..[40,1018+42])
+                    Pexp_constant Const_string("@[Applied Parsers:@;@[<hv2>%a@]@]@.",None)
+                <label> ""
+                  expression (fan_args.ml[41,1061+4]..[41,1061+65])
+                    Pexp_fun ""
+                    None
+                    pattern (fan_args.ml[41,1061+9]..[41,1061+10])
+                      Ppat_var "f" (fan_args.ml[41,1061+9]..[41,1061+10])
+                    expression (fan_args.ml[41,1061+11]..[41,1061+62]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fan_args.ml[41,1061+11]..[41,1061+12])
+                        Ppat_var "q" (fan_args.ml[41,1061+11]..[41,1061+12])
+                      expression (fan_args.ml[41,1061+16]..[41,1061+62])
+                        Pexp_apply
+                        expression (fan_args.ml[41,1061+16]..[41,1061+26])
+                          Pexp_ident "Queue.iter" (fan_args.ml[41,1061+16]..[41,1061+26])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[41,1061+27]..[41,1061+60])
+                              Pexp_fun ""
+                              None
+                              pattern (fan_args.ml[41,1061+32]..[41,1061+37])
+                                Ppat_tuple
+                                [
+                                  pattern (fan_args.ml[41,1061+33]..[41,1061+34])
+                                    Ppat_var "k" (fan_args.ml[41,1061+33]..[41,1061+34])
+                                  pattern (fan_args.ml[41,1061+35]..[41,1061+36])
+                                    Ppat_any
+                                ]
+                              expression (fan_args.ml[41,1061+41]..[41,1061+59])
+                                Pexp_apply
+                                expression (fan_args.ml[41,1061+41]..[41,1061+48])
+                                  Pexp_ident "fprintf" (fan_args.ml[41,1061+41]..[41,1061+48])
+                                [
+                                  <label> ""
+                                    expression (fan_args.ml[41,1061+49]..[41,1061+50])
+                                      Pexp_ident "f" (fan_args.ml[41,1061+49]..[41,1061+50])
+                                  <label> ""
+                                    expression (fan_args.ml[41,1061+51]..[41,1061+57])
+                                      Pexp_constant Const_string("%s@;",None)
+                                  <label> ""
+                                    expression (fan_args.ml[41,1061+58]..[41,1061+59])
+                                      Pexp_ident "k" (fan_args.ml[41,1061+58]..[41,1061+59])
+                                ]
+                          <label> ""
+                            expression (fan_args.ml[41,1061+61]..[41,1061+62])
+                              Pexp_ident "q" (fan_args.ml[41,1061+61]..[41,1061+62])
+                        ]
+                <label> ""
+                  expression (fan_args.ml[41,1061+66]..[41,1061+93])
+                    Pexp_ident "Ast_parsers.applied_parsers" (fan_args.ml[41,1061+66]..[41,1061+93])
+              ]
+    ]
+  structure_item (fan_args.ml[43,1158+0]..[48,1256+24])
+    Pstr_type
+    [
+      type_declaration "file_kind" (fan_args.ml[43,1158+5]..[43,1158+14]) (fan_args.ml[43,1158+0]..[48,1256+24])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_variant
+            [
+              (fan_args.ml[44,1175+2]..[44,1175+18])
+                "Intf" (fan_args.ml[44,1175+4]..[44,1175+8])
+                [
+                  core_type (fan_args.ml[44,1175+12]..[44,1175+18])
+                    Ptyp_constr "string" (fan_args.ml[44,1175+12]..[44,1175+18])
+                    []
+                ]
+                None
+              (fan_args.ml[45,1194+2]..[45,1194+18])
+                "Impl" (fan_args.ml[45,1194+4]..[45,1194+8])
+                [
+                  core_type (fan_args.ml[45,1194+12]..[45,1194+18])
+                    Ptyp_constr "string" (fan_args.ml[45,1194+12]..[45,1194+18])
+                    []
+                ]
+                None
+              (fan_args.ml[46,1213+2]..[46,1213+17])
+                "Str" (fan_args.ml[46,1213+4]..[46,1213+7])
+                [
+                  core_type (fan_args.ml[46,1213+11]..[46,1213+17])
+                    Ptyp_constr "string" (fan_args.ml[46,1213+11]..[46,1213+17])
+                    []
+                ]
+                None
+              (fan_args.ml[47,1231+2]..[47,1231+24])
+                "ModuleImpl" (fan_args.ml[47,1231+4]..[47,1231+14])
+                [
+                  core_type (fan_args.ml[47,1231+18]..[47,1231+24])
+                    Ptyp_constr "string" (fan_args.ml[47,1231+18]..[47,1231+24])
+                    []
+                ]
+                None
+              (fan_args.ml[48,1256+2]..[48,1256+24])
+                "IncludeDir" (fan_args.ml[48,1256+4]..[48,1256+14])
+                [
+                  core_type (fan_args.ml[48,1256+18]..[48,1256+24])
+                    Ptyp_constr "string" (fan_args.ml[48,1256+18]..[48,1256+24])
+                    []
+                ]
+                None
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (fan_args.ml[52,1291+0]..[52,1291+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[52,1291+4]..[52,1291+24])
+          Ppat_var "print_loaded_modules" (fan_args.ml[52,1291+4]..[52,1291+24])
+        expression (fan_args.ml[52,1291+27]..[52,1291+36])
+          Pexp_apply
+          expression (fan_args.ml[52,1291+27]..[52,1291+30])
+            Pexp_ident "ref" (fan_args.ml[52,1291+27]..[52,1291+30])
+          [
+            <label> ""
+              expression (fan_args.ml[52,1291+31]..[52,1291+36])
+                Pexp_construct "false" (fan_args.ml[52,1291+31]..[52,1291+36])
+                None
+          ]
+    ]
+  structure_item (fan_args.ml[59,1334+0]..[59,1334+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[59,1334+4]..[59,1334+15])
+          Ppat_var "output_file" (fan_args.ml[59,1334+4]..[59,1334+15])
+        expression (fan_args.ml[59,1334+18]..[59,1334+26])
+          Pexp_apply
+          expression (fan_args.ml[59,1334+18]..[59,1334+21])
+            Pexp_ident "ref" (fan_args.ml[59,1334+18]..[59,1334+21])
+          [
+            <label> ""
+              expression (fan_args.ml[59,1334+22]..[59,1334+26])
+                Pexp_construct "None" (fan_args.ml[59,1334+22]..[59,1334+26])
+                None
+          ]
+    ]
+  structure_item (fan_args.ml[63,1446+0]..[69,1642+33])
+    Pstr_value Nonrec
+    [
+      <def>
+          attribute "ocaml.doc"
+            [
+              structure_item (fan_args.ml[62,1377+0]..[62,1377+66])
+                Pstr_eval
+                expression (fan_args.ml[62,1377+0]..[62,1377+66])
+                  Pexp_constant Const_string(" parse the file, apply the filter and pipe it to the backend ",None)
+            ]
+        pattern (fan_args.ml[63,1446+4]..[63,1446+16])
+          Ppat_var "process_intf" (fan_args.ml[63,1446+4]..[63,1446+16])
+        expression (fan_args.ml[63,1446+18]..[69,1642+33]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[63,1446+18]..[63,1446+22])
+            Ppat_var "name" (fan_args.ml[63,1446+18]..[63,1446+22])
+          expression (fan_args.ml[64,1471+2]..[69,1642+33])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fan_args.ml[64,1471+6]..[64,1471+7])
+                  Ppat_var "v" (fan_args.ml[64,1471+6]..[64,1471+7])
+                expression (fan_args.ml[65,1481+4]..[66,1529+43])
+                  Pexp_apply
+                  expression (fan_args.ml[66,1529+4]..[66,1529+6])
+                    Pexp_ident "@@" (fan_args.ml[66,1529+4]..[66,1529+6])
+                  [
+                    <label> ""
+                      expression (fan_args.ml[65,1481+4]..[65,1481+47])
+                        Pexp_apply
+                        expression (fan_args.ml[65,1481+4]..[65,1481+14])
+                          Pexp_ident "Option.map" (fan_args.ml[65,1481+4]..[65,1481+14])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[65,1481+15]..[65,1481+47])
+                              Pexp_ident "Ast_filters.apply_interf_filters" (fan_args.ml[65,1481+15]..[65,1481+47])
+                        ]
+                    <label> ""
+                      expression (fan_args.ml[66,1529+7]..[66,1529+43])
+                        Pexp_apply
+                        expression (fan_args.ml[66,1529+7]..[66,1529+17])
+                          Pexp_ident "parse_file" (fan_args.ml[66,1529+7]..[66,1529+17])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[66,1529+18]..[66,1529+22])
+                              Pexp_ident "name" (fan_args.ml[66,1529+18]..[66,1529+22])
+                          <label> ""
+                            expression (fan_args.ml[66,1529+23]..[66,1529+43])
+                              Pexp_ident "Prelude.parse_interf" (fan_args.ml[66,1529+23]..[66,1529+43])
+                        ]
+                  ]
+            ]
+            expression (fan_args.ml[67,1576+2]..[69,1642+33])
+              Pexp_apply
+              expression (fan_args.ml[67,1576+2]..[67,1576+37])
+                Pexp_ident "Prelude.CurrentPrinter.print_interf" (fan_args.ml[67,1576+2]..[67,1576+37])
+              [
+                <label> "?input_file"
+                  expression (fan_args.ml[68,1614+16]..[68,1614+27])
+                    Pexp_construct "Some" (fan_args.ml[68,1614+17]..[68,1614+21])
+                    Some
+                      expression (fan_args.ml[68,1614+22]..[68,1614+26])
+                        Pexp_ident "name" (fan_args.ml[68,1614+22]..[68,1614+26])
+                <label> "?output_file"
+                  expression (fan_args.ml[69,1642+17]..[69,1642+31])
+                    Pexp_apply
+                    expression (fan_args.ml[69,1642+18]..[69,1642+19])
+                      Pexp_ident "!" (fan_args.ml[69,1642+18]..[69,1642+19])
+                    [
+                      <label> ""
+                        expression (fan_args.ml[69,1642+19]..[69,1642+30])
+                          Pexp_ident "output_file" (fan_args.ml[69,1642+19]..[69,1642+30])
+                    ]
+                <label> ""
+                  expression (fan_args.ml[69,1642+32]..[69,1642+33])
+                    Pexp_ident "v" (fan_args.ml[69,1642+32]..[69,1642+33])
+              ]
+    ]
+  structure_item (fan_args.ml[72,1679+0]..[78,1867+33])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[72,1679+4]..[72,1679+16])
+          Ppat_var "process_impl" (fan_args.ml[72,1679+4]..[72,1679+16])
+        expression (fan_args.ml[72,1679+17]..[78,1867+33]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[72,1679+17]..[72,1679+21])
+            Ppat_var "name" (fan_args.ml[72,1679+17]..[72,1679+21])
+          expression (fan_args.ml[73,1703+2]..[78,1867+33])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (fan_args.ml[73,1703+6]..[73,1703+7])
+                  Ppat_var "v" (fan_args.ml[73,1703+6]..[73,1703+7])
+                expression (fan_args.ml[74,1713+4]..[75,1761+43])
+                  Pexp_apply
+                  expression (fan_args.ml[75,1761+4]..[75,1761+6])
+                    Pexp_ident "@@" (fan_args.ml[75,1761+4]..[75,1761+6])
+                  [
+                    <label> ""
+                      expression (fan_args.ml[74,1713+4]..[74,1713+47])
+                        Pexp_apply
+                        expression (fan_args.ml[74,1713+4]..[74,1713+14])
+                          Pexp_ident "Option.map" (fan_args.ml[74,1713+4]..[74,1713+14])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[74,1713+15]..[74,1713+47])
+                              Pexp_ident "Ast_filters.apply_implem_filters" (fan_args.ml[74,1713+15]..[74,1713+47])
+                        ]
+                    <label> ""
+                      expression (fan_args.ml[75,1761+7]..[75,1761+43])
+                        Pexp_apply
+                        expression (fan_args.ml[75,1761+7]..[75,1761+17])
+                          Pexp_ident "parse_file" (fan_args.ml[75,1761+7]..[75,1761+17])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[75,1761+18]..[75,1761+22])
+                              Pexp_ident "name" (fan_args.ml[75,1761+18]..[75,1761+22])
+                          <label> ""
+                            expression (fan_args.ml[75,1761+23]..[75,1761+43])
+                              Pexp_ident "Prelude.parse_implem" (fan_args.ml[75,1761+23]..[75,1761+43])
+                        ]
+                  ]
+            ]
+            expression (fan_args.ml[76,1808+2]..[78,1867+33])
+              Pexp_apply
+              expression (fan_args.ml[76,1808+2]..[76,1808+37])
+                Pexp_ident "Prelude.CurrentPrinter.print_implem" (fan_args.ml[76,1808+2]..[76,1808+37])
+              [
+                <label> "input_file"
+                  expression (fan_args.ml[77,1846+16]..[77,1846+20])
+                    Pexp_ident "name" (fan_args.ml[77,1846+16]..[77,1846+20])
+                <label> "?output_file"
+                  expression (fan_args.ml[78,1867+17]..[78,1867+31])
+                    Pexp_apply
+                    expression (fan_args.ml[78,1867+18]..[78,1867+19])
+                      Pexp_ident "!" (fan_args.ml[78,1867+18]..[78,1867+19])
+                    [
+                      <label> ""
+                        expression (fan_args.ml[78,1867+19]..[78,1867+30])
+                          Pexp_ident "output_file" (fan_args.ml[78,1867+19]..[78,1867+30])
+                    ]
+                <label> ""
+                  expression (fan_args.ml[78,1867+32]..[78,1867+33])
+                    Pexp_ident "v" (fan_args.ml[78,1867+32]..[78,1867+33])
+              ]
+    ]
+  structure_item (fan_args.ml[82,1921+0]..[111,2845+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan_args.ml[82,1921+4]..[82,1921+14])
+          Ppat_var "input_file" (fan_args.ml[82,1921+4]..[82,1921+14])
+        expression (fan_args.ml[82,1921+15]..[111,2845+48]) ghost
+          Pexp_fun ""
+          None
+          pattern (fan_args.ml[82,1921+15]..[82,1921+16])
+            Ppat_var "x" (fan_args.ml[82,1921+15]..[82,1921+16])
+          expression (fan_args.ml[83,1940+2]..[111,2845+48])
+            Pexp_match
+            expression (fan_args.ml[83,1940+8]..[83,1940+9])
+              Pexp_ident "x" (fan_args.ml[83,1940+8]..[83,1940+9])
+            [
+              <case>
+                pattern (fan_args.ml[84,1955+4]..[84,1955+18])
+                  Ppat_construct "Intf" (fan_args.ml[84,1955+4]..[84,1955+8])
+                  Some
+                    pattern (fan_args.ml[84,1955+9]..[84,1955+18])
+                      Ppat_var "file_name" (fan_args.ml[84,1955+9]..[84,1955+18])
+                expression (fan_args.ml[85,1977+6]..[91,2229+9])
+                  Pexp_sequence
+                  expression (fan_args.ml[86,1989+8]..[88,2061+85])
+                    Pexp_ifthenelse
+                    expression (fan_args.ml[86,1989+11]..[86,1989+27])
+                      Pexp_apply
+                      expression (fan_args.ml[86,1989+21]..[86,1989+23])
+                        Pexp_ident "<>" (fan_args.ml[86,1989+21]..[86,1989+23])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[86,1989+11]..[86,1989+20])
+                            Pexp_ident "file_name" (fan_args.ml[86,1989+11]..[86,1989+20])
+                        <label> ""
+                          expression (fan_args.ml[86,1989+24]..[86,1989+27])
+                            Pexp_constant Const_string("-",None)
+                      ]
+                    expression (fan_args.ml[87,2023+10]..[88,2061+85])
+                      Pexp_apply
+                      expression (fan_args.ml[87,2023+35]..[87,2023+37])
+                        Pexp_ident ":=" (fan_args.ml[87,2023+35]..[87,2023+37])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[87,2023+10]..[87,2023+34])
+                            Pexp_ident "Configf.compilation_unit" (fan_args.ml[87,2023+10]..[87,2023+34])
+                        <label> ""
+                          expression (fan_args.ml[88,2061+12]..[88,2061+85])
+                            Pexp_construct "Some" (fan_args.ml[88,2061+12]..[88,2061+16])
+                            Some
+                              expression (fan_args.ml[88,2061+17]..[88,2061+85])
+                                Pexp_apply
+                                expression (fan_args.ml[88,2061+18]..[88,2061+35])
+                                  Pexp_ident "String.capitalize" (fan_args.ml[88,2061+18]..[88,2061+35])
+                                [
+                                  <label> ""
+                                    expression (fan_args.ml[88,2061+36]..[88,2061+84])
+                                      Pexp_open Fresh ""Filename" (fan_args.ml[88,2061+37]..[88,2061+45])"
+                                      expression (fan_args.ml[88,2061+47]..[88,2061+82])
+                                        Pexp_apply
+                                        expression (fan_args.ml[88,2061+47]..[88,2061+61])
+                                          Pexp_ident "chop_extension" (fan_args.ml[88,2061+47]..[88,2061+61])
+                                        [
+                                          <label> ""
+                                            expression (fan_args.ml[88,2061+62]..[88,2061+82])
+                                              Pexp_apply
+                                              expression (fan_args.ml[88,2061+63]..[88,2061+71])
+                                                Pexp_ident "basename" (fan_args.ml[88,2061+63]..[88,2061+71])
+                                              [
+                                                <label> ""
+                                                  expression (fan_args.ml[88,2061+72]..[88,2061+81])
+                                                    Pexp_ident "file_name" (fan_args.ml[88,2061+72]..[88,2061+81])
+                                              ]
+                                        ]
+                                ]
+                      ]
+                    None
+                  expression (fan_args.ml[89,2148+8]..[90,2197+31])
+                    Pexp_sequence
+                    expression (fan_args.ml[89,2148+8]..[89,2148+47])
+                      Pexp_apply
+                      expression (fan_args.ml[89,2148+35]..[89,2148+37])
+                        Pexp_ident ":=" (fan_args.ml[89,2148+35]..[89,2148+37])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[89,2148+8]..[89,2148+34])
+                            Pexp_ident "Configf.current_input_file" (fan_args.ml[89,2148+8]..[89,2148+34])
+                        <label> ""
+                          expression (fan_args.ml[89,2148+38]..[89,2148+47])
+                            Pexp_ident "file_name" (fan_args.ml[89,2148+38]..[89,2148+47])
+                      ]
+                    expression (fan_args.ml[90,2197+8]..[90,2197+31])
+                      Pexp_apply
+                      expression (fan_args.ml[90,2197+8]..[90,2197+20])
+                        Pexp_ident "process_intf" (fan_args.ml[90,2197+8]..[90,2197+20])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[90,2197+22]..[90,2197+31])
+                            Pexp_ident "file_name" (fan_args.ml[90,2197+22]..[90,2197+31])
+                      ]
+              <case>
+                pattern (fan_args.ml[92,2239+4]..[92,2239+18])
+                  Ppat_construct "Impl" (fan_args.ml[92,2239+4]..[92,2239+8])
+                  Some
+                    pattern (fan_args.ml[92,2239+9]..[92,2239+18])
+                      Ppat_var "file_name" (fan_args.ml[92,2239+9]..[92,2239+18])
+                expression (fan_args.ml[93,2261+6]..[99,2514+9])
+                  Pexp_sequence
+                  expression (fan_args.ml[94,2273+8]..[96,2345+85])
+                    Pexp_ifthenelse
+                    expression (fan_args.ml[94,2273+11]..[94,2273+27])
+                      Pexp_apply
+                      expression (fan_args.ml[94,2273+21]..[94,2273+23])
+                        Pexp_ident "<>" (fan_args.ml[94,2273+21]..[94,2273+23])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[94,2273+11]..[94,2273+20])
+                            Pexp_ident "file_name" (fan_args.ml[94,2273+11]..[94,2273+20])
+                        <label> ""
+                          expression (fan_args.ml[94,2273+24]..[94,2273+27])
+                            Pexp_constant Const_string("-",None)
+                      ]
+                    expression (fan_args.ml[95,2307+10]..[96,2345+85])
+                      Pexp_apply
+                      expression (fan_args.ml[95,2307+35]..[95,2307+37])
+                        Pexp_ident ":=" (fan_args.ml[95,2307+35]..[95,2307+37])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[95,2307+10]..[95,2307+34])
+                            Pexp_ident "Configf.compilation_unit" (fan_args.ml[95,2307+10]..[95,2307+34])
+                        <label> ""
+                          expression (fan_args.ml[96,2345+12]..[96,2345+85])
+                            Pexp_construct "Some" (fan_args.ml[96,2345+12]..[96,2345+16])
+                            Some
+                              expression (fan_args.ml[96,2345+17]..[96,2345+85])
+                                Pexp_apply
+                                expression (fan_args.ml[96,2345+18]..[96,2345+35])
+                                  Pexp_ident "String.capitalize" (fan_args.ml[96,2345+18]..[96,2345+35])
+                                [
+                                  <label> ""
+                                    expression (fan_args.ml[96,2345+36]..[96,2345+84])
+                                      Pexp_open Fresh ""Filename" (fan_args.ml[96,2345+37]..[96,2345+45])"
+                                      expression (fan_args.ml[96,2345+47]..[96,2345+82])
+                                        Pexp_apply
+                                        expression (fan_args.ml[96,2345+47]..[96,2345+61])
+                                          Pexp_ident "chop_extension" (fan_args.ml[96,2345+47]..[96,2345+61])
+                                        [
+                                          <label> ""
+                                            expression (fan_args.ml[96,2345+62]..[96,2345+82])
+                                              Pexp_apply
+                                              expression (fan_args.ml[96,2345+63]..[96,2345+71])
+                                                Pexp_ident "basename" (fan_args.ml[96,2345+63]..[96,2345+71])
+                                              [
+                                                <label> ""
+                                                  expression (fan_args.ml[96,2345+72]..[96,2345+81])
+                                                    Pexp_ident "file_name" (fan_args.ml[96,2345+72]..[96,2345+81])
+                                              ]
+                                        ]
+                                ]
+                      ]
+                    None
+                  expression (fan_args.ml[97,2432+8]..[98,2481+32])
+                    Pexp_sequence
+                    expression (fan_args.ml[97,2432+8]..[97,2432+47])
+                      Pexp_apply
+                      expression (fan_args.ml[97,2432+35]..[97,2432+37])
+                        Pexp_ident ":=" (fan_args.ml[97,2432+35]..[97,2432+37])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[97,2432+8]..[97,2432+34])
+                            Pexp_ident "Configf.current_input_file" (fan_args.ml[97,2432+8]..[97,2432+34])
+                        <label> ""
+                          expression (fan_args.ml[97,2432+38]..[97,2432+47])
+                            Pexp_ident "file_name" (fan_args.ml[97,2432+38]..[97,2432+47])
+                      ]
+                    expression (fan_args.ml[98,2481+8]..[98,2481+32])
+                      Pexp_apply
+                      expression (fan_args.ml[98,2481+8]..[98,2481+20])
+                        Pexp_ident "process_impl" (fan_args.ml[98,2481+8]..[98,2481+20])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[98,2481+22]..[98,2481+31])
+                            Pexp_ident "file_name" (fan_args.ml[98,2481+22]..[98,2481+31])
+                      ]
+              <case>
+                pattern (fan_args.ml[100,2524+4]..[100,2524+9])
+                  Ppat_construct "Str" (fan_args.ml[100,2524+4]..[100,2524+7])
+                  Some
+                    pattern (fan_args.ml[100,2524+8]..[100,2524+9])
+                      Ppat_var "s" (fan_args.ml[100,2524+8]..[100,2524+9])
+                expression (fan_args.ml[101,2537+6]..[106,2713+40])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (fan_args.ml[101,2537+10]..[101,2537+16])
+                        Ppat_tuple
+                        [
+                          pattern (fan_args.ml[101,2537+11]..[101,2537+12])
+                            Ppat_var "f" (fan_args.ml[101,2537+11]..[101,2537+12])
+                          pattern (fan_args.ml[101,2537+14]..[101,2537+15])
+                            Ppat_var "o" (fan_args.ml[101,2537+14]..[101,2537+15])
+                        ]
+                      expression (fan_args.ml[101,2537+19]..[101,2537+62])
+                        Pexp_apply
+                        expression (fan_args.ml[101,2537+19]..[101,2537+42])
+                          Pexp_ident "Filename.open_temp_file" (fan_args.ml[101,2537+19]..[101,2537+42])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[101,2537+43]..[101,2537+56])
+                              Pexp_constant Const_string("from_string",None)
+                          <label> ""
+                            expression (fan_args.ml[101,2537+57]..[101,2537+62])
+                              Pexp_constant Const_string(".ml",None)
+                        ]
+                  ]
+                  expression (fan_args.ml[102,2603+6]..[106,2713+40])
+                    Pexp_sequence
+                    expression (fan_args.ml[102,2603+7]..[102,2603+24])
+                      Pexp_apply
+                      expression (fan_args.ml[102,2603+7]..[102,2603+20])
+                        Pexp_ident "output_string" (fan_args.ml[102,2603+7]..[102,2603+20])
+                      [
+                        <label> ""
+                          expression (fan_args.ml[102,2603+21]..[102,2603+22])
+                            Pexp_ident "o" (fan_args.ml[102,2603+21]..[102,2603+22])
+                        <label> ""
+                          expression (fan_args.ml[102,2603+23]..[102,2603+24])
+                            Pexp_ident "s" (fan_args.ml[102,2603+23]..[102,2603+24])
+                      ]
+                    expression (fan_args.ml[103,2629+7]..[106,2713+39])
+                      Pexp_sequence
+                      expression (fan_args.ml[103,2629+7]..[103,2629+18])
+                        Pexp_apply
+                        expression (fan_args.ml[103,2629+7]..[103,2629+16])
+                          Pexp_ident "close_out" (fan_args.ml[103,2629+7]..[103,2629+16])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[103,2629+17]..[103,2629+18])
+                              Pexp_ident "o" (fan_args.ml[103,2629+17]..[103,2629+18])
+                        ]
+                      expression (fan_args.ml[104,2649+7]..[106,2713+39])
+                        Pexp_sequence
+                        expression (fan_args.ml[104,2649+7]..[104,2649+38])
+                          Pexp_apply
+                          expression (fan_args.ml[104,2649+34]..[104,2649+36])
+                            Pexp_ident ":=" (fan_args.ml[104,2649+34]..[104,2649+36])
+                          [
+                            <label> ""
+                              expression (fan_args.ml[104,2649+7]..[104,2649+33])
+                                Pexp_ident "Configf.current_input_file" (fan_args.ml[104,2649+7]..[104,2649+33])
+                            <label> ""
+                              expression (fan_args.ml[104,2649+37]..[104,2649+38])
+                                Pexp_ident "f" (fan_args.ml[104,2649+37]..[104,2649+38])
+                          ]
+                        expression (fan_args.ml[105,2689+7]..[106,2713+39])
+                          Pexp_sequence
+                          expression (fan_args.ml[105,2689+7]..[105,2689+22])
+                            Pexp_apply
+                            expression (fan_args.ml[105,2689+7]..[105,2689+19])
+                              Pexp_ident "process_impl" (fan_args.ml[105,2689+7]..[105,2689+19])
+                            [
+                              <label> ""
+                                expression (fan_args.ml[105,2689+21]..[105,2689+22])
+                                  Pexp_ident "f" (fan_args.ml[105,2689+21]..[105,2689+22])
+                            ]
+                          expression (fan_args.ml[106,2713+7]..[106,2713+39])
+                            Pexp_apply
+                            expression (fan_args.ml[106,2713+7]..[106,2713+14])
+                              Pexp_ident "at_exit" (fan_args.ml[106,2713+7]..[106,2713+14])
+                            [
+                              <label> ""
+                                expression (fan_args.ml[106,2713+15]..[106,2713+39])
+                                  Pexp_fun ""
+                                  None
+                                  pattern (fan_args.ml[106,2713+20]..[106,2713+22])
+                                    Ppat_construct "()" (fan_args.ml[106,2713+20]..[106,2713+22])
+                                    None
+                                  expression (fan_args.ml[106,2713+26]..[106,2713+38])
+                                    Pexp_apply
+                                    expression (fan_args.ml[106,2713+26]..[106,2713+36])
+                                      Pexp_ident "Sys.remove" (fan_args.ml[106,2713+26]..[106,2713+36])
+                                    [
+                                      <label> ""
+                                        expression (fan_args.ml[106,2713+37]..[106,2713+38])
+                                          Pexp_ident "f" (fan_args.ml[106,2713+37]..[106,2713+38])
+                                    ]
+                            ]
+              <case>
+                pattern (fan_args.ml[108,2763+4]..[108,2763+24])
+                  Ppat_construct "ModuleImpl" (fan_args.ml[108,2763+4]..[108,2763+14])
+                  Some
+                    pattern (fan_args.ml[108,2763+15]..[108,2763+24])
+                      Ppat_var "file_name" (fan_args.ml[108,2763+15]..[108,2763+24])
+                expression (fan_args.ml[108,2763+28]..[108,2763+58])
+                  Pexp_apply
+                  expression (fan_args.ml[108,2763+28]..[108,2763+47])
+                    Pexp_ident "Control_require.add" (fan_args.ml[108,2763+28]..[108,2763+47])
+                  [
+                    <label> ""
+                      expression (fan_args.ml[108,2763+49]..[108,2763+58])
+                        Pexp_ident "file_name" (fan_args.ml[108,2763+49]..[108,2763+58])
+                  ]
+              <case>
+                pattern (fan_args.ml[110,2823+4]..[110,2823+18])
+                  Ppat_construct "IncludeDir" (fan_args.ml[110,2823+4]..[110,2823+14])
+                  Some
+                    pattern (fan_args.ml[110,2823+15]..[110,2823+18])
+                      Ppat_var "dir" (fan_args.ml[110,2823+15]..[110,2823+18])
+                expression (fan_args.ml[111,2845+6]..[111,2845+48])
+                  Pexp_apply
+                  expression (fan_args.ml[111,2845+6]..[111,2845+16])
+                    Pexp_ident "Ref.modify" (fan_args.ml[111,2845+6]..[111,2845+16])
+                  [
+                    <label> ""
+                      expression (fan_args.ml[111,2845+17]..[111,2845+37])
+                        Pexp_ident "Configf.dynload_dirs" (fan_args.ml[111,2845+17]..[111,2845+37])
+                    <label> ""
+                      expression (fan_args.ml[111,2845+38]..[111,2845+48])
+                        Pexp_apply
+                        expression (fan_args.ml[111,2845+39]..[111,2845+43])
+                          Pexp_ident "cons" (fan_args.ml[111,2845+39]..[111,2845+43])
+                        [
+                          <label> ""
+                            expression (fan_args.ml[111,2845+44]..[111,2845+47])
+                              Pexp_ident "dir" (fan_args.ml[111,2845+44]..[111,2845+47])
+                        ]
+                  ]
+            ]
+    ]
+]

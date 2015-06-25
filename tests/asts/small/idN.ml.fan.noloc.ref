@@ -1,0 +1,1016 @@
+[
+  structure_item (idN.ml[]..[])
+    Pstr_open Fresh "Astfn" (idN.ml[]..[])
+  structure_item (idN.ml[]..[])
+    Pstr_open Fresh "Astn_util" (idN.ml[]..[])
+  structure_item (idN.ml[]..[])
+    Pstr_open Fresh "Util" (idN.ml[]..[])
+  structure_item (idN.ml[]..[])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "tvar_of_ident" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_constraint
+          expression (idN.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (idN.ml[]..[])
+                  Ppat_or
+                  pattern (idN.ml[]..[])
+                    Ppat_variant "Lid"
+                    Some
+                      pattern (idN.ml[]..[])
+                        Ppat_var "x" (idN.ml[]..[])
+                  pattern (idN.ml[]..[])
+                    Ppat_variant "Uid"
+                    Some
+                      pattern (idN.ml[]..[])
+                        Ppat_var "x" (idN.ml[]..[])
+                expression (idN.ml[]..[])
+                  Pexp_ident "x" (idN.ml[]..[])
+              <case>
+                pattern (idN.ml[]..[])
+                  Ppat_variant "Dot"
+                  Some
+                    pattern (idN.ml[]..[])
+                      Ppat_tuple
+                      [
+                        pattern (idN.ml[]..[])
+                          Ppat_variant "Uid"
+                          Some
+                            pattern (idN.ml[]..[])
+                              Ppat_var "x" (idN.ml[]..[])
+                        pattern (idN.ml[]..[])
+                          Ppat_var "xs" (idN.ml[]..[])
+                      ]
+                expression (idN.ml[]..[])
+                  Pexp_apply
+                  expression (idN.ml[]..[])
+                    Pexp_ident "^" (idN.ml[]..[])
+                  [
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_ident "x" (idN.ml[]..[])
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_apply
+                        expression (idN.ml[]..[])
+                          Pexp_ident "^" (idN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (idN.ml[]..[])
+                              Pexp_constant Const_string("__",None)
+                          <label> ""
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "tvar_of_ident" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "xs" (idN.ml[]..[])
+                              ]
+                        ]
+                  ]
+              <case>
+                pattern (idN.ml[]..[])
+                  Ppat_any
+                expression (idN.ml[]..[])
+                  Pexp_apply
+                  expression (idN.ml[]..[])
+                    Pexp_ident "failwith" (idN.ml[]..[])
+                  [
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_constant Const_string("internal error in the Grammar extension",None)
+                  ]
+            ]
+          core_type (idN.ml[]..[])
+            Ptyp_arrow
+            ""
+            core_type (idN.ml[]..[])
+              Ptyp_constr "vid" (idN.ml[]..[])
+              []
+            core_type (idN.ml[]..[])
+              Ptyp_constr "string" (idN.ml[]..[])
+              []
+    ]
+  structure_item (idN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "map_to_string" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[]..[])
+                Ppat_constraint
+                pattern (idN.ml[]..[])
+                  Ppat_var "ident" (idN.ml[]..[])
+                core_type (idN.ml[]..[])
+                  Ptyp_constr "vid" (idN.ml[]..[])
+                  []
+              expression (idN.ml[]..[])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (idN.ml[]..[])
+                      Ppat_var "aux" (idN.ml[]..[])
+                    expression (idN.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (idN.ml[]..[])
+                            Ppat_var "i" (idN.ml[]..[])
+                          expression (idN.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (idN.ml[]..[])
+                                  Ppat_var "acc" (idN.ml[]..[])
+                                expression (idN.ml[]..[])
+                                  Pexp_match
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "i" (idN.ml[]..[])
+                                  [
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Dot"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "a" (idN.ml[]..[])
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "b" (idN.ml[]..[])
+                                            ]
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "aux" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "a" (idN.ml[]..[])
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "^" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_constant Const_string("_",None)
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (idN.ml[]..[])
+                                                      Pexp_ident "aux" (idN.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_ident "b" (idN.ml[]..[])
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_ident "acc" (idN.ml[]..[])
+                                                    ]
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_var "x" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "^" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "x" (idN.ml[]..[])
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "acc" (idN.ml[]..[])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Uid"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_var "x" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "^" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "String.lowercase" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "x" (idN.ml[]..[])
+                                              ]
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "acc" (idN.ml[]..[])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_var "t" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "failwithf" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_constant Const_string("map_to_string: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "ObjsN.dump_vid" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "t" (idN.ml[]..[])
+                                              ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+                expression (idN.ml[]..[])
+                  Pexp_apply
+                  expression (idN.ml[]..[])
+                    Pexp_ident "aux" (idN.ml[]..[])
+                  [
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_ident "ident" (idN.ml[]..[])
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_constant Const_string("",None)
+                  ]
+          ]
+    ]
+  structure_item (idN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "to_string" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[]..[])
+                Ppat_constraint
+                pattern (idN.ml[]..[])
+                  Ppat_var "ident" (idN.ml[]..[])
+                core_type (idN.ml[]..[])
+                  Ptyp_constr "ident" (idN.ml[]..[])
+                  []
+              expression (idN.ml[]..[])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (idN.ml[]..[])
+                      Ppat_var "aux" (idN.ml[]..[])
+                    expression (idN.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (idN.ml[]..[])
+                            Ppat_var "i" (idN.ml[]..[])
+                          expression (idN.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (idN.ml[]..[])
+                                  Ppat_var "acc" (idN.ml[]..[])
+                                expression (idN.ml[]..[])
+                                  Pexp_match
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "i" (idN.ml[]..[])
+                                  [
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Dot"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "a" (idN.ml[]..[])
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "b" (idN.ml[]..[])
+                                            ]
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "aux" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "a" (idN.ml[]..[])
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "^" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_constant Const_string("_",None)
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (idN.ml[]..[])
+                                                      Pexp_ident "aux" (idN.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_ident "b" (idN.ml[]..[])
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_ident "acc" (idN.ml[]..[])
+                                                    ]
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Apply"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "a" (idN.ml[]..[])
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "b" (idN.ml[]..[])
+                                            ]
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "^" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_constant Const_string("app_",None)
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "^" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (idN.ml[]..[])
+                                                      Pexp_ident "aux" (idN.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_ident "a" (idN.ml[]..[])
+                                                      <label> ""
+                                                        expression (idN.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (idN.ml[]..[])
+                                                            Pexp_ident "^" (idN.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (idN.ml[]..[])
+                                                                Pexp_constant Const_string("_to_",None)
+                                                            <label> ""
+                                                              expression (idN.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (idN.ml[]..[])
+                                                                  Pexp_ident "aux" (idN.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (idN.ml[]..[])
+                                                                      Pexp_ident "b" (idN.ml[]..[])
+                                                                  <label> ""
+                                                                    expression (idN.ml[]..[])
+                                                                      Pexp_ident "acc" (idN.ml[]..[])
+                                                                ]
+                                                          ]
+                                                    ]
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_constant Const_string("_end",None)
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_var "x" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "^" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "x" (idN.ml[]..[])
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "acc" (idN.ml[]..[])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Uid"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_var "x" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "^" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "String.lowercase" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "x" (idN.ml[]..[])
+                                              ]
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "acc" (idN.ml[]..[])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_var "t" (idN.ml[]..[])
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "failwithf" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_constant Const_string("map_to_string: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "ObjsN.dump_ident" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "t" (idN.ml[]..[])
+                                              ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+                expression (idN.ml[]..[])
+                  Pexp_apply
+                  expression (idN.ml[]..[])
+                    Pexp_ident "aux" (idN.ml[]..[])
+                  [
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_ident "ident" (idN.ml[]..[])
+                    <label> ""
+                      expression (idN.ml[]..[])
+                        Pexp_constant Const_string("",None)
+                  ]
+          ]
+    ]
+  structure_item (idN.ml[]..[])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "to_vid" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[]..[])
+                Ppat_constraint
+                pattern (idN.ml[]..[])
+                  Ppat_var "x" (idN.ml[]..[])
+                core_type (idN.ml[]..[])
+                  Ptyp_constr "ident" (idN.ml[]..[])
+                  []
+              expression (idN.ml[]..[])
+                Pexp_constraint
+                expression (idN.ml[]..[])
+                  Pexp_match
+                  expression (idN.ml[]..[])
+                    Pexp_ident "x" (idN.ml[]..[])
+                  [
+                    <case>
+                      pattern (idN.ml[]..[])
+                        Ppat_variant "Apply"
+                        Some
+                          pattern (idN.ml[]..[])
+                            Ppat_any
+                      expression (idN.ml[]..[])
+                        Pexp_apply
+                        expression (idN.ml[]..[])
+                          Pexp_ident "failwith" (idN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (idN.ml[]..[])
+                              Pexp_constant Const_string("IdN.to_vid",None)
+                        ]
+                    <case>
+                      pattern (idN.ml[]..[])
+                        Ppat_variant "Dot"
+                        Some
+                          pattern (idN.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (idN.ml[]..[])
+                                Ppat_var "a" (idN.ml[]..[])
+                              pattern (idN.ml[]..[])
+                                Ppat_var "b" (idN.ml[]..[])
+                            ]
+                      expression (idN.ml[]..[])
+                        Pexp_apply
+                        expression (idN.ml[]..[])
+                          Pexp_ident "dot" (idN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "to_vid" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "a" (idN.ml[]..[])
+                              ]
+                          <label> ""
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "to_vid" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "b" (idN.ml[]..[])
+                              ]
+                        ]
+                    <case>
+                      pattern (idN.ml[]..[])
+                        Ppat_alias "x" (idN.ml[]..[])
+                        pattern (idN.ml[]..[])
+                          Ppat_or
+                          pattern (idN.ml[]..[])
+                            Ppat_or
+                            pattern (idN.ml[]..[])
+                              Ppat_variant "Lid"
+                              Some
+                                pattern (idN.ml[]..[])
+                                  Ppat_any
+                            pattern (idN.ml[]..[])
+                              Ppat_variant "Uid"
+                              Some
+                                pattern (idN.ml[]..[])
+                                  Ppat_any
+                          pattern (idN.ml[]..[])
+                            Ppat_variant "Ant"
+                            Some
+                              pattern (idN.ml[]..[])
+                                Ppat_any
+                      expression (idN.ml[]..[])
+                        Pexp_ident "x" (idN.ml[]..[])
+                  ]
+                core_type (idN.ml[]..[])
+                  Ptyp_constr "vid" (idN.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (idN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "ident_map" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[]..[])
+                Ppat_var "f" (idN.ml[]..[])
+              expression (idN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (idN.ml[]..[])
+                      Ppat_constraint
+                      pattern (idN.ml[]..[])
+                        Ppat_var "x" (idN.ml[]..[])
+                      core_type (idN.ml[]..[])
+                        Ptyp_constr "vid" (idN.ml[]..[])
+                        []
+                    expression (idN.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (idN.ml[]..[])
+                            Ppat_var "lst" (idN.ml[]..[])
+                          expression (idN.ml[]..[])
+                            Pexp_apply
+                            expression (idN.ml[]..[])
+                              Pexp_ident "Ast_basic.N.list_of_dot" (idN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (idN.ml[]..[])
+                                  Pexp_ident "x" (idN.ml[]..[])
+                              <label> ""
+                                expression (idN.ml[]..[])
+                                  Pexp_construct "[]" (idN.ml[]..[])
+                                  None
+                            ]
+                      ]
+                      expression (idN.ml[]..[])
+                        Pexp_match
+                        expression (idN.ml[]..[])
+                          Pexp_ident "lst" (idN.ml[]..[])
+                        [
+                          <case>
+                            pattern (idN.ml[]..[])
+                              Ppat_construct "[]" (idN.ml[]..[])
+                              None
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "invalid_arg" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_constant Const_string("ident_map identifier [] ",None)
+                              ]
+                          <case>
+                            pattern (idN.ml[]..[])
+                              Ppat_construct "::" (idN.ml[]..[])
+                              Some
+                                pattern (idN.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (idN.ml[]..[])
+                                      Ppat_variant "Lid"
+                                      Some
+                                        pattern (idN.ml[]..[])
+                                          Ppat_var "y" (idN.ml[]..[])
+                                    pattern (idN.ml[]..[])
+                                      Ppat_construct "[]" (idN.ml[]..[])
+                                      None
+                                  ]
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "lid" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_apply
+                                    expression (idN.ml[]..[])
+                                      Pexp_ident "f" (idN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "y" (idN.ml[]..[])
+                                    ]
+                              ]
+                          <case>
+                            pattern (idN.ml[]..[])
+                              Ppat_var "ls" (idN.ml[]..[])
+                            expression (idN.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (idN.ml[]..[])
+                                    Ppat_var "l" (idN.ml[]..[])
+                                  expression (idN.ml[]..[])
+                                    Pexp_apply
+                                    expression (idN.ml[]..[])
+                                      Pexp_ident "List.length" (idN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "ls" (idN.ml[]..[])
+                                    ]
+                              ]
+                              expression (idN.ml[]..[])
+                                Pexp_match
+                                expression (idN.ml[]..[])
+                                  Pexp_apply
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "Listf.drop" (idN.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "-" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "l" (idN.ml[]..[])
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_constant Const_int 2
+                                        ]
+                                    <label> ""
+                                      expression (idN.ml[]..[])
+                                        Pexp_ident "ls" (idN.ml[]..[])
+                                  ]
+                                [
+                                  <case>
+                                    pattern (idN.ml[]..[])
+                                      Ppat_construct "::" (idN.ml[]..[])
+                                      Some
+                                        pattern (idN.ml[]..[])
+                                          Ppat_tuple
+                                          [
+                                            pattern (idN.ml[]..[])
+                                              Ppat_var "q" (idN.ml[]..[])
+                                            pattern (idN.ml[]..[])
+                                              Ppat_construct "::" (idN.ml[]..[])
+                                              Some
+                                                pattern (idN.ml[]..[])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (idN.ml[]..[])
+                                                      Ppat_variant "Lid"
+                                                      Some
+                                                        pattern (idN.ml[]..[])
+                                                          Ppat_var "y" (idN.ml[]..[])
+                                                    pattern (idN.ml[]..[])
+                                                      Ppat_construct "[]" (idN.ml[]..[])
+                                                      None
+                                                  ]
+                                          ]
+                                    expression (idN.ml[]..[])
+                                      Pexp_variant "Dot"
+                                      Some
+                                        expression (idN.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "q" (idN.ml[]..[])
+                                            expression (idN.ml[]..[])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (idN.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "f" (idN.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (idN.ml[]..[])
+                                                        Pexp_ident "y" (idN.ml[]..[])
+                                                  ]
+                                          ]
+                                  <case>
+                                    pattern (idN.ml[]..[])
+                                      Ppat_any
+                                    expression (idN.ml[]..[])
+                                      Pexp_apply
+                                      expression (idN.ml[]..[])
+                                        Pexp_ident "failwithf" (idN.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (idN.ml[]..[])
+                                            Pexp_constant Const_string("ident_map: %s",None)
+                                        <label> ""
+                                          expression (idN.ml[]..[])
+                                            Pexp_apply
+                                            expression (idN.ml[]..[])
+                                              Pexp_ident "ObjsN.dump_vid" (idN.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (idN.ml[]..[])
+                                                  Pexp_ident "x" (idN.ml[]..[])
+                                            ]
+                                      ]
+                                ]
+                        ]
+                ]
+          ]
+    ]
+  structure_item (idN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[]..[])
+          Ppat_var "ident_map_of_ident" (idN.ml[]..[])
+        expression (idN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[]..[])
+                Ppat_var "f" (idN.ml[]..[])
+              expression (idN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (idN.ml[]..[])
+                      Ppat_var "x" (idN.ml[]..[])
+                    expression (idN.ml[]..[])
+                      Pexp_constraint
+                      expression (idN.ml[]..[])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (idN.ml[]..[])
+                              Ppat_var "lst" (idN.ml[]..[])
+                            expression (idN.ml[]..[])
+                              Pexp_apply
+                              expression (idN.ml[]..[])
+                                Pexp_ident "Ast_basic.N.list_of_dot" (idN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_ident "x" (idN.ml[]..[])
+                                <label> ""
+                                  expression (idN.ml[]..[])
+                                    Pexp_construct "[]" (idN.ml[]..[])
+                                    None
+                              ]
+                        ]
+                        expression (idN.ml[]..[])
+                          Pexp_match
+                          expression (idN.ml[]..[])
+                            Pexp_ident "lst" (idN.ml[]..[])
+                          [
+                            <case>
+                              pattern (idN.ml[]..[])
+                                Ppat_construct "[]" (idN.ml[]..[])
+                                None
+                              expression (idN.ml[]..[])
+                                Pexp_apply
+                                expression (idN.ml[]..[])
+                                  Pexp_ident "invalid_arg" (idN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (idN.ml[]..[])
+                                      Pexp_constant Const_string("ident_map identifier [] ",None)
+                                ]
+                            <case>
+                              pattern (idN.ml[]..[])
+                                Ppat_construct "::" (idN.ml[]..[])
+                                Some
+                                  pattern (idN.ml[]..[])
+                                    Ppat_tuple
+                                    [
+                                      pattern (idN.ml[]..[])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_var "y" (idN.ml[]..[])
+                                      pattern (idN.ml[]..[])
+                                        Ppat_construct "[]" (idN.ml[]..[])
+                                        None
+                                    ]
+                              expression (idN.ml[]..[])
+                                Pexp_apply
+                                expression (idN.ml[]..[])
+                                  Pexp_ident "f" (idN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (idN.ml[]..[])
+                                      Pexp_ident "y" (idN.ml[]..[])
+                                ]
+                            <case>
+                              pattern (idN.ml[]..[])
+                                Ppat_var "ls" (idN.ml[]..[])
+                              expression (idN.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (idN.ml[]..[])
+                                      Ppat_var "l" (idN.ml[]..[])
+                                    expression (idN.ml[]..[])
+                                      Pexp_apply
+                                      expression (idN.ml[]..[])
+                                        Pexp_ident "List.length" (idN.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (idN.ml[]..[])
+                                            Pexp_ident "ls" (idN.ml[]..[])
+                                      ]
+                                ]
+                                expression (idN.ml[]..[])
+                                  Pexp_match
+                                  expression (idN.ml[]..[])
+                                    Pexp_apply
+                                    expression (idN.ml[]..[])
+                                      Pexp_ident "Listf.drop" (idN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[]..[])
+                                          Pexp_apply
+                                          expression (idN.ml[]..[])
+                                            Pexp_ident "-" (idN.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "l" (idN.ml[]..[])
+                                            <label> ""
+                                              expression (idN.ml[]..[])
+                                                Pexp_constant Const_int 2
+                                          ]
+                                      <label> ""
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "ls" (idN.ml[]..[])
+                                    ]
+                                  [
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_construct "::" (idN.ml[]..[])
+                                        Some
+                                          pattern (idN.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[]..[])
+                                                Ppat_var "q" (idN.ml[]..[])
+                                              pattern (idN.ml[]..[])
+                                                Ppat_construct "::" (idN.ml[]..[])
+                                                Some
+                                                  pattern (idN.ml[]..[])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (idN.ml[]..[])
+                                                        Ppat_variant "Lid"
+                                                        Some
+                                                          pattern (idN.ml[]..[])
+                                                            Ppat_var "y" (idN.ml[]..[])
+                                                      pattern (idN.ml[]..[])
+                                                        Ppat_construct "[]" (idN.ml[]..[])
+                                                        None
+                                                    ]
+                                            ]
+                                      expression (idN.ml[]..[])
+                                        Pexp_variant "Dot"
+                                        Some
+                                          expression (idN.ml[]..[])
+                                            Pexp_tuple
+                                            [
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "q" (idN.ml[]..[])
+                                              expression (idN.ml[]..[])
+                                                Pexp_apply
+                                                expression (idN.ml[]..[])
+                                                  Pexp_ident "f" (idN.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (idN.ml[]..[])
+                                                      Pexp_ident "y" (idN.ml[]..[])
+                                                ]
+                                            ]
+                                    <case>
+                                      pattern (idN.ml[]..[])
+                                        Ppat_any
+                                      expression (idN.ml[]..[])
+                                        Pexp_apply
+                                        expression (idN.ml[]..[])
+                                          Pexp_ident "failwithf" (idN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_constant Const_string("ident_map_of_ident: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[]..[])
+                                              Pexp_apply
+                                              expression (idN.ml[]..[])
+                                                Pexp_ident "ObjsN.dump_vid" (idN.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[]..[])
+                                                    Pexp_ident "x" (idN.ml[]..[])
+                                              ]
+                                        ]
+                                  ]
+                          ]
+                      core_type (idN.ml[]..[])
+                        Ptyp_constr "vid" (idN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+]

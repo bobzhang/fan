@@ -1,0 +1,324 @@
+7c7
+<       type_declaration "name" (gram_def.ml[2,10+5]..[2,10+9]) (gram_def.ml[2,10+5]..[5,51+12])
+---
+>       type_declaration "name" (gram_def.ml[2,10+5]..[2,10+9]) (gram_def.ml[2,10+0]..[5,51+12])
+15c15
+<               (gram_def.ml[3,24+2]..[3,24+9])
+---
+>               (gram_def.ml[3,24+2]..[3,24+10])
+18,19d17
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[3,24+6]..[3,24+9])
+22c20
+<               (gram_def.ml[4,35+2]..[4,35+14])
+---
+>               (gram_def.ml[4,35+2]..[4,35+15])
+25,26d22
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[4,35+8]..[4,35+14])
+29c25
+<               (gram_def.ml[5,51+2]..[5,51+10])
+---
+>               (gram_def.ml[5,51+2]..[5,51+11])
+32,33d27
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[5,51+7]..[5,51+10])
+44c38
+<       type_declaration "styp" (gram_def.ml[6,64+5]..[6,64+9]) (gram_def.ml[6,64+5]..[9,175+19])
+---
+>       type_declaration "styp" (gram_def.ml[6,64+5]..[6,64+9]) (gram_def.ml[6,64+0]..[9,175+19])
+63c57
+<                     core_type (gram_def.ml[7,76+19]..[7,76+36])
+---
+>                     core_type (gram_def.ml[7,76+20]..[7,76+35])
+79c73
+<                     core_type (gram_def.ml[8,114+14]..[8,114+43])
+---
+>                     core_type (gram_def.ml[8,114+15]..[8,114+42])
+111c105
+<       type_declaration "entry" (gram_def.ml[10,195+5]..[10,195+10]) (gram_def.ml[10,195+5]..[14,258+16])
+---
+>       type_declaration "entry" (gram_def.ml[10,195+5]..[10,195+10]) (gram_def.ml[10,195+0]..[14,258+16])
+119c113
+<               (gram_def.ml[11,210+2]..[11,210+12])
+---
+>               (gram_def.ml[11,210+2]..[11,210+13])
+122,123d115
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[11,210+8]..[11,210+12])
+126c118
+<               (gram_def.ml[12,224+2]..[12,224+17])
+---
+>               (gram_def.ml[12,224+2]..[12,224+18])
+129,130d120
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[12,224+7]..[12,224+17])
+137c127
+<               (gram_def.ml[13,243+2]..[13,243+13])
+---
+>               (gram_def.ml[13,243+2]..[13,243+14])
+140,141d129
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[13,243+9]..[13,243+13])
+144c132
+<               (gram_def.ml[14,258+2]..[14,258+14])
+---
+>               (gram_def.ml[14,258+2]..[14,258+15])
+147,148d134
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[14,258+9]..[14,258+14])
+155c141
+<       type_declaration "level" (gram_def.ml[15,275+4]..[15,275+9]) (gram_def.ml[15,275+4]..[17,310+20])
+---
+>       type_declaration "level" (gram_def.ml[15,275+4]..[15,275+9]) (gram_def.ml[15,275+0]..[17,310+20])
+163c149
+<               (gram_def.ml[16,289+2]..[16,289+19])
+---
+>               (gram_def.ml[16,289+2]..[16,289+20])
+166,167d151
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[16,289+9]..[16,289+19])
+174c158
+<               (gram_def.ml[17,310+2]..[17,310+18])
+---
+>               (gram_def.ml[17,310+2]..[17,310+19])
+177,178d160
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[17,310+9]..[17,310+18])
+189c171
+<       type_declaration "action" (gram_def.ml[18,331+4]..[18,331+10]) (gram_def.ml[18,331+4]..[20,364+21])
+---
+>       type_declaration "action" (gram_def.ml[18,331+4]..[18,331+10]) (gram_def.ml[18,331+0]..[20,364+21])
+197c179
+<               (gram_def.ml[19,344+4]..[19,344+19])
+---
+>               (gram_def.ml[19,344+2]..[19,344+19])
+209c191
+<               (gram_def.ml[20,364+4]..[20,364+21])
+---
+>               (gram_def.ml[20,364+2]..[20,364+21])
+221c203
+<       type_declaration "rule" (gram_def.ml[21,386+4]..[21,386+8]) (gram_def.ml[21,386+4]..[24,447+18])
+---
+>       type_declaration "rule" (gram_def.ml[21,386+4]..[21,386+8]) (gram_def.ml[21,386+0]..[24,447+18])
+229c211
+<               (gram_def.ml[22,399+2]..[22,399+24])
+---
+>               (gram_def.ml[22,399+2]..[22,399+25])
+232,233d213
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[22,399+7]..[22,399+24])
+236c216
+<                       core_type (gram_def.ml[22,399+7]..[22,399+19])
+---
+>                     core_type (gram_def.ml[22,399+8]..[22,399+18])
+247c227
+<               (gram_def.ml[23,425+2]..[23,425+20])
+---
+>               (gram_def.ml[23,425+2]..[23,425+21])
+250,251d229
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[23,425+8]..[23,425+20])
+258c236
+<               (gram_def.ml[24,447+2]..[24,447+16])
+---
+>               (gram_def.ml[24,447+2]..[24,447+17])
+261,262d238
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[24,447+10]..[24,447+16])
+269c245
+<       type_declaration "label" (gram_def.ml[25,466+4]..[25,466+9]) (gram_def.ml[25,466+4]..[25,466+25])
+---
+>       type_declaration "label" (gram_def.ml[25,466+4]..[25,466+9]) (gram_def.ml[25,466+0]..[25,466+25])
+286c262
+<       type_declaration "kind" (gram_def.ml[26,492+4]..[26,492+8]) (gram_def.ml[26,492+4]..[29,523+11])
+---
+>       type_declaration "kind" (gram_def.ml[26,492+4]..[26,492+8]) (gram_def.ml[26,492+0]..[29,523+11])
+294c270
+<               (gram_def.ml[27,503+4]..[27,503+9])
+---
+>               (gram_def.ml[27,503+2]..[27,503+9])
+298c274
+<               (gram_def.ml[28,513+4]..[28,513+9])
+---
+>               (gram_def.ml[28,513+2]..[28,513+9])
+302c278
+<               (gram_def.ml[29,523+4]..[29,523+11])
+---
+>               (gram_def.ml[29,523+2]..[29,523+11])
+310c286
+<       type_declaration "locid" (gram_def.ml[30,535+4]..[30,535+9]) (gram_def.ml[30,535+4]..[30,535+25])
+---
+>       type_declaration "locid" (gram_def.ml[30,535+4]..[30,535+9]) (gram_def.ml[30,535+0]..[30,535+25])
+320c296
+<             core_type (gram_def.ml[30,535+12]..[30,535+25])
+---
+>             core_type (gram_def.ml[30,535+13]..[30,535+24])
+330c306
+<       type_declaration "symbol" (gram_def.ml[31,561+4]..[31,561+10]) (gram_def.ml[31,561+4]..[34,604+31])
+---
+>       type_declaration "symbol" (gram_def.ml[31,561+4]..[31,561+10]) (gram_def.ml[31,561+0]..[34,604+31])
+338c314
+<               (gram_def.ml[32,576+2]..[32,576+12])
+---
+>               (gram_def.ml[32,576+2]..[32,576+13])
+341,342d316
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[32,576+8]..[32,576+12])
+345c319
+<               (gram_def.ml[33,590+2]..[33,590+12])
+---
+>               (gram_def.ml[33,590+2]..[33,590+13])
+348,349d321
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[33,590+8]..[33,590+12])
+352c324
+<               (gram_def.ml[34,604+2]..[34,604+29])
+---
+>               (gram_def.ml[34,604+2]..[34,604+30])
+355,356d326
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[34,604+10]..[34,604+29])
+359c329
+<                       core_type (gram_def.ml[34,604+10]..[34,604+24])
+---
+>                     core_type (gram_def.ml[34,604+11]..[34,604+23])
+374c344
+<       type_declaration "decorate" (gram_def.ml[35,636+7]..[35,636+15]) (gram_def.ml[35,636+4]..[37,670+11])
+---
+>       type_declaration "decorate" (gram_def.ml[35,636+7]..[35,636+15]) (gram_def.ml[35,636+0]..[37,670+11])
+377c347
+<             core_type (gram_def.ml[35,636+5]..[35,636+6])
+---
+>             core_type (gram_def.ml[35,636+4]..[35,636+6])
+385c355
+<               (gram_def.ml[36,656+2]..[36,656+12])
+---
+>               (gram_def.ml[36,656+2]..[36,656+13])
+388,389d357
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[36,656+8]..[36,656+12])
+392c360
+<               (gram_def.ml[37,670+2]..[37,670+9])
+---
+>               (gram_def.ml[37,670+2]..[37,670+10])
+395,396d362
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[37,670+7]..[37,670+9])
+402c368
+<       type_declaration "osymbol" (gram_def.ml[38,682+4]..[38,682+11]) (gram_def.ml[38,682+4]..[43,759+31])
+---
+>       type_declaration "osymbol" (gram_def.ml[38,682+4]..[38,682+11]) (gram_def.ml[38,682+0]..[43,759+31])
+410c376
+<               (gram_def.ml[40,700+2]..[40,700+12])
+---
+>               (gram_def.ml[40,700+2]..[40,700+13])
+413,414d378
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[40,700+8]..[40,700+12])
+417c381
+<               (gram_def.ml[41,714+2]..[41,714+12])
+---
+>               (gram_def.ml[41,714+2]..[41,714+13])
+420,421d383
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[41,714+8]..[41,714+12])
+424c386
+<               (gram_def.ml[42,728+2]..[42,728+29])
+---
+>               (gram_def.ml[42,728+2]..[42,728+30])
+427,428d388
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[42,728+10]..[42,728+29])
+431c391
+<                       core_type (gram_def.ml[42,728+10]..[42,728+24])
+---
+>                     core_type (gram_def.ml[42,728+11]..[42,728+23])
+442c402
+<               (gram_def.ml[43,759+2]..[43,759+29])
+---
+>               (gram_def.ml[43,759+2]..[43,759+30])
+445,446d404
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[43,759+17]..[43,759+29])
+457c415
+<       type_declaration "text" (gram_def.ml[44,791+4]..[44,791+8]) (gram_def.ml[44,791+4]..[51,980+23])
+---
+>       type_declaration "text" (gram_def.ml[44,791+4]..[44,791+8]) (gram_def.ml[44,791+0]..[51,980+23])
+465c423
+<               (gram_def.ml[45,802+4]..[45,802+48])
+---
+>               (gram_def.ml[45,802+2]..[45,802+48])
+468c426
+<                   core_type (gram_def.ml[45,802+12]..[45,802+48])
+---
+>                   core_type (gram_def.ml[45,802+13]..[45,802+47])
+490c448
+<               (gram_def.ml[46,851+4]..[46,851+36])
+---
+>               (gram_def.ml[46,851+2]..[46,851+36])
+493c451
+<                   core_type (gram_def.ml[46,851+13]..[46,851+36])
+---
+>                   core_type (gram_def.ml[46,851+14]..[46,851+35])
+512c470
+<               (gram_def.ml[47,888+4]..[47,888+22])
+---
+>               (gram_def.ml[47,888+2]..[47,888+22])
+515c473
+<                   core_type (gram_def.ml[47,888+11]..[47,888+22])
+---
+>                   core_type (gram_def.ml[47,888+12]..[47,888+21])
+527c485
+<               (gram_def.ml[48,911+4]..[48,911+23])
+---
+>               (gram_def.ml[48,911+2]..[48,911+23])
+530c488
+<                   core_type (gram_def.ml[48,911+12]..[48,911+23])
+---
+>                   core_type (gram_def.ml[48,911+13]..[48,911+22])
+542c500
+<               (gram_def.ml[49,935+4]..[49,935+15])
+---
+>               (gram_def.ml[49,935+2]..[49,935+15])
+550c508
+<               (gram_def.ml[50,951+4]..[50,951+28])
+---
+>               (gram_def.ml[50,951+2]..[50,951+28])
+553c511
+<                   core_type (gram_def.ml[50,951+15]..[50,951+28])
+---
+>                   core_type (gram_def.ml[50,951+16]..[50,951+27])
+565c523
+<               (gram_def.ml[51,980+4]..[51,980+23])
+---
+>               (gram_def.ml[51,980+2]..[51,980+23])
+568c526
+<                   core_type (gram_def.ml[51,980+13]..[51,980+23])
+---
+>                   core_type (gram_def.ml[51,980+14]..[51,980+22])
+588c546
+<       type_declaration "entries" (gram_def.ml[52,1004+5]..[52,1004+12]) (gram_def.ml[52,1004+5]..[55,1062+14])
+---
+>       type_declaration "entries" (gram_def.ml[52,1004+5]..[52,1004+12]) (gram_def.ml[52,1004+0]..[55,1062+14])
+596c554
+<               (gram_def.ml[53,1021+2]..[53,1021+19])
+---
+>               (gram_def.ml[53,1021+2]..[53,1021+20])
+599,600d556
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[53,1021+9]..[53,1021+19])
+607c563
+<               (gram_def.ml[54,1042+2]..[54,1042+18])
+---
+>               (gram_def.ml[54,1042+2]..[54,1042+19])
+610,611d565
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[54,1042+8]..[54,1042+18])
+618c572
+<               (gram_def.ml[55,1062+2]..[55,1062+12])
+---
+>               (gram_def.ml[55,1062+2]..[55,1062+13])
+621,622d574
+<                   Ptyp_poly
+<                   core_type (gram_def.ml[55,1062+8]..[55,1062+12])

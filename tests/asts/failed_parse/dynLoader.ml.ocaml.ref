@@ -1,0 +1,265 @@
+[
+  structure_item (dynLoader.ml[1,0+0]..[1,0+32])
+    Pstr_exception
+    extension_constructor (dynLoader.ml[1,0+0]..[1,0+32])
+      pext_name = "Error"
+      pext_kind =
+        Pext_decl
+          [
+            core_type (dynLoader.ml[1,0+19]..[1,0+25])
+              Ptyp_constr "string" (dynLoader.ml[1,0+19]..[1,0+25])
+              []
+            core_type (dynLoader.ml[1,0+26]..[1,0+32])
+              Ptyp_constr "string" (dynLoader.ml[1,0+26]..[1,0+32])
+              []
+          ]
+          None
+  structure_item (dynLoader.ml[2,33+0]..[2,33+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dynLoader.ml[2,33+4]..[2,33+16])
+          Ppat_var "_initialized" (dynLoader.ml[2,33+4]..[2,33+16])
+        expression (dynLoader.ml[2,33+19]..[2,33+28])
+          Pexp_apply
+          expression (dynLoader.ml[2,33+19]..[2,33+22])
+            Pexp_ident "ref" (dynLoader.ml[2,33+19]..[2,33+22])
+          [
+            <label> ""
+              expression (dynLoader.ml[2,33+23]..[2,33+28])
+                Pexp_construct "false" (dynLoader.ml[2,33+23]..[2,33+28])
+                None
+          ]
+    ]
+  structure_item (dynLoader.ml[3,62+0]..[26,713+72])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dynLoader.ml[3,62+4]..[3,62+8])
+          Ppat_var "load" (dynLoader.ml[3,62+4]..[3,62+8])
+        expression (dynLoader.ml[3,62+9]..[26,713+72]) ghost
+          Pexp_fun ""
+          None
+          pattern (dynLoader.ml[3,62+9]..[3,62+13])
+            Ppat_var "file" (dynLoader.ml[3,62+9]..[3,62+13])
+          expression (dynLoader.ml[4,78+2]..[26,713+72])
+            Pexp_sequence
+            expression (dynLoader.ml[4,78+2]..[15,342+44])
+              Pexp_ifthenelse
+              expression (dynLoader.ml[4,78+5]..[4,78+30])
+                Pexp_apply
+                expression (dynLoader.ml[4,78+5]..[4,78+8])
+                  Pexp_ident "not" (dynLoader.ml[4,78+5]..[4,78+8])
+                [
+                  <label> ""
+                    expression (dynLoader.ml[4,78+9]..[4,78+30])
+                      Pexp_field
+                      expression (dynLoader.ml[4,78+9]..[4,78+21])
+                        Pexp_ident "_initialized" (dynLoader.ml[4,78+9]..[4,78+21])
+                      "contents" (dynLoader.ml[4,78+22]..[4,78+30])
+                ]
+              expression (dynLoader.ml[6,116+4]..[15,342+44])
+                Pexp_try
+                expression (dynLoader.ml[7,125+7]..[9,191+27])
+                  Pexp_sequence
+                  expression (dynLoader.ml[7,125+7]..[7,125+22])
+                    Pexp_apply
+                    expression (dynLoader.ml[7,125+7]..[7,125+19])
+                      Pexp_ident "Dynlink.init" (dynLoader.ml[7,125+7]..[7,125+19])
+                    [
+                      <label> ""
+                        expression (dynLoader.ml[7,125+20]..[7,125+22])
+                          Pexp_construct "()" (dynLoader.ml[7,125+20]..[7,125+22])
+                          None
+                    ]
+                  expression (dynLoader.ml[8,149+7]..[9,191+27])
+                    Pexp_sequence
+                    expression (dynLoader.ml[8,149+7]..[8,149+40])
+                      Pexp_apply
+                      expression (dynLoader.ml[8,149+7]..[8,149+35])
+                        Pexp_ident "Dynlink.allow_unsafe_modules" (dynLoader.ml[8,149+7]..[8,149+35])
+                      [
+                        <label> ""
+                          expression (dynLoader.ml[8,149+36]..[8,149+40])
+                            Pexp_construct "true" (dynLoader.ml[8,149+36]..[8,149+40])
+                            None
+                      ]
+                    expression (dynLoader.ml[9,191+7]..[9,191+27])
+                      Pexp_apply
+                      expression (dynLoader.ml[9,191+20]..[9,191+22])
+                        Pexp_ident ":=" (dynLoader.ml[9,191+20]..[9,191+22])
+                      [
+                        <label> ""
+                          expression (dynLoader.ml[9,191+7]..[9,191+19])
+                            Pexp_ident "_initialized" (dynLoader.ml[9,191+7]..[9,191+19])
+                        <label> ""
+                          expression (dynLoader.ml[9,191+23]..[9,191+27])
+                            Pexp_construct "true" (dynLoader.ml[9,191+23]..[9,191+27])
+                            None
+                      ]
+                [
+                  <case>
+                    pattern (dynLoader.ml[11,229+7]..[11,229+22])
+                      Ppat_construct "Dynlink.Error" (dynLoader.ml[11,229+7]..[11,229+20])
+                      Some
+                        pattern (dynLoader.ml[11,229+21]..[11,229+22])
+                          Ppat_var "e" (dynLoader.ml[11,229+21]..[11,229+22])
+                    expression (dynLoader.ml[12,255+9]..[15,342+43])
+                      Pexp_apply
+                      expression (dynLoader.ml[12,255+9]..[12,255+14])
+                        Pexp_ident "raise" (dynLoader.ml[12,255+9]..[12,255+14])
+                      [
+                        <label> ""
+                          expression (dynLoader.ml[13,270+11]..[15,342+43])
+                            Pexp_construct "Error" (dynLoader.ml[13,270+12]..[13,270+17])
+                            Some
+                              expression (dynLoader.ml[14,288+14]..[15,342+42])
+                                Pexp_tuple
+                                [
+                                  expression (dynLoader.ml[14,288+15]..[14,288+52])
+                                    Pexp_constant Const_string("Fan's dynamic loader initialization",None)
+                                  expression (dynLoader.ml[15,342+16]..[15,342+41])
+                                    Pexp_apply
+                                    expression (dynLoader.ml[15,342+17]..[15,342+38])
+                                      Pexp_ident "Dynlink.error_message" (dynLoader.ml[15,342+17]..[15,342+38])
+                                    [
+                                      <label> ""
+                                        expression (dynLoader.ml[15,342+39]..[15,342+40])
+                                          Pexp_ident "e" (dynLoader.ml[15,342+39]..[15,342+40])
+                                    ]
+                                ]
+                      ]
+                ]
+              None
+            expression (dynLoader.ml[16,388+2]..[26,713+72])
+              Pexp_apply
+              expression (dynLoader.ml[16,388+2]..[26,713+69])
+                Pexp_try
+                expression (dynLoader.ml[17,396+6]..[23,606+77])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (dynLoader.ml[17,396+10]..[17,396+15])
+                        Ppat_var "fname" (dynLoader.ml[17,396+10]..[17,396+15])
+                      expression (dynLoader.ml[18,414+8]..[19,490+47])
+                        Pexp_apply
+                        expression (dynLoader.ml[18,414+8]..[18,414+30])
+                          Pexp_ident "Filenamef.find_in_path" (dynLoader.ml[18,414+8]..[18,414+30])
+                        [
+                          <label> "path"
+                            expression (dynLoader.ml[18,414+37]..[19,490+42])
+                              Pexp_construct "::" (dynLoader.ml[18,414+42]..[18,414+44])
+                              Some
+                                expression (dynLoader.ml[18,414+38]..[19,490+41]) ghost
+                                  Pexp_tuple
+                                  [
+                                    expression (dynLoader.ml[18,414+38]..[18,414+41])
+                                      Pexp_constant Const_string(".",None)
+                                    expression (dynLoader.ml[18,414+45]..[19,490+41])
+                                      Pexp_construct "::" (dynLoader.ml[18,414+73]..[18,414+75])
+                                      Some
+                                        expression (dynLoader.ml[18,414+45]..[19,490+41]) ghost
+                                          Pexp_tuple
+                                          [
+                                            expression (dynLoader.ml[18,414+45]..[18,414+72])
+                                              Pexp_ident "FConfig.fan_plugins_library" (dynLoader.ml[18,414+45]..[18,414+72])
+                                            expression (dynLoader.ml[19,490+10]..[19,490+41])
+                                              Pexp_field
+                                              expression (dynLoader.ml[19,490+11]..[19,490+31])
+                                                Pexp_ident "FConfig.dynload_dirs" (dynLoader.ml[19,490+11]..[19,490+31])
+                                              "contents" (dynLoader.ml[19,490+32]..[19,490+40])
+                                          ]
+                                  ]
+                          <label> ""
+                            expression (dynLoader.ml[19,490+43]..[19,490+47])
+                              Pexp_ident "file" (dynLoader.ml[19,490+43]..[19,490+47])
+                        ]
+                  ]
+                  expression (dynLoader.ml[20,541+6]..[23,606+77])
+                    Pexp_fun ""
+                    None
+                    pattern (dynLoader.ml[20,541+10]..[20,541+12])
+                      Ppat_construct "()" (dynLoader.ml[20,541+10]..[20,541+12])
+                      None
+                    expression (dynLoader.ml[21,558+8]..[23,606+77])
+                      Pexp_try
+                      expression (dynLoader.ml[21,558+12]..[21,558+34])
+                        Pexp_apply
+                        expression (dynLoader.ml[21,558+12]..[21,558+28])
+                          Pexp_ident "Dynlink.loadfile" (dynLoader.ml[21,558+12]..[21,558+28])
+                        [
+                          <label> ""
+                            expression (dynLoader.ml[21,558+29]..[21,558+34])
+                              Pexp_ident "fname" (dynLoader.ml[21,558+29]..[21,558+34])
+                        ]
+                      [
+                        <case>
+                          pattern (dynLoader.ml[23,606+10]..[23,606+25])
+                            Ppat_construct "Dynlink.Error" (dynLoader.ml[23,606+10]..[23,606+23])
+                            Some
+                              pattern (dynLoader.ml[23,606+24]..[23,606+25])
+                                Ppat_var "e" (dynLoader.ml[23,606+24]..[23,606+25])
+                          expression (dynLoader.ml[23,606+29]..[23,606+77])
+                            Pexp_apply
+                            expression (dynLoader.ml[23,606+29]..[23,606+34])
+                              Pexp_ident "raise" (dynLoader.ml[23,606+29]..[23,606+34])
+                            [
+                              <label> ""
+                                expression (dynLoader.ml[23,606+35]..[23,606+77])
+                                  Pexp_construct "Error" (dynLoader.ml[23,606+36]..[23,606+41])
+                                  Some
+                                    expression (dynLoader.ml[23,606+42]..[23,606+76])
+                                      Pexp_tuple
+                                      [
+                                        expression (dynLoader.ml[23,606+43]..[23,606+48])
+                                          Pexp_ident "fname" (dynLoader.ml[23,606+43]..[23,606+48])
+                                        expression (dynLoader.ml[23,606+50]..[23,606+75])
+                                          Pexp_apply
+                                          expression (dynLoader.ml[23,606+51]..[23,606+72])
+                                            Pexp_ident "Dynlink.error_message" (dynLoader.ml[23,606+51]..[23,606+72])
+                                          [
+                                            <label> ""
+                                              expression (dynLoader.ml[23,606+73]..[23,606+74])
+                                                Pexp_ident "e" (dynLoader.ml[23,606+73]..[23,606+74])
+                                          ]
+                                      ]
+                            ]
+                      ]
+                [
+                  <case>
+                    pattern (dynLoader.ml[25,693+6]..[25,693+15])
+                      Ppat_construct "Not_found" (dynLoader.ml[25,693+6]..[25,693+15])
+                      None
+                    expression (dynLoader.ml[26,713+8]..[26,713+67])
+                      Pexp_fun ""
+                      None
+                      pattern (dynLoader.ml[26,713+13]..[26,713+15])
+                        Ppat_construct "()" (dynLoader.ml[26,713+13]..[26,713+15])
+                        None
+                      expression (dynLoader.ml[26,713+20]..[26,713+66])
+                        Pexp_apply
+                        expression (dynLoader.ml[26,713+20]..[26,713+25])
+                          Pexp_ident "raise" (dynLoader.ml[26,713+20]..[26,713+25])
+                        [
+                          <label> ""
+                            expression (dynLoader.ml[26,713+26]..[26,713+66])
+                              Pexp_construct "Error" (dynLoader.ml[26,713+27]..[26,713+32])
+                              Some
+                                expression (dynLoader.ml[26,713+33]..[26,713+65])
+                                  Pexp_tuple
+                                  [
+                                    expression (dynLoader.ml[26,713+34]..[26,713+38])
+                                      Pexp_ident "file" (dynLoader.ml[26,713+34]..[26,713+38])
+                                    expression (dynLoader.ml[26,713+40]..[26,713+64])
+                                      Pexp_constant Const_string("file not found in path",None)
+                                  ]
+                        ]
+                ]
+              [
+                <label> ""
+                  expression (dynLoader.ml[26,713+70]..[26,713+72])
+                    Pexp_construct "()" (dynLoader.ml[26,713+70]..[26,713+72])
+                    None
+              ]
+    ]
+]

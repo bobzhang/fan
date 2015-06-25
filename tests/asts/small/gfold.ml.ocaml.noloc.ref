@@ -1,0 +1,1082 @@
+[
+  structure_item (gfold.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[]..[])
+          Ppat_var "sfold0" (gfold.ml[]..[])
+        expression (gfold.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[]..[])
+                Ppat_var "f" (gfold.ml[]..[])
+              expression (gfold.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[]..[])
+                      Ppat_var "e" (gfold.ml[]..[])
+                    expression (gfold.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[]..[])
+                            Ppat_var "_entry" (gfold.ml[]..[])
+                          expression (gfold.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[]..[])
+                                  Ppat_var "_symbl" (gfold.ml[]..[])
+                                expression (gfold.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[]..[])
+                                        Ppat_var "psymb" (gfold.ml[]..[])
+                                      expression (gfold.ml[]..[])
+                                        Pexp_let Rec
+                                        [
+                                          <def>
+                                            pattern (gfold.ml[]..[])
+                                              Ppat_var "fold" (gfold.ml[]..[])
+                                            expression (gfold.ml[]..[])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (gfold.ml[]..[])
+                                                    Ppat_var "accu" (gfold.ml[]..[])
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_var "__strm" (gfold.ml[]..[])
+                                                          core_type (gfold.ml[]..[])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                            [
+                                                              core_type (gfold.ml[]..[])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_match
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_try
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_construct "Some" (gfold.ml[]..[])
+                                                              Some
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_ident "psymb" (gfold.ml[]..[])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                  ]
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                                                                  None
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_construct "None" (gfold.ml[]..[])
+                                                                  None
+                                                            ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_construct "Some" (gfold.ml[]..[])
+                                                                Some
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_var "a" (gfold.ml[]..[])
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "fold" (gfold.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_apply
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "f" (gfold.ml[]..[])
+                                                                      [
+<label> ""
+  expression (gfold.ml[]..[])
+    Pexp_ident "a" (gfold.ml[]..[])
+<label> ""
+  expression (gfold.ml[]..[])
+    Pexp_ident "accu" (gfold.ml[]..[])
+                                                                      ]
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                ]
+                                                            <case>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_any
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "accu" (gfold.ml[]..[])
+                                                          ]
+                                                    ]
+                                              ]
+                                        ]
+                                        expression (gfold.ml[]..[])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (gfold.ml[]..[])
+                                                Ppat_constraint
+                                                pattern (gfold.ml[]..[])
+                                                  Ppat_var "__strm" (gfold.ml[]..[])
+                                                core_type (gfold.ml[]..[])
+                                                  Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                  [
+                                                    core_type (gfold.ml[]..[])
+                                                      Ptyp_any
+                                                  ]
+                                              expression (gfold.ml[]..[])
+                                                Pexp_apply
+                                                expression (gfold.ml[]..[])
+                                                  Pexp_ident "fold" (gfold.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_ident "e" (gfold.ml[]..[])
+                                                  <label> ""
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_ident "__strm" (gfold.ml[]..[])
+                                                ]
+                                          ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[]..[])
+          Ppat_var "sfold1" (gfold.ml[]..[])
+        expression (gfold.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[]..[])
+                Ppat_var "f" (gfold.ml[]..[])
+              expression (gfold.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[]..[])
+                      Ppat_var "e" (gfold.ml[]..[])
+                    expression (gfold.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[]..[])
+                            Ppat_var "_entry" (gfold.ml[]..[])
+                          expression (gfold.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[]..[])
+                                  Ppat_var "_symbl" (gfold.ml[]..[])
+                                expression (gfold.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[]..[])
+                                        Ppat_var "psymb" (gfold.ml[]..[])
+                                      expression (gfold.ml[]..[])
+                                        Pexp_let Rec
+                                        [
+                                          <def>
+                                            pattern (gfold.ml[]..[])
+                                              Ppat_var "fold" (gfold.ml[]..[])
+                                            expression (gfold.ml[]..[])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (gfold.ml[]..[])
+                                                    Ppat_var "accu" (gfold.ml[]..[])
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_var "__strm" (gfold.ml[]..[])
+                                                          core_type (gfold.ml[]..[])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                            [
+                                                              core_type (gfold.ml[]..[])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_match
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_try
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_construct "Some" (gfold.ml[]..[])
+                                                              Some
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_ident "psymb" (gfold.ml[]..[])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                  ]
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                                                                  None
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_construct "None" (gfold.ml[]..[])
+                                                                  None
+                                                            ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_construct "Some" (gfold.ml[]..[])
+                                                                Some
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_var "a" (gfold.ml[]..[])
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "fold" (gfold.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_apply
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "f" (gfold.ml[]..[])
+                                                                      [
+<label> ""
+  expression (gfold.ml[]..[])
+    Pexp_ident "a" (gfold.ml[]..[])
+<label> ""
+  expression (gfold.ml[]..[])
+    Pexp_ident "accu" (gfold.ml[]..[])
+                                                                      ]
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                ]
+                                                            <case>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_any
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "accu" (gfold.ml[]..[])
+                                                          ]
+                                                    ]
+                                              ]
+                                        ]
+                                        expression (gfold.ml[]..[])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (gfold.ml[]..[])
+                                                Ppat_constraint
+                                                pattern (gfold.ml[]..[])
+                                                  Ppat_var "__strm" (gfold.ml[]..[])
+                                                core_type (gfold.ml[]..[])
+                                                  Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                  [
+                                                    core_type (gfold.ml[]..[])
+                                                      Ptyp_any
+                                                  ]
+                                              expression (gfold.ml[]..[])
+                                                Pexp_let Nonrec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[]..[])
+                                                      Ppat_var "a" (gfold.ml[]..[])
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (gfold.ml[]..[])
+                                                        Pexp_ident "psymb" (gfold.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_ident "__strm" (gfold.ml[]..[])
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[]..[])
+                                                  Pexp_try
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_ident "fold" (gfold.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_ident "f" (gfold.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "a" (gfold.ml[]..[])
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "e" (gfold.ml[]..[])
+                                                          ]
+                                                      <label> ""
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_ident "__strm" (gfold.ml[]..[])
+                                                    ]
+                                                  [
+                                                    <case>
+                                                      pattern (gfold.ml[]..[])
+                                                        Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                                                        None
+                                                      expression (gfold.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_ident "raise" (gfold.ml[]..[])
+                                                        [
+                                                          <label> ""
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_construct "Streamf.Error" (gfold.ml[]..[])
+                                                              Some
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_constant Const_string("",None)
+                                                        ]
+                                                  ]
+                                          ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[]..[])
+          Ppat_var "sfold0sep" (gfold.ml[]..[])
+        expression (gfold.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[]..[])
+                Ppat_var "f" (gfold.ml[]..[])
+              expression (gfold.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[]..[])
+                      Ppat_var "e" (gfold.ml[]..[])
+                    expression (gfold.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[]..[])
+                            Ppat_var "entry" (gfold.ml[]..[])
+                          expression (gfold.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[]..[])
+                                  Ppat_var "symbl" (gfold.ml[]..[])
+                                expression (gfold.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[]..[])
+                                        Ppat_var "psymb" (gfold.ml[]..[])
+                                      expression (gfold.ml[]..[])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (gfold.ml[]..[])
+                                              Ppat_var "psep" (gfold.ml[]..[])
+                                            expression (gfold.ml[]..[])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (gfold.ml[]..[])
+                                                    Ppat_var "failed" (gfold.ml[]..[])
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_construct "::" (gfold.ml[]..[])
+                                                          Some
+                                                            pattern (gfold.ml[]..[]) 
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_var "symb" (gfold.ml[]..[])
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_construct "::" (gfold.ml[]..[])
+                                                                  Some
+                                                                    pattern (gfold.ml[]..[]) 
+                                                                      Ppat_tuple
+                                                                      [
+pattern (gfold.ml[]..[])
+  Ppat_var "sep" (gfold.ml[]..[])
+pattern (gfold.ml[]..[])
+  Ppat_construct "[]" (gfold.ml[]..[])
+  None
+                                                                      ]
+                                                              ]
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_ident "Gentry.symb_failed_txt" (gfold.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "entry" (gfold.ml[]..[])
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "sep" (gfold.ml[]..[])
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "symb" (gfold.ml[]..[])
+                                                          ]
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_any
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_assert
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_construct "false" (gfold.ml[]..[])
+                                                            None
+                                                    ]
+                                              ]
+                                              expression (gfold.ml[]..[])
+                                                Pexp_let Rec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[]..[])
+                                                      Ppat_var "kont" (gfold.ml[]..[])
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_var "accu" (gfold.ml[]..[])
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_constraint
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_var "__strm" (gfold.ml[]..[])
+                                                                  core_type (gfold.ml[]..[])
+                                                                    Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                                    [
+                                                                      core_type (gfold.ml[]..[])
+Ptyp_any
+                                                                    ]
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_match
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_try
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_construct "Some" (gfold.ml[]..[])
+                                                                      Some
+expression (gfold.ml[]..[])
+  Pexp_apply
+  expression (gfold.ml[]..[])
+    Pexp_ident "psep" (gfold.ml[]..[])
+  [
+    <label> ""
+      expression (gfold.ml[]..[])
+        Pexp_ident "__strm" (gfold.ml[]..[])
+  ]
+                                                                    [
+                                                                      <case>
+pattern (gfold.ml[]..[])
+  Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+  None
+expression (gfold.ml[]..[])
+  Pexp_construct "None" (gfold.ml[]..[])
+  None
+                                                                    ]
+                                                                  [
+                                                                    <case>
+                                                                      pattern (gfold.ml[]..[])
+Ppat_construct "Some" (gfold.ml[]..[])
+Some
+  pattern (gfold.ml[]..[])
+    Ppat_construct "()" (gfold.ml[]..[])
+    None
+                                                                      expression (gfold.ml[]..[])
+Pexp_let Nonrec
+[
+  <def>
+    pattern (gfold.ml[]..[])
+      Ppat_var "a" (gfold.ml[]..[])
+    expression (gfold.ml[]..[])
+      Pexp_try
+      expression (gfold.ml[]..[])
+        Pexp_apply
+        expression (gfold.ml[]..[])
+          Pexp_ident "psymb" (gfold.ml[]..[])
+        [
+          <label> ""
+            expression (gfold.ml[]..[])
+              Pexp_ident "__strm" (gfold.ml[]..[])
+        ]
+      [
+        <case>
+          pattern (gfold.ml[]..[])
+            Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+            None
+          expression (gfold.ml[]..[])
+            Pexp_apply
+            expression (gfold.ml[]..[])
+              Pexp_ident "raise" (gfold.ml[]..[])
+            [
+              <label> ""
+                expression (gfold.ml[]..[])
+                  Pexp_construct "Streamf.Error" (gfold.ml[]..[])
+                  Some
+                    expression (gfold.ml[]..[])
+                      Pexp_apply
+                      expression (gfold.ml[]..[])
+                        Pexp_ident "failed" (gfold.ml[]..[])
+                      [
+                        <label> ""
+                          expression (gfold.ml[]..[])
+                            Pexp_ident "symbl" (gfold.ml[]..[])
+                      ]
+            ]
+      ]
+]
+expression (gfold.ml[]..[])
+  Pexp_apply
+  expression (gfold.ml[]..[])
+    Pexp_ident "kont" (gfold.ml[]..[])
+  [
+    <label> ""
+      expression (gfold.ml[]..[])
+        Pexp_apply
+        expression (gfold.ml[]..[])
+          Pexp_ident "f" (gfold.ml[]..[])
+        [
+          <label> ""
+            expression (gfold.ml[]..[])
+              Pexp_ident "a" (gfold.ml[]..[])
+          <label> ""
+            expression (gfold.ml[]..[])
+              Pexp_ident "accu" (gfold.ml[]..[])
+        ]
+    <label> ""
+      expression (gfold.ml[]..[])
+        Pexp_ident "__strm" (gfold.ml[]..[])
+  ]
+                                                                    <case>
+                                                                      pattern (gfold.ml[]..[])
+Ppat_any
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "accu" (gfold.ml[]..[])
+                                                                  ]
+                                                            ]
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (gfold.ml[]..[])
+                                                        Ppat_constraint
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_var "__strm" (gfold.ml[]..[])
+                                                        core_type (gfold.ml[]..[])
+                                                          Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                          [
+                                                            core_type (gfold.ml[]..[])
+                                                              Ptyp_any
+                                                          ]
+                                                      expression (gfold.ml[]..[])
+                                                        Pexp_match
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_try
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_construct "Some" (gfold.ml[]..[])
+                                                            Some
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "psymb" (gfold.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                                                                None
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_construct "None" (gfold.ml[]..[])
+                                                                None
+                                                          ]
+                                                        [
+                                                          <case>
+                                                            pattern (gfold.ml[]..[])
+                                                              Ppat_construct "Some" (gfold.ml[]..[])
+                                                              Some
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_var "a" (gfold.ml[]..[])
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_apply
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "kont" (gfold.ml[]..[])
+                                                              [
+                                                                <label> ""
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_apply
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_ident "f" (gfold.ml[]..[])
+                                                                    [
+                                                                      <label> ""
+expression (gfold.ml[]..[])
+  Pexp_ident "a" (gfold.ml[]..[])
+                                                                      <label> ""
+expression (gfold.ml[]..[])
+  Pexp_ident "e" (gfold.ml[]..[])
+                                                                    ]
+                                                                <label> ""
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_ident "__strm" (gfold.ml[]..[])
+                                                              ]
+                                                          <case>
+                                                            pattern (gfold.ml[]..[])
+                                                              Ppat_any
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_ident "e" (gfold.ml[]..[])
+                                                        ]
+                                                  ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[]..[])
+          Ppat_var "sfold1sep" (gfold.ml[]..[])
+        expression (gfold.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[]..[])
+                Ppat_var "f" (gfold.ml[]..[])
+              expression (gfold.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[]..[])
+                      Ppat_var "e" (gfold.ml[]..[])
+                    expression (gfold.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[]..[])
+                            Ppat_var "entry" (gfold.ml[]..[])
+                          expression (gfold.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[]..[])
+                                  Ppat_var "symbl" (gfold.ml[]..[])
+                                expression (gfold.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[]..[])
+                                        Ppat_var "psymb" (gfold.ml[]..[])
+                                      expression (gfold.ml[]..[])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (gfold.ml[]..[])
+                                              Ppat_var "psep" (gfold.ml[]..[])
+                                            expression (gfold.ml[]..[])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (gfold.ml[]..[])
+                                                    Ppat_var "failed" (gfold.ml[]..[])
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_construct "::" (gfold.ml[]..[])
+                                                          Some
+                                                            pattern (gfold.ml[]..[]) 
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_var "symb" (gfold.ml[]..[])
+                                                                pattern (gfold.ml[]..[])
+                                                                  Ppat_construct "::" (gfold.ml[]..[])
+                                                                  Some
+                                                                    pattern (gfold.ml[]..[]) 
+                                                                      Ppat_tuple
+                                                                      [
+pattern (gfold.ml[]..[])
+  Ppat_var "sep" (gfold.ml[]..[])
+pattern (gfold.ml[]..[])
+  Ppat_construct "[]" (gfold.ml[]..[])
+  None
+                                                                      ]
+                                                              ]
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_ident "Gentry.symb_failed_txt" (gfold.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "entry" (gfold.ml[]..[])
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "sep" (gfold.ml[]..[])
+                                                            <label> ""
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_ident "symb" (gfold.ml[]..[])
+                                                          ]
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_any
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_assert
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_construct "false" (gfold.ml[]..[])
+                                                            None
+                                                    ]
+                                              ]
+                                              expression (gfold.ml[]..[])
+                                                Pexp_let Nonrec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[]..[])
+                                                      Ppat_var "parse_top" (gfold.ml[]..[])
+                                                    expression (gfold.ml[]..[])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_construct "::" (gfold.ml[]..[])
+                                                            Some
+                                                              pattern (gfold.ml[]..[]) 
+                                                                Ppat_tuple
+                                                                [
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_var "symb" (gfold.ml[]..[])
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_construct "::" (gfold.ml[]..[])
+                                                                    Some
+                                                                      pattern (gfold.ml[]..[]) 
+Ppat_tuple
+[
+  pattern (gfold.ml[]..[])
+    Ppat_any
+  pattern (gfold.ml[]..[])
+    Ppat_construct "[]" (gfold.ml[]..[])
+    None
+]
+                                                                ]
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_ident "Gentry.parser_of_symbol" (gfold.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "entry" (gfold.ml[]..[])
+                                                              <label> ""
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "symb" (gfold.ml[]..[])
+                                                            ]
+                                                        <case>
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_any
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_ident "raise" (gfold.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                                                                  None
+                                                            ]
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[]..[])
+                                                  Pexp_let Rec
+                                                  [
+                                                    <def>
+                                                      pattern (gfold.ml[]..[])
+                                                        Ppat_var "kont" (gfold.ml[]..[])
+                                                      expression (gfold.ml[]..[])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (gfold.ml[]..[])
+                                                              Ppat_var "accu" (gfold.ml[]..[])
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_function
+                                                              [
+                                                                <case>
+                                                                  pattern (gfold.ml[]..[])
+                                                                    Ppat_constraint
+                                                                    pattern (gfold.ml[]..[])
+                                                                      Ppat_var "__strm" (gfold.ml[]..[])
+                                                                    core_type (gfold.ml[]..[])
+                                                                      Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                                      [
+core_type (gfold.ml[]..[])
+  Ptyp_any
+                                                                      ]
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_match
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_try
+                                                                      expression (gfold.ml[]..[])
+Pexp_construct "Some" (gfold.ml[]..[])
+Some
+  expression (gfold.ml[]..[])
+    Pexp_apply
+    expression (gfold.ml[]..[])
+      Pexp_ident "psep" (gfold.ml[]..[])
+    [
+      <label> ""
+        expression (gfold.ml[]..[])
+          Pexp_ident "__strm" (gfold.ml[]..[])
+    ]
+                                                                      [
+<case>
+  pattern (gfold.ml[]..[])
+    Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+    None
+  expression (gfold.ml[]..[])
+    Pexp_construct "None" (gfold.ml[]..[])
+    None
+                                                                      ]
+                                                                    [
+                                                                      <case>
+pattern (gfold.ml[]..[])
+  Ppat_construct "Some" (gfold.ml[]..[])
+  Some
+    pattern (gfold.ml[]..[])
+      Ppat_construct "()" (gfold.ml[]..[])
+      None
+expression (gfold.ml[]..[])
+  Pexp_let Nonrec
+  [
+    <def>
+      pattern (gfold.ml[]..[])
+        Ppat_var "a" (gfold.ml[]..[])
+      expression (gfold.ml[]..[])
+        Pexp_try
+        expression (gfold.ml[]..[])
+          Pexp_try
+          expression (gfold.ml[]..[])
+            Pexp_apply
+            expression (gfold.ml[]..[])
+              Pexp_ident "psymb" (gfold.ml[]..[])
+            [
+              <label> ""
+                expression (gfold.ml[]..[])
+                  Pexp_ident "__strm" (gfold.ml[]..[])
+            ]
+          [
+            <case>
+              pattern (gfold.ml[]..[])
+                Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                None
+              expression (gfold.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (gfold.ml[]..[])
+                      Ppat_var "a" (gfold.ml[]..[])
+                    expression (gfold.ml[]..[])
+                      Pexp_try
+                      expression (gfold.ml[]..[])
+                        Pexp_apply
+                        expression (gfold.ml[]..[])
+                          Pexp_ident "parse_top" (gfold.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gfold.ml[]..[])
+                              Pexp_ident "symbl" (gfold.ml[]..[])
+                          <label> ""
+                            expression (gfold.ml[]..[])
+                              Pexp_ident "__strm" (gfold.ml[]..[])
+                        ]
+                      [
+                        <case>
+                          pattern (gfold.ml[]..[])
+                            Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+                            None
+                          expression (gfold.ml[]..[])
+                            Pexp_apply
+                            expression (gfold.ml[]..[])
+                              Pexp_ident "raise" (gfold.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gfold.ml[]..[])
+                                  Pexp_construct "Streamf.Error" (gfold.ml[]..[])
+                                  Some
+                                    expression (gfold.ml[]..[])
+                                      Pexp_apply
+                                      expression (gfold.ml[]..[])
+                                        Pexp_ident "failed" (gfold.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gfold.ml[]..[])
+                                            Pexp_ident "symbl" (gfold.ml[]..[])
+                                      ]
+                            ]
+                      ]
+                ]
+                expression (gfold.ml[]..[])
+                  Pexp_apply
+                  expression (gfold.ml[]..[])
+                    Pexp_ident "Obj.magic" (gfold.ml[]..[])
+                  [
+                    <label> ""
+                      expression (gfold.ml[]..[])
+                        Pexp_ident "a" (gfold.ml[]..[])
+                  ]
+          ]
+        [
+          <case>
+            pattern (gfold.ml[]..[])
+              Ppat_construct "Streamf.NotConsumed" (gfold.ml[]..[])
+              None
+            expression (gfold.ml[]..[])
+              Pexp_apply
+              expression (gfold.ml[]..[])
+                Pexp_ident "raise" (gfold.ml[]..[])
+              [
+                <label> ""
+                  expression (gfold.ml[]..[])
+                    Pexp_construct "Streamf.Error" (gfold.ml[]..[])
+                    Some
+                      expression (gfold.ml[]..[])
+                        Pexp_constant Const_string("",None)
+              ]
+        ]
+  ]
+  expression (gfold.ml[]..[])
+    Pexp_apply
+    expression (gfold.ml[]..[])
+      Pexp_ident "kont" (gfold.ml[]..[])
+    [
+      <label> ""
+        expression (gfold.ml[]..[])
+          Pexp_apply
+          expression (gfold.ml[]..[])
+            Pexp_ident "f" (gfold.ml[]..[])
+          [
+            <label> ""
+              expression (gfold.ml[]..[])
+                Pexp_ident "a" (gfold.ml[]..[])
+            <label> ""
+              expression (gfold.ml[]..[])
+                Pexp_ident "accu" (gfold.ml[]..[])
+          ]
+      <label> ""
+        expression (gfold.ml[]..[])
+          Pexp_ident "__strm" (gfold.ml[]..[])
+    ]
+                                                                      <case>
+pattern (gfold.ml[]..[])
+  Ppat_any
+expression (gfold.ml[]..[])
+  Pexp_ident "accu" (gfold.ml[]..[])
+                                                                    ]
+                                                              ]
+                                                        ]
+                                                  ]
+                                                  expression (gfold.ml[]..[])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[]..[])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[]..[])
+                                                            Ppat_var "__strm" (gfold.ml[]..[])
+                                                          core_type (gfold.ml[]..[])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[]..[])
+                                                            [
+                                                              core_type (gfold.ml[]..[])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[]..[])
+                                                          Pexp_let Nonrec
+                                                          [
+                                                            <def>
+                                                              pattern (gfold.ml[]..[])
+                                                                Ppat_var "a" (gfold.ml[]..[])
+                                                              expression (gfold.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "psymb" (gfold.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[]..[])
+                                                                      Pexp_ident "__strm" (gfold.ml[]..[])
+                                                                ]
+                                                          ]
+                                                          expression (gfold.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[]..[])
+                                                              Pexp_ident "kont" (gfold.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[]..[])
+                                                                    Pexp_ident "f" (gfold.ml[]..[])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "a" (gfold.ml[]..[])
+                                                                    <label> ""
+                                                                      expression (gfold.ml[]..[])
+Pexp_ident "e" (gfold.ml[]..[])
+                                                                  ]
+                                                              <label> ""
+                                                                expression (gfold.ml[]..[])
+                                                                  Pexp_ident "__strm" (gfold.ml[]..[])
+                                                            ]
+                                                    ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+]

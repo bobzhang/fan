@@ -1,0 +1,2482 @@
+[
+  structure_item (syntaxf.ml[1,0+0]..[1,0+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[1,0+4]..[1,0+11])
+          Ppat_var "a_ident" (syntaxf.ml[1,0+4]..[1,0+11])
+        expression (syntaxf.ml[1,0+14]..[1,0+32])
+          Pexp_apply
+          expression (syntaxf.ml[1,0+14]..[1,0+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[1,0+14]..[1,0+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[1,0+23]..[1,0+32])
+                Pexp_constant Const_string("a_ident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[2,33+0]..[2,33+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[2,33+4]..[2,33+10])
+          Ppat_var "aident" (syntaxf.ml[2,33+4]..[2,33+10])
+        expression (syntaxf.ml[2,33+13]..[2,33+30])
+          Pexp_apply
+          expression (syntaxf.ml[2,33+13]..[2,33+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[2,33+13]..[2,33+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[2,33+22]..[2,33+30])
+                Pexp_constant Const_string("aident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[3,64+0]..[3,64+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[3,64+4]..[3,64+12])
+          Ppat_var "amp_ctyp" (syntaxf.ml[3,64+4]..[3,64+12])
+        expression (syntaxf.ml[3,64+15]..[3,64+34])
+          Pexp_apply
+          expression (syntaxf.ml[3,64+15]..[3,64+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[3,64+15]..[3,64+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[3,64+24]..[3,64+34])
+                Pexp_constant Const_string("amp_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[4,99+0]..[4,99+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[4,99+4]..[4,99+12])
+          Ppat_var "and_ctyp" (syntaxf.ml[4,99+4]..[4,99+12])
+        expression (syntaxf.ml[4,99+15]..[4,99+34])
+          Pexp_apply
+          expression (syntaxf.ml[4,99+15]..[4,99+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[4,99+15]..[4,99+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[4,99+24]..[4,99+34])
+                Pexp_constant Const_string("and_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[5,134+0]..[5,134+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[5,134+4]..[5,134+8])
+          Ppat_var "case" (syntaxf.ml[5,134+4]..[5,134+8])
+        expression (syntaxf.ml[5,134+11]..[5,134+26])
+          Pexp_apply
+          expression (syntaxf.ml[5,134+11]..[5,134+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[5,134+11]..[5,134+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[5,134+20]..[5,134+26])
+                Pexp_constant Const_string("case",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[6,161+0]..[6,161+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[6,161+4]..[6,161+9])
+          Ppat_var "case0" (syntaxf.ml[6,161+4]..[6,161+9])
+        expression (syntaxf.ml[6,161+12]..[6,161+28])
+          Pexp_apply
+          expression (syntaxf.ml[6,161+12]..[6,161+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[6,161+12]..[6,161+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[6,161+21]..[6,161+28])
+                Pexp_constant Const_string("case0",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[7,190+0]..[7,190+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[7,190+4]..[7,190+8])
+          Ppat_var "bind" (syntaxf.ml[7,190+4]..[7,190+8])
+        expression (syntaxf.ml[7,190+11]..[7,190+26])
+          Pexp_apply
+          expression (syntaxf.ml[7,190+11]..[7,190+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[7,190+11]..[7,190+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[7,190+20]..[7,190+26])
+                Pexp_constant Const_string("bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[8,217+0]..[8,217+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[8,217+4]..[8,217+21])
+          Ppat_var "class_declaration" (syntaxf.ml[8,217+4]..[8,217+21])
+        expression (syntaxf.ml[8,217+24]..[8,217+52])
+          Pexp_apply
+          expression (syntaxf.ml[8,217+24]..[8,217+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[8,217+24]..[8,217+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[8,217+33]..[8,217+52])
+                Pexp_constant Const_string("class_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[9,270+0]..[9,270+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[9,270+4]..[9,270+21])
+          Ppat_var "class_description" (syntaxf.ml[9,270+4]..[9,270+21])
+        expression (syntaxf.ml[9,270+24]..[9,270+52])
+          Pexp_apply
+          expression (syntaxf.ml[9,270+24]..[9,270+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[9,270+24]..[9,270+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[9,270+33]..[9,270+52])
+                Pexp_constant Const_string("class_description",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[10,323+0]..[10,323+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[10,323+4]..[10,323+12])
+          Ppat_var "let_bind" (syntaxf.ml[10,323+4]..[10,323+12])
+        expression (syntaxf.ml[10,323+15]..[10,323+34])
+          Pexp_apply
+          expression (syntaxf.ml[10,323+15]..[10,323+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[10,323+15]..[10,323+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[10,323+24]..[10,323+34])
+                Pexp_constant Const_string("let_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[11,358+0]..[11,358+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[11,358+4]..[11,358+9])
+          Ppat_var "clexp" (syntaxf.ml[11,358+4]..[11,358+9])
+        expression (syntaxf.ml[11,358+12]..[11,358+28])
+          Pexp_apply
+          expression (syntaxf.ml[11,358+12]..[11,358+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[11,358+12]..[11,358+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[11,358+21]..[11,358+28])
+                Pexp_constant Const_string("clexp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[12,387+0]..[12,387+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[12,387+4]..[12,387+18])
+          Ppat_var "class_fun_bind" (syntaxf.ml[12,387+4]..[12,387+18])
+        expression (syntaxf.ml[12,387+21]..[12,387+46])
+          Pexp_apply
+          expression (syntaxf.ml[12,387+21]..[12,387+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[12,387+21]..[12,387+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[12,387+30]..[12,387+46])
+                Pexp_constant Const_string("class_fun_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[13,434+0]..[13,434+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[13,434+4]..[13,434+17])
+          Ppat_var "class_fun_def" (syntaxf.ml[13,434+4]..[13,434+17])
+        expression (syntaxf.ml[13,434+20]..[13,434+44])
+          Pexp_apply
+          expression (syntaxf.ml[13,434+20]..[13,434+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[13,434+20]..[13,434+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[13,434+29]..[13,434+44])
+                Pexp_constant Const_string("class_fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[14,479+0]..[14,479+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[14,479+4]..[14,479+24])
+          Ppat_var "class_info_for_cltyp" (syntaxf.ml[14,479+4]..[14,479+24])
+        expression (syntaxf.ml[14,479+27]..[14,479+58])
+          Pexp_apply
+          expression (syntaxf.ml[14,479+27]..[14,479+35])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[14,479+27]..[14,479+35])
+          [
+            <label> ""
+              expression (syntaxf.ml[14,479+36]..[14,479+58])
+                Pexp_constant Const_string("class_info_for_cltyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[15,538+0]..[15,538+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[15,538+4]..[15,538+19])
+          Ppat_var "class_longident" (syntaxf.ml[15,538+4]..[15,538+19])
+        expression (syntaxf.ml[15,538+22]..[15,538+48])
+          Pexp_apply
+          expression (syntaxf.ml[15,538+22]..[15,538+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[15,538+22]..[15,538+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[15,538+31]..[15,538+48])
+                Pexp_constant Const_string("class_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[16,587+0]..[16,587+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[16,587+4]..[16,587+24])
+          Ppat_var "class_name_and_param" (syntaxf.ml[16,587+4]..[16,587+24])
+        expression (syntaxf.ml[16,587+27]..[16,587+58])
+          Pexp_apply
+          expression (syntaxf.ml[16,587+27]..[16,587+35])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[16,587+27]..[16,587+35])
+          [
+            <label> ""
+              expression (syntaxf.ml[16,587+36]..[16,587+58])
+                Pexp_constant Const_string("class_name_and_param",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[17,646+0]..[17,646+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[17,646+4]..[17,646+10])
+          Ppat_var "clsigi" (syntaxf.ml[17,646+4]..[17,646+10])
+        expression (syntaxf.ml[17,646+13]..[17,646+30])
+          Pexp_apply
+          expression (syntaxf.ml[17,646+13]..[17,646+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[17,646+13]..[17,646+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[17,646+22]..[17,646+30])
+                Pexp_constant Const_string("clsigi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[18,677+0]..[18,677+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[18,677+4]..[18,677+19])
+          Ppat_var "class_signature" (syntaxf.ml[18,677+4]..[18,677+19])
+        expression (syntaxf.ml[18,677+22]..[18,677+48])
+          Pexp_apply
+          expression (syntaxf.ml[18,677+22]..[18,677+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[18,677+22]..[18,677+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[18,677+31]..[18,677+48])
+                Pexp_constant Const_string("class_signature",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[19,726+0]..[19,726+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[19,726+4]..[19,726+11])
+          Ppat_var "clfield" (syntaxf.ml[19,726+4]..[19,726+11])
+        expression (syntaxf.ml[19,726+14]..[19,726+32])
+          Pexp_apply
+          expression (syntaxf.ml[19,726+14]..[19,726+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[19,726+14]..[19,726+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[19,726+23]..[19,726+32])
+                Pexp_constant Const_string("clfield",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[20,759+0]..[20,759+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[20,759+4]..[20,759+19])
+          Ppat_var "class_structure" (syntaxf.ml[20,759+4]..[20,759+19])
+        expression (syntaxf.ml[20,759+22]..[20,759+48])
+          Pexp_apply
+          expression (syntaxf.ml[20,759+22]..[20,759+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[20,759+22]..[20,759+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[20,759+31]..[20,759+48])
+                Pexp_constant Const_string("class_structure",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[21,808+0]..[21,808+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[21,808+4]..[21,808+9])
+          Ppat_var "cltyp" (syntaxf.ml[21,808+4]..[21,808+9])
+        expression (syntaxf.ml[21,808+12]..[21,808+28])
+          Pexp_apply
+          expression (syntaxf.ml[21,808+12]..[21,808+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[21,808+12]..[21,808+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[21,808+21]..[21,808+28])
+                Pexp_constant Const_string("cltyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[22,837+0]..[22,837+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[22,837+4]..[22,837+21])
+          Ppat_var "cltyp_declaration" (syntaxf.ml[22,837+4]..[22,837+21])
+        expression (syntaxf.ml[22,837+24]..[22,837+52])
+          Pexp_apply
+          expression (syntaxf.ml[22,837+24]..[22,837+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[22,837+24]..[22,837+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[22,837+33]..[22,837+52])
+                Pexp_constant Const_string("cltyp_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[23,890+0]..[23,890+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[23,890+4]..[23,890+19])
+          Ppat_var "cltyp_longident" (syntaxf.ml[23,890+4]..[23,890+19])
+        expression (syntaxf.ml[23,890+22]..[23,890+48])
+          Pexp_apply
+          expression (syntaxf.ml[23,890+22]..[23,890+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[23,890+22]..[23,890+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[23,890+31]..[23,890+48])
+                Pexp_constant Const_string("cltyp_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[24,939+0]..[24,939+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[24,939+4]..[24,939+14])
+          Ppat_var "cltyp_plus" (syntaxf.ml[24,939+4]..[24,939+14])
+        expression (syntaxf.ml[24,939+17]..[24,939+38])
+          Pexp_apply
+          expression (syntaxf.ml[24,939+17]..[24,939+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[24,939+17]..[24,939+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[24,939+26]..[24,939+38])
+                Pexp_constant Const_string("cltyp_plus",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[25,978+0]..[25,978+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[25,978+4]..[25,978+12])
+          Ppat_var "com_ctyp" (syntaxf.ml[25,978+4]..[25,978+12])
+        expression (syntaxf.ml[25,978+15]..[25,978+34])
+          Pexp_apply
+          expression (syntaxf.ml[25,978+15]..[25,978+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[25,978+15]..[25,978+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[25,978+24]..[25,978+34])
+                Pexp_constant Const_string("com_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[26,1013+0]..[26,1013+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[26,1013+4]..[26,1013+14])
+          Ppat_var "comma_ctyp" (syntaxf.ml[26,1013+4]..[26,1013+14])
+        expression (syntaxf.ml[26,1013+17]..[26,1013+38])
+          Pexp_apply
+          expression (syntaxf.ml[26,1013+17]..[26,1013+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[26,1013+17]..[26,1013+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[26,1013+26]..[26,1013+38])
+                Pexp_constant Const_string("comma_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[27,1052+0]..[27,1052+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[27,1052+4]..[27,1052+13])
+          Ppat_var "comma_exp" (syntaxf.ml[27,1052+4]..[27,1052+13])
+        expression (syntaxf.ml[27,1052+16]..[27,1052+36])
+          Pexp_apply
+          expression (syntaxf.ml[27,1052+16]..[27,1052+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[27,1052+16]..[27,1052+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[27,1052+25]..[27,1052+36])
+                Pexp_constant Const_string("comma_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[28,1089+0]..[28,1089+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[28,1089+4]..[28,1089+14])
+          Ppat_var "comma_ipat" (syntaxf.ml[28,1089+4]..[28,1089+14])
+        expression (syntaxf.ml[28,1089+17]..[28,1089+38])
+          Pexp_apply
+          expression (syntaxf.ml[28,1089+17]..[28,1089+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[28,1089+17]..[28,1089+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[28,1089+26]..[28,1089+38])
+                Pexp_constant Const_string("comma_ipat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[29,1128+0]..[29,1128+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[29,1128+4]..[29,1128+13])
+          Ppat_var "comma_pat" (syntaxf.ml[29,1128+4]..[29,1128+13])
+        expression (syntaxf.ml[29,1128+16]..[29,1128+36])
+          Pexp_apply
+          expression (syntaxf.ml[29,1128+16]..[29,1128+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[29,1128+16]..[29,1128+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[29,1128+25]..[29,1128+36])
+                Pexp_constant Const_string("comma_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[30,1165+0]..[30,1165+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[30,1165+4]..[30,1165+12])
+          Ppat_var "comma_ep" (syntaxf.ml[30,1165+4]..[30,1165+12])
+        expression (syntaxf.ml[30,1165+15]..[30,1165+34])
+          Pexp_apply
+          expression (syntaxf.ml[30,1165+15]..[30,1165+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[30,1165+15]..[30,1165+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[30,1165+24]..[30,1165+34])
+                Pexp_constant Const_string("comma_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[31,1200+0]..[31,1200+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[31,1200+4]..[31,1200+24])
+          Ppat_var "comma_type_parameter" (syntaxf.ml[31,1200+4]..[31,1200+24])
+        expression (syntaxf.ml[31,1200+27]..[31,1200+58])
+          Pexp_apply
+          expression (syntaxf.ml[31,1200+27]..[31,1200+35])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[31,1200+27]..[31,1200+35])
+          [
+            <label> ""
+              expression (syntaxf.ml[31,1200+36]..[31,1200+58])
+                Pexp_constant Const_string("comma_type_parameter",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[32,1259+0]..[32,1259+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[32,1259+4]..[32,1259+13])
+          Ppat_var "constrain" (syntaxf.ml[32,1259+4]..[32,1259+13])
+        expression (syntaxf.ml[32,1259+16]..[32,1259+36])
+          Pexp_apply
+          expression (syntaxf.ml[32,1259+16]..[32,1259+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[32,1259+16]..[32,1259+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[32,1259+25]..[32,1259+36])
+                Pexp_constant Const_string("constrain",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[33,1296+0]..[33,1296+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[33,1296+4]..[33,1296+24])
+          Ppat_var "constructor_arg_list" (syntaxf.ml[33,1296+4]..[33,1296+24])
+        expression (syntaxf.ml[33,1296+27]..[33,1296+58])
+          Pexp_apply
+          expression (syntaxf.ml[33,1296+27]..[33,1296+35])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[33,1296+27]..[33,1296+35])
+          [
+            <label> ""
+              expression (syntaxf.ml[33,1296+36]..[33,1296+58])
+                Pexp_constant Const_string("constructor_arg_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[34,1355+0]..[34,1355+64])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[34,1355+4]..[34,1355+27])
+          Ppat_var "constructor_declaration" (syntaxf.ml[34,1355+4]..[34,1355+27])
+        expression (syntaxf.ml[34,1355+30]..[34,1355+64])
+          Pexp_apply
+          expression (syntaxf.ml[34,1355+30]..[34,1355+38])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[34,1355+30]..[34,1355+38])
+          [
+            <label> ""
+              expression (syntaxf.ml[34,1355+39]..[34,1355+64])
+                Pexp_constant Const_string("constructor_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[35,1420+0]..[35,1420+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[35,1420+4]..[35,1420+28])
+          Ppat_var "constructor_declarations" (syntaxf.ml[35,1420+4]..[35,1420+28])
+        expression (syntaxf.ml[35,1420+31]..[35,1420+66])
+          Pexp_apply
+          expression (syntaxf.ml[35,1420+31]..[35,1420+39])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[35,1420+31]..[35,1420+39])
+          [
+            <label> ""
+              expression (syntaxf.ml[35,1420+40]..[35,1420+66])
+                Pexp_constant Const_string("constructor_declarations",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[36,1487+0]..[36,1487+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[36,1487+4]..[36,1487+8])
+          Ppat_var "ctyp" (syntaxf.ml[36,1487+4]..[36,1487+8])
+        expression (syntaxf.ml[36,1487+11]..[36,1487+26])
+          Pexp_apply
+          expression (syntaxf.ml[36,1487+11]..[36,1487+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[36,1487+11]..[36,1487+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[36,1487+20]..[36,1487+26])
+                Pexp_constant Const_string("ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[37,1514+0]..[37,1514+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[37,1514+4]..[37,1514+15])
+          Ppat_var "cvalue_bind" (syntaxf.ml[37,1514+4]..[37,1514+15])
+        expression (syntaxf.ml[37,1514+18]..[37,1514+40])
+          Pexp_apply
+          expression (syntaxf.ml[37,1514+18]..[37,1514+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[37,1514+18]..[37,1514+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[37,1514+27]..[37,1514+40])
+                Pexp_constant Const_string("cvalue_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[38,1555+0]..[38,1555+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[38,1555+4]..[38,1555+8])
+          Ppat_var "flag" (syntaxf.ml[38,1555+4]..[38,1555+8])
+        expression (syntaxf.ml[38,1555+11]..[38,1555+26])
+          Pexp_apply
+          expression (syntaxf.ml[38,1555+11]..[38,1555+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[38,1555+11]..[38,1555+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[38,1555+20]..[38,1555+26])
+                Pexp_constant Const_string("flag",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[39,1582+0]..[39,1582+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[39,1582+4]..[39,1582+23])
+          Ppat_var "direction_flag_quot" (syntaxf.ml[39,1582+4]..[39,1582+23])
+        expression (syntaxf.ml[39,1582+26]..[39,1582+56])
+          Pexp_apply
+          expression (syntaxf.ml[39,1582+26]..[39,1582+34])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[39,1582+26]..[39,1582+34])
+          [
+            <label> ""
+              expression (syntaxf.ml[39,1582+35]..[39,1582+56])
+                Pexp_constant Const_string("direction_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[40,1639+0]..[40,1639+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[40,1639+4]..[40,1639+10])
+          Ppat_var "eq_exp" (syntaxf.ml[40,1639+4]..[40,1639+10])
+        expression (syntaxf.ml[40,1639+13]..[40,1639+30])
+          Pexp_apply
+          expression (syntaxf.ml[40,1639+13]..[40,1639+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[40,1639+13]..[40,1639+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[40,1639+22]..[40,1639+30])
+                Pexp_constant Const_string("eq_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[41,1670+0]..[41,1670+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[41,1670+4]..[41,1670+7])
+          Ppat_var "exp" (syntaxf.ml[41,1670+4]..[41,1670+7])
+        expression (syntaxf.ml[41,1670+10]..[41,1670+24])
+          Pexp_apply
+          expression (syntaxf.ml[41,1670+10]..[41,1670+18])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[41,1670+10]..[41,1670+18])
+          [
+            <label> ""
+              expression (syntaxf.ml[41,1670+19]..[41,1670+24])
+                Pexp_constant Const_string("exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[42,1695+0]..[42,1695+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[42,1695+4]..[42,1695+13])
+          Ppat_var "field_exp" (syntaxf.ml[42,1695+4]..[42,1695+13])
+        expression (syntaxf.ml[42,1695+16]..[42,1695+36])
+          Pexp_apply
+          expression (syntaxf.ml[42,1695+16]..[42,1695+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[42,1695+16]..[42,1695+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[42,1695+25]..[42,1695+36])
+                Pexp_constant Const_string("field_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[43,1732+0]..[43,1732+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[43,1732+4]..[43,1732+18])
+          Ppat_var "field_exp_list" (syntaxf.ml[43,1732+4]..[43,1732+18])
+        expression (syntaxf.ml[43,1732+21]..[43,1732+46])
+          Pexp_apply
+          expression (syntaxf.ml[43,1732+21]..[43,1732+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[43,1732+21]..[43,1732+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[43,1732+30]..[43,1732+46])
+                Pexp_constant Const_string("field_exp_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[44,1779+0]..[44,1779+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[44,1779+4]..[44,1779+12])
+          Ppat_var "fun_bind" (syntaxf.ml[44,1779+4]..[44,1779+12])
+        expression (syntaxf.ml[44,1779+15]..[44,1779+34])
+          Pexp_apply
+          expression (syntaxf.ml[44,1779+15]..[44,1779+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[44,1779+15]..[44,1779+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[44,1779+24]..[44,1779+34])
+                Pexp_constant Const_string("fun_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[45,1814+0]..[45,1814+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[45,1814+4]..[45,1814+11])
+          Ppat_var "fun_def" (syntaxf.ml[45,1814+4]..[45,1814+11])
+        expression (syntaxf.ml[45,1814+14]..[45,1814+32])
+          Pexp_apply
+          expression (syntaxf.ml[45,1814+14]..[45,1814+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[45,1814+14]..[45,1814+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[45,1814+23]..[45,1814+32])
+                Pexp_constant Const_string("fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[46,1847+0]..[46,1847+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[46,1847+4]..[46,1847+9])
+          Ppat_var "ident" (syntaxf.ml[46,1847+4]..[46,1847+9])
+        expression (syntaxf.ml[46,1847+12]..[46,1847+28])
+          Pexp_apply
+          expression (syntaxf.ml[46,1847+12]..[46,1847+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[46,1847+12]..[46,1847+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[46,1847+21]..[46,1847+28])
+                Pexp_constant Const_string("ident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[47,1876+0]..[47,1876+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[47,1876+4]..[47,1876+10])
+          Ppat_var "implem" (syntaxf.ml[47,1876+4]..[47,1876+10])
+        expression (syntaxf.ml[47,1876+13]..[47,1876+30])
+          Pexp_apply
+          expression (syntaxf.ml[47,1876+13]..[47,1876+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[47,1876+13]..[47,1876+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[47,1876+22]..[47,1876+30])
+                Pexp_constant Const_string("implem",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[48,1907+0]..[48,1907+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[48,1907+4]..[48,1907+10])
+          Ppat_var "interf" (syntaxf.ml[48,1907+4]..[48,1907+10])
+        expression (syntaxf.ml[48,1907+13]..[48,1907+30])
+          Pexp_apply
+          expression (syntaxf.ml[48,1907+13]..[48,1907+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[48,1907+13]..[48,1907+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[48,1907+22]..[48,1907+30])
+                Pexp_constant Const_string("interf",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[49,1938+0]..[49,1938+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[49,1938+4]..[49,1938+12])
+          Ppat_var "use_file" (syntaxf.ml[49,1938+4]..[49,1938+12])
+        expression (syntaxf.ml[49,1938+15]..[49,1938+34])
+          Pexp_apply
+          expression (syntaxf.ml[49,1938+15]..[49,1938+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[49,1938+15]..[49,1938+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[49,1938+24]..[49,1938+34])
+                Pexp_constant Const_string("use_file",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[50,1973+0]..[50,1973+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[50,1973+4]..[50,1973+8])
+          Ppat_var "ipat" (syntaxf.ml[50,1973+4]..[50,1973+8])
+        expression (syntaxf.ml[50,1973+11]..[50,1973+26])
+          Pexp_apply
+          expression (syntaxf.ml[50,1973+11]..[50,1973+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[50,1973+11]..[50,1973+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[50,1973+20]..[50,1973+26])
+                Pexp_constant Const_string("ipat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[51,2000+0]..[51,2000+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[51,2000+4]..[51,2000+13])
+          Ppat_var "ipat_tcon" (syntaxf.ml[51,2000+4]..[51,2000+13])
+        expression (syntaxf.ml[51,2000+16]..[51,2000+36])
+          Pexp_apply
+          expression (syntaxf.ml[51,2000+16]..[51,2000+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[51,2000+16]..[51,2000+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[51,2000+25]..[51,2000+36])
+                Pexp_constant Const_string("ipat_tcon",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[52,2037+0]..[52,2037+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[52,2037+4]..[52,2037+12])
+          Ppat_var "pat_tcon" (syntaxf.ml[52,2037+4]..[52,2037+12])
+        expression (syntaxf.ml[52,2037+15]..[52,2037+34])
+          Pexp_apply
+          expression (syntaxf.ml[52,2037+15]..[52,2037+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[52,2037+15]..[52,2037+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[52,2037+24]..[52,2037+34])
+                Pexp_constant Const_string("pat_tcon",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[53,2072+0]..[53,2072+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[53,2072+4]..[53,2072+21])
+          Ppat_var "label_declaration" (syntaxf.ml[53,2072+4]..[53,2072+21])
+        expression (syntaxf.ml[53,2072+24]..[53,2072+52])
+          Pexp_apply
+          expression (syntaxf.ml[53,2072+24]..[53,2072+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[53,2072+24]..[53,2072+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[53,2072+33]..[53,2072+52])
+                Pexp_constant Const_string("label_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[54,2125+0]..[54,2125+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[54,2125+4]..[54,2125+26])
+          Ppat_var "label_declaration_list" (syntaxf.ml[54,2125+4]..[54,2125+26])
+        expression (syntaxf.ml[54,2125+29]..[54,2125+62])
+          Pexp_apply
+          expression (syntaxf.ml[54,2125+29]..[54,2125+37])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[54,2125+29]..[54,2125+37])
+          [
+            <label> ""
+              expression (syntaxf.ml[54,2125+38]..[54,2125+62])
+                Pexp_constant Const_string("label_declaration_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[55,2188+0]..[55,2188+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[55,2188+4]..[55,2188+13])
+          Ppat_var "label_exp" (syntaxf.ml[55,2188+4]..[55,2188+13])
+        expression (syntaxf.ml[55,2188+16]..[55,2188+36])
+          Pexp_apply
+          expression (syntaxf.ml[55,2188+16]..[55,2188+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[55,2188+16]..[55,2188+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[55,2188+25]..[55,2188+36])
+                Pexp_constant Const_string("label_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[56,2225+0]..[56,2225+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[56,2225+4]..[56,2225+18])
+          Ppat_var "label_exp_list" (syntaxf.ml[56,2225+4]..[56,2225+18])
+        expression (syntaxf.ml[56,2225+21]..[56,2225+46])
+          Pexp_apply
+          expression (syntaxf.ml[56,2225+21]..[56,2225+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[56,2225+21]..[56,2225+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[56,2225+30]..[56,2225+46])
+                Pexp_constant Const_string("label_exp_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[57,2272+0]..[57,2272+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[57,2272+4]..[57,2272+18])
+          Ppat_var "label_pat_list" (syntaxf.ml[57,2272+4]..[57,2272+18])
+        expression (syntaxf.ml[57,2272+21]..[57,2272+46])
+          Pexp_apply
+          expression (syntaxf.ml[57,2272+21]..[57,2272+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[57,2272+21]..[57,2272+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[57,2272+30]..[57,2272+46])
+                Pexp_constant Const_string("label_pat_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[58,2319+0]..[58,2319+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[58,2319+4]..[58,2319+13])
+          Ppat_var "label_pat" (syntaxf.ml[58,2319+4]..[58,2319+13])
+        expression (syntaxf.ml[58,2319+16]..[58,2319+36])
+          Pexp_apply
+          expression (syntaxf.ml[58,2319+16]..[58,2319+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[58,2319+16]..[58,2319+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[58,2319+25]..[58,2319+36])
+                Pexp_constant Const_string("label_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[59,2356+0]..[59,2356+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[59,2356+4]..[59,2356+19])
+          Ppat_var "label_longident" (syntaxf.ml[59,2356+4]..[59,2356+19])
+        expression (syntaxf.ml[59,2356+22]..[59,2356+48])
+          Pexp_apply
+          expression (syntaxf.ml[59,2356+22]..[59,2356+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[59,2356+22]..[59,2356+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[59,2356+31]..[59,2356+48])
+                Pexp_constant Const_string("label_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[60,2405+0]..[60,2405+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[60,2405+4]..[60,2405+13])
+          Ppat_var "meth_list" (syntaxf.ml[60,2405+4]..[60,2405+13])
+        expression (syntaxf.ml[60,2405+16]..[60,2405+36])
+          Pexp_apply
+          expression (syntaxf.ml[60,2405+16]..[60,2405+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[60,2405+16]..[60,2405+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[60,2405+25]..[60,2405+36])
+                Pexp_constant Const_string("meth_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[61,2442+0]..[61,2442+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[61,2442+4]..[61,2442+13])
+          Ppat_var "meth_decl" (syntaxf.ml[61,2442+4]..[61,2442+13])
+        expression (syntaxf.ml[61,2442+16]..[61,2442+36])
+          Pexp_apply
+          expression (syntaxf.ml[61,2442+16]..[61,2442+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[61,2442+16]..[61,2442+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[61,2442+25]..[61,2442+36])
+                Pexp_constant Const_string("meth_decl",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[62,2479+0]..[62,2479+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[62,2479+4]..[62,2479+9])
+          Ppat_var "mbind" (syntaxf.ml[62,2479+4]..[62,2479+9])
+        expression (syntaxf.ml[62,2479+12]..[62,2479+28])
+          Pexp_apply
+          expression (syntaxf.ml[62,2479+12]..[62,2479+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[62,2479+12]..[62,2479+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[62,2479+21]..[62,2479+28])
+                Pexp_constant Const_string("mbind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[63,2508+0]..[63,2508+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[63,2508+4]..[63,2508+9])
+          Ppat_var "mbind" (syntaxf.ml[63,2508+4]..[63,2508+9])
+        expression (syntaxf.ml[63,2508+12]..[63,2508+28])
+          Pexp_apply
+          expression (syntaxf.ml[63,2508+12]..[63,2508+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[63,2508+12]..[63,2508+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[63,2508+21]..[63,2508+28])
+                Pexp_constant Const_string("mbind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[64,2537+0]..[64,2537+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[64,2537+4]..[64,2537+10])
+          Ppat_var "mbind0" (syntaxf.ml[64,2537+4]..[64,2537+10])
+        expression (syntaxf.ml[64,2537+13]..[64,2537+30])
+          Pexp_apply
+          expression (syntaxf.ml[64,2537+13]..[64,2537+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[64,2537+13]..[64,2537+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[64,2537+22]..[64,2537+30])
+                Pexp_constant Const_string("mbind0",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[65,2568+0]..[65,2568+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[65,2568+4]..[65,2568+8])
+          Ppat_var "mexp" (syntaxf.ml[65,2568+4]..[65,2568+8])
+        expression (syntaxf.ml[65,2568+11]..[65,2568+26])
+          Pexp_apply
+          expression (syntaxf.ml[65,2568+11]..[65,2568+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[65,2568+11]..[65,2568+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[65,2568+20]..[65,2568+26])
+                Pexp_constant Const_string("mexp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[66,2595+0]..[66,2595+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[66,2595+4]..[66,2595+20])
+          Ppat_var "module_longident" (syntaxf.ml[66,2595+4]..[66,2595+20])
+        expression (syntaxf.ml[66,2595+23]..[66,2595+50])
+          Pexp_apply
+          expression (syntaxf.ml[66,2595+23]..[66,2595+31])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[66,2595+23]..[66,2595+31])
+          [
+            <label> ""
+              expression (syntaxf.ml[66,2595+32]..[66,2595+50])
+                Pexp_constant Const_string("module_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[67,2646+0]..[67,2646+68])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[67,2646+4]..[67,2646+29])
+          Ppat_var "module_longident_with_app" (syntaxf.ml[67,2646+4]..[67,2646+29])
+        expression (syntaxf.ml[67,2646+32]..[67,2646+68])
+          Pexp_apply
+          expression (syntaxf.ml[67,2646+32]..[67,2646+40])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[67,2646+32]..[67,2646+40])
+          [
+            <label> ""
+              expression (syntaxf.ml[67,2646+41]..[67,2646+68])
+                Pexp_constant Const_string("module_longident_with_app",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[68,2715+0]..[68,2715+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[68,2715+4]..[68,2715+26])
+          Ppat_var "module_rec_declaration" (syntaxf.ml[68,2715+4]..[68,2715+26])
+        expression (syntaxf.ml[68,2715+29]..[68,2715+62])
+          Pexp_apply
+          expression (syntaxf.ml[68,2715+29]..[68,2715+37])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[68,2715+29]..[68,2715+37])
+          [
+            <label> ""
+              expression (syntaxf.ml[68,2715+38]..[68,2715+62])
+                Pexp_constant Const_string("module_rec_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[69,2778+0]..[69,2778+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[69,2778+4]..[69,2778+8])
+          Ppat_var "mtyp" (syntaxf.ml[69,2778+4]..[69,2778+8])
+        expression (syntaxf.ml[69,2778+11]..[69,2778+26])
+          Pexp_apply
+          expression (syntaxf.ml[69,2778+11]..[69,2778+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[69,2778+11]..[69,2778+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[69,2778+20]..[69,2778+26])
+                Pexp_constant Const_string("mtyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[70,2805+0]..[70,2805+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[70,2805+4]..[70,2805+13])
+          Ppat_var "name_tags" (syntaxf.ml[70,2805+4]..[70,2805+13])
+        expression (syntaxf.ml[70,2805+16]..[70,2805+36])
+          Pexp_apply
+          expression (syntaxf.ml[70,2805+16]..[70,2805+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[70,2805+16]..[70,2805+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[70,2805+25]..[70,2805+36])
+                Pexp_constant Const_string("name_tags",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[71,2842+0]..[71,2842+54])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[71,2842+4]..[71,2842+22])
+          Ppat_var "opt_class_self_pat" (syntaxf.ml[71,2842+4]..[71,2842+22])
+        expression (syntaxf.ml[71,2842+25]..[71,2842+54])
+          Pexp_apply
+          expression (syntaxf.ml[71,2842+25]..[71,2842+33])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[71,2842+25]..[71,2842+33])
+          [
+            <label> ""
+              expression (syntaxf.ml[71,2842+34]..[71,2842+54])
+                Pexp_constant Const_string("opt_class_self_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[72,2897+0]..[72,2897+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[72,2897+4]..[72,2897+23])
+          Ppat_var "opt_class_self_type" (syntaxf.ml[72,2897+4]..[72,2897+23])
+        expression (syntaxf.ml[72,2897+26]..[72,2897+56])
+          Pexp_apply
+          expression (syntaxf.ml[72,2897+26]..[72,2897+34])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[72,2897+26]..[72,2897+34])
+          [
+            <label> ""
+              expression (syntaxf.ml[72,2897+35]..[72,2897+56])
+                Pexp_constant Const_string("opt_class_self_type",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[73,2954+0]..[73,2954+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[73,2954+4]..[73,2954+18])
+          Ppat_var "opt_comma_ctyp" (syntaxf.ml[73,2954+4]..[73,2954+18])
+        expression (syntaxf.ml[73,2954+21]..[73,2954+46])
+          Pexp_apply
+          expression (syntaxf.ml[73,2954+21]..[73,2954+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[73,2954+21]..[73,2954+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[73,2954+30]..[73,2954+46])
+                Pexp_constant Const_string("opt_comma_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[74,3001+0]..[74,3001+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[74,3001+4]..[74,3001+15])
+          Ppat_var "opt_dot_dot" (syntaxf.ml[74,3001+4]..[74,3001+15])
+        expression (syntaxf.ml[74,3001+18]..[74,3001+40])
+          Pexp_apply
+          expression (syntaxf.ml[74,3001+18]..[74,3001+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[74,3001+18]..[74,3001+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[74,3001+27]..[74,3001+40])
+                Pexp_constant Const_string("opt_dot_dot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[75,3042+0]..[75,3042+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[75,3042+4]..[75,3042+21])
+          Ppat_var "row_var_flag_quot" (syntaxf.ml[75,3042+4]..[75,3042+21])
+        expression (syntaxf.ml[75,3042+24]..[75,3042+52])
+          Pexp_apply
+          expression (syntaxf.ml[75,3042+24]..[75,3042+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[75,3042+24]..[75,3042+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[75,3042+33]..[75,3042+52])
+                Pexp_constant Const_string("row_var_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[76,3095+0]..[76,3095+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[76,3095+4]..[76,3095+11])
+          Ppat_var "opt_exp" (syntaxf.ml[76,3095+4]..[76,3095+11])
+        expression (syntaxf.ml[76,3095+14]..[76,3095+32])
+          Pexp_apply
+          expression (syntaxf.ml[76,3095+14]..[76,3095+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[76,3095+14]..[76,3095+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[76,3095+23]..[76,3095+32])
+                Pexp_constant Const_string("opt_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[77,3128+0]..[77,3128+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[77,3128+4]..[77,3128+17])
+          Ppat_var "opt_meth_list" (syntaxf.ml[77,3128+4]..[77,3128+17])
+        expression (syntaxf.ml[77,3128+20]..[77,3128+44])
+          Pexp_apply
+          expression (syntaxf.ml[77,3128+20]..[77,3128+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[77,3128+20]..[77,3128+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[77,3128+29]..[77,3128+44])
+                Pexp_constant Const_string("opt_meth_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[78,3173+0]..[78,3173+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[78,3173+4]..[78,3173+15])
+          Ppat_var "opt_mutable" (syntaxf.ml[78,3173+4]..[78,3173+15])
+        expression (syntaxf.ml[78,3173+18]..[78,3173+40])
+          Pexp_apply
+          expression (syntaxf.ml[78,3173+18]..[78,3173+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[78,3173+18]..[78,3173+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[78,3173+27]..[78,3173+40])
+                Pexp_constant Const_string("opt_mutable",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[79,3214+0]..[79,3214+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[79,3214+4]..[79,3214+21])
+          Ppat_var "mutable_flag_quot" (syntaxf.ml[79,3214+4]..[79,3214+21])
+        expression (syntaxf.ml[79,3214+24]..[79,3214+52])
+          Pexp_apply
+          expression (syntaxf.ml[79,3214+24]..[79,3214+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[79,3214+24]..[79,3214+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[79,3214+33]..[79,3214+52])
+                Pexp_constant Const_string("mutable_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[80,3267+0]..[80,3267+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[80,3267+4]..[80,3267+13])
+          Ppat_var "opt_polyt" (syntaxf.ml[80,3267+4]..[80,3267+13])
+        expression (syntaxf.ml[80,3267+16]..[80,3267+36])
+          Pexp_apply
+          expression (syntaxf.ml[80,3267+16]..[80,3267+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[80,3267+16]..[80,3267+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[80,3267+25]..[80,3267+36])
+                Pexp_constant Const_string("opt_polyt",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[81,3304+0]..[81,3304+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[81,3304+4]..[81,3304+15])
+          Ppat_var "opt_private" (syntaxf.ml[81,3304+4]..[81,3304+15])
+        expression (syntaxf.ml[81,3304+18]..[81,3304+40])
+          Pexp_apply
+          expression (syntaxf.ml[81,3304+18]..[81,3304+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[81,3304+18]..[81,3304+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[81,3304+27]..[81,3304+40])
+                Pexp_constant Const_string("opt_private",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[82,3345+0]..[82,3345+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[82,3345+4]..[82,3345+21])
+          Ppat_var "private_flag_quot" (syntaxf.ml[82,3345+4]..[82,3345+21])
+        expression (syntaxf.ml[82,3345+24]..[82,3345+52])
+          Pexp_apply
+          expression (syntaxf.ml[82,3345+24]..[82,3345+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[82,3345+24]..[82,3345+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[82,3345+33]..[82,3345+52])
+                Pexp_constant Const_string("private_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[83,3398+0]..[83,3398+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[83,3398+4]..[83,3398+11])
+          Ppat_var "opt_rec" (syntaxf.ml[83,3398+4]..[83,3398+11])
+        expression (syntaxf.ml[83,3398+14]..[83,3398+32])
+          Pexp_apply
+          expression (syntaxf.ml[83,3398+14]..[83,3398+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[83,3398+14]..[83,3398+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[83,3398+23]..[83,3398+32])
+                Pexp_constant Const_string("opt_rec",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[84,3431+0]..[84,3431+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[84,3431+4]..[84,3431+17])
+          Ppat_var "rec_flag_quot" (syntaxf.ml[84,3431+4]..[84,3431+17])
+        expression (syntaxf.ml[84,3431+20]..[84,3431+44])
+          Pexp_apply
+          expression (syntaxf.ml[84,3431+20]..[84,3431+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[84,3431+20]..[84,3431+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[84,3431+29]..[84,3431+44])
+                Pexp_constant Const_string("rec_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[85,3476+0]..[85,3476+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[85,3476+4]..[85,3476+15])
+          Ppat_var "opt_virtual" (syntaxf.ml[85,3476+4]..[85,3476+15])
+        expression (syntaxf.ml[85,3476+18]..[85,3476+40])
+          Pexp_apply
+          expression (syntaxf.ml[85,3476+18]..[85,3476+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[85,3476+18]..[85,3476+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[85,3476+27]..[85,3476+40])
+                Pexp_constant Const_string("opt_virtual",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[86,3517+0]..[86,3517+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[86,3517+4]..[86,3517+21])
+          Ppat_var "virtual_flag_quot" (syntaxf.ml[86,3517+4]..[86,3517+21])
+        expression (syntaxf.ml[86,3517+24]..[86,3517+52])
+          Pexp_apply
+          expression (syntaxf.ml[86,3517+24]..[86,3517+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[86,3517+24]..[86,3517+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[86,3517+33]..[86,3517+52])
+                Pexp_constant Const_string("virtual_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[87,3570+0]..[87,3570+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[87,3570+4]..[87,3570+16])
+          Ppat_var "opt_override" (syntaxf.ml[87,3570+4]..[87,3570+16])
+        expression (syntaxf.ml[87,3570+19]..[87,3570+42])
+          Pexp_apply
+          expression (syntaxf.ml[87,3570+19]..[87,3570+27])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[87,3570+19]..[87,3570+27])
+          [
+            <label> ""
+              expression (syntaxf.ml[87,3570+28]..[87,3570+42])
+                Pexp_constant Const_string("opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[88,3613+0]..[88,3613+54])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[88,3613+4]..[88,3613+22])
+          Ppat_var "override_flag_quot" (syntaxf.ml[88,3613+4]..[88,3613+22])
+        expression (syntaxf.ml[88,3613+25]..[88,3613+54])
+          Pexp_apply
+          expression (syntaxf.ml[88,3613+25]..[88,3613+33])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[88,3613+25]..[88,3613+33])
+          [
+            <label> ""
+              expression (syntaxf.ml[88,3613+34]..[88,3613+54])
+                Pexp_constant Const_string("override_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[89,3668+0]..[89,3668+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[89,3668+4]..[89,3668+7])
+          Ppat_var "pat" (syntaxf.ml[89,3668+4]..[89,3668+7])
+        expression (syntaxf.ml[89,3668+10]..[89,3668+24])
+          Pexp_apply
+          expression (syntaxf.ml[89,3668+10]..[89,3668+18])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[89,3668+10]..[89,3668+18])
+          [
+            <label> ""
+              expression (syntaxf.ml[89,3668+19]..[89,3668+24])
+                Pexp_constant Const_string("pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[90,3693+0]..[90,3693+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[90,3693+4]..[90,3693+13])
+          Ppat_var "row_field" (syntaxf.ml[90,3693+4]..[90,3693+13])
+        expression (syntaxf.ml[90,3693+16]..[90,3693+36])
+          Pexp_apply
+          expression (syntaxf.ml[90,3693+16]..[90,3693+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[90,3693+16]..[90,3693+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[90,3693+25]..[90,3693+36])
+                Pexp_constant Const_string("row_field",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[91,3730+0]..[91,3730+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[91,3730+4]..[91,3730+11])
+          Ppat_var "sem_exp" (syntaxf.ml[91,3730+4]..[91,3730+11])
+        expression (syntaxf.ml[91,3730+14]..[91,3730+32])
+          Pexp_apply
+          expression (syntaxf.ml[91,3730+14]..[91,3730+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[91,3730+14]..[91,3730+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[91,3730+23]..[91,3730+32])
+                Pexp_constant Const_string("sem_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[92,3763+0]..[92,3763+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[92,3763+4]..[92,3763+20])
+          Ppat_var "sem_exp_for_list" (syntaxf.ml[92,3763+4]..[92,3763+20])
+        expression (syntaxf.ml[92,3763+23]..[92,3763+50])
+          Pexp_apply
+          expression (syntaxf.ml[92,3763+23]..[92,3763+31])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[92,3763+23]..[92,3763+31])
+          [
+            <label> ""
+              expression (syntaxf.ml[92,3763+32]..[92,3763+50])
+                Pexp_constant Const_string("sem_exp_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[93,3814+0]..[93,3814+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[93,3814+4]..[93,3814+11])
+          Ppat_var "sem_pat" (syntaxf.ml[93,3814+4]..[93,3814+11])
+        expression (syntaxf.ml[93,3814+14]..[93,3814+32])
+          Pexp_apply
+          expression (syntaxf.ml[93,3814+14]..[93,3814+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[93,3814+14]..[93,3814+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[93,3814+23]..[93,3814+32])
+                Pexp_constant Const_string("sem_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[94,3847+0]..[94,3847+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[94,3847+4]..[94,3847+20])
+          Ppat_var "sem_pat_for_list" (syntaxf.ml[94,3847+4]..[94,3847+20])
+        expression (syntaxf.ml[94,3847+23]..[94,3847+50])
+          Pexp_apply
+          expression (syntaxf.ml[94,3847+23]..[94,3847+31])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[94,3847+23]..[94,3847+31])
+          [
+            <label> ""
+              expression (syntaxf.ml[94,3847+32]..[94,3847+50])
+                Pexp_constant Const_string("sem_pat_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[95,3898+0]..[95,3898+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[95,3898+4]..[95,3898+19])
+          Ppat_var "sem_ep_for_list" (syntaxf.ml[95,3898+4]..[95,3898+19])
+        expression (syntaxf.ml[95,3898+22]..[95,3898+48])
+          Pexp_apply
+          expression (syntaxf.ml[95,3898+22]..[95,3898+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[95,3898+22]..[95,3898+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[95,3898+31]..[95,3898+48])
+                Pexp_constant Const_string("sem_ep_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[96,3947+0]..[96,3947+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[96,3947+4]..[96,3947+10])
+          Ppat_var "sem_ep" (syntaxf.ml[96,3947+4]..[96,3947+10])
+        expression (syntaxf.ml[96,3947+13]..[96,3947+30])
+          Pexp_apply
+          expression (syntaxf.ml[96,3947+13]..[96,3947+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[96,3947+13]..[96,3947+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[96,3947+22]..[96,3947+30])
+                Pexp_constant Const_string("sem_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[97,3978+0]..[97,3978+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[97,3978+4]..[97,3978+17])
+          Ppat_var "label_ep_list" (syntaxf.ml[97,3978+4]..[97,3978+17])
+        expression (syntaxf.ml[97,3978+20]..[97,3978+44])
+          Pexp_apply
+          expression (syntaxf.ml[97,3978+20]..[97,3978+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[97,3978+20]..[97,3978+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[97,3978+29]..[97,3978+44])
+                Pexp_constant Const_string("label_ep_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[98,4023+0]..[98,4023+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[98,4023+4]..[98,4023+12])
+          Ppat_var "label_ep" (syntaxf.ml[98,4023+4]..[98,4023+12])
+        expression (syntaxf.ml[98,4023+15]..[98,4023+34])
+          Pexp_apply
+          expression (syntaxf.ml[98,4023+15]..[98,4023+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[98,4023+15]..[98,4023+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[98,4023+24]..[98,4023+34])
+                Pexp_constant Const_string("label_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[99,4058+0]..[99,4058+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[99,4058+4]..[99,4058+8])
+          Ppat_var "semi" (syntaxf.ml[99,4058+4]..[99,4058+8])
+        expression (syntaxf.ml[99,4058+11]..[99,4058+26])
+          Pexp_apply
+          expression (syntaxf.ml[99,4058+11]..[99,4058+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[99,4058+11]..[99,4058+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[99,4058+20]..[99,4058+26])
+                Pexp_constant Const_string("semi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[100,4085+0]..[100,4085+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[100,4085+4]..[100,4085+12])
+          Ppat_var "sequence" (syntaxf.ml[100,4085+4]..[100,4085+12])
+        expression (syntaxf.ml[100,4085+15]..[100,4085+34])
+          Pexp_apply
+          expression (syntaxf.ml[100,4085+15]..[100,4085+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[100,4085+15]..[100,4085+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[100,4085+24]..[100,4085+34])
+                Pexp_constant Const_string("sequence",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[101,4120+0]..[101,4120+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[101,4120+4]..[101,4120+8])
+          Ppat_var "sigi" (syntaxf.ml[101,4120+4]..[101,4120+8])
+        expression (syntaxf.ml[101,4120+11]..[101,4120+26])
+          Pexp_apply
+          expression (syntaxf.ml[101,4120+11]..[101,4120+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[101,4120+11]..[101,4120+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[101,4120+20]..[101,4120+26])
+                Pexp_constant Const_string("sigi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[102,4147+0]..[102,4147+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[102,4147+4]..[102,4147+9])
+          Ppat_var "sigis" (syntaxf.ml[102,4147+4]..[102,4147+9])
+        expression (syntaxf.ml[102,4147+12]..[102,4147+28])
+          Pexp_apply
+          expression (syntaxf.ml[102,4147+12]..[102,4147+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[102,4147+12]..[102,4147+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[102,4147+21]..[102,4147+28])
+                Pexp_constant Const_string("sigis",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[103,4176+0]..[103,4176+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[103,4176+4]..[103,4176+13])
+          Ppat_var "star_ctyp" (syntaxf.ml[103,4176+4]..[103,4176+13])
+        expression (syntaxf.ml[103,4176+16]..[103,4176+36])
+          Pexp_apply
+          expression (syntaxf.ml[103,4176+16]..[103,4176+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[103,4176+16]..[103,4176+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[103,4176+25]..[103,4176+36])
+                Pexp_constant Const_string("star_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[104,4213+0]..[104,4213+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[104,4213+4]..[104,4213+8])
+          Ppat_var "stru" (syntaxf.ml[104,4213+4]..[104,4213+8])
+        expression (syntaxf.ml[104,4213+11]..[104,4213+26])
+          Pexp_apply
+          expression (syntaxf.ml[104,4213+11]..[104,4213+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[104,4213+11]..[104,4213+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[104,4213+20]..[104,4213+26])
+                Pexp_constant Const_string("stru",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[105,4240+0]..[105,4240+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[105,4240+4]..[105,4240+9])
+          Ppat_var "strus" (syntaxf.ml[105,4240+4]..[105,4240+9])
+        expression (syntaxf.ml[105,4240+12]..[105,4240+28])
+          Pexp_apply
+          expression (syntaxf.ml[105,4240+12]..[105,4240+20])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[105,4240+12]..[105,4240+20])
+          [
+            <label> ""
+              expression (syntaxf.ml[105,4240+21]..[105,4240+28])
+                Pexp_constant Const_string("strus",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[106,4269+0]..[106,4269+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[106,4269+4]..[106,4269+14])
+          Ppat_var "top_phrase" (syntaxf.ml[106,4269+4]..[106,4269+14])
+        expression (syntaxf.ml[106,4269+17]..[106,4269+38])
+          Pexp_apply
+          expression (syntaxf.ml[106,4269+17]..[106,4269+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[106,4269+17]..[106,4269+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[106,4269+26]..[106,4269+38])
+                Pexp_constant Const_string("top_phrase",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[107,4308+0]..[107,4308+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[107,4308+4]..[107,4308+20])
+          Ppat_var "type_declaration" (syntaxf.ml[107,4308+4]..[107,4308+20])
+        expression (syntaxf.ml[107,4308+23]..[107,4308+50])
+          Pexp_apply
+          expression (syntaxf.ml[107,4308+23]..[107,4308+31])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[107,4308+23]..[107,4308+31])
+          [
+            <label> ""
+              expression (syntaxf.ml[107,4308+32]..[107,4308+50])
+                Pexp_constant Const_string("type_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[108,4359+0]..[108,4359+68])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[108,4359+4]..[108,4359+29])
+          Ppat_var "type_ident_and_parameters" (syntaxf.ml[108,4359+4]..[108,4359+29])
+        expression (syntaxf.ml[108,4359+32]..[108,4359+68])
+          Pexp_apply
+          expression (syntaxf.ml[108,4359+32]..[108,4359+40])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[108,4359+32]..[108,4359+40])
+          [
+            <label> ""
+              expression (syntaxf.ml[108,4359+41]..[108,4359+68])
+                Pexp_constant Const_string("type_ident_and_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[109,4428+0]..[109,4428+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[109,4428+4]..[109,4428+18])
+          Ppat_var "type_longident" (syntaxf.ml[109,4428+4]..[109,4428+18])
+        expression (syntaxf.ml[109,4428+21]..[109,4428+46])
+          Pexp_apply
+          expression (syntaxf.ml[109,4428+21]..[109,4428+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[109,4428+21]..[109,4428+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[109,4428+30]..[109,4428+46])
+                Pexp_constant Const_string("type_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[110,4475+0]..[110,4475+76])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[110,4475+4]..[110,4475+33])
+          Ppat_var "type_longident_and_parameters" (syntaxf.ml[110,4475+4]..[110,4475+33])
+        expression (syntaxf.ml[110,4475+36]..[110,4475+76])
+          Pexp_apply
+          expression (syntaxf.ml[110,4475+36]..[110,4475+44])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[110,4475+36]..[110,4475+44])
+          [
+            <label> ""
+              expression (syntaxf.ml[110,4475+45]..[110,4475+76])
+                Pexp_constant Const_string("type_longident_and_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[111,4552+0]..[111,4552+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[111,4552+4]..[111,4552+18])
+          Ppat_var "type_parameter" (syntaxf.ml[111,4552+4]..[111,4552+18])
+        expression (syntaxf.ml[111,4552+21]..[111,4552+46])
+          Pexp_apply
+          expression (syntaxf.ml[111,4552+21]..[111,4552+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[111,4552+21]..[111,4552+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[111,4552+30]..[111,4552+46])
+                Pexp_constant Const_string("type_parameter",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[112,4599+0]..[112,4599+48])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[112,4599+4]..[112,4599+19])
+          Ppat_var "type_parameters" (syntaxf.ml[112,4599+4]..[112,4599+19])
+        expression (syntaxf.ml[112,4599+22]..[112,4599+48])
+          Pexp_apply
+          expression (syntaxf.ml[112,4599+22]..[112,4599+30])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[112,4599+22]..[112,4599+30])
+          [
+            <label> ""
+              expression (syntaxf.ml[112,4599+31]..[112,4599+48])
+                Pexp_constant Const_string("type_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[113,4648+0]..[113,4648+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[113,4648+4]..[113,4648+12])
+          Ppat_var "typevars" (syntaxf.ml[113,4648+4]..[113,4648+12])
+        expression (syntaxf.ml[113,4648+15]..[113,4648+34])
+          Pexp_apply
+          expression (syntaxf.ml[113,4648+15]..[113,4648+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[113,4648+15]..[113,4648+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[113,4648+24]..[113,4648+34])
+                Pexp_constant Const_string("typevars",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[114,4683+0]..[114,4683+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[114,4683+4]..[114,4683+17])
+          Ppat_var "val_longident" (syntaxf.ml[114,4683+4]..[114,4683+17])
+        expression (syntaxf.ml[114,4683+20]..[114,4683+44])
+          Pexp_apply
+          expression (syntaxf.ml[114,4683+20]..[114,4683+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[114,4683+20]..[114,4683+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[114,4683+29]..[114,4683+44])
+                Pexp_constant Const_string("val_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[115,4728+0]..[115,4728+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[115,4728+4]..[115,4728+10])
+          Ppat_var "constr" (syntaxf.ml[115,4728+4]..[115,4728+10])
+        expression (syntaxf.ml[115,4728+13]..[115,4728+30])
+          Pexp_apply
+          expression (syntaxf.ml[115,4728+13]..[115,4728+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[115,4728+13]..[115,4728+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[115,4728+22]..[115,4728+30])
+                Pexp_constant Const_string("constr",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[116,4759+0]..[116,4759+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[116,4759+4]..[116,4759+12])
+          Ppat_var "exp_quot" (syntaxf.ml[116,4759+4]..[116,4759+12])
+        expression (syntaxf.ml[116,4759+15]..[116,4759+34])
+          Pexp_apply
+          expression (syntaxf.ml[116,4759+15]..[116,4759+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[116,4759+15]..[116,4759+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[116,4759+24]..[116,4759+34])
+                Pexp_constant Const_string("exp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[117,4794+0]..[117,4794+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[117,4794+4]..[117,4794+12])
+          Ppat_var "pat_quot" (syntaxf.ml[117,4794+4]..[117,4794+12])
+        expression (syntaxf.ml[117,4794+15]..[117,4794+34])
+          Pexp_apply
+          expression (syntaxf.ml[117,4794+15]..[117,4794+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[117,4794+15]..[117,4794+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[117,4794+24]..[117,4794+34])
+                Pexp_constant Const_string("pat_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[118,4829+0]..[118,4829+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[118,4829+4]..[118,4829+11])
+          Ppat_var "ep_quot" (syntaxf.ml[118,4829+4]..[118,4829+11])
+        expression (syntaxf.ml[118,4829+14]..[118,4829+32])
+          Pexp_apply
+          expression (syntaxf.ml[118,4829+14]..[118,4829+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[118,4829+14]..[118,4829+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[118,4829+23]..[118,4829+32])
+                Pexp_constant Const_string("ep_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[119,4862+0]..[119,4862+22])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[119,4862+4]..[119,4862+6])
+          Ppat_var "ep" (syntaxf.ml[119,4862+4]..[119,4862+6])
+        expression (syntaxf.ml[119,4862+9]..[119,4862+22])
+          Pexp_apply
+          expression (syntaxf.ml[119,4862+9]..[119,4862+17])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[119,4862+9]..[119,4862+17])
+          [
+            <label> ""
+              expression (syntaxf.ml[119,4862+18]..[119,4862+22])
+                Pexp_constant Const_string("ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[120,4885+0]..[120,4885+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[120,4885+4]..[120,4885+13])
+          Ppat_var "ctyp_quot" (syntaxf.ml[120,4885+4]..[120,4885+13])
+        expression (syntaxf.ml[120,4885+16]..[120,4885+36])
+          Pexp_apply
+          expression (syntaxf.ml[120,4885+16]..[120,4885+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[120,4885+16]..[120,4885+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[120,4885+25]..[120,4885+36])
+                Pexp_constant Const_string("ctyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[121,4922+0]..[121,4922+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[121,4922+4]..[121,4922+13])
+          Ppat_var "stru_quot" (syntaxf.ml[121,4922+4]..[121,4922+13])
+        expression (syntaxf.ml[121,4922+16]..[121,4922+36])
+          Pexp_apply
+          expression (syntaxf.ml[121,4922+16]..[121,4922+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[121,4922+16]..[121,4922+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[121,4922+25]..[121,4922+36])
+                Pexp_constant Const_string("stru_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[122,4959+0]..[122,4959+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[122,4959+4]..[122,4959+13])
+          Ppat_var "sigi_quot" (syntaxf.ml[122,4959+4]..[122,4959+13])
+        expression (syntaxf.ml[122,4959+16]..[122,4959+36])
+          Pexp_apply
+          expression (syntaxf.ml[122,4959+16]..[122,4959+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[122,4959+16]..[122,4959+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[122,4959+25]..[122,4959+36])
+                Pexp_constant Const_string("sigi_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[123,4996+0]..[123,4996+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[123,4996+4]..[123,4996+16])
+          Ppat_var "clfield_quot" (syntaxf.ml[123,4996+4]..[123,4996+16])
+        expression (syntaxf.ml[123,4996+19]..[123,4996+42])
+          Pexp_apply
+          expression (syntaxf.ml[123,4996+19]..[123,4996+27])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[123,4996+19]..[123,4996+27])
+          [
+            <label> ""
+              expression (syntaxf.ml[123,4996+28]..[123,4996+42])
+                Pexp_constant Const_string("clfield_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[124,5039+0]..[124,5039+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[124,5039+4]..[124,5039+15])
+          Ppat_var "clsigi_quot" (syntaxf.ml[124,5039+4]..[124,5039+15])
+        expression (syntaxf.ml[124,5039+18]..[124,5039+40])
+          Pexp_apply
+          expression (syntaxf.ml[124,5039+18]..[124,5039+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[124,5039+18]..[124,5039+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[124,5039+27]..[124,5039+40])
+                Pexp_constant Const_string("clsigi_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[125,5080+0]..[125,5080+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[125,5080+4]..[125,5080+13])
+          Ppat_var "mexp_quot" (syntaxf.ml[125,5080+4]..[125,5080+13])
+        expression (syntaxf.ml[125,5080+16]..[125,5080+36])
+          Pexp_apply
+          expression (syntaxf.ml[125,5080+16]..[125,5080+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[125,5080+16]..[125,5080+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[125,5080+25]..[125,5080+36])
+                Pexp_constant Const_string("mexp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[126,5117+0]..[126,5117+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[126,5117+4]..[126,5117+13])
+          Ppat_var "mtyp_quot" (syntaxf.ml[126,5117+4]..[126,5117+13])
+        expression (syntaxf.ml[126,5117+16]..[126,5117+36])
+          Pexp_apply
+          expression (syntaxf.ml[126,5117+16]..[126,5117+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[126,5117+16]..[126,5117+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[126,5117+25]..[126,5117+36])
+                Pexp_constant Const_string("mtyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[127,5154+0]..[127,5154+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[127,5154+4]..[127,5154+14])
+          Ppat_var "cltyp_quot" (syntaxf.ml[127,5154+4]..[127,5154+14])
+        expression (syntaxf.ml[127,5154+17]..[127,5154+38])
+          Pexp_apply
+          expression (syntaxf.ml[127,5154+17]..[127,5154+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[127,5154+17]..[127,5154+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[127,5154+26]..[127,5154+38])
+                Pexp_constant Const_string("cltyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[128,5193+0]..[128,5193+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[128,5193+4]..[128,5193+14])
+          Ppat_var "clexp_quot" (syntaxf.ml[128,5193+4]..[128,5193+14])
+        expression (syntaxf.ml[128,5193+17]..[128,5193+38])
+          Pexp_apply
+          expression (syntaxf.ml[128,5193+17]..[128,5193+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[128,5193+17]..[128,5193+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[128,5193+26]..[128,5193+38])
+                Pexp_constant Const_string("clexp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[129,5232+0]..[129,5232+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[129,5232+4]..[129,5232+15])
+          Ppat_var "constr_quot" (syntaxf.ml[129,5232+4]..[129,5232+15])
+        expression (syntaxf.ml[129,5232+18]..[129,5232+40])
+          Pexp_apply
+          expression (syntaxf.ml[129,5232+18]..[129,5232+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[129,5232+18]..[129,5232+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[129,5232+27]..[129,5232+40])
+                Pexp_constant Const_string("constr_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[130,5273+0]..[130,5273+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[130,5273+4]..[130,5273+13])
+          Ppat_var "bind_quot" (syntaxf.ml[130,5273+4]..[130,5273+13])
+        expression (syntaxf.ml[130,5273+16]..[130,5273+36])
+          Pexp_apply
+          expression (syntaxf.ml[130,5273+16]..[130,5273+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[130,5273+16]..[130,5273+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[130,5273+25]..[130,5273+36])
+                Pexp_constant Const_string("bind_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[131,5310+0]..[131,5310+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[131,5310+4]..[131,5310+16])
+          Ppat_var "rec_exp_quot" (syntaxf.ml[131,5310+4]..[131,5310+16])
+        expression (syntaxf.ml[131,5310+19]..[131,5310+42])
+          Pexp_apply
+          expression (syntaxf.ml[131,5310+19]..[131,5310+27])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[131,5310+19]..[131,5310+27])
+          [
+            <label> ""
+              expression (syntaxf.ml[131,5310+28]..[131,5310+42])
+                Pexp_constant Const_string("rec_exp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[132,5353+0]..[132,5353+54])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[132,5353+4]..[132,5353+22])
+          Ppat_var "module_declaration" (syntaxf.ml[132,5353+4]..[132,5353+22])
+        expression (syntaxf.ml[132,5353+25]..[132,5353+54])
+          Pexp_apply
+          expression (syntaxf.ml[132,5353+25]..[132,5353+33])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[132,5353+25]..[132,5353+33])
+          [
+            <label> ""
+              expression (syntaxf.ml[132,5353+34]..[132,5353+54])
+                Pexp_constant Const_string("module_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[133,5408+0]..[133,5408+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[133,5408+4]..[133,5408+13])
+          Ppat_var "type_info" (syntaxf.ml[133,5408+4]..[133,5408+13])
+        expression (syntaxf.ml[133,5408+16]..[133,5408+36])
+          Pexp_apply
+          expression (syntaxf.ml[133,5408+16]..[133,5408+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[133,5408+16]..[133,5408+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[133,5408+25]..[133,5408+36])
+                Pexp_constant Const_string("type_info",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[134,5445+0]..[134,5445+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[134,5445+4]..[134,5445+13])
+          Ppat_var "type_repr" (syntaxf.ml[134,5445+4]..[134,5445+13])
+        expression (syntaxf.ml[134,5445+16]..[134,5445+36])
+          Pexp_apply
+          expression (syntaxf.ml[134,5445+16]..[134,5445+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[134,5445+16]..[134,5445+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[134,5445+25]..[134,5445+36])
+                Pexp_constant Const_string("type_repr",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[135,5482+0]..[135,5482+70])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[135,5482+4]..[135,5482+13])
+          Ppat_var "case_quot" (syntaxf.ml[135,5482+4]..[135,5482+13])
+        expression (syntaxf.ml[135,5482+16]..[135,5482+70])
+          Pexp_apply
+          expression (syntaxf.ml[135,5482+16]..[135,5482+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[135,5482+16]..[135,5482+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[135,5482+25]..[135,5482+70])
+                Pexp_constant Const_string("quotation of case (try/match/function case)",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[136,5553+0]..[136,5553+72])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[136,5553+4]..[136,5553+31])
+          Ppat_var "module_longident_dot_lparen" (syntaxf.ml[136,5553+4]..[136,5553+31])
+        expression (syntaxf.ml[136,5553+34]..[136,5553+72])
+          Pexp_apply
+          expression (syntaxf.ml[136,5553+34]..[136,5553+42])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[136,5553+34]..[136,5553+42])
+          [
+            <label> ""
+              expression (syntaxf.ml[136,5553+43]..[136,5553+72])
+                Pexp_constant Const_string("module_longident_dot_lparen",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[137,5626+0]..[137,5626+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[137,5626+4]..[137,5626+13])
+          Ppat_var "sequence'" (syntaxf.ml[137,5626+4]..[137,5626+13])
+        expression (syntaxf.ml[137,5626+16]..[137,5626+36])
+          Pexp_apply
+          expression (syntaxf.ml[137,5626+16]..[137,5626+24])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[137,5626+16]..[137,5626+24])
+          [
+            <label> ""
+              expression (syntaxf.ml[137,5626+25]..[137,5626+36])
+                Pexp_constant Const_string("sequence'",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[138,5663+0]..[138,5663+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[138,5663+4]..[138,5663+11])
+          Ppat_var "fun_def" (syntaxf.ml[138,5663+4]..[138,5663+11])
+        expression (syntaxf.ml[138,5663+14]..[138,5663+32])
+          Pexp_apply
+          expression (syntaxf.ml[138,5663+14]..[138,5663+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[138,5663+14]..[138,5663+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[138,5663+23]..[138,5663+32])
+                Pexp_constant Const_string("fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[139,5696+0]..[139,5696+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[139,5696+4]..[139,5696+14])
+          Ppat_var "mbind_quot" (syntaxf.ml[139,5696+4]..[139,5696+14])
+        expression (syntaxf.ml[139,5696+17]..[139,5696+38])
+          Pexp_apply
+          expression (syntaxf.ml[139,5696+17]..[139,5696+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[139,5696+17]..[139,5696+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[139,5696+26]..[139,5696+38])
+                Pexp_constant Const_string("mbind_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[140,5735+0]..[140,5735+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[140,5735+4]..[140,5735+14])
+          Ppat_var "ident_quot" (syntaxf.ml[140,5735+4]..[140,5735+14])
+        expression (syntaxf.ml[140,5735+17]..[140,5735+38])
+          Pexp_apply
+          expression (syntaxf.ml[140,5735+17]..[140,5735+25])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[140,5735+17]..[140,5735+25])
+          [
+            <label> ""
+              expression (syntaxf.ml[140,5735+26]..[140,5735+38])
+                Pexp_constant Const_string("ident_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[141,5774+0]..[141,5774+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[141,5774+4]..[141,5774+15])
+          Ppat_var "string_list" (syntaxf.ml[141,5774+4]..[141,5774+15])
+        expression (syntaxf.ml[141,5774+18]..[141,5774+40])
+          Pexp_apply
+          expression (syntaxf.ml[141,5774+18]..[141,5774+26])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[141,5774+18]..[141,5774+26])
+          [
+            <label> ""
+              expression (syntaxf.ml[141,5774+27]..[141,5774+40])
+                Pexp_constant Const_string("string_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[142,5815+0]..[142,5815+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[142,5815+4]..[142,5815+23])
+          Ppat_var "method_opt_override" (syntaxf.ml[142,5815+4]..[142,5815+23])
+        expression (syntaxf.ml[142,5815+26]..[142,5815+56])
+          Pexp_apply
+          expression (syntaxf.ml[142,5815+26]..[142,5815+34])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[142,5815+26]..[142,5815+34])
+          [
+            <label> ""
+              expression (syntaxf.ml[142,5815+35]..[142,5815+56])
+                Pexp_constant Const_string("method_opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[143,5872+0]..[143,5872+62])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[143,5872+4]..[143,5872+26])
+          Ppat_var "value_val_opt_override" (syntaxf.ml[143,5872+4]..[143,5872+26])
+        expression (syntaxf.ml[143,5872+29]..[143,5872+62])
+          Pexp_apply
+          expression (syntaxf.ml[143,5872+29]..[143,5872+37])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[143,5872+29]..[143,5872+37])
+          [
+            <label> ""
+              expression (syntaxf.ml[143,5872+38]..[143,5872+62])
+                Pexp_constant Const_string("value_val_opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[144,5935+0]..[144,5935+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[144,5935+4]..[144,5935+21])
+          Ppat_var "unquoted_typevars" (syntaxf.ml[144,5935+4]..[144,5935+21])
+        expression (syntaxf.ml[144,5935+24]..[144,5935+52])
+          Pexp_apply
+          expression (syntaxf.ml[144,5935+24]..[144,5935+32])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[144,5935+24]..[144,5935+32])
+          [
+            <label> ""
+              expression (syntaxf.ml[144,5935+33]..[144,5935+52])
+                Pexp_constant Const_string("unquoted_typevars",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[145,5988+0]..[145,5988+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[145,5988+4]..[145,5988+8])
+          Ppat_var "lang" (syntaxf.ml[145,5988+4]..[145,5988+8])
+        expression (syntaxf.ml[145,5988+11]..[145,5988+26])
+          Pexp_apply
+          expression (syntaxf.ml[145,5988+11]..[145,5988+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[145,5988+11]..[145,5988+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[145,5988+20]..[145,5988+26])
+                Pexp_constant Const_string("lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[146,6015+0]..[146,6015+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[146,6015+4]..[146,6015+17])
+          Ppat_var "with_exp_lang" (syntaxf.ml[146,6015+4]..[146,6015+17])
+        expression (syntaxf.ml[146,6015+20]..[146,6015+44])
+          Pexp_apply
+          expression (syntaxf.ml[146,6015+20]..[146,6015+28])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[146,6015+20]..[146,6015+28])
+          [
+            <label> ""
+              expression (syntaxf.ml[146,6015+29]..[146,6015+44])
+                Pexp_constant Const_string("with_exp_lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[147,6060+0]..[147,6060+46])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[147,6060+4]..[147,6060+18])
+          Ppat_var "with_stru_lang" (syntaxf.ml[147,6060+4]..[147,6060+18])
+        expression (syntaxf.ml[147,6060+21]..[147,6060+46])
+          Pexp_apply
+          expression (syntaxf.ml[147,6060+21]..[147,6060+29])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[147,6060+21]..[147,6060+29])
+          [
+            <label> ""
+              expression (syntaxf.ml[147,6060+30]..[147,6060+46])
+                Pexp_constant Const_string("with_stru_lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[148,6107+0]..[148,6107+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[148,6107+4]..[148,6107+16])
+          Ppat_var "dot_lstrings" (syntaxf.ml[148,6107+4]..[148,6107+16])
+        expression (syntaxf.ml[148,6107+19]..[148,6107+42])
+          Pexp_apply
+          expression (syntaxf.ml[148,6107+19]..[148,6107+27])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[148,6107+19]..[148,6107+27])
+          [
+            <label> ""
+              expression (syntaxf.ml[148,6107+28]..[148,6107+42])
+                Pexp_constant Const_string("dot_lstrings",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[149,6150+0]..[149,6150+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[149,6150+4]..[149,6150+12])
+          Ppat_var "a_string" (syntaxf.ml[149,6150+4]..[149,6150+12])
+        expression (syntaxf.ml[149,6150+15]..[149,6150+34])
+          Pexp_apply
+          expression (syntaxf.ml[149,6150+15]..[149,6150+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[149,6150+15]..[149,6150+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[149,6150+24]..[149,6150+34])
+                Pexp_constant Const_string("a_string",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[150,6185+0]..[150,6185+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[150,6185+4]..[150,6185+12])
+          Ppat_var "a_lident" (syntaxf.ml[150,6185+4]..[150,6185+12])
+        expression (syntaxf.ml[150,6185+15]..[150,6185+34])
+          Pexp_apply
+          expression (syntaxf.ml[150,6185+15]..[150,6185+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[150,6185+15]..[150,6185+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[150,6185+24]..[150,6185+34])
+                Pexp_constant Const_string("a_lident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[151,6220+0]..[151,6220+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[151,6220+4]..[151,6220+12])
+          Ppat_var "a_uident" (syntaxf.ml[151,6220+4]..[151,6220+12])
+        expression (syntaxf.ml[151,6220+15]..[151,6220+34])
+          Pexp_apply
+          expression (syntaxf.ml[151,6220+15]..[151,6220+23])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[151,6220+15]..[151,6220+23])
+          [
+            <label> ""
+              expression (syntaxf.ml[151,6220+24]..[151,6220+34])
+                Pexp_constant Const_string("a_uident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[152,6255+0]..[152,6255+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[152,6255+4]..[152,6255+11])
+          Ppat_var "luident" (syntaxf.ml[152,6255+4]..[152,6255+11])
+        expression (syntaxf.ml[152,6255+14]..[152,6255+32])
+          Pexp_apply
+          expression (syntaxf.ml[152,6255+14]..[152,6255+22])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[152,6255+14]..[152,6255+22])
+          [
+            <label> ""
+              expression (syntaxf.ml[152,6255+23]..[152,6255+32])
+                Pexp_constant Const_string("luident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[153,6288+0]..[153,6288+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[153,6288+4]..[153,6288+10])
+          Ppat_var "uident" (syntaxf.ml[153,6288+4]..[153,6288+10])
+        expression (syntaxf.ml[153,6288+13]..[153,6288+30])
+          Pexp_apply
+          expression (syntaxf.ml[153,6288+13]..[153,6288+21])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[153,6288+13]..[153,6288+21])
+          [
+            <label> ""
+              expression (syntaxf.ml[153,6288+22]..[153,6288+30])
+                Pexp_constant Const_string("uident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[154,6319+0]..[154,6319+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[154,6319+4]..[154,6319+7])
+          Ppat_var "vid" (syntaxf.ml[154,6319+4]..[154,6319+7])
+        expression (syntaxf.ml[154,6319+10]..[154,6319+24])
+          Pexp_apply
+          expression (syntaxf.ml[154,6319+10]..[154,6319+18])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[154,6319+10]..[154,6319+18])
+          [
+            <label> ""
+              expression (syntaxf.ml[154,6319+19]..[154,6319+24])
+                Pexp_constant Const_string("vid",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[155,6344+0]..[155,6344+26])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[155,6344+4]..[155,6344+8])
+          Ppat_var "astr" (syntaxf.ml[155,6344+4]..[155,6344+8])
+        expression (syntaxf.ml[155,6344+11]..[155,6344+26])
+          Pexp_apply
+          expression (syntaxf.ml[155,6344+11]..[155,6344+19])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[155,6344+11]..[155,6344+19])
+          [
+            <label> ""
+              expression (syntaxf.ml[155,6344+20]..[155,6344+26])
+                Pexp_constant Const_string("astr",None)
+          ]
+    ]
+]

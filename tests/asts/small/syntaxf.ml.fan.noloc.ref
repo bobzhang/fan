@@ -1,0 +1,2482 @@
+[
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "a_ident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("a_ident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "aident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("aident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "amp_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("amp_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "and_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("and_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "case" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("case",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "case0" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("case0",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "bind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_description" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_description",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "let_bind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("let_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clexp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clexp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_fun_bind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_fun_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_fun_def" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_info_for_cltyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_info_for_cltyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_name_and_param" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_name_and_param",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clsigi" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clsigi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_signature" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_signature",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clfield" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clfield",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "class_structure" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("class_structure",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cltyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cltyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cltyp_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cltyp_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cltyp_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cltyp_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cltyp_plus" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cltyp_plus",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "com_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("com_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_ipat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_ipat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_pat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_ep" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "comma_type_parameter" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("comma_type_parameter",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constrain" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constrain",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constructor_arg_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constructor_arg_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constructor_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constructor_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constructor_declarations" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constructor_declarations",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cvalue_bind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cvalue_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "flag" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("flag",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "direction_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("direction_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "eq_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("eq_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "field_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("field_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "field_exp_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("field_exp_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "fun_bind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("fun_bind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "fun_def" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "implem" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("implem",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "interf" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("interf",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "use_file" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("use_file",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ipat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ipat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ipat_tcon" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ipat_tcon",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "pat_tcon" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("pat_tcon",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_declaration_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_declaration_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_exp_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_exp_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_pat_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_pat_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_pat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "meth_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("meth_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "meth_decl" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("meth_decl",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mbind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mbind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mbind" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mbind",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mbind0" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mbind0",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mexp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mexp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "module_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("module_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "module_longident_with_app" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("module_longident_with_app",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "module_rec_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("module_rec_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mtyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mtyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "name_tags" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("name_tags",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_class_self_pat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_class_self_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_class_self_type" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_class_self_type",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_comma_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_comma_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_dot_dot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_dot_dot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "row_var_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("row_var_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_meth_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_meth_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_mutable" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_mutable",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mutable_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mutable_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_polyt" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_polyt",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_private" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_private",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "private_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("private_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_rec" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_rec",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "rec_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("rec_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_virtual" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_virtual",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "virtual_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("virtual_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "opt_override" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "override_flag_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("override_flag_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "pat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "row_field" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("row_field",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_exp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_exp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_exp_for_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_exp_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_pat" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_pat",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_pat_for_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_pat_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_ep_for_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_ep_for_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sem_ep" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sem_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_ep_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_ep_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "label_ep" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("label_ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "semi" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("semi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sequence" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sequence",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sigi" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sigi",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sigis" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sigis",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "star_ctyp" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("star_ctyp",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "stru" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("stru",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "strus" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("strus",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "top_phrase" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("top_phrase",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_ident_and_parameters" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_ident_and_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_longident_and_parameters" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_longident_and_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_parameter" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_parameter",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_parameters" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_parameters",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "typevars" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("typevars",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "val_longident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("val_longident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constr" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constr",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "exp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("exp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "pat_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("pat_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ep_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ep_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ep" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ep",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ctyp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ctyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "stru_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("stru_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sigi_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sigi_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clfield_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clfield_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clsigi_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clsigi_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mexp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mexp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mtyp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mtyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "cltyp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("cltyp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "clexp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("clexp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "constr_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("constr_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "bind_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("bind_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "rec_exp_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("rec_exp_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "module_declaration" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("module_declaration",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_info" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_info",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "type_repr" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("type_repr",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "case_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("quotation of case (try/match/function case)",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "module_longident_dot_lparen" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("module_longident_dot_lparen",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "sequence'" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("sequence'",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "fun_def" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("fun_def",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "mbind_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("mbind_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "ident_quot" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("ident_quot",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "string_list" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("string_list",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "method_opt_override" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("method_opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "value_val_opt_override" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("value_val_opt_override",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "unquoted_typevars" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("unquoted_typevars",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "lang" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "with_exp_lang" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("with_exp_lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "with_stru_lang" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("with_stru_lang",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "dot_lstrings" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("dot_lstrings",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "a_string" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("a_string",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "a_lident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("a_lident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "a_uident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("a_uident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "luident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("luident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "uident" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("uident",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "vid" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("vid",None)
+          ]
+    ]
+  structure_item (syntaxf.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (syntaxf.ml[]..[])
+          Ppat_var "astr" (syntaxf.ml[]..[])
+        expression (syntaxf.ml[]..[])
+          Pexp_apply
+          expression (syntaxf.ml[]..[])
+            Pexp_ident "Gramf.mk" (syntaxf.ml[]..[])
+          [
+            <label> ""
+              expression (syntaxf.ml[]..[])
+                Pexp_constant Const_string("astr",None)
+          ]
+    ]
+]

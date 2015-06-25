@@ -1,0 +1,44 @@
+10c10
+<         expression (state.ml[2,15+19]..[2,15+60])
+---
+>         expression (state.ml[2,15+19]..[2,15+60]) ghost
+28c28
+<                   core_type (state.ml[2,15+21]..[2,15+42])
+---
+>                   core_type (state.ml[2,15+22]..[2,15+41])
+130c130
+<                 expression (state.ml[6,178+29]..[6,178+66])
+---
+>                 expression (state.ml[6,178+44]..[6,178+65])
+151c151
+<         expression (state.ml[7,245+11]..[12,388+20])
+---
+>         expression (state.ml[7,245+11]..[12,388+20]) ghost
+179c179
+<                             expression (state.ml[11,311+18]..[11,311+72])
+---
+>                             expression (state.ml[11,311+17]..[11,311+73])
+188c188
+<                                   expression (state.ml[11,311+28]..[11,311+71])
+---
+>                                   expression (state.ml[11,311+27]..[11,311+72])
+197c197
+<                                         expression (state.ml[11,311+35]..[11,311+70])
+---
+>                                         expression (state.ml[11,311+34]..[11,311+71])
+206c206
+<                                               expression (state.ml[11,311+42]..[11,311+69])
+---
+>                                               expression (state.ml[11,311+41]..[11,311+70])
+215c215
+<                                                     expression (state.ml[11,311+49]..[11,311+68])
+---
+>                                                     expression (state.ml[11,311+48]..[11,311+69])
+221c221
+<                                                           expression (state.ml[11,311+64]..[11,311+67])
+---
+>                                                           expression (state.ml[11,311+63]..[11,311+68])
+248c248
+<                     expression (state.ml[12,388+6]..[12,388+20])
+---
+>                     expression (state.ml[12,388+16]..[12,388+19])

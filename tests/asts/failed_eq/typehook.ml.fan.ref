@@ -1,0 +1,2324 @@
+[
+  structure_item (typehook.ml[1,0+0]..[1,0+45])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[1,0+4]..[1,0+18])
+          Ppat_var "pp_print_mtyps" (typehook.ml[1,0+4]..[1,0+18])
+        expression (typehook.ml[1,0+21]..[1,0+45])
+          Pexp_ident "Sigs_util.pp_print_mtyps" (typehook.ml[1,0+21]..[1,0+45])
+    ]
+  structure_item (typehook.ml[2,46+0]..[2,46+45])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[2,46+4]..[2,46+18])
+          Ppat_var "pp_print_types" (typehook.ml[2,46+4]..[2,46+18])
+        expression (typehook.ml[2,46+21]..[2,46+45])
+          Pexp_ident "Sigs_util.pp_print_types" (typehook.ml[2,46+21]..[2,46+45])
+    ]
+  structure_item (typehook.ml[3,92+0]..[3,92+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[3,92+4]..[3,92+11])
+          Ppat_var "eprintf" (typehook.ml[3,92+4]..[3,92+11])
+        expression (typehook.ml[3,92+14]..[3,92+28])
+          Pexp_ident "Format.eprintf" (typehook.ml[3,92+14]..[3,92+28])
+    ]
+  structure_item (typehook.ml[4,121+0]..[4,121+9])
+    Pstr_open Fresh "Util" (typehook.ml[4,121+5]..[4,121+9])
+  structure_item (typehook.ml[5,131+0]..[5,131+14])
+    Pstr_open Fresh "Ast_basic" (typehook.ml[5,131+5]..[5,131+14])
+  structure_item (typehook.ml[6,146+0]..[7,212+19])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[6,146+4]..[6,146+11])
+          Ppat_var "filters" (typehook.ml[6,146+4]..[6,146+11])
+        expression (typehook.ml[6,146+11]..[7,212+19])
+          Pexp_constraint
+          expression (typehook.ml[7,212+2]..[7,212+19])
+            Pexp_apply
+            expression (typehook.ml[7,212+2]..[7,212+16])
+              Pexp_ident "Hashtbl.create" (typehook.ml[7,212+2]..[7,212+16])
+            [
+              <label> ""
+                expression (typehook.ml[7,212+17]..[7,212+19])
+                  Pexp_constant Const_int 30
+            ]
+          core_type (typehook.ml[6,146+14]..[6,146+63])
+            Ptyp_constr "Hashtbl.t" (typehook.ml[6,146+54]..[6,146+63])
+            [
+              core_type (typehook.ml[6,146+14]..[6,146+35])
+                Ptyp_constr "Sigs_util.plugin_name" (typehook.ml[6,146+14]..[6,146+35])
+                []
+              core_type (typehook.ml[6,146+36]..[6,146+52])
+                Ptyp_constr "Sigs_util.plugin" (typehook.ml[6,146+36]..[6,146+52])
+                []
+            ]
+    ]
+  structure_item (typehook.ml[8,232+0]..[8,232+25])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[8,232+4]..[8,232+13])
+          Ppat_var "show_code" (typehook.ml[8,232+4]..[8,232+13])
+        expression (typehook.ml[8,232+16]..[8,232+25])
+          Pexp_apply
+          expression (typehook.ml[8,232+16]..[8,232+19])
+            Pexp_ident "ref" (typehook.ml[8,232+16]..[8,232+19])
+          [
+            <label> ""
+              expression (typehook.ml[8,232+20]..[8,232+25])
+                Pexp_construct "false" (typehook.ml[8,232+20]..[8,232+25])
+                None
+          ]
+    ]
+  structure_item (typehook.ml[9,258+0]..[9,258+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[9,258+4]..[9,258+23])
+          Ppat_var "print_collect_mtyps" (typehook.ml[9,258+4]..[9,258+23])
+        expression (typehook.ml[9,258+26]..[9,258+35])
+          Pexp_apply
+          expression (typehook.ml[9,258+26]..[9,258+29])
+            Pexp_ident "ref" (typehook.ml[9,258+26]..[9,258+29])
+          [
+            <label> ""
+              expression (typehook.ml[9,258+30]..[9,258+35])
+                Pexp_construct "false" (typehook.ml[9,258+30]..[9,258+35])
+                None
+          ]
+    ]
+  structure_item (typehook.ml[10,294+0]..[15,460+67])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[10,294+4]..[10,294+12])
+          Ppat_var "register" (typehook.ml[10,294+4]..[10,294+12])
+        expression (typehook.ml[10,294+13]..[15,460+67])
+          Pexp_fun "?filter"
+          None
+          pattern (typehook.ml[10,294+14]..[10,294+20])
+            Ppat_var "filter" (typehook.ml[10,294+14]..[10,294+20])
+          expression (typehook.ml[10,294+22]..[15,460+67])
+            Pexp_fun "?position"
+            None
+            pattern (typehook.ml[10,294+23]..[10,294+31])
+              Ppat_var "position" (typehook.ml[10,294+23]..[10,294+31])
+            expression (typehook.ml[11,329+2]..[15,460+67])
+              Pexp_function
+              [
+                <case>
+                  pattern (typehook.ml[12,340+4]..[12,340+20])
+                    Ppat_tuple
+                    [
+                      pattern (typehook.ml[12,340+5]..[12,340+9])
+                        Ppat_var "name" (typehook.ml[12,340+5]..[12,340+9])
+                      pattern (typehook.ml[12,340+10]..[12,340+19])
+                        Ppat_var "transform" (typehook.ml[12,340+10]..[12,340+19])
+                    ]
+                  expression (typehook.ml[13,364+6]..[15,460+67])
+                    Pexp_ifthenelse
+                    expression (typehook.ml[13,364+9]..[13,364+33])
+                      Pexp_apply
+                      expression (typehook.ml[13,364+9]..[13,364+20])
+                        Pexp_ident "Hashtbl.mem" (typehook.ml[13,364+9]..[13,364+20])
+                      [
+                        <label> ""
+                          expression (typehook.ml[13,364+21]..[13,364+28])
+                            Pexp_ident "filters" (typehook.ml[13,364+21]..[13,364+28])
+                        <label> ""
+                          expression (typehook.ml[13,364+29]..[13,364+33])
+                            Pexp_ident "name" (typehook.ml[13,364+29]..[13,364+33])
+                      ]
+                    expression (typehook.ml[14,398+11]..[14,398+61])
+                      Pexp_apply
+                      expression (typehook.ml[14,398+11]..[14,398+18])
+                        Pexp_ident "eprintf" (typehook.ml[14,398+11]..[14,398+18])
+                      [
+                        <label> ""
+                          expression (typehook.ml[14,398+19]..[14,398+56])
+                            Pexp_constant Const_string("Warning:%s filter already exists!@.",None)
+                        <label> ""
+                          expression (typehook.ml[14,398+57]..[14,398+61])
+                            Pexp_ident "name" (typehook.ml[14,398+57]..[14,398+61])
+                      ]
+                    Some
+                      expression (typehook.ml[15,460+11]..[15,460+67])
+                        Pexp_apply
+                        expression (typehook.ml[15,460+11]..[15,460+22])
+                          Pexp_ident "Hashtbl.add" (typehook.ml[15,460+11]..[15,460+22])
+                        [
+                          <label> ""
+                            expression (typehook.ml[15,460+23]..[15,460+30])
+                              Pexp_ident "filters" (typehook.ml[15,460+23]..[15,460+30])
+                          <label> ""
+                            expression (typehook.ml[15,460+31]..[15,460+35])
+                              Pexp_ident "name" (typehook.ml[15,460+31]..[15,460+35])
+                          <label> ""
+                            expression (typehook.ml[15,460+36]..[15,460+67])
+                              Pexp_record
+                              [
+                                "transform" (typehook.ml[15,460+38]..[15,460+47])
+                                  expression (typehook.ml[15,460+38]..[15,460+47])
+                                    Pexp_ident "transform" (typehook.ml[15,460+38]..[15,460+47])
+                                "position" (typehook.ml[15,460+49]..[15,460+57])
+                                  expression (typehook.ml[15,460+49]..[15,460+57])
+                                    Pexp_ident "position" (typehook.ml[15,460+49]..[15,460+57])
+                                "filter" (typehook.ml[15,460+59]..[15,460+65])
+                                  expression (typehook.ml[15,460+59]..[15,460+65])
+                                    Pexp_ident "filter" (typehook.ml[15,460+59]..[15,460+65])
+                              ]
+                              None
+                        ]
+              ]
+    ]
+  structure_item (typehook.ml[16,528+0]..[22,678+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[16,528+4]..[16,528+16])
+          Ppat_var "show_modules" (typehook.ml[16,528+4]..[16,528+16])
+        expression (typehook.ml[17,547+2]..[22,678+24])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[18,558+4]..[18,558+6])
+                Ppat_construct "()" (typehook.ml[18,558+4]..[18,558+6])
+                None
+              expression (typehook.ml[19,568+6]..[22,678+24])
+                Pexp_sequence
+                expression (typehook.ml[19,568+7]..[21,660+16])
+                  Pexp_apply
+                  expression (typehook.ml[19,568+7]..[19,568+19])
+                    Pexp_ident "Hashtbl.iter" (typehook.ml[19,568+7]..[19,568+19])
+                  [
+                    <label> ""
+                      expression (typehook.ml[20,588+10]..[20,588+70])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (typehook.ml[20,588+21]..[20,588+24])
+                              Ppat_var "key" (typehook.ml[20,588+21]..[20,588+24])
+                            expression (typehook.ml[20,588+29]..[20,588+69])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[20,588+40]..[20,588+41])
+                                    Ppat_any
+                                  expression (typehook.ml[20,588+45]..[20,588+69])
+                                    Pexp_apply
+                                    expression (typehook.ml[20,588+45]..[20,588+58])
+                                      Pexp_ident "Format.printf" (typehook.ml[20,588+45]..[20,588+58])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[20,588+59]..[20,588+65])
+                                          Pexp_constant Const_string("%s@ ",None)
+                                      <label> ""
+                                        expression (typehook.ml[20,588+66]..[20,588+69])
+                                          Pexp_ident "key" (typehook.ml[20,588+66]..[20,588+69])
+                                    ]
+                              ]
+                        ]
+                    <label> ""
+                      expression (typehook.ml[21,660+9]..[21,660+16])
+                        Pexp_ident "filters" (typehook.ml[21,660+9]..[21,660+16])
+                  ]
+                expression (typehook.ml[19,568+6]..[22,678+24])
+                  Pexp_apply
+                  expression (typehook.ml[22,678+7]..[22,678+20])
+                    Pexp_ident "print_newline" (typehook.ml[22,678+7]..[22,678+20])
+                  [
+                    <label> ""
+                      expression (typehook.ml[22,678+21]..[22,678+23])
+                        Pexp_construct "()" (typehook.ml[22,678+21]..[22,678+23])
+                        None
+                  ]
+          ]
+    ]
+  structure_item (typehook.ml[23,703+0]..[44,1373+10])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[23,703+4]..[23,703+14])
+          Ppat_var "plugin_add" (typehook.ml[23,703+4]..[23,703+14])
+        expression (typehook.ml[24,720+2]..[44,1373+10])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[25,731+4]..[25,731+10])
+                Ppat_var "plugin" (typehook.ml[25,731+4]..[25,731+10])
+              expression (typehook.ml[26,745+6]..[44,1373+10])
+                Pexp_apply
+                expression (typehook.ml[26,745+8]..[43,1293+77])
+                  Pexp_try
+                  expression (typehook.ml[27,757+10]..[38,1136+76])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (typehook.ml[27,757+14]..[27,757+15])
+                          Ppat_var "v" (typehook.ml[27,757+14]..[27,757+15])
+                        expression (typehook.ml[27,757+18]..[27,757+45])
+                          Pexp_apply
+                          expression (typehook.ml[27,757+18]..[27,757+30])
+                            Pexp_ident "Hashtbl.find" (typehook.ml[27,757+18]..[27,757+30])
+                          [
+                            <label> ""
+                              expression (typehook.ml[27,757+31]..[27,757+38])
+                                Pexp_ident "filters" (typehook.ml[27,757+31]..[27,757+38])
+                            <label> ""
+                              expression (typehook.ml[27,757+39]..[27,757+45])
+                                Pexp_ident "plugin" (typehook.ml[27,757+39]..[27,757+45])
+                          ]
+                    ]
+                    expression (typehook.ml[28,806+10]..[38,1136+76])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[29,825+12]..[29,825+14])
+                            Ppat_construct "()" (typehook.ml[29,825+12]..[29,825+14])
+                            None
+                          expression (typehook.ml[30,843+14]..[38,1136+76])
+                            Pexp_ifthenelse
+                            expression (typehook.ml[31,860+16]..[33,947+46])
+                              Pexp_apply
+                              expression (typehook.ml[31,860+20]..[31,860+22])
+                                Pexp_ident "@@" (typehook.ml[31,860+20]..[31,860+22])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[31,860+16]..[31,860+19])
+                                    Pexp_ident "not" (typehook.ml[31,860+16]..[31,860+19])
+                                <label> ""
+                                  expression (typehook.ml[32,883+19]..[33,947+45])
+                                    Pexp_apply
+                                    expression (typehook.ml[32,883+19]..[32,883+30])
+                                      Pexp_ident "List.exists" (typehook.ml[32,883+19]..[32,883+30])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[32,883+32]..[32,883+62])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (typehook.ml[32,883+43]..[32,883+48])
+                                                Ppat_tuple
+                                                [
+                                                  pattern (typehook.ml[32,883+44]..[32,883+45])
+                                                    Ppat_var "n" (typehook.ml[32,883+44]..[32,883+45])
+                                                  pattern (typehook.ml[32,883+46]..[32,883+47])
+                                                    Ppat_any
+                                                ]
+                                              expression (typehook.ml[32,883+52]..[32,883+62])
+                                                Pexp_apply
+                                                expression (typehook.ml[32,883+54]..[32,883+55])
+                                                  Pexp_ident "=" (typehook.ml[32,883+54]..[32,883+55])
+                                                [
+                                                  <label> ""
+                                                    expression (typehook.ml[32,883+52]..[32,883+53])
+                                                      Pexp_ident "n" (typehook.ml[32,883+52]..[32,883+53])
+                                                  <label> ""
+                                                    expression (typehook.ml[32,883+56]..[32,883+62])
+                                                      Pexp_ident "plugin" (typehook.ml[32,883+56]..[32,883+62])
+                                                ]
+                                          ]
+                                      <label> ""
+                                        expression (typehook.ml[33,947+22]..[33,947+44])
+                                          Pexp_apply
+                                          expression (typehook.ml[33,947+22]..[33,947+23])
+                                            Pexp_ident "!" (typehook.ml[33,947+22]..[33,947+23])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[33,947+23]..[33,947+44])
+                                                Pexp_ident "State.current_filters" (typehook.ml[33,947+23]..[33,947+44])
+                                          ]
+                                    ]
+                              ]
+                            expression (typehook.ml[35,1013+16]..[36,1062+54])
+                              Pexp_apply
+                              expression (typehook.ml[35,1013+16]..[35,1013+26])
+                                Pexp_ident "Ref.modify" (typehook.ml[35,1013+16]..[35,1013+26])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[35,1013+27]..[35,1013+48])
+                                    Pexp_ident "State.current_filters" (typehook.ml[35,1013+27]..[35,1013+48])
+                                <label> ""
+                                  expression (typehook.ml[36,1062+19]..[36,1062+53])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (typehook.ml[36,1062+30]..[36,1062+31])
+                                          Ppat_var "x" (typehook.ml[36,1062+30]..[36,1062+31])
+                                        expression (typehook.ml[36,1062+35]..[36,1062+53])
+                                          Pexp_apply
+                                          expression (typehook.ml[36,1062+35]..[36,1062+39])
+                                            Pexp_ident "cons" (typehook.ml[36,1062+35]..[36,1062+39])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[36,1062+40]..[36,1062+51])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[36,1062+41]..[36,1062+47])
+                                                    Pexp_ident "plugin" (typehook.ml[36,1062+41]..[36,1062+47])
+                                                  expression (typehook.ml[36,1062+49]..[36,1062+50])
+                                                    Pexp_ident "v" (typehook.ml[36,1062+49]..[36,1062+50])
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[36,1062+52]..[36,1062+53])
+                                                Pexp_ident "x" (typehook.ml[36,1062+52]..[36,1062+53])
+                                          ]
+                                    ]
+                              ]
+                            Some
+                              expression (typehook.ml[38,1136+16]..[38,1136+76])
+                                Pexp_apply
+                                expression (typehook.ml[38,1136+16]..[38,1136+23])
+                                  Pexp_ident "eprintf" (typehook.ml[38,1136+16]..[38,1136+23])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[38,1136+24]..[38,1136+69])
+                                      Pexp_constant Const_string("<Warning> plugin %s has already been loaded",None)
+                                  <label> ""
+                                    expression (typehook.ml[38,1136+70]..[38,1136+76])
+                                      Pexp_ident "plugin" (typehook.ml[38,1136+70]..[38,1136+76])
+                                ]
+                      ]
+                  [
+                    <case>
+                      pattern (typehook.ml[40,1226+10]..[40,1226+19])
+                        Ppat_construct "Not_found" (typehook.ml[40,1226+10]..[40,1226+19])
+                        None
+                      expression (typehook.ml[41,1250+13]..[43,1293+76])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (typehook.ml[42,1272+15]..[42,1272+17])
+                              Ppat_construct "()" (typehook.ml[42,1272+15]..[42,1272+17])
+                              None
+                            expression (typehook.ml[43,1293+17]..[43,1293+76])
+                              Pexp_sequence
+                              expression (typehook.ml[43,1293+18]..[43,1293+33])
+                                Pexp_apply
+                                expression (typehook.ml[43,1293+18]..[43,1293+30])
+                                  Pexp_ident "show_modules" (typehook.ml[43,1293+18]..[43,1293+30])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[43,1293+31]..[43,1293+33])
+                                      Pexp_construct "()" (typehook.ml[43,1293+31]..[43,1293+33])
+                                      None
+                                ]
+                              expression (typehook.ml[43,1293+17]..[43,1293+76])
+                                Pexp_apply
+                                expression (typehook.ml[43,1293+35]..[43,1293+44])
+                                  Pexp_ident "failwithf" (typehook.ml[43,1293+35]..[43,1293+44])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[43,1293+45]..[43,1293+68])
+                                      Pexp_constant Const_string("plugins %s not found ",None)
+                                  <label> ""
+                                    expression (typehook.ml[43,1293+69]..[43,1293+75])
+                                      Pexp_ident "plugin" (typehook.ml[43,1293+69]..[43,1293+75])
+                                ]
+                        ]
+                  ]
+                [
+                  <label> ""
+                    expression (typehook.ml[44,1373+8]..[44,1373+10])
+                      Pexp_construct "()" (typehook.ml[44,1373+8]..[44,1373+10])
+                      None
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[45,1384+0]..[49,1468+47])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[45,1384+4]..[45,1384+17])
+          Ppat_var "plugin_remove" (typehook.ml[45,1384+4]..[45,1384+17])
+        expression (typehook.ml[46,1404+2]..[49,1468+47])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[47,1415+4]..[47,1415+10])
+                Ppat_var "plugin" (typehook.ml[47,1415+4]..[47,1415+10])
+              expression (typehook.ml[48,1429+6]..[49,1468+47])
+                Pexp_apply
+                expression (typehook.ml[48,1429+6]..[48,1429+16])
+                  Pexp_ident "Ref.modify" (typehook.ml[48,1429+6]..[48,1429+16])
+                [
+                  <label> ""
+                    expression (typehook.ml[48,1429+17]..[48,1429+38])
+                      Pexp_ident "State.current_filters" (typehook.ml[48,1429+17]..[48,1429+38])
+                  <label> ""
+                    expression (typehook.ml[49,1468+9]..[49,1468+46])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[49,1468+20]..[49,1468+21])
+                            Ppat_var "x" (typehook.ml[49,1468+20]..[49,1468+21])
+                          expression (typehook.ml[49,1468+25]..[49,1468+46])
+                            Pexp_apply
+                            expression (typehook.ml[49,1468+25]..[49,1468+37])
+                              Pexp_ident "Listf.remove" (typehook.ml[49,1468+25]..[49,1468+37])
+                            [
+                              <label> ""
+                                expression (typehook.ml[49,1468+38]..[49,1468+44])
+                                  Pexp_ident "plugin" (typehook.ml[49,1468+38]..[49,1468+44])
+                              <label> ""
+                                expression (typehook.ml[49,1468+45]..[49,1468+46])
+                                  Pexp_ident "x" (typehook.ml[49,1468+45]..[49,1468+46])
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[50,1516+0]..[58,1835+5])
+    Pstr_class_type
+    [
+      class_type_declaration (typehook.ml[50,1516+11]..[58,1835+5])
+        pci_virt = Concrete
+        pci_params =
+          []
+        pci_name = "traversal" (typehook.ml[50,1516+11]..[50,1516+20])
+        pci_expr =
+          class_type (typehook.ml[51,1539+2]..[58,1835+5])
+            Pcty_signature
+            class_signature
+              core_type (typehook.ml[51,1539+2]..[58,1835+5])
+                Ptyp_any
+              [
+                class_type_field (typehook.ml[52,1548+4]..[52,1548+20])
+                  Pctf_inherit
+                  class_type (typehook.ml[52,1548+12]..[52,1548+20])
+                    Pcty_constr "Objs.map" (typehook.ml[52,1548+12]..[52,1548+20])
+                    []
+                class_type_field (typehook.ml[53,1569+4]..[53,1569+43])
+                  Pctf_method "get_cur_mtyps" Public Concrete
+                    core_type (typehook.ml[53,1569+28]..[53,1569+43])
+                      Ptyp_poly
+                      core_type (typehook.ml[53,1569+28]..[53,1569+43])
+                        Ptyp_constr "Sigs_util.mtyps" (typehook.ml[53,1569+28]..[53,1569+43])
+                        []
+                class_type_field (typehook.ml[54,1613+4]..[54,1613+51])
+                  Pctf_method "get_cur_and_types" Public Concrete
+                    core_type (typehook.ml[54,1613+32]..[54,1613+51])
+                      Ptyp_poly
+                      core_type (typehook.ml[54,1613+32]..[54,1613+51])
+                        Ptyp_constr "Sigs_util.and_types" (typehook.ml[54,1613+32]..[54,1613+51])
+                        []
+                class_type_field (typehook.ml[55,1665+4]..[56,1700+58])
+                  Pctf_method "update_cur_and_types" Public Concrete
+                    core_type (typehook.ml[56,1700+6]..[56,1700+58])
+                      Ptyp_poly
+                      core_type (typehook.ml[56,1700+6]..[56,1700+58])
+                        Ptyp_arrow
+                        ""
+                        core_type (typehook.ml[56,1700+7]..[56,1700+49])
+                          Ptyp_arrow
+                          ""
+                          core_type (typehook.ml[56,1700+7]..[56,1700+26])
+                            Ptyp_constr "Sigs_util.and_types" (typehook.ml[56,1700+7]..[56,1700+26])
+                            []
+                          core_type (typehook.ml[56,1700+30]..[56,1700+49])
+                            Ptyp_constr "Sigs_util.and_types" (typehook.ml[56,1700+30]..[56,1700+49])
+                            []
+                        core_type (typehook.ml[56,1700+54]..[56,1700+58])
+                          Ptyp_constr "unit" (typehook.ml[56,1700+54]..[56,1700+58])
+                          []
+                class_type_field (typehook.ml[57,1759+4]..[57,1759+75])
+                  Pctf_method "update_cur_mtyps" Public Concrete
+                    core_type (typehook.ml[57,1759+31]..[57,1759+75])
+                      Ptyp_poly
+                      core_type (typehook.ml[57,1759+31]..[57,1759+75])
+                        Ptyp_arrow
+                        ""
+                        core_type (typehook.ml[57,1759+32]..[57,1759+66])
+                          Ptyp_arrow
+                          ""
+                          core_type (typehook.ml[57,1759+32]..[57,1759+47])
+                            Ptyp_constr "Sigs_util.mtyps" (typehook.ml[57,1759+32]..[57,1759+47])
+                            []
+                          core_type (typehook.ml[57,1759+51]..[57,1759+66])
+                            Ptyp_constr "Sigs_util.mtyps" (typehook.ml[57,1759+51]..[57,1759+66])
+                            []
+                        core_type (typehook.ml[57,1759+71]..[57,1759+75])
+                          Ptyp_constr "unit" (typehook.ml[57,1759+71]..[57,1759+75])
+                          []
+              ]
+    ]
+  structure_item (typehook.ml[59,1841+0]..[67,2034+49])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[59,1841+4]..[59,1841+15])
+          Ppat_var "make_filter" (typehook.ml[59,1841+4]..[59,1841+15])
+        expression (typehook.ml[60,1859+2]..[67,2034+49])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[61,1870+4]..[61,1870+12])
+                Ppat_tuple
+                [
+                  pattern (typehook.ml[61,1870+5]..[61,1870+6])
+                    Ppat_var "s" (typehook.ml[61,1870+5]..[61,1870+6])
+                  pattern (typehook.ml[61,1870+7]..[61,1870+11])
+                    Ppat_var "code" (typehook.ml[61,1870+7]..[61,1870+11])
+                ]
+              expression (typehook.ml[62,1886+6]..[67,2034+49])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (typehook.ml[62,1886+10]..[62,1886+11])
+                      Ppat_var "f" (typehook.ml[62,1886+10]..[62,1886+11])
+                    expression (typehook.ml[63,1900+8]..[66,2014+16])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[64,1917+10]..[64,1917+49])
+                            Ppat_constraint
+                            pattern (typehook.ml[64,1917+11]..[64,1917+36])
+                              Ppat_variant "StExp"
+                              Some
+                                pattern (typehook.ml[64,1917+11]..[64,1917+36])
+                                  Ppat_tuple
+                                  [
+                                    pattern (typehook.ml[64,1917+19]..[64,1917+23])
+                                      Ppat_var "_loc" (typehook.ml[64,1917+19]..[64,1917+23])
+                                    pattern (typehook.ml[64,1917+24]..[64,1917+35])
+                                      Ppat_variant "Lid"
+                                      Some
+                                        pattern (typehook.ml[64,1917+24]..[64,1917+35])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[64,1917+30]..[64,1917+31])
+                                              Ppat_any
+                                            pattern (typehook.ml[64,1917+32]..[64,1917+34])
+                                              Ppat_var "s'" (typehook.ml[64,1917+32]..[64,1917+34])
+                                          ]
+                                  ]
+                            core_type (typehook.ml[64,1917+39]..[64,1917+48])
+                              Ptyp_constr "Astf.stru" (typehook.ml[64,1917+39]..[64,1917+48])
+                              []
+                          <when>
+                            expression (typehook.ml[64,1917+55]..[64,1917+61])
+                              Pexp_apply
+                              expression (typehook.ml[64,1917+57]..[64,1917+58])
+                                Pexp_ident "=" (typehook.ml[64,1917+57]..[64,1917+58])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[64,1917+55]..[64,1917+56])
+                                    Pexp_ident "s" (typehook.ml[64,1917+55]..[64,1917+56])
+                                <label> ""
+                                  expression (typehook.ml[64,1917+59]..[64,1917+61])
+                                    Pexp_ident "s'" (typehook.ml[64,1917+59]..[64,1917+61])
+                              ]
+                          expression (typehook.ml[65,1982+12]..[65,1982+31])
+                            Pexp_apply
+                            expression (typehook.ml[65,1982+12]..[65,1982+21])
+                              Pexp_ident "Fill.stru" (typehook.ml[65,1982+12]..[65,1982+21])
+                            [
+                              <label> ""
+                                expression (typehook.ml[65,1982+22]..[65,1982+26])
+                                  Pexp_ident "_loc" (typehook.ml[65,1982+22]..[65,1982+26])
+                              <label> ""
+                                expression (typehook.ml[65,1982+27]..[65,1982+31])
+                                  Pexp_ident "code" (typehook.ml[65,1982+27]..[65,1982+31])
+                            ]
+                        <case>
+                          pattern (typehook.ml[66,2014+10]..[66,2014+11])
+                            Ppat_var "e" (typehook.ml[66,2014+10]..[66,2014+11])
+                          expression (typehook.ml[66,2014+15]..[66,2014+16])
+                            Pexp_ident "e" (typehook.ml[66,2014+15]..[66,2014+16])
+                      ]
+                ]
+                expression (typehook.ml[67,2034+6]..[67,2034+49])
+                  Pexp_tuple
+                  [
+                    expression (typehook.ml[67,2034+8]..[67,2034+21])
+                      Pexp_apply
+                      expression (typehook.ml[67,2034+18]..[67,2034+19])
+                        Pexp_ident "^" (typehook.ml[67,2034+18]..[67,2034+19])
+                      [
+                        <label> ""
+                          expression (typehook.ml[67,2034+8]..[67,2034+17])
+                            Pexp_constant Const_string("filter_",None)
+                        <label> ""
+                          expression (typehook.ml[67,2034+20]..[67,2034+21])
+                            Pexp_ident "s" (typehook.ml[67,2034+20]..[67,2034+21])
+                      ]
+                    expression (typehook.ml[67,2034+25]..[67,2034+47])
+                      Pexp_send "stru"
+                      expression (typehook.ml[67,2034+26]..[67,2034+41])
+                        Pexp_apply
+                        expression (typehook.ml[67,2034+26]..[67,2034+39])
+                          Pexp_ident "Objs.map_stru" (typehook.ml[67,2034+26]..[67,2034+39])
+                        [
+                          <label> ""
+                            expression (typehook.ml[67,2034+40]..[67,2034+41])
+                              Pexp_ident "f" (typehook.ml[67,2034+40]..[67,2034+41])
+                        ]
+                  ]
+          ]
+    ]
+  structure_item (typehook.ml[68,2084+0]..[93,3104+44])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[68,2084+4]..[68,2084+16])
+          Ppat_var "iterate_code" (typehook.ml[68,2084+4]..[68,2084+16])
+        expression (typehook.ml[69,2103+2]..[93,3104+44])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[70,2114+4]..[70,2114+8])
+                Ppat_var "sloc" (typehook.ml[70,2114+4]..[70,2114+8])
+              expression (typehook.ml[71,2126+7]..[93,3104+43])
+                Pexp_function
+                [
+                  <case>
+                    pattern (typehook.ml[72,2142+9]..[72,2142+14])
+                      Ppat_var "mtyps" (typehook.ml[72,2142+9]..[72,2142+14])
+                    expression (typehook.ml[73,2160+12]..[93,3104+42])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[74,2181+14]..[74,2181+40])
+                            Ppat_tuple
+                            [
+                              pattern (typehook.ml[74,2181+15]..[74,2181+16])
+                                Ppat_any
+                              pattern (typehook.ml[74,2181+17]..[74,2181+39])
+                                Ppat_constraint
+                                pattern (typehook.ml[74,2181+18]..[74,2181+19])
+                                  Ppat_var "x" (typehook.ml[74,2181+18]..[74,2181+19])
+                                core_type (typehook.ml[74,2181+22]..[74,2181+38])
+                                  Ptyp_constr "Sigs_util.plugin" (typehook.ml[74,2181+22]..[74,2181+38])
+                                  []
+                            ]
+                          expression (typehook.ml[75,2225+17]..[93,3104+41])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (typehook.ml[76,2251+19]..[76,2251+22])
+                                  Ppat_var "acc" (typehook.ml[76,2251+19]..[76,2251+22])
+                                expression (typehook.ml[77,2277+21]..[93,3104+41])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (typehook.ml[77,2277+25]..[77,2277+30])
+                                        Ppat_var "mtyps" (typehook.ml[77,2277+25]..[77,2277+30])
+                                      expression (typehook.ml[78,2310+23]..[80,2419+39])
+                                        Pexp_match
+                                        expression (typehook.ml[78,2310+29]..[78,2310+37])
+                                          Pexp_field
+                                          expression (typehook.ml[78,2310+29]..[78,2310+30])
+                                            Pexp_ident "x" (typehook.ml[78,2310+29]..[78,2310+30])
+                                          "filter" (typehook.ml[78,2310+31]..[78,2310+37])
+                                        [
+                                          <case>
+                                            pattern (typehook.ml[79,2353+25]..[79,2353+31])
+                                              Ppat_construct "Some" (typehook.ml[79,2353+25]..[79,2353+29])
+                                              Some
+                                                pattern (typehook.ml[79,2353+30]..[79,2353+31])
+                                                  Ppat_var "x" (typehook.ml[79,2353+30]..[79,2353+31])
+                                            expression (typehook.ml[79,2353+35]..[79,2353+65])
+                                              Pexp_apply
+                                              expression (typehook.ml[79,2353+35]..[79,2353+57])
+                                                Pexp_ident "Sigs_util.apply_filter" (typehook.ml[79,2353+35]..[79,2353+57])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[79,2353+58]..[79,2353+59])
+                                                    Pexp_ident "x" (typehook.ml[79,2353+58]..[79,2353+59])
+                                                <label> ""
+                                                  expression (typehook.ml[79,2353+60]..[79,2353+65])
+                                                    Pexp_ident "mtyps" (typehook.ml[79,2353+60]..[79,2353+65])
+                                              ]
+                                          <case>
+                                            pattern (typehook.ml[80,2419+25]..[80,2419+29])
+                                              Ppat_construct "None" (typehook.ml[80,2419+25]..[80,2419+29])
+                                              None
+                                            expression (typehook.ml[80,2419+34]..[80,2419+39])
+                                              Pexp_ident "mtyps" (typehook.ml[80,2419+34]..[80,2419+39])
+                                        ]
+                                  ]
+                                  expression (typehook.ml[81,2462+21]..[93,3104+41])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[81,2462+25]..[81,2462+29])
+                                          Ppat_var "code" (typehook.ml[81,2462+25]..[81,2462+29])
+                                        expression (typehook.ml[81,2462+32]..[81,2462+49])
+                                          Pexp_apply
+                                          expression (typehook.ml[81,2462+32]..[81,2462+43])
+                                            Pexp_field
+                                            expression (typehook.ml[81,2462+32]..[81,2462+33])
+                                              Pexp_ident "x" (typehook.ml[81,2462+32]..[81,2462+33])
+                                            "transform" (typehook.ml[81,2462+34]..[81,2462+43])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[81,2462+44]..[81,2462+49])
+                                                Pexp_ident "mtyps" (typehook.ml[81,2462+44]..[81,2462+49])
+                                          ]
+                                    ]
+                                    expression (typehook.ml[82,2515+22]..[93,3104+40])
+                                      Pexp_match
+                                      expression (typehook.ml[82,2515+28]..[82,2515+48])
+                                        Pexp_tuple
+                                        [
+                                          expression (typehook.ml[82,2515+30]..[82,2515+40])
+                                            Pexp_field
+                                            expression (typehook.ml[82,2515+30]..[82,2515+31])
+                                              Pexp_ident "x" (typehook.ml[82,2515+30]..[82,2515+31])
+                                            "position" (typehook.ml[82,2515+32]..[82,2515+40])
+                                          expression (typehook.ml[82,2515+43]..[82,2515+47])
+                                            Pexp_ident "code" (typehook.ml[82,2515+43]..[82,2515+47])
+                                        ]
+                                      [
+                                        <case>
+                                          pattern (typehook.ml[83,2569+24]..[83,2569+42])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[83,2569+25]..[83,2569+31])
+                                                Ppat_construct "Some" (typehook.ml[83,2569+25]..[83,2569+29])
+                                                Some
+                                                  pattern (typehook.ml[83,2569+30]..[83,2569+31])
+                                                    Ppat_var "x" (typehook.ml[83,2569+30]..[83,2569+31])
+                                              pattern (typehook.ml[83,2569+32]..[83,2569+41])
+                                                Ppat_construct "Some" (typehook.ml[83,2569+32]..[83,2569+36])
+                                                Some
+                                                  pattern (typehook.ml[83,2569+37]..[83,2569+41])
+                                                    Ppat_var "code" (typehook.ml[83,2569+37]..[83,2569+41])
+                                            ]
+                                          expression (typehook.ml[84,2615+26]..[87,2815+31])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[84,2615+30]..[84,2615+38])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[84,2615+31]..[84,2615+35])
+                                                      Ppat_var "name" (typehook.ml[84,2615+31]..[84,2615+35])
+                                                    pattern (typehook.ml[84,2615+36]..[84,2615+37])
+                                                      Ppat_var "f" (typehook.ml[84,2615+36]..[84,2615+37])
+                                                  ]
+                                                expression (typehook.ml[84,2615+41]..[84,2615+62])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[84,2615+41]..[84,2615+52])
+                                                    Pexp_ident "make_filter" (typehook.ml[84,2615+41]..[84,2615+52])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[84,2615+53]..[84,2615+62])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (typehook.ml[84,2615+54]..[84,2615+55])
+                                                            Pexp_ident "x" (typehook.ml[84,2615+54]..[84,2615+55])
+                                                          expression (typehook.ml[84,2615+57]..[84,2615+61])
+                                                            Pexp_ident "code" (typehook.ml[84,2615+57]..[84,2615+61])
+                                                        ]
+                                                  ]
+                                            ]
+                                            expression (typehook.ml[85,2681+26]..[87,2815+31])
+                                              Pexp_sequence
+                                              expression (typehook.ml[85,2681+27]..[85,2681+69])
+                                                Pexp_apply
+                                                expression (typehook.ml[85,2681+27]..[85,2681+59])
+                                                  Pexp_ident "Ast_filters.register_stru_filter" (typehook.ml[85,2681+27]..[85,2681+59])
+                                                [
+                                                  <label> ""
+                                                    expression (typehook.ml[85,2681+60]..[85,2681+69])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (typehook.ml[85,2681+61]..[85,2681+65])
+                                                          Pexp_ident "name" (typehook.ml[85,2681+61]..[85,2681+65])
+                                                        expression (typehook.ml[85,2681+67]..[85,2681+68])
+                                                          Pexp_ident "f" (typehook.ml[85,2681+67]..[85,2681+68])
+                                                      ]
+                                                ]
+                                              expression (typehook.ml[85,2681+26]..[87,2815+31])
+                                                Pexp_sequence
+                                                expression (typehook.ml[86,2752+27]..[86,2752+61])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[86,2752+27]..[86,2752+56])
+                                                    Pexp_ident "Ast_filters.use_implem_filter" (typehook.ml[86,2752+27]..[86,2752+56])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[86,2752+57]..[86,2752+61])
+                                                        Pexp_ident "name" (typehook.ml[86,2752+57]..[86,2752+61])
+                                                  ]
+                                                expression (typehook.ml[85,2681+26]..[87,2815+31])
+                                                  Pexp_ident "acc" (typehook.ml[87,2815+27]..[87,2815+30])
+                                        <case>
+                                          pattern (typehook.ml[88,2847+24]..[88,2847+41])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[88,2847+25]..[88,2847+29])
+                                                Ppat_construct "None" (typehook.ml[88,2847+25]..[88,2847+29])
+                                                None
+                                              pattern (typehook.ml[88,2847+31]..[88,2847+40])
+                                                Ppat_construct "Some" (typehook.ml[88,2847+31]..[88,2847+35])
+                                                Some
+                                                  pattern (typehook.ml[88,2847+36]..[88,2847+40])
+                                                    Ppat_var "code" (typehook.ml[88,2847+36]..[88,2847+40])
+                                            ]
+                                          expression (typehook.ml[89,2892+26]..[92,3065+38])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[89,2892+30]..[89,2892+34])
+                                                  Ppat_var "code" (typehook.ml[89,2892+30]..[89,2892+34])
+                                                expression (typehook.ml[89,2892+37]..[89,2892+56])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[89,2892+37]..[89,2892+46])
+                                                    Pexp_ident "Fill.stru" (typehook.ml[89,2892+37]..[89,2892+46])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[89,2892+47]..[89,2892+51])
+                                                        Pexp_ident "sloc" (typehook.ml[89,2892+47]..[89,2892+51])
+                                                    <label> ""
+                                                      expression (typehook.ml[89,2892+52]..[89,2892+56])
+                                                        Pexp_ident "code" (typehook.ml[89,2892+52]..[89,2892+56])
+                                                  ]
+                                            ]
+                                            expression (typehook.ml[90,2952+26]..[92,3065+38])
+                                              Pexp_coerce
+                                              expression (typehook.ml[90,2952+27]..[91,2984+76])
+                                                Pexp_variant "Sem"
+                                                Some
+                                                  expression (typehook.ml[91,2984+29]..[91,2984+76])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (typehook.ml[91,2984+30]..[91,2984+34])
+                                                        Pexp_ident "sloc" (typehook.ml[91,2984+30]..[91,2984+34])
+                                                      expression (typehook.ml[91,2984+36]..[91,2984+54])
+                                                        Pexp_coerce
+                                                        expression (typehook.ml[91,2984+37]..[91,2984+40])
+                                                          Pexp_ident "acc" (typehook.ml[91,2984+37]..[91,2984+40])
+                                                        None
+                                                        core_type (typehook.ml[91,2984+44]..[91,2984+53])
+                                                          Ptyp_constr "Astf.stru" (typehook.ml[91,2984+44]..[91,2984+53])
+                                                          []
+                                                      expression (typehook.ml[91,2984+56]..[91,2984+75])
+                                                        Pexp_coerce
+                                                        expression (typehook.ml[91,2984+57]..[91,2984+61])
+                                                          Pexp_ident "code" (typehook.ml[91,2984+57]..[91,2984+61])
+                                                        None
+                                                        core_type (typehook.ml[91,2984+65]..[91,2984+74])
+                                                          Ptyp_constr "Astf.stru" (typehook.ml[91,2984+65]..[91,2984+74])
+                                                          []
+                                                    ]
+                                              None
+                                              core_type (typehook.ml[92,3065+28]..[92,3065+37])
+                                                Ptyp_constr "Astf.stru" (typehook.ml[92,3065+28]..[92,3065+37])
+                                                []
+                                        <case>
+                                          pattern (typehook.ml[93,3104+24]..[93,3104+33])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[93,3104+25]..[93,3104+26])
+                                                Ppat_any
+                                              pattern (typehook.ml[93,3104+27]..[93,3104+31])
+                                                Ppat_construct "None" (typehook.ml[93,3104+27]..[93,3104+31])
+                                                None
+                                            ]
+                                          expression (typehook.ml[93,3104+37]..[93,3104+40])
+                                            Pexp_ident "acc" (typehook.ml[93,3104+37]..[93,3104+40])
+                                      ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[94,3149+0]..[173,6694+23])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[94,3149+4]..[94,3149+13])
+          Ppat_var "traversal" (typehook.ml[94,3149+4]..[94,3149+13])
+        expression (typehook.ml[95,3165+2]..[173,6694+23])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[96,3176+4]..[96,3176+6])
+                Ppat_construct "()" (typehook.ml[96,3176+4]..[96,3176+6])
+                None
+              expression (typehook.ml[97,3186+6]..[173,6694+23])
+                Pexp_constraint
+                expression (typehook.ml[97,3186+7]..[173,6694+10])
+                  Pexp_object
+                  class_structure
+                    pattern (typehook.ml[97,3186+7]..[173,6694+10])
+                      Ppat_constraint
+                      pattern (typehook.ml[97,3186+15]..[97,3186+19])
+                        Ppat_var "self" (typehook.ml[97,3186+15]..[97,3186+19])
+                      core_type (typehook.ml[97,3186+22]..[97,3186+32])
+                        Ptyp_var self_type
+                    [
+                      class_field (typehook.ml[98,3220+9]..[98,3220+35])
+                        Pcf_inherit Fresh
+                          class_expr (typehook.ml[98,3220+18]..[98,3220+26])
+                            Pcl_constr "Objs.map" (typehook.ml[98,3220+18]..[98,3220+26])
+                            []
+                          Some
+                            "super"
+                      class_field (typehook.ml[99,3256+9]..[99,3256+70])
+                        Pcf_val Immutable
+                          "mtyps_stack" (typehook.ml[99,3256+13]..[99,3256+24])
+                          Concrete Fresh
+                          expression (typehook.ml[99,3256+27]..[99,3256+70])
+                            Pexp_constraint
+                            expression (typehook.ml[99,3256+28]..[99,3256+43])
+                              Pexp_apply
+                              expression (typehook.ml[99,3256+28]..[99,3256+40])
+                                Pexp_ident "Stack.create" (typehook.ml[99,3256+28]..[99,3256+40])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[99,3256+41]..[99,3256+43])
+                                    Pexp_construct "()" (typehook.ml[99,3256+41]..[99,3256+43])
+                                    None
+                              ]
+                            core_type (typehook.ml[99,3256+46]..[99,3256+69])
+                              Ptyp_constr "Stack.t" (typehook.ml[99,3256+62]..[99,3256+69])
+                              [
+                                core_type (typehook.ml[99,3256+46]..[99,3256+61])
+                                  Ptyp_constr "Sigs_util.mtyps" (typehook.ml[99,3256+46]..[99,3256+61])
+                                  []
+                              ]
+                      class_field (typehook.ml[100,3327+9]..[100,3327+63])
+                        Pcf_val Mutable
+                          "cur_and_types" (typehook.ml[100,3327+21]..[100,3327+34])
+                          Concrete Fresh
+                          expression (typehook.ml[100,3327+37]..[100,3327+63])
+                            Pexp_constraint
+                            expression (typehook.ml[100,3327+38]..[100,3327+40])
+                              Pexp_construct "[]" (typehook.ml[100,3327+38]..[100,3327+40])
+                              None
+                            core_type (typehook.ml[100,3327+43]..[100,3327+62])
+                              Ptyp_constr "Sigs_util.and_types" (typehook.ml[100,3327+43]..[100,3327+62])
+                              []
+                      class_field (typehook.ml[101,3391+9]..[101,3391+38])
+                        Pcf_val Mutable
+                          "and_group" (typehook.ml[101,3391+21]..[101,3391+30])
+                          Concrete Fresh
+                          expression (typehook.ml[101,3391+33]..[101,3391+38])
+                            Pexp_construct "false" (typehook.ml[101,3391+33]..[101,3391+38])
+                            None
+                      class_field (typehook.ml[102,3430+9]..[102,3430+70])
+                        Pcf_method Public
+                          "get_cur_mtyps" (typehook.ml[102,3430+16]..[102,3430+29])
+                          Concrete Fresh
+                          expression (typehook.ml[102,3430+9]..[102,3430+70])
+                            Pexp_poly
+                            expression (typehook.ml[102,3430+49]..[102,3430+70])
+                              Pexp_apply
+                              expression (typehook.ml[102,3430+49]..[102,3430+58])
+                                Pexp_ident "Stack.top" (typehook.ml[102,3430+49]..[102,3430+58])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[102,3430+59]..[102,3430+70])
+                                    Pexp_ident "mtyps_stack" (typehook.ml[102,3430+59]..[102,3430+70])
+                              ]
+                            Some
+                              core_type (typehook.ml[102,3430+32]..[102,3430+47])
+                                Ptyp_poly
+                                core_type (typehook.ml[102,3430+32]..[102,3430+47])
+                                  Ptyp_constr "Sigs_util.mtyps" (typehook.ml[102,3430+32]..[102,3430+47])
+                                  []
+                      class_field (typehook.ml[103,3501+9]..[105,3557+76])
+                        Pcf_method Public
+                          "update_cur_mtyps" (typehook.ml[103,3501+16]..[103,3501+32])
+                          Concrete Fresh
+                          expression (typehook.ml[103,3501+9]..[105,3557+76])
+                            Pexp_poly
+                            expression (typehook.ml[104,3536+12]..[105,3557+75])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[105,3557+14]..[105,3557+15])
+                                    Ppat_var "f" (typehook.ml[105,3557+14]..[105,3557+15])
+                                  expression (typehook.ml[105,3557+19]..[105,3557+75])
+                                    Pexp_open Fresh ""Stack" (typehook.ml[105,3557+28]..[105,3557+33])"
+                                    expression (typehook.ml[105,3557+37]..[105,3557+75])
+                                      Pexp_apply
+                                      expression (typehook.ml[105,3557+37]..[105,3557+41])
+                                        Pexp_ident "push" (typehook.ml[105,3557+37]..[105,3557+41])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[105,3557+43]..[105,3557+62])
+                                            Pexp_apply
+                                            expression (typehook.ml[105,3557+43]..[105,3557+44])
+                                              Pexp_ident "f" (typehook.ml[105,3557+43]..[105,3557+44])
+                                            [
+                                              <label> ""
+                                                expression (typehook.ml[105,3557+46]..[105,3557+61])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[105,3557+46]..[105,3557+49])
+                                                    Pexp_ident "pop" (typehook.ml[105,3557+46]..[105,3557+49])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[105,3557+50]..[105,3557+61])
+                                                        Pexp_ident "mtyps_stack" (typehook.ml[105,3557+50]..[105,3557+61])
+                                                  ]
+                                            ]
+                                        <label> ""
+                                          expression (typehook.ml[105,3557+64]..[105,3557+75])
+                                            Pexp_ident "mtyps_stack" (typehook.ml[105,3557+64]..[105,3557+75])
+                                      ]
+                              ]
+                            None
+                      class_field (typehook.ml[106,3634+9]..[106,3634+61])
+                        Pcf_method Private
+                          "in_module" (typehook.ml[106,3634+24]..[106,3634+33])
+                          Concrete Fresh
+                          expression (typehook.ml[106,3634+9]..[106,3634+61])
+                            Pexp_poly
+                            expression (typehook.ml[106,3634+36]..[106,3634+61])
+                              Pexp_apply
+                              expression (typehook.ml[106,3634+36]..[106,3634+46])
+                                Pexp_ident "Stack.push" (typehook.ml[106,3634+36]..[106,3634+46])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[106,3634+47]..[106,3634+49])
+                                    Pexp_construct "[]" (typehook.ml[106,3634+47]..[106,3634+49])
+                                    None
+                                <label> ""
+                                  expression (typehook.ml[106,3634+50]..[106,3634+61])
+                                    Pexp_ident "mtyps_stack" (typehook.ml[106,3634+50]..[106,3634+61])
+                              ]
+                            None
+                      class_field (typehook.ml[107,3696+9]..[107,3696+67])
+                        Pcf_method Private
+                          "out_module" (typehook.ml[107,3696+24]..[107,3696+34])
+                          Concrete Fresh
+                          expression (typehook.ml[107,3696+9]..[107,3696+67])
+                            Pexp_poly
+                            expression (typehook.ml[107,3696+37]..[107,3696+67])
+                              Pexp_apply
+                              expression (typehook.ml[107,3696+37]..[107,3696+43])
+                                Pexp_ident "ignore" (typehook.ml[107,3696+37]..[107,3696+43])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[107,3696+45]..[107,3696+66])
+                                    Pexp_apply
+                                    expression (typehook.ml[107,3696+45]..[107,3696+54])
+                                      Pexp_ident "Stack.pop" (typehook.ml[107,3696+45]..[107,3696+54])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[107,3696+55]..[107,3696+66])
+                                          Pexp_ident "mtyps_stack" (typehook.ml[107,3696+55]..[107,3696+66])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[108,3764+9]..[109,3803+51])
+                        Pcf_method Private
+                          "in_and_types" (typehook.ml[108,3764+24]..[108,3764+36])
+                          Concrete Fresh
+                          expression (typehook.ml[108,3764+9]..[109,3803+51])
+                            Pexp_poly
+                            expression (typehook.ml[109,3803+11]..[109,3803+51])
+                              Pexp_sequence
+                              expression (typehook.ml[109,3803+12]..[109,3803+29])
+                                Pexp_setinstvar "and_group" (typehook.ml[109,3803+12]..[109,3803+21])
+                                expression (typehook.ml[109,3803+25]..[109,3803+29])
+                                  Pexp_construct "true" (typehook.ml[109,3803+25]..[109,3803+29])
+                                  None
+                              expression (typehook.ml[109,3803+11]..[109,3803+51])
+                                Pexp_setinstvar "cur_and_types" (typehook.ml[109,3803+31]..[109,3803+44])
+                                expression (typehook.ml[109,3803+48]..[109,3803+50])
+                                  Pexp_construct "[]" (typehook.ml[109,3803+48]..[109,3803+50])
+                                  None
+                            None
+                      class_field (typehook.ml[110,3855+9]..[111,3895+52])
+                        Pcf_method Private
+                          "out_and_types" (typehook.ml[110,3855+24]..[110,3855+37])
+                          Concrete Fresh
+                          expression (typehook.ml[110,3855+9]..[111,3895+52])
+                            Pexp_poly
+                            expression (typehook.ml[111,3895+11]..[111,3895+52])
+                              Pexp_sequence
+                              expression (typehook.ml[111,3895+12]..[111,3895+30])
+                                Pexp_setinstvar "and_group" (typehook.ml[111,3895+12]..[111,3895+21])
+                                expression (typehook.ml[111,3895+25]..[111,3895+30])
+                                  Pexp_construct "false" (typehook.ml[111,3895+25]..[111,3895+30])
+                                  None
+                              expression (typehook.ml[111,3895+11]..[111,3895+52])
+                                Pexp_setinstvar "cur_and_types" (typehook.ml[111,3895+32]..[111,3895+45])
+                                expression (typehook.ml[111,3895+49]..[111,3895+51])
+                                  Pexp_construct "[]" (typehook.ml[111,3895+49]..[111,3895+51])
+                                  None
+                            None
+                      class_field (typehook.ml[112,3948+9]..[112,3948+51])
+                        Pcf_method Private
+                          "is_in_and_types" (typehook.ml[112,3948+24]..[112,3948+39])
+                          Concrete Fresh
+                          expression (typehook.ml[112,3948+9]..[112,3948+51])
+                            Pexp_poly
+                            expression (typehook.ml[112,3948+42]..[112,3948+51])
+                              Pexp_ident "and_group" (typehook.ml[112,3948+42]..[112,3948+51])
+                            None
+                      class_field (typehook.ml[113,4000+9]..[113,4000+49])
+                        Pcf_method Public
+                          "get_cur_and_types" (typehook.ml[113,4000+16]..[113,4000+33])
+                          Concrete Fresh
+                          expression (typehook.ml[113,4000+9]..[113,4000+49])
+                            Pexp_poly
+                            expression (typehook.ml[113,4000+36]..[113,4000+49])
+                              Pexp_ident "cur_and_types" (typehook.ml[113,4000+36]..[113,4000+49])
+                            None
+                      class_field (typehook.ml[114,4050+9]..[115,4089+61])
+                        Pcf_method Public
+                          "update_cur_and_types" (typehook.ml[114,4050+16]..[114,4050+36])
+                          Concrete Fresh
+                          expression (typehook.ml[114,4050+9]..[115,4089+61])
+                            Pexp_poly
+                            expression (typehook.ml[115,4089+12]..[115,4089+60])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[115,4089+23]..[115,4089+24])
+                                    Ppat_var "f" (typehook.ml[115,4089+23]..[115,4089+24])
+                                  expression (typehook.ml[115,4089+28]..[115,4089+60])
+                                    Pexp_setinstvar "cur_and_types" (typehook.ml[115,4089+28]..[115,4089+41])
+                                    expression (typehook.ml[115,4089+45]..[115,4089+60])
+                                      Pexp_apply
+                                      expression (typehook.ml[115,4089+45]..[115,4089+46])
+                                        Pexp_ident "f" (typehook.ml[115,4089+45]..[115,4089+46])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[115,4089+47]..[115,4089+60])
+                                            Pexp_ident "cur_and_types" (typehook.ml[115,4089+47]..[115,4089+60])
+                                      ]
+                              ]
+                            None
+                      class_field (typehook.ml[116,4151+9]..[133,4913+32])
+                        Pcf_method Public
+                          "mexp" (typehook.ml[116,4151+17]..[116,4151+21])
+                          Concrete Override
+                          expression (typehook.ml[116,4151+9]..[133,4913+32])
+                            Pexp_poly
+                            expression (typehook.ml[117,4175+12]..[133,4913+31])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[118,4196+14]..[118,4196+44])
+                                    Ppat_constraint
+                                    pattern (typehook.ml[118,4196+15]..[118,4196+31])
+                                      Ppat_variant "Struct"
+                                      Some
+                                        pattern (typehook.ml[118,4196+15]..[118,4196+31])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[118,4196+24]..[118,4196+28])
+                                              Ppat_var "sloc" (typehook.ml[118,4196+24]..[118,4196+28])
+                                            pattern (typehook.ml[118,4196+29]..[118,4196+30])
+                                              Ppat_var "u" (typehook.ml[118,4196+29]..[118,4196+30])
+                                          ]
+                                    core_type (typehook.ml[118,4196+34]..[118,4196+43])
+                                      Ptyp_constr "Astf.mexp" (typehook.ml[118,4196+34]..[118,4196+43])
+                                      []
+                                  expression (typehook.ml[119,4244+16]..[132,4840+72])
+                                    Pexp_sequence
+                                    expression (typehook.ml[119,4244+17]..[119,4244+31])
+                                      Pexp_send "in_module"
+                                      expression (typehook.ml[119,4244+17]..[119,4244+21])
+                                        Pexp_ident "self" (typehook.ml[119,4244+17]..[119,4244+21])
+                                    expression (typehook.ml[119,4244+16]..[132,4840+72])
+                                      Pexp_sequence
+                                      expression (typehook.ml[120,4277+18]..[131,4805+33])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (typehook.ml[120,4277+22]..[120,4277+25])
+                                              Ppat_var "res" (typehook.ml[120,4277+22]..[120,4277+25])
+                                            expression (typehook.ml[120,4277+28]..[120,4277+39])
+                                              Pexp_apply
+                                              expression (typehook.ml[120,4277+28]..[120,4277+37])
+                                                Pexp_send "stru"
+                                                expression (typehook.ml[120,4277+28]..[120,4277+32])
+                                                  Pexp_ident "self" (typehook.ml[120,4277+28]..[120,4277+32])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[120,4277+38]..[120,4277+39])
+                                                    Pexp_ident "u" (typehook.ml[120,4277+38]..[120,4277+39])
+                                              ]
+                                        ]
+                                        expression (typehook.ml[121,4320+18]..[131,4805+33])
+                                          Pexp_let Nonrec
+                                          [
+                                            <def>
+                                              pattern (typehook.ml[121,4320+22]..[121,4320+27])
+                                                Ppat_var "mtyps" (typehook.ml[121,4320+22]..[121,4320+27])
+                                              expression (typehook.ml[121,4320+30]..[121,4320+57])
+                                                Pexp_apply
+                                                expression (typehook.ml[121,4320+30]..[121,4320+38])
+                                                  Pexp_ident "List.rev" (typehook.ml[121,4320+30]..[121,4320+38])
+                                                [
+                                                  <label> ""
+                                                    expression (typehook.ml[121,4320+39]..[121,4320+57])
+                                                      Pexp_send "get_cur_mtyps"
+                                                      expression (typehook.ml[121,4320+39]..[121,4320+43])
+                                                        Pexp_ident "self" (typehook.ml[121,4320+39]..[121,4320+43])
+                                                ]
+                                          ]
+                                          expression (typehook.ml[122,4381+18]..[131,4805+33])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[122,4381+22]..[122,4381+24])
+                                                  Ppat_construct "()" (typehook.ml[122,4381+22]..[122,4381+24])
+                                                  None
+                                                expression (typehook.ml[123,4408+20]..[124,4452+64])
+                                                  Pexp_ifthenelse
+                                                  expression (typehook.ml[123,4408+23]..[123,4408+43])
+                                                    Pexp_apply
+                                                    expression (typehook.ml[123,4408+23]..[123,4408+24])
+                                                      Pexp_ident "!" (typehook.ml[123,4408+23]..[123,4408+24])
+                                                    [
+                                                      <label> ""
+                                                        expression (typehook.ml[123,4408+24]..[123,4408+43])
+                                                          Pexp_ident "print_collect_mtyps" (typehook.ml[123,4408+24]..[123,4408+43])
+                                                    ]
+                                                  expression (typehook.ml[124,4452+25]..[124,4452+64])
+                                                    Pexp_apply
+                                                    expression (typehook.ml[124,4452+25]..[124,4452+32])
+                                                      Pexp_ident "eprintf" (typehook.ml[124,4452+25]..[124,4452+32])
+                                                    [
+                                                      <label> ""
+                                                        expression (typehook.ml[124,4452+33]..[124,4452+43])
+                                                          Pexp_constant Const_string("@[%a@]@.",None)
+                                                      <label> ""
+                                                        expression (typehook.ml[124,4452+44]..[124,4452+58])
+                                                          Pexp_ident "pp_print_mtyps" (typehook.ml[124,4452+44]..[124,4452+58])
+                                                      <label> ""
+                                                        expression (typehook.ml[124,4452+59]..[124,4452+64])
+                                                          Pexp_ident "mtyps" (typehook.ml[124,4452+59]..[124,4452+64])
+                                                    ]
+                                                  None
+                                            ]
+                                            expression (typehook.ml[125,4520+18]..[131,4805+33])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (typehook.ml[125,4520+22]..[125,4520+28])
+                                                    Ppat_var "result" (typehook.ml[125,4520+22]..[125,4520+28])
+                                                  expression (typehook.ml[126,4551+20]..[130,4730+71])
+                                                    Pexp_apply
+                                                    expression (typehook.ml[126,4551+20]..[126,4551+35])
+                                                      Pexp_ident "List.fold_right" (typehook.ml[126,4551+20]..[126,4551+35])
+                                                    [
+                                                      <label> ""
+                                                        expression (typehook.ml[126,4551+37]..[126,4551+60])
+                                                          Pexp_apply
+                                                          expression (typehook.ml[126,4551+37]..[126,4551+49])
+                                                            Pexp_ident "iterate_code" (typehook.ml[126,4551+37]..[126,4551+49])
+                                                          [
+                                                            <label> ""
+                                                              expression (typehook.ml[126,4551+50]..[126,4551+54])
+                                                                Pexp_ident "sloc" (typehook.ml[126,4551+50]..[126,4551+54])
+                                                            <label> ""
+                                                              expression (typehook.ml[126,4551+55]..[126,4551+60])
+                                                                Pexp_ident "mtyps" (typehook.ml[126,4551+55]..[126,4551+60])
+                                                          ]
+                                                      <label> ""
+                                                        expression (typehook.ml[127,4613+23]..[127,4613+45])
+                                                          Pexp_apply
+                                                          expression (typehook.ml[127,4613+23]..[127,4613+24])
+                                                            Pexp_ident "!" (typehook.ml[127,4613+23]..[127,4613+24])
+                                                          [
+                                                            <label> ""
+                                                              expression (typehook.ml[127,4613+24]..[127,4613+45])
+                                                                Pexp_ident "State.current_filters" (typehook.ml[127,4613+24]..[127,4613+45])
+                                                          ]
+                                                      <label> ""
+                                                        expression (typehook.ml[128,4660+23]..[130,4730+70])
+                                                          Pexp_ifthenelse
+                                                          expression (typehook.ml[128,4660+26]..[128,4660+37])
+                                                            Pexp_apply
+                                                            expression (typehook.ml[128,4660+26]..[128,4660+27])
+                                                              Pexp_ident "!" (typehook.ml[128,4660+26]..[128,4660+27])
+                                                            [
+                                                              <label> ""
+                                                                expression (typehook.ml[128,4660+27]..[128,4660+37])
+                                                                  Pexp_ident "State.keep" (typehook.ml[128,4660+27]..[128,4660+37])
+                                                            ]
+                                                          expression (typehook.ml[129,4698+28]..[129,4698+31])
+                                                            Pexp_ident "res" (typehook.ml[129,4698+28]..[129,4698+31])
+                                                          Some
+                                                            expression (typehook.ml[130,4730+28]..[130,4730+70])
+                                                              Pexp_coerce
+                                                              expression (typehook.ml[130,4730+29]..[130,4730+56])
+                                                                Pexp_variant "StExp"
+                                                                Some
+                                                                  expression (typehook.ml[130,4730+36]..[130,4730+56])
+                                                                    Pexp_tuple
+                                                                    [
+                                                                      expression (typehook.ml[130,4730+37]..[130,4730+41])
+Pexp_ident "sloc" (typehook.ml[130,4730+37]..[130,4730+41])
+                                                                      expression (typehook.ml[130,4730+44]..[130,4730+54])
+Pexp_variant "Unit"
+Some
+  expression (typehook.ml[130,4730+50]..[130,4730+54])
+    Pexp_ident "sloc" (typehook.ml[130,4730+50]..[130,4730+54])
+                                                                    ]
+                                                              None
+                                                              core_type (typehook.ml[130,4730+60]..[130,4730+69])
+                                                                Ptyp_constr "Astf.stru" (typehook.ml[130,4730+60]..[130,4730+69])
+                                                                []
+                                                    ]
+                                              ]
+                                              expression (typehook.ml[131,4805+18]..[131,4805+33])
+                                                Pexp_send "out_module"
+                                                expression (typehook.ml[131,4805+18]..[131,4805+22])
+                                                  Pexp_ident "self" (typehook.ml[131,4805+18]..[131,4805+22])
+                                      expression (typehook.ml[119,4244+16]..[132,4840+72])
+                                        Pexp_coerce
+                                        expression (typehook.ml[132,4840+19]..[132,4840+56])
+                                          Pexp_variant "Struct"
+                                          Some
+                                            expression (typehook.ml[132,4840+27]..[132,4840+56])
+                                              Pexp_tuple
+                                              [
+                                                expression (typehook.ml[132,4840+28]..[132,4840+32])
+                                                  Pexp_ident "sloc" (typehook.ml[132,4840+28]..[132,4840+32])
+                                                expression (typehook.ml[132,4840+34]..[132,4840+55])
+                                                  Pexp_coerce
+                                                  expression (typehook.ml[132,4840+35]..[132,4840+41])
+                                                    Pexp_ident "result" (typehook.ml[132,4840+35]..[132,4840+41])
+                                                  None
+                                                  core_type (typehook.ml[132,4840+45]..[132,4840+54])
+                                                    Ptyp_constr "Astf.stru" (typehook.ml[132,4840+45]..[132,4840+54])
+                                                    []
+                                              ]
+                                        None
+                                        core_type (typehook.ml[132,4840+60]..[132,4840+69])
+                                          Ptyp_constr "Astf.mexp" (typehook.ml[132,4840+60]..[132,4840+69])
+                                          []
+                                <case>
+                                  pattern (typehook.ml[133,4913+14]..[133,4913+15])
+                                    Ppat_var "x" (typehook.ml[133,4913+14]..[133,4913+15])
+                                  expression (typehook.ml[133,4913+19]..[133,4913+31])
+                                    Pexp_apply
+                                    expression (typehook.ml[133,4913+19]..[133,4913+29])
+                                      Pexp_send "mexp"
+                                      expression (typehook.ml[133,4913+19]..[133,4913+24])
+                                        Pexp_ident "super" (typehook.ml[133,4913+19]..[133,4913+24])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[133,4913+30]..[133,4913+31])
+                                          Pexp_ident "x" (typehook.ml[133,4913+30]..[133,4913+31])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[134,4946+9]..[163,6318+32])
+                        Pcf_method Public
+                          "stru" (typehook.ml[134,4946+17]..[134,4946+21])
+                          Concrete Override
+                          expression (typehook.ml[134,4946+9]..[163,6318+32])
+                            Pexp_poly
+                            expression (typehook.ml[135,4970+12]..[163,6318+31])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[136,4991+14]..[136,4991+58])
+                                    Ppat_alias "x" (typehook.ml[136,4991+57]..[136,4991+58])
+                                    pattern (typehook.ml[136,4991+14]..[136,4991+53])
+                                      Ppat_constraint
+                                      pattern (typehook.ml[136,4991+15]..[136,4991+40])
+                                        Ppat_variant "Type"
+                                        Some
+                                          pattern (typehook.ml[136,4991+15]..[136,4991+40])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[136,4991+22]..[136,4991+26])
+                                                Ppat_var "_loc" (typehook.ml[136,4991+22]..[136,4991+26])
+                                              pattern (typehook.ml[136,4991+27]..[136,4991+39])
+                                                Ppat_variant "And"
+                                                Some
+                                                  pattern (typehook.ml[136,4991+27]..[136,4991+39])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (typehook.ml[136,4991+33]..[136,4991+34])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[136,4991+35]..[136,4991+36])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[136,4991+37]..[136,4991+38])
+                                                        Ppat_any
+                                                    ]
+                                            ]
+                                      core_type (typehook.ml[136,4991+43]..[136,4991+52])
+                                        Ptyp_constr "Astf.stru" (typehook.ml[136,4991+43]..[136,4991+52])
+                                        []
+                                  expression (typehook.ml[137,5053+16]..[146,5405+67])
+                                    Pexp_sequence
+                                    expression (typehook.ml[137,5053+17]..[137,5053+34])
+                                      Pexp_send "in_and_types"
+                                      expression (typehook.ml[137,5053+17]..[137,5053+21])
+                                        Pexp_ident "self" (typehook.ml[137,5053+17]..[137,5053+21])
+                                    expression (typehook.ml[137,5053+16]..[146,5405+67])
+                                      Pexp_sequence
+                                      expression (typehook.ml[138,5089+18]..[142,5278+29])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (typehook.ml[138,5089+22]..[138,5089+23])
+                                              Ppat_any
+                                            expression (typehook.ml[138,5089+26]..[138,5089+38])
+                                              Pexp_apply
+                                              expression (typehook.ml[138,5089+26]..[138,5089+36])
+                                                Pexp_send "stru"
+                                                expression (typehook.ml[138,5089+26]..[138,5089+31])
+                                                  Pexp_ident "super" (typehook.ml[138,5089+26]..[138,5089+31])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[138,5089+37]..[138,5089+38])
+                                                    Pexp_ident "x" (typehook.ml[138,5089+37]..[138,5089+38])
+                                              ]
+                                        ]
+                                        expression (typehook.ml[139,5131+18]..[142,5278+29])
+                                          Pexp_apply
+                                          expression (typehook.ml[139,5131+18]..[139,5131+39])
+                                            Pexp_send "update_cur_mtyps"
+                                            expression (typehook.ml[139,5131+18]..[139,5131+22])
+                                              Pexp_ident "self" (typehook.ml[139,5131+18]..[139,5131+22])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[140,5171+21]..[142,5278+28])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[141,5201+23]..[141,5201+26])
+                                                      Ppat_var "lst" (typehook.ml[141,5201+23]..[141,5201+26])
+                                                    expression (typehook.ml[141,5201+30]..[142,5278+28])
+                                                      Pexp_construct "::" (typehook.ml[141,5201+74]..[141,5201+76])
+                                                      Some
+                                                        expression (typehook.ml[141,5201+30]..[142,5278+28])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[141,5201+31]..[141,5201+72])
+                                                              Pexp_variant "Mutual"
+                                                              Some
+                                                                expression (typehook.ml[141,5201+40]..[141,5201+71])
+                                                                  Pexp_apply
+                                                                  expression (typehook.ml[141,5201+40]..[141,5201+48])
+                                                                    Pexp_ident "List.rev" (typehook.ml[141,5201+40]..[141,5201+48])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (typehook.ml[141,5201+49]..[141,5201+71])
+Pexp_send "get_cur_and_types"
+expression (typehook.ml[141,5201+49]..[141,5201+53])
+  Pexp_ident "self" (typehook.ml[141,5201+49]..[141,5201+53])
+                                                                  ]
+                                                            expression (typehook.ml[142,5278+25]..[142,5278+28])
+                                                              Pexp_ident "lst" (typehook.ml[142,5278+25]..[142,5278+28])
+                                                          ]
+                                                ]
+                                          ]
+                                      expression (typehook.ml[137,5053+16]..[146,5405+67])
+                                        Pexp_sequence
+                                        expression (typehook.ml[143,5309+18]..[143,5309+36])
+                                          Pexp_send "out_and_types"
+                                          expression (typehook.ml[143,5309+18]..[143,5309+22])
+                                            Pexp_ident "self" (typehook.ml[143,5309+18]..[143,5309+22])
+                                        expression (typehook.ml[137,5053+16]..[146,5405+67])
+                                          Pexp_ifthenelse
+                                          expression (typehook.ml[144,5347+21]..[144,5347+32])
+                                            Pexp_apply
+                                            expression (typehook.ml[144,5347+21]..[144,5347+22])
+                                              Pexp_ident "!" (typehook.ml[144,5347+21]..[144,5347+22])
+                                            [
+                                              <label> ""
+                                                expression (typehook.ml[144,5347+22]..[144,5347+32])
+                                                  Pexp_ident "State.keep" (typehook.ml[144,5347+22]..[144,5347+32])
+                                            ]
+                                          expression (typehook.ml[145,5380+23]..[145,5380+24])
+                                            Pexp_ident "x" (typehook.ml[145,5380+23]..[145,5380+24])
+                                          Some
+                                            expression (typehook.ml[146,5405+23]..[146,5405+65])
+                                              Pexp_coerce
+                                              expression (typehook.ml[146,5405+24]..[146,5405+51])
+                                                Pexp_variant "StExp"
+                                                Some
+                                                  expression (typehook.ml[146,5405+31]..[146,5405+51])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (typehook.ml[146,5405+32]..[146,5405+36])
+                                                        Pexp_ident "_loc" (typehook.ml[146,5405+32]..[146,5405+36])
+                                                      expression (typehook.ml[146,5405+39]..[146,5405+49])
+                                                        Pexp_variant "Unit"
+                                                        Some
+                                                          expression (typehook.ml[146,5405+45]..[146,5405+49])
+                                                            Pexp_ident "_loc" (typehook.ml[146,5405+45]..[146,5405+49])
+                                                    ]
+                                              None
+                                              core_type (typehook.ml[146,5405+55]..[146,5405+64])
+                                                Ptyp_constr "Astf.stru" (typehook.ml[146,5405+55]..[146,5405+64])
+                                                []
+                                <case>
+                                  pattern (typehook.ml[147,5473+14]..[147,5473+41])
+                                    Ppat_variant "TypeWith"
+                                    Some
+                                      pattern (typehook.ml[147,5473+14]..[147,5473+41])
+                                        Ppat_tuple
+                                        [
+                                          pattern (typehook.ml[147,5473+25]..[147,5473+29])
+                                            Ppat_var "_loc" (typehook.ml[147,5473+25]..[147,5473+29])
+                                          pattern (typehook.ml[147,5473+30]..[147,5473+38])
+                                            Ppat_var "typedecl" (typehook.ml[147,5473+30]..[147,5473+38])
+                                          pattern (typehook.ml[147,5473+39]..[147,5473+40])
+                                            Ppat_any
+                                        ]
+                                  expression (typehook.ml[148,5518+16]..[148,5518+50])
+                                    Pexp_apply
+                                    expression (typehook.ml[148,5518+16]..[148,5518+25])
+                                      Pexp_send "stru"
+                                      expression (typehook.ml[148,5518+16]..[148,5518+20])
+                                        Pexp_ident "self" (typehook.ml[148,5518+16]..[148,5518+20])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[148,5518+27]..[148,5518+49])
+                                          Pexp_variant "Type"
+                                          Some
+                                            expression (typehook.ml[148,5518+33]..[148,5518+49])
+                                              Pexp_tuple
+                                              [
+                                                expression (typehook.ml[148,5518+34]..[148,5518+38])
+                                                  Pexp_ident "_loc" (typehook.ml[148,5518+34]..[148,5518+38])
+                                                expression (typehook.ml[148,5518+40]..[148,5518+48])
+                                                  Pexp_ident "typedecl" (typehook.ml[148,5518+40]..[148,5518+48])
+                                              ]
+                                    ]
+                                <case>
+                                  pattern (typehook.ml[149,5569+14]..[150,5637+31])
+                                    Ppat_alias "x" (typehook.ml[150,5637+30]..[150,5637+31])
+                                    pattern (typehook.ml[149,5569+14]..[150,5637+26])
+                                      Ppat_constraint
+                                      pattern (typehook.ml[149,5569+15]..[149,5569+65])
+                                        Ppat_variant "Type"
+                                        Some
+                                          pattern (typehook.ml[149,5569+15]..[149,5569+65])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[149,5569+22]..[149,5569+26])
+                                                Ppat_var "_loc" (typehook.ml[149,5569+22]..[149,5569+26])
+                                              pattern (typehook.ml[149,5569+27]..[149,5569+64])
+                                                Ppat_alias "t" (typehook.ml[149,5569+62]..[149,5569+63])
+                                                pattern (typehook.ml[149,5569+28]..[149,5569+58])
+                                                  Ppat_variant "TyDcl"
+                                                  Some
+                                                    pattern (typehook.ml[149,5569+28]..[149,5569+58])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (typehook.ml[149,5569+36]..[149,5569+37])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[149,5569+38]..[149,5569+51])
+                                                          Ppat_variant "Lid"
+                                                          Some
+                                                            pattern (typehook.ml[149,5569+38]..[149,5569+51])
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (typehook.ml[149,5569+44]..[149,5569+45])
+                                                                  Ppat_any
+                                                                pattern (typehook.ml[149,5569+46]..[149,5569+50])
+                                                                  Ppat_var "name" (typehook.ml[149,5569+46]..[149,5569+50])
+                                                              ]
+                                                        pattern (typehook.ml[149,5569+52]..[149,5569+53])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[149,5569+54]..[149,5569+55])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[149,5569+56]..[149,5569+57])
+                                                          Ppat_any
+                                                      ]
+                                            ]
+                                      core_type (typehook.ml[150,5637+16]..[150,5637+25])
+                                        Ptyp_constr "Astf.stru" (typehook.ml[150,5637+16]..[150,5637+25])
+                                        []
+                                  expression (typehook.ml[151,5672+16]..[155,5881+74])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[151,5672+20]..[151,5672+24])
+                                          Ppat_var "item" (typehook.ml[151,5672+20]..[151,5672+24])
+                                        expression (typehook.ml[151,5672+27]..[151,5672+61])
+                                          Pexp_variant "Single"
+                                          Some
+                                            expression (typehook.ml[151,5672+35]..[151,5672+61])
+                                              Pexp_tuple
+                                              [
+                                                expression (typehook.ml[151,5672+36]..[151,5672+40])
+                                                  Pexp_ident "name" (typehook.ml[151,5672+36]..[151,5672+40])
+                                                expression (typehook.ml[151,5672+43]..[151,5672+59])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[151,5672+43]..[151,5672+57])
+                                                    Pexp_ident "Strip.typedecl" (typehook.ml[151,5672+43]..[151,5672+57])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[151,5672+58]..[151,5672+59])
+                                                        Pexp_ident "t" (typehook.ml[151,5672+58]..[151,5672+59])
+                                                  ]
+                                              ]
+                                    ]
+                                    expression (typehook.ml[152,5737+16]..[155,5881+74])
+                                      Pexp_let Nonrec
+                                      [
+                                        <def>
+                                          pattern (typehook.ml[152,5737+20]..[152,5737+22])
+                                            Ppat_construct "()" (typehook.ml[152,5737+20]..[152,5737+22])
+                                            None
+                                          expression (typehook.ml[153,5762+18]..[154,5804+73])
+                                            Pexp_ifthenelse
+                                            expression (typehook.ml[153,5762+21]..[153,5762+41])
+                                              Pexp_apply
+                                              expression (typehook.ml[153,5762+21]..[153,5762+22])
+                                                Pexp_ident "!" (typehook.ml[153,5762+21]..[153,5762+22])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[153,5762+22]..[153,5762+41])
+                                                    Pexp_ident "print_collect_mtyps" (typehook.ml[153,5762+22]..[153,5762+41])
+                                              ]
+                                            expression (typehook.ml[154,5804+23]..[154,5804+73])
+                                              Pexp_apply
+                                              expression (typehook.ml[154,5804+23]..[154,5804+30])
+                                                Pexp_ident "eprintf" (typehook.ml[154,5804+23]..[154,5804+30])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[154,5804+31]..[154,5804+53])
+                                                    Pexp_constant Const_string("Came across @[%a@]@.",None)
+                                                <label> ""
+                                                  expression (typehook.ml[154,5804+54]..[154,5804+68])
+                                                    Pexp_ident "pp_print_types" (typehook.ml[154,5804+54]..[154,5804+68])
+                                                <label> ""
+                                                  expression (typehook.ml[154,5804+69]..[154,5804+73])
+                                                    Pexp_ident "item" (typehook.ml[154,5804+69]..[154,5804+73])
+                                              ]
+                                            None
+                                      ]
+                                      expression (typehook.ml[155,5881+16]..[155,5881+74])
+                                        Pexp_sequence
+                                        expression (typehook.ml[155,5881+17]..[155,5881+70])
+                                          Pexp_apply
+                                          expression (typehook.ml[155,5881+17]..[155,5881+38])
+                                            Pexp_send "update_cur_mtyps"
+                                            expression (typehook.ml[155,5881+17]..[155,5881+21])
+                                              Pexp_ident "self" (typehook.ml[155,5881+17]..[155,5881+21])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[155,5881+40]..[155,5881+69])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[155,5881+51]..[155,5881+54])
+                                                      Ppat_var "lst" (typehook.ml[155,5881+51]..[155,5881+54])
+                                                    expression (typehook.ml[155,5881+58]..[155,5881+69])
+                                                      Pexp_construct "::" (typehook.ml[155,5881+63]..[155,5881+65])
+                                                      Some
+                                                        expression (typehook.ml[155,5881+58]..[155,5881+69])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[155,5881+58]..[155,5881+62])
+                                                              Pexp_ident "item" (typehook.ml[155,5881+58]..[155,5881+62])
+                                                            expression (typehook.ml[155,5881+66]..[155,5881+69])
+                                                              Pexp_ident "lst" (typehook.ml[155,5881+66]..[155,5881+69])
+                                                          ]
+                                                ]
+                                          ]
+                                        expression (typehook.ml[155,5881+16]..[155,5881+74])
+                                          Pexp_ident "x" (typehook.ml[155,5881+72]..[155,5881+73])
+                                <case>
+                                  pattern (typehook.ml[156,5956+14]..[162,6257+55])
+                                    Ppat_alias "x" (typehook.ml[162,6257+54]..[162,6257+55])
+                                    pattern (typehook.ml[156,5956+14]..[162,6257+50])
+                                      Ppat_or
+                                      pattern (typehook.ml[156,5956+14]..[161,6208+48])
+                                        Ppat_or
+                                        pattern (typehook.ml[156,5956+14]..[160,6163+44])
+                                          Ppat_or
+                                          pattern (typehook.ml[156,5956+14]..[159,6111+51])
+                                            Ppat_or
+                                            pattern (typehook.ml[156,5956+14]..[158,6064+46])
+                                              Ppat_or
+                                              pattern (typehook.ml[156,5956+14]..[157,6012+51])
+                                                Ppat_or
+                                                pattern (typehook.ml[156,5956+14]..[156,5956+55])
+                                                  Ppat_constraint
+                                                  pattern (typehook.ml[156,5956+15]..[156,5956+42])
+                                                    Ppat_variant "Value"
+                                                    Some
+                                                      pattern (typehook.ml[156,5956+15]..[156,5956+42])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[156,5956+23]..[156,5956+27])
+                                                            Ppat_var "_loc" (typehook.ml[156,5956+23]..[156,5956+27])
+                                                          pattern (typehook.ml[156,5956+28]..[156,5956+39])
+                                                            Ppat_variant "Negative"
+                                                            Some
+                                                              pattern (typehook.ml[156,5956+38]..[156,5956+39])
+                                                                Ppat_any
+                                                          pattern (typehook.ml[156,5956+40]..[156,5956+41])
+                                                            Ppat_any
+                                                        ]
+                                                  core_type (typehook.ml[156,5956+45]..[156,5956+54])
+                                                    Ptyp_constr "Astf.stru" (typehook.ml[156,5956+45]..[156,5956+54])
+                                                    []
+                                                pattern (typehook.ml[157,6012+15]..[157,6012+51])
+                                                  Ppat_constraint
+                                                  pattern (typehook.ml[157,6012+16]..[157,6012+38])
+                                                    Ppat_variant "ModuleType"
+                                                    Some
+                                                      pattern (typehook.ml[157,6012+16]..[157,6012+38])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[157,6012+29]..[157,6012+33])
+                                                            Ppat_var "_loc" (typehook.ml[157,6012+29]..[157,6012+33])
+                                                          pattern (typehook.ml[157,6012+34]..[157,6012+35])
+                                                            Ppat_any
+                                                          pattern (typehook.ml[157,6012+36]..[157,6012+37])
+                                                            Ppat_any
+                                                        ]
+                                                  core_type (typehook.ml[157,6012+41]..[157,6012+50])
+                                                    Ptyp_constr "Astf.stru" (typehook.ml[157,6012+41]..[157,6012+50])
+                                                    []
+                                              pattern (typehook.ml[158,6064+15]..[158,6064+46])
+                                                Ppat_constraint
+                                                pattern (typehook.ml[158,6064+16]..[158,6064+33])
+                                                  Ppat_variant "Include"
+                                                  Some
+                                                    pattern (typehook.ml[158,6064+16]..[158,6064+33])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (typehook.ml[158,6064+26]..[158,6064+30])
+                                                          Ppat_var "_loc" (typehook.ml[158,6064+26]..[158,6064+30])
+                                                        pattern (typehook.ml[158,6064+31]..[158,6064+32])
+                                                          Ppat_any
+                                                      ]
+                                                core_type (typehook.ml[158,6064+36]..[158,6064+45])
+                                                  Ptyp_constr "Astf.stru" (typehook.ml[158,6064+36]..[158,6064+45])
+                                                  []
+                                            pattern (typehook.ml[159,6111+15]..[159,6111+51])
+                                              Ppat_constraint
+                                              pattern (typehook.ml[159,6111+16]..[159,6111+38])
+                                                Ppat_variant "External"
+                                                Some
+                                                  pattern (typehook.ml[159,6111+16]..[159,6111+38])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (typehook.ml[159,6111+27]..[159,6111+31])
+                                                        Ppat_var "_loc" (typehook.ml[159,6111+27]..[159,6111+31])
+                                                      pattern (typehook.ml[159,6111+32]..[159,6111+33])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[159,6111+34]..[159,6111+35])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[159,6111+36]..[159,6111+37])
+                                                        Ppat_any
+                                                    ]
+                                              core_type (typehook.ml[159,6111+41]..[159,6111+50])
+                                                Ptyp_constr "Astf.stru" (typehook.ml[159,6111+41]..[159,6111+50])
+                                                []
+                                          pattern (typehook.ml[160,6163+15]..[160,6163+44])
+                                            Ppat_constraint
+                                            pattern (typehook.ml[160,6163+16]..[160,6163+31])
+                                              Ppat_variant "StExp"
+                                              Some
+                                                pattern (typehook.ml[160,6163+16]..[160,6163+31])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[160,6163+24]..[160,6163+28])
+                                                      Ppat_var "_loc" (typehook.ml[160,6163+24]..[160,6163+28])
+                                                    pattern (typehook.ml[160,6163+29]..[160,6163+30])
+                                                      Ppat_any
+                                                  ]
+                                            core_type (typehook.ml[160,6163+34]..[160,6163+43])
+                                              Ptyp_constr "Astf.stru" (typehook.ml[160,6163+34]..[160,6163+43])
+                                              []
+                                        pattern (typehook.ml[161,6208+15]..[161,6208+48])
+                                          Ppat_constraint
+                                          pattern (typehook.ml[161,6208+16]..[161,6208+35])
+                                            Ppat_variant "Exception"
+                                            Some
+                                              pattern (typehook.ml[161,6208+16]..[161,6208+35])
+                                                Ppat_tuple
+                                                [
+                                                  pattern (typehook.ml[161,6208+28]..[161,6208+32])
+                                                    Ppat_var "_loc" (typehook.ml[161,6208+28]..[161,6208+32])
+                                                  pattern (typehook.ml[161,6208+33]..[161,6208+34])
+                                                    Ppat_any
+                                                ]
+                                          core_type (typehook.ml[161,6208+38]..[161,6208+47])
+                                            Ptyp_constr "Astf.stru" (typehook.ml[161,6208+38]..[161,6208+47])
+                                            []
+                                      pattern (typehook.ml[162,6257+15]..[162,6257+50])
+                                        Ppat_constraint
+                                        pattern (typehook.ml[162,6257+16]..[162,6257+37])
+                                          Ppat_variant "Directive"
+                                          Some
+                                            pattern (typehook.ml[162,6257+16]..[162,6257+37])
+                                              Ppat_tuple
+                                              [
+                                                pattern (typehook.ml[162,6257+28]..[162,6257+32])
+                                                  Ppat_var "_loc" (typehook.ml[162,6257+28]..[162,6257+32])
+                                                pattern (typehook.ml[162,6257+33]..[162,6257+34])
+                                                  Ppat_any
+                                                pattern (typehook.ml[162,6257+35]..[162,6257+36])
+                                                  Ppat_any
+                                              ]
+                                        core_type (typehook.ml[162,6257+40]..[162,6257+49])
+                                          Ptyp_constr "Astf.stru" (typehook.ml[162,6257+40]..[162,6257+49])
+                                          []
+                                  expression (typehook.ml[162,6257+59]..[162,6257+60])
+                                    Pexp_ident "x" (typehook.ml[162,6257+59]..[162,6257+60])
+                                <case>
+                                  pattern (typehook.ml[163,6318+14]..[163,6318+15])
+                                    Ppat_var "x" (typehook.ml[163,6318+14]..[163,6318+15])
+                                  expression (typehook.ml[163,6318+19]..[163,6318+31])
+                                    Pexp_apply
+                                    expression (typehook.ml[163,6318+19]..[163,6318+29])
+                                      Pexp_send "stru"
+                                      expression (typehook.ml[163,6318+19]..[163,6318+24])
+                                        Pexp_ident "super" (typehook.ml[163,6318+19]..[163,6318+24])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[163,6318+30]..[163,6318+31])
+                                          Pexp_ident "x" (typehook.ml[163,6318+30]..[163,6318+31])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[164,6351+9]..[172,6657+36])
+                        Pcf_method Public
+                          "typedecl" (typehook.ml[164,6351+17]..[164,6351+25])
+                          Concrete Override
+                          expression (typehook.ml[164,6351+9]..[172,6657+36])
+                            Pexp_poly
+                            expression (typehook.ml[165,6379+12]..[172,6657+35])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[166,6400+14]..[166,6400+49])
+                                    Ppat_alias "t" (typehook.ml[166,6400+48]..[166,6400+49])
+                                    pattern (typehook.ml[166,6400+14]..[166,6400+44])
+                                      Ppat_variant "TyDcl"
+                                      Some
+                                        pattern (typehook.ml[166,6400+14]..[166,6400+44])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[166,6400+22]..[166,6400+23])
+                                              Ppat_any
+                                            pattern (typehook.ml[166,6400+24]..[166,6400+37])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (typehook.ml[166,6400+24]..[166,6400+37])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[166,6400+30]..[166,6400+31])
+                                                      Ppat_any
+                                                    pattern (typehook.ml[166,6400+32]..[166,6400+36])
+                                                      Ppat_var "name" (typehook.ml[166,6400+32]..[166,6400+36])
+                                                  ]
+                                            pattern (typehook.ml[166,6400+38]..[166,6400+39])
+                                              Ppat_any
+                                            pattern (typehook.ml[166,6400+40]..[166,6400+41])
+                                              Ppat_any
+                                            pattern (typehook.ml[166,6400+42]..[166,6400+43])
+                                              Ppat_any
+                                          ]
+                                  expression (typehook.ml[167,6453+16]..[171,6637+19])
+                                    Pexp_sequence
+                                    expression (typehook.ml[167,6453+17]..[170,6561+74])
+                                      Pexp_ifthenelse
+                                      expression (typehook.ml[167,6453+20]..[167,6453+40])
+                                        Pexp_send "is_in_and_types"
+                                        expression (typehook.ml[167,6453+20]..[167,6453+24])
+                                          Pexp_ident "self" (typehook.ml[167,6453+20]..[167,6453+24])
+                                      expression (typehook.ml[169,6516+19]..[170,6561+74])
+                                        Pexp_apply
+                                        expression (typehook.ml[169,6516+19]..[169,6516+44])
+                                          Pexp_send "update_cur_and_types"
+                                          expression (typehook.ml[169,6516+19]..[169,6516+23])
+                                            Pexp_ident "self" (typehook.ml[169,6516+19]..[169,6516+23])
+                                        [
+                                          <label> ""
+                                            expression (typehook.ml[170,6561+22]..[170,6561+73])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (typehook.ml[170,6561+33]..[170,6561+36])
+                                                    Ppat_var "lst" (typehook.ml[170,6561+33]..[170,6561+36])
+                                                  expression (typehook.ml[170,6561+40]..[170,6561+73])
+                                                    Pexp_construct "::" (typehook.ml[170,6561+67]..[170,6561+69])
+                                                    Some
+                                                      expression (typehook.ml[170,6561+40]..[170,6561+73])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (typehook.ml[170,6561+40]..[170,6561+66])
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (typehook.ml[170,6561+41]..[170,6561+45])
+                                                                Pexp_ident "name" (typehook.ml[170,6561+41]..[170,6561+45])
+                                                              expression (typehook.ml[170,6561+48]..[170,6561+64])
+                                                                Pexp_apply
+                                                                expression (typehook.ml[170,6561+48]..[170,6561+62])
+                                                                  Pexp_ident "Strip.typedecl" (typehook.ml[170,6561+48]..[170,6561+62])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (typehook.ml[170,6561+63]..[170,6561+64])
+                                                                      Pexp_ident "t" (typehook.ml[170,6561+63]..[170,6561+64])
+                                                                ]
+                                                            ]
+                                                          expression (typehook.ml[170,6561+70]..[170,6561+73])
+                                                            Pexp_ident "lst" (typehook.ml[170,6561+70]..[170,6561+73])
+                                                        ]
+                                              ]
+                                        ]
+                                      None
+                                    expression (typehook.ml[167,6453+16]..[171,6637+19])
+                                      Pexp_ident "t" (typehook.ml[171,6637+17]..[171,6637+18])
+                                <case>
+                                  pattern (typehook.ml[172,6657+14]..[172,6657+15])
+                                    Ppat_var "t" (typehook.ml[172,6657+14]..[172,6657+15])
+                                  expression (typehook.ml[172,6657+19]..[172,6657+35])
+                                    Pexp_apply
+                                    expression (typehook.ml[172,6657+19]..[172,6657+33])
+                                      Pexp_send "typedecl"
+                                      expression (typehook.ml[172,6657+19]..[172,6657+24])
+                                        Pexp_ident "super" (typehook.ml[172,6657+19]..[172,6657+24])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[172,6657+34]..[172,6657+35])
+                                          Pexp_ident "t" (typehook.ml[172,6657+34]..[172,6657+35])
+                                    ]
+                              ]
+                            None
+                    ]
+                core_type (typehook.ml[173,6694+13]..[173,6694+22])
+                  Ptyp_constr "traversal" (typehook.ml[173,6694+13]..[173,6694+22])
+                  []
+          ]
+    ]
+  structure_item (typehook.ml[174,6718+0]..[204,7936+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[174,6718+4]..[174,6718+23])
+          Ppat_var "genenrate_type_code" (typehook.ml[174,6718+4]..[174,6718+23])
+        expression (typehook.ml[175,6744+2]..[204,7936+52])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[176,6755+4]..[176,6755+8])
+                Ppat_var "_loc" (typehook.ml[176,6755+4]..[176,6755+8])
+              expression (typehook.ml[177,6767+7]..[204,7936+51])
+                Pexp_function
+                [
+                  <case>
+                    pattern (typehook.ml[178,6783+9]..[178,6783+12])
+                      Ppat_var "tdl" (typehook.ml[178,6783+9]..[178,6783+12])
+                    expression (typehook.ml[179,6799+12]..[204,7936+50])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[180,6820+14]..[180,6820+33])
+                            Ppat_constraint
+                            pattern (typehook.ml[180,6820+15]..[180,6820+17])
+                              Ppat_var "ns" (typehook.ml[180,6820+15]..[180,6820+17])
+                            core_type (typehook.ml[180,6820+20]..[180,6820+32])
+                              Ptyp_constr "Astf.strings" (typehook.ml[180,6820+20]..[180,6820+32])
+                              []
+                          expression (typehook.ml[181,6857+16]..[204,7936+50])
+                            Pexp_constraint
+                            expression (typehook.ml[181,6857+17]..[204,7936+37])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (typehook.ml[181,6857+21]..[181,6857+22])
+                                    Ppat_var "x" (typehook.ml[181,6857+21]..[181,6857+22])
+                                  expression (typehook.ml[181,6857+22]..[181,6857+53])
+                                    Pexp_constraint
+                                    expression (typehook.ml[181,6857+36]..[181,6857+53])
+                                      Pexp_variant "Type"
+                                      Some
+                                        expression (typehook.ml[181,6857+42]..[181,6857+53])
+                                          Pexp_tuple
+                                          [
+                                            expression (typehook.ml[181,6857+43]..[181,6857+47])
+                                              Pexp_ident "_loc" (typehook.ml[181,6857+43]..[181,6857+47])
+                                            expression (typehook.ml[181,6857+49]..[181,6857+52])
+                                              Pexp_ident "tdl" (typehook.ml[181,6857+49]..[181,6857+52])
+                                          ]
+                                    core_type (typehook.ml[181,6857+24]..[181,6857+33])
+                                      Ptyp_constr "Astf.stru" (typehook.ml[181,6857+24]..[181,6857+33])
+                                      []
+                              ]
+                              expression (typehook.ml[182,6914+17]..[204,7936+37])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (typehook.ml[182,6914+21]..[182,6914+23])
+                                      Ppat_var "ns" (typehook.ml[182,6914+21]..[182,6914+23])
+                                    expression (typehook.ml[182,6914+26]..[182,6914+43])
+                                      Pexp_apply
+                                      expression (typehook.ml[182,6914+26]..[182,6914+37])
+                                        Pexp_ident "list_of_app" (typehook.ml[182,6914+26]..[182,6914+37])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[182,6914+38]..[182,6914+40])
+                                            Pexp_ident "ns" (typehook.ml[182,6914+38]..[182,6914+40])
+                                        <label> ""
+                                          expression (typehook.ml[182,6914+41]..[182,6914+43])
+                                            Pexp_construct "[]" (typehook.ml[182,6914+41]..[182,6914+43])
+                                            None
+                                      ]
+                                ]
+                                expression (typehook.ml[183,6961+17]..[204,7936+37])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (typehook.ml[183,6961+21]..[183,6961+28])
+                                        Ppat_var "filters" (typehook.ml[183,6961+21]..[183,6961+28])
+                                      expression (typehook.ml[184,6992+19]..[193,7424+45])
+                                        Pexp_apply
+                                        expression (typehook.ml[184,6992+19]..[184,6992+27])
+                                          Pexp_ident "List.map" (typehook.ml[184,6992+19]..[184,6992+27])
+                                        [
+                                          <label> ""
+                                            expression (typehook.ml[185,7020+22]..[193,7424+41])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (typehook.ml[186,7051+24]..[186,7051+37])
+                                                    Ppat_variant "Str"
+                                                    Some
+                                                      pattern (typehook.ml[186,7051+24]..[186,7051+37])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[186,7051+30]..[186,7051+34])
+                                                            Ppat_var "sloc" (typehook.ml[186,7051+30]..[186,7051+34])
+                                                          pattern (typehook.ml[186,7051+35]..[186,7051+36])
+                                                            Ppat_var "n" (typehook.ml[186,7051+35]..[186,7051+36])
+                                                        ]
+                                                  expression (typehook.ml[187,7092+27]..[189,7229+45])
+                                                    Pexp_match
+                                                    expression (typehook.ml[187,7092+33]..[187,7092+60])
+                                                      Pexp_apply
+                                                      expression (typehook.ml[187,7092+33]..[187,7092+50])
+                                                        Pexp_ident "Hashtblf.find_opt" (typehook.ml[187,7092+33]..[187,7092+50])
+                                                      [
+                                                        <label> ""
+                                                          expression (typehook.ml[187,7092+51]..[187,7092+58])
+                                                            Pexp_ident "filters" (typehook.ml[187,7092+51]..[187,7092+58])
+                                                        <label> ""
+                                                          expression (typehook.ml[187,7092+59]..[187,7092+60])
+                                                            Pexp_ident "n" (typehook.ml[187,7092+59]..[187,7092+60])
+                                                      ]
+                                                    [
+                                                      <case>
+                                                        pattern (typehook.ml[188,7158+29]..[188,7158+33])
+                                                          Ppat_construct "None" (typehook.ml[188,7158+29]..[188,7158+33])
+                                                          None
+                                                        expression (typehook.ml[188,7158+38]..[188,7158+70])
+                                                          Pexp_apply
+                                                          expression (typehook.ml[188,7158+38]..[188,7158+48])
+                                                            Pexp_ident "Locf.failf" (typehook.ml[188,7158+38]..[188,7158+48])
+                                                          [
+                                                            <label> ""
+                                                              expression (typehook.ml[188,7158+49]..[188,7158+53])
+                                                                Pexp_ident "sloc" (typehook.ml[188,7158+49]..[188,7158+53])
+                                                            <label> ""
+                                                              expression (typehook.ml[188,7158+54]..[188,7158+68])
+                                                                Pexp_constant Const_string("%s not found",None)
+                                                            <label> ""
+                                                              expression (typehook.ml[188,7158+69]..[188,7158+70])
+                                                                Pexp_ident "n" (typehook.ml[188,7158+69]..[188,7158+70])
+                                                          ]
+                                                      <case>
+                                                        pattern (typehook.ml[189,7229+29]..[189,7229+35])
+                                                          Ppat_construct "Some" (typehook.ml[189,7229+29]..[189,7229+33])
+                                                          Some
+                                                            pattern (typehook.ml[189,7229+34]..[189,7229+35])
+                                                              Ppat_var "p" (typehook.ml[189,7229+34]..[189,7229+35])
+                                                        expression (typehook.ml[189,7229+39]..[189,7229+45])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[189,7229+40]..[189,7229+41])
+                                                              Pexp_ident "n" (typehook.ml[189,7229+40]..[189,7229+41])
+                                                            expression (typehook.ml[189,7229+43]..[189,7229+44])
+                                                              Pexp_ident "p" (typehook.ml[189,7229+43]..[189,7229+44])
+                                                          ]
+                                                    ]
+                                                <case>
+                                                  pattern (typehook.ml[190,7276+24]..[190,7276+30])
+                                                    Ppat_variant "Ant"
+                                                    Some
+                                                      pattern (typehook.ml[190,7276+29]..[190,7276+30])
+                                                        Ppat_any
+                                                  expression (typehook.ml[191,7310+26]..[192,7352+71])
+                                                    Pexp_apply
+                                                    expression (typehook.ml[191,7310+26]..[191,7310+36])
+                                                      Pexp_ident "Locf.raise" (typehook.ml[191,7310+26]..[191,7310+36])
+                                                    [
+                                                      <label> ""
+                                                        expression (typehook.ml[191,7310+37]..[191,7310+41])
+                                                          Pexp_ident "_loc" (typehook.ml[191,7310+37]..[191,7310+41])
+                                                      <label> ""
+                                                        expression (typehook.ml[192,7352+29]..[192,7352+70])
+                                                          Pexp_construct "Failure" (typehook.ml[192,7352+29]..[192,7352+36])
+                                                          Some
+                                                            expression (typehook.ml[192,7352+37]..[192,7352+70])
+                                                              Pexp_constant Const_string("antiquotation not expected here",None)
+                                                    ]
+                                                <case>
+                                                  pattern (typehook.ml[193,7424+24]..[193,7424+25])
+                                                    Ppat_any
+                                                  expression (typehook.ml[193,7424+29]..[193,7424+41])
+                                                    Pexp_assert
+                                                    expression (typehook.ml[193,7424+36]..[193,7424+41])
+                                                      Pexp_construct "false" (typehook.ml[193,7424+36]..[193,7424+41])
+                                                      None
+                                              ]
+                                          <label> ""
+                                            expression (typehook.ml[193,7424+43]..[193,7424+45])
+                                              Pexp_ident "ns" (typehook.ml[193,7424+43]..[193,7424+45])
+                                        ]
+                                  ]
+                                  expression (typehook.ml[194,7473+17]..[204,7936+37])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[194,7473+21]..[194,7473+25])
+                                          Ppat_var "code" (typehook.ml[194,7473+21]..[194,7473+25])
+                                        expression (typehook.ml[195,7501+19]..[203,7884+48])
+                                          Pexp_apply
+                                          expression (typehook.ml[195,7501+19]..[195,7501+31])
+                                            Pexp_ident "Ref.protect2" (typehook.ml[195,7501+19]..[195,7501+31])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[195,7501+32]..[195,7501+64])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[195,7501+33]..[195,7501+54])
+                                                    Pexp_ident "State.current_filters" (typehook.ml[195,7501+33]..[195,7501+54])
+                                                  expression (typehook.ml[195,7501+56]..[195,7501+63])
+                                                    Pexp_ident "filters" (typehook.ml[195,7501+56]..[195,7501+63])
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[196,7566+21]..[196,7566+40])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[196,7566+22]..[196,7566+32])
+                                                    Pexp_ident "State.keep" (typehook.ml[196,7566+22]..[196,7566+32])
+                                                  expression (typehook.ml[196,7566+34]..[196,7566+39])
+                                                    Pexp_construct "false" (typehook.ml[196,7566+34]..[196,7566+39])
+                                                    None
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[197,7607+22]..[203,7884+47])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[198,7638+24]..[198,7638+25])
+                                                      Ppat_any
+                                                    expression (typehook.ml[199,7667+27]..[203,7884+46])
+                                                      Pexp_match
+                                                      expression (typehook.ml[199,7667+33]..[200,7720+66])
+                                                        Pexp_apply
+                                                        expression (typehook.ml[199,7667+33]..[199,7667+52])
+                                                          Pexp_send "mexp"
+                                                          expression (typehook.ml[199,7667+34]..[199,7667+46])
+                                                            Pexp_apply
+                                                            expression (typehook.ml[199,7667+34]..[199,7667+43])
+                                                              Pexp_ident "traversal" (typehook.ml[199,7667+34]..[199,7667+43])
+                                                            [
+                                                              <label> ""
+                                                                expression (typehook.ml[199,7667+44]..[199,7667+46])
+                                                                  Pexp_construct "()" (typehook.ml[199,7667+44]..[199,7667+46])
+                                                                  None
+                                                            ]
+                                                        [
+                                                          <label> ""
+                                                            expression (typehook.ml[200,7720+35]..[200,7720+66])
+                                                              Pexp_constraint
+                                                              expression (typehook.ml[200,7720+36]..[200,7720+53])
+                                                                Pexp_variant "Struct"
+                                                                Some
+                                                                  expression (typehook.ml[200,7720+44]..[200,7720+53])
+                                                                    Pexp_tuple
+                                                                    [
+                                                                      expression (typehook.ml[200,7720+45]..[200,7720+49])
+Pexp_ident "_loc" (typehook.ml[200,7720+45]..[200,7720+49])
+                                                                      expression (typehook.ml[200,7720+51]..[200,7720+52])
+Pexp_ident "x" (typehook.ml[200,7720+51]..[200,7720+52])
+                                                                    ]
+                                                              core_type (typehook.ml[200,7720+56]..[200,7720+65])
+                                                                Ptyp_constr "Astf.mexp" (typehook.ml[200,7720+56]..[200,7720+65])
+                                                                []
+                                                        ]
+                                                      [
+                                                        <case>
+                                                          pattern (typehook.ml[202,7819+29]..[202,7819+59])
+                                                            Ppat_constraint
+                                                            pattern (typehook.ml[202,7819+30]..[202,7819+46])
+                                                              Ppat_variant "Struct"
+                                                              Some
+                                                                pattern (typehook.ml[202,7819+30]..[202,7819+46])
+                                                                  Ppat_tuple
+                                                                  [
+                                                                    pattern (typehook.ml[202,7819+39]..[202,7819+43])
+                                                                      Ppat_var "_loc" (typehook.ml[202,7819+39]..[202,7819+43])
+                                                                    pattern (typehook.ml[202,7819+44]..[202,7819+45])
+                                                                      Ppat_var "s" (typehook.ml[202,7819+44]..[202,7819+45])
+                                                                  ]
+                                                            core_type (typehook.ml[202,7819+49]..[202,7819+58])
+                                                              Ptyp_constr "Astf.mexp" (typehook.ml[202,7819+49]..[202,7819+58])
+                                                              []
+                                                          expression (typehook.ml[202,7819+63]..[202,7819+64])
+                                                            Pexp_ident "s" (typehook.ml[202,7819+63]..[202,7819+64])
+                                                        <case>
+                                                          pattern (typehook.ml[203,7884+29]..[203,7884+30])
+                                                            Ppat_any
+                                                          expression (typehook.ml[203,7884+34]..[203,7884+46])
+                                                            Pexp_assert
+                                                            expression (typehook.ml[203,7884+41]..[203,7884+46])
+                                                              Pexp_construct "false" (typehook.ml[203,7884+41]..[203,7884+46])
+                                                              None
+                                                      ]
+                                                ]
+                                          ]
+                                    ]
+                                    expression (typehook.ml[204,7936+17]..[204,7936+37])
+                                      Pexp_variant "Sem"
+                                      Some
+                                        expression (typehook.ml[204,7936+22]..[204,7936+37])
+                                          Pexp_tuple
+                                          [
+                                            expression (typehook.ml[204,7936+23]..[204,7936+27])
+                                              Pexp_ident "_loc" (typehook.ml[204,7936+23]..[204,7936+27])
+                                            expression (typehook.ml[204,7936+29]..[204,7936+30])
+                                              Pexp_ident "x" (typehook.ml[204,7936+29]..[204,7936+30])
+                                            expression (typehook.ml[204,7936+32]..[204,7936+36])
+                                              Pexp_ident "code" (typehook.ml[204,7936+32]..[204,7936+36])
+                                          ]
+                            core_type (typehook.ml[204,7936+40]..[204,7936+49])
+                              Ptyp_constr "Astf.stru" (typehook.ml[204,7936+40]..[204,7936+49])
+                              []
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[205,7989+0]..[205,7989+57])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[205,7989+4]..[205,7989+6])
+          Ppat_construct "()" (typehook.ml[205,7989+4]..[205,7989+6])
+          None
+        expression (typehook.ml[205,7989+9]..[205,7989+57])
+          Pexp_apply
+          expression (typehook.ml[205,7989+35]..[205,7989+37])
+            Pexp_ident ":=" (typehook.ml[205,7989+35]..[205,7989+37])
+          [
+            <label> ""
+              expression (typehook.ml[205,7989+9]..[205,7989+34])
+                Pexp_ident "Ast2pt.generate_type_code" (typehook.ml[205,7989+9]..[205,7989+34])
+            <label> ""
+              expression (typehook.ml[205,7989+38]..[205,7989+57])
+                Pexp_ident "genenrate_type_code" (typehook.ml[205,7989+38]..[205,7989+57])
+          ]
+    ]
+]

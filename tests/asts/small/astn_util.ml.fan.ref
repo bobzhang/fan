@@ -1,0 +1,997 @@
+[
+  structure_item (astn_util.ml[1,0+0]..[1,0+10])
+    Pstr_open Fresh "Astfn" (astn_util.ml[1,0+5]..[1,0+10])
+  structure_item (astn_util.ml[2,11+0]..[2,11+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[2,11+4]..[2,11+7])
+          Ppat_var "sem" (astn_util.ml[2,11+4]..[2,11+7])
+        expression (astn_util.ml[2,11+10]..[2,11+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[2,11+21]..[2,11+22])
+                Ppat_var "a" (astn_util.ml[2,11+21]..[2,11+22])
+              expression (astn_util.ml[2,11+27]..[2,11+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[2,11+38]..[2,11+39])
+                      Ppat_var "b" (astn_util.ml[2,11+38]..[2,11+39])
+                    expression (astn_util.ml[2,11+43]..[2,11+54])
+                      Pexp_variant "Sem"
+                      Some
+                        expression (astn_util.ml[2,11+48]..[2,11+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[2,11+49]..[2,11+50])
+                              Pexp_ident "a" (astn_util.ml[2,11+49]..[2,11+50])
+                            expression (astn_util.ml[2,11+52]..[2,11+53])
+                              Pexp_ident "b" (astn_util.ml[2,11+52]..[2,11+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[3,67+0]..[3,67+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[3,67+4]..[3,67+7])
+          Ppat_var "com" (astn_util.ml[3,67+4]..[3,67+7])
+        expression (astn_util.ml[3,67+10]..[3,67+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[3,67+21]..[3,67+22])
+                Ppat_var "a" (astn_util.ml[3,67+21]..[3,67+22])
+              expression (astn_util.ml[3,67+27]..[3,67+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[3,67+38]..[3,67+39])
+                      Ppat_var "b" (astn_util.ml[3,67+38]..[3,67+39])
+                    expression (astn_util.ml[3,67+43]..[3,67+54])
+                      Pexp_variant "Com"
+                      Some
+                        expression (astn_util.ml[3,67+48]..[3,67+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[3,67+49]..[3,67+50])
+                              Pexp_ident "a" (astn_util.ml[3,67+49]..[3,67+50])
+                            expression (astn_util.ml[3,67+52]..[3,67+53])
+                              Pexp_ident "b" (astn_util.ml[3,67+52]..[3,67+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[4,123+0]..[4,123+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[4,123+4]..[4,123+7])
+          Ppat_var "app" (astn_util.ml[4,123+4]..[4,123+7])
+        expression (astn_util.ml[4,123+10]..[4,123+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[4,123+21]..[4,123+22])
+                Ppat_var "a" (astn_util.ml[4,123+21]..[4,123+22])
+              expression (astn_util.ml[4,123+27]..[4,123+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[4,123+38]..[4,123+39])
+                      Ppat_var "b" (astn_util.ml[4,123+38]..[4,123+39])
+                    expression (astn_util.ml[4,123+43]..[4,123+54])
+                      Pexp_variant "App"
+                      Some
+                        expression (astn_util.ml[4,123+48]..[4,123+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[4,123+49]..[4,123+50])
+                              Pexp_ident "a" (astn_util.ml[4,123+49]..[4,123+50])
+                            expression (astn_util.ml[4,123+52]..[4,123+53])
+                              Pexp_ident "b" (astn_util.ml[4,123+52]..[4,123+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[5,179+0]..[5,179+59])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[5,179+4]..[5,179+9])
+          Ppat_var "apply" (astn_util.ml[5,179+4]..[5,179+9])
+        expression (astn_util.ml[5,179+12]..[5,179+59])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[5,179+23]..[5,179+24])
+                Ppat_var "a" (astn_util.ml[5,179+23]..[5,179+24])
+              expression (astn_util.ml[5,179+29]..[5,179+58])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[5,179+40]..[5,179+41])
+                      Ppat_var "b" (astn_util.ml[5,179+40]..[5,179+41])
+                    expression (astn_util.ml[5,179+45]..[5,179+58])
+                      Pexp_variant "Apply"
+                      Some
+                        expression (astn_util.ml[5,179+52]..[5,179+58])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[5,179+53]..[5,179+54])
+                              Pexp_ident "a" (astn_util.ml[5,179+53]..[5,179+54])
+                            expression (astn_util.ml[5,179+56]..[5,179+57])
+                              Pexp_ident "b" (astn_util.ml[5,179+56]..[5,179+57])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[6,239+0]..[6,239+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[6,239+4]..[6,239+7])
+          Ppat_var "sta" (astn_util.ml[6,239+4]..[6,239+7])
+        expression (astn_util.ml[6,239+10]..[6,239+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[6,239+21]..[6,239+22])
+                Ppat_var "a" (astn_util.ml[6,239+21]..[6,239+22])
+              expression (astn_util.ml[6,239+27]..[6,239+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[6,239+38]..[6,239+39])
+                      Ppat_var "b" (astn_util.ml[6,239+38]..[6,239+39])
+                    expression (astn_util.ml[6,239+43]..[6,239+54])
+                      Pexp_variant "Sta"
+                      Some
+                        expression (astn_util.ml[6,239+48]..[6,239+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[6,239+49]..[6,239+50])
+                              Pexp_ident "a" (astn_util.ml[6,239+49]..[6,239+50])
+                            expression (astn_util.ml[6,239+52]..[6,239+53])
+                              Pexp_ident "b" (astn_util.ml[6,239+52]..[6,239+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[7,295+0]..[7,295+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[7,295+4]..[7,295+7])
+          Ppat_var "bar" (astn_util.ml[7,295+4]..[7,295+7])
+        expression (astn_util.ml[7,295+10]..[7,295+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[7,295+21]..[7,295+22])
+                Ppat_var "a" (astn_util.ml[7,295+21]..[7,295+22])
+              expression (astn_util.ml[7,295+27]..[7,295+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[7,295+38]..[7,295+39])
+                      Ppat_var "b" (astn_util.ml[7,295+38]..[7,295+39])
+                    expression (astn_util.ml[7,295+43]..[7,295+54])
+                      Pexp_variant "Bar"
+                      Some
+                        expression (astn_util.ml[7,295+48]..[7,295+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[7,295+49]..[7,295+50])
+                              Pexp_ident "a" (astn_util.ml[7,295+49]..[7,295+50])
+                            expression (astn_util.ml[7,295+52]..[7,295+53])
+                              Pexp_ident "b" (astn_util.ml[7,295+52]..[7,295+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[8,351+0]..[8,351+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[8,351+4]..[8,351+8])
+          Ppat_var "anda" (astn_util.ml[8,351+4]..[8,351+8])
+        expression (astn_util.ml[8,351+11]..[8,351+56])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[8,351+22]..[8,351+23])
+                Ppat_var "a" (astn_util.ml[8,351+22]..[8,351+23])
+              expression (astn_util.ml[8,351+28]..[8,351+55])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[8,351+39]..[8,351+40])
+                      Ppat_var "b" (astn_util.ml[8,351+39]..[8,351+40])
+                    expression (astn_util.ml[8,351+44]..[8,351+55])
+                      Pexp_variant "And"
+                      Some
+                        expression (astn_util.ml[8,351+49]..[8,351+55])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[8,351+50]..[8,351+51])
+                              Pexp_ident "a" (astn_util.ml[8,351+50]..[8,351+51])
+                            expression (astn_util.ml[8,351+53]..[8,351+54])
+                              Pexp_ident "b" (astn_util.ml[8,351+53]..[8,351+54])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[9,408+0]..[9,408+55])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[9,408+4]..[9,408+7])
+          Ppat_var "dot" (astn_util.ml[9,408+4]..[9,408+7])
+        expression (astn_util.ml[9,408+10]..[9,408+55])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[9,408+21]..[9,408+22])
+                Ppat_var "a" (astn_util.ml[9,408+21]..[9,408+22])
+              expression (astn_util.ml[9,408+27]..[9,408+54])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[9,408+38]..[9,408+39])
+                      Ppat_var "b" (astn_util.ml[9,408+38]..[9,408+39])
+                    expression (astn_util.ml[9,408+43]..[9,408+54])
+                      Pexp_variant "Dot"
+                      Some
+                        expression (astn_util.ml[9,408+48]..[9,408+54])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[9,408+49]..[9,408+50])
+                              Pexp_ident "a" (astn_util.ml[9,408+49]..[9,408+50])
+                            expression (astn_util.ml[9,408+52]..[9,408+53])
+                              Pexp_ident "b" (astn_util.ml[9,408+52]..[9,408+53])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[10,464+0]..[10,464+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[10,464+4]..[10,464+7])
+          Ppat_var "par" (astn_util.ml[10,464+4]..[10,464+7])
+        expression (astn_util.ml[10,464+10]..[10,464+32])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[10,464+21]..[10,464+22])
+                Ppat_var "x" (astn_util.ml[10,464+21]..[10,464+22])
+              expression (astn_util.ml[10,464+26]..[10,464+32])
+                Pexp_variant "Par"
+                Some
+                  expression (astn_util.ml[10,464+31]..[10,464+32])
+                    Pexp_ident "x" (astn_util.ml[10,464+31]..[10,464+32])
+          ]
+    ]
+  structure_item (astn_util.ml[11,497+0]..[11,497+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[11,497+4]..[11,497+7])
+          Ppat_var "seq" (astn_util.ml[11,497+4]..[11,497+7])
+        expression (astn_util.ml[11,497+10]..[11,497+32])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[11,497+21]..[11,497+22])
+                Ppat_var "a" (astn_util.ml[11,497+21]..[11,497+22])
+              expression (astn_util.ml[11,497+26]..[11,497+32])
+                Pexp_variant "Seq"
+                Some
+                  expression (astn_util.ml[11,497+31]..[11,497+32])
+                    Pexp_ident "a" (astn_util.ml[11,497+31]..[11,497+32])
+          ]
+    ]
+  structure_item (astn_util.ml[12,530+0]..[12,530+59])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[12,530+4]..[12,530+9])
+          Ppat_var "arrow" (astn_util.ml[12,530+4]..[12,530+9])
+        expression (astn_util.ml[12,530+12]..[12,530+59])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[12,530+23]..[12,530+24])
+                Ppat_var "a" (astn_util.ml[12,530+23]..[12,530+24])
+              expression (astn_util.ml[12,530+29]..[12,530+58])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[12,530+40]..[12,530+41])
+                      Ppat_var "b" (astn_util.ml[12,530+40]..[12,530+41])
+                    expression (astn_util.ml[12,530+45]..[12,530+58])
+                      Pexp_variant "Arrow"
+                      Some
+                        expression (astn_util.ml[12,530+52]..[12,530+58])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[12,530+53]..[12,530+54])
+                              Pexp_ident "a" (astn_util.ml[12,530+53]..[12,530+54])
+                            expression (astn_util.ml[12,530+56]..[12,530+57])
+                              Pexp_ident "b" (astn_util.ml[12,530+56]..[12,530+57])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[13,590+0]..[13,590+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[13,590+4]..[13,590+10])
+          Ppat_var "typing" (astn_util.ml[13,590+4]..[13,590+10])
+        expression (astn_util.ml[13,590+13]..[13,590+65])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[13,590+24]..[13,590+25])
+                Ppat_var "a" (astn_util.ml[13,590+24]..[13,590+25])
+              expression (astn_util.ml[13,590+30]..[13,590+64])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[13,590+41]..[13,590+42])
+                      Ppat_var "b" (astn_util.ml[13,590+41]..[13,590+42])
+                    expression (astn_util.ml[13,590+46]..[13,590+64])
+                      Pexp_variant "Constraint"
+                      Some
+                        expression (astn_util.ml[13,590+58]..[13,590+64])
+                          Pexp_tuple
+                          [
+                            expression (astn_util.ml[13,590+59]..[13,590+60])
+                              Pexp_ident "a" (astn_util.ml[13,590+59]..[13,590+60])
+                            expression (astn_util.ml[13,590+62]..[13,590+63])
+                              Pexp_ident "b" (astn_util.ml[13,590+62]..[13,590+63])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[14,656+0]..[14,656+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[14,656+4]..[14,656+15])
+          Ppat_var "bar_of_list" (astn_util.ml[14,656+4]..[14,656+15])
+        expression (astn_util.ml[14,656+18]..[14,656+60])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[14,656+29]..[14,656+31])
+                Ppat_var "xs" (astn_util.ml[14,656+29]..[14,656+31])
+              expression (astn_util.ml[14,656+35]..[14,656+60])
+                Pexp_apply
+                expression (astn_util.ml[14,656+35]..[14,656+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[14,656+35]..[14,656+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[14,656+54]..[14,656+57])
+                      Pexp_ident "bar" (astn_util.ml[14,656+54]..[14,656+57])
+                  <label> ""
+                    expression (astn_util.ml[14,656+58]..[14,656+60])
+                      Pexp_ident "xs" (astn_util.ml[14,656+58]..[14,656+60])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[15,717+0]..[15,717+61])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[15,717+4]..[15,717+15])
+          Ppat_var "and_of_list" (astn_util.ml[15,717+4]..[15,717+15])
+        expression (astn_util.ml[15,717+18]..[15,717+61])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[15,717+29]..[15,717+31])
+                Ppat_var "xs" (astn_util.ml[15,717+29]..[15,717+31])
+              expression (astn_util.ml[15,717+35]..[15,717+61])
+                Pexp_apply
+                expression (astn_util.ml[15,717+35]..[15,717+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[15,717+35]..[15,717+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[15,717+54]..[15,717+58])
+                      Pexp_ident "anda" (astn_util.ml[15,717+54]..[15,717+58])
+                  <label> ""
+                    expression (astn_util.ml[15,717+59]..[15,717+61])
+                      Pexp_ident "xs" (astn_util.ml[15,717+59]..[15,717+61])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[16,779+0]..[16,779+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[16,779+4]..[16,779+15])
+          Ppat_var "sem_of_list" (astn_util.ml[16,779+4]..[16,779+15])
+        expression (astn_util.ml[16,779+18]..[16,779+60])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[16,779+29]..[16,779+31])
+                Ppat_var "xs" (astn_util.ml[16,779+29]..[16,779+31])
+              expression (astn_util.ml[16,779+35]..[16,779+60])
+                Pexp_apply
+                expression (astn_util.ml[16,779+35]..[16,779+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[16,779+35]..[16,779+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[16,779+54]..[16,779+57])
+                      Pexp_ident "sem" (astn_util.ml[16,779+54]..[16,779+57])
+                  <label> ""
+                    expression (astn_util.ml[16,779+58]..[16,779+60])
+                      Pexp_ident "xs" (astn_util.ml[16,779+58]..[16,779+60])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[17,840+0]..[17,840+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[17,840+4]..[17,840+15])
+          Ppat_var "com_of_list" (astn_util.ml[17,840+4]..[17,840+15])
+        expression (astn_util.ml[17,840+18]..[17,840+60])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[17,840+29]..[17,840+31])
+                Ppat_var "xs" (astn_util.ml[17,840+29]..[17,840+31])
+              expression (astn_util.ml[17,840+35]..[17,840+60])
+                Pexp_apply
+                expression (astn_util.ml[17,840+35]..[17,840+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[17,840+35]..[17,840+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[17,840+54]..[17,840+57])
+                      Pexp_ident "com" (astn_util.ml[17,840+54]..[17,840+57])
+                  <label> ""
+                    expression (astn_util.ml[17,840+58]..[17,840+60])
+                      Pexp_ident "xs" (astn_util.ml[17,840+58]..[17,840+60])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[18,901+0]..[18,901+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[18,901+4]..[18,901+15])
+          Ppat_var "sta_of_list" (astn_util.ml[18,901+4]..[18,901+15])
+        expression (astn_util.ml[18,901+18]..[18,901+60])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[18,901+29]..[18,901+31])
+                Ppat_var "xs" (astn_util.ml[18,901+29]..[18,901+31])
+              expression (astn_util.ml[18,901+35]..[18,901+60])
+                Pexp_apply
+                expression (astn_util.ml[18,901+35]..[18,901+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[18,901+35]..[18,901+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[18,901+54]..[18,901+57])
+                      Pexp_ident "sta" (astn_util.ml[18,901+54]..[18,901+57])
+                  <label> ""
+                    expression (astn_util.ml[18,901+58]..[18,901+60])
+                      Pexp_ident "xs" (astn_util.ml[18,901+58]..[18,901+60])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[19,962+0]..[19,962+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[19,962+4]..[19,962+15])
+          Ppat_var "dot_of_list" (astn_util.ml[19,962+4]..[19,962+15])
+        expression (astn_util.ml[19,962+18]..[19,962+60])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[19,962+29]..[19,962+31])
+                Ppat_var "xs" (astn_util.ml[19,962+29]..[19,962+31])
+              expression (astn_util.ml[19,962+35]..[19,962+60])
+                Pexp_apply
+                expression (astn_util.ml[19,962+35]..[19,962+53])
+                  Pexp_ident "Ast_basic.of_listr" (astn_util.ml[19,962+35]..[19,962+53])
+                [
+                  <label> ""
+                    expression (astn_util.ml[19,962+54]..[19,962+57])
+                      Pexp_ident "dot" (astn_util.ml[19,962+54]..[19,962+57])
+                  <label> ""
+                    expression (astn_util.ml[19,962+58]..[19,962+60])
+                      Pexp_ident "xs" (astn_util.ml[19,962+58]..[19,962+60])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[20,1023+0]..[20,1023+61])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[20,1023+4]..[20,1023+16])
+          Ppat_var "appl_of_list" (astn_util.ml[20,1023+4]..[20,1023+16])
+        expression (astn_util.ml[20,1023+19]..[20,1023+61])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[20,1023+30]..[20,1023+32])
+                Ppat_var "xs" (astn_util.ml[20,1023+30]..[20,1023+32])
+              expression (astn_util.ml[20,1023+36]..[20,1023+61])
+                Pexp_apply
+                expression (astn_util.ml[20,1023+36]..[20,1023+54])
+                  Pexp_ident "Ast_basic.of_listl" (astn_util.ml[20,1023+36]..[20,1023+54])
+                [
+                  <label> ""
+                    expression (astn_util.ml[20,1023+55]..[20,1023+58])
+                      Pexp_ident "app" (astn_util.ml[20,1023+55]..[20,1023+58])
+                  <label> ""
+                    expression (astn_util.ml[20,1023+59]..[20,1023+61])
+                      Pexp_ident "xs" (astn_util.ml[20,1023+59]..[20,1023+61])
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[21,1085+0]..[21,1085+51])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[21,1085+4]..[21,1085+11])
+          Ppat_var "seq_sem" (astn_util.ml[21,1085+4]..[21,1085+11])
+        expression (astn_util.ml[21,1085+14]..[21,1085+51])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[21,1085+25]..[21,1085+27])
+                Ppat_var "ls" (astn_util.ml[21,1085+25]..[21,1085+27])
+              expression (astn_util.ml[21,1085+31]..[21,1085+51])
+                Pexp_apply
+                expression (astn_util.ml[21,1085+31]..[21,1085+34])
+                  Pexp_ident "seq" (astn_util.ml[21,1085+31]..[21,1085+34])
+                [
+                  <label> ""
+                    expression (astn_util.ml[21,1085+36]..[21,1085+50])
+                      Pexp_apply
+                      expression (astn_util.ml[21,1085+36]..[21,1085+47])
+                        Pexp_ident "sem_of_list" (astn_util.ml[21,1085+36]..[21,1085+47])
+                      [
+                        <label> ""
+                          expression (astn_util.ml[21,1085+48]..[21,1085+50])
+                            Pexp_ident "ls" (astn_util.ml[21,1085+48]..[21,1085+50])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[22,1137+0]..[32,1402+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[22,1137+4]..[22,1137+9])
+          Ppat_var "binds" (astn_util.ml[22,1137+4]..[22,1137+9])
+        expression (astn_util.ml[23,1149+2]..[32,1402+30])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[24,1160+4]..[24,1160+6])
+                Ppat_var "bs" (astn_util.ml[24,1160+4]..[24,1160+6])
+              expression (astn_util.ml[25,1170+7]..[32,1402+29])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[26,1186+9]..[26,1186+18])
+                      Ppat_constraint
+                      pattern (astn_util.ml[26,1186+10]..[26,1186+11])
+                        Ppat_var "e" (astn_util.ml[26,1186+10]..[26,1186+11])
+                      core_type (astn_util.ml[26,1186+14]..[26,1186+17])
+                        Ptyp_constr "exp" (astn_util.ml[26,1186+14]..[26,1186+17])
+                        []
+                    expression (astn_util.ml[27,1208+12]..[32,1402+28])
+                      Pexp_match
+                      expression (astn_util.ml[27,1208+18]..[27,1208+20])
+                        Pexp_ident "bs" (astn_util.ml[27,1208+18]..[27,1208+20])
+                      [
+                        <case>
+                          pattern (astn_util.ml[28,1234+14]..[28,1234+16])
+                            Ppat_construct "[]" (astn_util.ml[28,1234+14]..[28,1234+16])
+                            None
+                          expression (astn_util.ml[28,1234+20]..[28,1234+21])
+                            Pexp_ident "e" (astn_util.ml[28,1234+20]..[28,1234+21])
+                        <case>
+                          pattern (astn_util.ml[29,1256+14]..[29,1256+15])
+                            Ppat_any
+                          expression (astn_util.ml[30,1275+16]..[32,1402+28])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (astn_util.ml[30,1275+20]..[30,1275+25])
+                                  Ppat_var "binds" (astn_util.ml[30,1275+20]..[30,1275+25])
+                                expression (astn_util.ml[30,1275+28]..[30,1275+42])
+                                  Pexp_apply
+                                  expression (astn_util.ml[30,1275+28]..[30,1275+39])
+                                    Pexp_ident "and_of_list" (astn_util.ml[30,1275+28]..[30,1275+39])
+                                  [
+                                    <label> ""
+                                      expression (astn_util.ml[30,1275+40]..[30,1275+42])
+                                        Pexp_ident "bs" (astn_util.ml[30,1275+40]..[30,1275+42])
+                                  ]
+                            ]
+                            expression (astn_util.ml[31,1321+16]..[32,1402+28])
+                              Pexp_coerce
+                              expression (astn_util.ml[31,1321+17]..[31,1321+76])
+                                Pexp_variant "LetIn"
+                                Some
+                                  expression (astn_util.ml[31,1321+24]..[31,1321+76])
+                                    Pexp_tuple
+                                    [
+                                      expression (astn_util.ml[31,1321+25]..[31,1321+34])
+                                        Pexp_variant "Negative"
+                                        None
+                                      expression (astn_util.ml[31,1321+36]..[31,1321+57])
+                                        Pexp_coerce
+                                        expression (astn_util.ml[31,1321+37]..[31,1321+42])
+                                          Pexp_ident "binds" (astn_util.ml[31,1321+37]..[31,1321+42])
+                                        None
+                                        core_type (astn_util.ml[31,1321+46]..[31,1321+56])
+                                          Ptyp_constr "Astfn.bind" (astn_util.ml[31,1321+46]..[31,1321+56])
+                                          []
+                                      expression (astn_util.ml[31,1321+59]..[31,1321+75])
+                                        Pexp_coerce
+                                        expression (astn_util.ml[31,1321+60]..[31,1321+61])
+                                          Pexp_ident "e" (astn_util.ml[31,1321+60]..[31,1321+61])
+                                        None
+                                        core_type (astn_util.ml[31,1321+65]..[31,1321+74])
+                                          Ptyp_constr "Astfn.exp" (astn_util.ml[31,1321+65]..[31,1321+74])
+                                          []
+                                    ]
+                              None
+                              core_type (astn_util.ml[32,1402+18]..[32,1402+27])
+                                Ptyp_constr "Astfn.exp" (astn_util.ml[32,1402+18]..[32,1402+27])
+                                []
+                      ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[33,1433+0]..[33,1433+43])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[33,1433+4]..[33,1433+7])
+          Ppat_var "lid" (astn_util.ml[33,1433+4]..[33,1433+7])
+        expression (astn_util.ml[33,1433+10]..[33,1433+43])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[33,1433+21]..[33,1433+33])
+                Ppat_constraint
+                pattern (astn_util.ml[33,1433+22]..[33,1433+23])
+                  Ppat_var "n" (astn_util.ml[33,1433+22]..[33,1433+23])
+                core_type (astn_util.ml[33,1433+26]..[33,1433+32])
+                  Ptyp_constr "string" (astn_util.ml[33,1433+26]..[33,1433+32])
+                  []
+              expression (astn_util.ml[33,1433+37]..[33,1433+43])
+                Pexp_variant "Lid"
+                Some
+                  expression (astn_util.ml[33,1433+42]..[33,1433+43])
+                    Pexp_ident "n" (astn_util.ml[33,1433+42]..[33,1433+43])
+          ]
+    ]
+  structure_item (astn_util.ml[34,1477+0]..[34,1477+43])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[34,1477+4]..[34,1477+7])
+          Ppat_var "uid" (astn_util.ml[34,1477+4]..[34,1477+7])
+        expression (astn_util.ml[34,1477+10]..[34,1477+43])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[34,1477+21]..[34,1477+33])
+                Ppat_constraint
+                pattern (astn_util.ml[34,1477+22]..[34,1477+23])
+                  Ppat_var "n" (astn_util.ml[34,1477+22]..[34,1477+23])
+                core_type (astn_util.ml[34,1477+26]..[34,1477+32])
+                  Ptyp_constr "string" (astn_util.ml[34,1477+26]..[34,1477+32])
+                  []
+              expression (astn_util.ml[34,1477+37]..[34,1477+43])
+                Pexp_variant "Uid"
+                Some
+                  expression (astn_util.ml[34,1477+42]..[34,1477+43])
+                    Pexp_ident "n" (astn_util.ml[34,1477+42]..[34,1477+43])
+          ]
+    ]
+  structure_item (astn_util.ml[35,1521+0]..[35,1521+20])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[35,1521+4]..[35,1521+8])
+          Ppat_var "unit" (astn_util.ml[35,1521+4]..[35,1521+8])
+        expression (astn_util.ml[35,1521+8]..[35,1521+20])
+          Pexp_constraint
+          expression (astn_util.ml[35,1521+15]..[35,1521+20])
+            Pexp_variant "Unit"
+            None
+          core_type (astn_util.ml[35,1521+10]..[35,1521+12])
+            Ptyp_constr "ep" (astn_util.ml[35,1521+10]..[35,1521+12])
+            []
+    ]
+  structure_item (astn_util.ml[36,1542+0]..[37,1563+64])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[36,1542+4]..[36,1542+18])
+          Ppat_var "tuple_com_unit" (astn_util.ml[36,1542+4]..[36,1542+18])
+        expression (astn_util.ml[37,1563+2]..[37,1563+64])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[37,1563+13]..[37,1563+15])
+                Ppat_construct "[]" (astn_util.ml[37,1563+13]..[37,1563+15])
+                None
+              expression (astn_util.ml[37,1563+19]..[37,1563+23])
+                Pexp_ident "unit" (astn_util.ml[37,1563+19]..[37,1563+23])
+            <case>
+              pattern (astn_util.ml[37,1563+26]..[37,1563+31])
+                Ppat_construct "::" (astn_util.ml[37,1563+26]..[37,1563+31])
+                Some
+                  pattern (astn_util.ml[37,1563+26]..[37,1563+31])
+                    Ppat_tuple
+                    [
+                      pattern (astn_util.ml[37,1563+26]..[37,1563+27])
+                        Ppat_var "p" (astn_util.ml[37,1563+26]..[37,1563+27])
+                      pattern (astn_util.ml[37,1563+29]..[37,1563+31])
+                        Ppat_construct "[]" (astn_util.ml[37,1563+29]..[37,1563+31])
+                        None
+                    ]
+              expression (astn_util.ml[37,1563+35]..[37,1563+36])
+                Pexp_ident "p" (astn_util.ml[37,1563+35]..[37,1563+36])
+            <case>
+              pattern (astn_util.ml[37,1563+39]..[37,1563+40])
+                Ppat_var "y" (astn_util.ml[37,1563+39]..[37,1563+40])
+              expression (astn_util.ml[37,1563+44]..[37,1563+64])
+                Pexp_variant "Par"
+                Some
+                  expression (astn_util.ml[37,1563+50]..[37,1563+63])
+                    Pexp_apply
+                    expression (astn_util.ml[37,1563+50]..[37,1563+61])
+                      Pexp_ident "com_of_list" (astn_util.ml[37,1563+50]..[37,1563+61])
+                    [
+                      <label> ""
+                        expression (astn_util.ml[37,1563+62]..[37,1563+63])
+                          Pexp_ident "y" (astn_util.ml[37,1563+62]..[37,1563+63])
+                    ]
+          ]
+    ]
+  structure_item (astn_util.ml[38,1628+0]..[44,1767+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[38,1628+4]..[38,1628+13])
+          Ppat_var "tuple_com" (astn_util.ml[38,1628+4]..[38,1628+13])
+        expression (astn_util.ml[39,1644+2]..[44,1767+35])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[40,1655+4]..[40,1655+5])
+                Ppat_var "y" (astn_util.ml[40,1655+4]..[40,1655+5])
+              expression (astn_util.ml[41,1664+7]..[44,1767+34])
+                Pexp_match
+                expression (astn_util.ml[41,1664+13]..[41,1664+14])
+                  Pexp_ident "y" (astn_util.ml[41,1664+13]..[41,1664+14])
+                [
+                  <case>
+                    pattern (astn_util.ml[42,1684+9]..[42,1684+11])
+                      Ppat_construct "[]" (astn_util.ml[42,1684+9]..[42,1684+11])
+                      None
+                    expression (astn_util.ml[42,1684+15]..[42,1684+62])
+                      Pexp_apply
+                      expression (astn_util.ml[42,1684+15]..[42,1684+26])
+                        Pexp_ident "invalid_arg" (astn_util.ml[42,1684+15]..[42,1684+26])
+                      [
+                        <label> ""
+                          expression (astn_util.ml[42,1684+28]..[42,1684+61])
+                            Pexp_apply
+                            expression (astn_util.ml[42,1684+40]..[42,1684+41])
+                              Pexp_ident "^" (astn_util.ml[42,1684+40]..[42,1684+41])
+                            [
+                              <label> ""
+                                expression (astn_util.ml[42,1684+28]..[42,1684+39])
+                                  Pexp_constant Const_string("Astn_util",None)
+                              <label> ""
+                                expression (astn_util.ml[42,1684+43]..[42,1684+60])
+                                  Pexp_apply
+                                  expression (astn_util.ml[42,1684+47]..[42,1684+48])
+                                    Pexp_ident "^" (astn_util.ml[42,1684+47]..[42,1684+48])
+                                  [
+                                    <label> ""
+                                      expression (astn_util.ml[42,1684+43]..[42,1684+46])
+                                        Pexp_constant Const_string(".",None)
+                                    <label> ""
+                                      expression (astn_util.ml[42,1684+49]..[42,1684+60])
+                                        Pexp_constant Const_string("tuple_com",None)
+                                  ]
+                            ]
+                      ]
+                  <case>
+                    pattern (astn_util.ml[43,1747+9]..[43,1747+14])
+                      Ppat_construct "::" (astn_util.ml[43,1747+9]..[43,1747+14])
+                      Some
+                        pattern (astn_util.ml[43,1747+9]..[43,1747+14])
+                          Ppat_tuple
+                          [
+                            pattern (astn_util.ml[43,1747+9]..[43,1747+10])
+                              Ppat_var "x" (astn_util.ml[43,1747+9]..[43,1747+10])
+                            pattern (astn_util.ml[43,1747+12]..[43,1747+14])
+                              Ppat_construct "[]" (astn_util.ml[43,1747+12]..[43,1747+14])
+                              None
+                          ]
+                    expression (astn_util.ml[43,1747+18]..[43,1747+19])
+                      Pexp_ident "x" (astn_util.ml[43,1747+18]..[43,1747+19])
+                  <case>
+                    pattern (astn_util.ml[44,1767+9]..[44,1767+10])
+                      Ppat_any
+                    expression (astn_util.ml[44,1767+14]..[44,1767+34])
+                      Pexp_variant "Par"
+                      Some
+                        expression (astn_util.ml[44,1767+20]..[44,1767+33])
+                          Pexp_apply
+                          expression (astn_util.ml[44,1767+20]..[44,1767+31])
+                            Pexp_ident "com_of_list" (astn_util.ml[44,1767+20]..[44,1767+31])
+                          [
+                            <label> ""
+                              expression (astn_util.ml[44,1767+32]..[44,1767+33])
+                                Pexp_ident "y" (astn_util.ml[44,1767+32]..[44,1767+33])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[45,1803+0]..[51,1942+35])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[45,1803+4]..[45,1803+13])
+          Ppat_var "tuple_sta" (astn_util.ml[45,1803+4]..[45,1803+13])
+        expression (astn_util.ml[46,1819+2]..[51,1942+35])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[47,1830+4]..[47,1830+5])
+                Ppat_var "y" (astn_util.ml[47,1830+4]..[47,1830+5])
+              expression (astn_util.ml[48,1839+7]..[51,1942+34])
+                Pexp_match
+                expression (astn_util.ml[48,1839+13]..[48,1839+14])
+                  Pexp_ident "y" (astn_util.ml[48,1839+13]..[48,1839+14])
+                [
+                  <case>
+                    pattern (astn_util.ml[49,1859+9]..[49,1859+11])
+                      Ppat_construct "[]" (astn_util.ml[49,1859+9]..[49,1859+11])
+                      None
+                    expression (astn_util.ml[49,1859+15]..[49,1859+62])
+                      Pexp_apply
+                      expression (astn_util.ml[49,1859+15]..[49,1859+26])
+                        Pexp_ident "invalid_arg" (astn_util.ml[49,1859+15]..[49,1859+26])
+                      [
+                        <label> ""
+                          expression (astn_util.ml[49,1859+28]..[49,1859+61])
+                            Pexp_apply
+                            expression (astn_util.ml[49,1859+40]..[49,1859+41])
+                              Pexp_ident "^" (astn_util.ml[49,1859+40]..[49,1859+41])
+                            [
+                              <label> ""
+                                expression (astn_util.ml[49,1859+28]..[49,1859+39])
+                                  Pexp_constant Const_string("Astn_util",None)
+                              <label> ""
+                                expression (astn_util.ml[49,1859+43]..[49,1859+60])
+                                  Pexp_apply
+                                  expression (astn_util.ml[49,1859+47]..[49,1859+48])
+                                    Pexp_ident "^" (astn_util.ml[49,1859+47]..[49,1859+48])
+                                  [
+                                    <label> ""
+                                      expression (astn_util.ml[49,1859+43]..[49,1859+46])
+                                        Pexp_constant Const_string(".",None)
+                                    <label> ""
+                                      expression (astn_util.ml[49,1859+49]..[49,1859+60])
+                                        Pexp_constant Const_string("tuple_sta",None)
+                                  ]
+                            ]
+                      ]
+                  <case>
+                    pattern (astn_util.ml[50,1922+9]..[50,1922+14])
+                      Ppat_construct "::" (astn_util.ml[50,1922+9]..[50,1922+14])
+                      Some
+                        pattern (astn_util.ml[50,1922+9]..[50,1922+14])
+                          Ppat_tuple
+                          [
+                            pattern (astn_util.ml[50,1922+9]..[50,1922+10])
+                              Ppat_var "x" (astn_util.ml[50,1922+9]..[50,1922+10])
+                            pattern (astn_util.ml[50,1922+12]..[50,1922+14])
+                              Ppat_construct "[]" (astn_util.ml[50,1922+12]..[50,1922+14])
+                              None
+                          ]
+                    expression (astn_util.ml[50,1922+18]..[50,1922+19])
+                      Pexp_ident "x" (astn_util.ml[50,1922+18]..[50,1922+19])
+                  <case>
+                    pattern (astn_util.ml[51,1942+9]..[51,1942+10])
+                      Ppat_any
+                    expression (astn_util.ml[51,1942+14]..[51,1942+34])
+                      Pexp_variant "Par"
+                      Some
+                        expression (astn_util.ml[51,1942+20]..[51,1942+33])
+                          Pexp_apply
+                          expression (astn_util.ml[51,1942+20]..[51,1942+31])
+                            Pexp_ident "sta_of_list" (astn_util.ml[51,1942+20]..[51,1942+31])
+                          [
+                            <label> ""
+                              expression (astn_util.ml[51,1942+32]..[51,1942+33])
+                                Pexp_ident "y" (astn_util.ml[51,1942+32]..[51,1942+33])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (astn_util.ml[52,1978+0]..[56,2025+75])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (astn_util.ml[52,1978+4]..[52,1978+8])
+          Ppat_var "+>" (astn_util.ml[52,1978+4]..[52,1978+8])
+        expression (astn_util.ml[53,1989+2]..[56,2025+75])
+          Pexp_function
+          [
+            <case>
+              pattern (astn_util.ml[54,2000+4]..[54,2000+5])
+                Ppat_var "f" (astn_util.ml[54,2000+4]..[54,2000+5])
+              expression (astn_util.ml[55,2009+7]..[56,2025+74])
+                Pexp_function
+                [
+                  <case>
+                    pattern (astn_util.ml[56,2025+9]..[56,2025+30])
+                      Ppat_constraint
+                      pattern (astn_util.ml[56,2025+10]..[56,2025+15])
+                        Ppat_var "names" (astn_util.ml[56,2025+10]..[56,2025+15])
+                      core_type (astn_util.ml[56,2025+18]..[56,2025+29])
+                        Ptyp_constr "list" (astn_util.ml[56,2025+25]..[56,2025+29])
+                        [
+                          core_type (astn_util.ml[56,2025+18]..[56,2025+24])
+                            Ptyp_constr "string" (astn_util.ml[56,2025+18]..[56,2025+24])
+                            []
+                        ]
+                    expression (astn_util.ml[56,2025+34]..[56,2025+74])
+                      Pexp_apply
+                      expression (astn_util.ml[56,2025+34]..[56,2025+46])
+                        Pexp_ident "appl_of_list" (astn_util.ml[56,2025+34]..[56,2025+46])
+                      [
+                        <label> ""
+                          expression (astn_util.ml[56,2025+48]..[56,2025+73])
+                            Pexp_construct "::" (astn_util.ml[56,2025+50]..[56,2025+52])
+                            Some
+                              expression (astn_util.ml[56,2025+48]..[56,2025+73])
+                                Pexp_tuple
+                                [
+                                  expression (astn_util.ml[56,2025+48]..[56,2025+49])
+                                    Pexp_ident "f" (astn_util.ml[56,2025+48]..[56,2025+49])
+                                  expression (astn_util.ml[56,2025+54]..[56,2025+72])
+                                    Pexp_apply
+                                    expression (astn_util.ml[56,2025+54]..[56,2025+62])
+                                      Pexp_ident "List.map" (astn_util.ml[56,2025+54]..[56,2025+62])
+                                    [
+                                      <label> ""
+                                        expression (astn_util.ml[56,2025+63]..[56,2025+66])
+                                          Pexp_ident "lid" (astn_util.ml[56,2025+63]..[56,2025+66])
+                                      <label> ""
+                                        expression (astn_util.ml[56,2025+67]..[56,2025+72])
+                                          Pexp_ident "names" (astn_util.ml[56,2025+67]..[56,2025+72])
+                                    ]
+                                ]
+                      ]
+                ]
+          ]
+    ]
+]

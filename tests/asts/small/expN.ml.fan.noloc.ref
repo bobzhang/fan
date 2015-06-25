@@ -1,0 +1,1245 @@
+[
+  structure_item (expN.ml[]..[])
+    Pstr_open Fresh "Astfn" (expN.ml[]..[])
+  structure_item (expN.ml[]..[])
+    Pstr_open Fresh "Astn_util" (expN.ml[]..[])
+  structure_item (expN.ml[]..[])
+    Pstr_open Fresh "Fid" (expN.ml[]..[])
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mkfun" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "names" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "acc" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_apply
+                      expression (expN.ml[]..[])
+                        Pexp_ident "List.fold_right" (expN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (expN.ml[]..[])
+                                  Ppat_var "name" (expN.ml[]..[])
+                                expression (expN.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (expN.ml[]..[])
+                                        Ppat_var "acc" (expN.ml[]..[])
+                                      expression (expN.ml[]..[])
+                                        Pexp_coerce
+                                        expression (expN.ml[]..[])
+                                          Pexp_variant "Fun"
+                                          Some
+                                            expression (expN.ml[]..[])
+                                              Pexp_variant "Case"
+                                              Some
+                                                expression (expN.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_variant "Lid"
+                                                      Some
+                                                        expression (expN.ml[]..[])
+                                                          Pexp_ident "name" (expN.ml[]..[])
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_coerce
+                                                      expression (expN.ml[]..[])
+                                                        Pexp_ident "acc" (expN.ml[]..[])
+                                                      None
+                                                      core_type (expN.ml[]..[])
+                                                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                        []
+                                                  ]
+                                        None
+                                        core_type (expN.ml[]..[])
+                                          Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                          []
+                                  ]
+                            ]
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "names" (expN.ml[]..[])
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "acc" (expN.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "currying" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "cases" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_fun "arity"
+                None
+                pattern (expN.ml[]..[])
+                  Ppat_var "arity" (expN.ml[]..[])
+                expression (expN.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (expN.ml[]..[])
+                        Ppat_var "cases" (expN.ml[]..[])
+                      expression (expN.ml[]..[])
+                        Pexp_apply
+                        expression (expN.ml[]..[])
+                          Pexp_ident "bar_of_list" (expN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (expN.ml[]..[])
+                              Pexp_ident "cases" (expN.ml[]..[])
+                        ]
+                  ]
+                  expression (expN.ml[]..[])
+                    Pexp_ifthenelse
+                    expression (expN.ml[]..[])
+                      Pexp_apply
+                      expression (expN.ml[]..[])
+                        Pexp_ident ">=" (expN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "arity" (expN.ml[]..[])
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_constant Const_int 2
+                      ]
+                    expression (expN.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (expN.ml[]..[])
+                            Ppat_var "names" (expN.ml[]..[])
+                          expression (expN.ml[]..[])
+                            Pexp_apply
+                            expression (expN.ml[]..[])
+                              Pexp_ident "Listf.init" (expN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (expN.ml[]..[])
+                                  Pexp_ident "arity" (expN.ml[]..[])
+                              <label> ""
+                                expression (expN.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (expN.ml[]..[])
+                                        Ppat_var "i" (expN.ml[]..[])
+                                      expression (expN.ml[]..[])
+                                        Pexp_apply
+                                        expression (expN.ml[]..[])
+                                          Pexp_ident "x" (expN.ml[]..[])
+                                        [
+                                          <label> "off"
+                                            expression (expN.ml[]..[])
+                                              Pexp_ident "i" (expN.ml[]..[])
+                                          <label> ""
+                                            expression (expN.ml[]..[])
+                                              Pexp_constant Const_int 0
+                                        ]
+                                  ]
+                            ]
+                      ]
+                      expression (expN.ml[]..[])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (expN.ml[]..[])
+                              Ppat_var "exps" (expN.ml[]..[])
+                            expression (expN.ml[]..[])
+                              Pexp_apply
+                              expression (expN.ml[]..[])
+                                Pexp_ident "Listf.map" (expN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (expN.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (expN.ml[]..[])
+                                          Ppat_var "s" (expN.ml[]..[])
+                                        expression (expN.ml[]..[])
+                                          Pexp_coerce
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_ident "s" (expN.ml[]..[])
+                                          None
+                                          core_type (expN.ml[]..[])
+                                            Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                            []
+                                    ]
+                                <label> ""
+                                  expression (expN.ml[]..[])
+                                    Pexp_ident "names" (expN.ml[]..[])
+                              ]
+                        ]
+                        expression (expN.ml[]..[])
+                          Pexp_let Nonrec
+                          [
+                            <def>
+                              pattern (expN.ml[]..[])
+                                Ppat_var "x" (expN.ml[]..[])
+                              expression (expN.ml[]..[])
+                                Pexp_apply
+                                expression (expN.ml[]..[])
+                                  Pexp_ident "tuple_com" (expN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (expN.ml[]..[])
+                                      Pexp_ident "exps" (expN.ml[]..[])
+                                ]
+                          ]
+                          expression (expN.ml[]..[])
+                            Pexp_apply
+                            expression (expN.ml[]..[])
+                              Pexp_ident "mkfun" (expN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (expN.ml[]..[])
+                                  Pexp_ident "names" (expN.ml[]..[])
+                              <label> ""
+                                expression (expN.ml[]..[])
+                                  Pexp_coerce
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Match"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_coerce
+                                            expression (expN.ml[]..[])
+                                              Pexp_ident "x" (expN.ml[]..[])
+                                            None
+                                            core_type (expN.ml[]..[])
+                                              Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                              []
+                                          expression (expN.ml[]..[])
+                                            Pexp_ident "cases" (expN.ml[]..[])
+                                        ]
+                                  None
+                                  core_type (expN.ml[]..[])
+                                    Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                    []
+                            ]
+                    Some
+                      expression (expN.ml[]..[])
+                        Pexp_coerce
+                        expression (expN.ml[]..[])
+                          Pexp_variant "Fun"
+                          Some
+                            expression (expN.ml[]..[])
+                              Pexp_ident "cases" (expN.ml[]..[])
+                        None
+                        core_type (expN.ml[]..[])
+                          Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                          []
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "eta_expand" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_constraint
+                pattern (expN.ml[]..[])
+                  Ppat_var "exp" (expN.ml[]..[])
+                core_type (expN.ml[]..[])
+                  Ptyp_constr "exp" (expN.ml[]..[])
+                  []
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "number" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_constraint
+                      expression (expN.ml[]..[])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (expN.ml[]..[])
+                              Ppat_var "names" (expN.ml[]..[])
+                            expression (expN.ml[]..[])
+                              Pexp_apply
+                              expression (expN.ml[]..[])
+                                Pexp_ident "Listf.init" (expN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (expN.ml[]..[])
+                                    Pexp_ident "number" (expN.ml[]..[])
+                                <label> ""
+                                  expression (expN.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (expN.ml[]..[])
+                                          Ppat_var "i" (expN.ml[]..[])
+                                        expression (expN.ml[]..[])
+                                          Pexp_apply
+                                          expression (expN.ml[]..[])
+                                            Pexp_ident "x" (expN.ml[]..[])
+                                          [
+                                            <label> "off"
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_int 0
+                                            <label> ""
+                                              expression (expN.ml[]..[])
+                                                Pexp_ident "i" (expN.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                        ]
+                        expression (expN.ml[]..[])
+                          Pexp_apply
+                          expression (expN.ml[]..[])
+                            Pexp_ident "mkfun" (expN.ml[]..[])
+                          [
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_ident "names" (expN.ml[]..[])
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_apply
+                                expression (expN.ml[]..[])
+                                  Pexp_ident "+>" (expN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (expN.ml[]..[])
+                                      Pexp_ident "exp" (expN.ml[]..[])
+                                  <label> ""
+                                    expression (expN.ml[]..[])
+                                      Pexp_ident "names" (expN.ml[]..[])
+                                ]
+                          ]
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "exp" (expN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "unknown" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "len" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_ifthenelse
+                expression (expN.ml[]..[])
+                  Pexp_apply
+                  expression (expN.ml[]..[])
+                    Pexp_ident "=" (expN.ml[]..[])
+                  [
+                    <label> ""
+                      expression (expN.ml[]..[])
+                        Pexp_ident "len" (expN.ml[]..[])
+                    <label> ""
+                      expression (expN.ml[]..[])
+                        Pexp_constant Const_int 0
+                  ]
+                expression (expN.ml[]..[])
+                  Pexp_coerce
+                  expression (expN.ml[]..[])
+                    Pexp_variant "Send"
+                    Some
+                      expression (expN.ml[]..[])
+                        Pexp_tuple
+                        [
+                          expression (expN.ml[]..[])
+                            Pexp_variant "Lid"
+                            Some
+                              expression (expN.ml[]..[])
+                                Pexp_constant Const_string("self",None)
+                          expression (expN.ml[]..[])
+                            Pexp_variant "Lid"
+                            Some
+                              expression (expN.ml[]..[])
+                                Pexp_constant Const_string("unknown",None)
+                        ]
+                  None
+                  core_type (expN.ml[]..[])
+                    Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                    []
+                Some
+                  expression (expN.ml[]..[])
+                    Pexp_coerce
+                    expression (expN.ml[]..[])
+                      Pexp_variant "App"
+                      Some
+                        expression (expN.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (expN.ml[]..[])
+                              Pexp_variant "Lid"
+                              Some
+                                expression (expN.ml[]..[])
+                                  Pexp_constant Const_string("failwith",None)
+                            expression (expN.ml[]..[])
+                              Pexp_variant "Str"
+                              Some
+                                expression (expN.ml[]..[])
+                                  Pexp_constant Const_string("not implemented!",None)
+                          ]
+                    None
+                    core_type (expN.ml[]..[])
+                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                      []
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mk_record" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "label_exps" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_constraint
+                expression (expN.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (expN.ml[]..[])
+                        Ppat_var "rec_exps" (expN.ml[]..[])
+                      expression (expN.ml[]..[])
+                        Pexp_apply
+                        expression (expN.ml[]..[])
+                          Pexp_ident "List.map" (expN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (expN.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (expN.ml[]..[])
+                                    Ppat_tuple
+                                    [
+                                      pattern (expN.ml[]..[])
+                                        Ppat_var "label" (expN.ml[]..[])
+                                      pattern (expN.ml[]..[])
+                                        Ppat_var "exp" (expN.ml[]..[])
+                                    ]
+                                  expression (expN.ml[]..[])
+                                    Pexp_coerce
+                                    expression (expN.ml[]..[])
+                                      Pexp_variant "RecBind"
+                                      Some
+                                        expression (expN.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (expN.ml[]..[])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (expN.ml[]..[])
+                                                  Pexp_ident "label" (expN.ml[]..[])
+                                            expression (expN.ml[]..[])
+                                              Pexp_coerce
+                                              expression (expN.ml[]..[])
+                                                Pexp_ident "exp" (expN.ml[]..[])
+                                              None
+                                              core_type (expN.ml[]..[])
+                                                Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                []
+                                          ]
+                                    None
+                                    core_type (expN.ml[]..[])
+                                      Ptyp_constr "Astfn.rec_exp" (expN.ml[]..[])
+                                      []
+                              ]
+                          <label> ""
+                            expression (expN.ml[]..[])
+                              Pexp_ident "label_exps" (expN.ml[]..[])
+                        ]
+                  ]
+                  expression (expN.ml[]..[])
+                    Pexp_variant "Record"
+                    Some
+                      expression (expN.ml[]..[])
+                        Pexp_apply
+                        expression (expN.ml[]..[])
+                          Pexp_ident "sem_of_list" (expN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (expN.ml[]..[])
+                              Pexp_ident "rec_exps" (expN.ml[]..[])
+                        ]
+                core_type (expN.ml[]..[])
+                  Ptyp_constr "exp" (expN.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mee_comma" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "x" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "y" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("Com",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Com"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "x" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "y" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                ]
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mee_app" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "x" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "y" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("App",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Com"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "x" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "y" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                ]
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mee_of_str" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "s" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "len" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_apply
+                      expression (expN.ml[]..[])
+                        Pexp_ident "String.length" (expN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "s" (expN.ml[]..[])
+                      ]
+                ]
+                expression (expN.ml[]..[])
+                  Pexp_ifthenelse
+                  expression (expN.ml[]..[])
+                    Pexp_apply
+                    expression (expN.ml[]..[])
+                      Pexp_ident "=" (expN.ml[]..[])
+                    [
+                      <label> ""
+                        expression (expN.ml[]..[])
+                          Pexp_apply
+                          expression (expN.ml[]..[])
+                            Pexp_ident "String.get" (expN.ml[]..[])
+                          [
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_ident "s" (expN.ml[]..[])
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_constant Const_int 0
+                          ]
+                      <label> ""
+                        expression (expN.ml[]..[])
+                          Pexp_constant Const_char 60
+                    ]
+                  expression (expN.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (expN.ml[]..[])
+                          Ppat_var "s" (expN.ml[]..[])
+                        expression (expN.ml[]..[])
+                          Pexp_apply
+                          expression (expN.ml[]..[])
+                            Pexp_ident "String.sub" (expN.ml[]..[])
+                          [
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_ident "s" (expN.ml[]..[])
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_constant Const_int 1
+                            <label> ""
+                              expression (expN.ml[]..[])
+                                Pexp_apply
+                                expression (expN.ml[]..[])
+                                  Pexp_ident "-" (expN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (expN.ml[]..[])
+                                      Pexp_ident "len" (expN.ml[]..[])
+                                  <label> ""
+                                    expression (expN.ml[]..[])
+                                      Pexp_constant Const_int 1
+                                ]
+                          ]
+                    ]
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("Vrn",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Str"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_ident "s" (expN.ml[]..[])
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+                  Some
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("Uid",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Str"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_ident "s" (expN.ml[]..[])
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mk_tuple_ee" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_construct "[]" (expN.ml[]..[])
+                None
+              expression (expN.ml[]..[])
+                Pexp_apply
+                expression (expN.ml[]..[])
+                  Pexp_ident "invalid_arg" (expN.ml[]..[])
+                [
+                  <label> ""
+                    expression (expN.ml[]..[])
+                      Pexp_constant Const_string("mktupee arity is zero ",None)
+                ]
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_construct "::" (expN.ml[]..[])
+                Some
+                  pattern (expN.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (expN.ml[]..[])
+                        Ppat_var "x" (expN.ml[]..[])
+                      pattern (expN.ml[]..[])
+                        Ppat_construct "[]" (expN.ml[]..[])
+                        None
+                    ]
+              expression (expN.ml[]..[])
+                Pexp_ident "x" (expN.ml[]..[])
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "xs" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "v" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_apply
+                      expression (expN.ml[]..[])
+                        Pexp_ident "Listf.reduce_right" (expN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "mee_comma" (expN.ml[]..[])
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "xs" (expN.ml[]..[])
+                      ]
+                ]
+                expression (expN.ml[]..[])
+                  Pexp_coerce
+                  expression (expN.ml[]..[])
+                    Pexp_variant "App"
+                    Some
+                      expression (expN.ml[]..[])
+                        Pexp_tuple
+                        [
+                          expression (expN.ml[]..[])
+                            Pexp_variant "Vrn"
+                            Some
+                              expression (expN.ml[]..[])
+                                Pexp_constant Const_string("Par",None)
+                          expression (expN.ml[]..[])
+                            Pexp_variant "Par"
+                            Some
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Com"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_tuple
+                                    [
+                                      expression (expN.ml[]..[])
+                                        Pexp_variant "Lid"
+                                        Some
+                                          expression (expN.ml[]..[])
+                                            Pexp_constant Const_string("_loc",None)
+                                      expression (expN.ml[]..[])
+                                        Pexp_coerce
+                                        expression (expN.ml[]..[])
+                                          Pexp_ident "v" (expN.ml[]..[])
+                                        None
+                                        core_type (expN.ml[]..[])
+                                          Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                          []
+                                    ]
+                        ]
+                  None
+                  core_type (expN.ml[]..[])
+                    Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                    []
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mee_record_col" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "label" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "exp" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("RecBind",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Com"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_variant "App"
+                                                    Some
+                                                      expression (expN.ml[]..[])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (expN.ml[]..[])
+                                                            Pexp_variant "Vrn"
+                                                            Some
+                                                              expression (expN.ml[]..[])
+                                                                Pexp_constant Const_string("Lid",None)
+                                                          expression (expN.ml[]..[])
+                                                            Pexp_variant "Par"
+                                                            Some
+                                                              expression (expN.ml[]..[])
+                                                                Pexp_variant "Com"
+                                                                Some
+                                                                  expression (expN.ml[]..[])
+                                                                    Pexp_tuple
+                                                                    [
+                                                                      expression (expN.ml[]..[])
+Pexp_variant "Lid"
+Some
+  expression (expN.ml[]..[])
+    Pexp_constant Const_string("_loc",None)
+                                                                      expression (expN.ml[]..[])
+Pexp_variant "Str"
+Some
+  expression (expN.ml[]..[])
+    Pexp_ident "label" (expN.ml[]..[])
+                                                                    ]
+                                                        ]
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "exp" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                ]
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mee_record_semi" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "a" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (expN.ml[]..[])
+                      Ppat_var "b" (expN.ml[]..[])
+                    expression (expN.ml[]..[])
+                      Pexp_coerce
+                      expression (expN.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (expN.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_constant Const_string("Sem",None)
+                              expression (expN.ml[]..[])
+                                Pexp_variant "Par"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (expN.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Lid"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_constant Const_string("_loc",None)
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Com"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "a" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "b" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                ]
+                                        ]
+                            ]
+                      None
+                      core_type (expN.ml[]..[])
+                        Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (expN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (expN.ml[]..[])
+          Ppat_var "mk_record_ee" (expN.ml[]..[])
+        expression (expN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (expN.ml[]..[])
+                Ppat_var "label_exps" (expN.ml[]..[])
+              expression (expN.ml[]..[])
+                Pexp_apply
+                expression (expN.ml[]..[])
+                  Pexp_ident "|>" (expN.ml[]..[])
+                [
+                  <label> ""
+                    expression (expN.ml[]..[])
+                      Pexp_apply
+                      expression (expN.ml[]..[])
+                        Pexp_ident "|>" (expN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_ident "label_exps" (expN.ml[]..[])
+                        <label> ""
+                          expression (expN.ml[]..[])
+                            Pexp_apply
+                            expression (expN.ml[]..[])
+                              Pexp_ident "List.map" (expN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (expN.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (expN.ml[]..[])
+                                        Ppat_tuple
+                                        [
+                                          pattern (expN.ml[]..[])
+                                            Ppat_var "label" (expN.ml[]..[])
+                                          pattern (expN.ml[]..[])
+                                            Ppat_var "exp" (expN.ml[]..[])
+                                        ]
+                                      expression (expN.ml[]..[])
+                                        Pexp_apply
+                                        expression (expN.ml[]..[])
+                                          Pexp_ident "mee_record_col" (expN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (expN.ml[]..[])
+                                              Pexp_ident "label" (expN.ml[]..[])
+                                          <label> ""
+                                            expression (expN.ml[]..[])
+                                              Pexp_ident "exp" (expN.ml[]..[])
+                                        ]
+                                  ]
+                            ]
+                      ]
+                  <label> ""
+                    expression (expN.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (expN.ml[]..[])
+                            Ppat_var "es" (expN.ml[]..[])
+                          expression (expN.ml[]..[])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (expN.ml[]..[])
+                                  Ppat_var "x" (expN.ml[]..[])
+                                expression (expN.ml[]..[])
+                                  Pexp_apply
+                                  expression (expN.ml[]..[])
+                                    Pexp_ident "Listf.reduce_right" (expN.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (expN.ml[]..[])
+                                        Pexp_ident "mee_record_semi" (expN.ml[]..[])
+                                    <label> ""
+                                      expression (expN.ml[]..[])
+                                        Pexp_ident "es" (expN.ml[]..[])
+                                  ]
+                            ]
+                            expression (expN.ml[]..[])
+                              Pexp_coerce
+                              expression (expN.ml[]..[])
+                                Pexp_variant "App"
+                                Some
+                                  expression (expN.ml[]..[])
+                                    Pexp_tuple
+                                    [
+                                      expression (expN.ml[]..[])
+                                        Pexp_variant "Vrn"
+                                        Some
+                                          expression (expN.ml[]..[])
+                                            Pexp_constant Const_string("Record",None)
+                                      expression (expN.ml[]..[])
+                                        Pexp_variant "Par"
+                                        Some
+                                          expression (expN.ml[]..[])
+                                            Pexp_variant "Com"
+                                            Some
+                                              expression (expN.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_variant "Lid"
+                                                    Some
+                                                      expression (expN.ml[]..[])
+                                                        Pexp_constant Const_string("_loc",None)
+                                                  expression (expN.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (expN.ml[]..[])
+                                                      Pexp_ident "x" (expN.ml[]..[])
+                                                    None
+                                                    core_type (expN.ml[]..[])
+                                                      Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                                      []
+                                                ]
+                                    ]
+                              None
+                              core_type (expN.ml[]..[])
+                                Ptyp_constr "Astfn.exp" (expN.ml[]..[])
+                                []
+                      ]
+                ]
+          ]
+    ]
+]

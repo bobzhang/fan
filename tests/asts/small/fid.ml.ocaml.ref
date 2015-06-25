@@ -1,0 +1,246 @@
+[
+  structure_item (fid.ml[1,0+0]..[8,192+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[1,0+4]..[1,0+5])
+          Ppat_var "x" (fid.ml[1,0+4]..[1,0+5])
+        expression (fid.ml[1,0+6]..[8,192+60]) ghost
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[1,0+13]..[1,0+14])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[1,0+8]..[1,0+11])
+            Ppat_var "off" (fid.ml[1,0+8]..[1,0+11])
+          expression (fid.ml[2,19+2]..[8,192+60])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[3,30+4]..[3,30+13])
+                  Ppat_constraint
+                  pattern (fid.ml[3,30+5]..[3,30+6])
+                    Ppat_var "i" (fid.ml[3,30+5]..[3,30+6])
+                  core_type (fid.ml[3,30+9]..[3,30+12])
+                    Ptyp_constr "int" (fid.ml[3,30+9]..[3,30+12])
+                    []
+                expression (fid.ml[4,47+6]..[8,192+60])
+                  Pexp_ifthenelse
+                  expression (fid.ml[4,47+9]..[4,47+17])
+                    Pexp_apply
+                    expression (fid.ml[4,47+13]..[4,47+14])
+                      Pexp_ident ">" (fid.ml[4,47+13]..[4,47+14])
+                    [
+                      <label> ""
+                        expression (fid.ml[4,47+9]..[4,47+12])
+                          Pexp_ident "off" (fid.ml[4,47+9]..[4,47+12])
+                      <label> ""
+                        expression (fid.ml[4,47+15]..[4,47+17])
+                          Pexp_constant Const_int 25
+                    ]
+                  expression (fid.ml[5,65+11]..[5,65+49])
+                    Pexp_apply
+                    expression (fid.ml[5,65+11]..[5,65+22])
+                      Pexp_ident "invalid_arg" (fid.ml[5,65+11]..[5,65+22])
+                    [
+                      <label> ""
+                        expression (fid.ml[5,65+23]..[5,65+49])
+                          Pexp_constant Const_string("unsupported offset in x ",None)
+                    ]
+                  Some
+                    expression (fid.ml[7,126+8]..[8,192+60])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (fid.ml[7,126+13]..[7,126+17])
+                            Ppat_var "base" (fid.ml[7,126+13]..[7,126+17])
+                          expression (fid.ml[7,126+20]..[7,126+62])
+                            Pexp_open Fresh ""Char" (fid.ml[7,126+29]..[7,126+33])"
+                            expression (fid.ml[7,126+37]..[7,126+62])
+                              Pexp_apply
+                              expression (fid.ml[7,126+56]..[7,126+58])
+                                Pexp_ident "|>" (fid.ml[7,126+56]..[7,126+58])
+                              [
+                                <label> ""
+                                  expression (fid.ml[7,126+37]..[7,126+55])
+                                    Pexp_apply
+                                    expression (fid.ml[7,126+49]..[7,126+50])
+                                      Pexp_ident "+" (fid.ml[7,126+49]..[7,126+50])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[7,126+38]..[7,126+48])
+                                          Pexp_apply
+                                          expression (fid.ml[7,126+39]..[7,126+43])
+                                            Pexp_ident "code" (fid.ml[7,126+39]..[7,126+43])
+                                          [
+                                            <label> ""
+                                              expression (fid.ml[7,126+44]..[7,126+47])
+                                                Pexp_constant Const_char 61
+                                          ]
+                                      <label> ""
+                                        expression (fid.ml[7,126+51]..[7,126+54])
+                                          Pexp_ident "off" (fid.ml[7,126+51]..[7,126+54])
+                                    ]
+                                <label> ""
+                                  expression (fid.ml[7,126+59]..[7,126+62])
+                                    Pexp_ident "chr" (fid.ml[7,126+59]..[7,126+62])
+                              ]
+                      ]
+                      expression (fid.ml[8,192+9]..[8,192+59])
+                        Pexp_apply
+                        expression (fid.ml[8,192+13]..[8,192+14])
+                          Pexp_ident "^" (fid.ml[8,192+13]..[8,192+14])
+                        [
+                          <label> ""
+                            expression (fid.ml[8,192+9]..[8,192+12])
+                              Pexp_constant Const_string("_",None)
+                          <label> ""
+                            expression (fid.ml[8,192+15]..[8,192+59])
+                              Pexp_apply
+                              expression (fid.ml[8,192+39]..[8,192+40])
+                                Pexp_ident "^" (fid.ml[8,192+39]..[8,192+40])
+                              [
+                                <label> ""
+                                  expression (fid.ml[8,192+16]..[8,192+38])
+                                    Pexp_apply
+                                    expression (fid.ml[8,192+17]..[8,192+32])
+                                      Pexp_ident "Stringf.of_char" (fid.ml[8,192+17]..[8,192+32])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[8,192+33]..[8,192+37])
+                                          Pexp_ident "base" (fid.ml[8,192+33]..[8,192+37])
+                                    ]
+                                <label> ""
+                                  expression (fid.ml[8,192+41]..[8,192+58])
+                                    Pexp_apply
+                                    expression (fid.ml[8,192+42]..[8,192+55])
+                                      Pexp_ident "string_of_int" (fid.ml[8,192+42]..[8,192+55])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[8,192+56]..[8,192+57])
+                                          Pexp_ident "i" (fid.ml[8,192+56]..[8,192+57])
+                                    ]
+                              ]
+                        ]
+            ]
+    ]
+  structure_item (fid.ml[9,253+0]..[9,253+60])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[9,253+4]..[9,253+7])
+          Ppat_var "xid" (fid.ml[9,253+4]..[9,253+7])
+        expression (fid.ml[9,253+8]..[9,253+60]) ghost
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[9,253+15]..[9,253+16])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[9,253+10]..[9,253+13])
+            Ppat_var "off" (fid.ml[9,253+10]..[9,253+13])
+          expression (fid.ml[9,253+21]..[9,253+60])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[9,253+32]..[9,253+41])
+                  Ppat_constraint
+                  pattern (fid.ml[9,253+33]..[9,253+34])
+                    Ppat_var "i" (fid.ml[9,253+33]..[9,253+34])
+                  core_type (fid.ml[9,253+37]..[9,253+40])
+                    Ptyp_constr "int" (fid.ml[9,253+37]..[9,253+40])
+                    []
+                expression (fid.ml[9,253+45]..[9,253+60])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (fid.ml[9,253+50]..[9,253+60])
+                      Pexp_apply
+                      expression (fid.ml[9,253+51]..[9,253+52])
+                        Pexp_ident "x" (fid.ml[9,253+51]..[9,253+52])
+                      [
+                        <label> "off"
+                          expression (fid.ml[9,253+54]..[9,253+57])
+                            Pexp_ident "off" (fid.ml[9,253+54]..[9,253+57])
+                        <label> ""
+                          expression (fid.ml[9,253+58]..[9,253+59])
+                            Pexp_ident "i" (fid.ml[9,253+58]..[9,253+59])
+                      ]
+            ]
+    ]
+  structure_item (fid.ml[10,314+0]..[10,314+56])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[10,314+4]..[10,314+8])
+          Ppat_var "allx" (fid.ml[10,314+4]..[10,314+8])
+        expression (fid.ml[10,314+9]..[10,314+56]) ghost
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[10,314+16]..[10,314+17])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[10,314+11]..[10,314+14])
+            Ppat_var "off" (fid.ml[10,314+11]..[10,314+14])
+          expression (fid.ml[10,314+22]..[10,314+56])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[10,314+33]..[10,314+34])
+                  Ppat_var "i" (fid.ml[10,314+33]..[10,314+34])
+                expression (fid.ml[10,314+38]..[10,314+56])
+                  Pexp_apply
+                  expression (fid.ml[10,314+44]..[10,314+45])
+                    Pexp_ident "^" (fid.ml[10,314+44]..[10,314+45])
+                  [
+                    <label> ""
+                      expression (fid.ml[10,314+38]..[10,314+43])
+                        Pexp_constant Const_string("all",None)
+                    <label> ""
+                      expression (fid.ml[10,314+46]..[10,314+56])
+                        Pexp_apply
+                        expression (fid.ml[10,314+47]..[10,314+48])
+                          Pexp_ident "x" (fid.ml[10,314+47]..[10,314+48])
+                        [
+                          <label> "off"
+                            expression (fid.ml[10,314+50]..[10,314+53])
+                              Pexp_ident "off" (fid.ml[10,314+50]..[10,314+53])
+                          <label> ""
+                            expression (fid.ml[10,314+54]..[10,314+55])
+                              Pexp_ident "i" (fid.ml[10,314+54]..[10,314+55])
+                        ]
+                  ]
+            ]
+    ]
+  structure_item (fid.ml[11,371+0]..[11,371+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[11,371+4]..[11,371+10])
+          Ppat_var "allxid" (fid.ml[11,371+4]..[11,371+10])
+        expression (fid.ml[11,371+11]..[11,371+58]) ghost
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[11,371+18]..[11,371+19])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[11,371+13]..[11,371+16])
+            Ppat_var "off" (fid.ml[11,371+13]..[11,371+16])
+          expression (fid.ml[11,371+24]..[11,371+58])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[11,371+35]..[11,371+36])
+                  Ppat_var "i" (fid.ml[11,371+35]..[11,371+36])
+                expression (fid.ml[11,371+40]..[11,371+58])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (fid.ml[11,371+45]..[11,371+58])
+                      Pexp_apply
+                      expression (fid.ml[11,371+46]..[11,371+50])
+                        Pexp_ident "allx" (fid.ml[11,371+46]..[11,371+50])
+                      [
+                        <label> "off"
+                          expression (fid.ml[11,371+52]..[11,371+55])
+                            Pexp_ident "off" (fid.ml[11,371+52]..[11,371+55])
+                        <label> ""
+                          expression (fid.ml[11,371+56]..[11,371+57])
+                            Pexp_ident "i" (fid.ml[11,371+56]..[11,371+57])
+                      ]
+            ]
+    ]
+]

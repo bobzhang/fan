@@ -1,0 +1,497 @@
+39c39
+<         expression (typehook.ml[6,146+11]..[7,212+19])
+---
+>         expression (typehook.ml[6,146+11]..[7,212+19]) ghost
+50c50
+<           core_type (typehook.ml[6,146+14]..[6,146+63])
+---
+>           core_type (typehook.ml[6,146+13]..[6,146+63])
+101c101
+<         expression (typehook.ml[10,294+13]..[15,460+67])
+---
+>         expression (typehook.ml[10,294+13]..[15,460+67]) ghost
+106c106
+<           expression (typehook.ml[10,294+22]..[15,460+67])
+---
+>           expression (typehook.ml[10,294+22]..[15,460+67]) ghost
+200c200
+<                       expression (typehook.ml[20,588+10]..[20,588+70])
+---
+>                       expression (typehook.ml[20,588+9]..[20,588+71])
+206c206
+<                             expression (typehook.ml[20,588+29]..[20,588+69])
+---
+>                             expression (typehook.ml[20,588+28]..[20,588+70])
+230c230
+<                 expression (typehook.ml[19,568+6]..[22,678+24])
+---
+>                 expression (typehook.ml[22,678+7]..[22,678+23])
+256c256
+<                 expression (typehook.ml[26,745+8]..[43,1293+77])
+---
+>                 expression (typehook.ml[26,745+6]..[43,1293+79])
+295c295
+<                                   expression (typehook.ml[32,883+19]..[33,947+45])
+---
+>                                   expression (typehook.ml[32,883+18]..[33,947+46])
+301c301
+<                                         expression (typehook.ml[32,883+32]..[32,883+62])
+---
+>                                         expression (typehook.ml[32,883+31]..[32,883+63])
+327c327
+<                                         expression (typehook.ml[33,947+22]..[33,947+44])
+---
+>                                         expression (typehook.ml[33,947+21]..[33,947+45])
+347c347
+<                                   expression (typehook.ml[36,1062+19]..[36,1062+53])
+---
+>                                   expression (typehook.ml[36,1062+18]..[36,1062+54])
+392c392
+<                       expression (typehook.ml[41,1250+13]..[43,1293+76])
+---
+>                       expression (typehook.ml[41,1250+12]..[43,1293+77])
+411c411
+<                               expression (typehook.ml[43,1293+17]..[43,1293+76])
+---
+>                               expression (typehook.ml[43,1293+35]..[43,1293+75])
+454c454
+<                     expression (typehook.ml[49,1468+9]..[49,1468+46])
+---
+>                     expression (typehook.ml[49,1468+8]..[49,1468+47])
+479c479
+<       class_type_declaration (typehook.ml[50,1516+11]..[58,1835+5])
+---
+>       class_type_declaration (typehook.ml[50,1516+0]..[58,1835+5])
+488c488
+<               core_type (typehook.ml[51,1539+2]..[58,1835+5])
+---
+>               core_type (typehook.ml[51,1539+8]..[51,1539+8])
+499,500d498
+<                       Ptyp_poly
+<                       core_type (typehook.ml[53,1569+28]..[53,1569+43])
+506,507d503
+<                       Ptyp_poly
+<                       core_type (typehook.ml[54,1613+32]..[54,1613+51])
+513,514d508
+<                       Ptyp_poly
+<                       core_type (typehook.ml[56,1700+6]..[56,1700+58])
+532,533d525
+<                       Ptyp_poly
+<                       core_type (typehook.ml[57,1759+31]..[57,1759+75])
+583c575
+<                                 pattern (typehook.ml[64,1917+11]..[64,1917+36])
+---
+>                                 pattern (typehook.ml[64,1917+18]..[64,1917+36])
+591c583
+<                                         pattern (typehook.ml[64,1917+24]..[64,1917+35])
+---
+>                                         pattern (typehook.ml[64,1917+29]..[64,1917+35])
+638c630
+<                     expression (typehook.ml[67,2034+8]..[67,2034+21])
+---
+>                     expression (typehook.ml[67,2034+7]..[67,2034+22])
+650c642
+<                     expression (typehook.ml[67,2034+25]..[67,2034+47])
+---
+>                     expression (typehook.ml[67,2034+24]..[67,2034+48])
+652c644
+<                       expression (typehook.ml[67,2034+26]..[67,2034+41])
+---
+>                       expression (typehook.ml[67,2034+25]..[67,2034+42])
+676c668
+<               expression (typehook.ml[71,2126+7]..[93,3104+43])
+---
+>               expression (typehook.ml[71,2126+6]..[93,3104+44])
+682c674
+<                     expression (typehook.ml[73,2160+12]..[93,3104+42])
+---
+>                     expression (typehook.ml[73,2160+11]..[93,3104+43])
+699c691
+<                           expression (typehook.ml[75,2225+17]..[93,3104+41])
+---
+>                           expression (typehook.ml[75,2225+16]..[93,3104+42])
+764c756
+<                                     expression (typehook.ml[82,2515+22]..[93,3104+40])
+---
+>                                     expression (typehook.ml[82,2515+21]..[93,3104+41])
+769c761
+<                                           expression (typehook.ml[82,2515+30]..[82,2515+40])
+---
+>                                           expression (typehook.ml[82,2515+29]..[82,2515+41])
+838c830
+<                                               expression (typehook.ml[85,2681+26]..[87,2815+31])
+---
+>                                               expression (typehook.ml[86,2752+27]..[87,2815+30])
+849c841
+<                                                 expression (typehook.ml[85,2681+26]..[87,2815+31])
+---
+>                                                 expression (typehook.ml[87,2815+27]..[87,2815+30])
+883c875
+<                                             expression (typehook.ml[90,2952+26]..[92,3065+38])
+---
+>                                             expression (typehook.ml[90,2952+26]..[92,3065+38]) ghost
+893c885
+<                                                       expression (typehook.ml[91,2984+36]..[91,2984+54])
+---
+>                                                       expression (typehook.ml[91,2984+36]..[91,2984+54]) ghost
+901c893
+<                                                       expression (typehook.ml[91,2984+56]..[91,2984+75])
+---
+>                                                       expression (typehook.ml[91,2984+56]..[91,2984+75]) ghost
+945c937
+<               expression (typehook.ml[97,3186+6]..[173,6694+23])
+---
+>               expression (typehook.ml[97,3186+6]..[173,6694+23]) ghost
+950c942
+<                     pattern (typehook.ml[97,3186+7]..[173,6694+10])
+---
+>                     pattern (typehook.ml[97,3186+14]..[97,3186+33])
+968c960
+<                           expression (typehook.ml[99,3256+27]..[99,3256+70])
+---
+>                           expression (typehook.ml[99,3256+27]..[99,3256+70]) ghost
+991c983
+<                           expression (typehook.ml[100,3327+37]..[100,3327+63])
+---
+>                           expression (typehook.ml[100,3327+37]..[100,3327+63]) ghost
+1010c1002
+<                           expression (typehook.ml[102,3430+9]..[102,3430+70])
+---
+>                           expression (typehook.ml[102,3430+16]..[102,3430+70]) ghost
+1023,1024d1014
+<                                 Ptyp_poly
+<                                 core_type (typehook.ml[102,3430+32]..[102,3430+47])
+1031c1021
+<                           expression (typehook.ml[103,3501+9]..[105,3557+76])
+---
+>                           expression (typehook.ml[103,3501+16]..[105,3557+76]) ghost
+1033c1023
+<                             expression (typehook.ml[104,3536+12]..[105,3557+75])
+---
+>                             expression (typehook.ml[104,3536+11]..[105,3557+76])
+1047c1037
+<                                           expression (typehook.ml[105,3557+43]..[105,3557+62])
+---
+>                                           expression (typehook.ml[105,3557+42]..[105,3557+63])
+1053c1043
+<                                                 expression (typehook.ml[105,3557+46]..[105,3557+61])
+---
+>                                                 expression (typehook.ml[105,3557+45]..[105,3557+62])
+1073c1063
+<                           expression (typehook.ml[106,3634+9]..[106,3634+61])
+---
+>                           expression (typehook.ml[106,3634+16]..[106,3634+61]) ghost
+1093c1083
+<                           expression (typehook.ml[107,3696+9]..[107,3696+67])
+---
+>                           expression (typehook.ml[107,3696+16]..[107,3696+67]) ghost
+1101c1091
+<                                   expression (typehook.ml[107,3696+45]..[107,3696+66])
+---
+>                                   expression (typehook.ml[107,3696+44]..[107,3696+67])
+1116c1106
+<                           expression (typehook.ml[108,3764+9]..[109,3803+51])
+---
+>                           expression (typehook.ml[108,3764+16]..[109,3803+51]) ghost
+1125c1115
+<                               expression (typehook.ml[109,3803+11]..[109,3803+51])
+---
+>                               expression (typehook.ml[109,3803+31]..[109,3803+50])
+1135c1125
+<                           expression (typehook.ml[110,3855+9]..[111,3895+52])
+---
+>                           expression (typehook.ml[110,3855+16]..[111,3895+52]) ghost
+1144c1134
+<                               expression (typehook.ml[111,3895+11]..[111,3895+52])
+---
+>                               expression (typehook.ml[111,3895+32]..[111,3895+51])
+1154c1144
+<                           expression (typehook.ml[112,3948+9]..[112,3948+51])
+---
+>                           expression (typehook.ml[112,3948+16]..[112,3948+51]) ghost
+1163c1153
+<                           expression (typehook.ml[113,4000+9]..[113,4000+49])
+---
+>                           expression (typehook.ml[113,4000+16]..[113,4000+49]) ghost
+1172c1162
+<                           expression (typehook.ml[114,4050+9]..[115,4089+61])
+---
+>                           expression (typehook.ml[114,4050+16]..[115,4089+61]) ghost
+1174c1164
+<                             expression (typehook.ml[115,4089+12]..[115,4089+60])
+---
+>                             expression (typehook.ml[115,4089+11]..[115,4089+61])
+1197c1187
+<                           expression (typehook.ml[116,4151+9]..[133,4913+32])
+---
+>                           expression (typehook.ml[116,4151+15]..[133,4913+32]) ghost
+1199c1189
+<                             expression (typehook.ml[117,4175+12]..[133,4913+31])
+---
+>                             expression (typehook.ml[117,4175+11]..[133,4913+32])
+1208c1198
+<                                         pattern (typehook.ml[118,4196+15]..[118,4196+31])
+---
+>                                         pattern (typehook.ml[118,4196+23]..[118,4196+31])
+1225,1227c1215
+<                                     expression (typehook.ml[119,4244+16]..[132,4840+72])
+<                                       Pexp_sequence
+<                                       expression (typehook.ml[120,4277+18]..[131,4805+33])
+---
+>                                     expression (typehook.ml[120,4277+17]..[132,4840+71])
+1245c1233
+<                                         expression (typehook.ml[121,4320+18]..[131,4805+33])
+---
+>                                       expression (typehook.ml[121,4320+18]..[132,4840+70])
+1263c1251
+<                                           expression (typehook.ml[122,4381+18]..[131,4805+33])
+---
+>                                         expression (typehook.ml[122,4381+18]..[132,4840+70])
+1298c1286
+<                                             expression (typehook.ml[125,4520+18]..[131,4805+33])
+---
+>                                           expression (typehook.ml[125,4520+18]..[132,4840+70])
+1310c1298
+<                                                         expression (typehook.ml[126,4551+37]..[126,4551+60])
+---
+>                                                       expression (typehook.ml[126,4551+36]..[126,4551+61])
+1323c1311
+<                                                         expression (typehook.ml[127,4613+23]..[127,4613+45])
+---
+>                                                       expression (typehook.ml[127,4613+22]..[127,4613+46])
+1333c1321
+<                                                         expression (typehook.ml[128,4660+23]..[130,4730+70])
+---
+>                                                       expression (typehook.ml[128,4660+22]..[130,4730+71])
+1347c1335
+<                                                             expression (typehook.ml[130,4730+28]..[130,4730+70])
+---
+>                                                           expression (typehook.ml[130,4730+28]..[130,4730+70]) ghost
+1356,1360c1344,1348
+< Pexp_ident "sloc" (typehook.ml[130,4730+37]..[130,4730+41])
+<                                                                       expression (typehook.ml[130,4730+44]..[130,4730+54])
+< Pexp_variant "Unit"
+< Some
+<   expression (typehook.ml[130,4730+50]..[130,4730+54])
+---
+>                                                                       Pexp_ident "sloc" (typehook.ml[130,4730+37]..[130,4730+41])
+>                                                                     expression (typehook.ml[130,4730+43]..[130,4730+55])
+>                                                                       Pexp_variant "Unit"
+>                                                                       Some
+> expression (typehook.ml[130,4730+50]..[130,4730+54])
+1368a1357,1358
+>                                             expression (typehook.ml[131,4805+18]..[132,4840+70])
+>                                               Pexp_sequence
+1373c1363
+<                                       expression (typehook.ml[119,4244+16]..[132,4840+72])
+---
+>                                               expression (typehook.ml[132,4840+18]..[132,4840+70]) ghost
+1383c1373
+<                                                 expression (typehook.ml[132,4840+34]..[132,4840+55])
+---
+>                                                         expression (typehook.ml[132,4840+34]..[132,4840+55]) ghost
+1416c1406
+<                           expression (typehook.ml[134,4946+9]..[163,6318+32])
+---
+>                           expression (typehook.ml[134,4946+15]..[163,6318+32]) ghost
+1418c1408
+<                             expression (typehook.ml[135,4970+12]..[163,6318+31])
+---
+>                             expression (typehook.ml[135,4970+11]..[163,6318+32])
+1429c1419
+<                                           pattern (typehook.ml[136,4991+15]..[136,4991+40])
+---
+>                                           pattern (typehook.ml[136,4991+21]..[136,4991+40])
+1437c1427
+<                                                   pattern (typehook.ml[136,4991+27]..[136,4991+39])
+---
+>                                                   pattern (typehook.ml[136,4991+32]..[136,4991+39])
+1457,1459c1447
+<                                     expression (typehook.ml[137,5053+16]..[146,5405+67])
+<                                       Pexp_sequence
+<                                       expression (typehook.ml[138,5089+18]..[142,5278+29])
+---
+>                                     expression (typehook.ml[138,5089+17]..[146,5405+66])
+1476a1465,1466
+>                                       expression (typehook.ml[139,5131+18]..[146,5405+65])
+>                                         Pexp_sequence
+1485c1475
+<                                               expression (typehook.ml[140,5171+21]..[142,5278+28])
+---
+>                                               expression (typehook.ml[140,5171+20]..[142,5278+29])
+1494c1484
+<                                                         expression (typehook.ml[141,5201+30]..[142,5278+28])
+---
+>                                                         expression (typehook.ml[141,5201+30]..[142,5278+28]) ghost
+1497c1487
+<                                                             expression (typehook.ml[141,5201+31]..[141,5201+72])
+---
+>                                                             expression (typehook.ml[141,5201+30]..[141,5201+73])
+1500c1490
+<                                                                 expression (typehook.ml[141,5201+40]..[141,5201+71])
+---
+>                                                                 expression (typehook.ml[141,5201+39]..[141,5201+72])
+1516c1506
+<                                       expression (typehook.ml[137,5053+16]..[146,5405+67])
+---
+>                                         expression (typehook.ml[143,5309+18]..[146,5405+65])
+1522c1512
+<                                         expression (typehook.ml[137,5053+16]..[146,5405+67])
+---
+>                                           expression (typehook.ml[144,5347+18]..[146,5405+65])
+1536c1526
+<                                             expression (typehook.ml[146,5405+23]..[146,5405+65])
+---
+>                                               expression (typehook.ml[146,5405+23]..[146,5405+65]) ghost
+1546c1536
+<                                                       expression (typehook.ml[146,5405+39]..[146,5405+49])
+---
+>                                                         expression (typehook.ml[146,5405+38]..[146,5405+50])
+1560c1550
+<                                       pattern (typehook.ml[147,5473+14]..[147,5473+41])
+---
+>                                       pattern (typehook.ml[147,5473+24]..[147,5473+41])
+1578c1568
+<                                         expression (typehook.ml[148,5518+27]..[148,5518+49])
+---
+>                                         expression (typehook.ml[148,5518+26]..[148,5518+50])
+1598c1588
+<                                           pattern (typehook.ml[149,5569+15]..[149,5569+65])
+---
+>                                           pattern (typehook.ml[149,5569+21]..[149,5569+65])
+1608c1598
+<                                                     pattern (typehook.ml[149,5569+28]..[149,5569+58])
+---
+>                                                     pattern (typehook.ml[149,5569+35]..[149,5569+58])
+1616c1606
+<                                                             pattern (typehook.ml[149,5569+38]..[149,5569+51])
+---
+>                                                             pattern (typehook.ml[149,5569+43]..[149,5569+51])
+1649c1639
+<                                                 expression (typehook.ml[151,5672+43]..[151,5672+59])
+---
+>                                                 expression (typehook.ml[151,5672+42]..[151,5672+60])
+1705c1695
+<                                               expression (typehook.ml[155,5881+40]..[155,5881+69])
+---
+>                                               expression (typehook.ml[155,5881+39]..[155,5881+70])
+1714c1704
+<                                                         expression (typehook.ml[155,5881+58]..[155,5881+69])
+---
+>                                                         expression (typehook.ml[155,5881+58]..[155,5881+69]) ghost
+1724c1714
+<                                         expression (typehook.ml[155,5881+16]..[155,5881+74])
+---
+>                                         expression (typehook.ml[155,5881+72]..[155,5881+73])
+1746c1736
+<                                                       pattern (typehook.ml[156,5956+15]..[156,5956+42])
+---
+>                                                       pattern (typehook.ml[156,5956+22]..[156,5956+42])
+1767c1757
+<                                                       pattern (typehook.ml[157,6012+16]..[157,6012+38])
+---
+>                                                       pattern (typehook.ml[157,6012+28]..[157,6012+38])
+1785c1775
+<                                                     pattern (typehook.ml[158,6064+16]..[158,6064+33])
+---
+>                                                     pattern (typehook.ml[158,6064+25]..[158,6064+33])
+1801c1791
+<                                                   pattern (typehook.ml[159,6111+16]..[159,6111+38])
+---
+>                                                   pattern (typehook.ml[159,6111+26]..[159,6111+38])
+1821c1811
+<                                                 pattern (typehook.ml[160,6163+16]..[160,6163+31])
+---
+>                                                 pattern (typehook.ml[160,6163+23]..[160,6163+31])
+1837c1827
+<                                               pattern (typehook.ml[161,6208+16]..[161,6208+35])
+---
+>                                               pattern (typehook.ml[161,6208+27]..[161,6208+35])
+1853c1843
+<                                             pattern (typehook.ml[162,6257+16]..[162,6257+37])
+---
+>                                             pattern (typehook.ml[162,6257+27]..[162,6257+37])
+1888c1878
+<                           expression (typehook.ml[164,6351+9]..[172,6657+36])
+---
+>                           expression (typehook.ml[164,6351+15]..[172,6657+36]) ghost
+1890c1880
+<                             expression (typehook.ml[165,6379+12]..[172,6657+35])
+---
+>                             expression (typehook.ml[165,6379+11]..[172,6657+36])
+1899c1889
+<                                         pattern (typehook.ml[166,6400+14]..[166,6400+44])
+---
+>                                         pattern (typehook.ml[166,6400+21]..[166,6400+44])
+1907c1897
+<                                                 pattern (typehook.ml[166,6400+24]..[166,6400+37])
+---
+>                                                 pattern (typehook.ml[166,6400+29]..[166,6400+37])
+1938c1928
+<                                             expression (typehook.ml[170,6561+22]..[170,6561+73])
+---
+>                                             expression (typehook.ml[170,6561+21]..[170,6561+74])
+1947c1937
+<                                                       expression (typehook.ml[170,6561+40]..[170,6561+73])
+---
+>                                                       expression (typehook.ml[170,6561+40]..[170,6561+73]) ghost
+1955c1945
+<                                                               expression (typehook.ml[170,6561+48]..[170,6561+64])
+---
+>                                                               expression (typehook.ml[170,6561+47]..[170,6561+65])
+1971c1961
+<                                     expression (typehook.ml[167,6453+16]..[171,6637+19])
+---
+>                                     expression (typehook.ml[171,6637+17]..[171,6637+18])
+2007c1997
+<               expression (typehook.ml[177,6767+7]..[204,7936+51])
+---
+>               expression (typehook.ml[177,6767+6]..[204,7936+52])
+2013c2003
+<                     expression (typehook.ml[179,6799+12]..[204,7936+50])
+---
+>                     expression (typehook.ml[179,6799+11]..[204,7936+51])
+2024c2014
+<                           expression (typehook.ml[181,6857+16]..[204,7936+50])
+---
+>                           expression (typehook.ml[181,6857+16]..[204,7936+50]) ghost
+2032c2022
+<                                   expression (typehook.ml[181,6857+22]..[181,6857+53])
+---
+>                                   expression (typehook.ml[181,6857+22]..[181,6857+53]) ghost
+2081c2071
+<                                             expression (typehook.ml[185,7020+22]..[193,7424+41])
+---
+>                                             expression (typehook.ml[185,7020+21]..[193,7424+42])
+2088c2078
+<                                                       pattern (typehook.ml[186,7051+24]..[186,7051+37])
+---
+>                                                       pattern (typehook.ml[186,7051+29]..[186,7051+37])
+2096c2086
+<                                                   expression (typehook.ml[187,7092+27]..[189,7229+45])
+---
+>                                                   expression (typehook.ml[187,7092+26]..[189,7229+46])
+2160c2150
+<                                                         expression (typehook.ml[192,7352+29]..[192,7352+70])
+---
+>                                                         expression (typehook.ml[192,7352+28]..[192,7352+71])
+2211c2201
+<                                               expression (typehook.ml[197,7607+22]..[203,7884+47])
+---
+>                                               expression (typehook.ml[197,7607+21]..[203,7884+48])
+2217c2207
+<                                                     expression (typehook.ml[199,7667+27]..[203,7884+46])
+---
+>                                                     expression (typehook.ml[199,7667+26]..[203,7884+47])
+2223c2213
+<                                                           expression (typehook.ml[199,7667+34]..[199,7667+46])
+---
+>                                                           expression (typehook.ml[199,7667+33]..[199,7667+47])
+2235c2225
+<                                                             expression (typehook.ml[200,7720+35]..[200,7720+66])
+---
+>                                                             expression (typehook.ml[200,7720+35]..[200,7720+66]) ghost
+2259c2249
+<                                                                 pattern (typehook.ml[202,7819+30]..[202,7819+46])
+---
+>                                                                 pattern (typehook.ml[202,7819+38]..[202,7819+46])

@@ -1,0 +1,505 @@
+[
+  structure_item (lang_hash_cmp.ml[1,0+0]..[1,0+30])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_hash_cmp.ml[1,0+4]..[1,0+10])
+          Ppat_var "hash_p" (lang_hash_cmp.ml[1,0+4]..[1,0+10])
+        expression (lang_hash_cmp.ml[1,0+13]..[1,0+30])
+          Pexp_apply
+          expression (lang_hash_cmp.ml[1,0+13]..[1,0+21])
+            Pexp_ident "Gramf.mk" (lang_hash_cmp.ml[1,0+13]..[1,0+21])
+          [
+            <label> ""
+              expression (lang_hash_cmp.ml[1,0+22]..[1,0+30])
+                Pexp_constant Const_string("hash_p",None)
+          ]
+    ]
+  structure_item (lang_hash_cmp.ml[2,31+0]..[78,4411+20])
+    Pstr_eval
+    expression (lang_hash_cmp.ml[3,39+2]..[78,4411+20])
+      Pexp_sequence
+      expression (lang_hash_cmp.ml[3,39+2]..[76,4299+41])
+        Pexp_apply
+        expression (lang_hash_cmp.ml[3,39+2]..[3,39+21])
+          Pexp_ident "Gramf.extend_single" (lang_hash_cmp.ml[3,39+2]..[3,39+21])
+        [
+          <label> ""
+            expression (lang_hash_cmp.ml[4,61+4]..[76,4299+41]) ghost
+              Pexp_constraint
+              expression (lang_hash_cmp.ml[4,61+5]..[76,4299+6])
+                Pexp_record
+                [
+                  "entry" (lang_hash_cmp.ml[5,68+7]..[5,68+12])
+                    expression (lang_hash_cmp.ml[5,68+15]..[5,68+41]) ghost
+                      Pexp_constraint
+                      expression (lang_hash_cmp.ml[5,68+16]..[5,68+22])
+                        Pexp_ident "hash_p" (lang_hash_cmp.ml[5,68+16]..[5,68+22])
+                      core_type (lang_hash_cmp.ml[5,68+25]..[5,68+40])
+                        Ptyp_constr "Gramf.t" (lang_hash_cmp.ml[5,68+33]..[5,68+40])
+                        [
+                          core_type (lang_hash_cmp.ml[5,68+25]..[5,68+32])
+                            Ptyp_var hash_p
+                        ]
+                  "olevel" (lang_hash_cmp.ml[6,111+7]..[6,111+13])
+                    expression (lang_hash_cmp.ml[7,127+9]..[75,4271+27]) ghost
+                      Pexp_constraint
+                      expression (lang_hash_cmp.ml[7,127+10]..[75,4271+11])
+                        Pexp_record
+                        [
+                          "label" (lang_hash_cmp.ml[8,139+12]..[8,139+17])
+                            expression (lang_hash_cmp.ml[8,139+20]..[8,139+24])
+                              Pexp_construct "None" (lang_hash_cmp.ml[8,139+20]..[8,139+24])
+                              None
+                          "lassoc" (lang_hash_cmp.ml[9,165+12]..[9,165+18])
+                            expression (lang_hash_cmp.ml[9,165+21]..[9,165+25])
+                              Pexp_construct "true" (lang_hash_cmp.ml[9,165+21]..[9,165+25])
+                              None
+                          "productions" (lang_hash_cmp.ml[10,192+12]..[10,192+23])
+                            expression (lang_hash_cmp.ml[11,218+14]..[74,4253+17])
+                              Pexp_construct "::" (lang_hash_cmp.ml[11,218+15]..[74,4253+17]) ghost
+                              Some
+                                expression (lang_hash_cmp.ml[11,218+15]..[74,4253+17]) ghost
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_hash_cmp.ml[11,218+15]..[74,4253+16])
+                                      Pexp_record
+                                      [
+                                        "symbols" (lang_hash_cmp.ml[12,235+17]..[12,235+24])
+                                          expression (lang_hash_cmp.ml[13,262+19]..[27,826+50])
+                                            Pexp_construct "::" (lang_hash_cmp.ml[13,262+20]..[27,826+50]) ghost
+                                            Some
+                                              expression (lang_hash_cmp.ml[13,262+20]..[27,826+50]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (lang_hash_cmp.ml[13,262+20]..[27,826+49])
+                                                    Pexp_construct "List1sep" (lang_hash_cmp.ml[13,262+20]..[13,262+28])
+                                                    Some
+                                                      expression (lang_hash_cmp.ml[14,291+22]..[27,826+49])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (lang_hash_cmp.ml[14,291+23]..[18,463+47])
+                                                            Pexp_construct "Token" (lang_hash_cmp.ml[14,291+24]..[14,291+29])
+                                                            Some
+                                                              expression (lang_hash_cmp.ml[15,321+26]..[18,463+46]) ghost
+                                                                Pexp_constraint
+                                                                expression (lang_hash_cmp.ml[15,321+27]..[18,463+28])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "descr" (lang_hash_cmp.ml[16,350+29]..[16,350+34])
+                                                                      expression (lang_hash_cmp.ml[17,387+31]..[17,387+75])
+Pexp_record
+[
+  "tag" (lang_hash_cmp.ml[17,387+33]..[17,387+36])
+    expression (lang_hash_cmp.ml[17,387+39]..[17,387+43])
+      Pexp_variant "Str"
+      None
+  "word" (lang_hash_cmp.ml[17,387+45]..[17,387+49])
+    expression (lang_hash_cmp.ml[17,387+52]..[17,387+55])
+      Pexp_construct "Any" (lang_hash_cmp.ml[17,387+52]..[17,387+55])
+      None
+  "tag_name" (lang_hash_cmp.ml[17,387+57]..[17,387+65])
+    expression (lang_hash_cmp.ml[17,387+68]..[17,387+73])
+      Pexp_constant Const_string("Str",None)
+]
+None
+                                                                  ]
+                                                                  None
+                                                                core_type (lang_hash_cmp.ml[18,463+31]..[18,463+45])
+                                                                  Ptyp_constr "Tokenf.pattern" (lang_hash_cmp.ml[18,463+31]..[18,463+45])
+                                                                  []
+                                                          expression (lang_hash_cmp.ml[19,512+24]..[27,826+48])
+                                                            Pexp_construct "Token" (lang_hash_cmp.ml[19,512+25]..[19,512+30])
+                                                            Some
+                                                              expression (lang_hash_cmp.ml[20,543+27]..[27,826+47]) ghost
+                                                                Pexp_constraint
+                                                                expression (lang_hash_cmp.ml[20,543+28]..[27,826+29])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "descr" (lang_hash_cmp.ml[21,573+30]..[21,573+35])
+                                                                      expression (lang_hash_cmp.ml[22,611+32]..[26,792+33])
+Pexp_record
+[
+  "tag" (lang_hash_cmp.ml[23,645+34]..[23,645+37])
+    expression (lang_hash_cmp.ml[23,645+40]..[23,645+44])
+      Pexp_variant "Key"
+      None
+  "word" (lang_hash_cmp.ml[24,691+34]..[24,691+38])
+    expression (lang_hash_cmp.ml[24,691+41]..[24,691+48])
+      Pexp_construct "A" (lang_hash_cmp.ml[24,691+42]..[24,691+43])
+      Some
+        expression (lang_hash_cmp.ml[24,691+44]..[24,691+47])
+          Pexp_constant Const_string("|",None)
+  "tag_name" (lang_hash_cmp.ml[25,741+34]..[25,741+42])
+    expression (lang_hash_cmp.ml[25,741+45]..[25,741+50])
+      Pexp_constant Const_string("Key",None)
+]
+None
+                                                                  ]
+                                                                  None
+                                                                core_type (lang_hash_cmp.ml[27,826+32]..[27,826+46])
+                                                                  Ptyp_constr "Tokenf.pattern" (lang_hash_cmp.ml[27,826+32]..[27,826+46])
+                                                                  []
+                                                        ]
+                                                  expression (lang_hash_cmp.ml[27,826+49]..[27,826+50]) ghost
+                                                    Pexp_construct "[]" (lang_hash_cmp.ml[27,826+49]..[27,826+50]) ghost
+                                                    None
+                                                ]
+                                        "annot" (lang_hash_cmp.ml[28,878+17]..[28,878+22])
+                                          expression (lang_hash_cmp.ml[29,903+19]..[29,903+776])
+                                            Pexp_constant Const_string("let p =\n  Ast_gen.bar_of_list\n    (List.map\n       (function\n        | (x : Tokenf.txt) ->\n            let v = x.txt in\n            let i = Hashtbl.hash v in\n            (`Case\n               (_loc, (`Int (_loc, (string_of_int i))),\n                 (`App\n                    (_loc,\n                      (`App (_loc, (`Lid (_loc, \"=\")), (`Lid (_loc, \"s\")))),\n                      (`Str (_loc, v))))) :> Astf.case)) xs) in\n(`Fun\n   (_loc,\n     (`Case\n        (_loc,\n          (`Constraint (_loc, (`Lid (_loc, \"s\")), (`Lid (_loc, \"string\")))),\n          (`Fun\n             (_loc,\n               (`Bar\n                  (_loc, p,\n                    (`Case (_loc, (`Any _loc), (`Bool (_loc, false))))))))))) :> \n  Astf.exp)\n",None)
+                                        "fn" (lang_hash_cmp.ml[30,1681+17]..[30,1681+19])
+                                          expression (lang_hash_cmp.ml[31,1703+19]..[73,4180+72])
+                                            Pexp_apply
+                                            expression (lang_hash_cmp.ml[31,1703+20]..[31,1703+35])
+                                              Pexp_ident "Gramf.mk_action" (lang_hash_cmp.ml[31,1703+20]..[31,1703+35])
+                                            [
+                                              <label> ""
+                                                expression (lang_hash_cmp.ml[32,1739+22]..[73,4180+71]) ghost
+                                                  Pexp_constraint
+                                                  expression (lang_hash_cmp.ml[32,1739+23]..[71,4031+56])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (lang_hash_cmp.ml[33,1771+25]..[33,1771+47])
+                                                          Ppat_constraint
+                                                          pattern (lang_hash_cmp.ml[33,1771+26]..[33,1771+28])
+                                                            Ppat_var "xs" (lang_hash_cmp.ml[33,1771+26]..[33,1771+28])
+                                                          core_type (lang_hash_cmp.ml[33,1771+31]..[33,1771+46])
+                                                            Ptyp_constr "list" (lang_hash_cmp.ml[33,1771+42]..[33,1771+46])
+                                                            [
+                                                              core_type (lang_hash_cmp.ml[33,1771+31]..[33,1771+41])
+                                                                Ptyp_constr "Tokenf.txt" (lang_hash_cmp.ml[33,1771+31]..[33,1771+41])
+                                                                []
+                                                            ]
+                                                        expression (lang_hash_cmp.ml[34,1822+27]..[71,4031+56])
+                                                          Pexp_function
+                                                          [
+                                                            <case>
+                                                              pattern (lang_hash_cmp.ml[35,1859+30]..[35,1859+45])
+                                                                Ppat_constraint
+                                                                pattern (lang_hash_cmp.ml[35,1859+31]..[35,1859+35])
+                                                                  Ppat_var "_loc" (lang_hash_cmp.ml[35,1859+31]..[35,1859+35])
+                                                                core_type (lang_hash_cmp.ml[35,1859+38]..[35,1859+44])
+                                                                  Ptyp_constr "Locf.t" (lang_hash_cmp.ml[35,1859+38]..[35,1859+44])
+                                                                  []
+                                                              expression (lang_hash_cmp.ml[36,1908+32]..[71,4031+55]) ghost
+                                                                Pexp_constraint
+                                                                expression (lang_hash_cmp.ml[36,1908+33]..[71,4031+44])
+                                                                  Pexp_let Nonrec
+                                                                  [
+                                                                    <def>
+                                                                      pattern (lang_hash_cmp.ml[36,1908+37]..[36,1908+38])
+Ppat_var "p" (lang_hash_cmp.ml[36,1908+37]..[36,1908+38])
+                                                                      expression (lang_hash_cmp.ml[37,1949+35]..[55,3079+62])
+Pexp_apply
+expression (lang_hash_cmp.ml[37,1949+35]..[37,1949+54])
+  Pexp_ident "Ast_gen.bar_of_list" (lang_hash_cmp.ml[37,1949+35]..[37,1949+54])
+[
+  <label> ""
+    expression (lang_hash_cmp.ml[38,2004+37]..[55,3079+62])
+      Pexp_apply
+      expression (lang_hash_cmp.ml[38,2004+38]..[38,2004+46])
+        Pexp_ident "List.map" (lang_hash_cmp.ml[38,2004+38]..[38,2004+46])
+      [
+        <label> ""
+          expression (lang_hash_cmp.ml[39,2051+40]..[55,3079+58])
+            Pexp_function
+            [
+              <case>
+                pattern (lang_hash_cmp.ml[40,2101+43]..[40,2101+59])
+                  Ppat_constraint
+                  pattern (lang_hash_cmp.ml[40,2101+44]..[40,2101+45])
+                    Ppat_var "x" (lang_hash_cmp.ml[40,2101+44]..[40,2101+45])
+                  core_type (lang_hash_cmp.ml[40,2101+48]..[40,2101+58])
+                    Ptyp_constr "Tokenf.txt" (lang_hash_cmp.ml[40,2101+48]..[40,2101+58])
+                    []
+                expression (lang_hash_cmp.ml[41,2164+45]..[55,3079+57])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (lang_hash_cmp.ml[41,2164+49]..[41,2164+50])
+                        Ppat_var "v" (lang_hash_cmp.ml[41,2164+49]..[41,2164+50])
+                      expression (lang_hash_cmp.ml[41,2164+53]..[41,2164+58])
+                        Pexp_field
+                        expression (lang_hash_cmp.ml[41,2164+53]..[41,2164+54])
+                          Pexp_ident "x" (lang_hash_cmp.ml[41,2164+53]..[41,2164+54])
+                        "txt" (lang_hash_cmp.ml[41,2164+55]..[41,2164+58])
+                  ]
+                  expression (lang_hash_cmp.ml[42,2226+45]..[55,3079+57])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (lang_hash_cmp.ml[42,2226+49]..[42,2226+50])
+                          Ppat_var "i" (lang_hash_cmp.ml[42,2226+49]..[42,2226+50])
+                        expression (lang_hash_cmp.ml[42,2226+53]..[42,2226+67])
+                          Pexp_apply
+                          expression (lang_hash_cmp.ml[42,2226+53]..[42,2226+65])
+                            Pexp_ident "Hashtbl.hash" (lang_hash_cmp.ml[42,2226+53]..[42,2226+65])
+                          [
+                            <label> ""
+                              expression (lang_hash_cmp.ml[42,2226+66]..[42,2226+67])
+                                Pexp_ident "v" (lang_hash_cmp.ml[42,2226+66]..[42,2226+67])
+                          ]
+                    ]
+                    expression (lang_hash_cmp.ml[43,2297+45]..[55,3079+57]) ghost
+                      Pexp_coerce
+                      expression (lang_hash_cmp.ml[43,2297+46]..[54,3000+74])
+                        Pexp_variant "Case"
+                        Some
+                          expression (lang_hash_cmp.ml[44,2349+48]..[54,3000+74])
+                            Pexp_tuple
+                            [
+                              expression (lang_hash_cmp.ml[44,2349+49]..[44,2349+53])
+                                Pexp_ident "_loc" (lang_hash_cmp.ml[44,2349+49]..[44,2349+53])
+                              expression (lang_hash_cmp.ml[45,2404+50]..[47,2520+74])
+                                Pexp_variant "Int"
+                                Some
+                                  expression (lang_hash_cmp.ml[46,2460+53]..[47,2520+73])
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_hash_cmp.ml[46,2460+54]..[46,2460+58])
+                                        Pexp_ident "_loc" (lang_hash_cmp.ml[46,2460+54]..[46,2460+58])
+                                      expression (lang_hash_cmp.ml[47,2520+55]..[47,2520+72])
+                                        Pexp_apply
+                                        expression (lang_hash_cmp.ml[47,2520+56]..[47,2520+69])
+                                          Pexp_ident "string_of_int" (lang_hash_cmp.ml[47,2520+56]..[47,2520+69])
+                                        [
+                                          <label> ""
+                                            expression (lang_hash_cmp.ml[47,2520+70]..[47,2520+71])
+                                              Pexp_ident "i" (lang_hash_cmp.ml[47,2520+70]..[47,2520+71])
+                                        ]
+                                    ]
+                              expression (lang_hash_cmp.ml[48,2596+50]..[54,3000+73])
+                                Pexp_variant "App"
+                                Some
+                                  expression (lang_hash_cmp.ml[49,2652+53]..[54,3000+72])
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_hash_cmp.ml[49,2652+54]..[49,2652+58])
+                                        Pexp_ident "_loc" (lang_hash_cmp.ml[49,2652+54]..[49,2652+58])
+                                      expression (lang_hash_cmp.ml[50,2712+55]..[53,2918+80])
+                                        Pexp_variant "App"
+                                        Some
+                                          expression (lang_hash_cmp.ml[51,2773+58]..[53,2918+79])
+                                            Pexp_tuple
+                                            [
+                                              expression (lang_hash_cmp.ml[51,2773+59]..[51,2773+63])
+                                                Pexp_ident "_loc" (lang_hash_cmp.ml[51,2773+59]..[51,2773+63])
+                                              expression (lang_hash_cmp.ml[52,2838+60]..[52,2838+78])
+                                                Pexp_variant "Lid"
+                                                Some
+                                                  expression (lang_hash_cmp.ml[52,2838+66]..[52,2838+77])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (lang_hash_cmp.ml[52,2838+67]..[52,2838+71])
+                                                        Pexp_ident "_loc" (lang_hash_cmp.ml[52,2838+67]..[52,2838+71])
+                                                      expression (lang_hash_cmp.ml[52,2838+73]..[52,2838+76])
+                                                        Pexp_constant Const_string("=",None)
+                                                    ]
+                                              expression (lang_hash_cmp.ml[53,2918+60]..[53,2918+78])
+                                                Pexp_variant "Lid"
+                                                Some
+                                                  expression (lang_hash_cmp.ml[53,2918+66]..[53,2918+77])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (lang_hash_cmp.ml[53,2918+67]..[53,2918+71])
+                                                        Pexp_ident "_loc" (lang_hash_cmp.ml[53,2918+67]..[53,2918+71])
+                                                      expression (lang_hash_cmp.ml[53,2918+73]..[53,2918+76])
+                                                        Pexp_constant Const_string("s",None)
+                                                    ]
+                                            ]
+                                      expression (lang_hash_cmp.ml[54,3000+55]..[54,3000+71])
+                                        Pexp_variant "Str"
+                                        Some
+                                          expression (lang_hash_cmp.ml[54,3000+61]..[54,3000+70])
+                                            Pexp_tuple
+                                            [
+                                              expression (lang_hash_cmp.ml[54,3000+62]..[54,3000+66])
+                                                Pexp_ident "_loc" (lang_hash_cmp.ml[54,3000+62]..[54,3000+66])
+                                              expression (lang_hash_cmp.ml[54,3000+68]..[54,3000+69])
+                                                Pexp_ident "v" (lang_hash_cmp.ml[54,3000+68]..[54,3000+69])
+                                            ]
+                                    ]
+                            ]
+                      None
+                      core_type (lang_hash_cmp.ml[55,3079+47]..[55,3079+56])
+                        Ptyp_constr "Astf.case" (lang_hash_cmp.ml[55,3079+47]..[55,3079+56])
+                        []
+            ]
+        <label> ""
+          expression (lang_hash_cmp.ml[55,3079+59]..[55,3079+61])
+            Pexp_ident "xs" (lang_hash_cmp.ml[55,3079+59]..[55,3079+61])
+      ]
+]
+                                                                  ]
+                                                                  expression (lang_hash_cmp.ml[56,3145+33]..[71,4031+44]) ghost
+                                                                    Pexp_coerce
+                                                                    expression (lang_hash_cmp.ml[56,3145+34]..[70,3942+84])
+                                                                      Pexp_variant "Fun"
+                                                                      Some
+expression (lang_hash_cmp.ml[57,3184+36]..[70,3942+84])
+  Pexp_tuple
+  [
+    expression (lang_hash_cmp.ml[57,3184+37]..[57,3184+41])
+      Pexp_ident "_loc" (lang_hash_cmp.ml[57,3184+37]..[57,3184+41])
+    expression (lang_hash_cmp.ml[58,3227+38]..[70,3942+83])
+      Pexp_variant "Case"
+      Some
+        expression (lang_hash_cmp.ml[59,3272+41]..[70,3942+82])
+          Pexp_tuple
+          [
+            expression (lang_hash_cmp.ml[59,3272+42]..[59,3272+46])
+              Pexp_ident "_loc" (lang_hash_cmp.ml[59,3272+42]..[59,3272+46])
+            expression (lang_hash_cmp.ml[60,3320+43]..[62,3449+73])
+              Pexp_variant "Constraint"
+              Some
+                expression (lang_hash_cmp.ml[61,3376+46]..[62,3449+72])
+                  Pexp_tuple
+                  [
+                    expression (lang_hash_cmp.ml[61,3376+47]..[61,3376+51])
+                      Pexp_ident "_loc" (lang_hash_cmp.ml[61,3376+47]..[61,3376+51])
+                    expression (lang_hash_cmp.ml[61,3376+53]..[61,3376+71])
+                      Pexp_variant "Lid"
+                      Some
+                        expression (lang_hash_cmp.ml[61,3376+59]..[61,3376+70])
+                          Pexp_tuple
+                          [
+                            expression (lang_hash_cmp.ml[61,3376+60]..[61,3376+64])
+                              Pexp_ident "_loc" (lang_hash_cmp.ml[61,3376+60]..[61,3376+64])
+                            expression (lang_hash_cmp.ml[61,3376+66]..[61,3376+69])
+                              Pexp_constant Const_string("s",None)
+                          ]
+                    expression (lang_hash_cmp.ml[62,3449+48]..[62,3449+71])
+                      Pexp_variant "Lid"
+                      Some
+                        expression (lang_hash_cmp.ml[62,3449+54]..[62,3449+70])
+                          Pexp_tuple
+                          [
+                            expression (lang_hash_cmp.ml[62,3449+55]..[62,3449+59])
+                              Pexp_ident "_loc" (lang_hash_cmp.ml[62,3449+55]..[62,3449+59])
+                            expression (lang_hash_cmp.ml[62,3449+61]..[62,3449+69])
+                              Pexp_constant Const_string("string",None)
+                          ]
+                  ]
+            expression (lang_hash_cmp.ml[63,3524+43]..[70,3942+81])
+              Pexp_variant "Fun"
+              Some
+                expression (lang_hash_cmp.ml[64,3573+46]..[70,3942+80])
+                  Pexp_tuple
+                  [
+                    expression (lang_hash_cmp.ml[64,3573+47]..[64,3573+51])
+                      Pexp_ident "_loc" (lang_hash_cmp.ml[64,3573+47]..[64,3573+51])
+                    expression (lang_hash_cmp.ml[65,3626+48]..[70,3942+79])
+                      Pexp_variant "Bar"
+                      Some
+                        expression (lang_hash_cmp.ml[66,3680+51]..[70,3942+78])
+                          Pexp_tuple
+                          [
+                            expression (lang_hash_cmp.ml[66,3680+52]..[66,3680+56])
+                              Pexp_ident "_loc" (lang_hash_cmp.ml[66,3680+52]..[66,3680+56])
+                            expression (lang_hash_cmp.ml[66,3680+58]..[66,3680+59])
+                              Pexp_ident "p" (lang_hash_cmp.ml[66,3680+58]..[66,3680+59])
+                            expression (lang_hash_cmp.ml[67,3741+53]..[70,3942+77])
+                              Pexp_variant "Case"
+                              Some
+                                expression (lang_hash_cmp.ml[68,3801+56]..[70,3942+76])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_hash_cmp.ml[68,3801+57]..[68,3801+61])
+                                      Pexp_ident "_loc" (lang_hash_cmp.ml[68,3801+57]..[68,3801+61])
+                                    expression (lang_hash_cmp.ml[68,3801+63]..[68,3801+74])
+                                      Pexp_variant "Any"
+                                      Some
+                                        expression (lang_hash_cmp.ml[68,3801+69]..[68,3801+73])
+                                          Pexp_ident "_loc" (lang_hash_cmp.ml[68,3801+69]..[68,3801+73])
+                                    expression (lang_hash_cmp.ml[69,3877+58]..[70,3942+75])
+                                      Pexp_variant "Bool"
+                                      Some
+                                        expression (lang_hash_cmp.ml[70,3942+61]..[70,3942+74])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_hash_cmp.ml[70,3942+62]..[70,3942+66])
+                                              Pexp_ident "_loc" (lang_hash_cmp.ml[70,3942+62]..[70,3942+66])
+                                            expression (lang_hash_cmp.ml[70,3942+68]..[70,3942+73])
+                                              Pexp_construct "false" (lang_hash_cmp.ml[70,3942+68]..[70,3942+73])
+                                              None
+                                          ]
+                                  ]
+                          ]
+                  ]
+          ]
+  ]
+                                                                    None
+                                                                    core_type (lang_hash_cmp.ml[71,4031+35]..[71,4031+43])
+                                                                      Ptyp_constr "Astf.exp" (lang_hash_cmp.ml[71,4031+35]..[71,4031+43])
+                                                                      []
+                                                                core_type (lang_hash_cmp.ml[71,4031+47]..[71,4031+54])
+                                                                  Ptyp_var hash_p
+                                                          ]
+                                                    ]
+                                                  core_type (lang_hash_cmp.ml[71,4031+59]..[73,4180+70])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (lang_hash_cmp.ml[71,4031+59]..[71,4031+74])
+                                                      Ptyp_constr "list" (lang_hash_cmp.ml[71,4031+70]..[71,4031+74])
+                                                      [
+                                                        core_type (lang_hash_cmp.ml[71,4031+59]..[71,4031+69])
+                                                          Ptyp_constr "Tokenf.txt" (lang_hash_cmp.ml[71,4031+59]..[71,4031+69])
+                                                          []
+                                                      ]
+                                                    core_type (lang_hash_cmp.ml[72,4109+61]..[73,4180+70])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (lang_hash_cmp.ml[72,4109+61]..[72,4109+67])
+                                                        Ptyp_constr "Locf.t" (lang_hash_cmp.ml[72,4109+61]..[72,4109+67])
+                                                        []
+                                                      core_type (lang_hash_cmp.ml[73,4180+63]..[73,4180+70])
+                                                        Ptyp_var hash_p
+                                            ]
+                                      ]
+                                      None
+                                    expression (lang_hash_cmp.ml[74,4253+16]..[74,4253+17]) ghost
+                                      Pexp_construct "[]" (lang_hash_cmp.ml[74,4253+16]..[74,4253+17]) ghost
+                                      None
+                                  ]
+                        ]
+                        None
+                      core_type (lang_hash_cmp.ml[75,4271+14]..[75,4271+26])
+                        Ptyp_constr "Gramf.olevel" (lang_hash_cmp.ml[75,4271+14]..[75,4271+26])
+                        []
+                ]
+                None
+              core_type (lang_hash_cmp.ml[76,4299+9]..[76,4299+40])
+                Ptyp_constr "Gramf.single_extend_statement" (lang_hash_cmp.ml[76,4299+11]..[76,4299+40])
+                [
+                  core_type (lang_hash_cmp.ml[76,4299+9]..[76,4299+10])
+                    Ptyp_any
+                ]
+        ]
+      expression (lang_hash_cmp.ml[77,4342+2]..[78,4411+20])
+        Pexp_apply
+        expression (lang_hash_cmp.ml[77,4342+2]..[77,4342+22])
+          Pexp_ident "Ast_quotation.of_exp" (lang_hash_cmp.ml[77,4342+2]..[77,4342+22])
+        [
+          <label> "name"
+            expression (lang_hash_cmp.ml[77,4342+29]..[77,4342+68])
+              Pexp_record
+              [
+                "domain" (lang_hash_cmp.ml[77,4342+31]..[77,4342+37])
+                  expression (lang_hash_cmp.ml[77,4342+40]..[77,4342+47])
+                    Pexp_ident "Ns.lang" (lang_hash_cmp.ml[77,4342+40]..[77,4342+47])
+                "name" (lang_hash_cmp.ml[77,4342+49]..[77,4342+53])
+                  expression (lang_hash_cmp.ml[77,4342+56]..[77,4342+66])
+                    Pexp_constant Const_string("hash_cmp",None)
+              ]
+              None
+          <label> "entry"
+            expression (lang_hash_cmp.ml[78,4411+11]..[78,4411+17])
+              Pexp_ident "hash_p" (lang_hash_cmp.ml[78,4411+11]..[78,4411+17])
+          <label> ""
+            expression (lang_hash_cmp.ml[78,4411+18]..[78,4411+20])
+              Pexp_construct "()" (lang_hash_cmp.ml[78,4411+18]..[78,4411+20])
+              None
+        ]
+]

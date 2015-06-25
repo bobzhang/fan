@@ -1,0 +1,222 @@
+9c9
+<       type_declaration "key" (ast_filters.ml[5,23+5]..[5,23+8]) (ast_filters.ml[5,23+5]..[5,23+17])
+---
+>       type_declaration "key" (ast_filters.ml[5,23+5]..[5,23+8]) (ast_filters.ml[5,23+0]..[5,23+17])
+26c26
+<       type_declaration "filter" (ast_filters.ml[6,41+8]..[6,41+14]) (ast_filters.ml[6,41+5]..[6,41+26])
+---
+>       type_declaration "filter" (ast_filters.ml[6,41+8]..[6,41+14]) (ast_filters.ml[6,41+0]..[6,41+26])
+29c29
+<             core_type (ast_filters.ml[6,41+6]..[6,41+7])
+---
+>             core_type (ast_filters.ml[6,41+5]..[6,41+7])
+53c53
+<         expression (ast_filters.ml[9,72+18]..[9,72+72])
+---
+>         expression (ast_filters.ml[9,72+18]..[9,72+72]) ghost
+64c64
+<           core_type (ast_filters.ml[9,72+22]..[9,72+50])
+---
+>           core_type (ast_filters.ml[9,72+20]..[9,72+50])
+85c85
+<         expression (ast_filters.ml[10,145+18]..[10,145+70])
+---
+>         expression (ast_filters.ml[10,145+18]..[10,145+70]) ghost
+96c96
+<           core_type (ast_filters.ml[10,145+21]..[10,145+49])
+---
+>           core_type (ast_filters.ml[10,145+20]..[10,145+49])
+117c117
+<         expression (ast_filters.ml[12,217+21]..[12,217+73])
+---
+>         expression (ast_filters.ml[12,217+21]..[12,217+73]) ghost
+128c128
+<           core_type (ast_filters.ml[12,217+24]..[12,217+52])
+---
+>           core_type (ast_filters.ml[12,217+23]..[12,217+52])
+149c149
+<         expression (ast_filters.ml[14,292+26]..[14,292+79])
+---
+>         expression (ast_filters.ml[14,292+26]..[14,292+79]) ghost
+164c164
+<               core_type (ast_filters.ml[14,292+29]..[14,292+52])
+---
+>               core_type (ast_filters.ml[14,292+30]..[14,292+50])
+186c186
+<         expression (ast_filters.ml[15,372+26]..[15,372+79])
+---
+>         expression (ast_filters.ml[15,372+26]..[15,372+79]) ghost
+201c201
+<               core_type (ast_filters.ml[15,372+29]..[15,372+52])
+---
+>               core_type (ast_filters.ml[15,372+30]..[15,372+50])
+223c223
+<         expression (ast_filters.ml[16,452+29]..[16,452+82])
+---
+>         expression (ast_filters.ml[16,452+29]..[16,452+82]) ghost
+238c238
+<               core_type (ast_filters.ml[16,452+32]..[16,452+55])
+---
+>               core_type (ast_filters.ml[16,452+33]..[16,452+53])
+260,263c260,262
+<         expression (ast_filters.ml[18,538+26]..[19,568+66])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[18,538+26]..[19,568+66]) ghost
+>           Pexp_fun ""
+>           None
+272,275c271,273
+<                     expression (ast_filters.ml[19,568+18]..[19,568+21])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                 expression (ast_filters.ml[19,568+13]..[19,568+41])
+>                   Pexp_fun ""
+>                   None
+278,281c276,278
+<                           expression (ast_filters.ml[19,568+22]..[19,568+31])
+<                             Pexp_function
+<                             [
+<                               <case>
+---
+>                   expression (ast_filters.ml[19,568+22]..[19,568+40]) ghost
+>                     Pexp_fun ""
+>                     None
+299,300d295
+<                             ]
+<                       ]
+309d303
+<     ]
+316,319c310,312
+<         expression (ast_filters.ml[20,635+26]..[21,665+66])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[20,635+26]..[21,665+66]) ghost
+>           Pexp_fun ""
+>           None
+328,331c321,323
+<                     expression (ast_filters.ml[21,665+18]..[21,665+21])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                 expression (ast_filters.ml[21,665+13]..[21,665+41])
+>                   Pexp_fun ""
+>                   None
+334,337c326,328
+<                           expression (ast_filters.ml[21,665+22]..[21,665+31])
+<                             Pexp_function
+<                             [
+<                               <case>
+---
+>                   expression (ast_filters.ml[21,665+22]..[21,665+40]) ghost
+>                     Pexp_fun ""
+>                     None
+355,356d345
+<                             ]
+<                       ]
+365d353
+<     ]
+372,375c360,362
+<         expression (ast_filters.ml[22,732+29]..[23,765+69])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[22,732+29]..[23,765+69]) ghost
+>           Pexp_fun ""
+>           None
+384,387c371,373
+<                     expression (ast_filters.ml[23,765+18]..[23,765+21])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                 expression (ast_filters.ml[23,765+13]..[23,765+41])
+>                   Pexp_fun ""
+>                   None
+390,393c376,378
+<                           expression (ast_filters.ml[23,765+22]..[23,765+31])
+<                             Pexp_function
+<                             [
+<                               <case>
+---
+>                   expression (ast_filters.ml[23,765+22]..[23,765+40]) ghost
+>                     Pexp_fun ""
+>                     None
+411,412d395
+<                             ]
+<                       ]
+421d403
+<     ]
+428,431c410,412
+<         expression (ast_filters.ml[25,836+22]..[29,977+40])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[25,836+22]..[29,977+40]) ghost
+>           Pexp_fun ""
+>           None
+492d472
+<     ]
+499,502c479,481
+<         expression (ast_filters.ml[31,1022+22]..[35,1163+40])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[31,1022+22]..[35,1163+40]) ghost
+>           Pexp_fun ""
+>           None
+563d541
+<     ]
+570,573c548,550
+<         expression (ast_filters.ml[37,1209+25]..[41,1356+43])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[37,1209+25]..[41,1356+43]) ghost
+>           Pexp_fun ""
+>           None
+634d610
+<     ]
+641,644c617,619
+<         expression (ast_filters.ml[43,1401+25]..[44,1434+36])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[43,1401+25]..[44,1434+36]) ghost
+>           Pexp_fun ""
+>           None
+669d643
+<     ]
+676,679c650,652
+<         expression (ast_filters.ml[46,1476+25]..[47,1510+36])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[46,1476+25]..[47,1510+36]) ghost
+>           Pexp_fun ""
+>           None
+704d676
+<     ]
+711,714c683,685
+<         expression (ast_filters.ml[50,1554+30]..[51,1592+39])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (ast_filters.ml[50,1554+30]..[51,1592+39]) ghost
+>           Pexp_fun ""
+>           None
+739d709
+<     ]

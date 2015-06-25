@@ -1,0 +1,26 @@
+9,11c9,10
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+29d27
+<     ]
+37,39c35,36
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+43,45c40,41
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>             Pexp_fun ""
+>             None
+109,110d104
+<           ]
+<     ]

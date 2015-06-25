@@ -1,0 +1,125 @@
+[
+  structure_item (fIncludeDir.ml[1,0+0]..[1,0+9])
+    Pstr_open Fresh "Util" (fIncludeDir.ml[1,0+5]..[1,0+9])
+  structure_item (fIncludeDir.ml[2,10+0]..[7,134+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fIncludeDir.ml[2,10+4]..[2,10+7])
+          Ppat_var "add" (fIncludeDir.ml[2,10+4]..[2,10+7])
+        expression (fIncludeDir.ml[2,10+8]..[7,134+58])
+          Pexp_function
+          [
+            <case>
+              pattern (fIncludeDir.ml[2,10+8]..[2,10+11])
+                Ppat_var "str" (fIncludeDir.ml[2,10+8]..[2,10+11])
+              expression (fIncludeDir.ml[3,24+2]..[7,134+58])
+                Pexp_ifthenelse
+                expression (fIncludeDir.ml[3,24+5]..[3,24+14])
+                  Pexp_apply
+                  expression (fIncludeDir.ml[3,24+9]..[3,24+11])
+                    Pexp_ident "<>" (fIncludeDir.ml[3,24+9]..[3,24+11])
+                  [
+                    <label> ""
+                      expression (fIncludeDir.ml[3,24+5]..[3,24+8])
+                        Pexp_ident "str" (fIncludeDir.ml[3,24+5]..[3,24+8])
+                    <label> ""
+                      expression (fIncludeDir.ml[3,24+12]..[3,24+14])
+                        Pexp_constant Const_string("",None)
+                  ]
+                expression (fIncludeDir.ml[5,46+4]..[7,134+58])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (fIncludeDir.ml[5,46+8]..[5,46+11])
+                        Ppat_var "str" (fIncludeDir.ml[5,46+8]..[5,46+11])
+                      expression (fIncludeDir.ml[6,60+6]..[6,60+70])
+                        Pexp_ifthenelse
+                        expression (fIncludeDir.ml[6,60+9]..[6,60+46])
+                          Pexp_apply
+                          expression (fIncludeDir.ml[6,60+41]..[6,60+42])
+                            Pexp_ident "=" (fIncludeDir.ml[6,60+41]..[6,60+42])
+                          [
+                            <label> ""
+                              expression (fIncludeDir.ml[6,60+10]..[6,60+39])
+                                Pexp_apply
+                                expression (fIncludeDir.ml[6,60+10]..[6,60+39])
+                                  Pexp_ident "String.get" (fIncludeDir.ml[6,60+10]..[6,60+39])
+                                [
+                                  <label> ""
+                                    expression (fIncludeDir.ml[6,60+10]..[6,60+13])
+                                      Pexp_ident "str" (fIncludeDir.ml[6,60+10]..[6,60+13])
+                                  <label> ""
+                                    expression (fIncludeDir.ml[6,60+15]..[6,60+38])
+                                      Pexp_apply
+                                      expression (fIncludeDir.ml[6,60+35]..[6,60+36])
+                                        Pexp_ident "-" (fIncludeDir.ml[6,60+35]..[6,60+36])
+                                      [
+                                        <label> ""
+                                          expression (fIncludeDir.ml[6,60+16]..[6,60+33])
+                                            Pexp_apply
+                                            expression (fIncludeDir.ml[6,60+16]..[6,60+29])
+                                              Pexp_ident "String.length" (fIncludeDir.ml[6,60+16]..[6,60+29])
+                                            [
+                                              <label> ""
+                                                expression (fIncludeDir.ml[6,60+30]..[6,60+33])
+                                                  Pexp_ident "str" (fIncludeDir.ml[6,60+30]..[6,60+33])
+                                            ]
+                                        <label> ""
+                                          expression (fIncludeDir.ml[6,60+37]..[6,60+38])
+                                            Pexp_constant Const_int 1
+                                      ]
+                                ]
+                            <label> ""
+                              expression (fIncludeDir.ml[6,60+43]..[6,60+46])
+                                Pexp_constant Const_char 2f
+                          ]
+                        expression (fIncludeDir.ml[6,60+52]..[6,60+55])
+                          Pexp_ident "str" (fIncludeDir.ml[6,60+52]..[6,60+55])
+                        Some
+                          expression (fIncludeDir.ml[6,60+61]..[6,60+70])
+                            Pexp_apply
+                            expression (fIncludeDir.ml[6,60+65]..[6,60+66])
+                              Pexp_ident "^" (fIncludeDir.ml[6,60+65]..[6,60+66])
+                            [
+                              <label> ""
+                                expression (fIncludeDir.ml[6,60+61]..[6,60+64])
+                                  Pexp_ident "str" (fIncludeDir.ml[6,60+61]..[6,60+64])
+                              <label> ""
+                                expression (fIncludeDir.ml[6,60+67]..[6,60+70])
+                                  Pexp_constant Const_string("/",None)
+                            ]
+                  ]
+                  expression (fIncludeDir.ml[7,134+4]..[7,134+58])
+                    Pexp_apply
+                    expression (fIncludeDir.ml[7,134+4]..[7,134+14])
+                      Pexp_ident "Ref.modify" (fIncludeDir.ml[7,134+4]..[7,134+14])
+                    [
+                      <label> ""
+                        expression (fIncludeDir.ml[7,134+15]..[7,134+35])
+                          Pexp_ident "Configf.include_dirs" (fIncludeDir.ml[7,134+15]..[7,134+35])
+                      <label> ""
+                        expression (fIncludeDir.ml[7,134+41]..[7,134+42])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (fIncludeDir.ml[7,134+41]..[7,134+42])
+                                Ppat_var "x" (fIncludeDir.ml[7,134+41]..[7,134+42])
+                              expression (fIncludeDir.ml[7,134+47]..[7,134+57])
+                                Pexp_apply
+                                expression (fIncludeDir.ml[7,134+47]..[7,134+51])
+                                  Pexp_ident "cons" (fIncludeDir.ml[7,134+47]..[7,134+51])
+                                [
+                                  <label> ""
+                                    expression (fIncludeDir.ml[7,134+52]..[7,134+55])
+                                      Pexp_ident "str" (fIncludeDir.ml[7,134+52]..[7,134+55])
+                                  <label> ""
+                                    expression (fIncludeDir.ml[7,134+56]..[7,134+57])
+                                      Pexp_ident "x" (fIncludeDir.ml[7,134+56]..[7,134+57])
+                                ]
+                          ]
+                    ]
+                None
+          ]
+    ]
+]

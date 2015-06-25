@@ -1,0 +1,1390 @@
+[
+  structure_item (fControl.ml[1,0+0]..[1,0+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fControl.ml[1,0+4]..[1,0+5])
+          Ppat_var "g" (fControl.ml[1,0+4]..[1,0+5])
+        expression (fControl.ml[1,0+8]..[1,0+52])
+          Pexp_apply
+          expression (fControl.ml[1,0+8]..[1,0+26])
+            Pexp_ident "Gramf.create_lexer" (fControl.ml[1,0+8]..[1,0+26])
+          [
+            <label> "annot"
+              expression (fControl.ml[1,0+34]..[1,0+36])
+                Pexp_constant Const_string("",None)
+            <label> "keywords"
+              expression (fControl.ml[1,0+47]..[1,0+49])
+                Pexp_construct "[]" (fControl.ml[1,0+47]..[1,0+49])
+                None
+            <label> ""
+              expression (fControl.ml[1,0+50]..[1,0+52])
+                Pexp_construct "()" (fControl.ml[1,0+50]..[1,0+52])
+                None
+          ]
+    ]
+  structure_item (fControl.ml[2,53+0]..[2,53+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fControl.ml[2,53+4]..[2,53+8])
+          Ppat_var "item" (fControl.ml[2,53+4]..[2,53+8])
+        expression (fControl.ml[2,53+11]..[2,53+36])
+          Pexp_apply
+          expression (fControl.ml[2,53+11]..[2,53+27])
+            Pexp_ident "Gramf.mk_dynamic" (fControl.ml[2,53+11]..[2,53+27])
+          [
+            <label> ""
+              expression (fControl.ml[2,53+28]..[2,53+29])
+                Pexp_ident "g" (fControl.ml[2,53+28]..[2,53+29])
+            <label> ""
+              expression (fControl.ml[2,53+30]..[2,53+36])
+                Pexp_constant Const_string("item",None)
+          ]
+    ]
+  structure_item (fControl.ml[3,90+0]..[3,90+54])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fControl.ml[3,90+4]..[3,90+17])
+          Ppat_var "dot_namespace" (fControl.ml[3,90+4]..[3,90+17])
+        expression (fControl.ml[3,90+20]..[3,90+54])
+          Pexp_apply
+          expression (fControl.ml[3,90+20]..[3,90+36])
+            Pexp_ident "Gramf.mk_dynamic" (fControl.ml[3,90+20]..[3,90+36])
+          [
+            <label> ""
+              expression (fControl.ml[3,90+37]..[3,90+38])
+                Pexp_ident "g" (fControl.ml[3,90+37]..[3,90+38])
+            <label> ""
+              expression (fControl.ml[3,90+39]..[3,90+54])
+                Pexp_constant Const_string("dot_namespace",None)
+          ]
+    ]
+  structure_item (fControl.ml[4,145+0]..[4,145+38])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fControl.ml[4,145+4]..[4,145+9])
+          Ppat_var "items" (fControl.ml[4,145+4]..[4,145+9])
+        expression (fControl.ml[4,145+12]..[4,145+38])
+          Pexp_apply
+          expression (fControl.ml[4,145+12]..[4,145+28])
+            Pexp_ident "Gramf.mk_dynamic" (fControl.ml[4,145+12]..[4,145+28])
+          [
+            <label> ""
+              expression (fControl.ml[4,145+29]..[4,145+30])
+                Pexp_ident "g" (fControl.ml[4,145+29]..[4,145+30])
+            <label> ""
+              expression (fControl.ml[4,145+31]..[4,145+38])
+                Pexp_constant Const_string("items",None)
+          ]
+    ]
+  structure_item (fControl.ml[5,184+0]..[85,3998+75])
+    Pstr_eval
+    expression (fControl.ml[6,192+2]..[85,3998+75])
+      Pexp_sequence
+      expression (fControl.ml[6,192+2]..[48,2499+32])
+        Pexp_apply
+        expression (fControl.ml[6,192+2]..[6,192+28])
+          Pexp_ident "Gramf.unsafe_extend_single" (fControl.ml[6,192+2]..[6,192+28])
+        [
+          <label> ""
+            expression (fControl.ml[6,192+29]..[6,192+52]) ghost
+              Pexp_constraint
+              expression (fControl.ml[6,192+30]..[6,192+34])
+                Pexp_ident "item" (fControl.ml[6,192+30]..[6,192+34])
+              core_type (fControl.ml[6,192+37]..[6,192+50])
+                Ptyp_constr "Gramf.t" (fControl.ml[6,192+43]..[6,192+50])
+                [
+                  core_type (fControl.ml[6,192+37]..[6,192+42])
+                    Ptyp_var item
+                ]
+          <label> ""
+            expression (fControl.ml[7,245+4]..[48,2499+32])
+              Pexp_tuple
+              [
+                expression (fControl.ml[7,245+5]..[7,245+9])
+                  Pexp_construct "None" (fControl.ml[7,245+5]..[7,245+9])
+                  None
+                expression (fControl.ml[8,256+6]..[48,2499+31])
+                  Pexp_tuple
+                  [
+                    expression (fControl.ml[8,256+7]..[8,256+11])
+                      Pexp_construct "None" (fControl.ml[8,256+7]..[8,256+11])
+                      None
+                    expression (fControl.ml[8,256+13]..[8,256+17])
+                      Pexp_construct "None" (fControl.ml[8,256+13]..[8,256+17])
+                      None
+                    expression (fControl.ml[9,275+8]..[48,2499+30])
+                      Pexp_construct "::" (fControl.ml[9,275+9]..[48,2499+30]) ghost
+                      Some
+                        expression (fControl.ml[9,275+9]..[48,2499+30]) ghost
+                          Pexp_tuple
+                          [
+                            expression (fControl.ml[9,275+9]..[25,1139+190])
+                              Pexp_tuple
+                              [
+                                expression (fControl.ml[9,275+10]..[12,382+53])
+                                  Pexp_construct "::" (fControl.ml[9,275+11]..[12,382+53]) ghost
+                                  Some
+                                    expression (fControl.ml[9,275+11]..[12,382+53]) ghost
+                                      Pexp_tuple
+                                      [
+                                        expression (fControl.ml[9,275+11]..[9,275+30])
+                                          Pexp_variant "Skeyword"
+                                          Some
+                                            expression (fControl.ml[9,275+21]..[9,275+30])
+                                              Pexp_constant Const_string("default",None)
+                                        expression (fControl.ml[10,307+10]..[12,382+53]) ghost
+                                          Pexp_construct "::" (fControl.ml[10,307+10]..[12,382+53]) ghost
+                                          Some
+                                            expression (fControl.ml[10,307+10]..[12,382+53]) ghost
+                                              Pexp_tuple
+                                              [
+                                                expression (fControl.ml[10,307+10]..[12,382+52])
+                                                  Pexp_variant "Stoken"
+                                                  Some
+                                                    expression (fControl.ml[11,325+12]..[12,382+52])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (fControl.ml[11,325+13]..[11,325+55])
+                                                          Pexp_function
+                                                          [
+                                                            <case>
+                                                              pattern (fControl.ml[11,325+26]..[11,325+32])
+                                                                Ppat_variant "Str"
+                                                                Some
+                                                                  pattern (fControl.ml[11,325+31]..[11,325+32])
+                                                                    Ppat_any
+                                                              expression (fControl.ml[11,325+36]..[11,325+40])
+                                                                Pexp_construct "true" (fControl.ml[11,325+36]..[11,325+40])
+                                                                None
+                                                            <case>
+                                                              pattern (fControl.ml[11,325+43]..[11,325+44])
+                                                                Ppat_any
+                                                              expression (fControl.ml[11,325+48]..[11,325+53])
+                                                                Pexp_construct "false" (fControl.ml[11,325+48]..[11,325+53])
+                                                                None
+                                                          ]
+                                                        expression (fControl.ml[12,382+14]..[12,382+41])
+                                                          Pexp_variant "App"
+                                                          Some
+                                                            expression (fControl.ml[12,382+20]..[12,382+40])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (fControl.ml[12,382+21]..[12,382+33])
+                                                                  Pexp_variant "Vrn"
+                                                                  Some
+                                                                    expression (fControl.ml[12,382+27]..[12,382+32])
+                                                                      Pexp_constant Const_string("Str",None)
+                                                                expression (fControl.ml[12,382+35]..[12,382+39])
+                                                                  Pexp_variant "Any"
+                                                                  None
+                                                              ]
+                                                        expression (fControl.ml[12,382+43]..[12,382+51])
+                                                          Pexp_constant Const_string("`Str _",None)
+                                                      ]
+                                                expression (fControl.ml[12,382+52]..[12,382+53]) ghost
+                                                  Pexp_construct "[]" (fControl.ml[12,382+52]..[12,382+53]) ghost
+                                                  None
+                                              ]
+                                      ]
+                                expression (fControl.ml[13,437+11]..[25,1139+189])
+                                  Pexp_tuple
+                                  [
+                                    expression (fControl.ml[13,437+12]..[13,437+173])
+                                      Pexp_constant Const_string("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",None)
+                                    expression (fControl.ml[14,612+13]..[25,1139+188])
+                                      Pexp_apply
+                                      expression (fControl.ml[14,612+14]..[14,612+29])
+                                        Pexp_ident "Gramf.mk_action" (fControl.ml[14,612+14]..[14,612+29])
+                                      [
+                                        <label> ""
+                                          expression (fControl.ml[15,642+16]..[25,1139+187])
+                                            Pexp_fun ""
+                                            None
+                                            pattern (fControl.ml[15,642+21]..[15,642+45])
+                                              Ppat_constraint
+                                              pattern (fControl.ml[15,642+22]..[15,642+29])
+                                                Ppat_var "__fan_1" (fControl.ml[15,642+22]..[15,642+29])
+                                              core_type (fControl.ml[15,642+32]..[15,642+44])
+                                                Ptyp_variant closed=Open
+                                                [
+                                                  Rinherit
+                                                    core_type (fControl.ml[15,642+35]..[15,642+43])
+                                                      Ptyp_constr "Tokenf.t" (fControl.ml[15,642+35]..[15,642+43])
+                                                      []
+                                                ]
+                                                None
+                                            expression (fControl.ml[15,642+47]..[25,1139+186]) ghost
+                                              Pexp_fun ""
+                                              None
+                                              pattern (fControl.ml[15,642+47]..[15,642+48])
+                                                Ppat_any
+                                              expression (fControl.ml[15,642+50]..[25,1139+186]) ghost
+                                                Pexp_fun ""
+                                                None
+                                                pattern (fControl.ml[15,642+50]..[15,642+65])
+                                                  Ppat_constraint
+                                                  pattern (fControl.ml[15,642+51]..[15,642+55])
+                                                    Ppat_var "_loc" (fControl.ml[15,642+51]..[15,642+55])
+                                                  core_type (fControl.ml[15,642+58]..[15,642+64])
+                                                    Ptyp_constr "Locf.t" (fControl.ml[15,642+58]..[15,642+64])
+                                                    []
+                                                expression (fControl.ml[16,712+19]..[25,1139+186])
+                                                  Pexp_match
+                                                  expression (fControl.ml[16,712+25]..[16,712+32])
+                                                    Pexp_ident "__fan_1" (fControl.ml[16,712+25]..[16,712+32])
+                                                  [
+                                                    <case>
+                                                      pattern (fControl.ml[17,750+21]..[17,750+27])
+                                                        Ppat_variant "Str"
+                                                        Some
+                                                          pattern (fControl.ml[17,750+26]..[17,750+27])
+                                                            Ppat_var "s" (fControl.ml[17,750+26]..[17,750+27])
+                                                      expression (fControl.ml[18,781+23]..[22,1005+75]) ghost
+                                                        Pexp_constraint
+                                                        expression (fControl.ml[18,781+24]..[22,1005+65])
+                                                          Pexp_match
+                                                          expression (fControl.ml[18,781+31]..[18,781+72])
+                                                            Pexp_apply
+                                                            expression (fControl.ml[18,781+31]..[18,781+57])
+                                                              Pexp_ident "Ast_quotation.resolve_name" (fControl.ml[18,781+31]..[18,781+57])
+                                                            [
+                                                              <label> ""
+                                                                expression (fControl.ml[18,781+58]..[18,781+72])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (fControl.ml[18,781+59]..[18,781+68])
+                                                                      Pexp_variant "Sub"
+                                                                      Some
+expression (fControl.ml[18,781+65]..[18,781+67])
+  Pexp_construct "[]" (fControl.ml[18,781+65]..[18,781+67])
+  None
+                                                                    expression (fControl.ml[18,781+70]..[18,781+71])
+                                                                      Pexp_ident "s" (fControl.ml[18,781+70]..[18,781+71])
+                                                                  ]
+                                                            ]
+                                                          [
+                                                            <case>
+                                                              pattern (fControl.ml[19,859+27]..[19,859+31])
+                                                                Ppat_construct "None" (fControl.ml[19,859+27]..[19,859+31])
+                                                                None
+                                                              expression (fControl.ml[20,895+29]..[21,972+32])
+                                                                Pexp_apply
+                                                                expression (fControl.ml[20,895+29]..[20,895+39])
+                                                                  Pexp_ident "Locf.failf" (fControl.ml[20,895+29]..[20,895+39])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (fControl.ml[20,895+40]..[20,895+44])
+                                                                      Pexp_ident "_loc" (fControl.ml[20,895+40]..[20,895+44])
+                                                                  <label> ""
+                                                                    expression (fControl.ml[20,895+45]..[20,895+76])
+                                                                      Pexp_constant Const_string("DDSL `%s' can not be resolved",None)
+                                                                  <label> ""
+                                                                    expression (fControl.ml[21,972+31]..[21,972+32])
+                                                                      Pexp_ident "s" (fControl.ml[21,972+31]..[21,972+32])
+                                                                ]
+                                                            <case>
+                                                              pattern (fControl.ml[22,1005+27]..[22,1005+33])
+                                                                Ppat_construct "Some" (fControl.ml[22,1005+27]..[22,1005+31])
+                                                                Some
+                                                                  pattern (fControl.ml[22,1005+32]..[22,1005+33])
+                                                                    Ppat_var "x" (fControl.ml[22,1005+32]..[22,1005+33])
+                                                              expression (fControl.ml[22,1005+37]..[22,1005+64])
+                                                                Pexp_apply
+                                                                expression (fControl.ml[22,1005+37]..[22,1005+62])
+                                                                  Pexp_ident "Ast_quotation.set_default" (fControl.ml[22,1005+37]..[22,1005+62])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (fControl.ml[22,1005+63]..[22,1005+64])
+                                                                      Pexp_ident "x" (fControl.ml[22,1005+63]..[22,1005+64])
+                                                                ]
+                                                          ]
+                                                        core_type (fControl.ml[22,1005+68]..[22,1005+73])
+                                                          Ptyp_var item
+                                                    <case>
+                                                      pattern (fControl.ml[23,1081+21]..[23,1081+22])
+                                                        Ppat_any
+                                                      expression (fControl.ml[24,1107+23]..[25,1139+186])
+                                                        Pexp_apply
+                                                        expression (fControl.ml[24,1107+23]..[24,1107+31])
+                                                          Pexp_ident "failwith" (fControl.ml[24,1107+23]..[24,1107+31])
+                                                        [
+                                                          <label> ""
+                                                            expression (fControl.ml[25,1139+25]..[25,1139+186])
+                                                              Pexp_constant Const_string("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",None)
+                                                        ]
+                                                  ]
+                                      ]
+                                  ]
+                              ]
+                            expression (fControl.ml[26,1331+8]..[48,2499+30]) ghost
+                              Pexp_construct "::" (fControl.ml[26,1331+8]..[48,2499+30]) ghost
+                              Some
+                                expression (fControl.ml[26,1331+8]..[48,2499+30]) ghost
+                                  Pexp_tuple
+                                  [
+                                    expression (fControl.ml[26,1331+8]..[32,1680+66])
+                                      Pexp_tuple
+                                      [
+                                        expression (fControl.ml[26,1331+9]..[27,1361+71])
+                                          Pexp_construct "::" (fControl.ml[26,1331+10]..[27,1361+71]) ghost
+                                          Some
+                                            expression (fControl.ml[26,1331+10]..[27,1361+71]) ghost
+                                              Pexp_tuple
+                                              [
+                                                expression (fControl.ml[26,1331+10]..[26,1331+28])
+                                                  Pexp_variant "Skeyword"
+                                                  Some
+                                                    expression (fControl.ml[26,1331+20]..[26,1331+28])
+                                                      Pexp_constant Const_string("import",None)
+                                                expression (fControl.ml[27,1361+9]..[27,1361+71]) ghost
+                                                  Pexp_construct "::" (fControl.ml[27,1361+9]..[27,1361+71]) ghost
+                                                  Some
+                                                    expression (fControl.ml[27,1361+9]..[27,1361+71]) ghost
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (fControl.ml[27,1361+9]..[27,1361+70])
+                                                          Pexp_variant "Snterm"
+                                                          Some
+                                                            expression (fControl.ml[27,1361+17]..[27,1361+70])
+                                                              Pexp_apply
+                                                              expression (fControl.ml[27,1361+18]..[27,1361+27])
+                                                                Pexp_ident "Gramf.obj" (fControl.ml[27,1361+18]..[27,1361+27])
+                                                              [
+                                                                <label> ""
+                                                                  expression (fControl.ml[27,1361+28]..[27,1361+69]) ghost
+                                                                    Pexp_constraint
+                                                                    expression (fControl.ml[27,1361+29]..[27,1361+42])
+                                                                      Pexp_ident "dot_namespace" (fControl.ml[27,1361+29]..[27,1361+42])
+                                                                    core_type (fControl.ml[27,1361+45]..[27,1361+67])
+                                                                      Ptyp_constr "Gramf.t" (fControl.ml[27,1361+60]..[27,1361+67])
+                                                                      [
+core_type (fControl.ml[27,1361+45]..[27,1361+59])
+  Ptyp_var dot_namespace
+                                                                      ]
+                                                              ]
+                                                        expression (fControl.ml[27,1361+70]..[27,1361+71]) ghost
+                                                          Pexp_construct "[]" (fControl.ml[27,1361+70]..[27,1361+71]) ghost
+                                                          None
+                                                      ]
+                                              ]
+                                        expression (fControl.ml[28,1434+10]..[32,1680+65])
+                                          Pexp_tuple
+                                          [
+                                            expression (fControl.ml[28,1434+11]..[28,1434+88])
+                                              Pexp_constant Const_string("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",None)
+                                            expression (fControl.ml[29,1524+12]..[32,1680+64])
+                                              Pexp_apply
+                                              expression (fControl.ml[29,1524+13]..[29,1524+28])
+                                                Pexp_ident "Gramf.mk_action" (fControl.ml[29,1524+13]..[29,1524+28])
+                                              [
+                                                <label> ""
+                                                  expression (fControl.ml[30,1553+15]..[32,1680+63])
+                                                    Pexp_fun ""
+                                                    None
+                                                    pattern (fControl.ml[30,1553+20]..[30,1553+41])
+                                                      Ppat_constraint
+                                                      pattern (fControl.ml[30,1553+21]..[30,1553+23])
+                                                        Ppat_var "xs" (fControl.ml[30,1553+21]..[30,1553+23])
+                                                      core_type (fControl.ml[30,1553+26]..[30,1553+40])
+                                                        Ptyp_var dot_namespace
+                                                    expression (fControl.ml[30,1553+43]..[32,1680+62]) ghost
+                                                      Pexp_fun ""
+                                                      None
+                                                      pattern (fControl.ml[30,1553+43]..[30,1553+44])
+                                                        Ppat_any
+                                                      expression (fControl.ml[30,1553+46]..[32,1680+62]) ghost
+                                                        Pexp_fun ""
+                                                        None
+                                                        pattern (fControl.ml[30,1553+46]..[30,1553+61])
+                                                          Ppat_constraint
+                                                          pattern (fControl.ml[30,1553+47]..[30,1553+51])
+                                                            Ppat_var "_loc" (fControl.ml[30,1553+47]..[30,1553+51])
+                                                          core_type (fControl.ml[30,1553+54]..[30,1553+60])
+                                                            Ptyp_constr "Locf.t" (fControl.ml[30,1553+54]..[30,1553+60])
+                                                            []
+                                                        expression (fControl.ml[31,1619+18]..[32,1680+62]) ghost
+                                                          Pexp_constraint
+                                                          expression (fControl.ml[31,1619+19]..[32,1680+52])
+                                                            Pexp_apply
+                                                            expression (fControl.ml[31,1619+39]..[31,1619+41])
+                                                              Pexp_ident ":=" (fControl.ml[31,1619+39]..[31,1619+41])
+                                                            [
+                                                              <label> ""
+                                                                expression (fControl.ml[31,1619+19]..[31,1619+38])
+                                                                  Pexp_ident "Ast_quotation.paths" (fControl.ml[31,1619+19]..[31,1619+38])
+                                                              <label> ""
+                                                                expression (fControl.ml[31,1619+42]..[32,1680+52])
+                                                                  Pexp_construct "::" (fControl.ml[31,1619+58]..[31,1619+60])
+                                                                  Some
+                                                                    expression (fControl.ml[31,1619+43]..[32,1680+51]) ghost
+                                                                      Pexp_tuple
+                                                                      [
+expression (fControl.ml[31,1619+43]..[31,1619+57])
+  Pexp_variant "Absolute"
+  Some
+    expression (fControl.ml[31,1619+54]..[31,1619+56])
+      Pexp_ident "xs" (fControl.ml[31,1619+54]..[31,1619+56])
+expression (fControl.ml[32,1680+21]..[32,1680+51])
+  Pexp_field
+  expression (fControl.ml[32,1680+22]..[32,1680+41])
+    Pexp_ident "Ast_quotation.paths" (fControl.ml[32,1680+22]..[32,1680+41])
+  "contents" (fControl.ml[32,1680+42]..[32,1680+50])
+                                                                      ]
+                                                            ]
+                                                          core_type (fControl.ml[32,1680+55]..[32,1680+60])
+                                                            Ptyp_var item
+                                              ]
+                                          ]
+                                      ]
+                                    expression (fControl.ml[33,1748+8]..[48,2499+30]) ghost
+                                      Pexp_construct "::" (fControl.ml[33,1748+8]..[48,2499+30]) ghost
+                                      Some
+                                        expression (fControl.ml[33,1748+8]..[48,2499+30]) ghost
+                                          Pexp_tuple
+                                          [
+                                            expression (fControl.ml[33,1748+8]..[42,2161+73])
+                                              Pexp_tuple
+                                              [
+                                                expression (fControl.ml[33,1748+9]..[36,1851+52])
+                                                  Pexp_construct "::" (fControl.ml[33,1748+10]..[36,1851+52]) ghost
+                                                  Some
+                                                    expression (fControl.ml[33,1748+10]..[36,1851+52]) ghost
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (fControl.ml[33,1748+10]..[33,1748+28])
+                                                          Pexp_variant "Skeyword"
+                                                          Some
+                                                            expression (fControl.ml[33,1748+20]..[33,1748+28])
+                                                              Pexp_constant Const_string("filter",None)
+                                                        expression (fControl.ml[34,1778+9]..[36,1851+52]) ghost
+                                                          Pexp_construct "::" (fControl.ml[34,1778+9]..[36,1851+52]) ghost
+                                                          Some
+                                                            expression (fControl.ml[34,1778+9]..[36,1851+52]) ghost
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (fControl.ml[34,1778+9]..[36,1851+51])
+                                                                  Pexp_variant "Stoken"
+                                                                  Some
+                                                                    expression (fControl.ml[35,1795+11]..[36,1851+51])
+                                                                      Pexp_tuple
+                                                                      [
+expression (fControl.ml[35,1795+12]..[35,1795+54])
+  Pexp_function
+  [
+    <case>
+      pattern (fControl.ml[35,1795+25]..[35,1795+31])
+        Ppat_variant "Str"
+        Some
+          pattern (fControl.ml[35,1795+30]..[35,1795+31])
+            Ppat_any
+      expression (fControl.ml[35,1795+35]..[35,1795+39])
+        Pexp_construct "true" (fControl.ml[35,1795+35]..[35,1795+39])
+        None
+    <case>
+      pattern (fControl.ml[35,1795+42]..[35,1795+43])
+        Ppat_any
+      expression (fControl.ml[35,1795+47]..[35,1795+52])
+        Pexp_construct "false" (fControl.ml[35,1795+47]..[35,1795+52])
+        None
+  ]
+expression (fControl.ml[36,1851+13]..[36,1851+40])
+  Pexp_variant "App"
+  Some
+    expression (fControl.ml[36,1851+19]..[36,1851+39])
+      Pexp_tuple
+      [
+        expression (fControl.ml[36,1851+20]..[36,1851+32])
+          Pexp_variant "Vrn"
+          Some
+            expression (fControl.ml[36,1851+26]..[36,1851+31])
+              Pexp_constant Const_string("Str",None)
+        expression (fControl.ml[36,1851+34]..[36,1851+38])
+          Pexp_variant "Any"
+          None
+      ]
+expression (fControl.ml[36,1851+42]..[36,1851+50])
+  Pexp_constant Const_string("`Str _",None)
+                                                                      ]
+                                                                expression (fControl.ml[36,1851+51]..[36,1851+52]) ghost
+                                                                  Pexp_construct "[]" (fControl.ml[36,1851+51]..[36,1851+52]) ghost
+                                                                  None
+                                                              ]
+                                                      ]
+                                                expression (fControl.ml[37,1905+10]..[42,2161+72])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (fControl.ml[37,1905+11]..[37,1905+46])
+                                                      Pexp_constant Const_string("Ast_filters.use_implem_filter s\n",None)
+                                                    expression (fControl.ml[38,1953+12]..[42,2161+71])
+                                                      Pexp_apply
+                                                      expression (fControl.ml[38,1953+13]..[38,1953+28])
+                                                        Pexp_ident "Gramf.mk_action" (fControl.ml[38,1953+13]..[38,1953+28])
+                                                      [
+                                                        <label> ""
+                                                          expression (fControl.ml[39,1982+15]..[42,2161+70])
+                                                            Pexp_fun ""
+                                                            None
+                                                            pattern (fControl.ml[39,1982+20]..[39,1982+44])
+                                                              Ppat_constraint
+                                                              pattern (fControl.ml[39,1982+21]..[39,1982+28])
+                                                                Ppat_var "__fan_1" (fControl.ml[39,1982+21]..[39,1982+28])
+                                                              core_type (fControl.ml[39,1982+31]..[39,1982+43])
+                                                                Ptyp_variant closed=Open
+                                                                [
+                                                                  Rinherit
+                                                                    core_type (fControl.ml[39,1982+34]..[39,1982+42])
+                                                                      Ptyp_constr "Tokenf.t" (fControl.ml[39,1982+34]..[39,1982+42])
+                                                                      []
+                                                                ]
+                                                                None
+                                                            expression (fControl.ml[39,1982+46]..[42,2161+69]) ghost
+                                                              Pexp_fun ""
+                                                              None
+                                                              pattern (fControl.ml[39,1982+46]..[39,1982+47])
+                                                                Ppat_any
+                                                              expression (fControl.ml[39,1982+49]..[42,2161+69]) ghost
+                                                                Pexp_fun ""
+                                                                None
+                                                                pattern (fControl.ml[39,1982+49]..[39,1982+64])
+                                                                  Ppat_constraint
+                                                                  pattern (fControl.ml[39,1982+50]..[39,1982+54])
+                                                                    Ppat_var "_loc" (fControl.ml[39,1982+50]..[39,1982+54])
+                                                                  core_type (fControl.ml[39,1982+57]..[39,1982+63])
+                                                                    Ptyp_constr "Locf.t" (fControl.ml[39,1982+57]..[39,1982+63])
+                                                                    []
+                                                                expression (fControl.ml[40,2051+18]..[42,2161+69])
+                                                                  Pexp_match
+                                                                  expression (fControl.ml[40,2051+24]..[40,2051+31])
+                                                                    Pexp_ident "__fan_1" (fControl.ml[40,2051+24]..[40,2051+31])
+                                                                  [
+                                                                    <case>
+                                                                      pattern (fControl.ml[41,2088+20]..[41,2088+26])
+Ppat_variant "Str"
+Some
+  pattern (fControl.ml[41,2088+25]..[41,2088+26])
+    Ppat_var "s" (fControl.ml[41,2088+25]..[41,2088+26])
+                                                                      expression (fControl.ml[41,2088+30]..[41,2088+72]) ghost
+Pexp_constraint
+expression (fControl.ml[41,2088+31]..[41,2088+62])
+  Pexp_apply
+  expression (fControl.ml[41,2088+31]..[41,2088+60])
+    Pexp_ident "Ast_filters.use_implem_filter" (fControl.ml[41,2088+31]..[41,2088+60])
+  [
+    <label> ""
+      expression (fControl.ml[41,2088+61]..[41,2088+62])
+        Pexp_ident "s" (fControl.ml[41,2088+61]..[41,2088+62])
+  ]
+core_type (fControl.ml[41,2088+65]..[41,2088+70])
+  Ptyp_var item
+                                                                    <case>
+                                                                      pattern (fControl.ml[42,2161+20]..[42,2161+21])
+Ppat_any
+                                                                      expression (fControl.ml[42,2161+25]..[42,2161+69])
+Pexp_apply
+expression (fControl.ml[42,2161+25]..[42,2161+33])
+  Pexp_ident "failwith" (fControl.ml[42,2161+25]..[42,2161+33])
+[
+  <label> ""
+    expression (fControl.ml[42,2161+34]..[42,2161+69])
+      Pexp_constant Const_string("Ast_filters.use_implem_filter s\n",None)
+]
+                                                                  ]
+                                                      ]
+                                                  ]
+                                              ]
+                                            expression (fControl.ml[43,2236+8]..[48,2499+30]) ghost
+                                              Pexp_construct "::" (fControl.ml[43,2236+8]..[48,2499+30]) ghost
+                                              Some
+                                                expression (fControl.ml[43,2236+8]..[48,2499+30]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (fControl.ml[43,2236+8]..[48,2499+29])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (fControl.ml[43,2236+9]..[43,2236+33])
+                                                          Pexp_construct "::" (fControl.ml[43,2236+10]..[43,2236+33]) ghost
+                                                          Some
+                                                            expression (fControl.ml[43,2236+10]..[43,2236+33]) ghost
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (fControl.ml[43,2236+10]..[43,2236+32])
+                                                                  Pexp_variant "Skeyword"
+                                                                  Some
+                                                                    expression (fControl.ml[43,2236+20]..[43,2236+32])
+                                                                      Pexp_constant Const_string("lang_clear",None)
+                                                                expression (fControl.ml[43,2236+32]..[43,2236+33]) ghost
+                                                                  Pexp_construct "[]" (fControl.ml[43,2236+32]..[43,2236+33]) ghost
+                                                                  None
+                                                              ]
+                                                        expression (fControl.ml[44,2271+10]..[48,2499+28])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (fControl.ml[44,2271+11]..[44,2271+73])
+                                                              Pexp_constant Const_string("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",None)
+                                                            expression (fControl.ml[45,2346+12]..[48,2499+27])
+                                                              Pexp_apply
+                                                              expression (fControl.ml[45,2346+13]..[45,2346+28])
+                                                                Pexp_ident "Gramf.mk_action" (fControl.ml[45,2346+13]..[45,2346+28])
+                                                              [
+                                                                <label> ""
+                                                                  expression (fControl.ml[46,2375+15]..[48,2499+26])
+                                                                    Pexp_fun ""
+                                                                    None
+                                                                    pattern (fControl.ml[46,2375+20]..[46,2375+21])
+                                                                      Ppat_any
+                                                                    expression (fControl.ml[46,2375+23]..[48,2499+25]) ghost
+                                                                      Pexp_fun ""
+                                                                      None
+                                                                      pattern (fControl.ml[46,2375+23]..[46,2375+38])
+Ppat_constraint
+pattern (fControl.ml[46,2375+24]..[46,2375+28])
+  Ppat_var "_loc" (fControl.ml[46,2375+24]..[46,2375+28])
+core_type (fControl.ml[46,2375+31]..[46,2375+37])
+  Ptyp_constr "Locf.t" (fControl.ml[46,2375+31]..[46,2375+37])
+  []
+                                                                      expression (fControl.ml[47,2418+18]..[48,2499+25]) ghost
+Pexp_constraint
+expression (fControl.ml[47,2418+19]..[47,2418+77])
+  Pexp_sequence
+  expression (fControl.ml[47,2418+19]..[47,2418+45])
+    Pexp_apply
+    expression (fControl.ml[47,2418+19]..[47,2418+42])
+      Pexp_ident "Ast_quotation.clear_map" (fControl.ml[47,2418+19]..[47,2418+42])
+    [
+      <label> ""
+        expression (fControl.ml[47,2418+43]..[47,2418+45])
+          Pexp_construct "()" (fControl.ml[47,2418+43]..[47,2418+45])
+          None
+    ]
+  expression (fControl.ml[47,2418+47]..[47,2418+77])
+    Pexp_apply
+    expression (fControl.ml[47,2418+47]..[47,2418+74])
+      Pexp_ident "Ast_quotation.clear_default" (fControl.ml[47,2418+47]..[47,2418+74])
+    [
+      <label> ""
+        expression (fControl.ml[47,2418+75]..[47,2418+77])
+          Pexp_construct "()" (fControl.ml[47,2418+75]..[47,2418+77])
+          None
+    ]
+core_type (fControl.ml[48,2499+18]..[48,2499+23])
+  Ptyp_var item
+                                                              ]
+                                                          ]
+                                                      ]
+                                                    expression (fControl.ml[48,2499+29]..[48,2499+30]) ghost
+                                                      Pexp_construct "[]" (fControl.ml[48,2499+29]..[48,2499+30]) ghost
+                                                      None
+                                                  ]
+                                          ]
+                                  ]
+                          ]
+                  ]
+              ]
+        ]
+      expression (fControl.ml[49,2533+2]..[85,3998+75])
+        Pexp_sequence
+        expression (fControl.ml[49,2533+2]..[72,3462+48])
+          Pexp_apply
+          expression (fControl.ml[49,2533+2]..[49,2533+28])
+            Pexp_ident "Gramf.unsafe_extend_single" (fControl.ml[49,2533+2]..[49,2533+28])
+          [
+            <label> ""
+              expression (fControl.ml[49,2533+29]..[49,2533+70]) ghost
+                Pexp_constraint
+                expression (fControl.ml[49,2533+30]..[49,2533+43])
+                  Pexp_ident "dot_namespace" (fControl.ml[49,2533+30]..[49,2533+43])
+                core_type (fControl.ml[49,2533+46]..[49,2533+68])
+                  Ptyp_constr "Gramf.t" (fControl.ml[49,2533+61]..[49,2533+68])
+                  [
+                    core_type (fControl.ml[49,2533+46]..[49,2533+60])
+                      Ptyp_var dot_namespace
+                  ]
+            <label> ""
+              expression (fControl.ml[50,2604+4]..[72,3462+48])
+                Pexp_tuple
+                [
+                  expression (fControl.ml[50,2604+5]..[50,2604+9])
+                    Pexp_construct "None" (fControl.ml[50,2604+5]..[50,2604+9])
+                    None
+                  expression (fControl.ml[51,2615+6]..[72,3462+47])
+                    Pexp_tuple
+                    [
+                      expression (fControl.ml[51,2615+7]..[51,2615+11])
+                        Pexp_construct "None" (fControl.ml[51,2615+7]..[51,2615+11])
+                        None
+                      expression (fControl.ml[51,2615+13]..[51,2615+17])
+                        Pexp_construct "None" (fControl.ml[51,2615+13]..[51,2615+17])
+                        None
+                      expression (fControl.ml[52,2634+8]..[72,3462+46])
+                        Pexp_construct "::" (fControl.ml[52,2634+9]..[72,3462+46]) ghost
+                        Some
+                          expression (fControl.ml[52,2634+9]..[72,3462+46]) ghost
+                            Pexp_tuple
+                            [
+                              expression (fControl.ml[52,2634+9]..[63,3074+50])
+                                Pexp_tuple
+                                [
+                                  expression (fControl.ml[52,2634+10]..[56,2791+17])
+                                    Pexp_construct "::" (fControl.ml[52,2634+11]..[56,2791+17]) ghost
+                                    Some
+                                      expression (fControl.ml[52,2634+11]..[56,2791+17]) ghost
+                                        Pexp_tuple
+                                        [
+                                          expression (fControl.ml[52,2634+11]..[54,2711+53])
+                                            Pexp_variant "Stoken"
+                                            Some
+                                              expression (fControl.ml[53,2653+13]..[54,2711+53])
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[53,2653+14]..[53,2653+56])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (fControl.ml[53,2653+27]..[53,2653+33])
+                                                          Ppat_variant "Uid"
+                                                          Some
+                                                            pattern (fControl.ml[53,2653+32]..[53,2653+33])
+                                                              Ppat_any
+                                                        expression (fControl.ml[53,2653+37]..[53,2653+41])
+                                                          Pexp_construct "true" (fControl.ml[53,2653+37]..[53,2653+41])
+                                                          None
+                                                      <case>
+                                                        pattern (fControl.ml[53,2653+44]..[53,2653+45])
+                                                          Ppat_any
+                                                        expression (fControl.ml[53,2653+49]..[53,2653+54])
+                                                          Pexp_construct "false" (fControl.ml[53,2653+49]..[53,2653+54])
+                                                          None
+                                                    ]
+                                                  expression (fControl.ml[54,2711+15]..[54,2711+42])
+                                                    Pexp_variant "App"
+                                                    Some
+                                                      expression (fControl.ml[54,2711+21]..[54,2711+41])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (fControl.ml[54,2711+22]..[54,2711+34])
+                                                            Pexp_variant "Vrn"
+                                                            Some
+                                                              expression (fControl.ml[54,2711+28]..[54,2711+33])
+                                                                Pexp_constant Const_string("Uid",None)
+                                                          expression (fControl.ml[54,2711+36]..[54,2711+40])
+                                                            Pexp_variant "Any"
+                                                            None
+                                                        ]
+                                                  expression (fControl.ml[54,2711+44]..[54,2711+52])
+                                                    Pexp_constant Const_string("`Uid _",None)
+                                                ]
+                                          expression (fControl.ml[55,2766+10]..[56,2791+17]) ghost
+                                            Pexp_construct "::" (fControl.ml[55,2766+10]..[56,2791+17]) ghost
+                                            Some
+                                              expression (fControl.ml[55,2766+10]..[56,2791+17]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[55,2766+10]..[55,2766+23])
+                                                    Pexp_variant "Skeyword"
+                                                    Some
+                                                      expression (fControl.ml[55,2766+20]..[55,2766+23])
+                                                        Pexp_constant Const_string(".",None)
+                                                  expression (fControl.ml[56,2791+10]..[56,2791+17]) ghost
+                                                    Pexp_construct "::" (fControl.ml[56,2791+10]..[56,2791+17]) ghost
+                                                    Some
+                                                      expression (fControl.ml[56,2791+10]..[56,2791+17]) ghost
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (fControl.ml[56,2791+10]..[56,2791+16])
+                                                            Pexp_variant "Sself"
+                                                            None
+                                                          expression (fControl.ml[56,2791+16]..[56,2791+17]) ghost
+                                                            Pexp_construct "[]" (fControl.ml[56,2791+16]..[56,2791+17]) ghost
+                                                            None
+                                                        ]
+                                                ]
+                                        ]
+                                  expression (fControl.ml[57,2810+11]..[63,3074+49])
+                                    Pexp_tuple
+                                    [
+                                      expression (fControl.ml[57,2810+12]..[57,2810+23])
+                                        Pexp_constant Const_string("i :: xs\n",None)
+                                      expression (fControl.ml[58,2835+13]..[63,3074+48])
+                                        Pexp_apply
+                                        expression (fControl.ml[58,2835+14]..[58,2835+29])
+                                          Pexp_ident "Gramf.mk_action" (fControl.ml[58,2835+14]..[58,2835+29])
+                                        [
+                                          <label> ""
+                                            expression (fControl.ml[59,2865+16]..[63,3074+47])
+                                              Pexp_fun ""
+                                              None
+                                              pattern (fControl.ml[59,2865+21]..[59,2865+42])
+                                                Ppat_constraint
+                                                pattern (fControl.ml[59,2865+22]..[59,2865+24])
+                                                  Ppat_var "xs" (fControl.ml[59,2865+22]..[59,2865+24])
+                                                core_type (fControl.ml[59,2865+27]..[59,2865+41])
+                                                  Ptyp_var dot_namespace
+                                              expression (fControl.ml[59,2865+44]..[63,3074+46]) ghost
+                                                Pexp_fun ""
+                                                None
+                                                pattern (fControl.ml[59,2865+44]..[59,2865+45])
+                                                  Ppat_any
+                                                expression (fControl.ml[59,2865+47]..[63,3074+46]) ghost
+                                                  Pexp_fun ""
+                                                  None
+                                                  pattern (fControl.ml[59,2865+47]..[59,2865+71])
+                                                    Ppat_constraint
+                                                    pattern (fControl.ml[59,2865+48]..[59,2865+55])
+                                                      Ppat_var "__fan_0" (fControl.ml[59,2865+48]..[59,2865+55])
+                                                    core_type (fControl.ml[59,2865+58]..[59,2865+70])
+                                                      Ptyp_variant closed=Open
+                                                      [
+                                                        Rinherit
+                                                          core_type (fControl.ml[59,2865+61]..[59,2865+69])
+                                                            Ptyp_constr "Tokenf.t" (fControl.ml[59,2865+61]..[59,2865+69])
+                                                            []
+                                                      ]
+                                                      None
+                                                  expression (fControl.ml[60,2938+19]..[63,3074+46]) ghost
+                                                    Pexp_fun ""
+                                                    None
+                                                    pattern (fControl.ml[60,2938+19]..[60,2938+34])
+                                                      Ppat_constraint
+                                                      pattern (fControl.ml[60,2938+20]..[60,2938+24])
+                                                        Ppat_var "_loc" (fControl.ml[60,2938+20]..[60,2938+24])
+                                                      core_type (fControl.ml[60,2938+27]..[60,2938+33])
+                                                        Ptyp_constr "Locf.t" (fControl.ml[60,2938+27]..[60,2938+33])
+                                                        []
+                                                    expression (fControl.ml[61,2977+19]..[63,3074+46])
+                                                      Pexp_match
+                                                      expression (fControl.ml[61,2977+25]..[61,2977+32])
+                                                        Pexp_ident "__fan_0" (fControl.ml[61,2977+25]..[61,2977+32])
+                                                      [
+                                                        <case>
+                                                          pattern (fControl.ml[62,3015+21]..[62,3015+27])
+                                                            Ppat_variant "Uid"
+                                                            Some
+                                                              pattern (fControl.ml[62,3015+26]..[62,3015+27])
+                                                                Ppat_var "i" (fControl.ml[62,3015+26]..[62,3015+27])
+                                                          expression (fControl.ml[62,3015+31]..[62,3015+58]) ghost
+                                                            Pexp_constraint
+                                                            expression (fControl.ml[62,3015+32]..[62,3015+39])
+                                                              Pexp_construct "::" (fControl.ml[62,3015+34]..[62,3015+36])
+                                                              Some
+                                                                expression (fControl.ml[62,3015+32]..[62,3015+39]) ghost
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (fControl.ml[62,3015+32]..[62,3015+33])
+                                                                      Pexp_ident "i" (fControl.ml[62,3015+32]..[62,3015+33])
+                                                                    expression (fControl.ml[62,3015+37]..[62,3015+39])
+                                                                      Pexp_ident "xs" (fControl.ml[62,3015+37]..[62,3015+39])
+                                                                  ]
+                                                            core_type (fControl.ml[62,3015+42]..[62,3015+56])
+                                                              Ptyp_var dot_namespace
+                                                        <case>
+                                                          pattern (fControl.ml[63,3074+21]..[63,3074+22])
+                                                            Ppat_any
+                                                          expression (fControl.ml[63,3074+26]..[63,3074+46])
+                                                            Pexp_apply
+                                                            expression (fControl.ml[63,3074+26]..[63,3074+34])
+                                                              Pexp_ident "failwith" (fControl.ml[63,3074+26]..[63,3074+34])
+                                                            [
+                                                              <label> ""
+                                                                expression (fControl.ml[63,3074+35]..[63,3074+46])
+                                                                  Pexp_constant Const_string("i :: xs\n",None)
+                                                            ]
+                                                      ]
+                                        ]
+                                    ]
+                                ]
+                              expression (fControl.ml[64,3126+8]..[72,3462+46]) ghost
+                                Pexp_construct "::" (fControl.ml[64,3126+8]..[72,3462+46]) ghost
+                                Some
+                                  expression (fControl.ml[64,3126+8]..[72,3462+46]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (fControl.ml[64,3126+8]..[72,3462+45])
+                                        Pexp_tuple
+                                        [
+                                          expression (fControl.ml[64,3126+9]..[66,3201+53])
+                                            Pexp_construct "::" (fControl.ml[64,3126+10]..[66,3201+53]) ghost
+                                            Some
+                                              expression (fControl.ml[64,3126+10]..[66,3201+53]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[64,3126+10]..[66,3201+52])
+                                                    Pexp_variant "Stoken"
+                                                    Some
+                                                      expression (fControl.ml[65,3144+12]..[66,3201+52])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (fControl.ml[65,3144+13]..[65,3144+55])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (fControl.ml[65,3144+26]..[65,3144+32])
+                                                                  Ppat_variant "Uid"
+                                                                  Some
+                                                                    pattern (fControl.ml[65,3144+31]..[65,3144+32])
+                                                                      Ppat_any
+                                                                expression (fControl.ml[65,3144+36]..[65,3144+40])
+                                                                  Pexp_construct "true" (fControl.ml[65,3144+36]..[65,3144+40])
+                                                                  None
+                                                              <case>
+                                                                pattern (fControl.ml[65,3144+43]..[65,3144+44])
+                                                                  Ppat_any
+                                                                expression (fControl.ml[65,3144+48]..[65,3144+53])
+                                                                  Pexp_construct "false" (fControl.ml[65,3144+48]..[65,3144+53])
+                                                                  None
+                                                            ]
+                                                          expression (fControl.ml[66,3201+14]..[66,3201+41])
+                                                            Pexp_variant "App"
+                                                            Some
+                                                              expression (fControl.ml[66,3201+20]..[66,3201+40])
+                                                                Pexp_tuple
+                                                                [
+                                                                  expression (fControl.ml[66,3201+21]..[66,3201+33])
+                                                                    Pexp_variant "Vrn"
+                                                                    Some
+                                                                      expression (fControl.ml[66,3201+27]..[66,3201+32])
+Pexp_constant Const_string("Uid",None)
+                                                                  expression (fControl.ml[66,3201+35]..[66,3201+39])
+                                                                    Pexp_variant "Any"
+                                                                    None
+                                                                ]
+                                                          expression (fControl.ml[66,3201+43]..[66,3201+51])
+                                                            Pexp_constant Const_string("`Uid _",None)
+                                                        ]
+                                                  expression (fControl.ml[66,3201+52]..[66,3201+53]) ghost
+                                                    Pexp_construct "[]" (fControl.ml[66,3201+52]..[66,3201+53]) ghost
+                                                    None
+                                                ]
+                                          expression (fControl.ml[67,3256+10]..[72,3462+44])
+                                            Pexp_tuple
+                                            [
+                                              expression (fControl.ml[67,3256+11]..[67,3256+18])
+                                                Pexp_constant Const_string("[i]\n",None)
+                                              expression (fControl.ml[68,3276+12]..[72,3462+43])
+                                                Pexp_apply
+                                                expression (fControl.ml[68,3276+13]..[68,3276+28])
+                                                  Pexp_ident "Gramf.mk_action" (fControl.ml[68,3276+13]..[68,3276+28])
+                                                [
+                                                  <label> ""
+                                                    expression (fControl.ml[69,3305+15]..[72,3462+42])
+                                                      Pexp_fun ""
+                                                      None
+                                                      pattern (fControl.ml[69,3305+20]..[69,3305+44])
+                                                        Ppat_constraint
+                                                        pattern (fControl.ml[69,3305+21]..[69,3305+28])
+                                                          Ppat_var "__fan_0" (fControl.ml[69,3305+21]..[69,3305+28])
+                                                        core_type (fControl.ml[69,3305+31]..[69,3305+43])
+                                                          Ptyp_variant closed=Open
+                                                          [
+                                                            Rinherit
+                                                              core_type (fControl.ml[69,3305+34]..[69,3305+42])
+                                                                Ptyp_constr "Tokenf.t" (fControl.ml[69,3305+34]..[69,3305+42])
+                                                                []
+                                                          ]
+                                                          None
+                                                      expression (fControl.ml[69,3305+46]..[72,3462+41]) ghost
+                                                        Pexp_fun ""
+                                                        None
+                                                        pattern (fControl.ml[69,3305+46]..[69,3305+61])
+                                                          Ppat_constraint
+                                                          pattern (fControl.ml[69,3305+47]..[69,3305+51])
+                                                            Ppat_var "_loc" (fControl.ml[69,3305+47]..[69,3305+51])
+                                                          core_type (fControl.ml[69,3305+54]..[69,3305+60])
+                                                            Ptyp_constr "Locf.t" (fControl.ml[69,3305+54]..[69,3305+60])
+                                                            []
+                                                        expression (fControl.ml[70,3371+18]..[72,3462+41])
+                                                          Pexp_match
+                                                          expression (fControl.ml[70,3371+24]..[70,3371+31])
+                                                            Pexp_ident "__fan_0" (fControl.ml[70,3371+24]..[70,3371+31])
+                                                          [
+                                                            <case>
+                                                              pattern (fControl.ml[71,3408+20]..[71,3408+26])
+                                                                Ppat_variant "Uid"
+                                                                Some
+                                                                  pattern (fControl.ml[71,3408+25]..[71,3408+26])
+                                                                    Ppat_var "i" (fControl.ml[71,3408+25]..[71,3408+26])
+                                                              expression (fControl.ml[71,3408+30]..[71,3408+53]) ghost
+                                                                Pexp_constraint
+                                                                expression (fControl.ml[71,3408+31]..[71,3408+34])
+                                                                  Pexp_construct "::" (fControl.ml[71,3408+32]..[71,3408+34]) ghost
+                                                                  Some
+                                                                    expression (fControl.ml[71,3408+32]..[71,3408+34]) ghost
+                                                                      Pexp_tuple
+                                                                      [
+expression (fControl.ml[71,3408+32]..[71,3408+33])
+  Pexp_ident "i" (fControl.ml[71,3408+32]..[71,3408+33])
+expression (fControl.ml[71,3408+33]..[71,3408+34]) ghost
+  Pexp_construct "[]" (fControl.ml[71,3408+33]..[71,3408+34]) ghost
+  None
+                                                                      ]
+                                                                core_type (fControl.ml[71,3408+37]..[71,3408+51])
+                                                                  Ptyp_var dot_namespace
+                                                            <case>
+                                                              pattern (fControl.ml[72,3462+20]..[72,3462+21])
+                                                                Ppat_any
+                                                              expression (fControl.ml[72,3462+25]..[72,3462+41])
+                                                                Pexp_apply
+                                                                expression (fControl.ml[72,3462+25]..[72,3462+33])
+                                                                  Pexp_ident "failwith" (fControl.ml[72,3462+25]..[72,3462+33])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (fControl.ml[72,3462+34]..[72,3462+41])
+                                                                      Pexp_constant Const_string("[i]\n",None)
+                                                                ]
+                                                          ]
+                                                ]
+                                            ]
+                                        ]
+                                      expression (fControl.ml[72,3462+45]..[72,3462+46]) ghost
+                                        Pexp_construct "[]" (fControl.ml[72,3462+45]..[72,3462+46]) ghost
+                                        None
+                                    ]
+                            ]
+                    ]
+                ]
+          ]
+        expression (fControl.ml[73,3512+2]..[85,3998+75])
+          Pexp_apply
+          expression (fControl.ml[73,3512+2]..[73,3512+28])
+            Pexp_ident "Gramf.unsafe_extend_single" (fControl.ml[73,3512+2]..[73,3512+28])
+          [
+            <label> ""
+              expression (fControl.ml[73,3512+29]..[73,3512+54]) ghost
+                Pexp_constraint
+                expression (fControl.ml[73,3512+30]..[73,3512+35])
+                  Pexp_ident "items" (fControl.ml[73,3512+30]..[73,3512+35])
+                core_type (fControl.ml[73,3512+38]..[73,3512+52])
+                  Ptyp_constr "Gramf.t" (fControl.ml[73,3512+45]..[73,3512+52])
+                  [
+                    core_type (fControl.ml[73,3512+38]..[73,3512+44])
+                      Ptyp_var items
+                  ]
+            <label> ""
+              expression (fControl.ml[74,3567+4]..[85,3998+75])
+                Pexp_tuple
+                [
+                  expression (fControl.ml[74,3567+5]..[74,3567+9])
+                    Pexp_construct "None" (fControl.ml[74,3567+5]..[74,3567+9])
+                    None
+                  expression (fControl.ml[75,3578+6]..[85,3998+74])
+                    Pexp_tuple
+                    [
+                      expression (fControl.ml[75,3578+7]..[75,3578+11])
+                        Pexp_construct "None" (fControl.ml[75,3578+7]..[75,3578+11])
+                        None
+                      expression (fControl.ml[75,3578+13]..[75,3578+17])
+                        Pexp_construct "None" (fControl.ml[75,3578+13]..[75,3578+17])
+                        None
+                      expression (fControl.ml[76,3597+8]..[85,3998+73])
+                        Pexp_construct "::" (fControl.ml[76,3597+9]..[85,3998+73]) ghost
+                        Some
+                          expression (fControl.ml[76,3597+9]..[85,3998+73]) ghost
+                            Pexp_tuple
+                            [
+                              expression (fControl.ml[76,3597+9]..[78,3689+79])
+                                Pexp_tuple
+                                [
+                                  expression (fControl.ml[76,3597+10]..[76,3597+70])
+                                    Pexp_construct "::" (fControl.ml[76,3597+11]..[76,3597+70]) ghost
+                                    Some
+                                      expression (fControl.ml[76,3597+11]..[76,3597+70]) ghost
+                                        Pexp_tuple
+                                        [
+                                          expression (fControl.ml[76,3597+11]..[76,3597+54])
+                                            Pexp_variant "Snterm"
+                                            Some
+                                              expression (fControl.ml[76,3597+19]..[76,3597+54])
+                                                Pexp_apply
+                                                expression (fControl.ml[76,3597+20]..[76,3597+29])
+                                                  Pexp_ident "Gramf.obj" (fControl.ml[76,3597+20]..[76,3597+29])
+                                                [
+                                                  <label> ""
+                                                    expression (fControl.ml[76,3597+30]..[76,3597+53]) ghost
+                                                      Pexp_constraint
+                                                      expression (fControl.ml[76,3597+31]..[76,3597+35])
+                                                        Pexp_ident "item" (fControl.ml[76,3597+31]..[76,3597+35])
+                                                      core_type (fControl.ml[76,3597+38]..[76,3597+51])
+                                                        Ptyp_constr "Gramf.t" (fControl.ml[76,3597+44]..[76,3597+51])
+                                                        [
+                                                          core_type (fControl.ml[76,3597+38]..[76,3597+43])
+                                                            Ptyp_var item
+                                                        ]
+                                                ]
+                                          expression (fControl.ml[76,3597+56]..[76,3597+70]) ghost
+                                            Pexp_construct "::" (fControl.ml[76,3597+56]..[76,3597+70]) ghost
+                                            Some
+                                              expression (fControl.ml[76,3597+56]..[76,3597+70]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[76,3597+56]..[76,3597+69])
+                                                    Pexp_variant "Skeyword"
+                                                    Some
+                                                      expression (fControl.ml[76,3597+66]..[76,3597+69])
+                                                        Pexp_constant Const_string(";",None)
+                                                  expression (fControl.ml[76,3597+69]..[76,3597+70]) ghost
+                                                    Pexp_construct "[]" (fControl.ml[76,3597+69]..[76,3597+70]) ghost
+                                                    None
+                                                ]
+                                        ]
+                                  expression (fControl.ml[77,3669+11]..[78,3689+78])
+                                    Pexp_tuple
+                                    [
+                                      expression (fControl.ml[77,3669+12]..[77,3669+18])
+                                        Pexp_constant Const_string("()\n",None)
+                                      expression (fControl.ml[78,3689+13]..[78,3689+77])
+                                        Pexp_apply
+                                        expression (fControl.ml[78,3689+14]..[78,3689+29])
+                                          Pexp_ident "Gramf.mk_action" (fControl.ml[78,3689+14]..[78,3689+29])
+                                        [
+                                          <label> ""
+                                            expression (fControl.ml[78,3689+30]..[78,3689+76])
+                                              Pexp_fun ""
+                                              None
+                                              pattern (fControl.ml[78,3689+35]..[78,3689+36])
+                                                Ppat_any
+                                              expression (fControl.ml[78,3689+38]..[78,3689+75]) ghost
+                                                Pexp_fun ""
+                                                None
+                                                pattern (fControl.ml[78,3689+38]..[78,3689+39])
+                                                  Ppat_any
+                                                expression (fControl.ml[78,3689+41]..[78,3689+75]) ghost
+                                                  Pexp_fun ""
+                                                  None
+                                                  pattern (fControl.ml[78,3689+41]..[78,3689+56])
+                                                    Ppat_constraint
+                                                    pattern (fControl.ml[78,3689+42]..[78,3689+46])
+                                                      Ppat_var "_loc" (fControl.ml[78,3689+42]..[78,3689+46])
+                                                    core_type (fControl.ml[78,3689+49]..[78,3689+55])
+                                                      Ptyp_constr "Locf.t" (fControl.ml[78,3689+49]..[78,3689+55])
+                                                      []
+                                                  expression (fControl.ml[78,3689+61]..[78,3689+75]) ghost
+                                                    Pexp_constraint
+                                                    expression (fControl.ml[78,3689+62]..[78,3689+64])
+                                                      Pexp_construct "()" (fControl.ml[78,3689+62]..[78,3689+64])
+                                                      None
+                                                    core_type (fControl.ml[78,3689+67]..[78,3689+73])
+                                                      Ptyp_var items
+                                        ]
+                                    ]
+                                ]
+                              expression (fControl.ml[79,3770+8]..[85,3998+73]) ghost
+                                Pexp_construct "::" (fControl.ml[79,3770+8]..[85,3998+73]) ghost
+                                Some
+                                  expression (fControl.ml[79,3770+8]..[85,3998+73]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (fControl.ml[79,3770+8]..[82,3897+67])
+                                        Pexp_tuple
+                                        [
+                                          expression (fControl.ml[79,3770+9]..[79,3770+77])
+                                            Pexp_construct "::" (fControl.ml[79,3770+10]..[79,3770+77]) ghost
+                                            Some
+                                              expression (fControl.ml[79,3770+10]..[79,3770+77]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[79,3770+10]..[79,3770+53])
+                                                    Pexp_variant "Snterm"
+                                                    Some
+                                                      expression (fControl.ml[79,3770+18]..[79,3770+53])
+                                                        Pexp_apply
+                                                        expression (fControl.ml[79,3770+19]..[79,3770+28])
+                                                          Pexp_ident "Gramf.obj" (fControl.ml[79,3770+19]..[79,3770+28])
+                                                        [
+                                                          <label> ""
+                                                            expression (fControl.ml[79,3770+29]..[79,3770+52]) ghost
+                                                              Pexp_constraint
+                                                              expression (fControl.ml[79,3770+30]..[79,3770+34])
+                                                                Pexp_ident "item" (fControl.ml[79,3770+30]..[79,3770+34])
+                                                              core_type (fControl.ml[79,3770+37]..[79,3770+50])
+                                                                Ptyp_constr "Gramf.t" (fControl.ml[79,3770+43]..[79,3770+50])
+                                                                [
+                                                                  core_type (fControl.ml[79,3770+37]..[79,3770+42])
+                                                                    Ptyp_var item
+                                                                ]
+                                                        ]
+                                                  expression (fControl.ml[79,3770+55]..[79,3770+77]) ghost
+                                                    Pexp_construct "::" (fControl.ml[79,3770+55]..[79,3770+77]) ghost
+                                                    Some
+                                                      expression (fControl.ml[79,3770+55]..[79,3770+77]) ghost
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (fControl.ml[79,3770+55]..[79,3770+68])
+                                                            Pexp_variant "Skeyword"
+                                                            Some
+                                                              expression (fControl.ml[79,3770+65]..[79,3770+68])
+                                                                Pexp_constant Const_string(";",None)
+                                                          expression (fControl.ml[79,3770+70]..[79,3770+77]) ghost
+                                                            Pexp_construct "::" (fControl.ml[79,3770+70]..[79,3770+77]) ghost
+                                                            Some
+                                                              expression (fControl.ml[79,3770+70]..[79,3770+77]) ghost
+                                                                Pexp_tuple
+                                                                [
+                                                                  expression (fControl.ml[79,3770+70]..[79,3770+76])
+                                                                    Pexp_variant "Sself"
+                                                                    None
+                                                                  expression (fControl.ml[79,3770+76]..[79,3770+77]) ghost
+                                                                    Pexp_construct "[]" (fControl.ml[79,3770+76]..[79,3770+77]) ghost
+                                                                    None
+                                                                ]
+                                                        ]
+                                                ]
+                                          expression (fControl.ml[80,3849+10]..[82,3897+66])
+                                            Pexp_tuple
+                                            [
+                                              expression (fControl.ml[80,3849+11]..[80,3849+17])
+                                                Pexp_constant Const_string("()\n",None)
+                                              expression (fControl.ml[81,3868+12]..[82,3897+65])
+                                                Pexp_apply
+                                                expression (fControl.ml[81,3868+13]..[81,3868+28])
+                                                  Pexp_ident "Gramf.mk_action" (fControl.ml[81,3868+13]..[81,3868+28])
+                                                [
+                                                  <label> ""
+                                                    expression (fControl.ml[82,3897+15]..[82,3897+64])
+                                                      Pexp_fun ""
+                                                      None
+                                                      pattern (fControl.ml[82,3897+20]..[82,3897+21])
+                                                        Ppat_any
+                                                      expression (fControl.ml[82,3897+23]..[82,3897+63]) ghost
+                                                        Pexp_fun ""
+                                                        None
+                                                        pattern (fControl.ml[82,3897+23]..[82,3897+24])
+                                                          Ppat_any
+                                                        expression (fControl.ml[82,3897+26]..[82,3897+63]) ghost
+                                                          Pexp_fun ""
+                                                          None
+                                                          pattern (fControl.ml[82,3897+26]..[82,3897+27])
+                                                            Ppat_any
+                                                          expression (fControl.ml[82,3897+29]..[82,3897+63]) ghost
+                                                            Pexp_fun ""
+                                                            None
+                                                            pattern (fControl.ml[82,3897+29]..[82,3897+44])
+                                                              Ppat_constraint
+                                                              pattern (fControl.ml[82,3897+30]..[82,3897+34])
+                                                                Ppat_var "_loc" (fControl.ml[82,3897+30]..[82,3897+34])
+                                                              core_type (fControl.ml[82,3897+37]..[82,3897+43])
+                                                                Ptyp_constr "Locf.t" (fControl.ml[82,3897+37]..[82,3897+43])
+                                                                []
+                                                            expression (fControl.ml[82,3897+49]..[82,3897+63]) ghost
+                                                              Pexp_constraint
+                                                              expression (fControl.ml[82,3897+50]..[82,3897+52])
+                                                                Pexp_construct "()" (fControl.ml[82,3897+50]..[82,3897+52])
+                                                                None
+                                                              core_type (fControl.ml[82,3897+55]..[82,3897+61])
+                                                                Ptyp_var items
+                                                ]
+                                            ]
+                                        ]
+                                      expression (fControl.ml[83,3966+8]..[85,3998+73]) ghost
+                                        Pexp_construct "::" (fControl.ml[83,3966+8]..[85,3998+73]) ghost
+                                        Some
+                                          expression (fControl.ml[83,3966+8]..[85,3998+73]) ghost
+                                            Pexp_tuple
+                                            [
+                                              expression (fControl.ml[83,3966+8]..[85,3998+72])
+                                                Pexp_tuple
+                                                [
+                                                  expression (fControl.ml[83,3966+9]..[83,3966+11])
+                                                    Pexp_construct "[]" (fControl.ml[83,3966+9]..[83,3966+11])
+                                                    None
+                                                  expression (fControl.ml[84,3979+10]..[85,3998+71])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (fControl.ml[84,3979+11]..[84,3979+17])
+                                                        Pexp_constant Const_string("()\n",None)
+                                                      expression (fControl.ml[85,3998+12]..[85,3998+70])
+                                                        Pexp_apply
+                                                        expression (fControl.ml[85,3998+13]..[85,3998+28])
+                                                          Pexp_ident "Gramf.mk_action" (fControl.ml[85,3998+13]..[85,3998+28])
+                                                        [
+                                                          <label> ""
+                                                            expression (fControl.ml[85,3998+29]..[85,3998+69])
+                                                              Pexp_fun ""
+                                                              None
+                                                              pattern (fControl.ml[85,3998+34]..[85,3998+49])
+                                                                Ppat_constraint
+                                                                pattern (fControl.ml[85,3998+35]..[85,3998+39])
+                                                                  Ppat_var "_loc" (fControl.ml[85,3998+35]..[85,3998+39])
+                                                                core_type (fControl.ml[85,3998+42]..[85,3998+48])
+                                                                  Ptyp_constr "Locf.t" (fControl.ml[85,3998+42]..[85,3998+48])
+                                                                  []
+                                                              expression (fControl.ml[85,3998+54]..[85,3998+68]) ghost
+                                                                Pexp_constraint
+                                                                expression (fControl.ml[85,3998+55]..[85,3998+57])
+                                                                  Pexp_construct "()" (fControl.ml[85,3998+55]..[85,3998+57])
+                                                                  None
+                                                                core_type (fControl.ml[85,3998+60]..[85,3998+66])
+                                                                  Ptyp_var items
+                                                        ]
+                                                    ]
+                                                ]
+                                              expression (fControl.ml[85,3998+72]..[85,3998+73]) ghost
+                                                Pexp_construct "[]" (fControl.ml[85,3998+72]..[85,3998+73]) ghost
+                                                None
+                                            ]
+                                    ]
+                            ]
+                    ]
+                ]
+          ]
+  structure_item (fControl.ml[86,4074+0]..[89,4139+58])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fControl.ml[86,4074+4]..[86,4074+6])
+          Ppat_construct "()" (fControl.ml[86,4074+4]..[86,4074+6])
+          None
+        expression (fControl.ml[87,4083+2]..[89,4139+58])
+          Pexp_apply
+          expression (fControl.ml[87,4083+2]..[87,4083+15])
+            Pexp_ident "Fdir.register" (fControl.ml[87,4083+2]..[87,4083+15])
+          [
+            <label> ""
+              expression (fControl.ml[88,4099+4]..[89,4139+58])
+                Pexp_tuple
+                [
+                  expression (fControl.ml[88,4099+5]..[88,4099+38])
+                    Pexp_apply
+                    expression (fControl.ml[88,4099+6]..[88,4099+27])
+                      Pexp_ident "Tokenf.name_of_string" (fControl.ml[88,4099+6]..[88,4099+27])
+                    [
+                      <label> ""
+                        expression (fControl.ml[88,4099+28]..[88,4099+37])
+                          Pexp_constant Const_string("control",None)
+                    ]
+                  expression (fControl.ml[89,4139+6]..[89,4139+57])
+                    Pexp_fun ""
+                    None
+                    pattern (fControl.ml[89,4139+11]..[89,4139+14])
+                      Ppat_var "loc" (fControl.ml[89,4139+11]..[89,4139+14])
+                    expression (fControl.ml[89,4139+16]..[89,4139+56]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fControl.ml[89,4139+16]..[89,4139+17])
+                        Ppat_any
+                      expression (fControl.ml[89,4139+19]..[89,4139+56]) ghost
+                        Pexp_fun ""
+                        None
+                        pattern (fControl.ml[89,4139+19]..[89,4139+20])
+                          Ppat_var "c" (fControl.ml[89,4139+19]..[89,4139+20])
+                        expression (fControl.ml[89,4139+25]..[89,4139+56])
+                          Pexp_apply
+                          expression (fControl.ml[89,4139+25]..[89,4139+43])
+                            Pexp_ident "Gramf.parse_string" (fControl.ml[89,4139+25]..[89,4139+43])
+                          [
+                            <label> "loc"
+                              expression (fControl.ml[89,4139+45]..[89,4139+48])
+                                Pexp_ident "loc" (fControl.ml[89,4139+45]..[89,4139+48])
+                            <label> ""
+                              expression (fControl.ml[89,4139+49]..[89,4139+54])
+                                Pexp_ident "items" (fControl.ml[89,4139+49]..[89,4139+54])
+                            <label> ""
+                              expression (fControl.ml[89,4139+55]..[89,4139+56])
+                                Pexp_ident "c" (fControl.ml[89,4139+55]..[89,4139+56])
+                          ]
+                ]
+          ]
+    ]
+]

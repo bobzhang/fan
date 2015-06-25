@@ -1,0 +1,2233 @@
+[
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "loc_of" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_ident "Ast_loc.loc_of" (ast_gen.ml[]..[])
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "<+>" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_open Fresh ""Locf.Ops" (ast_gen.ml[]..[])"
+          expression (ast_gen.ml[]..[])
+            Pexp_ident "<+>" (ast_gen.ml[]..[])
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "<+>" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "<+>" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "loc_of" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                            ]
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "loc_of" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "sem" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_constraint
+                pattern (ast_gen.ml[]..[])
+                  Ppat_var "a" (ast_gen.ml[]..[])
+                core_type (ast_gen.ml[]..[])
+                  Ptyp_var a
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_constraint
+                      pattern (ast_gen.ml[]..[])
+                        Ppat_var "b" (ast_gen.ml[]..[])
+                      core_type (ast_gen.ml[]..[])
+                        Ptyp_var a
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Sem"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "com" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Com"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "app" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "App"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "apply" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Apply"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "sta" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Sta"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "bar" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Bar"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "anda" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "And"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "dot" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Dot"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "par" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "x" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "_loc" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "loc_of" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "x" (ast_gen.ml[]..[])
+                      ]
+                ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Par"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "x" (ast_gen.ml[]..[])
+                      ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "seq" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "_loc" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "loc_of" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "a" (ast_gen.ml[]..[])
+                      ]
+                ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Seq"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "a" (ast_gen.ml[]..[])
+                      ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "arrow" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Arrow"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "typing" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "a" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "b" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "a" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Constraint"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "bar_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "bar" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "and_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "anda" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "sem_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "sem" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "com_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "com" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "sta_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "sta" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "dot_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listr" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "dot" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "appl_of_list" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "xs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "Ast_basic.of_listl" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "app" (ast_gen.ml[]..[])
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "xs" (ast_gen.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "seq_sem" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "ls" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_apply
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "seq" (ast_gen.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "sem_of_list" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "ls" (ast_gen.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "binds" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "bs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_constraint
+                      pattern (ast_gen.ml[]..[])
+                        Ppat_var "e" (ast_gen.ml[]..[])
+                      core_type (ast_gen.ml[]..[])
+                        Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                        []
+                    expression (ast_gen.ml[]..[])
+                      Pexp_match
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "bs" (ast_gen.ml[]..[])
+                      [
+                        <case>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_construct "[]" (ast_gen.ml[]..[])
+                            None
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "e" (ast_gen.ml[]..[])
+                        <case>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_any
+                          expression (ast_gen.ml[]..[])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_var "binds" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "and_of_list" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "bs" (ast_gen.ml[]..[])
+                                  ]
+                            ]
+                            expression (ast_gen.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (ast_gen.ml[]..[])
+                                    Ppat_var "_loc" (ast_gen.ml[]..[])
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_apply
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_ident "<+>" (ast_gen.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "binds" (ast_gen.ml[]..[])
+                                      <label> ""
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "e" (ast_gen.ml[]..[])
+                                    ]
+                              ]
+                              expression (ast_gen.ml[]..[])
+                                Pexp_coerce
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "LetIn"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_variant "Negative"
+                                          Some
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_coerce
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_ident "binds" (ast_gen.ml[]..[])
+                                          None
+                                          core_type (ast_gen.ml[]..[])
+                                            Ptyp_constr "Astf.bind" (ast_gen.ml[]..[])
+                                            []
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_coerce
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_ident "e" (ast_gen.ml[]..[])
+                                          None
+                                          core_type (ast_gen.ml[]..[])
+                                            Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                                            []
+                                      ]
+                                None
+                                core_type (ast_gen.ml[]..[])
+                                  Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                                  []
+                      ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "seq_binds" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "bs" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_constraint
+                      pattern (ast_gen.ml[]..[])
+                        Ppat_var "e" (ast_gen.ml[]..[])
+                      core_type (ast_gen.ml[]..[])
+                        Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                        []
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "List.fold_right" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_var "b" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "e" (ast_gen.ml[]..[])
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (ast_gen.ml[]..[])
+                                              Ppat_var "_loc" (ast_gen.ml[]..[])
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_apply
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_ident "<+>" (ast_gen.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_ident "b" (ast_gen.ml[]..[])
+                                                <label> ""
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_ident "e" (ast_gen.ml[]..[])
+                                              ]
+                                        ]
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_coerce
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_variant "LetIn"
+                                            Some
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_variant "Negative"
+                                                    Some
+                                                      expression (ast_gen.ml[]..[])
+                                                        Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (ast_gen.ml[]..[])
+                                                      Pexp_ident "b" (ast_gen.ml[]..[])
+                                                    None
+                                                    core_type (ast_gen.ml[]..[])
+                                                      Ptyp_constr "Astf.bind" (ast_gen.ml[]..[])
+                                                      []
+                                                  expression (ast_gen.ml[]..[])
+                                                    Pexp_coerce
+                                                    expression (ast_gen.ml[]..[])
+                                                      Pexp_ident "e" (ast_gen.ml[]..[])
+                                                    None
+                                                    core_type (ast_gen.ml[]..[])
+                                                      Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                                                      []
+                                                ]
+                                          None
+                                          core_type (ast_gen.ml[]..[])
+                                            Ptyp_constr "Astf.exp" (ast_gen.ml[]..[])
+                                            []
+                                  ]
+                            ]
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "bs" (ast_gen.ml[]..[])
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "e" (ast_gen.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "lid" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "n" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_variant "Lid"
+                      Some
+                        expression (ast_gen.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "_loc" (ast_gen.ml[]..[])
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "n" (ast_gen.ml[]..[])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "uid" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "n" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_variant "Uid"
+                      Some
+                        expression (ast_gen.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "_loc" (ast_gen.ml[]..[])
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "n" (ast_gen.ml[]..[])
+                          ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "unit" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_variant "Unit"
+                Some
+                  expression (ast_gen.ml[]..[])
+                    Pexp_ident "_loc" (ast_gen.ml[]..[])
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "ep_of_cons" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "n" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "ps" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_match
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "ps" (ast_gen.ml[]..[])
+                            [
+                              <case>
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_construct "[]" (ast_gen.ml[]..[])
+                                  None
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "uid" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "n" (ast_gen.ml[]..[])
+                                  ]
+                              <case>
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_any
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "app" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_apply
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "uid" (ast_gen.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                          <label> ""
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_ident "n" (ast_gen.ml[]..[])
+                                        ]
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_variant "Par"
+                                        Some
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_tuple
+                                            [
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_apply
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_ident "com_of_list" (ast_gen.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (ast_gen.ml[]..[])
+                                                      Pexp_ident "ps" (ast_gen.ml[]..[])
+                                                ]
+                                            ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "tuple_com_unit" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "[]" (ast_gen.ml[]..[])
+                      None
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "unit" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "_loc" (ast_gen.ml[]..[])
+                      ]
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "::" (ast_gen.ml[]..[])
+                      Some
+                        pattern (ast_gen.ml[]..[])
+                          Ppat_tuple
+                          [
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_var "p" (ast_gen.ml[]..[])
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_construct "[]" (ast_gen.ml[]..[])
+                              None
+                          ]
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "p" (ast_gen.ml[]..[])
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "y" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_variant "Par"
+                      Some
+                        expression (ast_gen.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "_loc" (ast_gen.ml[]..[])
+                            expression (ast_gen.ml[]..[])
+                              Pexp_apply
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "com_of_list" (ast_gen.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "y" (ast_gen.ml[]..[])
+                              ]
+                          ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "tuple_com" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "y" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_match
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "y" (ast_gen.ml[]..[])
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "[]" (ast_gen.ml[]..[])
+                      None
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "failwith" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_constant Const_string("tuple_com empty",None)
+                      ]
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "::" (ast_gen.ml[]..[])
+                      Some
+                        pattern (ast_gen.ml[]..[])
+                          Ppat_tuple
+                          [
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_var "x" (ast_gen.ml[]..[])
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_construct "[]" (ast_gen.ml[]..[])
+                              None
+                          ]
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "x" (ast_gen.ml[]..[])
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "::" (ast_gen.ml[]..[])
+                      Some
+                        pattern (ast_gen.ml[]..[])
+                          Ppat_tuple
+                          [
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_var "x" (ast_gen.ml[]..[])
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_any
+                          ]
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "x" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "Listf.last" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "y" (ast_gen.ml[]..[])
+                                  ]
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Par"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_apply
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "com_of_list" (ast_gen.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_ident "y" (ast_gen.ml[]..[])
+                                ]
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "tuple_sta" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "y" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_match
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "y" (ast_gen.ml[]..[])
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "[]" (ast_gen.ml[]..[])
+                      None
+                    expression (ast_gen.ml[]..[])
+                      Pexp_apply
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "failwith" (ast_gen.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_gen.ml[]..[])
+                            Pexp_constant Const_string("tuple_sta empty",None)
+                      ]
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "::" (ast_gen.ml[]..[])
+                      Some
+                        pattern (ast_gen.ml[]..[])
+                          Ppat_tuple
+                          [
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_var "x" (ast_gen.ml[]..[])
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_construct "[]" (ast_gen.ml[]..[])
+                              None
+                          ]
+                    expression (ast_gen.ml[]..[])
+                      Pexp_ident "x" (ast_gen.ml[]..[])
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_construct "::" (ast_gen.ml[]..[])
+                      Some
+                        pattern (ast_gen.ml[]..[])
+                          Ppat_tuple
+                          [
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_var "x" (ast_gen.ml[]..[])
+                            pattern (ast_gen.ml[]..[])
+                              Ppat_any
+                          ]
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "<+>" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "x" (ast_gen.ml[]..[])
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "Listf.last" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "y" (ast_gen.ml[]..[])
+                                  ]
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_variant "Par"
+                        Some
+                          expression (ast_gen.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "_loc" (ast_gen.ml[]..[])
+                              expression (ast_gen.ml[]..[])
+                                Pexp_apply
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "sta_of_list" (ast_gen.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_ident "y" (ast_gen.ml[]..[])
+                                ]
+                            ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "+>" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "f" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_var "names" (ast_gen.ml[]..[])
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_var "_loc" (ast_gen.ml[]..[])
+                          expression (ast_gen.ml[]..[])
+                            Pexp_apply
+                            expression (ast_gen.ml[]..[])
+                              Pexp_ident "loc_of" (ast_gen.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "f" (ast_gen.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_apply
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "appl_of_list" (ast_gen.ml[]..[])
+                        [
+                          <label> ""
+                            expression (ast_gen.ml[]..[])
+                              Pexp_construct "::" (ast_gen.ml[]..[])
+                              Some
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_tuple
+                                  [
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_ident "f" (ast_gen.ml[]..[])
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_apply
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "List.map" (ast_gen.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_apply
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_ident "lid" (ast_gen.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                            ]
+                                        <label> ""
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_ident "names" (ast_gen.ml[]..[])
+                                      ]
+                                  ]
+                        ]
+                ]
+          ]
+    ]
+  structure_item (ast_gen.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_gen.ml[]..[])
+          Ppat_var "meta_here" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_gen.ml[]..[])
+                Ppat_var "_loc" (ast_gen.ml[]..[])
+              expression (ast_gen.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (ast_gen.ml[]..[])
+                      Ppat_constraint
+                      pattern (ast_gen.ml[]..[])
+                        Ppat_var "location" (ast_gen.ml[]..[])
+                      core_type (ast_gen.ml[]..[])
+                        Ptyp_constr "Locf.t" (ast_gen.ml[]..[])
+                        []
+                    expression (ast_gen.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_gen.ml[]..[])
+                            Ppat_record Closed
+                            [
+                              "Locf.loc_start" (ast_gen.ml[]..[])
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_record Closed
+                                  [
+                                    "pos_fname" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "a" (ast_gen.ml[]..[])
+                                    "pos_lnum" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "b" (ast_gen.ml[]..[])
+                                    "pos_bol" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "c" (ast_gen.ml[]..[])
+                                    "pos_cnum" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "d" (ast_gen.ml[]..[])
+                                  ]
+                              "loc_end" (ast_gen.ml[]..[])
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_record Open
+                                  [
+                                    "pos_lnum" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "e" (ast_gen.ml[]..[])
+                                    "pos_bol" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "f" (ast_gen.ml[]..[])
+                                    "pos_cnum" (ast_gen.ml[]..[])
+                                      pattern (ast_gen.ml[]..[])
+                                        Ppat_var "g" (ast_gen.ml[]..[])
+                                  ]
+                              "loc_" (ast_gen.ml[]..[])
+                                pattern (ast_gen.ml[]..[])
+                                  Ppat_var "h" (ast_gen.ml[]..[])
+                            ]
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "location" (ast_gen.ml[]..[])
+                      ]
+                      expression (ast_gen.ml[]..[])
+                        Pexp_coerce
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Constraint"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Record"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_variant "Sem"
+                                          Some
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_variant "RecBind"
+                                                  Some
+                                                    expression (ast_gen.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_variant "Lid"
+                                                          Some
+                                                            expression (ast_gen.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_constant Const_string("loc_start",None)
+                                                              ]
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_variant "Record"
+                                                          Some
+                                                            expression (ast_gen.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_variant "Sem"
+                                                                  Some
+                                                                    expression (ast_gen.ml[]..[])
+                                                                      Pexp_tuple
+                                                                      [
+expression (ast_gen.ml[]..[])
+  Pexp_ident "_loc" (ast_gen.ml[]..[])
+expression (ast_gen.ml[]..[])
+  Pexp_variant "RecBind"
+  Some
+    expression (ast_gen.ml[]..[])
+      Pexp_tuple
+      [
+        expression (ast_gen.ml[]..[])
+          Pexp_ident "_loc" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "Lid"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_constant Const_string("pos_fname",None)
+              ]
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "Str"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_apply
+                  expression (ast_gen.ml[]..[])
+                    Pexp_ident "String.escaped" (ast_gen.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_gen.ml[]..[])
+                        Pexp_ident "a" (ast_gen.ml[]..[])
+                  ]
+              ]
+      ]
+expression (ast_gen.ml[]..[])
+  Pexp_variant "Sem"
+  Some
+    expression (ast_gen.ml[]..[])
+      Pexp_tuple
+      [
+        expression (ast_gen.ml[]..[])
+          Pexp_ident "_loc" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "RecBind"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_constant Const_string("pos_lnum",None)
+                      ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Int"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_apply
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                          [
+                            <label> ""
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "b" (ast_gen.ml[]..[])
+                          ]
+                      ]
+              ]
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "Sem"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "RecBind"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Lid"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_constant Const_string("pos_bol",None)
+                              ]
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Int"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "c" (ast_gen.ml[]..[])
+                                  ]
+                              ]
+                      ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "RecBind"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Lid"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_constant Const_string("pos_cnum",None)
+                              ]
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Int"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "d" (ast_gen.ml[]..[])
+                                  ]
+                              ]
+                      ]
+              ]
+      ]
+                                                                      ]
+                                                              ]
+                                                      ]
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_variant "Sem"
+                                                  Some
+                                                    expression (ast_gen.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_variant "RecBind"
+                                                          Some
+                                                            expression (ast_gen.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_variant "Lid"
+                                                                  Some
+                                                                    expression (ast_gen.ml[]..[])
+                                                                      Pexp_tuple
+                                                                      [
+expression (ast_gen.ml[]..[])
+  Pexp_ident "_loc" (ast_gen.ml[]..[])
+expression (ast_gen.ml[]..[])
+  Pexp_constant Const_string("loc_end",None)
+                                                                      ]
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_variant "Record"
+                                                                  Some
+                                                                    expression (ast_gen.ml[]..[])
+                                                                      Pexp_tuple
+                                                                      [
+expression (ast_gen.ml[]..[])
+  Pexp_ident "_loc" (ast_gen.ml[]..[])
+expression (ast_gen.ml[]..[])
+  Pexp_variant "Sem"
+  Some
+    expression (ast_gen.ml[]..[])
+      Pexp_tuple
+      [
+        expression (ast_gen.ml[]..[])
+          Pexp_ident "_loc" (ast_gen.ml[]..[])
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "RecBind"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_constant Const_string("pos_fname",None)
+                      ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Str"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_apply
+                          expression (ast_gen.ml[]..[])
+                            Pexp_ident "String.escaped" (ast_gen.ml[]..[])
+                          [
+                            <label> ""
+                              expression (ast_gen.ml[]..[])
+                                Pexp_ident "a" (ast_gen.ml[]..[])
+                          ]
+                      ]
+              ]
+        expression (ast_gen.ml[]..[])
+          Pexp_variant "Sem"
+          Some
+            expression (ast_gen.ml[]..[])
+              Pexp_tuple
+              [
+                expression (ast_gen.ml[]..[])
+                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "RecBind"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Lid"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_constant Const_string("pos_lnum",None)
+                              ]
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "Int"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_gen.ml[]..[])
+                                    Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_gen.ml[]..[])
+                                        Pexp_ident "e" (ast_gen.ml[]..[])
+                                  ]
+                              ]
+                      ]
+                expression (ast_gen.ml[]..[])
+                  Pexp_variant "Sem"
+                  Some
+                    expression (ast_gen.ml[]..[])
+                      Pexp_tuple
+                      [
+                        expression (ast_gen.ml[]..[])
+                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "RecBind"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_constant Const_string("pos_bol",None)
+                                      ]
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Int"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_apply
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_ident "f" (ast_gen.ml[]..[])
+                                          ]
+                                      ]
+                              ]
+                        expression (ast_gen.ml[]..[])
+                          Pexp_variant "RecBind"
+                          Some
+                            expression (ast_gen.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_constant Const_string("pos_cnum",None)
+                                      ]
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Int"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_apply
+                                          expression (ast_gen.ml[]..[])
+                                            Pexp_ident "string_of_int" (ast_gen.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (ast_gen.ml[]..[])
+                                                Pexp_ident "g" (ast_gen.ml[]..[])
+                                          ]
+                                      ]
+                              ]
+                      ]
+              ]
+      ]
+                                                                      ]
+                                                              ]
+                                                        expression (ast_gen.ml[]..[])
+                                                          Pexp_variant "RecBind"
+                                                          Some
+                                                            expression (ast_gen.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_variant "Lid"
+                                                                  Some
+                                                                    expression (ast_gen.ml[]..[])
+                                                                      Pexp_tuple
+                                                                      [
+expression (ast_gen.ml[]..[])
+  Pexp_ident "_loc" (ast_gen.ml[]..[])
+expression (ast_gen.ml[]..[])
+  Pexp_constant Const_string("loc_",None)
+                                                                      ]
+                                                                expression (ast_gen.ml[]..[])
+                                                                  Pexp_variant "Bool"
+                                                                  Some
+                                                                    expression (ast_gen.ml[]..[])
+                                                                      Pexp_tuple
+                                                                      [
+expression (ast_gen.ml[]..[])
+  Pexp_ident "_loc" (ast_gen.ml[]..[])
+expression (ast_gen.ml[]..[])
+  Pexp_ident "h" (ast_gen.ml[]..[])
+                                                                      ]
+                                                              ]
+                                                      ]
+                                              ]
+                                      ]
+                                expression (ast_gen.ml[]..[])
+                                  Pexp_variant "Dot"
+                                  Some
+                                    expression (ast_gen.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_variant "Uid"
+                                          Some
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_constant Const_string("Locf",None)
+                                              ]
+                                        expression (ast_gen.ml[]..[])
+                                          Pexp_variant "Lid"
+                                          Some
+                                            expression (ast_gen.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_ident "_loc" (ast_gen.ml[]..[])
+                                                expression (ast_gen.ml[]..[])
+                                                  Pexp_constant Const_string("t",None)
+                                              ]
+                                      ]
+                              ]
+                        None
+                        core_type (ast_gen.ml[]..[])
+                          Ptyp_constr "Astf.ep" (ast_gen.ml[]..[])
+                          []
+                ]
+          ]
+    ]
+]

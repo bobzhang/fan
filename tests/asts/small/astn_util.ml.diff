@@ -1,0 +1,144 @@
+16c16
+<               expression (astn_util.ml[2,11+27]..[2,11+54])
+---
+>               expression (astn_util.ml[2,11+26]..[2,11+55])
+48c48
+<               expression (astn_util.ml[3,67+27]..[3,67+54])
+---
+>               expression (astn_util.ml[3,67+26]..[3,67+55])
+80c80
+<               expression (astn_util.ml[4,123+27]..[4,123+54])
+---
+>               expression (astn_util.ml[4,123+26]..[4,123+55])
+112c112
+<               expression (astn_util.ml[5,179+29]..[5,179+58])
+---
+>               expression (astn_util.ml[5,179+28]..[5,179+59])
+144c144
+<               expression (astn_util.ml[6,239+27]..[6,239+54])
+---
+>               expression (astn_util.ml[6,239+26]..[6,239+55])
+176c176
+<               expression (astn_util.ml[7,295+27]..[7,295+54])
+---
+>               expression (astn_util.ml[7,295+26]..[7,295+55])
+208c208
+<               expression (astn_util.ml[8,351+28]..[8,351+55])
+---
+>               expression (astn_util.ml[8,351+27]..[8,351+56])
+240c240
+<               expression (astn_util.ml[9,408+27]..[9,408+54])
+---
+>               expression (astn_util.ml[9,408+26]..[9,408+55])
+310c310
+<               expression (astn_util.ml[12,530+29]..[12,530+58])
+---
+>               expression (astn_util.ml[12,530+28]..[12,530+59])
+342c342
+<               expression (astn_util.ml[13,590+30]..[13,590+64])
+---
+>               expression (astn_util.ml[13,590+29]..[13,590+65])
+562c562
+<                     expression (astn_util.ml[21,1085+36]..[21,1085+50])
+---
+>                     expression (astn_util.ml[21,1085+35]..[21,1085+51])
+586c586
+<               expression (astn_util.ml[25,1170+7]..[32,1402+29])
+---
+>               expression (astn_util.ml[25,1170+6]..[32,1402+30])
+597c597
+<                     expression (astn_util.ml[27,1208+12]..[32,1402+28])
+---
+>                     expression (astn_util.ml[27,1208+11]..[32,1402+29])
+627c627
+<                             expression (astn_util.ml[31,1321+16]..[32,1402+28])
+---
+>                             expression (astn_util.ml[31,1321+16]..[32,1402+28]) ghost
+638c638
+<                                       expression (astn_util.ml[31,1321+36]..[31,1321+57])
+---
+>                                       expression (astn_util.ml[31,1321+36]..[31,1321+57]) ghost
+646c646
+<                                       expression (astn_util.ml[31,1321+59]..[31,1321+75])
+---
+>                                       expression (astn_util.ml[31,1321+59]..[31,1321+75]) ghost
+717c717
+<         expression (astn_util.ml[35,1521+8]..[35,1521+20])
+---
+>         expression (astn_util.ml[35,1521+8]..[35,1521+20]) ghost
+743c743
+<                 Ppat_construct "::" (astn_util.ml[37,1563+26]..[37,1563+31])
+---
+>                 Ppat_construct "::" (astn_util.ml[37,1563+27]..[37,1563+29])
+745c745
+<                   pattern (astn_util.ml[37,1563+26]..[37,1563+31])
+---
+>                   pattern (astn_util.ml[37,1563+26]..[37,1563+31]) ghost
+762c762
+<                   expression (astn_util.ml[37,1563+50]..[37,1563+63])
+---
+>                   expression (astn_util.ml[37,1563+49]..[37,1563+64])
+785c785
+<               expression (astn_util.ml[41,1664+7]..[44,1767+34])
+---
+>               expression (astn_util.ml[41,1664+6]..[44,1767+35])
+800c800
+<                           expression (astn_util.ml[42,1684+28]..[42,1684+61])
+---
+>                           expression (astn_util.ml[42,1684+27]..[42,1684+62])
+809c809
+<                                 expression (astn_util.ml[42,1684+43]..[42,1684+60])
+---
+>                                 expression (astn_util.ml[42,1684+42]..[42,1684+61])
+825c825
+<                       Ppat_construct "::" (astn_util.ml[43,1747+9]..[43,1747+14])
+---
+>                       Ppat_construct "::" (astn_util.ml[43,1747+10]..[43,1747+12])
+827c827
+<                         pattern (astn_util.ml[43,1747+9]..[43,1747+14])
+---
+>                         pattern (astn_util.ml[43,1747+9]..[43,1747+14]) ghost
+844c844
+<                         expression (astn_util.ml[44,1767+20]..[44,1767+33])
+---
+>                         expression (astn_util.ml[44,1767+19]..[44,1767+34])
+868c868
+<               expression (astn_util.ml[48,1839+7]..[51,1942+34])
+---
+>               expression (astn_util.ml[48,1839+6]..[51,1942+35])
+883c883
+<                           expression (astn_util.ml[49,1859+28]..[49,1859+61])
+---
+>                           expression (astn_util.ml[49,1859+27]..[49,1859+62])
+892c892
+<                                 expression (astn_util.ml[49,1859+43]..[49,1859+60])
+---
+>                                 expression (astn_util.ml[49,1859+42]..[49,1859+61])
+908c908
+<                       Ppat_construct "::" (astn_util.ml[50,1922+9]..[50,1922+14])
+---
+>                       Ppat_construct "::" (astn_util.ml[50,1922+10]..[50,1922+12])
+910c910
+<                         pattern (astn_util.ml[50,1922+9]..[50,1922+14])
+---
+>                         pattern (astn_util.ml[50,1922+9]..[50,1922+14]) ghost
+927c927
+<                         expression (astn_util.ml[51,1942+20]..[51,1942+33])
+---
+>                         expression (astn_util.ml[51,1942+19]..[51,1942+34])
+951c951
+<               expression (astn_util.ml[55,2009+7]..[56,2025+74])
+---
+>               expression (astn_util.ml[55,2009+6]..[56,2025+75])
+972c972
+<                           expression (astn_util.ml[56,2025+48]..[56,2025+73])
+---
+>                           expression (astn_util.ml[56,2025+47]..[56,2025+74])
+975c975
+<                               expression (astn_util.ml[56,2025+48]..[56,2025+73])
+---
+>                               expression (astn_util.ml[56,2025+48]..[56,2025+73]) ghost
+980c980
+<                                   expression (astn_util.ml[56,2025+54]..[56,2025+72])
+---
+>                                   expression (astn_util.ml[56,2025+53]..[56,2025+73])

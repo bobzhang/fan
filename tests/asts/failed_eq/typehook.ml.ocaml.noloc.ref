@@ -1,0 +1,2314 @@
+[
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "pp_print_mtyps" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_ident "Sigs_util.pp_print_mtyps" (typehook.ml[]..[])
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "pp_print_types" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_ident "Sigs_util.pp_print_types" (typehook.ml[]..[])
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "eprintf" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_ident "Format.eprintf" (typehook.ml[]..[])
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_open Fresh "Util" (typehook.ml[]..[])
+  structure_item (typehook.ml[]..[])
+    Pstr_open Fresh "Ast_basic" (typehook.ml[]..[])
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "filters" (typehook.ml[]..[])
+        expression (typehook.ml[]..[]) 
+          Pexp_constraint
+          expression (typehook.ml[]..[])
+            Pexp_apply
+            expression (typehook.ml[]..[])
+              Pexp_ident "Hashtbl.create" (typehook.ml[]..[])
+            [
+              <label> ""
+                expression (typehook.ml[]..[])
+                  Pexp_constant Const_int 30
+            ]
+          core_type (typehook.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (typehook.ml[]..[])
+            [
+              core_type (typehook.ml[]..[])
+                Ptyp_constr "Sigs_util.plugin_name" (typehook.ml[]..[])
+                []
+              core_type (typehook.ml[]..[])
+                Ptyp_constr "Sigs_util.plugin" (typehook.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "show_code" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_apply
+          expression (typehook.ml[]..[])
+            Pexp_ident "ref" (typehook.ml[]..[])
+          [
+            <label> ""
+              expression (typehook.ml[]..[])
+                Pexp_construct "false" (typehook.ml[]..[])
+                None
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "print_collect_mtyps" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_apply
+          expression (typehook.ml[]..[])
+            Pexp_ident "ref" (typehook.ml[]..[])
+          [
+            <label> ""
+              expression (typehook.ml[]..[])
+                Pexp_construct "false" (typehook.ml[]..[])
+                None
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "register" (typehook.ml[]..[])
+        expression (typehook.ml[]..[]) 
+          Pexp_fun "?filter"
+          None
+          pattern (typehook.ml[]..[])
+            Ppat_var "filter" (typehook.ml[]..[])
+          expression (typehook.ml[]..[]) 
+            Pexp_fun "?position"
+            None
+            pattern (typehook.ml[]..[])
+              Ppat_var "position" (typehook.ml[]..[])
+            expression (typehook.ml[]..[])
+              Pexp_function
+              [
+                <case>
+                  pattern (typehook.ml[]..[])
+                    Ppat_tuple
+                    [
+                      pattern (typehook.ml[]..[])
+                        Ppat_var "name" (typehook.ml[]..[])
+                      pattern (typehook.ml[]..[])
+                        Ppat_var "transform" (typehook.ml[]..[])
+                    ]
+                  expression (typehook.ml[]..[])
+                    Pexp_ifthenelse
+                    expression (typehook.ml[]..[])
+                      Pexp_apply
+                      expression (typehook.ml[]..[])
+                        Pexp_ident "Hashtbl.mem" (typehook.ml[]..[])
+                      [
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "filters" (typehook.ml[]..[])
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "name" (typehook.ml[]..[])
+                      ]
+                    expression (typehook.ml[]..[])
+                      Pexp_apply
+                      expression (typehook.ml[]..[])
+                        Pexp_ident "eprintf" (typehook.ml[]..[])
+                      [
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_constant Const_string("Warning:%s filter already exists!@.",None)
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "name" (typehook.ml[]..[])
+                      ]
+                    Some
+                      expression (typehook.ml[]..[])
+                        Pexp_apply
+                        expression (typehook.ml[]..[])
+                          Pexp_ident "Hashtbl.add" (typehook.ml[]..[])
+                        [
+                          <label> ""
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "filters" (typehook.ml[]..[])
+                          <label> ""
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "name" (typehook.ml[]..[])
+                          <label> ""
+                            expression (typehook.ml[]..[])
+                              Pexp_record
+                              [
+                                "transform" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "transform" (typehook.ml[]..[])
+                                "position" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "position" (typehook.ml[]..[])
+                                "filter" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "filter" (typehook.ml[]..[])
+                              ]
+                              None
+                        ]
+              ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "show_modules" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_construct "()" (typehook.ml[]..[])
+                None
+              expression (typehook.ml[]..[])
+                Pexp_sequence
+                expression (typehook.ml[]..[])
+                  Pexp_apply
+                  expression (typehook.ml[]..[])
+                    Pexp_ident "Hashtbl.iter" (typehook.ml[]..[])
+                  [
+                    <label> ""
+                      expression (typehook.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (typehook.ml[]..[])
+                              Ppat_var "key" (typehook.ml[]..[])
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_any
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "Format.printf" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_constant Const_string("%s@ ",None)
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "key" (typehook.ml[]..[])
+                                    ]
+                              ]
+                        ]
+                    <label> ""
+                      expression (typehook.ml[]..[])
+                        Pexp_ident "filters" (typehook.ml[]..[])
+                  ]
+                expression (typehook.ml[]..[])
+                  Pexp_apply
+                  expression (typehook.ml[]..[])
+                    Pexp_ident "print_newline" (typehook.ml[]..[])
+                  [
+                    <label> ""
+                      expression (typehook.ml[]..[])
+                        Pexp_construct "()" (typehook.ml[]..[])
+                        None
+                  ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "plugin_add" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_var "plugin" (typehook.ml[]..[])
+              expression (typehook.ml[]..[])
+                Pexp_apply
+                expression (typehook.ml[]..[])
+                  Pexp_try
+                  expression (typehook.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (typehook.ml[]..[])
+                          Ppat_var "v" (typehook.ml[]..[])
+                        expression (typehook.ml[]..[])
+                          Pexp_apply
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "Hashtbl.find" (typehook.ml[]..[])
+                          [
+                            <label> ""
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "filters" (typehook.ml[]..[])
+                            <label> ""
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "plugin" (typehook.ml[]..[])
+                          ]
+                    ]
+                    expression (typehook.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_construct "()" (typehook.ml[]..[])
+                            None
+                          expression (typehook.ml[]..[])
+                            Pexp_ifthenelse
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "@@" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "not" (typehook.ml[]..[])
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "List.exists" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_tuple
+                                                [
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "n" (typehook.ml[]..[])
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_any
+                                                ]
+                                              expression (typehook.ml[]..[])
+                                                Pexp_apply
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "=" (typehook.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_ident "n" (typehook.ml[]..[])
+                                                  <label> ""
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_ident "plugin" (typehook.ml[]..[])
+                                                ]
+                                          ]
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "!" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "State.current_filters" (typehook.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "Ref.modify" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "State.current_filters" (typehook.ml[]..[])
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_var "x" (typehook.ml[]..[])
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "cons" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "plugin" (typehook.ml[]..[])
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "v" (typehook.ml[]..[])
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "x" (typehook.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                            Some
+                              expression (typehook.ml[]..[])
+                                Pexp_apply
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "eprintf" (typehook.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[]..[])
+                                      Pexp_constant Const_string("<Warning> plugin %s has already been loaded",None)
+                                  <label> ""
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "plugin" (typehook.ml[]..[])
+                                ]
+                      ]
+                  [
+                    <case>
+                      pattern (typehook.ml[]..[])
+                        Ppat_construct "Not_found" (typehook.ml[]..[])
+                        None
+                      expression (typehook.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (typehook.ml[]..[])
+                              Ppat_construct "()" (typehook.ml[]..[])
+                              None
+                            expression (typehook.ml[]..[])
+                              Pexp_sequence
+                              expression (typehook.ml[]..[])
+                                Pexp_apply
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "show_modules" (typehook.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[]..[])
+                                      Pexp_construct "()" (typehook.ml[]..[])
+                                      None
+                                ]
+                              expression (typehook.ml[]..[])
+                                Pexp_apply
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "failwithf" (typehook.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (typehook.ml[]..[])
+                                      Pexp_constant Const_string("plugins %s not found ",None)
+                                  <label> ""
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "plugin" (typehook.ml[]..[])
+                                ]
+                        ]
+                  ]
+                [
+                  <label> ""
+                    expression (typehook.ml[]..[])
+                      Pexp_construct "()" (typehook.ml[]..[])
+                      None
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "plugin_remove" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_var "plugin" (typehook.ml[]..[])
+              expression (typehook.ml[]..[])
+                Pexp_apply
+                expression (typehook.ml[]..[])
+                  Pexp_ident "Ref.modify" (typehook.ml[]..[])
+                [
+                  <label> ""
+                    expression (typehook.ml[]..[])
+                      Pexp_ident "State.current_filters" (typehook.ml[]..[])
+                  <label> ""
+                    expression (typehook.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_var "x" (typehook.ml[]..[])
+                          expression (typehook.ml[]..[])
+                            Pexp_apply
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "Listf.remove" (typehook.ml[]..[])
+                            [
+                              <label> ""
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "plugin" (typehook.ml[]..[])
+                              <label> ""
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "x" (typehook.ml[]..[])
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_class_type
+    [
+      class_type_declaration (typehook.ml[]..[])
+        pci_virt = Concrete
+        pci_params =
+          []
+        pci_name = "traversal" (typehook.ml[]..[])
+        pci_expr =
+          class_type (typehook.ml[]..[])
+            Pcty_signature
+            class_signature
+              core_type (typehook.ml[]..[])
+                Ptyp_any
+              [
+                class_type_field (typehook.ml[]..[])
+                  Pctf_inherit
+                  class_type (typehook.ml[]..[])
+                    Pcty_constr "Objs.map" (typehook.ml[]..[])
+                    []
+                class_type_field (typehook.ml[]..[])
+                  Pctf_method "get_cur_mtyps" Public Concrete
+                    core_type (typehook.ml[]..[])
+                      Ptyp_constr "Sigs_util.mtyps" (typehook.ml[]..[])
+                      []
+                class_type_field (typehook.ml[]..[])
+                  Pctf_method "get_cur_and_types" Public Concrete
+                    core_type (typehook.ml[]..[])
+                      Ptyp_constr "Sigs_util.and_types" (typehook.ml[]..[])
+                      []
+                class_type_field (typehook.ml[]..[])
+                  Pctf_method "update_cur_and_types" Public Concrete
+                    core_type (typehook.ml[]..[])
+                      Ptyp_arrow
+                      ""
+                      core_type (typehook.ml[]..[])
+                        Ptyp_arrow
+                        ""
+                        core_type (typehook.ml[]..[])
+                          Ptyp_constr "Sigs_util.and_types" (typehook.ml[]..[])
+                          []
+                        core_type (typehook.ml[]..[])
+                          Ptyp_constr "Sigs_util.and_types" (typehook.ml[]..[])
+                          []
+                      core_type (typehook.ml[]..[])
+                        Ptyp_constr "unit" (typehook.ml[]..[])
+                        []
+                class_type_field (typehook.ml[]..[])
+                  Pctf_method "update_cur_mtyps" Public Concrete
+                    core_type (typehook.ml[]..[])
+                      Ptyp_arrow
+                      ""
+                      core_type (typehook.ml[]..[])
+                        Ptyp_arrow
+                        ""
+                        core_type (typehook.ml[]..[])
+                          Ptyp_constr "Sigs_util.mtyps" (typehook.ml[]..[])
+                          []
+                        core_type (typehook.ml[]..[])
+                          Ptyp_constr "Sigs_util.mtyps" (typehook.ml[]..[])
+                          []
+                      core_type (typehook.ml[]..[])
+                        Ptyp_constr "unit" (typehook.ml[]..[])
+                        []
+              ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "make_filter" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (typehook.ml[]..[])
+                    Ppat_var "s" (typehook.ml[]..[])
+                  pattern (typehook.ml[]..[])
+                    Ppat_var "code" (typehook.ml[]..[])
+                ]
+              expression (typehook.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (typehook.ml[]..[])
+                      Ppat_var "f" (typehook.ml[]..[])
+                    expression (typehook.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_constraint
+                            pattern (typehook.ml[]..[])
+                              Ppat_variant "StExp"
+                              Some
+                                pattern (typehook.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_var "_loc" (typehook.ml[]..[])
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_variant "Lid"
+                                      Some
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_any
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_var "s'" (typehook.ml[]..[])
+                                          ]
+                                  ]
+                            core_type (typehook.ml[]..[])
+                              Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                              []
+                          <when>
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "=" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "s" (typehook.ml[]..[])
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "s'" (typehook.ml[]..[])
+                              ]
+                          expression (typehook.ml[]..[])
+                            Pexp_apply
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "Fill.stru" (typehook.ml[]..[])
+                            [
+                              <label> ""
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "_loc" (typehook.ml[]..[])
+                              <label> ""
+                                expression (typehook.ml[]..[])
+                                  Pexp_ident "code" (typehook.ml[]..[])
+                            ]
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_var "e" (typehook.ml[]..[])
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "e" (typehook.ml[]..[])
+                      ]
+                ]
+                expression (typehook.ml[]..[])
+                  Pexp_tuple
+                  [
+                    expression (typehook.ml[]..[])
+                      Pexp_apply
+                      expression (typehook.ml[]..[])
+                        Pexp_ident "^" (typehook.ml[]..[])
+                      [
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_constant Const_string("filter_",None)
+                        <label> ""
+                          expression (typehook.ml[]..[])
+                            Pexp_ident "s" (typehook.ml[]..[])
+                      ]
+                    expression (typehook.ml[]..[])
+                      Pexp_send "stru"
+                      expression (typehook.ml[]..[])
+                        Pexp_apply
+                        expression (typehook.ml[]..[])
+                          Pexp_ident "Objs.map_stru" (typehook.ml[]..[])
+                        [
+                          <label> ""
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "f" (typehook.ml[]..[])
+                        ]
+                  ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "iterate_code" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_var "sloc" (typehook.ml[]..[])
+              expression (typehook.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (typehook.ml[]..[])
+                      Ppat_var "mtyps" (typehook.ml[]..[])
+                    expression (typehook.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (typehook.ml[]..[])
+                                Ppat_any
+                              pattern (typehook.ml[]..[])
+                                Ppat_constraint
+                                pattern (typehook.ml[]..[])
+                                  Ppat_var "x" (typehook.ml[]..[])
+                                core_type (typehook.ml[]..[])
+                                  Ptyp_constr "Sigs_util.plugin" (typehook.ml[]..[])
+                                  []
+                            ]
+                          expression (typehook.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (typehook.ml[]..[])
+                                  Ppat_var "acc" (typehook.ml[]..[])
+                                expression (typehook.ml[]..[])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_var "mtyps" (typehook.ml[]..[])
+                                      expression (typehook.ml[]..[])
+                                        Pexp_match
+                                        expression (typehook.ml[]..[])
+                                          Pexp_field
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "x" (typehook.ml[]..[])
+                                          "filter" (typehook.ml[]..[])
+                                        [
+                                          <case>
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_construct "Some" (typehook.ml[]..[])
+                                              Some
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_var "x" (typehook.ml[]..[])
+                                            expression (typehook.ml[]..[])
+                                              Pexp_apply
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "Sigs_util.apply_filter" (typehook.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "x" (typehook.ml[]..[])
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "mtyps" (typehook.ml[]..[])
+                                              ]
+                                          <case>
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_construct "None" (typehook.ml[]..[])
+                                              None
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "mtyps" (typehook.ml[]..[])
+                                        ]
+                                  ]
+                                  expression (typehook.ml[]..[])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_var "code" (typehook.ml[]..[])
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_field
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "x" (typehook.ml[]..[])
+                                            "transform" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "mtyps" (typehook.ml[]..[])
+                                          ]
+                                    ]
+                                    expression (typehook.ml[]..[])
+                                      Pexp_match
+                                      expression (typehook.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (typehook.ml[]..[])
+                                            Pexp_field
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "x" (typehook.ml[]..[])
+                                            "position" (typehook.ml[]..[])
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "code" (typehook.ml[]..[])
+                                        ]
+                                      [
+                                        <case>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "Some" (typehook.ml[]..[])
+                                                Some
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "x" (typehook.ml[]..[])
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "Some" (typehook.ml[]..[])
+                                                Some
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "code" (typehook.ml[]..[])
+                                            ]
+                                          expression (typehook.ml[]..[])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "name" (typehook.ml[]..[])
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "f" (typehook.ml[]..[])
+                                                  ]
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "make_filter" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "x" (typehook.ml[]..[])
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "code" (typehook.ml[]..[])
+                                                        ]
+                                                  ]
+                                            ]
+                                            expression (typehook.ml[]..[])
+                                              Pexp_sequence
+                                              expression (typehook.ml[]..[])
+                                                Pexp_apply
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "Ast_filters.register_stru_filter" (typehook.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "name" (typehook.ml[]..[])
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "f" (typehook.ml[]..[])
+                                                      ]
+                                                ]
+                                              expression (typehook.ml[]..[])
+                                                Pexp_sequence
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "Ast_filters.use_implem_filter" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "name" (typehook.ml[]..[])
+                                                  ]
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "acc" (typehook.ml[]..[])
+                                        <case>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "None" (typehook.ml[]..[])
+                                                None
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "Some" (typehook.ml[]..[])
+                                                Some
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "code" (typehook.ml[]..[])
+                                            ]
+                                          expression (typehook.ml[]..[])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_var "code" (typehook.ml[]..[])
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "Fill.stru" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "sloc" (typehook.ml[]..[])
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "code" (typehook.ml[]..[])
+                                                  ]
+                                            ]
+                                            expression (typehook.ml[]..[]) 
+                                              Pexp_coerce
+                                              expression (typehook.ml[]..[])
+                                                Pexp_variant "Sem"
+                                                Some
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "sloc" (typehook.ml[]..[])
+                                                      expression (typehook.ml[]..[]) 
+                                                        Pexp_coerce
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "acc" (typehook.ml[]..[])
+                                                        None
+                                                        core_type (typehook.ml[]..[])
+                                                          Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                          []
+                                                      expression (typehook.ml[]..[]) 
+                                                        Pexp_coerce
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "code" (typehook.ml[]..[])
+                                                        None
+                                                        core_type (typehook.ml[]..[])
+                                                          Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                          []
+                                                    ]
+                                              None
+                                              core_type (typehook.ml[]..[])
+                                                Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                []
+                                        <case>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_any
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "None" (typehook.ml[]..[])
+                                                None
+                                            ]
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "acc" (typehook.ml[]..[])
+                                      ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "traversal" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_construct "()" (typehook.ml[]..[])
+                None
+              expression (typehook.ml[]..[]) 
+                Pexp_constraint
+                expression (typehook.ml[]..[])
+                  Pexp_object
+                  class_structure
+                    pattern (typehook.ml[]..[])
+                      Ppat_constraint
+                      pattern (typehook.ml[]..[])
+                        Ppat_var "self" (typehook.ml[]..[])
+                      core_type (typehook.ml[]..[])
+                        Ptyp_var self_type
+                    [
+                      class_field (typehook.ml[]..[])
+                        Pcf_inherit Fresh
+                          class_expr (typehook.ml[]..[])
+                            Pcl_constr "Objs.map" (typehook.ml[]..[])
+                            []
+                          Some
+                            "super"
+                      class_field (typehook.ml[]..[])
+                        Pcf_val Immutable
+                          "mtyps_stack" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_constraint
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "Stack.create" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_construct "()" (typehook.ml[]..[])
+                                    None
+                              ]
+                            core_type (typehook.ml[]..[])
+                              Ptyp_constr "Stack.t" (typehook.ml[]..[])
+                              [
+                                core_type (typehook.ml[]..[])
+                                  Ptyp_constr "Sigs_util.mtyps" (typehook.ml[]..[])
+                                  []
+                              ]
+                      class_field (typehook.ml[]..[])
+                        Pcf_val Mutable
+                          "cur_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_constraint
+                            expression (typehook.ml[]..[])
+                              Pexp_construct "[]" (typehook.ml[]..[])
+                              None
+                            core_type (typehook.ml[]..[])
+                              Ptyp_constr "Sigs_util.and_types" (typehook.ml[]..[])
+                              []
+                      class_field (typehook.ml[]..[])
+                        Pcf_val Mutable
+                          "and_group" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[])
+                            Pexp_construct "false" (typehook.ml[]..[])
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "get_cur_mtyps" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "Stack.top" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "mtyps_stack" (typehook.ml[]..[])
+                              ]
+                            Some
+                              core_type (typehook.ml[]..[])
+                                Ptyp_constr "Sigs_util.mtyps" (typehook.ml[]..[])
+                                []
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "update_cur_mtyps" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "f" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_open Fresh ""Stack" (typehook.ml[]..[])"
+                                    expression (typehook.ml[]..[])
+                                      Pexp_apply
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "push" (typehook.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[]..[])
+                                            Pexp_apply
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "f" (typehook.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "pop" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "mtyps_stack" (typehook.ml[]..[])
+                                                  ]
+                                            ]
+                                        <label> ""
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "mtyps_stack" (typehook.ml[]..[])
+                                      ]
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Private
+                          "in_module" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "Stack.push" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_construct "[]" (typehook.ml[]..[])
+                                    None
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "mtyps_stack" (typehook.ml[]..[])
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Private
+                          "out_module" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_apply
+                              expression (typehook.ml[]..[])
+                                Pexp_ident "ignore" (typehook.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "Stack.pop" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "mtyps_stack" (typehook.ml[]..[])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Private
+                          "in_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_sequence
+                              expression (typehook.ml[]..[])
+                                Pexp_setinstvar "and_group" (typehook.ml[]..[])
+                                expression (typehook.ml[]..[])
+                                  Pexp_construct "true" (typehook.ml[]..[])
+                                  None
+                              expression (typehook.ml[]..[])
+                                Pexp_setinstvar "cur_and_types" (typehook.ml[]..[])
+                                expression (typehook.ml[]..[])
+                                  Pexp_construct "[]" (typehook.ml[]..[])
+                                  None
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Private
+                          "out_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_sequence
+                              expression (typehook.ml[]..[])
+                                Pexp_setinstvar "and_group" (typehook.ml[]..[])
+                                expression (typehook.ml[]..[])
+                                  Pexp_construct "false" (typehook.ml[]..[])
+                                  None
+                              expression (typehook.ml[]..[])
+                                Pexp_setinstvar "cur_and_types" (typehook.ml[]..[])
+                                expression (typehook.ml[]..[])
+                                  Pexp_construct "[]" (typehook.ml[]..[])
+                                  None
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Private
+                          "is_in_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "and_group" (typehook.ml[]..[])
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "get_cur_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_ident "cur_and_types" (typehook.ml[]..[])
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "update_cur_and_types" (typehook.ml[]..[])
+                          Concrete Fresh
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "f" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_setinstvar "cur_and_types" (typehook.ml[]..[])
+                                    expression (typehook.ml[]..[])
+                                      Pexp_apply
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "f" (typehook.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "cur_and_types" (typehook.ml[]..[])
+                                      ]
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "mexp" (typehook.ml[]..[])
+                          Concrete Override
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_constraint
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_variant "Struct"
+                                      Some
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_var "sloc" (typehook.ml[]..[])
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_var "u" (typehook.ml[]..[])
+                                          ]
+                                    core_type (typehook.ml[]..[])
+                                      Ptyp_constr "Astf.mexp" (typehook.ml[]..[])
+                                      []
+                                  expression (typehook.ml[]..[])
+                                    Pexp_sequence
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "in_module"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "self" (typehook.ml[]..[])
+                                    expression (typehook.ml[]..[])
+                                      Pexp_let Nonrec
+                                      [
+                                        <def>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_var "res" (typehook.ml[]..[])
+                                          expression (typehook.ml[]..[])
+                                            Pexp_apply
+                                            expression (typehook.ml[]..[])
+                                              Pexp_send "stru"
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "self" (typehook.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "u" (typehook.ml[]..[])
+                                            ]
+                                      ]
+                                      expression (typehook.ml[]..[])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_var "mtyps" (typehook.ml[]..[])
+                                            expression (typehook.ml[]..[])
+                                              Pexp_apply
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "List.rev" (typehook.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_send "get_cur_mtyps"
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_ident "self" (typehook.ml[]..[])
+                                              ]
+                                        ]
+                                        expression (typehook.ml[]..[])
+                                          Pexp_let Nonrec
+                                          [
+                                            <def>
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_construct "()" (typehook.ml[]..[])
+                                                None
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ifthenelse
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "!" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "print_collect_mtyps" (typehook.ml[]..[])
+                                                  ]
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "eprintf" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_constant Const_string("@[%a@]@.",None)
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "pp_print_mtyps" (typehook.ml[]..[])
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "mtyps" (typehook.ml[]..[])
+                                                  ]
+                                                None
+                                          ]
+                                          expression (typehook.ml[]..[])
+                                            Pexp_let Nonrec
+                                            [
+                                              <def>
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_var "result" (typehook.ml[]..[])
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "List.fold_right" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "iterate_code" (typehook.ml[]..[])
+                                                        [
+                                                          <label> ""
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "sloc" (typehook.ml[]..[])
+                                                          <label> ""
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "mtyps" (typehook.ml[]..[])
+                                                        ]
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "!" (typehook.ml[]..[])
+                                                        [
+                                                          <label> ""
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "State.current_filters" (typehook.ml[]..[])
+                                                        ]
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ifthenelse
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "!" (typehook.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_ident "State.keep" (typehook.ml[]..[])
+                                                          ]
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "res" (typehook.ml[]..[])
+                                                        Some
+                                                          expression (typehook.ml[]..[]) 
+                                                            Pexp_coerce
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_variant "StExp"
+                                                              Some
+                                                                expression (typehook.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (typehook.ml[]..[])
+                                                                      Pexp_ident "sloc" (typehook.ml[]..[])
+                                                                    expression (typehook.ml[]..[])
+                                                                      Pexp_variant "Unit"
+                                                                      Some
+expression (typehook.ml[]..[])
+  Pexp_ident "sloc" (typehook.ml[]..[])
+                                                                  ]
+                                                            None
+                                                            core_type (typehook.ml[]..[])
+                                                              Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                              []
+                                                  ]
+                                            ]
+                                            expression (typehook.ml[]..[])
+                                              Pexp_sequence
+                                              expression (typehook.ml[]..[])
+                                                Pexp_send "out_module"
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "self" (typehook.ml[]..[])
+                                              expression (typehook.ml[]..[]) 
+                                                Pexp_coerce
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_variant "Struct"
+                                                  Some
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "sloc" (typehook.ml[]..[])
+                                                        expression (typehook.ml[]..[]) 
+                                                          Pexp_coerce
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "result" (typehook.ml[]..[])
+                                                          None
+                                                          core_type (typehook.ml[]..[])
+                                                            Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                            []
+                                                      ]
+                                                None
+                                                core_type (typehook.ml[]..[])
+                                                  Ptyp_constr "Astf.mexp" (typehook.ml[]..[])
+                                                  []
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "x" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "mexp"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "super" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "x" (typehook.ml[]..[])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "stru" (typehook.ml[]..[])
+                          Concrete Override
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_alias "x" (typehook.ml[]..[])
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_constraint
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_variant "Type"
+                                        Some
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_var "_loc" (typehook.ml[]..[])
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_variant "And"
+                                                Some
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                    ]
+                                            ]
+                                      core_type (typehook.ml[]..[])
+                                        Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                        []
+                                  expression (typehook.ml[]..[])
+                                    Pexp_sequence
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "in_and_types"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "self" (typehook.ml[]..[])
+                                    expression (typehook.ml[]..[])
+                                      Pexp_let Nonrec
+                                      [
+                                        <def>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_any
+                                          expression (typehook.ml[]..[])
+                                            Pexp_apply
+                                            expression (typehook.ml[]..[])
+                                              Pexp_send "stru"
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "super" (typehook.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "x" (typehook.ml[]..[])
+                                            ]
+                                      ]
+                                      expression (typehook.ml[]..[])
+                                        Pexp_sequence
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_send "update_cur_mtyps"
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "self" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "lst" (typehook.ml[]..[])
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_construct "::" (typehook.ml[]..[])
+                                                      Some
+                                                        expression (typehook.ml[]..[]) 
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_variant "Mutual"
+                                                              Some
+                                                                expression (typehook.ml[]..[])
+                                                                  Pexp_apply
+                                                                  expression (typehook.ml[]..[])
+                                                                    Pexp_ident "List.rev" (typehook.ml[]..[])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (typehook.ml[]..[])
+Pexp_send "get_cur_and_types"
+expression (typehook.ml[]..[])
+  Pexp_ident "self" (typehook.ml[]..[])
+                                                                  ]
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "lst" (typehook.ml[]..[])
+                                                          ]
+                                                ]
+                                          ]
+                                        expression (typehook.ml[]..[])
+                                          Pexp_sequence
+                                          expression (typehook.ml[]..[])
+                                            Pexp_send "out_and_types"
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "self" (typehook.ml[]..[])
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ifthenelse
+                                            expression (typehook.ml[]..[])
+                                              Pexp_apply
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "!" (typehook.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "State.keep" (typehook.ml[]..[])
+                                              ]
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "x" (typehook.ml[]..[])
+                                            Some
+                                              expression (typehook.ml[]..[]) 
+                                                Pexp_coerce
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_variant "StExp"
+                                                  Some
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "_loc" (typehook.ml[]..[])
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_variant "Unit"
+                                                          Some
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "_loc" (typehook.ml[]..[])
+                                                      ]
+                                                None
+                                                core_type (typehook.ml[]..[])
+                                                  Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                  []
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_variant "TypeWith"
+                                    Some
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_tuple
+                                        [
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_var "_loc" (typehook.ml[]..[])
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_var "typedecl" (typehook.ml[]..[])
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_any
+                                        ]
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "stru"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "self" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_variant "Type"
+                                          Some
+                                            expression (typehook.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "_loc" (typehook.ml[]..[])
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "typedecl" (typehook.ml[]..[])
+                                              ]
+                                    ]
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_alias "x" (typehook.ml[]..[])
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_constraint
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_variant "Type"
+                                        Some
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_tuple
+                                            [
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_var "_loc" (typehook.ml[]..[])
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_alias "t" (typehook.ml[]..[])
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_variant "TyDcl"
+                                                  Some
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_variant "Lid"
+                                                          Some
+                                                            pattern (typehook.ml[]..[])
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (typehook.ml[]..[])
+                                                                  Ppat_any
+                                                                pattern (typehook.ml[]..[])
+                                                                  Ppat_var "name" (typehook.ml[]..[])
+                                                              ]
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_any
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_any
+                                                      ]
+                                            ]
+                                      core_type (typehook.ml[]..[])
+                                        Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                        []
+                                  expression (typehook.ml[]..[])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_var "item" (typehook.ml[]..[])
+                                        expression (typehook.ml[]..[])
+                                          Pexp_variant "Single"
+                                          Some
+                                            expression (typehook.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_ident "name" (typehook.ml[]..[])
+                                                expression (typehook.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "Strip.typedecl" (typehook.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "t" (typehook.ml[]..[])
+                                                  ]
+                                              ]
+                                    ]
+                                    expression (typehook.ml[]..[])
+                                      Pexp_let Nonrec
+                                      [
+                                        <def>
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_construct "()" (typehook.ml[]..[])
+                                            None
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ifthenelse
+                                            expression (typehook.ml[]..[])
+                                              Pexp_apply
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "!" (typehook.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "print_collect_mtyps" (typehook.ml[]..[])
+                                              ]
+                                            expression (typehook.ml[]..[])
+                                              Pexp_apply
+                                              expression (typehook.ml[]..[])
+                                                Pexp_ident "eprintf" (typehook.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_constant Const_string("Came across @[%a@]@.",None)
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "pp_print_types" (typehook.ml[]..[])
+                                                <label> ""
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "item" (typehook.ml[]..[])
+                                              ]
+                                            None
+                                      ]
+                                      expression (typehook.ml[]..[])
+                                        Pexp_sequence
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_send "update_cur_mtyps"
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "self" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "lst" (typehook.ml[]..[])
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_construct "::" (typehook.ml[]..[])
+                                                      Some
+                                                        expression (typehook.ml[]..[]) 
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "item" (typehook.ml[]..[])
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "lst" (typehook.ml[]..[])
+                                                          ]
+                                                ]
+                                          ]
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "x" (typehook.ml[]..[])
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_alias "x" (typehook.ml[]..[])
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_or
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_or
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_or
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_or
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_or
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_or
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_constraint
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_variant "Value"
+                                                    Some
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_var "_loc" (typehook.ml[]..[])
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_variant "Negative"
+                                                            Some
+                                                              pattern (typehook.ml[]..[])
+                                                                Ppat_any
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_any
+                                                        ]
+                                                  core_type (typehook.ml[]..[])
+                                                    Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                    []
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_constraint
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_variant "ModuleType"
+                                                    Some
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_var "_loc" (typehook.ml[]..[])
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_any
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_any
+                                                        ]
+                                                  core_type (typehook.ml[]..[])
+                                                    Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                    []
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_constraint
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_variant "Include"
+                                                  Some
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_var "_loc" (typehook.ml[]..[])
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_any
+                                                      ]
+                                                core_type (typehook.ml[]..[])
+                                                  Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                  []
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_constraint
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_variant "External"
+                                                Some
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_var "_loc" (typehook.ml[]..[])
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                    ]
+                                              core_type (typehook.ml[]..[])
+                                                Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                                []
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_constraint
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_variant "StExp"
+                                              Some
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "_loc" (typehook.ml[]..[])
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_any
+                                                  ]
+                                            core_type (typehook.ml[]..[])
+                                              Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                              []
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_constraint
+                                          pattern (typehook.ml[]..[])
+                                            Ppat_variant "Exception"
+                                            Some
+                                              pattern (typehook.ml[]..[])
+                                                Ppat_tuple
+                                                [
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "_loc" (typehook.ml[]..[])
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_any
+                                                ]
+                                          core_type (typehook.ml[]..[])
+                                            Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                            []
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_constraint
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_variant "Directive"
+                                          Some
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_tuple
+                                              [
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_var "_loc" (typehook.ml[]..[])
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_any
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_any
+                                              ]
+                                        core_type (typehook.ml[]..[])
+                                          Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                          []
+                                  expression (typehook.ml[]..[])
+                                    Pexp_ident "x" (typehook.ml[]..[])
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "x" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "stru"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "super" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "x" (typehook.ml[]..[])
+                                    ]
+                              ]
+                            None
+                      class_field (typehook.ml[]..[])
+                        Pcf_method Public
+                          "typedecl" (typehook.ml[]..[])
+                          Concrete Override
+                          expression (typehook.ml[]..[]) 
+                            Pexp_poly
+                            expression (typehook.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_alias "t" (typehook.ml[]..[])
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_variant "TyDcl"
+                                      Some
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_tuple
+                                          [
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_any
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_variant "Lid"
+                                              Some
+                                                pattern (typehook.ml[]..[])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_any
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_var "name" (typehook.ml[]..[])
+                                                  ]
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_any
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_any
+                                            pattern (typehook.ml[]..[])
+                                              Ppat_any
+                                          ]
+                                  expression (typehook.ml[]..[])
+                                    Pexp_sequence
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ifthenelse
+                                      expression (typehook.ml[]..[])
+                                        Pexp_send "is_in_and_types"
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "self" (typehook.ml[]..[])
+                                      expression (typehook.ml[]..[])
+                                        Pexp_apply
+                                        expression (typehook.ml[]..[])
+                                          Pexp_send "update_cur_and_types"
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "self" (typehook.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (typehook.ml[]..[])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_var "lst" (typehook.ml[]..[])
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_construct "::" (typehook.ml[]..[])
+                                                    Some
+                                                      expression (typehook.ml[]..[]) 
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_ident "name" (typehook.ml[]..[])
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (typehook.ml[]..[])
+                                                                  Pexp_ident "Strip.typedecl" (typehook.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (typehook.ml[]..[])
+                                                                      Pexp_ident "t" (typehook.ml[]..[])
+                                                                ]
+                                                            ]
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "lst" (typehook.ml[]..[])
+                                                        ]
+                                              ]
+                                        ]
+                                      None
+                                    expression (typehook.ml[]..[])
+                                      Pexp_ident "t" (typehook.ml[]..[])
+                                <case>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "t" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[])
+                                    Pexp_apply
+                                    expression (typehook.ml[]..[])
+                                      Pexp_send "typedecl"
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "super" (typehook.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "t" (typehook.ml[]..[])
+                                    ]
+                              ]
+                            None
+                    ]
+                core_type (typehook.ml[]..[])
+                  Ptyp_constr "traversal" (typehook.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_var "genenrate_type_code" (typehook.ml[]..[])
+        expression (typehook.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (typehook.ml[]..[])
+                Ppat_var "_loc" (typehook.ml[]..[])
+              expression (typehook.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (typehook.ml[]..[])
+                      Ppat_var "tdl" (typehook.ml[]..[])
+                    expression (typehook.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (typehook.ml[]..[])
+                            Ppat_constraint
+                            pattern (typehook.ml[]..[])
+                              Ppat_var "ns" (typehook.ml[]..[])
+                            core_type (typehook.ml[]..[])
+                              Ptyp_constr "Astf.strings" (typehook.ml[]..[])
+                              []
+                          expression (typehook.ml[]..[]) 
+                            Pexp_constraint
+                            expression (typehook.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (typehook.ml[]..[])
+                                    Ppat_var "x" (typehook.ml[]..[])
+                                  expression (typehook.ml[]..[]) 
+                                    Pexp_constraint
+                                    expression (typehook.ml[]..[])
+                                      Pexp_variant "Type"
+                                      Some
+                                        expression (typehook.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "_loc" (typehook.ml[]..[])
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "tdl" (typehook.ml[]..[])
+                                          ]
+                                    core_type (typehook.ml[]..[])
+                                      Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                                      []
+                              ]
+                              expression (typehook.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (typehook.ml[]..[])
+                                      Ppat_var "ns" (typehook.ml[]..[])
+                                    expression (typehook.ml[]..[])
+                                      Pexp_apply
+                                      expression (typehook.ml[]..[])
+                                        Pexp_ident "list_of_app" (typehook.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "ns" (typehook.ml[]..[])
+                                        <label> ""
+                                          expression (typehook.ml[]..[])
+                                            Pexp_construct "[]" (typehook.ml[]..[])
+                                            None
+                                      ]
+                                ]
+                                expression (typehook.ml[]..[])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (typehook.ml[]..[])
+                                        Ppat_var "filters" (typehook.ml[]..[])
+                                      expression (typehook.ml[]..[])
+                                        Pexp_apply
+                                        expression (typehook.ml[]..[])
+                                          Pexp_ident "List.map" (typehook.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (typehook.ml[]..[])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_variant "Str"
+                                                    Some
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_var "sloc" (typehook.ml[]..[])
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_var "n" (typehook.ml[]..[])
+                                                        ]
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_match
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_ident "Hashtblf.find_opt" (typehook.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "filters" (typehook.ml[]..[])
+                                                        <label> ""
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "n" (typehook.ml[]..[])
+                                                      ]
+                                                    [
+                                                      <case>
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_construct "None" (typehook.ml[]..[])
+                                                          None
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "Locf.failf" (typehook.ml[]..[])
+                                                          [
+                                                            <label> ""
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_ident "sloc" (typehook.ml[]..[])
+                                                            <label> ""
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_constant Const_string("%s not found",None)
+                                                            <label> ""
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_ident "n" (typehook.ml[]..[])
+                                                          ]
+                                                      <case>
+                                                        pattern (typehook.ml[]..[])
+                                                          Ppat_construct "Some" (typehook.ml[]..[])
+                                                          Some
+                                                            pattern (typehook.ml[]..[])
+                                                              Ppat_var "p" (typehook.ml[]..[])
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "n" (typehook.ml[]..[])
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "p" (typehook.ml[]..[])
+                                                          ]
+                                                    ]
+                                                <case>
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_variant "Ant"
+                                                    Some
+                                                      pattern (typehook.ml[]..[])
+                                                        Ppat_any
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_ident "Locf.raise" (typehook.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_ident "_loc" (typehook.ml[]..[])
+                                                      <label> ""
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_construct "Failure" (typehook.ml[]..[])
+                                                          Some
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_constant Const_string("antiquotation not expected here",None)
+                                                    ]
+                                                <case>
+                                                  pattern (typehook.ml[]..[])
+                                                    Ppat_any
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_assert
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_construct "false" (typehook.ml[]..[])
+                                                      None
+                                              ]
+                                          <label> ""
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "ns" (typehook.ml[]..[])
+                                        ]
+                                  ]
+                                  expression (typehook.ml[]..[])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (typehook.ml[]..[])
+                                          Ppat_var "code" (typehook.ml[]..[])
+                                        expression (typehook.ml[]..[])
+                                          Pexp_apply
+                                          expression (typehook.ml[]..[])
+                                            Pexp_ident "Ref.protect2" (typehook.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "State.current_filters" (typehook.ml[]..[])
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "filters" (typehook.ml[]..[])
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_ident "State.keep" (typehook.ml[]..[])
+                                                  expression (typehook.ml[]..[])
+                                                    Pexp_construct "false" (typehook.ml[]..[])
+                                                    None
+                                                ]
+                                            <label> ""
+                                              expression (typehook.ml[]..[])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (typehook.ml[]..[])
+                                                      Ppat_any
+                                                    expression (typehook.ml[]..[])
+                                                      Pexp_match
+                                                      expression (typehook.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (typehook.ml[]..[])
+                                                          Pexp_send "mexp"
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_ident "traversal" (typehook.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (typehook.ml[]..[])
+                                                                  Pexp_construct "()" (typehook.ml[]..[])
+                                                                  None
+                                                            ]
+                                                        [
+                                                          <label> ""
+                                                            expression (typehook.ml[]..[]) 
+                                                              Pexp_constraint
+                                                              expression (typehook.ml[]..[])
+                                                                Pexp_variant "Struct"
+                                                                Some
+                                                                  expression (typehook.ml[]..[])
+                                                                    Pexp_tuple
+                                                                    [
+                                                                      expression (typehook.ml[]..[])
+Pexp_ident "_loc" (typehook.ml[]..[])
+                                                                      expression (typehook.ml[]..[])
+Pexp_ident "x" (typehook.ml[]..[])
+                                                                    ]
+                                                              core_type (typehook.ml[]..[])
+                                                                Ptyp_constr "Astf.mexp" (typehook.ml[]..[])
+                                                                []
+                                                        ]
+                                                      [
+                                                        <case>
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_constraint
+                                                            pattern (typehook.ml[]..[])
+                                                              Ppat_variant "Struct"
+                                                              Some
+                                                                pattern (typehook.ml[]..[])
+                                                                  Ppat_tuple
+                                                                  [
+                                                                    pattern (typehook.ml[]..[])
+                                                                      Ppat_var "_loc" (typehook.ml[]..[])
+                                                                    pattern (typehook.ml[]..[])
+                                                                      Ppat_var "s" (typehook.ml[]..[])
+                                                                  ]
+                                                            core_type (typehook.ml[]..[])
+                                                              Ptyp_constr "Astf.mexp" (typehook.ml[]..[])
+                                                              []
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_ident "s" (typehook.ml[]..[])
+                                                        <case>
+                                                          pattern (typehook.ml[]..[])
+                                                            Ppat_any
+                                                          expression (typehook.ml[]..[])
+                                                            Pexp_assert
+                                                            expression (typehook.ml[]..[])
+                                                              Pexp_construct "false" (typehook.ml[]..[])
+                                                              None
+                                                      ]
+                                                ]
+                                          ]
+                                    ]
+                                    expression (typehook.ml[]..[])
+                                      Pexp_variant "Sem"
+                                      Some
+                                        expression (typehook.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "_loc" (typehook.ml[]..[])
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "x" (typehook.ml[]..[])
+                                            expression (typehook.ml[]..[])
+                                              Pexp_ident "code" (typehook.ml[]..[])
+                                          ]
+                            core_type (typehook.ml[]..[])
+                              Ptyp_constr "Astf.stru" (typehook.ml[]..[])
+                              []
+                      ]
+                ]
+          ]
+    ]
+  structure_item (typehook.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (typehook.ml[]..[])
+          Ppat_construct "()" (typehook.ml[]..[])
+          None
+        expression (typehook.ml[]..[])
+          Pexp_apply
+          expression (typehook.ml[]..[])
+            Pexp_ident ":=" (typehook.ml[]..[])
+          [
+            <label> ""
+              expression (typehook.ml[]..[])
+                Pexp_ident "Ast2pt.generate_type_code" (typehook.ml[]..[])
+            <label> ""
+              expression (typehook.ml[]..[])
+                Pexp_ident "genenrate_type_code" (typehook.ml[]..[])
+          ]
+    ]
+]

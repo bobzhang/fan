@@ -1,0 +1,151 @@
+1a2,9
+>   structure_item (fan_top.ml[4,3+0]..[4,3+35])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan_top.ml[4,3+0]..[4,3+35])
+>         Pstr_eval
+>         expression (fan_top.ml[4,3+0]..[4,3+35])
+>           Pexp_constant Const_string(" FIXME a better register mode ",None)
+>     ]
+5a14,20
+>           attribute "ocaml.text"
+>             [
+>               structure_item (fan_top.ml[4,3+0]..[4,3+35])
+>                 Pstr_eval
+>                 expression (fan_top.ml[4,3+0]..[4,3+35])
+>                   Pexp_constant Const_string(" FIXME a better register mode ",None)
+>             ]
+40,43c55,57
+<         expression (fan_top.ml[11,195+11]..[14,321+3])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (fan_top.ml[11,195+11]..[14,321+3]) ghost
+>           Pexp_fun ""
+>           None
+61c75
+<                 expression (fan_top.ml[11,195+16]..[14,321+3])
+---
+>             expression (fan_top.ml[13,279+2]..[13,279+41])
+74d87
+<     ]
+81,84c94,96
+<         expression (fan_top.ml[16,330+8]..[21,559+3])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (fan_top.ml[16,330+8]..[21,559+3]) ghost
+>           Pexp_fun ""
+>           None
+112c124
+<                 expression (fan_top.ml[16,330+14]..[21,559+3])
+---
+>             expression (fan_top.ml[19,462+2]..[20,490+68])
+134a147,153
+>   structure_item (fan_top.ml[23,566+0]..[23,566+28])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan_top.ml[23,566+0]..[23,566+28])
+>         Pstr_eval
+>         expression (fan_top.ml[23,566+0]..[23,566+28])
+>           Pexp_constant Const_string(" For fan's js toplevel ",None)
+152c171
+<             expression (fan_top.ml[28,673+5]..[28,673+46])
+---
+>             expression (fan_top.ml[28,673+4]..[28,673+47])
+155,158c174,176
+<                 expression (fan_top.ml[28,673+33]..[28,673+35])
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                 expression (fan_top.ml[28,673+28]..[28,673+46])
+>                   Pexp_fun ""
+>                   None
+173,174c191
+<         ]
+<       expression (fan_top.ml[26,619+0]..[38,1115+3])
+---
+>       expression (fan_top.ml[29,722+2]..[37,1081+33])
+188c205
+<               expression (fan_top.ml[30,773+5]..[30,773+49])
+---
+>               expression (fan_top.ml[30,773+4]..[30,773+50])
+191,194c208,210
+<                   expression (fan_top.ml[30,773+33]..[30,773+35])
+<                     Pexp_function
+<                     [
+<                       <case>
+---
+>                   expression (fan_top.ml[30,773+28]..[30,773+49])
+>                     Pexp_fun ""
+>                     None
+209,210c225
+<           ]
+<         expression (fan_top.ml[26,619+0]..[38,1115+3])
+---
+>         expression (fan_top.ml[31,825+2]..[37,1081+33])
+224c239
+<                 expression (fan_top.ml[32,873+5]..[32,873+67])
+---
+>                 expression (fan_top.ml[32,873+4]..[32,873+68])
+227,230c242,244
+<                     expression (fan_top.ml[32,873+33]..[32,873+35])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                     expression (fan_top.ml[32,873+28]..[32,873+67])
+>                       Pexp_fun ""
+>                       None
+254,255c268
+<             ]
+<           expression (fan_top.ml[26,619+0]..[38,1115+3])
+---
+>           expression (fan_top.ml[33,943+2]..[37,1081+33])
+266,269c279,281
+<                   expression (fan_top.ml[34,969+9]..[34,969+12])
+<                     Pexp_function
+<                     [
+<                       <case>
+---
+>                   expression (fan_top.ml[34,969+4]..[36,1043+36])
+>                     Pexp_fun ""
+>                     None
+272,275c284,286
+<                         expression (fan_top.ml[34,969+13]..[34,969+16])
+<                           Pexp_function
+<                           [
+<                             <case>
+---
+>                     expression (fan_top.ml[34,969+13]..[36,1043+35]) ghost
+>                       Pexp_fun ""
+>                       None
+290c301
+<                                     expression (fan_top.ml[36,1043+9]..[36,1043+34])
+---
+>                             expression (fan_top.ml[36,1043+8]..[36,1043+35])
+297,299c308
+<                     ]
+<               ]
+<             expression (fan_top.ml[26,619+0]..[38,1115+3])
+---
+>             expression (fan_top.ml[37,1081+2]..[37,1081+33])
+305,306c314,315
+<                   expression (fan_top.ml[37,1081+27]..[37,1081+32])
+<                     Pexp_construct "::" (fan_top.ml[37,1081+27]..[37,1081+32])
+---
+>                   expression (fan_top.ml[37,1081+26]..[37,1081+33])
+>                     Pexp_construct "::" (fan_top.ml[37,1081+27]..[37,1081+33]) ghost
+308c317
+<                       expression (fan_top.ml[37,1081+27]..[37,1081+32])
+---
+>                       expression (fan_top.ml[37,1081+27]..[37,1081+33]) ghost
+313,314c322,323
+<                           expression (fan_top.ml[37,1081+27]..[37,1081+32])
+<                             Pexp_construct "[]" (fan_top.ml[37,1081+27]..[37,1081+32])
+---
+>                           expression (fan_top.ml[37,1081+32]..[37,1081+33]) ghost
+>                             Pexp_construct "[]" (fan_top.ml[37,1081+32]..[37,1081+33]) ghost

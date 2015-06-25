@@ -1,0 +1,633 @@
+[
+  structure_item (lang_fresh.ml[1,0+0]..[1,0+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_fresh.ml[1,0+4]..[1,0+9])
+          Ppat_var "fresh" (lang_fresh.ml[1,0+4]..[1,0+9])
+        expression (lang_fresh.ml[1,0+12]..[1,0+28])
+          Pexp_apply
+          expression (lang_fresh.ml[1,0+12]..[1,0+20])
+            Pexp_ident "Gramf.mk" (lang_fresh.ml[1,0+12]..[1,0+20])
+          [
+            <label> ""
+              expression (lang_fresh.ml[1,0+21]..[1,0+28])
+                Pexp_constant Const_string("fresh",None)
+          ]
+    ]
+  structure_item (lang_fresh.ml[2,29+4]..[84,4048+41])
+    Pstr_eval
+    expression (lang_fresh.ml[3,37+2]..[84,4048+41])
+      Pexp_apply
+      expression (lang_fresh.ml[3,37+2]..[3,37+21])
+        Pexp_ident "Gramf.extend_single" (lang_fresh.ml[3,37+2]..[3,37+21])
+      [
+        <label> ""
+          expression (lang_fresh.ml[4,59+4]..[84,4048+41])
+            Pexp_constraint
+            expression (lang_fresh.ml[4,59+5]..[84,4048+6])
+              Pexp_record
+              [
+                "entry" (lang_fresh.ml[5,66+7]..[5,66+12])
+                  expression (lang_fresh.ml[5,66+15]..[5,66+39])
+                    Pexp_constraint
+                    expression (lang_fresh.ml[5,66+16]..[5,66+21])
+                      Pexp_ident "fresh" (lang_fresh.ml[5,66+16]..[5,66+21])
+                    core_type (lang_fresh.ml[5,66+24]..[5,66+38])
+                      Ptyp_constr "Gramf.t" (lang_fresh.ml[5,66+31]..[5,66+38])
+                      [
+                        core_type (lang_fresh.ml[5,66+24]..[5,66+30])
+                          Ptyp_var fresh
+                      ]
+                "olevel" (lang_fresh.ml[6,107+7]..[6,107+13])
+                  expression (lang_fresh.ml[7,123+9]..[83,4020+27])
+                    Pexp_constraint
+                    expression (lang_fresh.ml[7,123+10]..[83,4020+11])
+                      Pexp_record
+                      [
+                        "label" (lang_fresh.ml[8,135+12]..[8,135+17])
+                          expression (lang_fresh.ml[8,135+20]..[8,135+24])
+                            Pexp_construct "None" (lang_fresh.ml[8,135+20]..[8,135+24])
+                            None
+                        "lassoc" (lang_fresh.ml[9,161+12]..[9,161+18])
+                          expression (lang_fresh.ml[9,161+21]..[9,161+25])
+                            Pexp_construct "true" (lang_fresh.ml[9,161+21]..[9,161+25])
+                            None
+                        "productions" (lang_fresh.ml[10,188+12]..[10,188+23])
+                          expression (lang_fresh.ml[11,214+15]..[82,4003+15])
+                            Pexp_construct "::" (lang_fresh.ml[11,214+15]..[82,4003+15])
+                            Some
+                              expression (lang_fresh.ml[11,214+15]..[82,4003+15])
+                                Pexp_tuple
+                                [
+                                  expression (lang_fresh.ml[11,214+15]..[37,1678+16])
+                                    Pexp_record
+                                    [
+                                      "symbols" (lang_fresh.ml[12,231+17]..[12,231+24])
+                                        expression (lang_fresh.ml[13,258+20]..[15,362+42])
+                                          Pexp_construct "::" (lang_fresh.ml[13,258+20]..[15,362+42])
+                                          Some
+                                            expression (lang_fresh.ml[13,258+20]..[15,362+42])
+                                              Pexp_tuple
+                                              [
+                                                expression (lang_fresh.ml[13,258+20]..[15,362+42])
+                                                  Pexp_construct "Token" (lang_fresh.ml[13,258+20]..[13,258+25])
+                                                  Some
+                                                    expression (lang_fresh.ml[14,284+22]..[15,362+42])
+                                                      Pexp_constraint
+                                                      expression (lang_fresh.ml[14,284+23]..[15,362+24])
+                                                        Pexp_record
+                                                        [
+                                                          "descr" (lang_fresh.ml[14,284+25]..[14,284+30])
+                                                            expression (lang_fresh.ml[14,284+33]..[14,284+77])
+                                                              Pexp_record
+                                                              [
+                                                                "tag" (lang_fresh.ml[14,284+35]..[14,284+38])
+                                                                  expression (lang_fresh.ml[14,284+41]..[14,284+45])
+                                                                    Pexp_variant "Lid"
+                                                                    None
+                                                                "word" (lang_fresh.ml[14,284+47]..[14,284+51])
+                                                                  expression (lang_fresh.ml[14,284+54]..[14,284+57])
+                                                                    Pexp_construct "Any" (lang_fresh.ml[14,284+54]..[14,284+57])
+                                                                    None
+                                                                "tag_name" (lang_fresh.ml[14,284+59]..[14,284+67])
+                                                                  expression (lang_fresh.ml[14,284+70]..[14,284+75])
+                                                                    Pexp_constant Const_string("Lid",None)
+                                                              ]
+                                                              None
+                                                        ]
+                                                        None
+                                                      core_type (lang_fresh.ml[15,362+27]..[15,362+41])
+                                                        Ptyp_constr "Tokenf.pattern" (lang_fresh.ml[15,362+27]..[15,362+41])
+                                                        []
+                                                expression (lang_fresh.ml[13,258+20]..[15,362+42])
+                                                  Pexp_construct "[]" (lang_fresh.ml[13,258+20]..[15,362+42])
+                                                  None
+                                              ]
+                                      "annot" (lang_fresh.ml[16,407+17]..[16,407+22])
+                                        expression (lang_fresh.ml[17,432+19]..[17,432+254])
+                                          Pexp_constant Const_string("(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label (_loc, (`Lid (_loc, \"prefix\")), (`Str (_loc, x)))))),\n     (`Unit _loc)) :> Astf.exp)\n",None)
+                                      "fn" (lang_fresh.ml[18,688+17]..[18,688+19])
+                                        expression (lang_fresh.ml[19,710+20]..[36,1623+53])
+                                          Pexp_apply
+                                          expression (lang_fresh.ml[19,710+20]..[19,710+35])
+                                            Pexp_ident "Gramf.mk_action" (lang_fresh.ml[19,710+20]..[19,710+35])
+                                          [
+                                            <label> ""
+                                              expression (lang_fresh.ml[20,746+22]..[36,1623+53])
+                                                Pexp_constraint
+                                                expression (lang_fresh.ml[20,746+23]..[35,1544+75])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (lang_fresh.ml[21,778+25]..[21,778+47])
+                                                        Ppat_constraint
+                                                        pattern (lang_fresh.ml[21,778+26]..[21,778+33])
+                                                          Ppat_var "__fan_0" (lang_fresh.ml[21,778+26]..[21,778+33])
+                                                        core_type (lang_fresh.ml[21,778+36]..[21,778+46])
+                                                          Ptyp_constr "Tokenf.txt" (lang_fresh.ml[21,778+36]..[21,778+46])
+                                                          []
+                                                      expression (lang_fresh.ml[22,829+28]..[35,1544+74])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (lang_fresh.ml[23,866+30]..[23,866+45])
+                                                              Ppat_constraint
+                                                              pattern (lang_fresh.ml[23,866+31]..[23,866+35])
+                                                                Ppat_var "_loc" (lang_fresh.ml[23,866+31]..[23,866+35])
+                                                              core_type (lang_fresh.ml[23,866+38]..[23,866+44])
+                                                                Ptyp_constr "Locf.t" (lang_fresh.ml[23,866+38]..[23,866+44])
+                                                                []
+                                                            expression (lang_fresh.ml[24,915+32]..[35,1544+74])
+                                                              Pexp_let Nonrec
+                                                              [
+                                                                <def>
+                                                                  pattern (lang_fresh.ml[24,915+36]..[24,915+37])
+                                                                    Ppat_var "x" (lang_fresh.ml[24,915+36]..[24,915+37])
+                                                                  expression (lang_fresh.ml[24,915+40]..[24,915+51])
+                                                                    Pexp_field
+                                                                    expression (lang_fresh.ml[24,915+40]..[24,915+47])
+                                                                      Pexp_ident "__fan_0" (lang_fresh.ml[24,915+40]..[24,915+47])
+                                                                    "txt" (lang_fresh.ml[24,915+48]..[24,915+51])
+                                                              ]
+                                                              expression (lang_fresh.ml[25,970+32]..[35,1544+74])
+                                                                Pexp_constraint
+                                                                expression (lang_fresh.ml[25,970+33]..[35,1544+64])
+                                                                  Pexp_coerce
+                                                                  expression (lang_fresh.ml[25,970+34]..[35,1544+51])
+                                                                    Pexp_variant "App"
+                                                                    Some
+                                                                      expression (lang_fresh.ml[26,1009+36]..[35,1544+51])
+Pexp_tuple
+[
+  expression (lang_fresh.ml[26,1009+37]..[26,1009+41])
+    Pexp_ident "_loc" (lang_fresh.ml[26,1009+37]..[26,1009+41])
+  expression (lang_fresh.ml[27,1052+39]..[34,1474+67])
+    Pexp_variant "App"
+    Some
+      expression (lang_fresh.ml[28,1096+41]..[34,1474+67])
+        Pexp_tuple
+        [
+          expression (lang_fresh.ml[28,1096+42]..[28,1096+46])
+            Pexp_ident "_loc" (lang_fresh.ml[28,1096+42]..[28,1096+46])
+          expression (lang_fresh.ml[29,1144+44]..[31,1271+71])
+            Pexp_variant "Dot"
+            Some
+              expression (lang_fresh.ml[30,1193+46]..[31,1271+71])
+                Pexp_tuple
+                [
+                  expression (lang_fresh.ml[30,1193+47]..[30,1193+51])
+                    Pexp_ident "_loc" (lang_fresh.ml[30,1193+47]..[30,1193+51])
+                  expression (lang_fresh.ml[30,1193+54]..[30,1193+75])
+                    Pexp_variant "Uid"
+                    Some
+                      expression (lang_fresh.ml[30,1193+59]..[30,1193+75])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[30,1193+60]..[30,1193+64])
+                            Pexp_ident "_loc" (lang_fresh.ml[30,1193+60]..[30,1193+64])
+                          expression (lang_fresh.ml[30,1193+66]..[30,1193+74])
+                            Pexp_constant Const_string("Gensym",None)
+                        ]
+                  expression (lang_fresh.ml[31,1271+49]..[31,1271+69])
+                    Pexp_variant "Lid"
+                    Some
+                      expression (lang_fresh.ml[31,1271+54]..[31,1271+69])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[31,1271+55]..[31,1271+59])
+                            Pexp_ident "_loc" (lang_fresh.ml[31,1271+55]..[31,1271+59])
+                          expression (lang_fresh.ml[31,1271+61]..[31,1271+68])
+                            Pexp_constant Const_string("fresh",None)
+                        ]
+                ]
+          expression (lang_fresh.ml[32,1345+44]..[34,1474+65])
+            Pexp_variant "Label"
+            Some
+              expression (lang_fresh.ml[33,1396+46]..[34,1474+65])
+                Pexp_tuple
+                [
+                  expression (lang_fresh.ml[33,1396+47]..[33,1396+51])
+                    Pexp_ident "_loc" (lang_fresh.ml[33,1396+47]..[33,1396+51])
+                  expression (lang_fresh.ml[33,1396+54]..[33,1396+75])
+                    Pexp_variant "Lid"
+                    Some
+                      expression (lang_fresh.ml[33,1396+59]..[33,1396+75])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[33,1396+60]..[33,1396+64])
+                            Pexp_ident "_loc" (lang_fresh.ml[33,1396+60]..[33,1396+64])
+                          expression (lang_fresh.ml[33,1396+66]..[33,1396+74])
+                            Pexp_constant Const_string("prefix",None)
+                        ]
+                  expression (lang_fresh.ml[34,1474+49]..[34,1474+63])
+                    Pexp_variant "Str"
+                    Some
+                      expression (lang_fresh.ml[34,1474+54]..[34,1474+63])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[34,1474+55]..[34,1474+59])
+                            Pexp_ident "_loc" (lang_fresh.ml[34,1474+55]..[34,1474+59])
+                          expression (lang_fresh.ml[34,1474+61]..[34,1474+62])
+                            Pexp_ident "x" (lang_fresh.ml[34,1474+61]..[34,1474+62])
+                        ]
+                ]
+        ]
+  expression (lang_fresh.ml[35,1544+39]..[35,1544+49])
+    Pexp_variant "Unit"
+    Some
+      expression (lang_fresh.ml[35,1544+45]..[35,1544+49])
+        Pexp_ident "_loc" (lang_fresh.ml[35,1544+45]..[35,1544+49])
+]
+                                                                  None
+                                                                  core_type (lang_fresh.ml[35,1544+55]..[35,1544+63])
+                                                                    Ptyp_constr "Astf.exp" (lang_fresh.ml[35,1544+55]..[35,1544+63])
+                                                                    []
+                                                                core_type (lang_fresh.ml[35,1544+67]..[35,1544+73])
+                                                                  Ptyp_var fresh
+                                                        ]
+                                                  ]
+                                                core_type (lang_fresh.ml[36,1623+22]..[36,1623+52])
+                                                  Ptyp_arrow
+                                                  ""
+                                                  core_type (lang_fresh.ml[36,1623+22]..[36,1623+32])
+                                                    Ptyp_constr "Tokenf.txt" (lang_fresh.ml[36,1623+22]..[36,1623+32])
+                                                    []
+                                                  core_type (lang_fresh.ml[36,1623+36]..[36,1623+52])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (lang_fresh.ml[36,1623+36]..[36,1623+42])
+                                                      Ptyp_constr "Locf.t" (lang_fresh.ml[36,1623+36]..[36,1623+42])
+                                                      []
+                                                    core_type (lang_fresh.ml[36,1623+46]..[36,1623+52])
+                                                      Ptyp_var fresh
+                                          ]
+                                    ]
+                                    None
+                                  expression (lang_fresh.ml[38,1696+14]..[82,4003+15])
+                                    Pexp_construct "::" (lang_fresh.ml[38,1696+14]..[82,4003+15])
+                                    Some
+                                      expression (lang_fresh.ml[38,1696+14]..[82,4003+15])
+                                        Pexp_tuple
+                                        [
+                                          expression (lang_fresh.ml[38,1696+14]..[67,3322+15])
+                                            Pexp_record
+                                            [
+                                              "symbols" (lang_fresh.ml[39,1712+16]..[39,1712+23])
+                                                expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                  Pexp_construct "::" (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                  Some
+                                                    expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                          Pexp_construct "Token" (lang_fresh.ml[40,1738+19]..[40,1738+24])
+                                                          Some
+                                                            expression (lang_fresh.ml[41,1763+21]..[44,1896+41])
+                                                              Pexp_constraint
+                                                              expression (lang_fresh.ml[41,1763+22]..[44,1896+23])
+                                                                Pexp_record
+                                                                [
+                                                                  "descr" (lang_fresh.ml[42,1787+24]..[42,1787+29])
+                                                                    expression (lang_fresh.ml[43,1819+26]..[43,1819+76])
+                                                                      Pexp_record
+                                                                      [
+"tag" (lang_fresh.ml[43,1819+28]..[43,1819+31])
+  expression (lang_fresh.ml[43,1819+34]..[43,1819+38])
+    Pexp_variant "Ant"
+    None
+"word" (lang_fresh.ml[43,1819+40]..[43,1819+44])
+  expression (lang_fresh.ml[43,1819+48]..[43,1819+55])
+    Pexp_construct "Kind" (lang_fresh.ml[43,1819+48]..[43,1819+52])
+    Some
+      expression (lang_fresh.ml[43,1819+53]..[43,1819+55])
+        Pexp_constant Const_string("",None)
+"tag_name" (lang_fresh.ml[43,1819+58]..[43,1819+66])
+  expression (lang_fresh.ml[43,1819+69]..[43,1819+74])
+    Pexp_constant Const_string("Ant",None)
+                                                                      ]
+                                                                      None
+                                                                ]
+                                                                None
+                                                              core_type (lang_fresh.ml[44,1896+26]..[44,1896+40])
+                                                                Ptyp_constr "Tokenf.pattern" (lang_fresh.ml[44,1896+26]..[44,1896+40])
+                                                                []
+                                                        expression (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                          Pexp_construct "[]" (lang_fresh.ml[40,1738+19]..[44,1896+41])
+                                                          None
+                                                      ]
+                                              "annot" (lang_fresh.ml[45,1940+16]..[45,1940+21])
+                                                expression (lang_fresh.ml[46,1964+18]..[46,1964+311])
+                                                  Pexp_constant Const_string("(`App\n   (_loc,\n     (`App\n        (_loc,\n          (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n          (`Label\n             (_loc, (`Lid (_loc, \"prefix\")),\n               (Tokenf.ant_expand Parsef.exp x :> Astf.exp))))),\n     (`Unit _loc)) :> Astf.exp)\n",None)
+                                              "fn" (lang_fresh.ml[47,2277+16]..[47,2277+18])
+                                                expression (lang_fresh.ml[48,2298+19]..[66,3268+52])
+                                                  Pexp_apply
+                                                  expression (lang_fresh.ml[48,2298+19]..[48,2298+34])
+                                                    Pexp_ident "Gramf.mk_action" (lang_fresh.ml[48,2298+19]..[48,2298+34])
+                                                  [
+                                                    <label> ""
+                                                      expression (lang_fresh.ml[49,2333+21]..[66,3268+52])
+                                                        Pexp_constraint
+                                                        expression (lang_fresh.ml[49,2333+22]..[65,3190+74])
+                                                          Pexp_function
+                                                          [
+                                                            <case>
+                                                              pattern (lang_fresh.ml[50,2364+24]..[50,2364+46])
+                                                                Ppat_constraint
+                                                                pattern (lang_fresh.ml[50,2364+25]..[50,2364+32])
+                                                                  Ppat_var "__fan_0" (lang_fresh.ml[50,2364+25]..[50,2364+32])
+                                                                core_type (lang_fresh.ml[50,2364+35]..[50,2364+45])
+                                                                  Ptyp_constr "Tokenf.ant" (lang_fresh.ml[50,2364+35]..[50,2364+45])
+                                                                  []
+                                                              expression (lang_fresh.ml[51,2414+27]..[65,3190+73])
+                                                                Pexp_function
+                                                                [
+                                                                  <case>
+                                                                    pattern (lang_fresh.ml[52,2450+29]..[52,2450+44])
+                                                                      Ppat_constraint
+                                                                      pattern (lang_fresh.ml[52,2450+30]..[52,2450+34])
+Ppat_var "_loc" (lang_fresh.ml[52,2450+30]..[52,2450+34])
+                                                                      core_type (lang_fresh.ml[52,2450+37]..[52,2450+43])
+Ptyp_constr "Locf.t" (lang_fresh.ml[52,2450+37]..[52,2450+43])
+[]
+                                                                    expression (lang_fresh.ml[53,2498+31]..[65,3190+73])
+                                                                      Pexp_let Nonrec
+                                                                      [
+<def>
+  pattern (lang_fresh.ml[53,2498+35]..[53,2498+36])
+    Ppat_var "x" (lang_fresh.ml[53,2498+35]..[53,2498+36])
+  expression (lang_fresh.ml[53,2498+39]..[53,2498+46])
+    Pexp_ident "__fan_0" (lang_fresh.ml[53,2498+39]..[53,2498+46])
+                                                                      ]
+                                                                      expression (lang_fresh.ml[54,2548+31]..[65,3190+73])
+Pexp_constraint
+expression (lang_fresh.ml[54,2548+32]..[65,3190+63])
+  Pexp_coerce
+  expression (lang_fresh.ml[54,2548+33]..[65,3190+50])
+    Pexp_variant "App"
+    Some
+      expression (lang_fresh.ml[55,2586+35]..[65,3190+50])
+        Pexp_tuple
+        [
+          expression (lang_fresh.ml[55,2586+36]..[55,2586+40])
+            Pexp_ident "_loc" (lang_fresh.ml[55,2586+36]..[55,2586+40])
+          expression (lang_fresh.ml[56,2628+38]..[64,3120+67])
+            Pexp_variant "App"
+            Some
+              expression (lang_fresh.ml[57,2671+40]..[64,3120+67])
+                Pexp_tuple
+                [
+                  expression (lang_fresh.ml[57,2671+41]..[57,2671+45])
+                    Pexp_ident "_loc" (lang_fresh.ml[57,2671+41]..[57,2671+45])
+                  expression (lang_fresh.ml[58,2718+43]..[60,2843+70])
+                    Pexp_variant "Dot"
+                    Some
+                      expression (lang_fresh.ml[59,2766+45]..[60,2843+70])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[59,2766+46]..[59,2766+50])
+                            Pexp_ident "_loc" (lang_fresh.ml[59,2766+46]..[59,2766+50])
+                          expression (lang_fresh.ml[59,2766+53]..[59,2766+74])
+                            Pexp_variant "Uid"
+                            Some
+                              expression (lang_fresh.ml[59,2766+58]..[59,2766+74])
+                                Pexp_tuple
+                                [
+                                  expression (lang_fresh.ml[59,2766+59]..[59,2766+63])
+                                    Pexp_ident "_loc" (lang_fresh.ml[59,2766+59]..[59,2766+63])
+                                  expression (lang_fresh.ml[59,2766+65]..[59,2766+73])
+                                    Pexp_constant Const_string("Gensym",None)
+                                ]
+                          expression (lang_fresh.ml[60,2843+48]..[60,2843+68])
+                            Pexp_variant "Lid"
+                            Some
+                              expression (lang_fresh.ml[60,2843+53]..[60,2843+68])
+                                Pexp_tuple
+                                [
+                                  expression (lang_fresh.ml[60,2843+54]..[60,2843+58])
+                                    Pexp_ident "_loc" (lang_fresh.ml[60,2843+54]..[60,2843+58])
+                                  expression (lang_fresh.ml[60,2843+60]..[60,2843+67])
+                                    Pexp_constant Const_string("fresh",None)
+                                ]
+                        ]
+                  expression (lang_fresh.ml[61,2916+43]..[64,3120+65])
+                    Pexp_variant "Label"
+                    Some
+                      expression (lang_fresh.ml[62,2966+45]..[64,3120+65])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[62,2966+46]..[62,2966+50])
+                            Pexp_ident "_loc" (lang_fresh.ml[62,2966+46]..[62,2966+50])
+                          expression (lang_fresh.ml[62,2966+53]..[62,2966+74])
+                            Pexp_variant "Lid"
+                            Some
+                              expression (lang_fresh.ml[62,2966+58]..[62,2966+74])
+                                Pexp_tuple
+                                [
+                                  expression (lang_fresh.ml[62,2966+59]..[62,2966+63])
+                                    Pexp_ident "_loc" (lang_fresh.ml[62,2966+59]..[62,2966+63])
+                                  expression (lang_fresh.ml[62,2966+65]..[62,2966+73])
+                                    Pexp_constant Const_string("prefix",None)
+                                ]
+                          expression (lang_fresh.ml[63,3043+47]..[64,3120+64])
+                            Pexp_coerce
+                            expression (lang_fresh.ml[63,3043+48]..[64,3120+51])
+                              Pexp_apply
+                              expression (lang_fresh.ml[63,3043+48]..[63,3043+65])
+                                Pexp_ident "Tokenf.ant_expand" (lang_fresh.ml[63,3043+48]..[63,3043+65])
+                              [
+                                <label> ""
+                                  expression (lang_fresh.ml[63,3043+66]..[63,3043+76])
+                                    Pexp_ident "Parsef.exp" (lang_fresh.ml[63,3043+66]..[63,3043+76])
+                                <label> ""
+                                  expression (lang_fresh.ml[64,3120+50]..[64,3120+51])
+                                    Pexp_ident "x" (lang_fresh.ml[64,3120+50]..[64,3120+51])
+                              ]
+                            None
+                            core_type (lang_fresh.ml[64,3120+55]..[64,3120+63])
+                              Ptyp_constr "Astf.exp" (lang_fresh.ml[64,3120+55]..[64,3120+63])
+                              []
+                        ]
+                ]
+          expression (lang_fresh.ml[65,3190+38]..[65,3190+48])
+            Pexp_variant "Unit"
+            Some
+              expression (lang_fresh.ml[65,3190+44]..[65,3190+48])
+                Pexp_ident "_loc" (lang_fresh.ml[65,3190+44]..[65,3190+48])
+        ]
+  None
+  core_type (lang_fresh.ml[65,3190+54]..[65,3190+62])
+    Ptyp_constr "Astf.exp" (lang_fresh.ml[65,3190+54]..[65,3190+62])
+    []
+core_type (lang_fresh.ml[65,3190+66]..[65,3190+72])
+  Ptyp_var fresh
+                                                                ]
+                                                          ]
+                                                        core_type (lang_fresh.ml[66,3268+21]..[66,3268+51])
+                                                          Ptyp_arrow
+                                                          ""
+                                                          core_type (lang_fresh.ml[66,3268+21]..[66,3268+31])
+                                                            Ptyp_constr "Tokenf.ant" (lang_fresh.ml[66,3268+21]..[66,3268+31])
+                                                            []
+                                                          core_type (lang_fresh.ml[66,3268+35]..[66,3268+51])
+                                                            Ptyp_arrow
+                                                            ""
+                                                            core_type (lang_fresh.ml[66,3268+35]..[66,3268+41])
+                                                              Ptyp_constr "Locf.t" (lang_fresh.ml[66,3268+35]..[66,3268+41])
+                                                              []
+                                                            core_type (lang_fresh.ml[66,3268+45]..[66,3268+51])
+                                                              Ptyp_var fresh
+                                                  ]
+                                            ]
+                                            None
+                                          expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                            Pexp_construct "::" (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                            Some
+                                              expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                                Pexp_tuple
+                                                [
+                                                  expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                                    Pexp_record
+                                                    [
+                                                      "symbols" (lang_fresh.ml[69,3355+16]..[69,3355+23])
+                                                        expression (lang_fresh.ml[69,3355+26]..[69,3355+28])
+                                                          Pexp_construct "[]" (lang_fresh.ml[69,3355+26]..[69,3355+28])
+                                                          None
+                                                      "annot" (lang_fresh.ml[70,3385+16]..[70,3385+21])
+                                                        expression (lang_fresh.ml[71,3409+18]..[71,3409+139])
+                                                          Pexp_constant Const_string("(`App\n   (_loc, (`Dot (_loc, (`Uid (_loc, \"Gensym\")), (`Lid (_loc, \"fresh\")))),\n     (`Unit _loc)) :> Astf.exp)\n",None)
+                                                      "fn" (lang_fresh.ml[72,3550+16]..[72,3550+18])
+                                                        expression (lang_fresh.ml[73,3571+19]..[81,3936+65])
+                                                          Pexp_apply
+                                                          expression (lang_fresh.ml[73,3571+19]..[73,3571+34])
+                                                            Pexp_ident "Gramf.mk_action" (lang_fresh.ml[73,3571+19]..[73,3571+34])
+                                                          [
+                                                            <label> ""
+                                                              expression (lang_fresh.ml[74,3606+21]..[81,3936+65])
+                                                                Pexp_constraint
+                                                                expression (lang_fresh.ml[74,3606+22]..[81,3936+45])
+                                                                  Pexp_function
+                                                                  [
+                                                                    <case>
+                                                                      pattern (lang_fresh.ml[75,3637+24]..[75,3637+39])
+Ppat_constraint
+pattern (lang_fresh.ml[75,3637+25]..[75,3637+29])
+  Ppat_var "_loc" (lang_fresh.ml[75,3637+25]..[75,3637+29])
+core_type (lang_fresh.ml[75,3637+32]..[75,3637+38])
+  Ptyp_constr "Locf.t" (lang_fresh.ml[75,3637+32]..[75,3637+38])
+  []
+                                                                      expression (lang_fresh.ml[76,3680+26]..[81,3936+45])
+Pexp_constraint
+expression (lang_fresh.ml[76,3680+27]..[81,3936+35])
+  Pexp_coerce
+  expression (lang_fresh.ml[76,3680+28]..[80,3855+76])
+    Pexp_variant "App"
+    Some
+      expression (lang_fresh.ml[77,3713+30]..[80,3855+76])
+        Pexp_tuple
+        [
+          expression (lang_fresh.ml[77,3713+31]..[77,3713+35])
+            Pexp_ident "_loc" (lang_fresh.ml[77,3713+31]..[77,3713+35])
+          expression (lang_fresh.ml[78,3750+33]..[80,3855+60])
+            Pexp_variant "Dot"
+            Some
+              expression (lang_fresh.ml[79,3788+35]..[80,3855+60])
+                Pexp_tuple
+                [
+                  expression (lang_fresh.ml[79,3788+36]..[79,3788+40])
+                    Pexp_ident "_loc" (lang_fresh.ml[79,3788+36]..[79,3788+40])
+                  expression (lang_fresh.ml[79,3788+43]..[79,3788+64])
+                    Pexp_variant "Uid"
+                    Some
+                      expression (lang_fresh.ml[79,3788+48]..[79,3788+64])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[79,3788+49]..[79,3788+53])
+                            Pexp_ident "_loc" (lang_fresh.ml[79,3788+49]..[79,3788+53])
+                          expression (lang_fresh.ml[79,3788+55]..[79,3788+63])
+                            Pexp_constant Const_string("Gensym",None)
+                        ]
+                  expression (lang_fresh.ml[80,3855+38]..[80,3855+58])
+                    Pexp_variant "Lid"
+                    Some
+                      expression (lang_fresh.ml[80,3855+43]..[80,3855+58])
+                        Pexp_tuple
+                        [
+                          expression (lang_fresh.ml[80,3855+44]..[80,3855+48])
+                            Pexp_ident "_loc" (lang_fresh.ml[80,3855+44]..[80,3855+48])
+                          expression (lang_fresh.ml[80,3855+50]..[80,3855+57])
+                            Pexp_constant Const_string("fresh",None)
+                        ]
+                ]
+          expression (lang_fresh.ml[80,3855+64]..[80,3855+74])
+            Pexp_variant "Unit"
+            Some
+              expression (lang_fresh.ml[80,3855+70]..[80,3855+74])
+                Pexp_ident "_loc" (lang_fresh.ml[80,3855+70]..[80,3855+74])
+        ]
+  None
+  core_type (lang_fresh.ml[81,3936+26]..[81,3936+34])
+    Ptyp_constr "Astf.exp" (lang_fresh.ml[81,3936+26]..[81,3936+34])
+    []
+core_type (lang_fresh.ml[81,3936+38]..[81,3936+44])
+  Ptyp_var fresh
+                                                                  ]
+                                                                core_type (lang_fresh.ml[81,3936+48]..[81,3936+64])
+                                                                  Ptyp_arrow
+                                                                  ""
+                                                                  core_type (lang_fresh.ml[81,3936+48]..[81,3936+54])
+                                                                    Ptyp_constr "Locf.t" (lang_fresh.ml[81,3936+48]..[81,3936+54])
+                                                                    []
+                                                                  core_type (lang_fresh.ml[81,3936+58]..[81,3936+64])
+                                                                    Ptyp_var fresh
+                                                          ]
+                                                    ]
+                                                    None
+                                                  expression (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                                    Pexp_construct "[]" (lang_fresh.ml[68,3339+14]..[82,4003+15])
+                                                    None
+                                                ]
+                                        ]
+                                ]
+                      ]
+                      None
+                    core_type (lang_fresh.ml[83,4020+14]..[83,4020+26])
+                      Ptyp_constr "Gramf.olevel" (lang_fresh.ml[83,4020+14]..[83,4020+26])
+                      []
+              ]
+              None
+            core_type (lang_fresh.ml[84,4048+9]..[84,4048+40])
+              Ptyp_constr "Gramf.single_extend_statement" (lang_fresh.ml[84,4048+11]..[84,4048+40])
+              [
+                core_type (lang_fresh.ml[84,4048+9]..[84,4048+10])
+                  Ptyp_any
+              ]
+      ]
+  structure_item (lang_fresh.ml[85,4090+4]..[87,4164+19])
+    Pstr_eval
+    expression (lang_fresh.ml[86,4098+2]..[87,4164+19])
+      Pexp_apply
+      expression (lang_fresh.ml[86,4098+2]..[86,4098+22])
+        Pexp_ident "Ast_quotation.of_exp" (lang_fresh.ml[86,4098+2]..[86,4098+22])
+      [
+        <label> "name"
+          expression (lang_fresh.ml[86,4098+29]..[86,4098+65])
+            Pexp_record
+            [
+              "domain" (lang_fresh.ml[86,4098+31]..[86,4098+37])
+                expression (lang_fresh.ml[86,4098+40]..[86,4098+47])
+                  Pexp_ident "Ns.lang" (lang_fresh.ml[86,4098+40]..[86,4098+47])
+              "name" (lang_fresh.ml[86,4098+49]..[86,4098+53])
+                expression (lang_fresh.ml[86,4098+56]..[86,4098+63])
+                  Pexp_constant Const_string("fresh",None)
+            ]
+            None
+        <label> "entry"
+          expression (lang_fresh.ml[87,4164+11]..[87,4164+16])
+            Pexp_ident "fresh" (lang_fresh.ml[87,4164+11]..[87,4164+16])
+        <label> ""
+          expression (lang_fresh.ml[87,4164+17]..[87,4164+19])
+            Pexp_construct "()" (lang_fresh.ml[87,4164+17]..[87,4164+19])
+            None
+      ]
+]

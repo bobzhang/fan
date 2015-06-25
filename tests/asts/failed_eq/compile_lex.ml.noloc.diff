@@ -1,0 +1,44 @@
+999,1000d998
+<                             Pexp_sequence
+<                             expression (compile_lex.ml[]..[])
+1042a1041,1042
+>                               Pexp_sequence
+>                               expression (compile_lex.ml[]..[])
+1200c1200
+<                                                                       Pexp_ident "!" (compile_lex.ml[]..[])
+---
+> Pexp_ident "!" (compile_lex.ml[]..[])
+1202,1203c1202,1203
+<                                                                       <label> ""
+< expression (compile_lex.ml[]..[])
+---
+> <label> ""
+>   expression (compile_lex.ml[]..[])
+1214,1218c1214,1218
+<                                                                       Pexp_apply
+<                                                                       expression (compile_lex.ml[]..[])
+< Pexp_ident "output_clause" (compile_lex.ml[]..[])
+<                                                                       [
+< <label> "pats"
+---
+> Pexp_apply
+> expression (compile_lex.ml[]..[])
+>   Pexp_ident "output_clause" (compile_lex.ml[]..[])
+> [
+>   <label> "pats"
+1228c1228
+< <label> ""
+---
+>   <label> ""
+1231c1231
+< <label> ""
+---
+>   <label> ""
+1234c1234
+<                                                                       ]
+---
+> ]
+1236c1236
+<                                                                       Pexp_ident "acc" (compile_lex.ml[]..[])
+---
+> Pexp_ident "acc" (compile_lex.ml[]..[])

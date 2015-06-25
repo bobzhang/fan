@@ -1,0 +1,1274 @@
+[
+  structure_item (lang_clear.ml[1,0+0]..[1,0+27])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_clear.ml[1,0+4]..[1,0+10])
+          Ppat_var "loc_of" (lang_clear.ml[1,0+4]..[1,0+10])
+        expression (lang_clear.ml[1,0+13]..[1,0+27])
+          Pexp_ident "Ast_gen.loc_of" (lang_clear.ml[1,0+13]..[1,0+27])
+    ]
+  structure_item (lang_clear.ml[2,28+0]..[2,28+29])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_clear.ml[2,28+4]..[2,28+11])
+          Ppat_var "seq_sem" (lang_clear.ml[2,28+4]..[2,28+11])
+        expression (lang_clear.ml[2,28+14]..[2,28+29])
+          Pexp_ident "Ast_gen.seq_sem" (lang_clear.ml[2,28+14]..[2,28+29])
+    ]
+  structure_item (lang_clear.ml[3,58+0]..[3,58+9])
+    Pstr_open Fresh "Astf" (lang_clear.ml[3,58+5]..[3,58+9])
+  structure_item (lang_clear.ml[4,68+0]..[4,68+34])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_clear.ml[4,68+4]..[4,68+12])
+          Ppat_var "a_lident" (lang_clear.ml[4,68+4]..[4,68+12])
+        expression (lang_clear.ml[4,68+15]..[4,68+34])
+          Pexp_apply
+          expression (lang_clear.ml[4,68+15]..[4,68+23])
+            Pexp_ident "Gramf.mk" (lang_clear.ml[4,68+15]..[4,68+23])
+          [
+            <label> ""
+              expression (lang_clear.ml[4,68+24]..[4,68+34])
+                Pexp_constant Const_string("a_lident",None)
+          ]
+    ]
+  structure_item (lang_clear.ml[5,103+0]..[5,103+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_clear.ml[5,103+4]..[5,103+21])
+          Ppat_var "nonterminalsclear" (lang_clear.ml[5,103+4]..[5,103+21])
+        expression (lang_clear.ml[5,103+21]..[5,103+65]) ghost
+          Pexp_constraint
+          expression (lang_clear.ml[5,103+37]..[5,103+65])
+            Pexp_apply
+            expression (lang_clear.ml[5,103+37]..[5,103+45])
+              Pexp_ident "Gramf.mk" (lang_clear.ml[5,103+37]..[5,103+45])
+            [
+              <label> ""
+                expression (lang_clear.ml[5,103+46]..[5,103+65])
+                  Pexp_constant Const_string("nonterminalsclear",None)
+            ]
+          core_type (lang_clear.ml[5,103+23]..[5,103+34])
+            Ptyp_constr "Gramf.t" (lang_clear.ml[5,103+27]..[5,103+34])
+            [
+              core_type (lang_clear.ml[5,103+23]..[5,103+26])
+                Ptyp_constr "exp" (lang_clear.ml[5,103+23]..[5,103+26])
+                []
+            ]
+    ]
+  structure_item (lang_clear.ml[6,169+0]..[6,169+32])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_clear.ml[6,169+4]..[6,169+11])
+          Ppat_var "qualuid" (lang_clear.ml[6,169+4]..[6,169+11])
+        expression (lang_clear.ml[6,169+14]..[6,169+32])
+          Pexp_apply
+          expression (lang_clear.ml[6,169+14]..[6,169+22])
+            Pexp_ident "Gramf.mk" (lang_clear.ml[6,169+14]..[6,169+22])
+          [
+            <label> ""
+              expression (lang_clear.ml[6,169+23]..[6,169+32])
+                Pexp_constant Const_string("qualuid",None)
+          ]
+    ]
+  structure_item (lang_clear.ml[7,202+0]..[170,7302+41])
+    Pstr_eval
+    expression (lang_clear.ml[8,210+2]..[170,7302+41])
+      Pexp_sequence
+      expression (lang_clear.ml[8,210+2]..[71,2681+41])
+        Pexp_apply
+        expression (lang_clear.ml[8,210+2]..[8,210+21])
+          Pexp_ident "Gramf.extend_single" (lang_clear.ml[8,210+2]..[8,210+21])
+        [
+          <label> ""
+            expression (lang_clear.ml[9,232+4]..[71,2681+41]) ghost
+              Pexp_constraint
+              expression (lang_clear.ml[9,232+5]..[71,2681+6])
+                Pexp_record
+                [
+                  "entry" (lang_clear.ml[10,239+7]..[10,239+12])
+                    expression (lang_clear.ml[10,239+15]..[10,239+45]) ghost
+                      Pexp_constraint
+                      expression (lang_clear.ml[10,239+16]..[10,239+24])
+                        Pexp_ident "a_lident" (lang_clear.ml[10,239+16]..[10,239+24])
+                      core_type (lang_clear.ml[10,239+27]..[10,239+44])
+                        Ptyp_constr "Gramf.t" (lang_clear.ml[10,239+37]..[10,239+44])
+                        [
+                          core_type (lang_clear.ml[10,239+27]..[10,239+36])
+                            Ptyp_var a_lident
+                        ]
+                  "olevel" (lang_clear.ml[11,286+7]..[11,286+13])
+                    expression (lang_clear.ml[12,302+9]..[70,2653+27]) ghost
+                      Pexp_constraint
+                      expression (lang_clear.ml[12,302+10]..[70,2653+11])
+                        Pexp_record
+                        [
+                          "label" (lang_clear.ml[13,314+12]..[13,314+17])
+                            expression (lang_clear.ml[13,314+20]..[13,314+24])
+                              Pexp_construct "None" (lang_clear.ml[13,314+20]..[13,314+24])
+                              None
+                          "lassoc" (lang_clear.ml[14,340+12]..[14,340+18])
+                            expression (lang_clear.ml[14,340+21]..[14,340+25])
+                              Pexp_construct "true" (lang_clear.ml[14,340+21]..[14,340+25])
+                              None
+                          "productions" (lang_clear.ml[15,367+12]..[15,367+23])
+                            expression (lang_clear.ml[16,393+14]..[69,2636+16])
+                              Pexp_construct "::" (lang_clear.ml[16,393+15]..[69,2636+16]) ghost
+                              Some
+                                expression (lang_clear.ml[16,393+15]..[69,2636+16]) ghost
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_clear.ml[16,393+15]..[33,1122+16])
+                                      Pexp_record
+                                      [
+                                        "symbols" (lang_clear.ml[17,410+17]..[17,410+24])
+                                          expression (lang_clear.ml[18,437+19]..[22,599+43])
+                                            Pexp_construct "::" (lang_clear.ml[18,437+20]..[22,599+43]) ghost
+                                            Some
+                                              expression (lang_clear.ml[18,437+20]..[22,599+43]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (lang_clear.ml[18,437+20]..[22,599+42])
+                                                    Pexp_construct "Token" (lang_clear.ml[18,437+20]..[18,437+25])
+                                                    Some
+                                                      expression (lang_clear.ml[19,463+22]..[22,599+42]) ghost
+                                                        Pexp_constraint
+                                                        expression (lang_clear.ml[19,463+23]..[22,599+24])
+                                                          Pexp_record
+                                                          [
+                                                            "descr" (lang_clear.ml[20,488+25]..[20,488+30])
+                                                              expression (lang_clear.ml[21,521+27]..[21,521+77])
+                                                                Pexp_record
+                                                                [
+                                                                  "tag" (lang_clear.ml[21,521+29]..[21,521+32])
+                                                                    expression (lang_clear.ml[21,521+35]..[21,521+39])
+                                                                      Pexp_variant "Ant"
+                                                                      None
+                                                                  "word" (lang_clear.ml[21,521+41]..[21,521+45])
+                                                                    expression (lang_clear.ml[21,521+48]..[21,521+57])
+                                                                      Pexp_construct "Kind" (lang_clear.ml[21,521+49]..[21,521+53])
+                                                                      Some
+expression (lang_clear.ml[21,521+54]..[21,521+56])
+  Pexp_constant Const_string("",None)
+                                                                  "tag_name" (lang_clear.ml[21,521+59]..[21,521+67])
+                                                                    expression (lang_clear.ml[21,521+70]..[21,521+75])
+                                                                      Pexp_constant Const_string("Ant",None)
+                                                                ]
+                                                                None
+                                                          ]
+                                                          None
+                                                        core_type (lang_clear.ml[22,599+27]..[22,599+41])
+                                                          Ptyp_constr "Tokenf.pattern" (lang_clear.ml[22,599+27]..[22,599+41])
+                                                          []
+                                                  expression (lang_clear.ml[22,599+42]..[22,599+43]) ghost
+                                                    Pexp_construct "[]" (lang_clear.ml[22,599+42]..[22,599+43]) ghost
+                                                    None
+                                                ]
+                                        "annot" (lang_clear.ml[23,644+17]..[23,644+22])
+                                          expression (lang_clear.ml[23,644+25]..[23,644+60])
+                                            Pexp_constant Const_string("Tokenf.mk_ant ~c:\"a_lident\" s\n",None)
+                                        "fn" (lang_clear.ml[24,706+17]..[24,706+19])
+                                          expression (lang_clear.ml[25,728+19]..[32,1064+57])
+                                            Pexp_apply
+                                            expression (lang_clear.ml[25,728+20]..[25,728+35])
+                                              Pexp_ident "Gramf.mk_action" (lang_clear.ml[25,728+20]..[25,728+35])
+                                            [
+                                              <label> ""
+                                                expression (lang_clear.ml[26,764+22]..[32,1064+56]) ghost
+                                                  Pexp_constraint
+                                                  expression (lang_clear.ml[26,764+23]..[31,984+76])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (lang_clear.ml[27,796+25]..[27,796+47])
+                                                          Ppat_constraint
+                                                          pattern (lang_clear.ml[27,796+26]..[27,796+33])
+                                                            Ppat_var "__fan_0" (lang_clear.ml[27,796+26]..[27,796+33])
+                                                          core_type (lang_clear.ml[27,796+36]..[27,796+46])
+                                                            Ptyp_constr "Tokenf.ant" (lang_clear.ml[27,796+36]..[27,796+46])
+                                                            []
+                                                        expression (lang_clear.ml[28,847+27]..[31,984+76])
+                                                          Pexp_function
+                                                          [
+                                                            <case>
+                                                              pattern (lang_clear.ml[29,884+30]..[29,884+45])
+                                                                Ppat_constraint
+                                                                pattern (lang_clear.ml[29,884+31]..[29,884+35])
+                                                                  Ppat_var "_loc" (lang_clear.ml[29,884+31]..[29,884+35])
+                                                                core_type (lang_clear.ml[29,884+38]..[29,884+44])
+                                                                  Ptyp_constr "Locf.t" (lang_clear.ml[29,884+38]..[29,884+44])
+                                                                  []
+                                                              expression (lang_clear.ml[30,933+32]..[31,984+75])
+                                                                Pexp_let Nonrec
+                                                                [
+                                                                  <def>
+                                                                    pattern (lang_clear.ml[30,933+36]..[30,933+37])
+                                                                      Ppat_var "s" (lang_clear.ml[30,933+36]..[30,933+37])
+                                                                    expression (lang_clear.ml[30,933+40]..[30,933+47])
+                                                                      Pexp_ident "__fan_0" (lang_clear.ml[30,933+40]..[30,933+47])
+                                                                ]
+                                                                expression (lang_clear.ml[31,984+32]..[31,984+75]) ghost
+                                                                  Pexp_constraint
+                                                                  expression (lang_clear.ml[31,984+33]..[31,984+62])
+                                                                    Pexp_apply
+                                                                    expression (lang_clear.ml[31,984+33]..[31,984+46])
+                                                                      Pexp_ident "Tokenf.mk_ant" (lang_clear.ml[31,984+33]..[31,984+46])
+                                                                    [
+                                                                      <label> "c"
+expression (lang_clear.ml[31,984+50]..[31,984+60])
+  Pexp_constant Const_string("a_lident",None)
+                                                                      <label> ""
+expression (lang_clear.ml[31,984+61]..[31,984+62])
+  Pexp_ident "s" (lang_clear.ml[31,984+61]..[31,984+62])
+                                                                    ]
+                                                                  core_type (lang_clear.ml[31,984+65]..[31,984+74])
+                                                                    Ptyp_var a_lident
+                                                          ]
+                                                    ]
+                                                  core_type (lang_clear.ml[32,1064+22]..[32,1064+55])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (lang_clear.ml[32,1064+22]..[32,1064+32])
+                                                      Ptyp_constr "Tokenf.ant" (lang_clear.ml[32,1064+22]..[32,1064+32])
+                                                      []
+                                                    core_type (lang_clear.ml[32,1064+36]..[32,1064+55])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (lang_clear.ml[32,1064+36]..[32,1064+42])
+                                                        Ptyp_constr "Locf.t" (lang_clear.ml[32,1064+36]..[32,1064+42])
+                                                        []
+                                                      core_type (lang_clear.ml[32,1064+46]..[32,1064+55])
+                                                        Ptyp_var a_lident
+                                            ]
+                                      ]
+                                      None
+                                    expression (lang_clear.ml[34,1140+14]..[69,2636+16]) ghost
+                                      Pexp_construct "::" (lang_clear.ml[34,1140+14]..[69,2636+16]) ghost
+                                      Some
+                                        expression (lang_clear.ml[34,1140+14]..[69,2636+16]) ghost
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_clear.ml[34,1140+14]..[52,1881+15])
+                                              Pexp_record
+                                              [
+                                                "symbols" (lang_clear.ml[35,1156+16]..[35,1156+23])
+                                                  expression (lang_clear.ml[36,1182+18]..[41,1369+42])
+                                                    Pexp_construct "::" (lang_clear.ml[36,1182+19]..[41,1369+42]) ghost
+                                                    Some
+                                                      expression (lang_clear.ml[36,1182+19]..[41,1369+42]) ghost
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (lang_clear.ml[36,1182+19]..[41,1369+41])
+                                                            Pexp_construct "Token" (lang_clear.ml[36,1182+19]..[36,1182+24])
+                                                            Some
+                                                              expression (lang_clear.ml[37,1207+21]..[41,1369+41]) ghost
+                                                                Pexp_constraint
+                                                                expression (lang_clear.ml[37,1207+22]..[41,1369+23])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "descr" (lang_clear.ml[38,1231+24]..[38,1231+29])
+                                                                      expression (lang_clear.ml[39,1263+26]..[40,1341+27])
+Pexp_record
+[
+  "tag" (lang_clear.ml[39,1263+28]..[39,1263+31])
+    expression (lang_clear.ml[39,1263+34]..[39,1263+38])
+      Pexp_variant "Ant"
+      None
+  "word" (lang_clear.ml[39,1263+40]..[39,1263+44])
+    expression (lang_clear.ml[39,1263+47]..[39,1263+59])
+      Pexp_construct "Kind" (lang_clear.ml[39,1263+48]..[39,1263+52])
+      Some
+        expression (lang_clear.ml[39,1263+53]..[39,1263+58])
+          Pexp_constant Const_string("lid",None)
+  "tag_name" (lang_clear.ml[39,1263+61]..[39,1263+69])
+    expression (lang_clear.ml[39,1263+72]..[39,1263+77])
+      Pexp_constant Const_string("Ant",None)
+]
+None
+                                                                  ]
+                                                                  None
+                                                                core_type (lang_clear.ml[41,1369+26]..[41,1369+40])
+                                                                  Ptyp_constr "Tokenf.pattern" (lang_clear.ml[41,1369+26]..[41,1369+40])
+                                                                  []
+                                                          expression (lang_clear.ml[41,1369+41]..[41,1369+42]) ghost
+                                                            Pexp_construct "[]" (lang_clear.ml[41,1369+41]..[41,1369+42]) ghost
+                                                            None
+                                                        ]
+                                                "annot" (lang_clear.ml[42,1413+16]..[42,1413+21])
+                                                  expression (lang_clear.ml[42,1413+24]..[42,1413+59])
+                                                    Pexp_constant Const_string("Tokenf.mk_ant ~c:\"a_lident\" s\n",None)
+                                                "fn" (lang_clear.ml[43,1474+16]..[43,1474+18])
+                                                  expression (lang_clear.ml[44,1495+18]..[51,1824+56])
+                                                    Pexp_apply
+                                                    expression (lang_clear.ml[44,1495+19]..[44,1495+34])
+                                                      Pexp_ident "Gramf.mk_action" (lang_clear.ml[44,1495+19]..[44,1495+34])
+                                                    [
+                                                      <label> ""
+                                                        expression (lang_clear.ml[45,1530+21]..[51,1824+55]) ghost
+                                                          Pexp_constraint
+                                                          expression (lang_clear.ml[45,1530+22]..[50,1745+75])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (lang_clear.ml[46,1561+24]..[46,1561+46])
+                                                                  Ppat_constraint
+                                                                  pattern (lang_clear.ml[46,1561+25]..[46,1561+32])
+                                                                    Ppat_var "__fan_0" (lang_clear.ml[46,1561+25]..[46,1561+32])
+                                                                  core_type (lang_clear.ml[46,1561+35]..[46,1561+45])
+                                                                    Ptyp_constr "Tokenf.ant" (lang_clear.ml[46,1561+35]..[46,1561+45])
+                                                                    []
+                                                                expression (lang_clear.ml[47,1611+26]..[50,1745+75])
+                                                                  Pexp_function
+                                                                  [
+                                                                    <case>
+                                                                      pattern (lang_clear.ml[48,1647+29]..[48,1647+44])
+Ppat_constraint
+pattern (lang_clear.ml[48,1647+30]..[48,1647+34])
+  Ppat_var "_loc" (lang_clear.ml[48,1647+30]..[48,1647+34])
+core_type (lang_clear.ml[48,1647+37]..[48,1647+43])
+  Ptyp_constr "Locf.t" (lang_clear.ml[48,1647+37]..[48,1647+43])
+  []
+                                                                      expression (lang_clear.ml[49,1695+31]..[50,1745+74])
+Pexp_let Nonrec
+[
+  <def>
+    pattern (lang_clear.ml[49,1695+35]..[49,1695+36])
+      Ppat_var "s" (lang_clear.ml[49,1695+35]..[49,1695+36])
+    expression (lang_clear.ml[49,1695+39]..[49,1695+46])
+      Pexp_ident "__fan_0" (lang_clear.ml[49,1695+39]..[49,1695+46])
+]
+expression (lang_clear.ml[50,1745+31]..[50,1745+74]) ghost
+  Pexp_constraint
+  expression (lang_clear.ml[50,1745+32]..[50,1745+61])
+    Pexp_apply
+    expression (lang_clear.ml[50,1745+32]..[50,1745+45])
+      Pexp_ident "Tokenf.mk_ant" (lang_clear.ml[50,1745+32]..[50,1745+45])
+    [
+      <label> "c"
+        expression (lang_clear.ml[50,1745+49]..[50,1745+59])
+          Pexp_constant Const_string("a_lident",None)
+      <label> ""
+        expression (lang_clear.ml[50,1745+60]..[50,1745+61])
+          Pexp_ident "s" (lang_clear.ml[50,1745+60]..[50,1745+61])
+    ]
+  core_type (lang_clear.ml[50,1745+64]..[50,1745+73])
+    Ptyp_var a_lident
+                                                                  ]
+                                                            ]
+                                                          core_type (lang_clear.ml[51,1824+21]..[51,1824+54])
+                                                            Ptyp_arrow
+                                                            ""
+                                                            core_type (lang_clear.ml[51,1824+21]..[51,1824+31])
+                                                              Ptyp_constr "Tokenf.ant" (lang_clear.ml[51,1824+21]..[51,1824+31])
+                                                              []
+                                                            core_type (lang_clear.ml[51,1824+35]..[51,1824+54])
+                                                              Ptyp_arrow
+                                                              ""
+                                                              core_type (lang_clear.ml[51,1824+35]..[51,1824+41])
+                                                                Ptyp_constr "Locf.t" (lang_clear.ml[51,1824+35]..[51,1824+41])
+                                                                []
+                                                              core_type (lang_clear.ml[51,1824+45]..[51,1824+54])
+                                                                Ptyp_var a_lident
+                                                    ]
+                                              ]
+                                              None
+                                            expression (lang_clear.ml[53,1898+14]..[69,2636+16]) ghost
+                                              Pexp_construct "::" (lang_clear.ml[53,1898+14]..[69,2636+16]) ghost
+                                              Some
+                                                expression (lang_clear.ml[53,1898+14]..[69,2636+16]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_clear.ml[53,1898+14]..[69,2636+15])
+                                                      Pexp_record
+                                                      [
+                                                        "symbols" (lang_clear.ml[54,1914+16]..[54,1914+23])
+                                                          expression (lang_clear.ml[55,1940+18]..[57,2042+42])
+                                                            Pexp_construct "::" (lang_clear.ml[55,1940+19]..[57,2042+42]) ghost
+                                                            Some
+                                                              expression (lang_clear.ml[55,1940+19]..[57,2042+42]) ghost
+                                                                Pexp_tuple
+                                                                [
+                                                                  expression (lang_clear.ml[55,1940+19]..[57,2042+41])
+                                                                    Pexp_construct "Token" (lang_clear.ml[55,1940+19]..[55,1940+24])
+                                                                    Some
+                                                                      expression (lang_clear.ml[56,1965+21]..[57,2042+41]) ghost
+Pexp_constraint
+expression (lang_clear.ml[56,1965+22]..[57,2042+23])
+  Pexp_record
+  [
+    "descr" (lang_clear.ml[56,1965+24]..[56,1965+29])
+      expression (lang_clear.ml[56,1965+32]..[56,1965+76])
+        Pexp_record
+        [
+          "tag" (lang_clear.ml[56,1965+34]..[56,1965+37])
+            expression (lang_clear.ml[56,1965+40]..[56,1965+44])
+              Pexp_variant "Lid"
+              None
+          "word" (lang_clear.ml[56,1965+46]..[56,1965+50])
+            expression (lang_clear.ml[56,1965+53]..[56,1965+56])
+              Pexp_construct "Any" (lang_clear.ml[56,1965+53]..[56,1965+56])
+              None
+          "tag_name" (lang_clear.ml[56,1965+58]..[56,1965+66])
+            expression (lang_clear.ml[56,1965+69]..[56,1965+74])
+              Pexp_constant Const_string("Lid",None)
+        ]
+        None
+  ]
+  None
+core_type (lang_clear.ml[57,2042+26]..[57,2042+40])
+  Ptyp_constr "Tokenf.pattern" (lang_clear.ml[57,2042+26]..[57,2042+40])
+  []
+                                                                  expression (lang_clear.ml[57,2042+41]..[57,2042+42]) ghost
+                                                                    Pexp_construct "[]" (lang_clear.ml[57,2042+41]..[57,2042+42]) ghost
+                                                                    None
+                                                                ]
+                                                        "annot" (lang_clear.ml[58,2086+16]..[58,2086+21])
+                                                          expression (lang_clear.ml[58,2086+24]..[58,2086+42])
+                                                            Pexp_constant Const_string("`Lid (_loc, s)\n",None)
+                                                        "fn" (lang_clear.ml[59,2130+16]..[59,2130+18])
+                                                          expression (lang_clear.ml[60,2151+18]..[68,2557+78])
+                                                            Pexp_apply
+                                                            expression (lang_clear.ml[60,2151+19]..[60,2151+34])
+                                                              Pexp_ident "Gramf.mk_action" (lang_clear.ml[60,2151+19]..[60,2151+34])
+                                                            [
+                                                              <label> ""
+                                                                expression (lang_clear.ml[61,2186+21]..[68,2557+77]) ghost
+                                                                  Pexp_constraint
+                                                                  expression (lang_clear.ml[61,2186+22]..[66,2405+60])
+                                                                    Pexp_function
+                                                                    [
+                                                                      <case>
+pattern (lang_clear.ml[62,2217+24]..[62,2217+46])
+  Ppat_constraint
+  pattern (lang_clear.ml[62,2217+25]..[62,2217+32])
+    Ppat_var "__fan_0" (lang_clear.ml[62,2217+25]..[62,2217+32])
+  core_type (lang_clear.ml[62,2217+35]..[62,2217+45])
+    Ptyp_constr "Tokenf.txt" (lang_clear.ml[62,2217+35]..[62,2217+45])
+    []
+expression (lang_clear.ml[63,2267+26]..[66,2405+60])
+  Pexp_function
+  [
+    <case>
+      pattern (lang_clear.ml[64,2303+29]..[64,2303+44])
+        Ppat_constraint
+        pattern (lang_clear.ml[64,2303+30]..[64,2303+34])
+          Ppat_var "_loc" (lang_clear.ml[64,2303+30]..[64,2303+34])
+        core_type (lang_clear.ml[64,2303+37]..[64,2303+43])
+          Ptyp_constr "Locf.t" (lang_clear.ml[64,2303+37]..[64,2303+43])
+          []
+      expression (lang_clear.ml[65,2351+31]..[66,2405+59])
+        Pexp_let Nonrec
+        [
+          <def>
+            pattern (lang_clear.ml[65,2351+35]..[65,2351+36])
+              Ppat_var "s" (lang_clear.ml[65,2351+35]..[65,2351+36])
+            expression (lang_clear.ml[65,2351+39]..[65,2351+50])
+              Pexp_field
+              expression (lang_clear.ml[65,2351+39]..[65,2351+46])
+                Pexp_ident "__fan_0" (lang_clear.ml[65,2351+39]..[65,2351+46])
+              "txt" (lang_clear.ml[65,2351+47]..[65,2351+50])
+        ]
+        expression (lang_clear.ml[66,2405+31]..[66,2405+59]) ghost
+          Pexp_constraint
+          expression (lang_clear.ml[66,2405+32]..[66,2405+46])
+            Pexp_variant "Lid"
+            Some
+              expression (lang_clear.ml[66,2405+37]..[66,2405+46])
+                Pexp_tuple
+                [
+                  expression (lang_clear.ml[66,2405+38]..[66,2405+42])
+                    Pexp_ident "_loc" (lang_clear.ml[66,2405+38]..[66,2405+42])
+                  expression (lang_clear.ml[66,2405+44]..[66,2405+45])
+                    Pexp_ident "s" (lang_clear.ml[66,2405+44]..[66,2405+45])
+                ]
+          core_type (lang_clear.ml[66,2405+49]..[66,2405+58])
+            Ptyp_var a_lident
+  ]
+                                                                    ]
+                                                                  core_type (lang_clear.ml[66,2405+63]..[68,2557+76])
+                                                                    Ptyp_arrow
+                                                                    ""
+                                                                    core_type (lang_clear.ml[66,2405+63]..[66,2405+73])
+                                                                      Ptyp_constr "Tokenf.txt" (lang_clear.ml[66,2405+63]..[66,2405+73])
+                                                                      []
+                                                                    core_type (lang_clear.ml[67,2482+65]..[68,2557+76])
+                                                                      Ptyp_arrow
+                                                                      ""
+                                                                      core_type (lang_clear.ml[67,2482+65]..[67,2482+71])
+Ptyp_constr "Locf.t" (lang_clear.ml[67,2482+65]..[67,2482+71])
+[]
+                                                                      core_type (lang_clear.ml[68,2557+67]..[68,2557+76])
+Ptyp_var a_lident
+                                                            ]
+                                                      ]
+                                                      None
+                                                    expression (lang_clear.ml[69,2636+15]..[69,2636+16]) ghost
+                                                      Pexp_construct "[]" (lang_clear.ml[69,2636+15]..[69,2636+16]) ghost
+                                                      None
+                                                  ]
+                                          ]
+                                  ]
+                        ]
+                        None
+                      core_type (lang_clear.ml[70,2653+14]..[70,2653+26])
+                        Ptyp_constr "Gramf.olevel" (lang_clear.ml[70,2653+14]..[70,2653+26])
+                        []
+                ]
+                None
+              core_type (lang_clear.ml[71,2681+9]..[71,2681+40])
+                Ptyp_constr "Gramf.single_extend_statement" (lang_clear.ml[71,2681+11]..[71,2681+40])
+                [
+                  core_type (lang_clear.ml[71,2681+9]..[71,2681+10])
+                    Ptyp_any
+                ]
+        ]
+      expression (lang_clear.ml[72,2724+2]..[170,7302+41])
+        Pexp_sequence
+        expression (lang_clear.ml[72,2724+2]..[113,4864+41])
+          Pexp_apply
+          expression (lang_clear.ml[72,2724+2]..[72,2724+21])
+            Pexp_ident "Gramf.extend_single" (lang_clear.ml[72,2724+2]..[72,2724+21])
+          [
+            <label> ""
+              expression (lang_clear.ml[73,2746+4]..[113,4864+41]) ghost
+                Pexp_constraint
+                expression (lang_clear.ml[73,2746+5]..[113,4864+6])
+                  Pexp_record
+                  [
+                    "entry" (lang_clear.ml[74,2753+7]..[74,2753+12])
+                      expression (lang_clear.ml[74,2753+15]..[74,2753+63]) ghost
+                        Pexp_constraint
+                        expression (lang_clear.ml[74,2753+16]..[74,2753+33])
+                          Pexp_ident "nonterminalsclear" (lang_clear.ml[74,2753+16]..[74,2753+33])
+                        core_type (lang_clear.ml[74,2753+36]..[74,2753+62])
+                          Ptyp_constr "Gramf.t" (lang_clear.ml[74,2753+55]..[74,2753+62])
+                          [
+                            core_type (lang_clear.ml[74,2753+36]..[74,2753+54])
+                              Ptyp_var nonterminalsclear
+                          ]
+                    "olevel" (lang_clear.ml[75,2818+7]..[75,2818+13])
+                      expression (lang_clear.ml[76,2834+9]..[112,4836+27]) ghost
+                        Pexp_constraint
+                        expression (lang_clear.ml[76,2834+10]..[112,4836+11])
+                          Pexp_record
+                          [
+                            "label" (lang_clear.ml[77,2846+12]..[77,2846+17])
+                              expression (lang_clear.ml[77,2846+20]..[77,2846+24])
+                                Pexp_construct "None" (lang_clear.ml[77,2846+20]..[77,2846+24])
+                                None
+                            "lassoc" (lang_clear.ml[78,2872+12]..[78,2872+18])
+                              expression (lang_clear.ml[78,2872+21]..[78,2872+25])
+                                Pexp_construct "true" (lang_clear.ml[78,2872+21]..[78,2872+25])
+                                None
+                            "productions" (lang_clear.ml[79,2899+12]..[79,2899+23])
+                              expression (lang_clear.ml[80,2925+14]..[111,4818+17])
+                                Pexp_construct "::" (lang_clear.ml[80,2925+15]..[111,4818+17]) ghost
+                                Some
+                                  expression (lang_clear.ml[80,2925+15]..[111,4818+17]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_clear.ml[80,2925+15]..[111,4818+16])
+                                        Pexp_record
+                                        [
+                                          "symbols" (lang_clear.ml[81,2942+17]..[81,2942+24])
+                                            expression (lang_clear.ml[82,2969+19]..[83,3037+76])
+                                              Pexp_construct "::" (lang_clear.ml[82,2969+20]..[83,3037+76]) ghost
+                                              Some
+                                                expression (lang_clear.ml[82,2969+20]..[83,3037+76]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_clear.ml[82,2969+20]..[82,2969+66])
+                                                      Pexp_construct "Nterm" (lang_clear.ml[82,2969+20]..[82,2969+25])
+                                                      Some
+                                                        expression (lang_clear.ml[82,2969+26]..[82,2969+66])
+                                                          Pexp_apply
+                                                          expression (lang_clear.ml[82,2969+27]..[82,2969+36])
+                                                            Pexp_ident "Gramf.obj" (lang_clear.ml[82,2969+27]..[82,2969+36])
+                                                          [
+                                                            <label> ""
+                                                              expression (lang_clear.ml[82,2969+37]..[82,2969+65]) ghost
+                                                                Pexp_constraint
+                                                                expression (lang_clear.ml[82,2969+38]..[82,2969+45])
+                                                                  Pexp_ident "qualuid" (lang_clear.ml[82,2969+38]..[82,2969+45])
+                                                                core_type (lang_clear.ml[82,2969+48]..[82,2969+64])
+                                                                  Ptyp_constr "Gramf.t" (lang_clear.ml[82,2969+57]..[82,2969+64])
+                                                                  [
+                                                                    core_type (lang_clear.ml[82,2969+48]..[82,2969+56])
+                                                                      Ptyp_var qualuid
+                                                                  ]
+                                                          ]
+                                                    expression (lang_clear.ml[83,3037+19]..[83,3037+76]) ghost
+                                                      Pexp_construct "::" (lang_clear.ml[83,3037+19]..[83,3037+76]) ghost
+                                                      Some
+                                                        expression (lang_clear.ml[83,3037+19]..[83,3037+76]) ghost
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_clear.ml[83,3037+19]..[83,3037+75])
+                                                              Pexp_construct "List1" (lang_clear.ml[83,3037+19]..[83,3037+24])
+                                                              Some
+                                                                expression (lang_clear.ml[83,3037+25]..[83,3037+75])
+                                                                  Pexp_construct "Nterm" (lang_clear.ml[83,3037+26]..[83,3037+31])
+                                                                  Some
+                                                                    expression (lang_clear.ml[83,3037+32]..[83,3037+74])
+                                                                      Pexp_apply
+                                                                      expression (lang_clear.ml[83,3037+33]..[83,3037+42])
+Pexp_ident "Gramf.obj" (lang_clear.ml[83,3037+33]..[83,3037+42])
+                                                                      [
+<label> ""
+  expression (lang_clear.ml[83,3037+43]..[83,3037+73]) ghost
+    Pexp_constraint
+    expression (lang_clear.ml[83,3037+44]..[83,3037+52])
+      Pexp_ident "a_lident" (lang_clear.ml[83,3037+44]..[83,3037+52])
+    core_type (lang_clear.ml[83,3037+55]..[83,3037+72])
+      Ptyp_constr "Gramf.t" (lang_clear.ml[83,3037+65]..[83,3037+72])
+      [
+        core_type (lang_clear.ml[83,3037+55]..[83,3037+64])
+          Ptyp_var a_lident
+      ]
+                                                                      ]
+                                                            expression (lang_clear.ml[83,3037+75]..[83,3037+76]) ghost
+                                                              Pexp_construct "[]" (lang_clear.ml[83,3037+75]..[83,3037+76]) ghost
+                                                              None
+                                                          ]
+                                                  ]
+                                          "annot" (lang_clear.ml[84,3115+17]..[84,3115+22])
+                                            expression (lang_clear.ml[85,3140+19]..[85,3140+284])
+                                              Pexp_constant Const_string("(ls |>\n   (List.map\n      (function\n       | (x : alident) ->\n           let _loc = loc_of x in\n           (`App\n              (_loc, (`Dot (_loc, (t :> Astf.vid), (`Lid (_loc, \"clear\")))),\n                (x :> Astf.exp)) :> Astf.exp))))\n  |> seq_sem\n",None)
+                                          "fn" (lang_clear.ml[86,3426+17]..[86,3426+19])
+                                            expression (lang_clear.ml[87,3448+19]..[110,4751+66])
+                                              Pexp_apply
+                                              expression (lang_clear.ml[87,3448+20]..[87,3448+35])
+                                                Pexp_ident "Gramf.mk_action" (lang_clear.ml[87,3448+20]..[87,3448+35])
+                                              [
+                                                <label> ""
+                                                  expression (lang_clear.ml[88,3484+22]..[110,4751+65]) ghost
+                                                    Pexp_constraint
+                                                    expression (lang_clear.ml[88,3484+23]..[108,4633+74])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (lang_clear.ml[89,3516+25]..[89,3516+46])
+                                                            Ppat_constraint
+                                                            pattern (lang_clear.ml[89,3516+26]..[89,3516+28])
+                                                              Ppat_var "ls" (lang_clear.ml[89,3516+26]..[89,3516+28])
+                                                            core_type (lang_clear.ml[89,3516+31]..[89,3516+45])
+                                                              Ptyp_constr "list" (lang_clear.ml[89,3516+41]..[89,3516+45])
+                                                              [
+                                                                core_type (lang_clear.ml[89,3516+31]..[89,3516+40])
+                                                                  Ptyp_var a_lident
+                                                              ]
+                                                          expression (lang_clear.ml[90,3566+27]..[108,4633+74])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (lang_clear.ml[91,3603+30]..[91,3603+44])
+                                                                  Ppat_constraint
+                                                                  pattern (lang_clear.ml[91,3603+31]..[91,3603+32])
+                                                                    Ppat_var "t" (lang_clear.ml[91,3603+31]..[91,3603+32])
+                                                                  core_type (lang_clear.ml[91,3603+35]..[91,3603+43])
+                                                                    Ptyp_var qualuid
+                                                                expression (lang_clear.ml[92,3651+32]..[108,4633+73])
+                                                                  Pexp_function
+                                                                  [
+                                                                    <case>
+                                                                      pattern (lang_clear.ml[93,3693+35]..[93,3693+50])
+Ppat_constraint
+pattern (lang_clear.ml[93,3693+36]..[93,3693+40])
+  Ppat_var "_loc" (lang_clear.ml[93,3693+36]..[93,3693+40])
+core_type (lang_clear.ml[93,3693+43]..[93,3693+49])
+  Ptyp_constr "Locf.t" (lang_clear.ml[93,3693+43]..[93,3693+49])
+  []
+                                                                      expression (lang_clear.ml[94,3747+37]..[108,4633+72]) ghost
+Pexp_constraint
+expression (lang_clear.ml[94,3747+38]..[108,4633+50])
+  Pexp_apply
+  expression (lang_clear.ml[108,4633+40]..[108,4633+42])
+    Pexp_ident "|>" (lang_clear.ml[108,4633+40]..[108,4633+42])
+  [
+    <label> ""
+      expression (lang_clear.ml[94,3747+38]..[107,4569+63])
+        Pexp_apply
+        expression (lang_clear.ml[94,3747+42]..[94,3747+44])
+          Pexp_ident "|>" (lang_clear.ml[94,3747+42]..[94,3747+44])
+        [
+          <label> ""
+            expression (lang_clear.ml[94,3747+39]..[94,3747+41])
+              Pexp_ident "ls" (lang_clear.ml[94,3747+39]..[94,3747+41])
+          <label> ""
+            expression (lang_clear.ml[95,3792+41]..[107,4569+62])
+              Pexp_apply
+              expression (lang_clear.ml[95,3792+42]..[95,3792+50])
+                Pexp_ident "List.map" (lang_clear.ml[95,3792+42]..[95,3792+50])
+              [
+                <label> ""
+                  expression (lang_clear.ml[96,3843+44]..[107,4569+61])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (lang_clear.ml[97,3897+47]..[97,3897+60])
+                          Ppat_constraint
+                          pattern (lang_clear.ml[97,3897+48]..[97,3897+49])
+                            Ppat_var "x" (lang_clear.ml[97,3897+48]..[97,3897+49])
+                          core_type (lang_clear.ml[97,3897+52]..[97,3897+59])
+                            Ptyp_constr "alident" (lang_clear.ml[97,3897+52]..[97,3897+59])
+                            []
+                        expression (lang_clear.ml[98,3961+49]..[107,4569+60])
+                          Pexp_let Nonrec
+                          [
+                            <def>
+                              pattern (lang_clear.ml[98,3961+53]..[98,3961+57])
+                                Ppat_var "_loc" (lang_clear.ml[98,3961+53]..[98,3961+57])
+                              expression (lang_clear.ml[98,3961+60]..[98,3961+68])
+                                Pexp_apply
+                                expression (lang_clear.ml[98,3961+60]..[98,3961+66])
+                                  Pexp_ident "loc_of" (lang_clear.ml[98,3961+60]..[98,3961+66])
+                                [
+                                  <label> ""
+                                    expression (lang_clear.ml[98,3961+67]..[98,3961+68])
+                                      Pexp_ident "x" (lang_clear.ml[98,3961+67]..[98,3961+68])
+                                ]
+                          ]
+                          expression (lang_clear.ml[99,4033+49]..[107,4569+60]) ghost
+                            Pexp_coerce
+                            expression (lang_clear.ml[99,4033+50]..[106,4494+70])
+                              Pexp_variant "App"
+                              Some
+                                expression (lang_clear.ml[100,4088+52]..[106,4494+70])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_clear.ml[100,4088+53]..[100,4088+57])
+                                      Pexp_ident "_loc" (lang_clear.ml[100,4088+53]..[100,4088+57])
+                                    expression (lang_clear.ml[101,4147+54]..[105,4412+80])
+                                      Pexp_variant "Dot"
+                                      Some
+                                        expression (lang_clear.ml[102,4207+57]..[105,4412+79])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_clear.ml[102,4207+58]..[102,4207+62])
+                                              Pexp_ident "_loc" (lang_clear.ml[102,4207+58]..[102,4207+62])
+                                            expression (lang_clear.ml[103,4271+59]..[103,4271+74]) ghost
+                                              Pexp_coerce
+                                              expression (lang_clear.ml[103,4271+60]..[103,4271+61])
+                                                Pexp_ident "t" (lang_clear.ml[103,4271+60]..[103,4271+61])
+                                              None
+                                              core_type (lang_clear.ml[103,4271+65]..[103,4271+73])
+                                                Ptyp_constr "Astf.vid" (lang_clear.ml[103,4271+65]..[103,4271+73])
+                                                []
+                                            expression (lang_clear.ml[104,4347+59]..[105,4412+78])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (lang_clear.ml[105,4412+62]..[105,4412+77])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_clear.ml[105,4412+63]..[105,4412+67])
+                                                      Pexp_ident "_loc" (lang_clear.ml[105,4412+63]..[105,4412+67])
+                                                    expression (lang_clear.ml[105,4412+69]..[105,4412+76])
+                                                      Pexp_constant Const_string("clear",None)
+                                                  ]
+                                          ]
+                                    expression (lang_clear.ml[106,4494+54]..[106,4494+69]) ghost
+                                      Pexp_coerce
+                                      expression (lang_clear.ml[106,4494+55]..[106,4494+56])
+                                        Pexp_ident "x" (lang_clear.ml[106,4494+55]..[106,4494+56])
+                                      None
+                                      core_type (lang_clear.ml[106,4494+60]..[106,4494+68])
+                                        Ptyp_constr "Astf.exp" (lang_clear.ml[106,4494+60]..[106,4494+68])
+                                        []
+                                  ]
+                            None
+                            core_type (lang_clear.ml[107,4569+51]..[107,4569+59])
+                              Ptyp_constr "Astf.exp" (lang_clear.ml[107,4569+51]..[107,4569+59])
+                              []
+                    ]
+              ]
+        ]
+    <label> ""
+      expression (lang_clear.ml[108,4633+43]..[108,4633+50])
+        Pexp_ident "seq_sem" (lang_clear.ml[108,4633+43]..[108,4633+50])
+  ]
+core_type (lang_clear.ml[108,4633+53]..[108,4633+71])
+  Ptyp_var nonterminalsclear
+                                                                  ]
+                                                            ]
+                                                      ]
+                                                    core_type (lang_clear.ml[109,4711+22]..[110,4751+64])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (lang_clear.ml[109,4711+22]..[109,4711+36])
+                                                        Ptyp_constr "list" (lang_clear.ml[109,4711+32]..[109,4711+36])
+                                                        [
+                                                          core_type (lang_clear.ml[109,4711+22]..[109,4711+31])
+                                                            Ptyp_var a_lident
+                                                        ]
+                                                      core_type (lang_clear.ml[110,4751+24]..[110,4751+64])
+                                                        Ptyp_arrow
+                                                        ""
+                                                        core_type (lang_clear.ml[110,4751+24]..[110,4751+32])
+                                                          Ptyp_var qualuid
+                                                        core_type (lang_clear.ml[110,4751+36]..[110,4751+64])
+                                                          Ptyp_arrow
+                                                          ""
+                                                          core_type (lang_clear.ml[110,4751+36]..[110,4751+42])
+                                                            Ptyp_constr "Locf.t" (lang_clear.ml[110,4751+36]..[110,4751+42])
+                                                            []
+                                                          core_type (lang_clear.ml[110,4751+46]..[110,4751+64])
+                                                            Ptyp_var nonterminalsclear
+                                              ]
+                                        ]
+                                        None
+                                      expression (lang_clear.ml[111,4818+16]..[111,4818+17]) ghost
+                                        Pexp_construct "[]" (lang_clear.ml[111,4818+16]..[111,4818+17]) ghost
+                                        None
+                                    ]
+                          ]
+                          None
+                        core_type (lang_clear.ml[112,4836+14]..[112,4836+26])
+                          Ptyp_constr "Gramf.olevel" (lang_clear.ml[112,4836+14]..[112,4836+26])
+                          []
+                  ]
+                  None
+                core_type (lang_clear.ml[113,4864+9]..[113,4864+40])
+                  Ptyp_constr "Gramf.single_extend_statement" (lang_clear.ml[113,4864+11]..[113,4864+40])
+                  [
+                    core_type (lang_clear.ml[113,4864+9]..[113,4864+10])
+                      Ptyp_any
+                  ]
+          ]
+        expression (lang_clear.ml[114,4907+2]..[170,7302+41])
+          Pexp_apply
+          expression (lang_clear.ml[114,4907+2]..[114,4907+21])
+            Pexp_ident "Gramf.extend_single" (lang_clear.ml[114,4907+2]..[114,4907+21])
+          [
+            <label> ""
+              expression (lang_clear.ml[115,4929+4]..[170,7302+41]) ghost
+                Pexp_constraint
+                expression (lang_clear.ml[115,4929+5]..[170,7302+6])
+                  Pexp_record
+                  [
+                    "entry" (lang_clear.ml[116,4936+7]..[116,4936+12])
+                      expression (lang_clear.ml[116,4936+15]..[116,4936+43]) ghost
+                        Pexp_constraint
+                        expression (lang_clear.ml[116,4936+16]..[116,4936+23])
+                          Pexp_ident "qualuid" (lang_clear.ml[116,4936+16]..[116,4936+23])
+                        core_type (lang_clear.ml[116,4936+26]..[116,4936+42])
+                          Ptyp_constr "Gramf.t" (lang_clear.ml[116,4936+35]..[116,4936+42])
+                          [
+                            core_type (lang_clear.ml[116,4936+26]..[116,4936+34])
+                              Ptyp_var qualuid
+                          ]
+                    "olevel" (lang_clear.ml[117,4981+7]..[117,4981+13])
+                      expression (lang_clear.ml[118,4997+9]..[169,7274+27]) ghost
+                        Pexp_constraint
+                        expression (lang_clear.ml[118,4997+10]..[169,7274+11])
+                          Pexp_record
+                          [
+                            "label" (lang_clear.ml[119,5009+12]..[119,5009+17])
+                              expression (lang_clear.ml[119,5009+20]..[119,5009+24])
+                                Pexp_construct "None" (lang_clear.ml[119,5009+20]..[119,5009+24])
+                                None
+                            "lassoc" (lang_clear.ml[120,5035+12]..[120,5035+18])
+                              expression (lang_clear.ml[120,5035+21]..[120,5035+25])
+                                Pexp_construct "true" (lang_clear.ml[120,5035+21]..[120,5035+25])
+                                None
+                            "productions" (lang_clear.ml[121,5062+12]..[121,5062+23])
+                              expression (lang_clear.ml[122,5088+14]..[168,7257+16])
+                                Pexp_construct "::" (lang_clear.ml[122,5088+15]..[168,7257+16]) ghost
+                                Some
+                                  expression (lang_clear.ml[122,5088+15]..[168,7257+16]) ghost
+                                    Pexp_tuple
+                                    [
+                                      expression (lang_clear.ml[122,5088+15]..[151,6505+16])
+                                        Pexp_record
+                                        [
+                                          "symbols" (lang_clear.ml[123,5105+17]..[123,5105+24])
+                                            expression (lang_clear.ml[124,5132+19]..[132,5479+24])
+                                              Pexp_construct "::" (lang_clear.ml[124,5132+20]..[132,5479+24]) ghost
+                                              Some
+                                                expression (lang_clear.ml[124,5132+20]..[132,5479+24]) ghost
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_clear.ml[124,5132+20]..[126,5236+42])
+                                                      Pexp_construct "Token" (lang_clear.ml[124,5132+20]..[124,5132+25])
+                                                      Some
+                                                        expression (lang_clear.ml[125,5158+22]..[126,5236+42]) ghost
+                                                          Pexp_constraint
+                                                          expression (lang_clear.ml[125,5158+23]..[126,5236+24])
+                                                            Pexp_record
+                                                            [
+                                                              "descr" (lang_clear.ml[125,5158+25]..[125,5158+30])
+                                                                expression (lang_clear.ml[125,5158+33]..[125,5158+77])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "tag" (lang_clear.ml[125,5158+35]..[125,5158+38])
+                                                                      expression (lang_clear.ml[125,5158+41]..[125,5158+45])
+Pexp_variant "Uid"
+None
+                                                                    "word" (lang_clear.ml[125,5158+47]..[125,5158+51])
+                                                                      expression (lang_clear.ml[125,5158+54]..[125,5158+57])
+Pexp_construct "Any" (lang_clear.ml[125,5158+54]..[125,5158+57])
+None
+                                                                    "tag_name" (lang_clear.ml[125,5158+59]..[125,5158+67])
+                                                                      expression (lang_clear.ml[125,5158+70]..[125,5158+75])
+Pexp_constant Const_string("Uid",None)
+                                                                  ]
+                                                                  None
+                                                            ]
+                                                            None
+                                                          core_type (lang_clear.ml[126,5236+27]..[126,5236+41])
+                                                            Ptyp_constr "Tokenf.pattern" (lang_clear.ml[126,5236+27]..[126,5236+41])
+                                                            []
+                                                    expression (lang_clear.ml[127,5280+19]..[132,5479+24]) ghost
+                                                      Pexp_construct "::" (lang_clear.ml[127,5280+19]..[132,5479+24]) ghost
+                                                      Some
+                                                        expression (lang_clear.ml[127,5280+19]..[132,5479+24]) ghost
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_clear.ml[127,5280+19]..[131,5436+41])
+                                                              Pexp_construct "Token" (lang_clear.ml[127,5280+19]..[127,5280+24])
+                                                              Some
+                                                                expression (lang_clear.ml[128,5305+21]..[131,5436+41]) ghost
+                                                                  Pexp_constraint
+                                                                  expression (lang_clear.ml[128,5305+22]..[131,5436+23])
+                                                                    Pexp_record
+                                                                    [
+                                                                      "descr" (lang_clear.ml[129,5329+24]..[129,5329+29])
+expression (lang_clear.ml[130,5361+26]..[130,5361+74])
+  Pexp_record
+  [
+    "tag" (lang_clear.ml[130,5361+28]..[130,5361+31])
+      expression (lang_clear.ml[130,5361+34]..[130,5361+38])
+        Pexp_variant "Key"
+        None
+    "word" (lang_clear.ml[130,5361+40]..[130,5361+44])
+      expression (lang_clear.ml[130,5361+47]..[130,5361+54])
+        Pexp_construct "A" (lang_clear.ml[130,5361+48]..[130,5361+49])
+        Some
+          expression (lang_clear.ml[130,5361+50]..[130,5361+53])
+            Pexp_constant Const_string(".",None)
+    "tag_name" (lang_clear.ml[130,5361+56]..[130,5361+64])
+      expression (lang_clear.ml[130,5361+67]..[130,5361+72])
+        Pexp_constant Const_string("Key",None)
+  ]
+  None
+                                                                    ]
+                                                                    None
+                                                                  core_type (lang_clear.ml[131,5436+26]..[131,5436+40])
+                                                                    Ptyp_constr "Tokenf.pattern" (lang_clear.ml[131,5436+26]..[131,5436+40])
+                                                                    []
+                                                            expression (lang_clear.ml[132,5479+19]..[132,5479+24]) ghost
+                                                              Pexp_construct "::" (lang_clear.ml[132,5479+19]..[132,5479+24]) ghost
+                                                              Some
+                                                                expression (lang_clear.ml[132,5479+19]..[132,5479+24]) ghost
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_clear.ml[132,5479+19]..[132,5479+23])
+                                                                      Pexp_construct "Self" (lang_clear.ml[132,5479+19]..[132,5479+23])
+                                                                      None
+                                                                    expression (lang_clear.ml[132,5479+23]..[132,5479+24]) ghost
+                                                                      Pexp_construct "[]" (lang_clear.ml[132,5479+23]..[132,5479+24]) ghost
+                                                                      None
+                                                                  ]
+                                                          ]
+                                                  ]
+                                          "annot" (lang_clear.ml[133,5505+17]..[133,5505+22])
+                                            expression (lang_clear.ml[133,5505+25]..[133,5505+62])
+                                              Pexp_constant Const_string("`Dot (_loc, (`Uid (_loc, x)), xs)\n",None)
+                                          "fn" (lang_clear.ml[134,5569+17]..[134,5569+19])
+                                            expression (lang_clear.ml[135,5591+19]..[150,6427+77])
+                                              Pexp_apply
+                                              expression (lang_clear.ml[135,5591+20]..[135,5591+35])
+                                                Pexp_ident "Gramf.mk_action" (lang_clear.ml[135,5591+20]..[135,5591+35])
+                                              [
+                                                <label> ""
+                                                  expression (lang_clear.ml[136,5627+22]..[150,6427+76]) ghost
+                                                    Pexp_constraint
+                                                    expression (lang_clear.ml[136,5627+23]..[146,6129+56])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (lang_clear.ml[137,5659+25]..[137,5659+40])
+                                                            Ppat_constraint
+                                                            pattern (lang_clear.ml[137,5659+26]..[137,5659+28])
+                                                              Ppat_var "xs" (lang_clear.ml[137,5659+26]..[137,5659+28])
+                                                            core_type (lang_clear.ml[137,5659+31]..[137,5659+39])
+                                                              Ptyp_var qualuid
+                                                          expression (lang_clear.ml[138,5703+27]..[146,6129+56])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (lang_clear.ml[139,5740+30]..[139,5740+31])
+                                                                  Ppat_any
+                                                                expression (lang_clear.ml[140,5775+32]..[146,6129+55])
+                                                                  Pexp_function
+                                                                  [
+                                                                    <case>
+                                                                      pattern (lang_clear.ml[141,5817+35]..[141,5817+57])
+Ppat_constraint
+pattern (lang_clear.ml[141,5817+36]..[141,5817+43])
+  Ppat_var "__fan_0" (lang_clear.ml[141,5817+36]..[141,5817+43])
+core_type (lang_clear.ml[141,5817+46]..[141,5817+56])
+  Ptyp_constr "Tokenf.txt" (lang_clear.ml[141,5817+46]..[141,5817+56])
+  []
+                                                                      expression (lang_clear.ml[142,5878+37]..[146,6129+54])
+Pexp_function
+[
+  <case>
+    pattern (lang_clear.ml[143,5925+40]..[143,5925+55])
+      Ppat_constraint
+      pattern (lang_clear.ml[143,5925+41]..[143,5925+45])
+        Ppat_var "_loc" (lang_clear.ml[143,5925+41]..[143,5925+45])
+      core_type (lang_clear.ml[143,5925+48]..[143,5925+54])
+        Ptyp_constr "Locf.t" (lang_clear.ml[143,5925+48]..[143,5925+54])
+        []
+    expression (lang_clear.ml[144,5984+42]..[146,6129+53])
+      Pexp_let Nonrec
+      [
+        <def>
+          pattern (lang_clear.ml[144,5984+46]..[144,5984+47])
+            Ppat_var "x" (lang_clear.ml[144,5984+46]..[144,5984+47])
+          expression (lang_clear.ml[144,5984+50]..[144,5984+61])
+            Pexp_field
+            expression (lang_clear.ml[144,5984+50]..[144,5984+57])
+              Pexp_ident "__fan_0" (lang_clear.ml[144,5984+50]..[144,5984+57])
+            "txt" (lang_clear.ml[144,5984+58]..[144,5984+61])
+      ]
+      expression (lang_clear.ml[145,6049+42]..[146,6129+53]) ghost
+        Pexp_constraint
+        expression (lang_clear.ml[145,6049+43]..[145,6049+76])
+          Pexp_variant "Dot"
+          Some
+            expression (lang_clear.ml[145,6049+48]..[145,6049+76])
+              Pexp_tuple
+              [
+                expression (lang_clear.ml[145,6049+49]..[145,6049+53])
+                  Pexp_ident "_loc" (lang_clear.ml[145,6049+49]..[145,6049+53])
+                expression (lang_clear.ml[145,6049+55]..[145,6049+71])
+                  Pexp_variant "Uid"
+                  Some
+                    expression (lang_clear.ml[145,6049+61]..[145,6049+70])
+                      Pexp_tuple
+                      [
+                        expression (lang_clear.ml[145,6049+62]..[145,6049+66])
+                          Pexp_ident "_loc" (lang_clear.ml[145,6049+62]..[145,6049+66])
+                        expression (lang_clear.ml[145,6049+68]..[145,6049+69])
+                          Pexp_ident "x" (lang_clear.ml[145,6049+68]..[145,6049+69])
+                      ]
+                expression (lang_clear.ml[145,6049+73]..[145,6049+75])
+                  Pexp_ident "xs" (lang_clear.ml[145,6049+73]..[145,6049+75])
+              ]
+        core_type (lang_clear.ml[146,6129+44]..[146,6129+52])
+          Ptyp_var qualuid
+]
+                                                                  ]
+                                                            ]
+                                                      ]
+                                                    core_type (lang_clear.ml[146,6129+59]..[150,6427+75])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (lang_clear.ml[146,6129+59]..[146,6129+67])
+                                                        Ptyp_var qualuid
+                                                      core_type (lang_clear.ml[147,6200+61]..[150,6427+75])
+                                                        Ptyp_arrow
+                                                        ""
+                                                        core_type (lang_clear.ml[147,6200+61]..[147,6200+71])
+                                                          Ptyp_constr "Tokenf.txt" (lang_clear.ml[147,6200+61]..[147,6200+71])
+                                                          []
+                                                        core_type (lang_clear.ml[148,6275+63]..[150,6427+75])
+                                                          Ptyp_arrow
+                                                          ""
+                                                          core_type (lang_clear.ml[148,6275+63]..[148,6275+73])
+                                                            Ptyp_constr "Tokenf.txt" (lang_clear.ml[148,6275+63]..[148,6275+73])
+                                                            []
+                                                          core_type (lang_clear.ml[149,6352+65]..[150,6427+75])
+                                                            Ptyp_arrow
+                                                            ""
+                                                            core_type (lang_clear.ml[149,6352+65]..[149,6352+71])
+                                                              Ptyp_constr "Locf.t" (lang_clear.ml[149,6352+65]..[149,6352+71])
+                                                              []
+                                                            core_type (lang_clear.ml[150,6427+67]..[150,6427+75])
+                                                              Ptyp_var qualuid
+                                              ]
+                                        ]
+                                        None
+                                      expression (lang_clear.ml[152,6523+14]..[168,7257+16]) ghost
+                                        Pexp_construct "::" (lang_clear.ml[152,6523+14]..[168,7257+16]) ghost
+                                        Some
+                                          expression (lang_clear.ml[152,6523+14]..[168,7257+16]) ghost
+                                            Pexp_tuple
+                                            [
+                                              expression (lang_clear.ml[152,6523+14]..[168,7257+15])
+                                                Pexp_record
+                                                [
+                                                  "symbols" (lang_clear.ml[153,6539+16]..[153,6539+23])
+                                                    expression (lang_clear.ml[154,6565+18]..[156,6667+42])
+                                                      Pexp_construct "::" (lang_clear.ml[154,6565+19]..[156,6667+42]) ghost
+                                                      Some
+                                                        expression (lang_clear.ml[154,6565+19]..[156,6667+42]) ghost
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_clear.ml[154,6565+19]..[156,6667+41])
+                                                              Pexp_construct "Token" (lang_clear.ml[154,6565+19]..[154,6565+24])
+                                                              Some
+                                                                expression (lang_clear.ml[155,6590+21]..[156,6667+41]) ghost
+                                                                  Pexp_constraint
+                                                                  expression (lang_clear.ml[155,6590+22]..[156,6667+23])
+                                                                    Pexp_record
+                                                                    [
+                                                                      "descr" (lang_clear.ml[155,6590+24]..[155,6590+29])
+expression (lang_clear.ml[155,6590+32]..[155,6590+76])
+  Pexp_record
+  [
+    "tag" (lang_clear.ml[155,6590+34]..[155,6590+37])
+      expression (lang_clear.ml[155,6590+40]..[155,6590+44])
+        Pexp_variant "Uid"
+        None
+    "word" (lang_clear.ml[155,6590+46]..[155,6590+50])
+      expression (lang_clear.ml[155,6590+53]..[155,6590+56])
+        Pexp_construct "Any" (lang_clear.ml[155,6590+53]..[155,6590+56])
+        None
+    "tag_name" (lang_clear.ml[155,6590+58]..[155,6590+66])
+      expression (lang_clear.ml[155,6590+69]..[155,6590+74])
+        Pexp_constant Const_string("Uid",None)
+  ]
+  None
+                                                                    ]
+                                                                    None
+                                                                  core_type (lang_clear.ml[156,6667+26]..[156,6667+40])
+                                                                    Ptyp_constr "Tokenf.pattern" (lang_clear.ml[156,6667+26]..[156,6667+40])
+                                                                    []
+                                                            expression (lang_clear.ml[156,6667+41]..[156,6667+42]) ghost
+                                                              Pexp_construct "[]" (lang_clear.ml[156,6667+41]..[156,6667+42]) ghost
+                                                              None
+                                                          ]
+                                                  "annot" (lang_clear.ml[157,6711+16]..[157,6711+21])
+                                                    expression (lang_clear.ml[157,6711+24]..[157,6711+42])
+                                                      Pexp_constant Const_string("`Uid (_loc, x)\n",None)
+                                                  "fn" (lang_clear.ml[158,6755+16]..[158,6755+18])
+                                                    expression (lang_clear.ml[159,6776+18]..[167,7180+76])
+                                                      Pexp_apply
+                                                      expression (lang_clear.ml[159,6776+19]..[159,6776+34])
+                                                        Pexp_ident "Gramf.mk_action" (lang_clear.ml[159,6776+19]..[159,6776+34])
+                                                      [
+                                                        <label> ""
+                                                          expression (lang_clear.ml[160,6811+21]..[167,7180+75]) ghost
+                                                            Pexp_constraint
+                                                            expression (lang_clear.ml[160,6811+22]..[165,7030+59])
+                                                              Pexp_function
+                                                              [
+                                                                <case>
+                                                                  pattern (lang_clear.ml[161,6842+24]..[161,6842+46])
+                                                                    Ppat_constraint
+                                                                    pattern (lang_clear.ml[161,6842+25]..[161,6842+32])
+                                                                      Ppat_var "__fan_0" (lang_clear.ml[161,6842+25]..[161,6842+32])
+                                                                    core_type (lang_clear.ml[161,6842+35]..[161,6842+45])
+                                                                      Ptyp_constr "Tokenf.txt" (lang_clear.ml[161,6842+35]..[161,6842+45])
+                                                                      []
+                                                                  expression (lang_clear.ml[162,6892+26]..[165,7030+59])
+                                                                    Pexp_function
+                                                                    [
+                                                                      <case>
+pattern (lang_clear.ml[163,6928+29]..[163,6928+44])
+  Ppat_constraint
+  pattern (lang_clear.ml[163,6928+30]..[163,6928+34])
+    Ppat_var "_loc" (lang_clear.ml[163,6928+30]..[163,6928+34])
+  core_type (lang_clear.ml[163,6928+37]..[163,6928+43])
+    Ptyp_constr "Locf.t" (lang_clear.ml[163,6928+37]..[163,6928+43])
+    []
+expression (lang_clear.ml[164,6976+31]..[165,7030+58])
+  Pexp_let Nonrec
+  [
+    <def>
+      pattern (lang_clear.ml[164,6976+35]..[164,6976+36])
+        Ppat_var "x" (lang_clear.ml[164,6976+35]..[164,6976+36])
+      expression (lang_clear.ml[164,6976+39]..[164,6976+50])
+        Pexp_field
+        expression (lang_clear.ml[164,6976+39]..[164,6976+46])
+          Pexp_ident "__fan_0" (lang_clear.ml[164,6976+39]..[164,6976+46])
+        "txt" (lang_clear.ml[164,6976+47]..[164,6976+50])
+  ]
+  expression (lang_clear.ml[165,7030+31]..[165,7030+58]) ghost
+    Pexp_constraint
+    expression (lang_clear.ml[165,7030+32]..[165,7030+46])
+      Pexp_variant "Uid"
+      Some
+        expression (lang_clear.ml[165,7030+37]..[165,7030+46])
+          Pexp_tuple
+          [
+            expression (lang_clear.ml[165,7030+38]..[165,7030+42])
+              Pexp_ident "_loc" (lang_clear.ml[165,7030+38]..[165,7030+42])
+            expression (lang_clear.ml[165,7030+44]..[165,7030+45])
+              Pexp_ident "x" (lang_clear.ml[165,7030+44]..[165,7030+45])
+          ]
+    core_type (lang_clear.ml[165,7030+49]..[165,7030+57])
+      Ptyp_var qualuid
+                                                                    ]
+                                                              ]
+                                                            core_type (lang_clear.ml[165,7030+62]..[167,7180+74])
+                                                              Ptyp_arrow
+                                                              ""
+                                                              core_type (lang_clear.ml[165,7030+62]..[165,7030+72])
+                                                                Ptyp_constr "Tokenf.txt" (lang_clear.ml[165,7030+62]..[165,7030+72])
+                                                                []
+                                                              core_type (lang_clear.ml[166,7106+64]..[167,7180+74])
+                                                                Ptyp_arrow
+                                                                ""
+                                                                core_type (lang_clear.ml[166,7106+64]..[166,7106+70])
+                                                                  Ptyp_constr "Locf.t" (lang_clear.ml[166,7106+64]..[166,7106+70])
+                                                                  []
+                                                                core_type (lang_clear.ml[167,7180+66]..[167,7180+74])
+                                                                  Ptyp_var qualuid
+                                                      ]
+                                                ]
+                                                None
+                                              expression (lang_clear.ml[168,7257+15]..[168,7257+16]) ghost
+                                                Pexp_construct "[]" (lang_clear.ml[168,7257+15]..[168,7257+16]) ghost
+                                                None
+                                            ]
+                                    ]
+                          ]
+                          None
+                        core_type (lang_clear.ml[169,7274+14]..[169,7274+26])
+                          Ptyp_constr "Gramf.olevel" (lang_clear.ml[169,7274+14]..[169,7274+26])
+                          []
+                  ]
+                  None
+                core_type (lang_clear.ml[170,7302+9]..[170,7302+40])
+                  Ptyp_constr "Gramf.single_extend_statement" (lang_clear.ml[170,7302+11]..[170,7302+40])
+                  [
+                    core_type (lang_clear.ml[170,7302+9]..[170,7302+10])
+                      Ptyp_any
+                  ]
+          ]
+  structure_item (lang_clear.ml[171,7344+0]..[173,7418+31])
+    Pstr_eval
+    expression (lang_clear.ml[172,7352+2]..[173,7418+31])
+      Pexp_apply
+      expression (lang_clear.ml[172,7352+2]..[172,7352+22])
+        Pexp_ident "Ast_quotation.of_exp" (lang_clear.ml[172,7352+2]..[172,7352+22])
+      [
+        <label> "name"
+          expression (lang_clear.ml[172,7352+29]..[172,7352+65])
+            Pexp_record
+            [
+              "domain" (lang_clear.ml[172,7352+31]..[172,7352+37])
+                expression (lang_clear.ml[172,7352+40]..[172,7352+47])
+                  Pexp_ident "Ns.lang" (lang_clear.ml[172,7352+40]..[172,7352+47])
+              "name" (lang_clear.ml[172,7352+49]..[172,7352+53])
+                expression (lang_clear.ml[172,7352+56]..[172,7352+63])
+                  Pexp_constant Const_string("clear",None)
+            ]
+            None
+        <label> "entry"
+          expression (lang_clear.ml[173,7418+11]..[173,7418+28])
+            Pexp_ident "nonterminalsclear" (lang_clear.ml[173,7418+11]..[173,7418+28])
+        <label> ""
+          expression (lang_clear.ml[173,7418+29]..[173,7418+31])
+            Pexp_construct "()" (lang_clear.ml[173,7418+29]..[173,7418+31])
+            None
+      ]
+]

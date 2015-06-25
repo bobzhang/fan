@@ -1,0 +1,15 @@
+402,403d401
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[]..[])
+419,420d416
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[]..[])
+430,431d425
+<                   Ptyp_poly
+<                   core_type (sigs_util.ml[]..[])
+1204,1205d1197
+<                                                 Pexp_sequence
+<                                                 expression (sigs_util.ml[]..[])
+1226a1219,1220
+>                                                   Pexp_sequence
+>                                                   expression (sigs_util.ml[]..[])

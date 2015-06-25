@@ -1,0 +1,343 @@
+[
+  structure_item (fanTop.ml[1,0+0]..[1,0+70])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanTop.ml[1,0+4]..[1,0+29])
+          Ppat_var "parse_toplevel_phrase_old" (fanTop.ml[1,0+4]..[1,0+29])
+        expression (fanTop.ml[1,0+32]..[1,0+70])
+          Pexp_field
+          expression (fanTop.ml[1,0+32]..[1,0+61])
+            Pexp_ident "Toploop.parse_toplevel_phrase" (fanTop.ml[1,0+32]..[1,0+61])
+          "contents" (fanTop.ml[1,0+62]..[1,0+70])
+    ]
+  structure_item (fanTop.ml[2,71+0]..[2,71+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanTop.ml[2,71+4]..[2,71+16])
+          Ppat_var "use_file_old" (fanTop.ml[2,71+4]..[2,71+16])
+        expression (fanTop.ml[2,71+19]..[2,71+50])
+          Pexp_field
+          expression (fanTop.ml[2,71+19]..[2,71+41])
+            Pexp_ident "Toploop.parse_use_file" (fanTop.ml[2,71+19]..[2,71+41])
+          "contents" (fanTop.ml[2,71+42]..[2,71+50])
+    ]
+  structure_item (fanTop.ml[3,122+0]..[5,200+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanTop.ml[3,122+4]..[3,122+10])
+          Ppat_var "normal" (fanTop.ml[3,122+4]..[3,122+10])
+        expression (fanTop.ml[3,122+11]..[5,200+40]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanTop.ml[3,122+11]..[3,122+13])
+            Ppat_construct "()" (fanTop.ml[3,122+11]..[3,122+13])
+            None
+          expression (fanTop.ml[4,138+2]..[5,200+40])
+            Pexp_sequence
+            expression (fanTop.ml[4,138+2]..[4,138+60])
+              Pexp_apply
+              expression (fanTop.ml[4,138+32]..[4,138+34])
+                Pexp_ident ":=" (fanTop.ml[4,138+32]..[4,138+34])
+              [
+                <label> ""
+                  expression (fanTop.ml[4,138+2]..[4,138+31])
+                    Pexp_ident "Toploop.parse_toplevel_phrase" (fanTop.ml[4,138+2]..[4,138+31])
+                <label> ""
+                  expression (fanTop.ml[4,138+35]..[4,138+60])
+                    Pexp_ident "parse_toplevel_phrase_old" (fanTop.ml[4,138+35]..[4,138+60])
+              ]
+            expression (fanTop.ml[5,200+2]..[5,200+40])
+              Pexp_apply
+              expression (fanTop.ml[5,200+25]..[5,200+27])
+                Pexp_ident ":=" (fanTop.ml[5,200+25]..[5,200+27])
+              [
+                <label> ""
+                  expression (fanTop.ml[5,200+2]..[5,200+24])
+                    Pexp_ident "Toploop.parse_use_file" (fanTop.ml[5,200+2]..[5,200+24])
+                <label> ""
+                  expression (fanTop.ml[5,200+28]..[5,200+40])
+                    Pexp_ident "use_file_old" (fanTop.ml[5,200+28]..[5,200+40])
+              ]
+    ]
+  structure_item (fanTop.ml[6,241+0]..[10,396+70])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fanTop.ml[6,241+4]..[6,241+7])
+          Ppat_var "fan" (fanTop.ml[6,241+4]..[6,241+7])
+        expression (fanTop.ml[6,241+8]..[10,396+70]) ghost
+          Pexp_fun ""
+          None
+          pattern (fanTop.ml[6,241+8]..[6,241+10])
+            Ppat_construct "()" (fanTop.ml[6,241+8]..[6,241+10])
+            None
+          expression (fanTop.ml[7,254+2]..[10,396+70])
+            Pexp_sequence
+            expression (fanTop.ml[7,254+2]..[8,289+77])
+              Pexp_apply
+              expression (fanTop.ml[7,254+32]..[7,254+34])
+                Pexp_ident ":=" (fanTop.ml[7,254+32]..[7,254+34])
+              [
+                <label> ""
+                  expression (fanTop.ml[7,254+2]..[7,254+31])
+                    Pexp_ident "Toploop.parse_toplevel_phrase" (fanTop.ml[7,254+2]..[7,254+31])
+                <label> ""
+                  expression (fanTop.ml[8,289+4]..[8,289+77])
+                    Pexp_apply
+                    expression (fanTop.ml[8,289+5]..[8,289+15])
+                      Pexp_ident "Mktop.wrap" (fanTop.ml[8,289+5]..[8,289+15])
+                    [
+                      <label> ""
+                        expression (fanTop.ml[8,289+16]..[8,289+37])
+                          Pexp_ident "Mktop.toplevel_phrase" (fanTop.ml[8,289+16]..[8,289+37])
+                      <label> "print_location"
+                        expression (fanTop.ml[8,289+54]..[8,289+76])
+                          Pexp_ident "Toploop.print_location" (fanTop.ml[8,289+54]..[8,289+76])
+                    ]
+              ]
+            expression (fanTop.ml[9,368+2]..[10,396+70])
+              Pexp_apply
+              expression (fanTop.ml[9,368+25]..[9,368+27])
+                Pexp_ident ":=" (fanTop.ml[9,368+25]..[9,368+27])
+              [
+                <label> ""
+                  expression (fanTop.ml[9,368+2]..[9,368+24])
+                    Pexp_ident "Toploop.parse_use_file" (fanTop.ml[9,368+2]..[9,368+24])
+                <label> ""
+                  expression (fanTop.ml[10,396+4]..[10,396+70])
+                    Pexp_apply
+                    expression (fanTop.ml[10,396+5]..[10,396+15])
+                      Pexp_ident "Mktop.wrap" (fanTop.ml[10,396+5]..[10,396+15])
+                    [
+                      <label> ""
+                        expression (fanTop.ml[10,396+16]..[10,396+30])
+                          Pexp_ident "Mktop.use_file" (fanTop.ml[10,396+16]..[10,396+30])
+                      <label> "print_location"
+                        expression (fanTop.ml[10,396+47]..[10,396+69])
+                          Pexp_ident "Toploop.print_location" (fanTop.ml[10,396+47]..[10,396+69])
+                    ]
+              ]
+    ]
+  structure_item (fanTop.ml[11,467+0]..[21,930+46])
+    Pstr_eval
+    expression (fanTop.ml[12,475+2]..[21,930+46])
+      Pexp_sequence
+      expression (fanTop.ml[12,475+2]..[13,523+48])
+        Pexp_apply
+        expression (fanTop.ml[12,475+2]..[12,475+17])
+          Pexp_ident "Hashtbl.replace" (fanTop.ml[12,475+2]..[12,475+17])
+        [
+          <label> ""
+            expression (fanTop.ml[12,475+18]..[12,475+41])
+              Pexp_ident "Toploop.directive_table" (fanTop.ml[12,475+18]..[12,475+41])
+          <label> ""
+            expression (fanTop.ml[12,475+42]..[12,475+47])
+              Pexp_constant Const_string("fan",None)
+          <label> ""
+            expression (fanTop.ml[13,523+4]..[13,523+48])
+              Pexp_construct "Toploop.Directive_none" (fanTop.ml[13,523+5]..[13,523+27])
+              Some
+                expression (fanTop.ml[13,523+28]..[13,523+47])
+                  Pexp_fun ""
+                  None
+                  pattern (fanTop.ml[13,523+33]..[13,523+35])
+                    Ppat_construct "()" (fanTop.ml[13,523+33]..[13,523+35])
+                    None
+                  expression (fanTop.ml[13,523+40]..[13,523+46])
+                    Pexp_apply
+                    expression (fanTop.ml[13,523+40]..[13,523+43])
+                      Pexp_ident "fan" (fanTop.ml[13,523+40]..[13,523+43])
+                    [
+                      <label> ""
+                        expression (fanTop.ml[13,523+44]..[13,523+46])
+                          Pexp_construct "()" (fanTop.ml[13,523+44]..[13,523+46])
+                          None
+                    ]
+        ]
+      expression (fanTop.ml[14,573+2]..[21,930+46])
+        Pexp_sequence
+        expression (fanTop.ml[14,573+2]..[15,624+51])
+          Pexp_apply
+          expression (fanTop.ml[14,573+2]..[14,573+17])
+            Pexp_ident "Hashtbl.replace" (fanTop.ml[14,573+2]..[14,573+17])
+          [
+            <label> ""
+              expression (fanTop.ml[14,573+18]..[14,573+41])
+                Pexp_ident "Toploop.directive_table" (fanTop.ml[14,573+18]..[14,573+41])
+            <label> ""
+              expression (fanTop.ml[14,573+42]..[14,573+50])
+                Pexp_constant Const_string("normal",None)
+            <label> ""
+              expression (fanTop.ml[15,624+4]..[15,624+51])
+                Pexp_construct "Toploop.Directive_none" (fanTop.ml[15,624+5]..[15,624+27])
+                Some
+                  expression (fanTop.ml[15,624+28]..[15,624+50])
+                    Pexp_fun ""
+                    None
+                    pattern (fanTop.ml[15,624+33]..[15,624+35])
+                      Ppat_construct "()" (fanTop.ml[15,624+33]..[15,624+35])
+                      None
+                    expression (fanTop.ml[15,624+40]..[15,624+49])
+                      Pexp_apply
+                      expression (fanTop.ml[15,624+40]..[15,624+46])
+                        Pexp_ident "normal" (fanTop.ml[15,624+40]..[15,624+46])
+                      [
+                        <label> ""
+                          expression (fanTop.ml[15,624+47]..[15,624+49])
+                            Pexp_construct "()" (fanTop.ml[15,624+47]..[15,624+49])
+                            None
+                      ]
+          ]
+        expression (fanTop.ml[16,677+2]..[21,930+46])
+          Pexp_sequence
+          expression (fanTop.ml[16,677+2]..[17,725+71])
+            Pexp_apply
+            expression (fanTop.ml[16,677+2]..[16,677+17])
+              Pexp_ident "Hashtbl.replace" (fanTop.ml[16,677+2]..[16,677+17])
+            [
+              <label> ""
+                expression (fanTop.ml[16,677+18]..[16,677+41])
+                  Pexp_ident "Toploop.directive_table" (fanTop.ml[16,677+18]..[16,677+41])
+              <label> ""
+                expression (fanTop.ml[16,677+42]..[16,677+47])
+                  Pexp_constant Const_string("pwd",None)
+              <label> ""
+                expression (fanTop.ml[17,725+4]..[17,725+71])
+                  Pexp_construct "Toploop.Directive_none" (fanTop.ml[17,725+5]..[17,725+27])
+                  Some
+                    expression (fanTop.ml[17,725+28]..[17,725+70])
+                      Pexp_fun ""
+                      None
+                      pattern (fanTop.ml[17,725+33]..[17,725+35])
+                        Ppat_construct "()" (fanTop.ml[17,725+33]..[17,725+35])
+                        None
+                      expression (fanTop.ml[17,725+40]..[17,725+69])
+                        Pexp_apply
+                        expression (fanTop.ml[17,725+47]..[17,725+49])
+                          Pexp_ident "@@" (fanTop.ml[17,725+47]..[17,725+49])
+                        [
+                          <label> ""
+                            expression (fanTop.ml[17,725+40]..[17,725+46])
+                              Pexp_ident "ignore" (fanTop.ml[17,725+40]..[17,725+46])
+                          <label> ""
+                            expression (fanTop.ml[17,725+50]..[17,725+69])
+                              Pexp_apply
+                              expression (fanTop.ml[17,725+51]..[17,725+62])
+                                Pexp_ident "Sys.command" (fanTop.ml[17,725+51]..[17,725+62])
+                              [
+                                <label> ""
+                                  expression (fanTop.ml[17,725+63]..[17,725+68])
+                                    Pexp_constant Const_string("pwd",None)
+                              ]
+                        ]
+            ]
+          expression (fanTop.ml[18,798+2]..[21,930+46])
+            Pexp_sequence
+            expression (fanTop.ml[18,798+2]..[20,850+78])
+              Pexp_apply
+              expression (fanTop.ml[18,798+26]..[18,798+28])
+                Pexp_ident ":=" (fanTop.ml[18,798+26]..[18,798+28])
+              [
+                <label> ""
+                  expression (fanTop.ml[18,798+2]..[18,798+25])
+                    Pexp_ident "Syntaxf.current_warning" (fanTop.ml[18,798+2]..[18,798+25])
+                <label> ""
+                  expression (fanTop.ml[19,827+4]..[20,850+78])
+                    Pexp_fun ""
+                    None
+                    pattern (fanTop.ml[19,827+10]..[19,827+13])
+                      Ppat_var "loc" (fanTop.ml[19,827+10]..[19,827+13])
+                    expression (fanTop.ml[19,827+15]..[20,850+76]) ghost
+                      Pexp_fun ""
+                      None
+                      pattern (fanTop.ml[19,827+15]..[19,827+18])
+                        Ppat_var "txt" (fanTop.ml[19,827+15]..[19,827+18])
+                      expression (fanTop.ml[20,850+8]..[20,850+76])
+                        Pexp_apply
+                        expression (fanTop.ml[20,850+8]..[20,850+29])
+                          Pexp_ident "Toploop.print_warning" (fanTop.ml[20,850+8]..[20,850+29])
+                        [
+                          <label> ""
+                            expression (fanTop.ml[20,850+30]..[20,850+33])
+                              Pexp_ident "loc" (fanTop.ml[20,850+30]..[20,850+33])
+                          <label> ""
+                            expression (fanTop.ml[20,850+34]..[20,850+54])
+                              Pexp_ident "Format.err_formatter" (fanTop.ml[20,850+34]..[20,850+54])
+                          <label> ""
+                            expression (fanTop.ml[20,850+55]..[20,850+76])
+                              Pexp_construct "Warnings.Camlp4" (fanTop.ml[20,850+56]..[20,850+71])
+                              Some
+                                expression (fanTop.ml[20,850+72]..[20,850+75])
+                                  Pexp_ident "txt" (fanTop.ml[20,850+72]..[20,850+75])
+                        ]
+              ]
+            expression (fanTop.ml[21,930+2]..[21,930+46])
+              Pexp_apply
+              expression (fanTop.ml[21,930+2]..[21,930+25])
+                Pexp_ident "Ast_parsers.use_parsers" (fanTop.ml[21,930+2]..[21,930+25])
+              [
+                <label> ""
+                  expression (fanTop.ml[21,930+26]..[21,930+46])
+                    Pexp_construct "::" (fanTop.ml[21,930+27]..[21,930+46]) ghost
+                    Some
+                      expression (fanTop.ml[21,930+27]..[21,930+46]) ghost
+                        Pexp_tuple
+                        [
+                          expression (fanTop.ml[21,930+27]..[21,930+35])
+                            Pexp_constant Const_string("revise",None)
+                          expression (fanTop.ml[21,930+37]..[21,930+46]) ghost
+                            Pexp_construct "::" (fanTop.ml[21,930+37]..[21,930+46]) ghost
+                            Some
+                              expression (fanTop.ml[21,930+37]..[21,930+46]) ghost
+                                Pexp_tuple
+                                [
+                                  expression (fanTop.ml[21,930+37]..[21,930+45])
+                                    Pexp_constant Const_string("stream",None)
+                                  expression (fanTop.ml[21,930+45]..[21,930+46]) ghost
+                                    Pexp_construct "[]" (fanTop.ml[21,930+45]..[21,930+46]) ghost
+                                    None
+                                ]
+                        ]
+              ]
+  structure_item (fanTop.ml[22,977+0]..[25,1095+8])
+    Pstr_eval
+    expression (fanTop.ml[23,985+2]..[25,1095+8])
+      Pexp_sequence
+      expression (fanTop.ml[23,985+2]..[24,1036+57])
+        Pexp_apply
+        expression (fanTop.ml[23,985+2]..[23,985+29])
+          Pexp_ident "Topdirs.dir_install_printer" (fanTop.ml[23,985+2]..[23,985+29])
+        [
+          <label> ""
+            expression (fanTop.ml[23,985+30]..[23,985+50])
+              Pexp_ident "Format.std_formatter" (fanTop.ml[23,985+30]..[23,985+50])
+          <label> ""
+            expression (fanTop.ml[24,1036+4]..[24,1036+57])
+              Pexp_construct "Longident.Ldot" (fanTop.ml[24,1036+5]..[24,1036+19])
+              Some
+                expression (fanTop.ml[24,1036+20]..[24,1036+56])
+                  Pexp_tuple
+                  [
+                    expression (fanTop.ml[24,1036+21]..[24,1036+47])
+                      Pexp_construct "Longident.Lident" (fanTop.ml[24,1036+22]..[24,1036+38])
+                      Some
+                        expression (fanTop.ml[24,1036+39]..[24,1036+46])
+                          Pexp_constant Const_string("Gramf",None)
+                    expression (fanTop.ml[24,1036+49]..[24,1036+55])
+                      Pexp_constant Const_string("dump",None)
+                  ]
+        ]
+      expression (fanTop.ml[25,1095+2]..[25,1095+8])
+        Pexp_apply
+        expression (fanTop.ml[25,1095+2]..[25,1095+5])
+          Pexp_ident "fan" (fanTop.ml[25,1095+2]..[25,1095+5])
+        [
+          <label> ""
+            expression (fanTop.ml[25,1095+6]..[25,1095+8])
+              Pexp_construct "()" (fanTop.ml[25,1095+6]..[25,1095+8])
+              None
+        ]
+]

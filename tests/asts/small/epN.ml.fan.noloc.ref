@@ -1,0 +1,1245 @@
+[
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "xid" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_ident "Fid.xid" (epN.ml[]..[])
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_open Fresh "Astfn" (epN.ml[]..[])
+  structure_item (epN.ml[]..[])
+    Pstr_open Fresh "Astn_util" (epN.ml[]..[])
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "of_str" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (epN.ml[]..[])
+                Ppat_constraint
+                pattern (epN.ml[]..[])
+                  Ppat_var "s" (epN.ml[]..[])
+                core_type (epN.ml[]..[])
+                  Ptyp_constr "string" (epN.ml[]..[])
+                  []
+              expression (epN.ml[]..[])
+                Pexp_constraint
+                expression (epN.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (epN.ml[]..[])
+                        Ppat_var "len" (epN.ml[]..[])
+                      expression (epN.ml[]..[])
+                        Pexp_apply
+                        expression (epN.ml[]..[])
+                          Pexp_ident "String.length" (epN.ml[]..[])
+                        [
+                          <label> ""
+                            expression (epN.ml[]..[])
+                              Pexp_ident "s" (epN.ml[]..[])
+                        ]
+                  ]
+                  expression (epN.ml[]..[])
+                    Pexp_ifthenelse
+                    expression (epN.ml[]..[])
+                      Pexp_apply
+                      expression (epN.ml[]..[])
+                        Pexp_ident "=" (epN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_ident "len" (epN.ml[]..[])
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_constant Const_int 0
+                      ]
+                    expression (epN.ml[]..[])
+                      Pexp_apply
+                      expression (epN.ml[]..[])
+                        Pexp_ident "invalid_arg" (epN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_constant Const_string("[exp|pat]_of_str len=0",None)
+                      ]
+                    Some
+                      expression (epN.ml[]..[])
+                        Pexp_match
+                        expression (epN.ml[]..[])
+                          Pexp_apply
+                          expression (epN.ml[]..[])
+                            Pexp_ident "String.get" (epN.ml[]..[])
+                          [
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_ident "s" (epN.ml[]..[])
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_constant Const_int 0
+                          ]
+                        [
+                          <case>
+                            pattern (epN.ml[]..[])
+                              Ppat_constant Const_char 60
+                            expression (epN.ml[]..[])
+                              Pexp_coerce
+                              expression (epN.ml[]..[])
+                                Pexp_variant "Vrn"
+                                Some
+                                  expression (epN.ml[]..[])
+                                    Pexp_apply
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "String.sub" (epN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "s" (epN.ml[]..[])
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_constant Const_int 1
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_apply
+                                          expression (epN.ml[]..[])
+                                            Pexp_ident "-" (epN.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (epN.ml[]..[])
+                                                Pexp_ident "len" (epN.ml[]..[])
+                                            <label> ""
+                                              expression (epN.ml[]..[])
+                                                Pexp_constant Const_int 1
+                                          ]
+                                    ]
+                              None
+                              core_type (epN.ml[]..[])
+                                Ptyp_constr "Astfn.ep" (epN.ml[]..[])
+                                []
+                          <case>
+                            pattern (epN.ml[]..[])
+                              Ppat_var "x" (epN.ml[]..[])
+                            <when>
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "Charf.is_uppercase" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "x" (epN.ml[]..[])
+                                ]
+                            expression (epN.ml[]..[])
+                              Pexp_coerce
+                              expression (epN.ml[]..[])
+                                Pexp_variant "Uid"
+                                Some
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "s" (epN.ml[]..[])
+                              None
+                              core_type (epN.ml[]..[])
+                                Ptyp_constr "Astfn.ep" (epN.ml[]..[])
+                                []
+                          <case>
+                            pattern (epN.ml[]..[])
+                              Ppat_any
+                            expression (epN.ml[]..[])
+                              Pexp_coerce
+                              expression (epN.ml[]..[])
+                                Pexp_variant "Lid"
+                                Some
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "s" (epN.ml[]..[])
+                              None
+                              core_type (epN.ml[]..[])
+                                Ptyp_constr "Astfn.ep" (epN.ml[]..[])
+                                []
+                        ]
+                core_type (epN.ml[]..[])
+                  Ptyp_constr "ep" (epN.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "of_vstr_number" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (epN.ml[]..[])
+                Ppat_var "name" (epN.ml[]..[])
+              expression (epN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (epN.ml[]..[])
+                      Ppat_var "i" (epN.ml[]..[])
+                    expression (epN.ml[]..[])
+                      Pexp_constraint
+                      expression (epN.ml[]..[])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (epN.ml[]..[])
+                              Ppat_var "items" (epN.ml[]..[])
+                            expression (epN.ml[]..[])
+                              Pexp_apply
+                              expression (epN.ml[]..[])
+                                Pexp_ident "Listf.init" (epN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "i" (epN.ml[]..[])
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "xid" (epN.ml[]..[])
+                              ]
+                        ]
+                        expression (epN.ml[]..[])
+                          Pexp_ifthenelse
+                          expression (epN.ml[]..[])
+                            Pexp_apply
+                            expression (epN.ml[]..[])
+                              Pexp_ident "=" (epN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "items" (epN.ml[]..[])
+                              <label> ""
+                                expression (epN.ml[]..[])
+                                  Pexp_construct "[]" (epN.ml[]..[])
+                                  None
+                            ]
+                          expression (epN.ml[]..[])
+                            Pexp_variant "Vrn"
+                            Some
+                              expression (epN.ml[]..[])
+                                Pexp_ident "name" (epN.ml[]..[])
+                          Some
+                            expression (epN.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (epN.ml[]..[])
+                                    Ppat_var "item" (epN.ml[]..[])
+                                  expression (epN.ml[]..[])
+                                    Pexp_apply
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "tuple_com" (epN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "items" (epN.ml[]..[])
+                                    ]
+                              ]
+                              expression (epN.ml[]..[])
+                                Pexp_variant "App"
+                                Some
+                                  expression (epN.ml[]..[])
+                                    Pexp_tuple
+                                    [
+                                      expression (epN.ml[]..[])
+                                        Pexp_variant "Vrn"
+                                        Some
+                                          expression (epN.ml[]..[])
+                                            Pexp_ident "name" (epN.ml[]..[])
+                                      expression (epN.ml[]..[])
+                                        Pexp_ident "item" (epN.ml[]..[])
+                                    ]
+                      core_type (epN.ml[]..[])
+                        Ptyp_constr "ep" (epN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "gen_tuple_first" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_fun "number"
+          None
+          pattern (epN.ml[]..[])
+            Ppat_var "number" (epN.ml[]..[])
+          expression (epN.ml[]..[])
+            Pexp_fun "off"
+            None
+            pattern (epN.ml[]..[])
+              Ppat_var "off" (epN.ml[]..[])
+            expression (epN.ml[]..[])
+              Pexp_match
+              expression (epN.ml[]..[])
+                Pexp_ident "number" (epN.ml[]..[])
+              [
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_constant Const_int 1
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "xid" (epN.ml[]..[])
+                    [
+                      <label> "off"
+                        expression (epN.ml[]..[])
+                          Pexp_ident "off" (epN.ml[]..[])
+                      <label> ""
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_int 0
+                    ]
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_var "n" (epN.ml[]..[])
+                  <when>
+                    expression (epN.ml[]..[])
+                      Pexp_apply
+                      expression (epN.ml[]..[])
+                        Pexp_ident ">" (epN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_ident "n" (epN.ml[]..[])
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_constant Const_int 1
+                      ]
+                  expression (epN.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (epN.ml[]..[])
+                          Ppat_var "lst" (epN.ml[]..[])
+                        expression (epN.ml[]..[])
+                          Pexp_apply
+                          expression (epN.ml[]..[])
+                            Pexp_ident "Int.fold_left" (epN.ml[]..[])
+                          [
+                            <label> "start"
+                              expression (epN.ml[]..[])
+                                Pexp_constant Const_int 1
+                            <label> "until"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "-" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "number" (epN.ml[]..[])
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 1
+                                ]
+                            <label> "acc"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "xid" (epN.ml[]..[])
+                                [
+                                  <label> "off"
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "off" (epN.ml[]..[])
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 0
+                                ]
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (epN.ml[]..[])
+                                      Ppat_var "acc" (epN.ml[]..[])
+                                    expression (epN.ml[]..[])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (epN.ml[]..[])
+                                            Ppat_var "i" (epN.ml[]..[])
+                                          expression (epN.ml[]..[])
+                                            Pexp_apply
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "com" (epN.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_ident "acc" (epN.ml[]..[])
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (epN.ml[]..[])
+                                                    Pexp_ident "xid" (epN.ml[]..[])
+                                                  [
+                                                    <label> "off"
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "off" (epN.ml[]..[])
+                                                    <label> ""
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "i" (epN.ml[]..[])
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                          ]
+                    ]
+                    expression (epN.ml[]..[])
+                      Pexp_variant "Par"
+                      Some
+                        expression (epN.ml[]..[])
+                          Pexp_ident "lst" (epN.ml[]..[])
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_any
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "invalid_arg" (epN.ml[]..[])
+                    [
+                      <label> ""
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_string("n < 1 in gen_tuple_first",None)
+                    ]
+              ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "gen_tuple_second" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_fun "number"
+          None
+          pattern (epN.ml[]..[])
+            Ppat_var "number" (epN.ml[]..[])
+          expression (epN.ml[]..[])
+            Pexp_fun "off"
+            None
+            pattern (epN.ml[]..[])
+              Ppat_var "off" (epN.ml[]..[])
+            expression (epN.ml[]..[])
+              Pexp_match
+              expression (epN.ml[]..[])
+                Pexp_ident "number" (epN.ml[]..[])
+              [
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_constant Const_int 1
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "xid" (epN.ml[]..[])
+                    [
+                      <label> "off"
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_int 0
+                      <label> ""
+                        expression (epN.ml[]..[])
+                          Pexp_ident "off" (epN.ml[]..[])
+                    ]
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_var "n" (epN.ml[]..[])
+                  <when>
+                    expression (epN.ml[]..[])
+                      Pexp_apply
+                      expression (epN.ml[]..[])
+                        Pexp_ident ">" (epN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_ident "n" (epN.ml[]..[])
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_constant Const_int 1
+                      ]
+                  expression (epN.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (epN.ml[]..[])
+                          Ppat_var "lst" (epN.ml[]..[])
+                        expression (epN.ml[]..[])
+                          Pexp_apply
+                          expression (epN.ml[]..[])
+                            Pexp_ident "Int.fold_left" (epN.ml[]..[])
+                          [
+                            <label> "start"
+                              expression (epN.ml[]..[])
+                                Pexp_constant Const_int 1
+                            <label> "until"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "-" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "number" (epN.ml[]..[])
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 1
+                                ]
+                            <label> "acc"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "xid" (epN.ml[]..[])
+                                [
+                                  <label> "off"
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 0
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "off" (epN.ml[]..[])
+                                ]
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (epN.ml[]..[])
+                                      Ppat_var "acc" (epN.ml[]..[])
+                                    expression (epN.ml[]..[])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (epN.ml[]..[])
+                                            Ppat_var "i" (epN.ml[]..[])
+                                          expression (epN.ml[]..[])
+                                            Pexp_apply
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "com" (epN.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_ident "acc" (epN.ml[]..[])
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (epN.ml[]..[])
+                                                    Pexp_ident "xid" (epN.ml[]..[])
+                                                  [
+                                                    <label> "off"
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "i" (epN.ml[]..[])
+                                                    <label> ""
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "off" (epN.ml[]..[])
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                          ]
+                    ]
+                    expression (epN.ml[]..[])
+                      Pexp_variant "Par"
+                      Some
+                        expression (epN.ml[]..[])
+                          Pexp_ident "lst" (epN.ml[]..[])
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_any
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "invalid_arg" (epN.ml[]..[])
+                    [
+                      <label> ""
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_string("n < 1 in gen_tuple_first ",None)
+                    ]
+              ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "tuple_of_number" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (epN.ml[]..[])
+                Ppat_var "ast" (epN.ml[]..[])
+              expression (epN.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (epN.ml[]..[])
+                      Ppat_var "n" (epN.ml[]..[])
+                    expression (epN.ml[]..[])
+                      Pexp_constraint
+                      expression (epN.ml[]..[])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (epN.ml[]..[])
+                              Ppat_var "res" (epN.ml[]..[])
+                            expression (epN.ml[]..[])
+                              Pexp_apply
+                              expression (epN.ml[]..[])
+                                Pexp_ident "Int.fold_left" (epN.ml[]..[])
+                              [
+                                <label> "start"
+                                  expression (epN.ml[]..[])
+                                    Pexp_constant Const_int 1
+                                <label> "until"
+                                  expression (epN.ml[]..[])
+                                    Pexp_apply
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "-" (epN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "n" (epN.ml[]..[])
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_constant Const_int 1
+                                    ]
+                                <label> "acc"
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "ast" (epN.ml[]..[])
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (epN.ml[]..[])
+                                          Ppat_var "acc" (epN.ml[]..[])
+                                        expression (epN.ml[]..[])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (epN.ml[]..[])
+                                                Ppat_any
+                                              expression (epN.ml[]..[])
+                                                Pexp_apply
+                                                expression (epN.ml[]..[])
+                                                  Pexp_ident "com" (epN.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_ident "acc" (epN.ml[]..[])
+                                                  <label> ""
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_ident "ast" (epN.ml[]..[])
+                                                ]
+                                          ]
+                                    ]
+                              ]
+                        ]
+                        expression (epN.ml[]..[])
+                          Pexp_ifthenelse
+                          expression (epN.ml[]..[])
+                            Pexp_apply
+                            expression (epN.ml[]..[])
+                              Pexp_ident ">" (epN.ml[]..[])
+                            [
+                              <label> ""
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "n" (epN.ml[]..[])
+                              <label> ""
+                                expression (epN.ml[]..[])
+                                  Pexp_constant Const_int 1
+                            ]
+                          expression (epN.ml[]..[])
+                            Pexp_variant "Par"
+                            Some
+                              expression (epN.ml[]..[])
+                                Pexp_ident "res" (epN.ml[]..[])
+                          Some
+                            expression (epN.ml[]..[])
+                              Pexp_ident "res" (epN.ml[]..[])
+                      core_type (epN.ml[]..[])
+                        Ptyp_constr "ep" (epN.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "gen_tuple_n" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_fun "?cons_transform"
+          Some
+            expression (epN.ml[]..[])
+              Pexp_function
+              [
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_var "x" (epN.ml[]..[])
+                  expression (epN.ml[]..[])
+                    Pexp_ident "x" (epN.ml[]..[])
+              ]
+          pattern (epN.ml[]..[])
+            Ppat_var "cons_transform" (epN.ml[]..[])
+          expression (epN.ml[]..[])
+            Pexp_fun "arity"
+            None
+            pattern (epN.ml[]..[])
+              Ppat_var "arity" (epN.ml[]..[])
+            expression (epN.ml[]..[])
+              Pexp_function
+              [
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_var "cons" (epN.ml[]..[])
+                  expression (epN.ml[]..[])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (epN.ml[]..[])
+                          Ppat_var "n" (epN.ml[]..[])
+                        expression (epN.ml[]..[])
+                          Pexp_let Nonrec
+                          [
+                            <def>
+                              pattern (epN.ml[]..[])
+                                Ppat_var "args" (epN.ml[]..[])
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "Listf.init" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "arity" (epN.ml[]..[])
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (epN.ml[]..[])
+                                            Ppat_var "i" (epN.ml[]..[])
+                                          expression (epN.ml[]..[])
+                                            Pexp_apply
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "Listf.init" (epN.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_ident "n" (epN.ml[]..[])
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (epN.ml[]..[])
+                                                        Ppat_var "j" (epN.ml[]..[])
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (epN.ml[]..[])
+                                                          Pexp_ident "xid" (epN.ml[]..[])
+                                                        [
+                                                          <label> "off"
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_ident "i" (epN.ml[]..[])
+                                                          <label> ""
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_ident "j" (epN.ml[]..[])
+                                                        ]
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                          ]
+                          expression (epN.ml[]..[])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (epN.ml[]..[])
+                                  Ppat_var "pat" (epN.ml[]..[])
+                                expression (epN.ml[]..[])
+                                  Pexp_apply
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "@@" (epN.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (epN.ml[]..[])
+                                        Pexp_ident "of_str" (epN.ml[]..[])
+                                    <label> ""
+                                      expression (epN.ml[]..[])
+                                        Pexp_apply
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "cons_transform" (epN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "cons" (epN.ml[]..[])
+                                        ]
+                                  ]
+                            ]
+                            expression (epN.ml[]..[])
+                              Pexp_apply
+                              expression (epN.ml[]..[])
+                                Pexp_ident "|>" (epN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_apply
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "|>" (epN.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "args" (epN.ml[]..[])
+                                      <label> ""
+                                        expression (epN.ml[]..[])
+                                          Pexp_apply
+                                          expression (epN.ml[]..[])
+                                            Pexp_ident "List.map" (epN.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (epN.ml[]..[])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (epN.ml[]..[])
+                                                      Ppat_construct "[]" (epN.ml[]..[])
+                                                      None
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_ident "pat" (epN.ml[]..[])
+                                                  <case>
+                                                    pattern (epN.ml[]..[])
+                                                      Ppat_var "lst" (epN.ml[]..[])
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_variant "App"
+                                                      Some
+                                                        expression (epN.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_ident "pat" (epN.ml[]..[])
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_apply
+                                                              expression (epN.ml[]..[])
+                                                                Pexp_ident "tuple_com" (epN.ml[]..[])
+                                                              [
+                                                                <label> ""
+                                                                  expression (epN.ml[]..[])
+                                                                    Pexp_ident "lst" (epN.ml[]..[])
+                                                              ]
+                                                          ]
+                                                ]
+                                          ]
+                                    ]
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "tuple_com" (epN.ml[]..[])
+                              ]
+                    ]
+              ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "mk_record" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_fun "?arity"
+          Some
+            expression (epN.ml[]..[])
+              Pexp_constant Const_int 1
+          pattern (epN.ml[]..[])
+            Ppat_var "arity" (epN.ml[]..[])
+          expression (epN.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (epN.ml[]..[])
+                  Ppat_var "cols" (epN.ml[]..[])
+                expression (epN.ml[]..[])
+                  Pexp_constraint
+                  expression (epN.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (epN.ml[]..[])
+                          Ppat_var "mk_list" (epN.ml[]..[])
+                        expression (epN.ml[]..[])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (epN.ml[]..[])
+                                Ppat_var "off" (epN.ml[]..[])
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "Listf.mapi" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (epN.ml[]..[])
+                                            Ppat_var "i" (epN.ml[]..[])
+                                          expression (epN.ml[]..[])
+                                            Pexp_function
+                                            [
+                                              <case>
+                                                pattern (epN.ml[]..[])
+                                                  Ppat_constraint
+                                                  pattern (epN.ml[]..[])
+                                                    Ppat_var "x" (epN.ml[]..[])
+                                                  core_type (epN.ml[]..[])
+                                                    Ptyp_constr "Ctyp.col" (epN.ml[]..[])
+                                                    []
+                                                expression (epN.ml[]..[])
+                                                  Pexp_variant "RecBind"
+                                                  Some
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (epN.ml[]..[])
+                                                          Pexp_variant "Lid"
+                                                          Some
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_field
+                                                              expression (epN.ml[]..[])
+                                                                Pexp_ident "x" (epN.ml[]..[])
+                                                              "label" (epN.ml[]..[])
+                                                        expression (epN.ml[]..[])
+                                                          Pexp_apply
+                                                          expression (epN.ml[]..[])
+                                                            Pexp_ident "xid" (epN.ml[]..[])
+                                                          [
+                                                            <label> "off"
+                                                              expression (epN.ml[]..[])
+                                                                Pexp_ident "off" (epN.ml[]..[])
+                                                            <label> ""
+                                                              expression (epN.ml[]..[])
+                                                                Pexp_ident "i" (epN.ml[]..[])
+                                                          ]
+                                                      ]
+                                            ]
+                                      ]
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "cols" (epN.ml[]..[])
+                                ]
+                          ]
+                    ]
+                    expression (epN.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (epN.ml[]..[])
+                            Ppat_var "res" (epN.ml[]..[])
+                          expression (epN.ml[]..[])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (epN.ml[]..[])
+                                  Ppat_var "ls" (epN.ml[]..[])
+                                expression (epN.ml[]..[])
+                                  Pexp_apply
+                                  expression (epN.ml[]..[])
+                                    Pexp_ident "sem_of_list" (epN.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (epN.ml[]..[])
+                                        Pexp_apply
+                                        expression (epN.ml[]..[])
+                                          Pexp_ident "mk_list" (epN.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (epN.ml[]..[])
+                                              Pexp_constant Const_int 0
+                                        ]
+                                  ]
+                            ]
+                            expression (epN.ml[]..[])
+                              Pexp_apply
+                              expression (epN.ml[]..[])
+                                Pexp_ident "@@" (epN.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_apply
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "Int.fold_left" (epN.ml[]..[])
+                                    [
+                                      <label> "start"
+                                        expression (epN.ml[]..[])
+                                          Pexp_constant Const_int 1
+                                      <label> "until"
+                                        expression (epN.ml[]..[])
+                                          Pexp_apply
+                                          expression (epN.ml[]..[])
+                                            Pexp_ident "-" (epN.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (epN.ml[]..[])
+                                                Pexp_ident "arity" (epN.ml[]..[])
+                                            <label> ""
+                                              expression (epN.ml[]..[])
+                                                Pexp_constant Const_int 1
+                                          ]
+                                      <label> "acc"
+                                        expression (epN.ml[]..[])
+                                          Pexp_variant "Record"
+                                          Some
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "ls" (epN.ml[]..[])
+                                    ]
+                                <label> ""
+                                  expression (epN.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (epN.ml[]..[])
+                                          Ppat_var "acc" (epN.ml[]..[])
+                                        expression (epN.ml[]..[])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (epN.ml[]..[])
+                                                Ppat_var "i" (epN.ml[]..[])
+                                              expression (epN.ml[]..[])
+                                                Pexp_let Nonrec
+                                                [
+                                                  <def>
+                                                    pattern (epN.ml[]..[])
+                                                      Ppat_var "v" (epN.ml[]..[])
+                                                    expression (epN.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "@@" (epN.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (epN.ml[]..[])
+                                                            Pexp_ident "sem_of_list" (epN.ml[]..[])
+                                                        <label> ""
+                                                          expression (epN.ml[]..[])
+                                                            Pexp_apply
+                                                            expression (epN.ml[]..[])
+                                                              Pexp_ident "mk_list" (epN.ml[]..[])
+                                                            [
+                                                              <label> ""
+                                                                expression (epN.ml[]..[])
+                                                                  Pexp_ident "i" (epN.ml[]..[])
+                                                            ]
+                                                      ]
+                                                ]
+                                                expression (epN.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (epN.ml[]..[])
+                                                    Pexp_ident "com" (epN.ml[]..[])
+                                                  [
+                                                    <label> ""
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "acc" (epN.ml[]..[])
+                                                    <label> ""
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_variant "Record"
+                                                        Some
+                                                          expression (epN.ml[]..[])
+                                                            Pexp_ident "v" (epN.ml[]..[])
+                                                  ]
+                                          ]
+                                    ]
+                              ]
+                      ]
+                      expression (epN.ml[]..[])
+                        Pexp_ifthenelse
+                        expression (epN.ml[]..[])
+                          Pexp_apply
+                          expression (epN.ml[]..[])
+                            Pexp_ident ">" (epN.ml[]..[])
+                          [
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_ident "arity" (epN.ml[]..[])
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_constant Const_int 1
+                          ]
+                        expression (epN.ml[]..[])
+                          Pexp_variant "Par"
+                          Some
+                            expression (epN.ml[]..[])
+                              Pexp_ident "res" (epN.ml[]..[])
+                        Some
+                          expression (epN.ml[]..[])
+                            Pexp_ident "res" (epN.ml[]..[])
+                  core_type (epN.ml[]..[])
+                    Ptyp_constr "ep" (epN.ml[]..[])
+                    []
+            ]
+    ]
+  structure_item (epN.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (epN.ml[]..[])
+          Ppat_var "mk_tuple" (epN.ml[]..[])
+        expression (epN.ml[]..[])
+          Pexp_fun "arity"
+          None
+          pattern (epN.ml[]..[])
+            Ppat_var "arity" (epN.ml[]..[])
+          expression (epN.ml[]..[])
+            Pexp_fun "number"
+            None
+            pattern (epN.ml[]..[])
+              Ppat_var "number" (epN.ml[]..[])
+            expression (epN.ml[]..[])
+              Pexp_match
+              expression (epN.ml[]..[])
+                Pexp_ident "arity" (epN.ml[]..[])
+              [
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_constant Const_int 1
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "gen_tuple_first" (epN.ml[]..[])
+                    [
+                      <label> "number"
+                        expression (epN.ml[]..[])
+                          Pexp_ident "number" (epN.ml[]..[])
+                      <label> "off"
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_int 0
+                    ]
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_var "n" (epN.ml[]..[])
+                  <when>
+                    expression (epN.ml[]..[])
+                      Pexp_apply
+                      expression (epN.ml[]..[])
+                        Pexp_ident ">" (epN.ml[]..[])
+                      [
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_ident "n" (epN.ml[]..[])
+                        <label> ""
+                          expression (epN.ml[]..[])
+                            Pexp_constant Const_int 1
+                      ]
+                  expression (epN.ml[]..[])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (epN.ml[]..[])
+                          Ppat_var "e" (epN.ml[]..[])
+                        expression (epN.ml[]..[])
+                          Pexp_apply
+                          expression (epN.ml[]..[])
+                            Pexp_ident "Int.fold_left" (epN.ml[]..[])
+                          [
+                            <label> "start"
+                              expression (epN.ml[]..[])
+                                Pexp_constant Const_int 1
+                            <label> "until"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "-" (epN.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "n" (epN.ml[]..[])
+                                  <label> ""
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 1
+                                ]
+                            <label> "acc"
+                              expression (epN.ml[]..[])
+                                Pexp_apply
+                                expression (epN.ml[]..[])
+                                  Pexp_ident "gen_tuple_first" (epN.ml[]..[])
+                                [
+                                  <label> "number"
+                                    expression (epN.ml[]..[])
+                                      Pexp_ident "number" (epN.ml[]..[])
+                                  <label> "off"
+                                    expression (epN.ml[]..[])
+                                      Pexp_constant Const_int 0
+                                ]
+                            <label> ""
+                              expression (epN.ml[]..[])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (epN.ml[]..[])
+                                      Ppat_var "acc" (epN.ml[]..[])
+                                    expression (epN.ml[]..[])
+                                      Pexp_function
+                                      [
+                                        <case>
+                                          pattern (epN.ml[]..[])
+                                            Ppat_var "i" (epN.ml[]..[])
+                                          expression (epN.ml[]..[])
+                                            Pexp_apply
+                                            expression (epN.ml[]..[])
+                                              Pexp_ident "com" (epN.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_ident "acc" (epN.ml[]..[])
+                                              <label> ""
+                                                expression (epN.ml[]..[])
+                                                  Pexp_apply
+                                                  expression (epN.ml[]..[])
+                                                    Pexp_ident "gen_tuple_first" (epN.ml[]..[])
+                                                  [
+                                                    <label> "number"
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "number" (epN.ml[]..[])
+                                                    <label> "off"
+                                                      expression (epN.ml[]..[])
+                                                        Pexp_ident "i" (epN.ml[]..[])
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                          ]
+                    ]
+                    expression (epN.ml[]..[])
+                      Pexp_coerce
+                      expression (epN.ml[]..[])
+                        Pexp_variant "Par"
+                        Some
+                          expression (epN.ml[]..[])
+                            Pexp_ident "e" (epN.ml[]..[])
+                      None
+                      core_type (epN.ml[]..[])
+                        Ptyp_constr "Astfn.ep" (epN.ml[]..[])
+                        []
+                <case>
+                  pattern (epN.ml[]..[])
+                    Ppat_any
+                  expression (epN.ml[]..[])
+                    Pexp_apply
+                    expression (epN.ml[]..[])
+                      Pexp_ident "invalid_arg" (epN.ml[]..[])
+                    [
+                      <label> ""
+                        expression (epN.ml[]..[])
+                          Pexp_constant Const_string("mk_tuple arity < 1 ",None)
+                    ]
+              ]
+    ]
+]

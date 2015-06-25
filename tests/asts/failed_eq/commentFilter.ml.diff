@@ -1,0 +1,183 @@
+5c5
+<       type_declaration "t" (commentFilter.ml[1,0+5]..[1,0+6]) (commentFilter.ml[1,0+5]..[1,0+63])
+---
+>       type_declaration "t" (commentFilter.ml[1,0+5]..[1,0+6]) (commentFilter.ml[1,0+0]..[1,0+63])
+15c15
+<             core_type (commentFilter.ml[1,0+9]..[1,0+63])
+---
+>             core_type (commentFilter.ml[1,0+10]..[1,0+62])
+21c21
+<                     core_type (commentFilter.ml[1,0+10]..[1,0+26])
+---
+>                     core_type (commentFilter.ml[1,0+11]..[1,0+25])
+35c35
+<                     core_type (commentFilter.ml[1,0+38]..[1,0+54])
+---
+>                     core_type (commentFilter.ml[1,0+39]..[1,0+53])
+54,57c54,56
+<         expression (commentFilter.ml[2,65+7]..[5,173+23])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (commentFilter.ml[2,65+7]..[5,173+23]) ghost
+>           Pexp_fun ""
+>           None
+84,87c83,85
+<                       expression (commentFilter.ml[4,106+8]..[4,106+63])
+<                         Pexp_function
+<                         [
+<                           <case>
+---
+>                   expression (commentFilter.ml[4,106+8]..[4,106+63]) ghost
+>                     Pexp_fun ""
+>                     None
+95c93
+<                                   expression (commentFilter.ml[4,106+22]..[4,106+34])
+---
+>                           expression (commentFilter.ml[4,106+21]..[4,106+35])
+114d111
+<                   ]
+118c115
+<                       expression (commentFilter.ml[5,173+4]..[5,173+18])
+---
+>                   expression (commentFilter.ml[5,173+3]..[5,173+19])
+131d127
+<     ]
+138,141c134,136
+<         expression (commentFilter.ml[6,197+11]..[17,581+6])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (commentFilter.ml[6,197+11]..[17,581+6]) ghost
+>           Pexp_fun ""
+>           None
+156,159c151,153
+<                     expression (commentFilter.ml[7,216+15]..[16,552+25])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                 expression (commentFilter.ml[7,216+15]..[16,552+25]) ghost
+>                   Pexp_fun ""
+>                   None
+186c180
+<                                     pattern (commentFilter.ml[9,291+6]..[9,291+27])
+---
+>                             pattern (commentFilter.ml[9,291+11]..[9,291+27])
+208,210c202
+<                                   expression (commentFilter.ml[10,322+8]..[11,352+60])
+<                                     Pexp_sequence
+<                                     expression (commentFilter.ml[11,352+10]..[11,352+49])
+---
+>                           expression (commentFilter.ml[11,352+9]..[11,352+59])
+218a211,212
+>                             expression (commentFilter.ml[11,352+29]..[11,352+58])
+>                               Pexp_sequence
+237c231
+<                                     expression (commentFilter.ml[10,322+8]..[11,352+60])
+---
+>                               expression (commentFilter.ml[11,352+51]..[11,352+58])
+263c257
+<                                   expression (commentFilter.ml[13,429+8]..[15,488+63])
+---
+>                           expression (commentFilter.ml[14,459+9]..[15,488+62])
+281c275
+<                                           expression (commentFilter.ml[15,488+27]..[15,488+60])
+---
+>                                   expression (commentFilter.ml[15,488+26]..[15,488+61])
+287,290c281,283
+<                                                 expression (commentFilter.ml[15,488+46]..[15,488+47])
+<                                                   Pexp_function
+<                                                   [
+<                                                     <case>
+---
+>                                         expression (commentFilter.ml[15,488+41]..[15,488+60])
+>                                           Pexp_fun ""
+>                                           None
+304d296
+<                                       ]
+312d303
+<                 ]
+316d306
+<     ]
+323,326c313,315
+<         expression (commentFilter.ml[18,588+14]..[21,704+9])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (commentFilter.ml[18,588+14]..[21,704+9]) ghost
+>           Pexp_fun ""
+>           None
+341,344c330,332
+<                     expression (commentFilter.ml[19,610+15]..[20,632+68])
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                 expression (commentFilter.ml[19,610+15]..[20,632+68]) ghost
+>                   Pexp_fun ""
+>                   None
+367c355
+<                                     expression (commentFilter.ml[20,632+45]..[20,632+67])
+---
+>                             expression (commentFilter.ml[20,632+44]..[20,632+68])
+370c358
+<                                         expression (commentFilter.ml[20,632+45]..[20,632+67])
+---
+>                                 expression (commentFilter.ml[20,632+45]..[20,632+67]) ghost
+373c361
+<                                             expression (commentFilter.ml[20,632+46]..[20,632+58])
+---
+>                                     expression (commentFilter.ml[20,632+45]..[20,632+59])
+387d374
+<                 ]
+399d385
+<     ]
+415,418c401,403
+<         expression (commentFilter.ml[23,736+11]..[25,815+65])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (commentFilter.ml[23,736+11]..[25,815+65]) ghost
+>           Pexp_fun ""
+>           None
+421,424c406,408
+<               expression (commentFilter.ml[23,736+23]..[25,815+65])
+<                 Pexp_function
+<                 [
+<                   <case>
+---
+>           expression (commentFilter.ml[23,736+23]..[25,815+65]) ghost
+>             Pexp_fun ""
+>             None
+436,439c420,422
+<                           expression (commentFilter.ml[25,815+9]..[25,815+17])
+<                             Pexp_function
+<                             [
+<                               <case>
+---
+>                   expression (commentFilter.ml[25,815+4]..[25,815+65])
+>                     Pexp_fun ""
+>                     None
+442,445c425,427
+<                                 expression (commentFilter.ml[25,815+19]..[25,815+23])
+<                                   Pexp_function
+<                                   [
+<                                     <case>
+---
+>                     expression (commentFilter.ml[25,815+19]..[25,815+64]) ghost
+>                       Pexp_fun ""
+>                       None
+454c436
+<                                             expression (commentFilter.ml[25,815+38]..[25,815+63])
+---
+>                             expression (commentFilter.ml[25,815+37]..[25,815+64])
+469,472d450
+<                       ]
+<                 ]
+<           ]
+<     ]

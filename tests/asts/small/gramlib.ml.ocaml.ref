@@ -1,0 +1,348 @@
+[
+  structure_item (gramlib.ml[1,0+0]..[8,174+71])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gramlib.ml[1,0+4]..[1,0+9])
+          Ppat_var "parse" (gramlib.ml[1,0+4]..[1,0+9])
+        expression (gramlib.ml[1,0+10]..[8,174+71]) ghost
+          Pexp_fun "?lexer"
+          Some
+            expression (gramlib.ml[1,0+19]..[1,0+38])
+              Pexp_ident "Lex_fan.from_stream" (gramlib.ml[1,0+19]..[1,0+38])
+          pattern (gramlib.ml[1,0+12]..[1,0+17])
+            Ppat_var "lexer" (gramlib.ml[1,0+12]..[1,0+17])
+          expression (gramlib.ml[2,43+2]..[8,174+71])
+            Pexp_function
+            [
+              <case>
+                pattern (gramlib.ml[3,54+4]..[3,54+24])
+                  Ppat_constraint
+                  pattern (gramlib.ml[3,54+5]..[3,54+10])
+                    Ppat_var "entry" (gramlib.ml[3,54+5]..[3,54+10])
+                  core_type (gramlib.ml[3,54+13]..[3,54+23])
+                    Ptyp_constr "Gramf.t" (gramlib.ml[3,54+16]..[3,54+23])
+                    [
+                      core_type (gramlib.ml[3,54+13]..[3,54+15])
+                        Ptyp_var a
+                    ]
+                expression (gramlib.ml[4,82+6]..[8,174+71])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (gramlib.ml[5,98+9]..[5,98+12])
+                        Ppat_var "loc" (gramlib.ml[5,98+9]..[5,98+12])
+                      expression (gramlib.ml[6,114+11]..[8,174+70])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gramlib.ml[7,135+14]..[7,135+35])
+                              Ppat_constraint
+                              pattern (gramlib.ml[7,135+15]..[7,135+17])
+                                Ppat_var "cs" (gramlib.ml[7,135+15]..[7,135+17])
+                              core_type (gramlib.ml[7,135+20]..[7,135+34])
+                                Ptyp_constr "Streamf.t" (gramlib.ml[7,135+25]..[7,135+34])
+                                [
+                                  core_type (gramlib.ml[7,135+20]..[7,135+24])
+                                    Ptyp_constr "char" (gramlib.ml[7,135+20]..[7,135+24])
+                                    []
+                                ]
+                            expression (gramlib.ml[8,174+16]..[8,174+69])
+                              Pexp_apply
+                              expression (gramlib.ml[8,174+36]..[8,174+38])
+                                Pexp_ident "|>" (gramlib.ml[8,174+36]..[8,174+38])
+                              [
+                                <label> ""
+                                  expression (gramlib.ml[8,174+16]..[8,174+35])
+                                    Pexp_apply
+                                    expression (gramlib.ml[8,174+20]..[8,174+22])
+                                      Pexp_ident "|>" (gramlib.ml[8,174+20]..[8,174+22])
+                                    [
+                                      <label> ""
+                                        expression (gramlib.ml[8,174+17]..[8,174+19])
+                                          Pexp_ident "cs" (gramlib.ml[8,174+17]..[8,174+19])
+                                      <label> ""
+                                        expression (gramlib.ml[8,174+23]..[8,174+34])
+                                          Pexp_apply
+                                          expression (gramlib.ml[8,174+24]..[8,174+29])
+                                            Pexp_ident "lexer" (gramlib.ml[8,174+24]..[8,174+29])
+                                          [
+                                            <label> ""
+                                              expression (gramlib.ml[8,174+30]..[8,174+33])
+                                                Pexp_ident "loc" (gramlib.ml[8,174+30]..[8,174+33])
+                                          ]
+                                    ]
+                                <label> ""
+                                  expression (gramlib.ml[8,174+39]..[8,174+69])
+                                    Pexp_apply
+                                    expression (gramlib.ml[8,174+40]..[8,174+62])
+                                      Pexp_ident "Gramf.parse_tokens_eoi" (gramlib.ml[8,174+40]..[8,174+62])
+                                    [
+                                      <label> ""
+                                        expression (gramlib.ml[8,174+63]..[8,174+68])
+                                          Pexp_ident "entry" (gramlib.ml[8,174+63]..[8,174+68])
+                                    ]
+                              ]
+                        ]
+                  ]
+            ]
+    ]
+  structure_item (gramlib.ml[9,246+0]..[14,384+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gramlib.ml[9,246+4]..[9,246+20])
+          Ppat_var "parse_string_eoi" (gramlib.ml[9,246+4]..[9,246+20])
+        expression (gramlib.ml[9,246+21]..[14,384+66]) ghost
+          Pexp_fun "?lexer"
+          None
+          pattern (gramlib.ml[9,246+22]..[9,246+27])
+            Ppat_var "lexer" (gramlib.ml[9,246+22]..[9,246+27])
+          expression (gramlib.ml[9,246+29]..[14,384+66]) ghost
+            Pexp_fun "?loc"
+            Some
+              expression (gramlib.ml[9,246+36]..[9,246+51])
+                Pexp_ident "Locf.string_loc" (gramlib.ml[9,246+36]..[9,246+51])
+            pattern (gramlib.ml[9,246+31]..[9,246+34])
+              Ppat_var "loc" (gramlib.ml[9,246+31]..[9,246+34])
+            expression (gramlib.ml[10,302+2]..[14,384+66])
+              Pexp_function
+              [
+                <case>
+                  pattern (gramlib.ml[11,313+4]..[11,313+24])
+                    Ppat_constraint
+                    pattern (gramlib.ml[11,313+5]..[11,313+10])
+                      Ppat_var "entry" (gramlib.ml[11,313+5]..[11,313+10])
+                    core_type (gramlib.ml[11,313+13]..[11,313+23])
+                      Ptyp_constr "Gramf.t" (gramlib.ml[11,313+16]..[11,313+23])
+                      [
+                        core_type (gramlib.ml[11,313+13]..[11,313+15])
+                          Ptyp_var a
+                      ]
+                  expression (gramlib.ml[12,341+6]..[14,384+66])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (gramlib.ml[13,357+9]..[13,357+23])
+                          Ppat_constraint
+                          pattern (gramlib.ml[13,357+10]..[13,357+13])
+                            Ppat_var "str" (gramlib.ml[13,357+10]..[13,357+13])
+                          core_type (gramlib.ml[13,357+16]..[13,357+22])
+                            Ptyp_constr "string" (gramlib.ml[13,357+16]..[13,357+22])
+                            []
+                        expression (gramlib.ml[14,384+11]..[14,384+65])
+                          Pexp_apply
+                          expression (gramlib.ml[14,384+38]..[14,384+40])
+                            Pexp_ident "|>" (gramlib.ml[14,384+38]..[14,384+40])
+                          [
+                            <label> ""
+                              expression (gramlib.ml[14,384+11]..[14,384+37])
+                                Pexp_apply
+                                expression (gramlib.ml[14,384+16]..[14,384+18])
+                                  Pexp_ident "|>" (gramlib.ml[14,384+16]..[14,384+18])
+                                [
+                                  <label> ""
+                                    expression (gramlib.ml[14,384+12]..[14,384+15])
+                                      Pexp_ident "str" (gramlib.ml[14,384+12]..[14,384+15])
+                                  <label> ""
+                                    expression (gramlib.ml[14,384+19]..[14,384+36])
+                                      Pexp_ident "Streamf.of_string" (gramlib.ml[14,384+19]..[14,384+36])
+                                ]
+                            <label> ""
+                              expression (gramlib.ml[14,384+41]..[14,384+65])
+                                Pexp_apply
+                                expression (gramlib.ml[14,384+42]..[14,384+47])
+                                  Pexp_ident "parse" (gramlib.ml[14,384+42]..[14,384+47])
+                                [
+                                  <label> "?lexer"
+                                    expression (gramlib.ml[14,384+49]..[14,384+54])
+                                      Pexp_ident "lexer" (gramlib.ml[14,384+49]..[14,384+54])
+                                  <label> ""
+                                    expression (gramlib.ml[14,384+55]..[14,384+60])
+                                      Pexp_ident "entry" (gramlib.ml[14,384+55]..[14,384+60])
+                                  <label> ""
+                                    expression (gramlib.ml[14,384+61]..[14,384+64])
+                                      Pexp_ident "loc" (gramlib.ml[14,384+61]..[14,384+64])
+                                ]
+                          ]
+                    ]
+              ]
+    ]
+  structure_item (gramlib.ml[15,451+0]..[28,847+75])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gramlib.ml[15,451+4]..[15,451+22])
+          Ppat_var "parse_include_file" (gramlib.ml[15,451+4]..[15,451+22])
+        expression (gramlib.ml[16,476+2]..[28,847+75])
+          Pexp_function
+          [
+            <case>
+              pattern (gramlib.ml[17,487+4]..[17,487+9])
+                Ppat_var "entry" (gramlib.ml[17,487+4]..[17,487+9])
+              expression (gramlib.ml[18,500+6]..[28,847+75])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (gramlib.ml[18,500+10]..[18,500+16])
+                      Ppat_var "dir_ok" (gramlib.ml[18,500+10]..[18,500+16])
+                    expression (gramlib.ml[19,519+8]..[19,519+75])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gramlib.ml[19,519+19]..[19,519+23])
+                            Ppat_var "file" (gramlib.ml[19,519+19]..[19,519+23])
+                          expression (gramlib.ml[19,519+27]..[19,519+75])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gramlib.ml[19,519+39]..[19,519+42])
+                                  Ppat_var "dir" (gramlib.ml[19,519+39]..[19,519+42])
+                                expression (gramlib.ml[19,519+46]..[19,519+74])
+                                  Pexp_apply
+                                  expression (gramlib.ml[19,519+46]..[19,519+61])
+                                    Pexp_ident "Sys.file_exists" (gramlib.ml[19,519+46]..[19,519+61])
+                                  [
+                                    <label> ""
+                                      expression (gramlib.ml[19,519+62]..[19,519+74])
+                                        Pexp_apply
+                                        expression (gramlib.ml[19,519+67]..[19,519+68])
+                                          Pexp_ident "^" (gramlib.ml[19,519+67]..[19,519+68])
+                                        [
+                                          <label> ""
+                                            expression (gramlib.ml[19,519+63]..[19,519+66])
+                                              Pexp_ident "dir" (gramlib.ml[19,519+63]..[19,519+66])
+                                          <label> ""
+                                            expression (gramlib.ml[19,519+69]..[19,519+73])
+                                              Pexp_ident "file" (gramlib.ml[19,519+69]..[19,519+73])
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+                expression (gramlib.ml[20,598+6]..[28,847+75])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (gramlib.ml[21,614+9]..[21,614+13])
+                        Ppat_var "file" (gramlib.ml[21,614+9]..[21,614+13])
+                      expression (gramlib.ml[22,631+11]..[28,847+74])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (gramlib.ml[22,631+15]..[22,631+19])
+                              Ppat_var "file" (gramlib.ml[22,631+15]..[22,631+19])
+                            expression (gramlib.ml[23,653+13]..[26,769+38])
+                              Pexp_try
+                              expression (gramlib.ml[24,670+15]..[25,747+21])
+                                Pexp_apply
+                                expression (gramlib.ml[24,670+75]..[24,670+76])
+                                  Pexp_ident "^" (gramlib.ml[24,670+75]..[24,670+76])
+                                [
+                                  <label> ""
+                                    expression (gramlib.ml[24,670+15]..[24,670+74])
+                                      Pexp_apply
+                                      expression (gramlib.ml[24,670+16]..[24,670+25])
+                                        Pexp_ident "List.find" (gramlib.ml[24,670+16]..[24,670+25])
+                                      [
+                                        <label> ""
+                                          expression (gramlib.ml[24,670+26]..[24,670+39])
+                                            Pexp_apply
+                                            expression (gramlib.ml[24,670+27]..[24,670+33])
+                                              Pexp_ident "dir_ok" (gramlib.ml[24,670+27]..[24,670+33])
+                                            [
+                                              <label> ""
+                                                expression (gramlib.ml[24,670+34]..[24,670+38])
+                                                  Pexp_ident "file" (gramlib.ml[24,670+34]..[24,670+38])
+                                            ]
+                                        <label> ""
+                                          expression (gramlib.ml[24,670+40]..[24,670+73])
+                                            Pexp_construct "::" (gramlib.ml[24,670+46]..[24,670+48])
+                                            Some
+                                              expression (gramlib.ml[24,670+41]..[24,670+72]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (gramlib.ml[24,670+41]..[24,670+45])
+                                                    Pexp_constant Const_string("./",None)
+                                                  expression (gramlib.ml[24,670+49]..[24,670+72])
+                                                    Pexp_apply
+                                                    expression (gramlib.ml[24,670+50]..[24,670+51])
+                                                      Pexp_ident "!" (gramlib.ml[24,670+50]..[24,670+51])
+                                                    [
+                                                      <label> ""
+                                                        expression (gramlib.ml[24,670+51]..[24,670+71])
+                                                          Pexp_ident "Configf.include_dirs" (gramlib.ml[24,670+51]..[24,670+71])
+                                                    ]
+                                                ]
+                                      ]
+                                  <label> ""
+                                    expression (gramlib.ml[25,747+17]..[25,747+21])
+                                      Pexp_ident "file" (gramlib.ml[25,747+17]..[25,747+21])
+                                ]
+                              [
+                                <case>
+                                  pattern (gramlib.ml[26,769+20]..[26,769+29])
+                                    Ppat_construct "Not_found" (gramlib.ml[26,769+20]..[26,769+29])
+                                    None
+                                  expression (gramlib.ml[26,769+34]..[26,769+38])
+                                    Pexp_ident "file" (gramlib.ml[26,769+34]..[26,769+38])
+                              ]
+                        ]
+                        expression (gramlib.ml[27,811+11]..[28,847+74])
+                          Pexp_let Nonrec
+                          [
+                            <def>
+                              pattern (gramlib.ml[27,811+15]..[27,811+17])
+                                Ppat_var "ch" (gramlib.ml[27,811+15]..[27,811+17])
+                              expression (gramlib.ml[27,811+20]..[27,811+32])
+                                Pexp_apply
+                                expression (gramlib.ml[27,811+20]..[27,811+27])
+                                  Pexp_ident "open_in" (gramlib.ml[27,811+20]..[27,811+27])
+                                [
+                                  <label> ""
+                                    expression (gramlib.ml[27,811+28]..[27,811+32])
+                                      Pexp_ident "file" (gramlib.ml[27,811+28]..[27,811+32])
+                                ]
+                          ]
+                          expression (gramlib.ml[28,847+11]..[28,847+74])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (gramlib.ml[28,847+15]..[28,847+17])
+                                  Ppat_var "st" (gramlib.ml[28,847+15]..[28,847+17])
+                                expression (gramlib.ml[28,847+20]..[28,847+41])
+                                  Pexp_apply
+                                  expression (gramlib.ml[28,847+20]..[28,847+38])
+                                    Pexp_ident "Streamf.of_channel" (gramlib.ml[28,847+20]..[28,847+38])
+                                  [
+                                    <label> ""
+                                      expression (gramlib.ml[28,847+39]..[28,847+41])
+                                        Pexp_ident "ch" (gramlib.ml[28,847+39]..[28,847+41])
+                                  ]
+                            ]
+                            expression (gramlib.ml[28,847+45]..[28,847+74])
+                              Pexp_apply
+                              expression (gramlib.ml[28,847+45]..[28,847+50])
+                                Pexp_ident "parse" (gramlib.ml[28,847+45]..[28,847+50])
+                              [
+                                <label> ""
+                                  expression (gramlib.ml[28,847+51]..[28,847+56])
+                                    Pexp_ident "entry" (gramlib.ml[28,847+51]..[28,847+56])
+                                <label> ""
+                                  expression (gramlib.ml[28,847+57]..[28,847+71])
+                                    Pexp_apply
+                                    expression (gramlib.ml[28,847+58]..[28,847+65])
+                                      Pexp_ident "Locf.mk" (gramlib.ml[28,847+58]..[28,847+65])
+                                    [
+                                      <label> ""
+                                        expression (gramlib.ml[28,847+66]..[28,847+70])
+                                          Pexp_ident "file" (gramlib.ml[28,847+66]..[28,847+70])
+                                    ]
+                                <label> ""
+                                  expression (gramlib.ml[28,847+72]..[28,847+74])
+                                    Pexp_ident "st" (gramlib.ml[28,847+72]..[28,847+74])
+                              ]
+                  ]
+          ]
+    ]
+]

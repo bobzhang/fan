@@ -1,0 +1,710 @@
+[
+  structure_item (ast_filters.ml[2,1+0]..[2,1+9])
+    Pstr_open Fresh "Util" (ast_filters.ml[2,1+5]..[2,1+9])
+  structure_item (ast_filters.ml[3,11+0]..[3,11+9])
+    Pstr_open Fresh "Astf" (ast_filters.ml[3,11+5]..[3,11+9])
+  structure_item (ast_filters.ml[5,23+0]..[5,23+17])
+    Pstr_type
+    [
+      type_declaration "key" (ast_filters.ml[5,23+5]..[5,23+8]) (ast_filters.ml[5,23+0]..[5,23+17])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_filters.ml[5,23+11]..[5,23+17])
+              Ptyp_constr "string" (ast_filters.ml[5,23+11]..[5,23+17])
+              []
+    ]
+  structure_item (ast_filters.ml[6,41+0]..[6,41+26])
+    Pstr_type
+    [
+      type_declaration "filter" (ast_filters.ml[6,41+8]..[6,41+14]) (ast_filters.ml[6,41+0]..[6,41+26])
+        ptype_params =
+          [
+            core_type (ast_filters.ml[6,41+5]..[6,41+7])
+              Ptyp_var a
+          ]
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_filters.ml[6,41+18]..[6,41+26])
+              Ptyp_arrow
+              ""
+              core_type (ast_filters.ml[6,41+18]..[6,41+20])
+                Ptyp_var a
+              core_type (ast_filters.ml[6,41+24]..[6,41+26])
+                Ptyp_var a
+    ]
+  structure_item (ast_filters.ml[9,72+0]..[9,72+72])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[9,72+4]..[9,72+18])
+          Ppat_var "interf_filters" (ast_filters.ml[9,72+4]..[9,72+18])
+        expression (ast_filters.ml[9,72+18]..[9,72+72]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[9,72+55]..[9,72+72])
+            Pexp_apply
+            expression (ast_filters.ml[9,72+55]..[9,72+69])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[9,72+55]..[9,72+69])
+            [
+              <label> ""
+                expression (ast_filters.ml[9,72+70]..[9,72+72])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[9,72+20]..[9,72+50])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[9,72+41]..[9,72+50])
+            [
+              core_type (ast_filters.ml[9,72+22]..[9,72+25])
+                Ptyp_constr "key" (ast_filters.ml[9,72+22]..[9,72+25])
+                []
+              core_type (ast_filters.ml[9,72+27]..[9,72+38])
+                Ptyp_constr "filter" (ast_filters.ml[9,72+32]..[9,72+38])
+                [
+                  core_type (ast_filters.ml[9,72+27]..[9,72+31])
+                    Ptyp_constr "sigi" (ast_filters.ml[9,72+27]..[9,72+31])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[10,145+0]..[10,145+70])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[10,145+4]..[10,145+18])
+          Ppat_var "implem_filters" (ast_filters.ml[10,145+4]..[10,145+18])
+        expression (ast_filters.ml[10,145+18]..[10,145+70]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[10,145+53]..[10,145+70])
+            Pexp_apply
+            expression (ast_filters.ml[10,145+53]..[10,145+67])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[10,145+53]..[10,145+67])
+            [
+              <label> ""
+                expression (ast_filters.ml[10,145+68]..[10,145+70])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[10,145+20]..[10,145+49])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[10,145+40]..[10,145+49])
+            [
+              core_type (ast_filters.ml[10,145+21]..[10,145+24])
+                Ptyp_constr "key" (ast_filters.ml[10,145+21]..[10,145+24])
+                []
+              core_type (ast_filters.ml[10,145+26]..[10,145+37])
+                Ptyp_constr "filter" (ast_filters.ml[10,145+31]..[10,145+37])
+                [
+                  core_type (ast_filters.ml[10,145+26]..[10,145+30])
+                    Ptyp_constr "stru" (ast_filters.ml[10,145+26]..[10,145+30])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[12,217+0]..[12,217+73])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[12,217+4]..[12,217+21])
+          Ppat_var "topphrase_filters" (ast_filters.ml[12,217+4]..[12,217+21])
+        expression (ast_filters.ml[12,217+21]..[12,217+73]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[12,217+56]..[12,217+73])
+            Pexp_apply
+            expression (ast_filters.ml[12,217+56]..[12,217+70])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[12,217+56]..[12,217+70])
+            [
+              <label> ""
+                expression (ast_filters.ml[12,217+71]..[12,217+73])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[12,217+23]..[12,217+52])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[12,217+43]..[12,217+52])
+            [
+              core_type (ast_filters.ml[12,217+24]..[12,217+27])
+                Ptyp_constr "key" (ast_filters.ml[12,217+24]..[12,217+27])
+                []
+              core_type (ast_filters.ml[12,217+29]..[12,217+40])
+                Ptyp_constr "filter" (ast_filters.ml[12,217+34]..[12,217+40])
+                [
+                  core_type (ast_filters.ml[12,217+29]..[12,217+33])
+                    Ptyp_constr "stru" (ast_filters.ml[12,217+29]..[12,217+33])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[14,292+0]..[14,292+79])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[14,292+4]..[14,292+26])
+          Ppat_var "applied_interf_filters" (ast_filters.ml[14,292+4]..[14,292+26])
+        expression (ast_filters.ml[14,292+26]..[14,292+79]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[14,292+64]..[14,292+79])
+            Pexp_apply
+            expression (ast_filters.ml[14,292+64]..[14,292+76])
+              Pexp_ident "Queue.create" (ast_filters.ml[14,292+64]..[14,292+76])
+            [
+              <label> ""
+                expression (ast_filters.ml[14,292+77]..[14,292+79])
+                  Pexp_construct "()" (ast_filters.ml[14,292+77]..[14,292+79])
+                  None
+            ]
+          core_type (ast_filters.ml[14,292+29]..[14,292+60])
+            Ptyp_constr "Queue.t" (ast_filters.ml[14,292+53]..[14,292+60])
+            [
+              core_type (ast_filters.ml[14,292+30]..[14,292+50])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[14,292+30]..[14,292+36])
+                    Ptyp_constr "string" (ast_filters.ml[14,292+30]..[14,292+36])
+                    []
+                  core_type (ast_filters.ml[14,292+39]..[14,292+50])
+                    Ptyp_constr "filter" (ast_filters.ml[14,292+44]..[14,292+50])
+                    [
+                      core_type (ast_filters.ml[14,292+39]..[14,292+43])
+                        Ptyp_constr "sigi" (ast_filters.ml[14,292+39]..[14,292+43])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[15,372+0]..[15,372+79])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[15,372+4]..[15,372+26])
+          Ppat_var "applied_implem_filters" (ast_filters.ml[15,372+4]..[15,372+26])
+        expression (ast_filters.ml[15,372+26]..[15,372+79]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[15,372+64]..[15,372+79])
+            Pexp_apply
+            expression (ast_filters.ml[15,372+64]..[15,372+76])
+              Pexp_ident "Queue.create" (ast_filters.ml[15,372+64]..[15,372+76])
+            [
+              <label> ""
+                expression (ast_filters.ml[15,372+77]..[15,372+79])
+                  Pexp_construct "()" (ast_filters.ml[15,372+77]..[15,372+79])
+                  None
+            ]
+          core_type (ast_filters.ml[15,372+29]..[15,372+60])
+            Ptyp_constr "Queue.t" (ast_filters.ml[15,372+53]..[15,372+60])
+            [
+              core_type (ast_filters.ml[15,372+30]..[15,372+50])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[15,372+30]..[15,372+36])
+                    Ptyp_constr "string" (ast_filters.ml[15,372+30]..[15,372+36])
+                    []
+                  core_type (ast_filters.ml[15,372+39]..[15,372+50])
+                    Ptyp_constr "filter" (ast_filters.ml[15,372+44]..[15,372+50])
+                    [
+                      core_type (ast_filters.ml[15,372+39]..[15,372+43])
+                        Ptyp_constr "stru" (ast_filters.ml[15,372+39]..[15,372+43])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[16,452+0]..[16,452+82])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[16,452+4]..[16,452+29])
+          Ppat_var "applied_topphrase_filters" (ast_filters.ml[16,452+4]..[16,452+29])
+        expression (ast_filters.ml[16,452+29]..[16,452+82]) ghost
+          Pexp_constraint
+          expression (ast_filters.ml[16,452+67]..[16,452+82])
+            Pexp_apply
+            expression (ast_filters.ml[16,452+67]..[16,452+79])
+              Pexp_ident "Queue.create" (ast_filters.ml[16,452+67]..[16,452+79])
+            [
+              <label> ""
+                expression (ast_filters.ml[16,452+80]..[16,452+82])
+                  Pexp_construct "()" (ast_filters.ml[16,452+80]..[16,452+82])
+                  None
+            ]
+          core_type (ast_filters.ml[16,452+32]..[16,452+63])
+            Ptyp_constr "Queue.t" (ast_filters.ml[16,452+56]..[16,452+63])
+            [
+              core_type (ast_filters.ml[16,452+33]..[16,452+53])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[16,452+33]..[16,452+39])
+                    Ptyp_constr "string" (ast_filters.ml[16,452+33]..[16,452+39])
+                    []
+                  core_type (ast_filters.ml[16,452+42]..[16,452+53])
+                    Ptyp_constr "filter" (ast_filters.ml[16,452+47]..[16,452+53])
+                    [
+                      core_type (ast_filters.ml[16,452+42]..[16,452+46])
+                        Ptyp_constr "stru" (ast_filters.ml[16,452+42]..[16,452+46])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[18,538+0]..[19,568+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[18,538+4]..[18,538+24])
+          Ppat_var "apply_interf_filters" (ast_filters.ml[18,538+4]..[18,538+24])
+        expression (ast_filters.ml[18,538+26]..[19,568+66]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[18,538+26]..[18,538+27])
+            Ppat_var "i" (ast_filters.ml[18,538+26]..[18,538+27])
+          expression (ast_filters.ml[19,568+2]..[19,568+66])
+            Pexp_apply
+            expression (ast_filters.ml[19,568+2]..[19,568+12])
+              Pexp_ident "Queue.fold" (ast_filters.ml[19,568+2]..[19,568+12])
+            [
+              <label> ""
+                expression (ast_filters.ml[19,568+13]..[19,568+41])
+                  Pexp_fun ""
+                  None
+                  pattern (ast_filters.ml[19,568+18]..[19,568+21])
+                    Ppat_var "ast" (ast_filters.ml[19,568+18]..[19,568+21])
+                  expression (ast_filters.ml[19,568+22]..[19,568+40]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (ast_filters.ml[19,568+22]..[19,568+31])
+                      Ppat_tuple
+                      [
+                        pattern (ast_filters.ml[19,568+23]..[19,568+28])
+                          Ppat_var "_name" (ast_filters.ml[19,568+23]..[19,568+28])
+                        pattern (ast_filters.ml[19,568+29]..[19,568+30])
+                          Ppat_var "f" (ast_filters.ml[19,568+29]..[19,568+30])
+                      ]
+                    expression (ast_filters.ml[19,568+35]..[19,568+40])
+                      Pexp_apply
+                      expression (ast_filters.ml[19,568+35]..[19,568+36])
+                        Pexp_ident "f" (ast_filters.ml[19,568+35]..[19,568+36])
+                      [
+                        <label> ""
+                          expression (ast_filters.ml[19,568+37]..[19,568+40])
+                            Pexp_ident "ast" (ast_filters.ml[19,568+37]..[19,568+40])
+                      ]
+              <label> ""
+                expression (ast_filters.ml[19,568+42]..[19,568+43])
+                  Pexp_ident "i" (ast_filters.ml[19,568+42]..[19,568+43])
+              <label> ""
+                expression (ast_filters.ml[19,568+44]..[19,568+66])
+                  Pexp_ident "applied_interf_filters" (ast_filters.ml[19,568+44]..[19,568+66])
+            ]
+    ]
+  structure_item (ast_filters.ml[20,635+0]..[21,665+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[20,635+4]..[20,635+24])
+          Ppat_var "apply_implem_filters" (ast_filters.ml[20,635+4]..[20,635+24])
+        expression (ast_filters.ml[20,635+26]..[21,665+66]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[20,635+26]..[20,635+27])
+            Ppat_var "i" (ast_filters.ml[20,635+26]..[20,635+27])
+          expression (ast_filters.ml[21,665+2]..[21,665+66])
+            Pexp_apply
+            expression (ast_filters.ml[21,665+2]..[21,665+12])
+              Pexp_ident "Queue.fold" (ast_filters.ml[21,665+2]..[21,665+12])
+            [
+              <label> ""
+                expression (ast_filters.ml[21,665+13]..[21,665+41])
+                  Pexp_fun ""
+                  None
+                  pattern (ast_filters.ml[21,665+18]..[21,665+21])
+                    Ppat_var "ast" (ast_filters.ml[21,665+18]..[21,665+21])
+                  expression (ast_filters.ml[21,665+22]..[21,665+40]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (ast_filters.ml[21,665+22]..[21,665+31])
+                      Ppat_tuple
+                      [
+                        pattern (ast_filters.ml[21,665+23]..[21,665+28])
+                          Ppat_var "_name" (ast_filters.ml[21,665+23]..[21,665+28])
+                        pattern (ast_filters.ml[21,665+29]..[21,665+30])
+                          Ppat_var "f" (ast_filters.ml[21,665+29]..[21,665+30])
+                      ]
+                    expression (ast_filters.ml[21,665+35]..[21,665+40])
+                      Pexp_apply
+                      expression (ast_filters.ml[21,665+35]..[21,665+36])
+                        Pexp_ident "f" (ast_filters.ml[21,665+35]..[21,665+36])
+                      [
+                        <label> ""
+                          expression (ast_filters.ml[21,665+37]..[21,665+40])
+                            Pexp_ident "ast" (ast_filters.ml[21,665+37]..[21,665+40])
+                      ]
+              <label> ""
+                expression (ast_filters.ml[21,665+42]..[21,665+43])
+                  Pexp_ident "i" (ast_filters.ml[21,665+42]..[21,665+43])
+              <label> ""
+                expression (ast_filters.ml[21,665+44]..[21,665+66])
+                  Pexp_ident "applied_implem_filters" (ast_filters.ml[21,665+44]..[21,665+66])
+            ]
+    ]
+  structure_item (ast_filters.ml[22,732+0]..[23,765+69])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[22,732+4]..[22,732+27])
+          Ppat_var "apply_topphrase_filters" (ast_filters.ml[22,732+4]..[22,732+27])
+        expression (ast_filters.ml[22,732+29]..[23,765+69]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[22,732+29]..[22,732+30])
+            Ppat_var "i" (ast_filters.ml[22,732+29]..[22,732+30])
+          expression (ast_filters.ml[23,765+2]..[23,765+69])
+            Pexp_apply
+            expression (ast_filters.ml[23,765+2]..[23,765+12])
+              Pexp_ident "Queue.fold" (ast_filters.ml[23,765+2]..[23,765+12])
+            [
+              <label> ""
+                expression (ast_filters.ml[23,765+13]..[23,765+41])
+                  Pexp_fun ""
+                  None
+                  pattern (ast_filters.ml[23,765+18]..[23,765+21])
+                    Ppat_var "ast" (ast_filters.ml[23,765+18]..[23,765+21])
+                  expression (ast_filters.ml[23,765+22]..[23,765+40]) ghost
+                    Pexp_fun ""
+                    None
+                    pattern (ast_filters.ml[23,765+22]..[23,765+31])
+                      Ppat_tuple
+                      [
+                        pattern (ast_filters.ml[23,765+23]..[23,765+28])
+                          Ppat_var "_name" (ast_filters.ml[23,765+23]..[23,765+28])
+                        pattern (ast_filters.ml[23,765+29]..[23,765+30])
+                          Ppat_var "f" (ast_filters.ml[23,765+29]..[23,765+30])
+                      ]
+                    expression (ast_filters.ml[23,765+35]..[23,765+40])
+                      Pexp_apply
+                      expression (ast_filters.ml[23,765+35]..[23,765+36])
+                        Pexp_ident "f" (ast_filters.ml[23,765+35]..[23,765+36])
+                      [
+                        <label> ""
+                          expression (ast_filters.ml[23,765+37]..[23,765+40])
+                            Pexp_ident "ast" (ast_filters.ml[23,765+37]..[23,765+40])
+                      ]
+              <label> ""
+                expression (ast_filters.ml[23,765+42]..[23,765+43])
+                  Pexp_ident "i" (ast_filters.ml[23,765+42]..[23,765+43])
+              <label> ""
+                expression (ast_filters.ml[23,765+44]..[23,765+69])
+                  Pexp_ident "applied_topphrase_filters" (ast_filters.ml[23,765+44]..[23,765+69])
+            ]
+    ]
+  structure_item (ast_filters.ml[25,836+0]..[29,977+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[25,836+4]..[25,836+21])
+          Ppat_var "use_interf_filter" (ast_filters.ml[25,836+4]..[25,836+21])
+        expression (ast_filters.ml[25,836+22]..[29,977+40]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[25,836+22]..[25,836+23])
+            Ppat_var "s" (ast_filters.ml[25,836+22]..[25,836+23])
+          expression (ast_filters.ml[26,862+2]..[29,977+40])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (ast_filters.ml[26,862+6]..[26,862+7])
+                  Ppat_var "u" (ast_filters.ml[26,862+6]..[26,862+7])
+                expression (ast_filters.ml[27,872+4]..[28,910+63])
+                  Pexp_try
+                  expression (ast_filters.ml[27,872+8]..[27,872+37])
+                    Pexp_apply
+                    expression (ast_filters.ml[27,872+8]..[27,872+20])
+                      Pexp_ident "Hashtbl.find" (ast_filters.ml[27,872+8]..[27,872+20])
+                    [
+                      <label> ""
+                        expression (ast_filters.ml[27,872+21]..[27,872+35])
+                          Pexp_ident "interf_filters" (ast_filters.ml[27,872+21]..[27,872+35])
+                      <label> ""
+                        expression (ast_filters.ml[27,872+36]..[27,872+37])
+                          Pexp_ident "s" (ast_filters.ml[27,872+36]..[27,872+37])
+                    ]
+                  [
+                    <case>
+                      pattern (ast_filters.ml[28,910+9]..[28,910+18])
+                        Ppat_construct "Not_found" (ast_filters.ml[28,910+9]..[28,910+18])
+                        None
+                      expression (ast_filters.ml[28,910+22]..[28,910+63])
+                        Pexp_apply
+                        expression (ast_filters.ml[28,910+22]..[28,910+31])
+                          Pexp_ident "failwithf" (ast_filters.ml[28,910+22]..[28,910+31])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[28,910+32]..[28,910+61])
+                              Pexp_constant Const_string("filter %s is not registered",None)
+                          <label> ""
+                            expression (ast_filters.ml[28,910+62]..[28,910+63])
+                              Pexp_ident "s" (ast_filters.ml[28,910+62]..[28,910+63])
+                        ]
+                  ]
+            ]
+            expression (ast_filters.ml[29,977+2]..[29,977+40])
+              Pexp_apply
+              expression (ast_filters.ml[29,977+2]..[29,977+11])
+                Pexp_ident "Queue.add" (ast_filters.ml[29,977+2]..[29,977+11])
+              [
+                <label> ""
+                  expression (ast_filters.ml[29,977+12]..[29,977+17])
+                    Pexp_tuple
+                    [
+                      expression (ast_filters.ml[29,977+13]..[29,977+14])
+                        Pexp_ident "s" (ast_filters.ml[29,977+13]..[29,977+14])
+                      expression (ast_filters.ml[29,977+15]..[29,977+16])
+                        Pexp_ident "u" (ast_filters.ml[29,977+15]..[29,977+16])
+                    ]
+                <label> ""
+                  expression (ast_filters.ml[29,977+18]..[29,977+40])
+                    Pexp_ident "applied_interf_filters" (ast_filters.ml[29,977+18]..[29,977+40])
+              ]
+    ]
+  structure_item (ast_filters.ml[31,1022+0]..[35,1163+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[31,1022+4]..[31,1022+21])
+          Ppat_var "use_implem_filter" (ast_filters.ml[31,1022+4]..[31,1022+21])
+        expression (ast_filters.ml[31,1022+22]..[35,1163+40]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[31,1022+22]..[31,1022+23])
+            Ppat_var "s" (ast_filters.ml[31,1022+22]..[31,1022+23])
+          expression (ast_filters.ml[32,1048+2]..[35,1163+40])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (ast_filters.ml[32,1048+6]..[32,1048+7])
+                  Ppat_var "u" (ast_filters.ml[32,1048+6]..[32,1048+7])
+                expression (ast_filters.ml[33,1058+4]..[34,1096+63])
+                  Pexp_try
+                  expression (ast_filters.ml[33,1058+8]..[33,1058+37])
+                    Pexp_apply
+                    expression (ast_filters.ml[33,1058+8]..[33,1058+20])
+                      Pexp_ident "Hashtbl.find" (ast_filters.ml[33,1058+8]..[33,1058+20])
+                    [
+                      <label> ""
+                        expression (ast_filters.ml[33,1058+21]..[33,1058+35])
+                          Pexp_ident "implem_filters" (ast_filters.ml[33,1058+21]..[33,1058+35])
+                      <label> ""
+                        expression (ast_filters.ml[33,1058+36]..[33,1058+37])
+                          Pexp_ident "s" (ast_filters.ml[33,1058+36]..[33,1058+37])
+                    ]
+                  [
+                    <case>
+                      pattern (ast_filters.ml[34,1096+9]..[34,1096+18])
+                        Ppat_construct "Not_found" (ast_filters.ml[34,1096+9]..[34,1096+18])
+                        None
+                      expression (ast_filters.ml[34,1096+22]..[34,1096+63])
+                        Pexp_apply
+                        expression (ast_filters.ml[34,1096+22]..[34,1096+31])
+                          Pexp_ident "failwithf" (ast_filters.ml[34,1096+22]..[34,1096+31])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[34,1096+32]..[34,1096+61])
+                              Pexp_constant Const_string("filter %s is not registered",None)
+                          <label> ""
+                            expression (ast_filters.ml[34,1096+62]..[34,1096+63])
+                              Pexp_ident "s" (ast_filters.ml[34,1096+62]..[34,1096+63])
+                        ]
+                  ]
+            ]
+            expression (ast_filters.ml[35,1163+2]..[35,1163+40])
+              Pexp_apply
+              expression (ast_filters.ml[35,1163+2]..[35,1163+11])
+                Pexp_ident "Queue.add" (ast_filters.ml[35,1163+2]..[35,1163+11])
+              [
+                <label> ""
+                  expression (ast_filters.ml[35,1163+12]..[35,1163+17])
+                    Pexp_tuple
+                    [
+                      expression (ast_filters.ml[35,1163+13]..[35,1163+14])
+                        Pexp_ident "s" (ast_filters.ml[35,1163+13]..[35,1163+14])
+                      expression (ast_filters.ml[35,1163+15]..[35,1163+16])
+                        Pexp_ident "u" (ast_filters.ml[35,1163+15]..[35,1163+16])
+                    ]
+                <label> ""
+                  expression (ast_filters.ml[35,1163+18]..[35,1163+40])
+                    Pexp_ident "applied_implem_filters" (ast_filters.ml[35,1163+18]..[35,1163+40])
+              ]
+    ]
+  structure_item (ast_filters.ml[37,1209+0]..[41,1356+43])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[37,1209+4]..[37,1209+24])
+          Ppat_var "use_topphrase_filter" (ast_filters.ml[37,1209+4]..[37,1209+24])
+        expression (ast_filters.ml[37,1209+25]..[41,1356+43]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[37,1209+25]..[37,1209+26])
+            Ppat_var "s" (ast_filters.ml[37,1209+25]..[37,1209+26])
+          expression (ast_filters.ml[38,1238+2]..[41,1356+43])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (ast_filters.ml[38,1238+6]..[38,1238+7])
+                  Ppat_var "u" (ast_filters.ml[38,1238+6]..[38,1238+7])
+                expression (ast_filters.ml[39,1248+4]..[40,1289+63])
+                  Pexp_try
+                  expression (ast_filters.ml[39,1248+8]..[39,1248+40])
+                    Pexp_apply
+                    expression (ast_filters.ml[39,1248+8]..[39,1248+20])
+                      Pexp_ident "Hashtbl.find" (ast_filters.ml[39,1248+8]..[39,1248+20])
+                    [
+                      <label> ""
+                        expression (ast_filters.ml[39,1248+21]..[39,1248+38])
+                          Pexp_ident "topphrase_filters" (ast_filters.ml[39,1248+21]..[39,1248+38])
+                      <label> ""
+                        expression (ast_filters.ml[39,1248+39]..[39,1248+40])
+                          Pexp_ident "s" (ast_filters.ml[39,1248+39]..[39,1248+40])
+                    ]
+                  [
+                    <case>
+                      pattern (ast_filters.ml[40,1289+9]..[40,1289+18])
+                        Ppat_construct "Not_found" (ast_filters.ml[40,1289+9]..[40,1289+18])
+                        None
+                      expression (ast_filters.ml[40,1289+22]..[40,1289+63])
+                        Pexp_apply
+                        expression (ast_filters.ml[40,1289+22]..[40,1289+31])
+                          Pexp_ident "failwithf" (ast_filters.ml[40,1289+22]..[40,1289+31])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[40,1289+32]..[40,1289+61])
+                              Pexp_constant Const_string("filter %s is not registered",None)
+                          <label> ""
+                            expression (ast_filters.ml[40,1289+62]..[40,1289+63])
+                              Pexp_ident "s" (ast_filters.ml[40,1289+62]..[40,1289+63])
+                        ]
+                  ]
+            ]
+            expression (ast_filters.ml[41,1356+2]..[41,1356+43])
+              Pexp_apply
+              expression (ast_filters.ml[41,1356+2]..[41,1356+11])
+                Pexp_ident "Queue.add" (ast_filters.ml[41,1356+2]..[41,1356+11])
+              [
+                <label> ""
+                  expression (ast_filters.ml[41,1356+12]..[41,1356+17])
+                    Pexp_tuple
+                    [
+                      expression (ast_filters.ml[41,1356+13]..[41,1356+14])
+                        Pexp_ident "s" (ast_filters.ml[41,1356+13]..[41,1356+14])
+                      expression (ast_filters.ml[41,1356+15]..[41,1356+16])
+                        Pexp_ident "u" (ast_filters.ml[41,1356+15]..[41,1356+16])
+                    ]
+                <label> ""
+                  expression (ast_filters.ml[41,1356+18]..[41,1356+43])
+                    Pexp_ident "applied_topphrase_filters" (ast_filters.ml[41,1356+18]..[41,1356+43])
+              ]
+    ]
+  structure_item (ast_filters.ml[43,1401+0]..[44,1434+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[43,1401+4]..[43,1401+24])
+          Ppat_var "register_sigi_filter" (ast_filters.ml[43,1401+4]..[43,1401+24])
+        expression (ast_filters.ml[43,1401+25]..[44,1434+36]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[43,1401+25]..[43,1401+30])
+            Ppat_tuple
+            [
+              pattern (ast_filters.ml[43,1401+26]..[43,1401+27])
+                Ppat_var "k" (ast_filters.ml[43,1401+26]..[43,1401+27])
+              pattern (ast_filters.ml[43,1401+28]..[43,1401+29])
+                Ppat_var "f" (ast_filters.ml[43,1401+28]..[43,1401+29])
+            ]
+          expression (ast_filters.ml[44,1434+2]..[44,1434+36])
+            Pexp_apply
+            expression (ast_filters.ml[44,1434+2]..[44,1434+17])
+              Pexp_ident "Hashtbl.replace" (ast_filters.ml[44,1434+2]..[44,1434+17])
+            [
+              <label> ""
+                expression (ast_filters.ml[44,1434+18]..[44,1434+32])
+                  Pexp_ident "interf_filters" (ast_filters.ml[44,1434+18]..[44,1434+32])
+              <label> ""
+                expression (ast_filters.ml[44,1434+33]..[44,1434+34])
+                  Pexp_ident "k" (ast_filters.ml[44,1434+33]..[44,1434+34])
+              <label> ""
+                expression (ast_filters.ml[44,1434+35]..[44,1434+36])
+                  Pexp_ident "f" (ast_filters.ml[44,1434+35]..[44,1434+36])
+            ]
+    ]
+  structure_item (ast_filters.ml[46,1476+0]..[47,1510+36])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[46,1476+4]..[46,1476+24])
+          Ppat_var "register_stru_filter" (ast_filters.ml[46,1476+4]..[46,1476+24])
+        expression (ast_filters.ml[46,1476+25]..[47,1510+36]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[46,1476+25]..[46,1476+30])
+            Ppat_tuple
+            [
+              pattern (ast_filters.ml[46,1476+26]..[46,1476+27])
+                Ppat_var "k" (ast_filters.ml[46,1476+26]..[46,1476+27])
+              pattern (ast_filters.ml[46,1476+28]..[46,1476+29])
+                Ppat_var "f" (ast_filters.ml[46,1476+28]..[46,1476+29])
+            ]
+          expression (ast_filters.ml[47,1510+2]..[47,1510+36])
+            Pexp_apply
+            expression (ast_filters.ml[47,1510+2]..[47,1510+17])
+              Pexp_ident "Hashtbl.replace" (ast_filters.ml[47,1510+2]..[47,1510+17])
+            [
+              <label> ""
+                expression (ast_filters.ml[47,1510+18]..[47,1510+32])
+                  Pexp_ident "implem_filters" (ast_filters.ml[47,1510+18]..[47,1510+32])
+              <label> ""
+                expression (ast_filters.ml[47,1510+33]..[47,1510+34])
+                  Pexp_ident "k" (ast_filters.ml[47,1510+33]..[47,1510+34])
+              <label> ""
+                expression (ast_filters.ml[47,1510+35]..[47,1510+36])
+                  Pexp_ident "f" (ast_filters.ml[47,1510+35]..[47,1510+36])
+            ]
+    ]
+  structure_item (ast_filters.ml[50,1554+0]..[51,1592+39])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[50,1554+4]..[50,1554+29])
+          Ppat_var "register_topphrase_filter" (ast_filters.ml[50,1554+4]..[50,1554+29])
+        expression (ast_filters.ml[50,1554+30]..[51,1592+39]) ghost
+          Pexp_fun ""
+          None
+          pattern (ast_filters.ml[50,1554+30]..[50,1554+35])
+            Ppat_tuple
+            [
+              pattern (ast_filters.ml[50,1554+31]..[50,1554+32])
+                Ppat_var "k" (ast_filters.ml[50,1554+31]..[50,1554+32])
+              pattern (ast_filters.ml[50,1554+33]..[50,1554+34])
+                Ppat_var "f" (ast_filters.ml[50,1554+33]..[50,1554+34])
+            ]
+          expression (ast_filters.ml[51,1592+2]..[51,1592+39])
+            Pexp_apply
+            expression (ast_filters.ml[51,1592+2]..[51,1592+17])
+              Pexp_ident "Hashtbl.replace" (ast_filters.ml[51,1592+2]..[51,1592+17])
+            [
+              <label> ""
+                expression (ast_filters.ml[51,1592+18]..[51,1592+35])
+                  Pexp_ident "topphrase_filters" (ast_filters.ml[51,1592+18]..[51,1592+35])
+              <label> ""
+                expression (ast_filters.ml[51,1592+36]..[51,1592+37])
+                  Pexp_ident "k" (ast_filters.ml[51,1592+36]..[51,1592+37])
+              <label> ""
+                expression (ast_filters.ml[51,1592+38]..[51,1592+39])
+                  Pexp_ident "f" (ast_filters.ml[51,1592+38]..[51,1592+39])
+            ]
+    ]
+]

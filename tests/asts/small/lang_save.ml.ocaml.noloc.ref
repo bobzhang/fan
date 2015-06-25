@@ -1,0 +1,905 @@
+[
+  structure_item (lang_save.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_save.ml[]..[])
+          Ppat_var "and_of_list" (lang_save.ml[]..[])
+        expression (lang_save.ml[]..[])
+          Pexp_ident "Ast_gen.and_of_list" (lang_save.ml[]..[])
+    ]
+  structure_item (lang_save.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_save.ml[]..[])
+          Ppat_var "seq_sem" (lang_save.ml[]..[])
+        expression (lang_save.ml[]..[])
+          Pexp_ident "Ast_gen.seq_sem" (lang_save.ml[]..[])
+    ]
+  structure_item (lang_save.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (lang_save.ml[]..[])
+          Ppat_var "save_quot" (lang_save.ml[]..[])
+        expression (lang_save.ml[]..[])
+          Pexp_apply
+          expression (lang_save.ml[]..[])
+            Pexp_ident "Gramf.mk" (lang_save.ml[]..[])
+          [
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_constant Const_string("save_quot",None)
+          ]
+    ]
+  structure_item (lang_save.ml[]..[])
+    Pstr_eval
+    expression (lang_save.ml[]..[])
+      Pexp_apply
+      expression (lang_save.ml[]..[])
+        Pexp_ident "Gramf.extend_single" (lang_save.ml[]..[])
+      [
+        <label> ""
+          expression (lang_save.ml[]..[]) 
+            Pexp_constraint
+            expression (lang_save.ml[]..[])
+              Pexp_record
+              [
+                "entry" (lang_save.ml[]..[])
+                  expression (lang_save.ml[]..[]) 
+                    Pexp_constraint
+                    expression (lang_save.ml[]..[])
+                      Pexp_ident "save_quot" (lang_save.ml[]..[])
+                    core_type (lang_save.ml[]..[])
+                      Ptyp_constr "Gramf.t" (lang_save.ml[]..[])
+                      [
+                        core_type (lang_save.ml[]..[])
+                          Ptyp_var save_quot
+                      ]
+                "olevel" (lang_save.ml[]..[])
+                  expression (lang_save.ml[]..[]) 
+                    Pexp_constraint
+                    expression (lang_save.ml[]..[])
+                      Pexp_record
+                      [
+                        "label" (lang_save.ml[]..[])
+                          expression (lang_save.ml[]..[])
+                            Pexp_construct "None" (lang_save.ml[]..[])
+                            None
+                        "lassoc" (lang_save.ml[]..[])
+                          expression (lang_save.ml[]..[])
+                            Pexp_construct "true" (lang_save.ml[]..[])
+                            None
+                        "productions" (lang_save.ml[]..[])
+                          expression (lang_save.ml[]..[])
+                            Pexp_construct "::" (lang_save.ml[]..[]) 
+                            Some
+                              expression (lang_save.ml[]..[]) 
+                                Pexp_tuple
+                                [
+                                  expression (lang_save.ml[]..[])
+                                    Pexp_record
+                                    [
+                                      "symbols" (lang_save.ml[]..[])
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_construct "::" (lang_save.ml[]..[]) 
+                                          Some
+                                            expression (lang_save.ml[]..[]) 
+                                              Pexp_tuple
+                                              [
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_construct "List1" (lang_save.ml[]..[])
+                                                  Some
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_construct "Token" (lang_save.ml[]..[])
+                                                      Some
+                                                        expression (lang_save.ml[]..[]) 
+                                                          Pexp_constraint
+                                                          expression (lang_save.ml[]..[])
+                                                            Pexp_record
+                                                            [
+                                                              "descr" (lang_save.ml[]..[])
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_record
+                                                                  [
+                                                                    "tag" (lang_save.ml[]..[])
+                                                                      expression (lang_save.ml[]..[])
+Pexp_variant "Lid"
+None
+                                                                    "word" (lang_save.ml[]..[])
+                                                                      expression (lang_save.ml[]..[])
+Pexp_construct "Any" (lang_save.ml[]..[])
+None
+                                                                    "tag_name" (lang_save.ml[]..[])
+                                                                      expression (lang_save.ml[]..[])
+Pexp_constant Const_string("Lid",None)
+                                                                  ]
+                                                                  None
+                                                            ]
+                                                            None
+                                                          core_type (lang_save.ml[]..[])
+                                                            Ptyp_constr "Tokenf.pattern" (lang_save.ml[]..[])
+                                                            []
+                                                expression (lang_save.ml[]..[]) 
+                                                  Pexp_construct "::" (lang_save.ml[]..[]) 
+                                                  Some
+                                                    expression (lang_save.ml[]..[]) 
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_construct "Token" (lang_save.ml[]..[])
+                                                          Some
+                                                            expression (lang_save.ml[]..[]) 
+                                                              Pexp_constraint
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_record
+                                                                [
+                                                                  "descr" (lang_save.ml[]..[])
+                                                                    expression (lang_save.ml[]..[])
+                                                                      Pexp_record
+                                                                      [
+"tag" (lang_save.ml[]..[])
+  expression (lang_save.ml[]..[])
+    Pexp_variant "Quot"
+    None
+"word" (lang_save.ml[]..[])
+  expression (lang_save.ml[]..[])
+    Pexp_construct "Any" (lang_save.ml[]..[])
+    None
+"tag_name" (lang_save.ml[]..[])
+  expression (lang_save.ml[]..[])
+    Pexp_constant Const_string("Quot",None)
+                                                                      ]
+                                                                      None
+                                                                ]
+                                                                None
+                                                              core_type (lang_save.ml[]..[])
+                                                                Ptyp_constr "Tokenf.pattern" (lang_save.ml[]..[])
+                                                                []
+                                                        expression (lang_save.ml[]..[]) 
+                                                          Pexp_construct "[]" (lang_save.ml[]..[]) 
+                                                          None
+                                                      ]
+                                              ]
+                                      "annot" (lang_save.ml[]..[])
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_constant Const_string("let b =\n  if x.name = Tokenf.empty_name\n  then\n    let expander =\n      function\n      | loc ->\n          (function\n           | _ ->\n               (function | s -> Gramlib.parse_string_eoi ~loc Syntaxf.exp s)) in\n    Tokenf.quot_expand expander x\n  else Ast_quotation.expand x Dyn_tag.exp in\nlet symbs =\n  List.map\n    (function | ({ txt;_} : Tokenf.txt) -> Gensym.fresh ~prefix:txt ()) ls in\nlet res = Gensym.fresh ~prefix:\"res\" () in\nlet exc = Gensym.fresh ~prefix:\"e\" () in\nlet binds =\n  and_of_list\n    (List.map2\n       (function\n        | x ->\n            (function\n             | (y : Tokenf.txt) ->\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App\n                         (_loc, (`Lid (_loc, \"!\")), (`Lid (_loc, (y.txt)))))) :> \n                 Astf.bind))) symbs ls) in\nlet restore =\n  seq_sem\n    (List.map2\n       (function\n        | (x : Tokenf.txt) ->\n            (function\n             | y ->\n                 (`App\n                    (_loc,\n                      (`App\n                         (_loc, (`Lid (_loc, \":=\")), (`Lid (_loc, (x.txt))))),\n                      (`Lid (_loc, y))) :> Astf.exp))) ls symbs) in\n(`LetIn\n   (_loc, (`Negative _loc), (binds :> Astf.bind),\n     (`Try\n        (_loc,\n          (`Seq\n             (_loc,\n               (`LetIn\n                  (_loc, (`Negative _loc),\n                    (`Bind (_loc, (`Lid (_loc, res)), (b :> Astf.exp))),\n                    (`LetIn\n                       (_loc, (`Negative _loc),\n                         (`Bind (_loc, (`Any _loc), (restore :> Astf.exp))),\n                         (`Lid (_loc, res)))))))),\n          (`Case\n             (_loc, (`Lid (_loc, exc)),\n               (`Seq\n                  (_loc,\n                    (`Sem\n                       (_loc, (restore :> Astf.exp),\n                         (`App\n                            (_loc, (`Lid (_loc, \"raise\")),\n                              (`Lid (_loc, exc))))))))))))) :> Astf.exp)\n",None)
+                                      "fn" (lang_save.ml[]..[])
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_apply
+                                          expression (lang_save.ml[]..[])
+                                            Pexp_ident "Gramf.mk_action" (lang_save.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (lang_save.ml[]..[]) 
+                                                Pexp_constraint
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (lang_save.ml[]..[])
+                                                        Ppat_constraint
+                                                        pattern (lang_save.ml[]..[])
+                                                          Ppat_var "__fan_1" (lang_save.ml[]..[])
+                                                        core_type (lang_save.ml[]..[])
+                                                          Ptyp_constr "Tokenf.quot" (lang_save.ml[]..[])
+                                                          []
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (lang_save.ml[]..[])
+                                                              Ppat_constraint
+                                                              pattern (lang_save.ml[]..[])
+                                                                Ppat_var "ls" (lang_save.ml[]..[])
+                                                              core_type (lang_save.ml[]..[])
+                                                                Ptyp_constr "list" (lang_save.ml[]..[])
+                                                                [
+                                                                  core_type (lang_save.ml[]..[])
+                                                                    Ptyp_constr "Tokenf.txt" (lang_save.ml[]..[])
+                                                                    []
+                                                                ]
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_function
+                                                              [
+                                                                <case>
+                                                                  pattern (lang_save.ml[]..[])
+                                                                    Ppat_constraint
+                                                                    pattern (lang_save.ml[]..[])
+                                                                      Ppat_var "_loc" (lang_save.ml[]..[])
+                                                                    core_type (lang_save.ml[]..[])
+                                                                      Ptyp_constr "Locf.t" (lang_save.ml[]..[])
+                                                                      []
+                                                                  expression (lang_save.ml[]..[])
+                                                                    Pexp_let Nonrec
+                                                                    [
+                                                                      <def>
+pattern (lang_save.ml[]..[])
+  Ppat_var "x" (lang_save.ml[]..[])
+expression (lang_save.ml[]..[])
+  Pexp_ident "__fan_1" (lang_save.ml[]..[])
+                                                                    ]
+                                                                    expression (lang_save.ml[]..[]) 
+                                                                      Pexp_constraint
+                                                                      expression (lang_save.ml[]..[])
+Pexp_let Nonrec
+[
+  <def>
+    pattern (lang_save.ml[]..[])
+      Ppat_var "b" (lang_save.ml[]..[])
+    expression (lang_save.ml[]..[])
+      Pexp_ifthenelse
+      expression (lang_save.ml[]..[])
+        Pexp_apply
+        expression (lang_save.ml[]..[])
+          Pexp_ident "=" (lang_save.ml[]..[])
+        [
+          <label> ""
+            expression (lang_save.ml[]..[])
+              Pexp_field
+              expression (lang_save.ml[]..[])
+                Pexp_ident "x" (lang_save.ml[]..[])
+              "name" (lang_save.ml[]..[])
+          <label> ""
+            expression (lang_save.ml[]..[])
+              Pexp_ident "Tokenf.empty_name" (lang_save.ml[]..[])
+        ]
+      expression (lang_save.ml[]..[])
+        Pexp_let Nonrec
+        [
+          <def>
+            pattern (lang_save.ml[]..[])
+              Ppat_var "expander" (lang_save.ml[]..[])
+            expression (lang_save.ml[]..[])
+              Pexp_function
+              [
+                <case>
+                  pattern (lang_save.ml[]..[])
+                    Ppat_var "loc" (lang_save.ml[]..[])
+                  expression (lang_save.ml[]..[])
+                    Pexp_function
+                    [
+                      <case>
+                        pattern (lang_save.ml[]..[])
+                          Ppat_any
+                        expression (lang_save.ml[]..[])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (lang_save.ml[]..[])
+                                Ppat_var "s" (lang_save.ml[]..[])
+                              expression (lang_save.ml[]..[])
+                                Pexp_apply
+                                expression (lang_save.ml[]..[])
+                                  Pexp_ident "Gramlib.parse_string_eoi" (lang_save.ml[]..[])
+                                [
+                                  <label> "loc"
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_ident "loc" (lang_save.ml[]..[])
+                                  <label> ""
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_ident "Syntaxf.exp" (lang_save.ml[]..[])
+                                  <label> ""
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_ident "s" (lang_save.ml[]..[])
+                                ]
+                          ]
+                    ]
+              ]
+        ]
+        expression (lang_save.ml[]..[])
+          Pexp_apply
+          expression (lang_save.ml[]..[])
+            Pexp_ident "Tokenf.quot_expand" (lang_save.ml[]..[])
+          [
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_ident "expander" (lang_save.ml[]..[])
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_ident "x" (lang_save.ml[]..[])
+          ]
+      Some
+        expression (lang_save.ml[]..[])
+          Pexp_apply
+          expression (lang_save.ml[]..[])
+            Pexp_ident "Ast_quotation.expand" (lang_save.ml[]..[])
+          [
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_ident "x" (lang_save.ml[]..[])
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_ident "Dyn_tag.exp" (lang_save.ml[]..[])
+          ]
+]
+expression (lang_save.ml[]..[])
+  Pexp_let Nonrec
+  [
+    <def>
+      pattern (lang_save.ml[]..[])
+        Ppat_var "symbs" (lang_save.ml[]..[])
+      expression (lang_save.ml[]..[])
+        Pexp_apply
+        expression (lang_save.ml[]..[])
+          Pexp_ident "List.map" (lang_save.ml[]..[])
+        [
+          <label> ""
+            expression (lang_save.ml[]..[])
+              Pexp_function
+              [
+                <case>
+                  pattern (lang_save.ml[]..[])
+                    Ppat_constraint
+                    pattern (lang_save.ml[]..[])
+                      Ppat_record Open
+                      [
+                        "txt" (lang_save.ml[]..[])
+                          pattern (lang_save.ml[]..[])
+                            Ppat_var "txt" (lang_save.ml[]..[])
+                      ]
+                    core_type (lang_save.ml[]..[])
+                      Ptyp_constr "Tokenf.txt" (lang_save.ml[]..[])
+                      []
+                  expression (lang_save.ml[]..[])
+                    Pexp_apply
+                    expression (lang_save.ml[]..[])
+                      Pexp_ident "Gensym.fresh" (lang_save.ml[]..[])
+                    [
+                      <label> "prefix"
+                        expression (lang_save.ml[]..[])
+                          Pexp_ident "txt" (lang_save.ml[]..[])
+                      <label> ""
+                        expression (lang_save.ml[]..[])
+                          Pexp_construct "()" (lang_save.ml[]..[])
+                          None
+                    ]
+              ]
+          <label> ""
+            expression (lang_save.ml[]..[])
+              Pexp_ident "ls" (lang_save.ml[]..[])
+        ]
+  ]
+  expression (lang_save.ml[]..[])
+    Pexp_let Nonrec
+    [
+      <def>
+        pattern (lang_save.ml[]..[])
+          Ppat_var "res" (lang_save.ml[]..[])
+        expression (lang_save.ml[]..[])
+          Pexp_apply
+          expression (lang_save.ml[]..[])
+            Pexp_ident "Gensym.fresh" (lang_save.ml[]..[])
+          [
+            <label> "prefix"
+              expression (lang_save.ml[]..[])
+                Pexp_constant Const_string("res",None)
+            <label> ""
+              expression (lang_save.ml[]..[])
+                Pexp_construct "()" (lang_save.ml[]..[])
+                None
+          ]
+    ]
+    expression (lang_save.ml[]..[])
+      Pexp_let Nonrec
+      [
+        <def>
+          pattern (lang_save.ml[]..[])
+            Ppat_var "exc" (lang_save.ml[]..[])
+          expression (lang_save.ml[]..[])
+            Pexp_apply
+            expression (lang_save.ml[]..[])
+              Pexp_ident "Gensym.fresh" (lang_save.ml[]..[])
+            [
+              <label> "prefix"
+                expression (lang_save.ml[]..[])
+                  Pexp_constant Const_string("e",None)
+              <label> ""
+                expression (lang_save.ml[]..[])
+                  Pexp_construct "()" (lang_save.ml[]..[])
+                  None
+            ]
+      ]
+      expression (lang_save.ml[]..[])
+        Pexp_let Nonrec
+        [
+          <def>
+            pattern (lang_save.ml[]..[])
+              Ppat_var "binds" (lang_save.ml[]..[])
+            expression (lang_save.ml[]..[])
+              Pexp_apply
+              expression (lang_save.ml[]..[])
+                Pexp_ident "and_of_list" (lang_save.ml[]..[])
+              [
+                <label> ""
+                  expression (lang_save.ml[]..[])
+                    Pexp_apply
+                    expression (lang_save.ml[]..[])
+                      Pexp_ident "List.map2" (lang_save.ml[]..[])
+                    [
+                      <label> ""
+                        expression (lang_save.ml[]..[])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (lang_save.ml[]..[])
+                                Ppat_var "x" (lang_save.ml[]..[])
+                              expression (lang_save.ml[]..[])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (lang_save.ml[]..[])
+                                      Ppat_constraint
+                                      pattern (lang_save.ml[]..[])
+                                        Ppat_var "y" (lang_save.ml[]..[])
+                                      core_type (lang_save.ml[]..[])
+                                        Ptyp_constr "Tokenf.txt" (lang_save.ml[]..[])
+                                        []
+                                    expression (lang_save.ml[]..[]) 
+                                      Pexp_coerce
+                                      expression (lang_save.ml[]..[])
+                                        Pexp_variant "Bind"
+                                        Some
+                                          expression (lang_save.ml[]..[])
+                                            Pexp_tuple
+                                            [
+                                              expression (lang_save.ml[]..[])
+                                                Pexp_ident "_loc" (lang_save.ml[]..[])
+                                              expression (lang_save.ml[]..[])
+                                                Pexp_variant "Lid"
+                                                Some
+                                                  expression (lang_save.ml[]..[])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_ident "x" (lang_save.ml[]..[])
+                                                    ]
+                                              expression (lang_save.ml[]..[])
+                                                Pexp_variant "App"
+                                                Some
+                                                  expression (lang_save.ml[]..[])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_variant "Lid"
+                                                        Some
+                                                          expression (lang_save.ml[]..[])
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_constant Const_string("!",None)
+                                                            ]
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_variant "Lid"
+                                                        Some
+                                                          expression (lang_save.ml[]..[])
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_field
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_ident "y" (lang_save.ml[]..[])
+                                                                "txt" (lang_save.ml[]..[])
+                                                            ]
+                                                    ]
+                                            ]
+                                      None
+                                      core_type (lang_save.ml[]..[])
+                                        Ptyp_constr "Astf.bind" (lang_save.ml[]..[])
+                                        []
+                                ]
+                          ]
+                      <label> ""
+                        expression (lang_save.ml[]..[])
+                          Pexp_ident "symbs" (lang_save.ml[]..[])
+                      <label> ""
+                        expression (lang_save.ml[]..[])
+                          Pexp_ident "ls" (lang_save.ml[]..[])
+                    ]
+              ]
+        ]
+        expression (lang_save.ml[]..[])
+          Pexp_let Nonrec
+          [
+            <def>
+              pattern (lang_save.ml[]..[])
+                Ppat_var "restore" (lang_save.ml[]..[])
+              expression (lang_save.ml[]..[])
+                Pexp_apply
+                expression (lang_save.ml[]..[])
+                  Pexp_ident "seq_sem" (lang_save.ml[]..[])
+                [
+                  <label> ""
+                    expression (lang_save.ml[]..[])
+                      Pexp_apply
+                      expression (lang_save.ml[]..[])
+                        Pexp_ident "List.map2" (lang_save.ml[]..[])
+                      [
+                        <label> ""
+                          expression (lang_save.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (lang_save.ml[]..[])
+                                  Ppat_constraint
+                                  pattern (lang_save.ml[]..[])
+                                    Ppat_var "x" (lang_save.ml[]..[])
+                                  core_type (lang_save.ml[]..[])
+                                    Ptyp_constr "Tokenf.txt" (lang_save.ml[]..[])
+                                    []
+                                expression (lang_save.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (lang_save.ml[]..[])
+                                        Ppat_var "y" (lang_save.ml[]..[])
+                                      expression (lang_save.ml[]..[]) 
+                                        Pexp_coerce
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_variant "App"
+                                          Some
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_tuple
+                                              [
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_variant "App"
+                                                  Some
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_variant "Lid"
+                                                          Some
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_constant Const_string(":=",None)
+                                                              ]
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_variant "Lid"
+                                                          Some
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_tuple
+                                                              [
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_field
+                                                                  expression (lang_save.ml[]..[])
+                                                                    Pexp_ident "x" (lang_save.ml[]..[])
+                                                                  "txt" (lang_save.ml[]..[])
+                                                              ]
+                                                      ]
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_variant "Lid"
+                                                  Some
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_tuple
+                                                      [
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_ident "y" (lang_save.ml[]..[])
+                                                      ]
+                                              ]
+                                        None
+                                        core_type (lang_save.ml[]..[])
+                                          Ptyp_constr "Astf.exp" (lang_save.ml[]..[])
+                                          []
+                                  ]
+                            ]
+                        <label> ""
+                          expression (lang_save.ml[]..[])
+                            Pexp_ident "ls" (lang_save.ml[]..[])
+                        <label> ""
+                          expression (lang_save.ml[]..[])
+                            Pexp_ident "symbs" (lang_save.ml[]..[])
+                      ]
+                ]
+          ]
+          expression (lang_save.ml[]..[]) 
+            Pexp_coerce
+            expression (lang_save.ml[]..[])
+              Pexp_variant "LetIn"
+              Some
+                expression (lang_save.ml[]..[])
+                  Pexp_tuple
+                  [
+                    expression (lang_save.ml[]..[])
+                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                    expression (lang_save.ml[]..[])
+                      Pexp_variant "Negative"
+                      Some
+                        expression (lang_save.ml[]..[])
+                          Pexp_ident "_loc" (lang_save.ml[]..[])
+                    expression (lang_save.ml[]..[]) 
+                      Pexp_coerce
+                      expression (lang_save.ml[]..[])
+                        Pexp_ident "binds" (lang_save.ml[]..[])
+                      None
+                      core_type (lang_save.ml[]..[])
+                        Ptyp_constr "Astf.bind" (lang_save.ml[]..[])
+                        []
+                    expression (lang_save.ml[]..[])
+                      Pexp_variant "Try"
+                      Some
+                        expression (lang_save.ml[]..[])
+                          Pexp_tuple
+                          [
+                            expression (lang_save.ml[]..[])
+                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                            expression (lang_save.ml[]..[])
+                              Pexp_variant "Seq"
+                              Some
+                                expression (lang_save.ml[]..[])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_variant "LetIn"
+                                      Some
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_variant "Negative"
+                                              Some
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_ident "_loc" (lang_save.ml[]..[])
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_variant "Bind"
+                                              Some
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_variant "Lid"
+                                                      Some
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "res" (lang_save.ml[]..[])
+                                                          ]
+                                                    expression (lang_save.ml[]..[]) 
+                                                      Pexp_coerce
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_ident "b" (lang_save.ml[]..[])
+                                                      None
+                                                      core_type (lang_save.ml[]..[])
+                                                        Ptyp_constr "Astf.exp" (lang_save.ml[]..[])
+                                                        []
+                                                  ]
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_variant "LetIn"
+                                              Some
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_variant "Negative"
+                                                      Some
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_variant "Bind"
+                                                      Some
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_variant "Any"
+                                                              Some
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                            expression (lang_save.ml[]..[]) 
+                                                              Pexp_coerce
+                                                              expression (lang_save.ml[]..[])
+                                                                Pexp_ident "restore" (lang_save.ml[]..[])
+                                                              None
+                                                              core_type (lang_save.ml[]..[])
+                                                                Ptyp_constr "Astf.exp" (lang_save.ml[]..[])
+                                                                []
+                                                          ]
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_variant "Lid"
+                                                      Some
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "res" (lang_save.ml[]..[])
+                                                          ]
+                                                  ]
+                                          ]
+                                  ]
+                            expression (lang_save.ml[]..[])
+                              Pexp_variant "Case"
+                              Some
+                                expression (lang_save.ml[]..[])
+                                  Pexp_tuple
+                                  [
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_variant "Lid"
+                                      Some
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_ident "exc" (lang_save.ml[]..[])
+                                          ]
+                                    expression (lang_save.ml[]..[])
+                                      Pexp_variant "Seq"
+                                      Some
+                                        expression (lang_save.ml[]..[])
+                                          Pexp_tuple
+                                          [
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                            expression (lang_save.ml[]..[])
+                                              Pexp_variant "Sem"
+                                              Some
+                                                expression (lang_save.ml[]..[])
+                                                  Pexp_tuple
+                                                  [
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                    expression (lang_save.ml[]..[]) 
+                                                      Pexp_coerce
+                                                      expression (lang_save.ml[]..[])
+                                                        Pexp_ident "restore" (lang_save.ml[]..[])
+                                                      None
+                                                      core_type (lang_save.ml[]..[])
+                                                        Ptyp_constr "Astf.exp" (lang_save.ml[]..[])
+                                                        []
+                                                    expression (lang_save.ml[]..[])
+                                                      Pexp_variant "App"
+                                                      Some
+                                                        expression (lang_save.ml[]..[])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_save.ml[]..[])
+                                                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                                    expression (lang_save.ml[]..[])
+                                                                      Pexp_constant Const_string("raise",None)
+                                                                  ]
+                                                            expression (lang_save.ml[]..[])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (lang_save.ml[]..[])
+                                                                  Pexp_tuple
+                                                                  [
+                                                                    expression (lang_save.ml[]..[])
+                                                                      Pexp_ident "_loc" (lang_save.ml[]..[])
+                                                                    expression (lang_save.ml[]..[])
+                                                                      Pexp_ident "exc" (lang_save.ml[]..[])
+                                                                  ]
+                                                          ]
+                                                  ]
+                                          ]
+                                  ]
+                          ]
+                  ]
+            None
+            core_type (lang_save.ml[]..[])
+              Ptyp_constr "Astf.exp" (lang_save.ml[]..[])
+              []
+                                                                      core_type (lang_save.ml[]..[])
+Ptyp_var save_quot
+                                                              ]
+                                                        ]
+                                                  ]
+                                                core_type (lang_save.ml[]..[])
+                                                  Ptyp_arrow
+                                                  ""
+                                                  core_type (lang_save.ml[]..[])
+                                                    Ptyp_constr "Tokenf.quot" (lang_save.ml[]..[])
+                                                    []
+                                                  core_type (lang_save.ml[]..[])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (lang_save.ml[]..[])
+                                                      Ptyp_constr "list" (lang_save.ml[]..[])
+                                                      [
+                                                        core_type (lang_save.ml[]..[])
+                                                          Ptyp_constr "Tokenf.txt" (lang_save.ml[]..[])
+                                                          []
+                                                      ]
+                                                    core_type (lang_save.ml[]..[])
+                                                      Ptyp_arrow
+                                                      ""
+                                                      core_type (lang_save.ml[]..[])
+                                                        Ptyp_constr "Locf.t" (lang_save.ml[]..[])
+                                                        []
+                                                      core_type (lang_save.ml[]..[])
+                                                        Ptyp_var save_quot
+                                          ]
+                                    ]
+                                    None
+                                  expression (lang_save.ml[]..[]) 
+                                    Pexp_construct "[]" (lang_save.ml[]..[]) 
+                                    None
+                                ]
+                      ]
+                      None
+                    core_type (lang_save.ml[]..[])
+                      Ptyp_constr "Gramf.olevel" (lang_save.ml[]..[])
+                      []
+              ]
+              None
+            core_type (lang_save.ml[]..[])
+              Ptyp_constr "Gramf.single_extend_statement" (lang_save.ml[]..[])
+              [
+                core_type (lang_save.ml[]..[])
+                  Ptyp_any
+              ]
+      ]
+  structure_item (lang_save.ml[]..[])
+    Pstr_eval
+    expression (lang_save.ml[]..[])
+      Pexp_apply
+      expression (lang_save.ml[]..[])
+        Pexp_ident "Ast_quotation.of_exp" (lang_save.ml[]..[])
+      [
+        <label> "name"
+          expression (lang_save.ml[]..[])
+            Pexp_record
+            [
+              "domain" (lang_save.ml[]..[])
+                expression (lang_save.ml[]..[])
+                  Pexp_ident "Ns.lang" (lang_save.ml[]..[])
+              "name" (lang_save.ml[]..[])
+                expression (lang_save.ml[]..[])
+                  Pexp_constant Const_string("save",None)
+            ]
+            None
+        <label> "entry"
+          expression (lang_save.ml[]..[])
+            Pexp_ident "save_quot" (lang_save.ml[]..[])
+        <label> ""
+          expression (lang_save.ml[]..[])
+            Pexp_construct "()" (lang_save.ml[]..[])
+            None
+      ]
+]

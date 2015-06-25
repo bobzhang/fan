@@ -1,0 +1,167 @@
+1a2,17
+>   structure_item (fan.ml[2,1+0]..[3,68+42])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan.ml[2,1+0]..[3,68+42])
+>         Pstr_eval
+>         expression (fan.ml[2,1+0]..[3,68+42])
+>           Pexp_constant Const_string(" FIXME the command line parsing  can not handle prefix problem,\n    e.g. -p -px will cause some problem ",None)
+>     ]
+>   structure_item (fan.ml[55,1899+0]..[58,2029+3])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan.ml[55,1899+0]..[58,2029+3])
+>         Pstr_eval
+>         expression (fan.ml[55,1899+0]..[58,2029+3])
+>           Pexp_constant Const_string(" The first argument is file name\n    we dispatch different functions based on the filename extension\n    handle the file name \n ",None)
+>     ]
+5a22,28
+>           attribute "ocaml.text"
+>             [
+>               structure_item (fan.ml[55,1899+0]..[58,2029+3])
+>                 Pstr_eval
+>                 expression (fan.ml[55,1899+0]..[58,2029+3])
+>                   Pexp_constant Const_string(" The first argument is file name\n    we dispatch different functions based on the filename extension\n    handle the file name \n ",None)
+>             ]
+8,11c31,33
+<         expression (fan.ml[60,2034+13]..[105,3405+5])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (fan.ml[60,2034+13]..[105,3405+5]) ghost
+>           Pexp_fun ""
+>           None
+26c48
+<               expression (fan.ml[60,2034+65]..[105,3405+5])
+---
+>           expression (fan.ml[60,2034+65]..[105,3405+5]) ghost
+30c52
+<                   expression (fan.ml[63,2118+5]..[64,2145+56])
+---
+>               expression (fan.ml[63,2118+4]..[64,2145+57])
+48c70
+<                       expression (fan.ml[64,2145+6]..[64,2145+56])
+---
+>                   expression (fan.ml[64,2145+49]..[64,2145+55])
+58c80
+<                   expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>               expression (fan.ml[67,2212+4]..[104,3337+67])
+60c82
+<                     expression (fan.ml[67,2212+5]..[69,2297+13])
+---
+>                 expression (fan.ml[67,2212+4]..[69,2297+14])
+96c118
+<                     expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>                 expression (fan.ml[72,2315+4]..[104,3337+67])
+104,107c126,128
+<                             expression (fan.ml[72,2315+19]..[72,2315+22])
+<                               Pexp_function
+<                               [
+<                                 <case>
+---
+>                         expression (fan.ml[72,2315+14]..[72,2315+73])
+>                           Pexp_fun ""
+>                           None
+119c140
+<                                         expression (fan.ml[72,2315+58]..[72,2315+71])
+---
+>                                 expression (fan.ml[72,2315+57]..[72,2315+72])
+129d149
+<                               ]
+137c157
+<                       expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>                   expression (fan.ml[73,2406+4]..[104,3337+67])
+154c174
+<                         expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>                     expression (fan.ml[75,2453+4]..[104,3337+67])
+180,183c200,202
+<                                           expression (fan.ml[78,2520+29]..[78,2520+30])
+<                                             Pexp_function
+<                                             [
+<                                               <case>
+---
+>                                       expression (fan.ml[78,2520+24]..[79,2574+53])
+>                                         Pexp_fun ""
+>                                         None
+186,189c205,207
+<                                                 expression (fan.ml[78,2520+31]..[78,2520+50])
+<                                                   Pexp_function
+<                                                   [
+<                                                     <case>
+---
+>                                         expression (fan.ml[78,2520+31]..[79,2574+52]) ghost
+>                                           Pexp_fun ""
+>                                           None
+217,219c235
+<                                       ]
+<                                 ]
+<                               expression (fan.ml[76,2482+6]..[81,2644+9])
+---
+>                           expression (fan.ml[80,2629+8]..[80,2629+14])
+232c248
+<                           expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>                       expression (fan.ml[83,2667+4]..[104,3337+67])
+234c250
+<                             expression (fan.ml[83,2667+5]..[92,2966+11])
+---
+>                         expression (fan.ml[83,2667+4]..[92,2966+13])
+311c327
+<                                       expression (fan.ml[89,2864+8]..[92,2966+11])
+---
+>                                   expression (fan.ml[91,2923+10]..[91,2923+42])
+327c343
+<                             expression (fan.ml[61,2109+2]..[105,3405+5])
+---
+>                         expression (fan.ml[95,2987+4]..[104,3337+67])
+349c365
+<                                     expression (fan.ml[100,3141+7]..[104,3337+66])
+---
+>                                 expression (fan.ml[98,3101+6]..[104,3337+67])
+423c439
+<                                                           expression (fan.ml[104,3337+19]..[104,3337+65])
+---
+>                                                       expression (fan.ml[104,3337+18]..[104,3337+66])
+426c442
+<                                                               expression (fan.ml[104,3337+28]..[104,3337+64])
+---
+>                                                           expression (fan.ml[104,3337+27]..[104,3337+65])
+444d459
+<     ]
+447c462
+<   structure_item (fan.ml[113,3446+4]..[132,4149+5])
+---
+>   structure_item (fan.ml[113,3446+0]..[132,4149+5])
+457,458c472,473
+<             expression (fan.ml[123,3742+30]..[123,3742+35])
+<               Pexp_construct "::" (fan.ml[123,3742+30]..[123,3742+35])
+---
+>             expression (fan.ml[123,3742+28]..[123,3742+36])
+>               Pexp_construct "::" (fan.ml[123,3742+30]..[123,3742+36]) ghost
+460c475
+<                 expression (fan.ml[123,3742+30]..[123,3742+35])
+---
+>                 expression (fan.ml[123,3742+30]..[123,3742+36]) ghost
+465,466c480,481
+<                     expression (fan.ml[123,3742+30]..[123,3742+35])
+<                       Pexp_construct "[]" (fan.ml[123,3742+30]..[123,3742+35])
+---
+>                     expression (fan.ml[123,3742+35]..[123,3742+36]) ghost
+>                       Pexp_construct "[]" (fan.ml[123,3742+35]..[123,3742+36]) ghost
+470c485
+<       expression (fan.ml[114,3454+2]..[132,4149+5])
+---
+>       expression (fan.ml[129,4016+4]..[131,4081+67])
+480c495
+<                   Pexp_open Fresh ""Term" (fan.ml[129,4016+15]..[129,4016+21])"
+---
+>                   Pexp_open Fresh ""Term" (fan.ml[129,4016+15]..[129,4016+19])"
+487c502
+<                         expression (fan.ml[130,4042+24]..[130,4042+37])
+---
+>                         expression (fan.ml[130,4042+23]..[130,4042+38])

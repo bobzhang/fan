@@ -1,0 +1,85 @@
+2a3,10
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan_top.ml[]..[])
+>         Pstr_eval
+>         expression (fan_top.ml[]..[])
+>           Pexp_constant Const_string(" FIXME a better register mode ",None)
+>     ]
+>   structure_item (fan_top.ml[]..[])
+5a14,20
+>           attribute "ocaml.text"
+>             [
+>               structure_item (fan_top.ml[]..[])
+>                 Pstr_eval
+>                 expression (fan_top.ml[]..[])
+>                   Pexp_constant Const_string(" FIXME a better register mode ",None)
+>             ]
+41,43c56,57
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+74d87
+<     ]
+82,84c95,96
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+134a147,153
+>   structure_item (fan_top.ml[]..[])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan_top.ml[]..[])
+>         Pstr_eval
+>         expression (fan_top.ml[]..[])
+>           Pexp_constant Const_string(" For fan's js toplevel ",None)
+156,158c175,176
+<                   Pexp_function
+<                   [
+<                     <case>
+---
+>                   Pexp_fun ""
+>                   None
+173d190
+<         ]
+192,194c209,210
+<                     Pexp_function
+<                     [
+<                       <case>
+---
+>                     Pexp_fun ""
+>                     None
+209d224
+<           ]
+228,230c243,244
+<                       Pexp_function
+<                       [
+<                         <case>
+---
+>                       Pexp_fun ""
+>                       None
+254d267
+<             ]
+267,269c280,281
+<                     Pexp_function
+<                     [
+<                       <case>
+---
+>                     Pexp_fun ""
+>                     None
+273,275c285,286
+<                           Pexp_function
+<                           [
+<                             <case>
+---
+>                       Pexp_fun ""
+>                       None
+297,298d307
+<                     ]
+<               ]

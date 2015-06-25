@@ -1,0 +1,1831 @@
+[
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_string" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "StdFan.pp_print_string" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_vid'" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "Objs.pp_print_vid'" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_vid" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "Objs.pp_print_vid" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_alident" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "Objs.pp_print_alident" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_ant" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "Objs.pp_print_ant" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "fprintf" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_open Fresh "Astf" (gram_pat.ml[]..[])
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_loc" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gram_pat.ml[]..[])
+                Ppat_var "_f" (gram_pat.ml[]..[])
+              expression (gram_pat.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gram_pat.ml[]..[])
+                      Ppat_var "_loc" (gram_pat.ml[]..[])
+                    expression (gram_pat.ml[]..[])
+                      Pexp_construct "()" (gram_pat.ml[]..[])
+                      None
+                ]
+          ]
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_class
+    [
+      class_declaration (gram_pat.ml[]..[])
+        pci_virt = Concrete
+        pci_params =
+          []
+        pci_name = "mapbase" (gram_pat.ml[]..[])
+        pci_expr =
+          class_expr (gram_pat.ml[]..[])
+            Pcl_structure
+            class_structure
+              pattern (gram_pat.ml[]..[]) 
+                Ppat_any
+              [
+                class_field (gram_pat.ml[]..[])
+                  Pcf_method Public
+                    "loc" (gram_pat.ml[]..[])
+                    Concrete Fresh
+                    expression (gram_pat.ml[]..[]) 
+                      Pexp_poly
+                      expression (gram_pat.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_constraint
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "x" (gram_pat.ml[]..[])
+                              core_type (gram_pat.ml[]..[])
+                                Ptyp_constr "loc" (gram_pat.ml[]..[])
+                                []
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "x" (gram_pat.ml[]..[])
+                        ]
+                      None
+                class_field (gram_pat.ml[]..[])
+                  Pcf_method Public
+                    "string" (gram_pat.ml[]..[])
+                    Concrete Fresh
+                    expression (gram_pat.ml[]..[]) 
+                      Pexp_poly
+                      expression (gram_pat.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_constraint
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "x" (gram_pat.ml[]..[])
+                              core_type (gram_pat.ml[]..[])
+                                Ptyp_constr "string" (gram_pat.ml[]..[])
+                                []
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "x" (gram_pat.ml[]..[])
+                        ]
+                      None
+                class_field (gram_pat.ml[]..[])
+                  Pcf_method Public
+                    "ant" (gram_pat.ml[]..[])
+                    Concrete Fresh
+                    expression (gram_pat.ml[]..[]) 
+                      Pexp_poly
+                      expression (gram_pat.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_constraint
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "x" (gram_pat.ml[]..[])
+                              core_type (gram_pat.ml[]..[])
+                                Ptyp_constr "ant" (gram_pat.ml[]..[])
+                                []
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "x" (gram_pat.ml[]..[])
+                        ]
+                      None
+              ]
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "lident" (gram_pat.ml[]..[]) (gram_pat.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (gram_pat.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Lid" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "string" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+              ]
+              None
+      type_declaration "t" (gram_pat.ml[]..[]) (gram_pat.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (gram_pat.ml[]..[])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Vrn" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "string" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "App" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "t" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "t" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Lid" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "string" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rinherit
+                  core_type (gram_pat.ml[]..[])
+                    Ptyp_constr "ant" (gram_pat.ml[]..[])
+                    []
+                Rtag "Com" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "t" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "t" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Alias" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "t" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "lident" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Str" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_tuple
+                      [
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "loc" (gram_pat.ml[]..[])
+                          []
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "string" (gram_pat.ml[]..[])
+                          []
+                      ]
+                  ]
+                Rtag "Any" false
+                  [
+                    core_type (gram_pat.ml[]..[])
+                      Ptyp_constr "loc" (gram_pat.ml[]..[])
+                      []
+                  ]
+              ]
+              None
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_class
+    [
+      class_declaration (gram_pat.ml[]..[])
+        pci_virt = Concrete
+        pci_params =
+          []
+        pci_name = "map" (gram_pat.ml[]..[])
+        pci_expr =
+          class_expr (gram_pat.ml[]..[])
+            Pcl_structure
+            class_structure
+              pattern (gram_pat.ml[]..[])
+                Ppat_constraint
+                pattern (gram_pat.ml[]..[])
+                  Ppat_var "self" (gram_pat.ml[]..[])
+                core_type (gram_pat.ml[]..[])
+                  Ptyp_var self_type
+              [
+                class_field (gram_pat.ml[]..[])
+                  Pcf_inherit Fresh
+                    class_expr (gram_pat.ml[]..[])
+                      Pcl_constr "mapbase" (gram_pat.ml[]..[])
+                      []
+                    None
+                class_field (gram_pat.ml[]..[])
+                  Pcf_method Public
+                    "lident" (gram_pat.ml[]..[])
+                    Concrete Fresh
+                    expression (gram_pat.ml[]..[]) 
+                      Pexp_poly
+                      expression (gram_pat.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Lid"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "string"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                        ]
+                      Some
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_arrow
+                          ""
+                          core_type (gram_pat.ml[]..[])
+                            Ptyp_constr "lident" (gram_pat.ml[]..[])
+                            []
+                          core_type (gram_pat.ml[]..[])
+                            Ptyp_constr "lident" (gram_pat.ml[]..[])
+                            []
+                class_field (gram_pat.ml[]..[])
+                  Pcf_method Public
+                    "t" (gram_pat.ml[]..[])
+                    Concrete Fresh
+                    expression (gram_pat.ml[]..[]) 
+                      Pexp_poly
+                      expression (gram_pat.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Vrn"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "string"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_variant "Vrn"
+                                  Some
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "App"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a2" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "t"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (gram_pat.ml[]..[])
+                                        Ppat_var "_a2" (gram_pat.ml[]..[])
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_apply
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_send "t"
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "self" (gram_pat.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (gram_pat.ml[]..[])
+                                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                                  ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_variant "App"
+                                    Some
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Lid"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "string"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_alias "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_type
+                                "ant" (gram_pat.ml[]..[])
+                            expression (gram_pat.ml[]..[]) 
+                              Pexp_coerce
+                              expression (gram_pat.ml[]..[])
+                                Pexp_apply
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_send "ant"
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_ident "self" (gram_pat.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                ]
+                              Some
+                                core_type (gram_pat.ml[]..[])
+                                  Ptyp_constr "ant" (gram_pat.ml[]..[])
+                                  []
+                              core_type (gram_pat.ml[]..[])
+                                Ptyp_constr "t" (gram_pat.ml[]..[])
+                                []
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Com"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a2" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "t"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (gram_pat.ml[]..[])
+                                        Ppat_var "_a2" (gram_pat.ml[]..[])
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_apply
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_send "t"
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "self" (gram_pat.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (gram_pat.ml[]..[])
+                                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                                  ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_variant "Com"
+                                    Some
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Alias"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a2" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "t"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (gram_pat.ml[]..[])
+                                        Ppat_var "_a2" (gram_pat.ml[]..[])
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_apply
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_send "lident"
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "self" (gram_pat.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (gram_pat.ml[]..[])
+                                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                                  ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_variant "Alias"
+                                    Some
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_tuple
+                                        [
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a2" (gram_pat.ml[]..[])
+                                        ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Str"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a0" (gram_pat.ml[]..[])
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                  ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (gram_pat.ml[]..[])
+                                      Ppat_var "_a1" (gram_pat.ml[]..[])
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_send "string"
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "self" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                                ]
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_variant "Str"
+                                  Some
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a1" (gram_pat.ml[]..[])
+                                      ]
+                          <case>
+                            pattern (gram_pat.ml[]..[])
+                              Ppat_variant "Any"
+                              Some
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_var "_a0" (gram_pat.ml[]..[])
+                            expression (gram_pat.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_a0" (gram_pat.ml[]..[])
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_send "loc"
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "self" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "_a0" (gram_pat.ml[]..[])
+                                    ]
+                              ]
+                              expression (gram_pat.ml[]..[])
+                                Pexp_variant "Any"
+                                Some
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_ident "_a0" (gram_pat.ml[]..[])
+                        ]
+                      Some
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_arrow
+                          ""
+                          core_type (gram_pat.ml[]..[])
+                            Ptyp_constr "t" (gram_pat.ml[]..[])
+                            []
+                          core_type (gram_pat.ml[]..[])
+                            Ptyp_constr "t" (gram_pat.ml[]..[])
+                            []
+              ]
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_lident" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[]) 
+          Pexp_constraint
+          expression (gram_pat.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (gram_pat.ml[]..[])
+                  Ppat_var "fmt" (gram_pat.ml[]..[])
+                expression (gram_pat.ml[]..[])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Lid"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Lid@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_string" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                        ]
+                  ]
+            ]
+          core_type (gram_pat.ml[]..[])
+            Ptyp_arrow
+            ""
+            core_type (gram_pat.ml[]..[])
+              Ptyp_constr "Format.formatter" (gram_pat.ml[]..[])
+              []
+            core_type (gram_pat.ml[]..[])
+              Ptyp_arrow
+              ""
+              core_type (gram_pat.ml[]..[])
+                Ptyp_constr "lident" (gram_pat.ml[]..[])
+                []
+              core_type (gram_pat.ml[]..[])
+                Ptyp_constr "unit" (gram_pat.ml[]..[])
+                []
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "pp_print_t" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[]) 
+          Pexp_constraint
+          expression (gram_pat.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (gram_pat.ml[]..[])
+                  Ppat_var "fmt" (gram_pat.ml[]..[])
+                expression (gram_pat.ml[]..[])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Vrn"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Vrn@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_string" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "App"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a2" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`App@ %a@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Lid"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Lid@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_string" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_alias "_a0" (gram_pat.ml[]..[])
+                        pattern (gram_pat.ml[]..[])
+                          Ppat_type
+                          "ant" (gram_pat.ml[]..[])
+                      expression (gram_pat.ml[]..[]) 
+                        Pexp_coerce
+                        expression (gram_pat.ml[]..[])
+                          Pexp_apply
+                          expression (gram_pat.ml[]..[])
+                            Pexp_ident "pp_print_ant" (gram_pat.ml[]..[])
+                          [
+                            <label> ""
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "fmt" (gram_pat.ml[]..[])
+                            <label> ""
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          ]
+                        None
+                        core_type (gram_pat.ml[]..[])
+                          Ptyp_constr "unit" (gram_pat.ml[]..[])
+                          []
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Com"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a2" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Com@ %a@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Alias"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a2" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Alias@ %a@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_lident" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a2" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Str"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a0" (gram_pat.ml[]..[])
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_var "_a1" (gram_pat.ml[]..[])
+                            ]
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Str@ %a@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_string" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a1" (gram_pat.ml[]..[])
+                        ]
+                    <case>
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_variant "Any"
+                        Some
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_var "_a0" (gram_pat.ml[]..[])
+                      expression (gram_pat.ml[]..[])
+                        Pexp_apply
+                        expression (gram_pat.ml[]..[])
+                          Pexp_ident "Format.fprintf" (gram_pat.ml[]..[])
+                        [
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "fmt" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_constant Const_string("@[<1>(`Any@ %a)@]",None)
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "pp_print_loc" (gram_pat.ml[]..[])
+                          <label> ""
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "_a0" (gram_pat.ml[]..[])
+                        ]
+                  ]
+            ]
+          core_type (gram_pat.ml[]..[])
+            Ptyp_arrow
+            ""
+            core_type (gram_pat.ml[]..[])
+              Ptyp_constr "Format.formatter" (gram_pat.ml[]..[])
+              []
+            core_type (gram_pat.ml[]..[])
+              Ptyp_arrow
+              ""
+              core_type (gram_pat.ml[]..[])
+                Ptyp_constr "t" (gram_pat.ml[]..[])
+                []
+              core_type (gram_pat.ml[]..[])
+                Ptyp_constr "unit" (gram_pat.ml[]..[])
+                []
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "wildcarder" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_object
+          class_structure
+            pattern (gram_pat.ml[]..[])
+              Ppat_var "self" (gram_pat.ml[]..[])
+            [
+              class_field (gram_pat.ml[]..[])
+                Pcf_inherit Fresh
+                  class_expr (gram_pat.ml[]..[])
+                    Pcl_constr "map" (gram_pat.ml[]..[])
+                    []
+                  Some
+                    "super"
+              class_field (gram_pat.ml[]..[])
+                Pcf_method Public
+                  "t" (gram_pat.ml[]..[])
+                  Concrete Override
+                  expression (gram_pat.ml[]..[]) 
+                    Pexp_poly
+                    expression (gram_pat.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Lid"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_loc" (gram_pat.ml[]..[])
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_variant "Any"
+                            Some
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "_loc" (gram_pat.ml[]..[])
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Alias"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "_loc" (gram_pat.ml[]..[])
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "p" (gram_pat.ml[]..[])
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_send "t"
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "self" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "p" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_var "p" (gram_pat.ml[]..[])
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_send "t"
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "super" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "p" (gram_pat.ml[]..[])
+                            ]
+                      ]
+                    None
+            ]
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "p" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_ident "fprintf" (gram_pat.ml[]..[])
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "unparse" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (gram_pat.ml[]..[])
+                Ppat_var "f" (gram_pat.ml[]..[])
+              expression (gram_pat.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gram_pat.ml[]..[])
+                      Ppat_constraint
+                      pattern (gram_pat.ml[]..[])
+                        Ppat_var "x" (gram_pat.ml[]..[])
+                      core_type (gram_pat.ml[]..[])
+                        Ptyp_constr "t" (gram_pat.ml[]..[])
+                        []
+                    expression (gram_pat.ml[]..[])
+                      Pexp_match
+                      expression (gram_pat.ml[]..[])
+                        Pexp_ident "x" (gram_pat.ml[]..[])
+                      [
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Vrn"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "s" (gram_pat.ml[]..[])
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("`%s",None)
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "s" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "App"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_any
+                          expression (gram_pat.ml[]..[])
+                            Pexp_let Nonrec
+                            [
+                              <def>
+                                pattern (gram_pat.ml[]..[])
+                                  Ppat_var "l" (gram_pat.ml[]..[])
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_apply
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_ident "Ast_basic.list_of_app" (gram_pat.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "x" (gram_pat.ml[]..[])
+                                    <label> ""
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_construct "[]" (gram_pat.ml[]..[])
+                                        None
+                                  ]
+                            ]
+                            expression (gram_pat.ml[]..[])
+                              Pexp_match
+                              expression (gram_pat.ml[]..[])
+                                Pexp_ident "l" (gram_pat.ml[]..[])
+                              [
+                                <case>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_construct "::" (gram_pat.ml[]..[])
+                                    Some
+                                      pattern (gram_pat.ml[]..[]) 
+                                        Ppat_tuple
+                                        [
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_alias "x" (gram_pat.ml[]..[])
+                                            pattern (gram_pat.ml[]..[])
+                                              Ppat_variant "Vrn"
+                                              Some
+                                                pattern (gram_pat.ml[]..[])
+                                                  Ppat_any
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_construct "[]" (gram_pat.ml[]..[])
+                                            None
+                                        ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_ident "unparse" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "f" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "x" (gram_pat.ml[]..[])
+                                    ]
+                                <case>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_construct "::" (gram_pat.ml[]..[])
+                                    Some
+                                      pattern (gram_pat.ml[]..[]) 
+                                        Ppat_tuple
+                                        [
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_alias "x" (gram_pat.ml[]..[])
+                                            pattern (gram_pat.ml[]..[])
+                                              Ppat_variant "Vrn"
+                                              Some
+                                                pattern (gram_pat.ml[]..[])
+                                                  Ppat_any
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_construct "::" (gram_pat.ml[]..[])
+                                            Some
+                                              pattern (gram_pat.ml[]..[]) 
+                                                Ppat_tuple
+                                                [
+                                                  pattern (gram_pat.ml[]..[])
+                                                    Ppat_var "v" (gram_pat.ml[]..[])
+                                                  pattern (gram_pat.ml[]..[])
+                                                    Ppat_construct "[]" (gram_pat.ml[]..[])
+                                                    None
+                                                ]
+                                        ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_ident "p" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "f" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_constant Const_string("%a %a",None)
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "unparse" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "x" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "unparse" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "v" (gram_pat.ml[]..[])
+                                    ]
+                                <case>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_construct "::" (gram_pat.ml[]..[])
+                                    Some
+                                      pattern (gram_pat.ml[]..[]) 
+                                        Ppat_tuple
+                                        [
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_alias "x" (gram_pat.ml[]..[])
+                                            pattern (gram_pat.ml[]..[])
+                                              Ppat_variant "Vrn"
+                                              Some
+                                                pattern (gram_pat.ml[]..[])
+                                                  Ppat_any
+                                          pattern (gram_pat.ml[]..[])
+                                            Ppat_var "rest" (gram_pat.ml[]..[])
+                                        ]
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_apply
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_ident "p" (gram_pat.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "f" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_constant Const_string("%a (%a)",None)
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "unparse" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "x" (gram_pat.ml[]..[])
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_apply
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "Formatf.pp_list" (gram_pat.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (gram_pat.ml[]..[])
+                                                Pexp_ident "unparse" (gram_pat.ml[]..[])
+                                            <label> "sep"
+                                              expression (gram_pat.ml[]..[])
+                                                Pexp_constant Const_string(",",None)
+                                          ]
+                                      <label> ""
+                                        expression (gram_pat.ml[]..[])
+                                          Pexp_ident "rest" (gram_pat.ml[]..[])
+                                    ]
+                                <case>
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_sequence
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "p" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "Format.err_formatter" (gram_pat.ml[]..[])
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_constant Const_string("impossible pattern %a@.",None)
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "pp_print_t" (gram_pat.ml[]..[])
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_ident "x" (gram_pat.ml[]..[])
+                                      ]
+                                    expression (gram_pat.ml[]..[])
+                                      Pexp_apply
+                                      expression (gram_pat.ml[]..[])
+                                        Pexp_ident "invalid_arg" (gram_pat.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (gram_pat.ml[]..[])
+                                            Pexp_constant Const_string("unparse",None)
+                                      ]
+                              ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Com"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "a" (gram_pat.ml[]..[])
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "b" (gram_pat.ml[]..[])
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("%a, %a",None)
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "unparse" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "a" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "unparse" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "b" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Alias"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "p" (gram_pat.ml[]..[])
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "unparse" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "p" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Str"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "s" (gram_pat.ml[]..[])
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("%S",None)
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "s" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Any"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_any
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("_",None)
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Lid"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "s" (gram_pat.ml[]..[])
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("%s",None)
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "s" (gram_pat.ml[]..[])
+                            ]
+                        <case>
+                          pattern (gram_pat.ml[]..[])
+                            Ppat_variant "Ant"
+                            Some
+                              pattern (gram_pat.ml[]..[])
+                                Ppat_tuple
+                                [
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_any
+                                  pattern (gram_pat.ml[]..[])
+                                    Ppat_var "x" (gram_pat.ml[]..[])
+                                ]
+                          expression (gram_pat.ml[]..[])
+                            Pexp_apply
+                            expression (gram_pat.ml[]..[])
+                              Pexp_ident "p" (gram_pat.ml[]..[])
+                            [
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_ident "f" (gram_pat.ml[]..[])
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_constant Const_string("$%s",None)
+                              <label> ""
+                                expression (gram_pat.ml[]..[])
+                                  Pexp_field
+                                  expression (gram_pat.ml[]..[])
+                                    Pexp_ident "x" (gram_pat.ml[]..[])
+                                  "txt" (gram_pat.ml[]..[])
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gram_pat.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gram_pat.ml[]..[])
+          Ppat_var "to_string" (gram_pat.ml[]..[])
+        expression (gram_pat.ml[]..[])
+          Pexp_apply
+          expression (gram_pat.ml[]..[])
+            Pexp_ident "Formatf.to_string" (gram_pat.ml[]..[])
+          [
+            <label> ""
+              expression (gram_pat.ml[]..[])
+                Pexp_ident "unparse" (gram_pat.ml[]..[])
+          ]
+    ]
+]

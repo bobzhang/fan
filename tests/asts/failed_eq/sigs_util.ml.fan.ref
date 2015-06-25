@@ -1,0 +1,1692 @@
+[
+  structure_item (sigs_util.ml[1,0+0]..[1,0+14])
+    Pstr_open Fresh "Astn_util" (sigs_util.ml[1,0+5]..[1,0+14])
+  structure_item (sigs_util.ml[2,15+0]..[2,15+10])
+    Pstr_open Fresh "Astfn" (sigs_util.ml[2,15+5]..[2,15+10])
+  structure_item (sigs_util.ml[3,26+0]..[3,26+11])
+    Pstr_open Fresh "StdFan" (sigs_util.ml[3,26+5]..[3,26+11])
+  structure_item (sigs_util.ml[4,38+0]..[4,38+47])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[4,38+4]..[4,38+21])
+          Ppat_var "pp_print_typedecl" (sigs_util.ml[4,38+4]..[4,38+21])
+        expression (sigs_util.ml[4,38+24]..[4,38+47])
+          Pexp_ident "ObjsN.pp_print_typedecl" (sigs_util.ml[4,38+24]..[4,38+47])
+    ]
+  structure_item (sigs_util.ml[5,86+0]..[8,217+22])
+    Pstr_type
+    [
+      type_declaration "named_type" (sigs_util.ml[5,86+5]..[5,86+15]) (sigs_util.ml[5,86+5]..[5,86+36])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (sigs_util.ml[5,86+18]..[5,86+36])
+              Ptyp_tuple
+              [
+                core_type (sigs_util.ml[5,86+19]..[5,86+25])
+                  Ptyp_constr "string" (sigs_util.ml[5,86+19]..[5,86+25])
+                  []
+                core_type (sigs_util.ml[5,86+27]..[5,86+35])
+                  Ptyp_constr "typedecl" (sigs_util.ml[5,86+27]..[5,86+35])
+                  []
+              ]
+      type_declaration "and_types" (sigs_util.ml[6,123+4]..[6,123+13]) (sigs_util.ml[6,123+4]..[6,123+31])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (sigs_util.ml[6,123+16]..[6,123+31])
+              Ptyp_constr "list" (sigs_util.ml[6,123+27]..[6,123+31])
+              [
+                core_type (sigs_util.ml[6,123+16]..[6,123+26])
+                  Ptyp_constr "named_type" (sigs_util.ml[6,123+16]..[6,123+26])
+                  []
+              ]
+      type_declaration "types" (sigs_util.ml[7,155+4]..[7,155+9]) (sigs_util.ml[7,155+4]..[7,155+61])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (sigs_util.ml[7,155+12]..[7,155+61])
+              Ptyp_variant closed=Closed
+              [
+                Rtag "Mutual" false
+                  [
+                    core_type (sigs_util.ml[7,155+25]..[7,155+34])
+                      Ptyp_constr "and_types" (sigs_util.ml[7,155+25]..[7,155+34])
+                      []
+                  ]
+                Rtag "Single" false
+                  [
+                    core_type (sigs_util.ml[7,155+49]..[7,155+59])
+                      Ptyp_constr "named_type" (sigs_util.ml[7,155+49]..[7,155+59])
+                      []
+                  ]
+              ]
+              None
+      type_declaration "mtyps" (sigs_util.ml[8,217+4]..[8,217+9]) (sigs_util.ml[8,217+4]..[8,217+22])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (sigs_util.ml[8,217+12]..[8,217+22])
+              Ptyp_constr "list" (sigs_util.ml[8,217+18]..[8,217+22])
+              [
+                core_type (sigs_util.ml[8,217+12]..[8,217+17])
+                  Ptyp_constr "types" (sigs_util.ml[8,217+12]..[8,217+17])
+                  []
+              ]
+    ]
+  structure_item (sigs_util.ml[9,240+0]..[32,1106+76])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (sigs_util.ml[9,240+8]..[9,240+27])
+          Ppat_var "pp_print_named_type" (sigs_util.ml[9,240+8]..[9,240+27])
+        expression (sigs_util.ml[9,240+27]..[19,544+61])
+          Pexp_constraint
+          expression (sigs_util.ml[10,310+2]..[19,544+61])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[11,321+4]..[11,321+7])
+                  Ppat_var "fmt" (sigs_util.ml[11,321+4]..[11,321+7])
+                expression (sigs_util.ml[12,332+7]..[19,544+60])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (sigs_util.ml[13,348+9]..[13,348+12])
+                        Ppat_var "_a0" (sigs_util.ml[13,348+9]..[13,348+12])
+                      expression (sigs_util.ml[14,364+11]..[19,544+60])
+                        Pexp_apply
+                        expression (sigs_util.ml[14,364+13]..[19,544+50])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (sigs_util.ml[15,386+15]..[15,386+18])
+                                Ppat_var "fmt" (sigs_util.ml[15,386+15]..[15,386+18])
+                              expression (sigs_util.ml[16,408+18]..[19,544+49])
+                                Pexp_function
+                                [
+                                  <case>
+                                    pattern (sigs_util.ml[17,435+20]..[17,435+29])
+                                      Ppat_tuple
+                                      [
+                                        pattern (sigs_util.ml[17,435+21]..[17,435+24])
+                                          Ppat_var "_a0" (sigs_util.ml[17,435+21]..[17,435+24])
+                                        pattern (sigs_util.ml[17,435+25]..[17,435+28])
+                                          Ppat_var "_a1" (sigs_util.ml[17,435+25]..[17,435+28])
+                                      ]
+                                    expression (sigs_util.ml[18,468+22]..[19,544+49])
+                                      Pexp_apply
+                                      expression (sigs_util.ml[18,468+22]..[18,468+36])
+                                        Pexp_ident "Format.fprintf" (sigs_util.ml[18,468+22]..[18,468+36])
+                                      [
+                                        <label> ""
+                                          expression (sigs_util.ml[18,468+37]..[18,468+40])
+                                            Pexp_ident "fmt" (sigs_util.ml[18,468+37]..[18,468+40])
+                                        <label> ""
+                                          expression (sigs_util.ml[18,468+41]..[18,468+59])
+                                            Pexp_constant Const_string("@[<1>(%a,@,%a)@]",None)
+                                        <label> ""
+                                          expression (sigs_util.ml[18,468+60]..[18,468+75])
+                                            Pexp_ident "pp_print_string" (sigs_util.ml[18,468+60]..[18,468+75])
+                                        <label> ""
+                                          expression (sigs_util.ml[19,544+24]..[19,544+27])
+                                            Pexp_ident "_a0" (sigs_util.ml[19,544+24]..[19,544+27])
+                                        <label> ""
+                                          expression (sigs_util.ml[19,544+28]..[19,544+45])
+                                            Pexp_ident "pp_print_typedecl" (sigs_util.ml[19,544+28]..[19,544+45])
+                                        <label> ""
+                                          expression (sigs_util.ml[19,544+46]..[19,544+49])
+                                            Pexp_ident "_a1" (sigs_util.ml[19,544+46]..[19,544+49])
+                                      ]
+                                ]
+                          ]
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[19,544+53]..[19,544+56])
+                              Pexp_ident "fmt" (sigs_util.ml[19,544+53]..[19,544+56])
+                          <label> ""
+                            expression (sigs_util.ml[19,544+57]..[19,544+60])
+                              Pexp_ident "_a0" (sigs_util.ml[19,544+57]..[19,544+60])
+                        ]
+                  ]
+            ]
+          core_type (sigs_util.ml[9,240+29]..[9,240+67])
+            Ptyp_arrow
+            ""
+            core_type (sigs_util.ml[9,240+29]..[9,240+45])
+              Ptyp_constr "Format.formatter" (sigs_util.ml[9,240+29]..[9,240+45])
+              []
+            core_type (sigs_util.ml[9,240+49]..[9,240+67])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[9,240+49]..[9,240+59])
+                Ptyp_constr "named_type" (sigs_util.ml[9,240+49]..[9,240+59])
+                []
+              core_type (sigs_util.ml[9,240+63]..[9,240+67])
+                Ptyp_constr "unit" (sigs_util.ml[9,240+63]..[9,240+67])
+                []
+      <def>
+        pattern (sigs_util.ml[20,606+4]..[20,606+22])
+          Ppat_var "pp_print_and_types" (sigs_util.ml[20,606+4]..[20,606+22])
+        expression (sigs_util.ml[20,606+22]..[22,681+72])
+          Pexp_constraint
+          expression (sigs_util.ml[21,670+2]..[22,681+72])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[22,681+4]..[22,681+7])
+                  Ppat_var "fmt" (sigs_util.ml[22,681+4]..[22,681+7])
+                expression (sigs_util.ml[22,681+12]..[22,681+71])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (sigs_util.ml[22,681+23]..[22,681+26])
+                        Ppat_var "_a0" (sigs_util.ml[22,681+23]..[22,681+26])
+                      expression (sigs_util.ml[22,681+30]..[22,681+71])
+                        Pexp_apply
+                        expression (sigs_util.ml[22,681+30]..[22,681+43])
+                          Pexp_ident "pp_print_list" (sigs_util.ml[22,681+30]..[22,681+43])
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[22,681+44]..[22,681+63])
+                              Pexp_ident "pp_print_named_type" (sigs_util.ml[22,681+44]..[22,681+63])
+                          <label> ""
+                            expression (sigs_util.ml[22,681+64]..[22,681+67])
+                              Pexp_ident "fmt" (sigs_util.ml[22,681+64]..[22,681+67])
+                          <label> ""
+                            expression (sigs_util.ml[22,681+68]..[22,681+71])
+                              Pexp_ident "_a0" (sigs_util.ml[22,681+68]..[22,681+71])
+                        ]
+                  ]
+            ]
+          core_type (sigs_util.ml[20,606+24]..[20,606+61])
+            Ptyp_arrow
+            ""
+            core_type (sigs_util.ml[20,606+24]..[20,606+40])
+              Ptyp_constr "Format.formatter" (sigs_util.ml[20,606+24]..[20,606+40])
+              []
+            core_type (sigs_util.ml[20,606+44]..[20,606+61])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[20,606+44]..[20,606+53])
+                Ptyp_constr "and_types" (sigs_util.ml[20,606+44]..[20,606+53])
+                []
+              core_type (sigs_util.ml[20,606+57]..[20,606+61])
+                Ptyp_constr "unit" (sigs_util.ml[20,606+57]..[20,606+61])
+                []
+      <def>
+        pattern (sigs_util.ml[23,754+4]..[23,754+18])
+          Ppat_var "pp_print_types" (sigs_util.ml[23,754+4]..[23,754+18])
+        expression (sigs_util.ml[23,754+18]..[30,972+77])
+          Pexp_constraint
+          expression (sigs_util.ml[24,810+2]..[30,972+77])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[25,821+4]..[25,821+7])
+                  Ppat_var "fmt" (sigs_util.ml[25,821+4]..[25,821+7])
+                expression (sigs_util.ml[26,832+7]..[30,972+76])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (sigs_util.ml[27,848+9]..[27,848+20])
+                        Ppat_variant "Mutual"
+                        Some
+                          pattern (sigs_util.ml[27,848+17]..[27,848+20])
+                            Ppat_var "_a0" (sigs_util.ml[27,848+17]..[27,848+20])
+                      expression (sigs_util.ml[28,872+11]..[28,872+75])
+                        Pexp_apply
+                        expression (sigs_util.ml[28,872+11]..[28,872+25])
+                          Pexp_ident "Format.fprintf" (sigs_util.ml[28,872+11]..[28,872+25])
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[28,872+26]..[28,872+29])
+                              Pexp_ident "fmt" (sigs_util.ml[28,872+26]..[28,872+29])
+                          <label> ""
+                            expression (sigs_util.ml[28,872+30]..[28,872+52])
+                              Pexp_constant Const_string("@[<1>(`Mutual@ %a)@]",None)
+                          <label> ""
+                            expression (sigs_util.ml[28,872+53]..[28,872+71])
+                              Pexp_ident "pp_print_and_types" (sigs_util.ml[28,872+53]..[28,872+71])
+                          <label> ""
+                            expression (sigs_util.ml[28,872+72]..[28,872+75])
+                              Pexp_ident "_a0" (sigs_util.ml[28,872+72]..[28,872+75])
+                        ]
+                    <case>
+                      pattern (sigs_util.ml[29,948+9]..[29,948+20])
+                        Ppat_variant "Single"
+                        Some
+                          pattern (sigs_util.ml[29,948+17]..[29,948+20])
+                            Ppat_var "_a0" (sigs_util.ml[29,948+17]..[29,948+20])
+                      expression (sigs_util.ml[30,972+11]..[30,972+76])
+                        Pexp_apply
+                        expression (sigs_util.ml[30,972+11]..[30,972+25])
+                          Pexp_ident "Format.fprintf" (sigs_util.ml[30,972+11]..[30,972+25])
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[30,972+26]..[30,972+29])
+                              Pexp_ident "fmt" (sigs_util.ml[30,972+26]..[30,972+29])
+                          <label> ""
+                            expression (sigs_util.ml[30,972+30]..[30,972+52])
+                              Pexp_constant Const_string("@[<1>(`Single@ %a)@]",None)
+                          <label> ""
+                            expression (sigs_util.ml[30,972+53]..[30,972+72])
+                              Pexp_ident "pp_print_named_type" (sigs_util.ml[30,972+53]..[30,972+72])
+                          <label> ""
+                            expression (sigs_util.ml[30,972+73]..[30,972+76])
+                              Pexp_ident "_a0" (sigs_util.ml[30,972+73]..[30,972+76])
+                        ]
+                  ]
+            ]
+          core_type (sigs_util.ml[23,754+20]..[23,754+53])
+            Ptyp_arrow
+            ""
+            core_type (sigs_util.ml[23,754+20]..[23,754+36])
+              Ptyp_constr "Format.formatter" (sigs_util.ml[23,754+20]..[23,754+36])
+              []
+            core_type (sigs_util.ml[23,754+40]..[23,754+53])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[23,754+40]..[23,754+45])
+                Ptyp_constr "types" (sigs_util.ml[23,754+40]..[23,754+45])
+                []
+              core_type (sigs_util.ml[23,754+49]..[23,754+53])
+                Ptyp_constr "unit" (sigs_util.ml[23,754+49]..[23,754+53])
+                []
+      <def>
+        pattern (sigs_util.ml[31,1050+4]..[31,1050+18])
+          Ppat_var "pp_print_mtyps" (sigs_util.ml[31,1050+4]..[31,1050+18])
+        expression (sigs_util.ml[31,1050+18]..[32,1106+76])
+          Pexp_constraint
+          expression (sigs_util.ml[32,1106+2]..[32,1106+76])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[32,1106+13]..[32,1106+16])
+                  Ppat_var "fmt" (sigs_util.ml[32,1106+13]..[32,1106+16])
+                expression (sigs_util.ml[32,1106+21]..[32,1106+75])
+                  Pexp_function
+                  [
+                    <case>
+                      pattern (sigs_util.ml[32,1106+32]..[32,1106+35])
+                        Ppat_var "_a0" (sigs_util.ml[32,1106+32]..[32,1106+35])
+                      expression (sigs_util.ml[32,1106+39]..[32,1106+75])
+                        Pexp_apply
+                        expression (sigs_util.ml[32,1106+39]..[32,1106+52])
+                          Pexp_ident "pp_print_list" (sigs_util.ml[32,1106+39]..[32,1106+52])
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[32,1106+53]..[32,1106+67])
+                              Pexp_ident "pp_print_types" (sigs_util.ml[32,1106+53]..[32,1106+67])
+                          <label> ""
+                            expression (sigs_util.ml[32,1106+68]..[32,1106+71])
+                              Pexp_ident "fmt" (sigs_util.ml[32,1106+68]..[32,1106+71])
+                          <label> ""
+                            expression (sigs_util.ml[32,1106+72]..[32,1106+75])
+                              Pexp_ident "_a0" (sigs_util.ml[32,1106+72]..[32,1106+75])
+                        ]
+                  ]
+            ]
+          core_type (sigs_util.ml[31,1050+20]..[31,1050+53])
+            Ptyp_arrow
+            ""
+            core_type (sigs_util.ml[31,1050+20]..[31,1050+36])
+              Ptyp_constr "Format.formatter" (sigs_util.ml[31,1050+20]..[31,1050+36])
+              []
+            core_type (sigs_util.ml[31,1050+40]..[31,1050+53])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[31,1050+40]..[31,1050+45])
+                Ptyp_constr "mtyps" (sigs_util.ml[31,1050+40]..[31,1050+45])
+                []
+              core_type (sigs_util.ml[31,1050+49]..[31,1050+53])
+                Ptyp_constr "unit" (sigs_util.ml[31,1050+49]..[31,1050+53])
+                []
+    ]
+  structure_item (sigs_util.ml[33,1183+0]..[33,1183+25])
+    Pstr_type
+    [
+      type_declaration "plugin_name" (sigs_util.ml[33,1183+5]..[33,1183+16]) (sigs_util.ml[33,1183+5]..[33,1183+25])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (sigs_util.ml[33,1183+19]..[33,1183+25])
+              Ptyp_constr "string" (sigs_util.ml[33,1183+19]..[33,1183+25])
+              []
+    ]
+  structure_item (sigs_util.ml[34,1209+0]..[38,1289+35])
+    Pstr_type
+    [
+      type_declaration "plugin" (sigs_util.ml[34,1209+5]..[34,1209+11]) (sigs_util.ml[34,1209+5]..[38,1289+35])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_record
+            [
+              (sigs_util.ml[36,1227+2]..[36,1227+33])
+                Immutable
+                "transform" (sigs_util.ml[36,1227+2]..[36,1227+11])                core_type (sigs_util.ml[36,1227+13]..[36,1227+33])
+                  Ptyp_poly
+                  core_type (sigs_util.ml[36,1227+13]..[36,1227+33])
+                    Ptyp_arrow
+                    ""
+                    core_type (sigs_util.ml[36,1227+13]..[36,1227+18])
+                      Ptyp_constr "mtyps" (sigs_util.ml[36,1227+13]..[36,1227+18])
+                      []
+                    core_type (sigs_util.ml[36,1227+22]..[36,1227+33])
+                      Ptyp_constr "option" (sigs_util.ml[36,1227+27]..[36,1227+33])
+                      [
+                        core_type (sigs_util.ml[36,1227+22]..[36,1227+26])
+                          Ptyp_constr "stru" (sigs_util.ml[36,1227+22]..[36,1227+26])
+                          []
+                      ]
+              (sigs_util.ml[37,1262+2]..[37,1262+25])
+                Immutable
+                "position" (sigs_util.ml[37,1262+2]..[37,1262+10])                core_type (sigs_util.ml[37,1262+12]..[37,1262+25])
+                  Ptyp_poly
+                  core_type (sigs_util.ml[37,1262+12]..[37,1262+25])
+                    Ptyp_constr "option" (sigs_util.ml[37,1262+19]..[37,1262+25])
+                    [
+                      core_type (sigs_util.ml[37,1262+12]..[37,1262+18])
+                        Ptyp_constr "string" (sigs_util.ml[37,1262+12]..[37,1262+18])
+                        []
+                    ]
+              (sigs_util.ml[38,1289+2]..[38,1289+33])
+                Immutable
+                "filter" (sigs_util.ml[38,1289+2]..[38,1289+8])                core_type (sigs_util.ml[38,1289+10]..[38,1289+33])
+                  Ptyp_poly
+                  core_type (sigs_util.ml[38,1289+10]..[38,1289+33])
+                    Ptyp_constr "option" (sigs_util.ml[38,1289+27]..[38,1289+33])
+                    [
+                      core_type (sigs_util.ml[38,1289+11]..[38,1289+25])
+                        Ptyp_arrow
+                        ""
+                        core_type (sigs_util.ml[38,1289+11]..[38,1289+17])
+                          Ptyp_constr "string" (sigs_util.ml[38,1289+11]..[38,1289+17])
+                          []
+                        core_type (sigs_util.ml[38,1289+21]..[38,1289+25])
+                          Ptyp_constr "bool" (sigs_util.ml[38,1289+21]..[38,1289+25])
+                          []
+                    ]
+            ]
+        ptype_private = Public
+        ptype_manifest =
+          None
+    ]
+  structure_item (sigs_util.ml[39,1325+0]..[56,1871+42])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[39,1325+4]..[39,1325+16])
+          Ppat_var "apply_filter" (sigs_util.ml[39,1325+4]..[39,1325+16])
+        expression (sigs_util.ml[40,1344+2]..[56,1871+42])
+          Pexp_function
+          [
+            <case>
+              pattern (sigs_util.ml[41,1355+4]..[41,1355+5])
+                Ppat_var "f" (sigs_util.ml[41,1355+4]..[41,1355+5])
+              expression (sigs_util.ml[42,1364+7]..[56,1871+41])
+                Pexp_function
+                [
+                  <case>
+                    pattern (sigs_util.ml[43,1380+9]..[43,1380+20])
+                      Ppat_constraint
+                      pattern (sigs_util.ml[43,1380+10]..[43,1380+11])
+                        Ppat_var "m" (sigs_util.ml[43,1380+10]..[43,1380+11])
+                      core_type (sigs_util.ml[43,1380+14]..[43,1380+19])
+                        Ptyp_constr "mtyps" (sigs_util.ml[43,1380+14]..[43,1380+19])
+                        []
+                    expression (sigs_util.ml[44,1404+11]..[56,1871+41])
+                      Pexp_constraint
+                      expression (sigs_util.ml[44,1404+12]..[56,1871+32])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (sigs_util.ml[44,1404+16]..[44,1404+17])
+                              Ppat_var "f" (sigs_util.ml[44,1404+16]..[44,1404+17])
+                            expression (sigs_util.ml[45,1424+14]..[55,1824+43])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (sigs_util.ml[46,1447+16]..[46,1447+34])
+                                    Ppat_alias "x" (sigs_util.ml[46,1447+33]..[46,1447+34])
+                                    pattern (sigs_util.ml[46,1447+16]..[46,1447+29])
+                                      Ppat_variant "Single"
+                                      Some
+                                        pattern (sigs_util.ml[46,1447+16]..[46,1447+29])
+                                          Ppat_tuple
+                                          [
+                                            pattern (sigs_util.ml[46,1447+25]..[46,1447+26])
+                                              Ppat_var "s" (sigs_util.ml[46,1447+25]..[46,1447+26])
+                                            pattern (sigs_util.ml[46,1447+27]..[46,1447+28])
+                                              Ppat_any
+                                          ]
+                                  expression (sigs_util.ml[46,1447+38]..[46,1447+66])
+                                    Pexp_ifthenelse
+                                    expression (sigs_util.ml[46,1447+41]..[46,1447+44])
+                                      Pexp_apply
+                                      expression (sigs_util.ml[46,1447+41]..[46,1447+42])
+                                        Pexp_ident "f" (sigs_util.ml[46,1447+41]..[46,1447+42])
+                                      [
+                                        <label> ""
+                                          expression (sigs_util.ml[46,1447+43]..[46,1447+44])
+                                            Pexp_ident "s" (sigs_util.ml[46,1447+43]..[46,1447+44])
+                                      ]
+                                    expression (sigs_util.ml[46,1447+50]..[46,1447+56])
+                                      Pexp_construct "Some" (sigs_util.ml[46,1447+50]..[46,1447+54])
+                                      Some
+                                        expression (sigs_util.ml[46,1447+55]..[46,1447+56])
+                                          Pexp_ident "x" (sigs_util.ml[46,1447+55]..[46,1447+56])
+                                    Some
+                                      expression (sigs_util.ml[46,1447+62]..[46,1447+66])
+                                        Pexp_construct "None" (sigs_util.ml[46,1447+62]..[46,1447+66])
+                                        None
+                                <case>
+                                  pattern (sigs_util.ml[47,1514+16]..[47,1514+26])
+                                    Ppat_variant "Mutual"
+                                    Some
+                                      pattern (sigs_util.ml[47,1514+24]..[47,1514+26])
+                                        Ppat_var "ls" (sigs_util.ml[47,1514+24]..[47,1514+26])
+                                  expression (sigs_util.ml[48,1544+18]..[55,1824+43])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (sigs_util.ml[48,1544+22]..[48,1544+23])
+                                          Ppat_var "x" (sigs_util.ml[48,1544+22]..[48,1544+23])
+                                        expression (sigs_util.ml[49,1570+20]..[51,1685+24])
+                                          Pexp_apply
+                                          expression (sigs_util.ml[49,1570+20]..[49,1570+36])
+                                            Pexp_ident "Listf.filter_map" (sigs_util.ml[49,1570+20]..[49,1570+36])
+                                          [
+                                            <label> ""
+                                              expression (sigs_util.ml[50,1607+23]..[50,1607+76])
+                                                Pexp_function
+                                                [
+                                                  <case>
+                                                    pattern (sigs_util.ml[50,1607+34]..[50,1607+44])
+                                                      Ppat_alias "x" (sigs_util.ml[50,1607+43]..[50,1607+44])
+                                                      pattern (sigs_util.ml[50,1607+34]..[50,1607+39])
+                                                        Ppat_tuple
+                                                        [
+                                                          pattern (sigs_util.ml[50,1607+35]..[50,1607+36])
+                                                            Ppat_var "s" (sigs_util.ml[50,1607+35]..[50,1607+36])
+                                                          pattern (sigs_util.ml[50,1607+37]..[50,1607+38])
+                                                            Ppat_any
+                                                        ]
+                                                    expression (sigs_util.ml[50,1607+48]..[50,1607+76])
+                                                      Pexp_ifthenelse
+                                                      expression (sigs_util.ml[50,1607+51]..[50,1607+54])
+                                                        Pexp_apply
+                                                        expression (sigs_util.ml[50,1607+51]..[50,1607+52])
+                                                          Pexp_ident "f" (sigs_util.ml[50,1607+51]..[50,1607+52])
+                                                        [
+                                                          <label> ""
+                                                            expression (sigs_util.ml[50,1607+53]..[50,1607+54])
+                                                              Pexp_ident "s" (sigs_util.ml[50,1607+53]..[50,1607+54])
+                                                        ]
+                                                      expression (sigs_util.ml[50,1607+60]..[50,1607+66])
+                                                        Pexp_construct "Some" (sigs_util.ml[50,1607+60]..[50,1607+64])
+                                                        Some
+                                                          expression (sigs_util.ml[50,1607+65]..[50,1607+66])
+                                                            Pexp_ident "x" (sigs_util.ml[50,1607+65]..[50,1607+66])
+                                                      Some
+                                                        expression (sigs_util.ml[50,1607+72]..[50,1607+76])
+                                                          Pexp_construct "None" (sigs_util.ml[50,1607+72]..[50,1607+76])
+                                                          None
+                                                ]
+                                            <label> ""
+                                              expression (sigs_util.ml[51,1685+22]..[51,1685+24])
+                                                Pexp_ident "ls" (sigs_util.ml[51,1685+22]..[51,1685+24])
+                                          ]
+                                    ]
+                                    expression (sigs_util.ml[52,1713+19]..[55,1824+42])
+                                      Pexp_match
+                                      expression (sigs_util.ml[52,1713+25]..[52,1713+26])
+                                        Pexp_ident "x" (sigs_util.ml[52,1713+25]..[52,1713+26])
+                                      [
+                                        <case>
+                                          pattern (sigs_util.ml[53,1745+21]..[53,1745+23])
+                                            Ppat_construct "[]" (sigs_util.ml[53,1745+21]..[53,1745+23])
+                                            None
+                                          expression (sigs_util.ml[53,1745+27]..[53,1745+31])
+                                            Pexp_construct "None" (sigs_util.ml[53,1745+27]..[53,1745+31])
+                                            None
+                                        <case>
+                                          pattern (sigs_util.ml[54,1777+21]..[54,1777+26])
+                                            Ppat_construct "::" (sigs_util.ml[54,1777+21]..[54,1777+26])
+                                            Some
+                                              pattern (sigs_util.ml[54,1777+21]..[54,1777+26])
+                                                Ppat_tuple
+                                                [
+                                                  pattern (sigs_util.ml[54,1777+21]..[54,1777+22])
+                                                    Ppat_var "x" (sigs_util.ml[54,1777+21]..[54,1777+22])
+                                                  pattern (sigs_util.ml[54,1777+24]..[54,1777+26])
+                                                    Ppat_construct "[]" (sigs_util.ml[54,1777+24]..[54,1777+26])
+                                                    None
+                                                ]
+                                          expression (sigs_util.ml[54,1777+30]..[54,1777+46])
+                                            Pexp_construct "Some" (sigs_util.ml[54,1777+30]..[54,1777+34])
+                                            Some
+                                              expression (sigs_util.ml[54,1777+36]..[54,1777+45])
+                                                Pexp_variant "Single"
+                                                Some
+                                                  expression (sigs_util.ml[54,1777+44]..[54,1777+45])
+                                                    Pexp_ident "x" (sigs_util.ml[54,1777+44]..[54,1777+45])
+                                        <case>
+                                          pattern (sigs_util.ml[55,1824+21]..[55,1824+22])
+                                            Ppat_var "y" (sigs_util.ml[55,1824+21]..[55,1824+22])
+                                          expression (sigs_util.ml[55,1824+26]..[55,1824+42])
+                                            Pexp_construct "Some" (sigs_util.ml[55,1824+26]..[55,1824+30])
+                                            Some
+                                              expression (sigs_util.ml[55,1824+32]..[55,1824+41])
+                                                Pexp_variant "Mutual"
+                                                Some
+                                                  expression (sigs_util.ml[55,1824+40]..[55,1824+41])
+                                                    Pexp_ident "y" (sigs_util.ml[55,1824+40]..[55,1824+41])
+                                      ]
+                              ]
+                        ]
+                        expression (sigs_util.ml[56,1871+12]..[56,1871+32])
+                          Pexp_apply
+                          expression (sigs_util.ml[56,1871+12]..[56,1871+28])
+                            Pexp_ident "Listf.filter_map" (sigs_util.ml[56,1871+12]..[56,1871+28])
+                          [
+                            <label> ""
+                              expression (sigs_util.ml[56,1871+29]..[56,1871+30])
+                                Pexp_ident "f" (sigs_util.ml[56,1871+29]..[56,1871+30])
+                            <label> ""
+                              expression (sigs_util.ml[56,1871+31]..[56,1871+32])
+                                Pexp_ident "m" (sigs_util.ml[56,1871+31]..[56,1871+32])
+                          ]
+                      core_type (sigs_util.ml[56,1871+35]..[56,1871+40])
+                        Ptyp_constr "mtyps" (sigs_util.ml[56,1871+35]..[56,1871+40])
+                        []
+                ]
+          ]
+    ]
+  structure_item (sigs_util.ml[57,1914+0]..[72,2444+49])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[57,1914+4]..[57,1914+19])
+          Ppat_var "stru_from_mtyps" (sigs_util.ml[57,1914+4]..[57,1914+19])
+        expression (sigs_util.ml[57,1914+20]..[72,2444+49])
+          Pexp_fun "f"
+          None
+          pattern (sigs_util.ml[57,1914+23]..[57,1914+53])
+            Ppat_constraint
+            pattern (sigs_util.ml[57,1914+24]..[57,1914+27])
+              Ppat_var "aux" (sigs_util.ml[57,1914+24]..[57,1914+27])
+            core_type (sigs_util.ml[57,1914+30]..[57,1914+52])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[57,1914+30]..[57,1914+40])
+                Ptyp_constr "named_type" (sigs_util.ml[57,1914+30]..[57,1914+40])
+                []
+              core_type (sigs_util.ml[57,1914+44]..[57,1914+52])
+                Ptyp_constr "typedecl" (sigs_util.ml[57,1914+44]..[57,1914+52])
+                []
+          expression (sigs_util.ml[58,1971+2]..[72,2444+49])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[59,1982+4]..[59,1982+15])
+                  Ppat_constraint
+                  pattern (sigs_util.ml[59,1982+5]..[59,1982+6])
+                    Ppat_var "x" (sigs_util.ml[59,1982+5]..[59,1982+6])
+                  core_type (sigs_util.ml[59,1982+9]..[59,1982+14])
+                    Ptyp_constr "mtyps" (sigs_util.ml[59,1982+9]..[59,1982+14])
+                    []
+                expression (sigs_util.ml[60,2001+6]..[72,2444+49])
+                  Pexp_constraint
+                  expression (sigs_util.ml[60,2001+8]..[72,2444+33])
+                    Pexp_match
+                    expression (sigs_util.ml[60,2001+14]..[60,2001+15])
+                      Pexp_ident "x" (sigs_util.ml[60,2001+14]..[60,2001+15])
+                    [
+                      <case>
+                        pattern (sigs_util.ml[61,2022+10]..[61,2022+12])
+                          Ppat_construct "[]" (sigs_util.ml[61,2022+10]..[61,2022+12])
+                          None
+                        expression (sigs_util.ml[61,2022+16]..[61,2022+20])
+                          Pexp_construct "None" (sigs_util.ml[61,2022+16]..[61,2022+20])
+                          None
+                      <case>
+                        pattern (sigs_util.ml[62,2043+10]..[62,2043+11])
+                          Ppat_any
+                        expression (sigs_util.ml[63,2058+12]..[72,2444+33])
+                          Pexp_let Nonrec
+                          [
+                            <def>
+                              pattern (sigs_util.ml[63,2058+16]..[63,2058+18])
+                                Ppat_var "xs" (sigs_util.ml[63,2058+16]..[63,2058+18])
+                              expression (sigs_util.ml[63,2058+18]..[71,2373+67])
+                                Pexp_constraint
+                                expression (sigs_util.ml[64,2090+14]..[71,2373+67])
+                                  Pexp_apply
+                                  expression (sigs_util.ml[64,2090+14]..[64,2090+22])
+                                    Pexp_ident "List.map" (sigs_util.ml[64,2090+14]..[64,2090+22])
+                                  [
+                                    <label> ""
+                                      expression (sigs_util.ml[65,2113+17]..[71,2373+64])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (sigs_util.ml[66,2139+19]..[66,2139+30])
+                                              Ppat_variant "Mutual"
+                                              Some
+                                                pattern (sigs_util.ml[66,2139+27]..[66,2139+30])
+                                                  Ppat_var "tys" (sigs_util.ml[66,2139+27]..[66,2139+30])
+                                            expression (sigs_util.ml[67,2173+21]..[68,2236+64])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (sigs_util.ml[67,2173+25]..[67,2173+26])
+                                                    Ppat_var "v" (sigs_util.ml[67,2173+25]..[67,2173+26])
+                                                  expression (sigs_util.ml[67,2173+29]..[67,2173+59])
+                                                    Pexp_apply
+                                                    expression (sigs_util.ml[67,2173+29]..[67,2173+40])
+                                                      Pexp_ident "and_of_list" (sigs_util.ml[67,2173+29]..[67,2173+40])
+                                                    [
+                                                      <label> ""
+                                                        expression (sigs_util.ml[67,2173+42]..[67,2173+58])
+                                                          Pexp_apply
+                                                          expression (sigs_util.ml[67,2173+42]..[67,2173+50])
+                                                            Pexp_ident "List.map" (sigs_util.ml[67,2173+42]..[67,2173+50])
+                                                          [
+                                                            <label> ""
+                                                              expression (sigs_util.ml[67,2173+51]..[67,2173+54])
+                                                                Pexp_ident "aux" (sigs_util.ml[67,2173+51]..[67,2173+54])
+                                                            <label> ""
+                                                              expression (sigs_util.ml[67,2173+55]..[67,2173+58])
+                                                                Pexp_ident "tys" (sigs_util.ml[67,2173+55]..[67,2173+58])
+                                                          ]
+                                                    ]
+                                              ]
+                                              expression (sigs_util.ml[68,2236+21]..[68,2236+64])
+                                                Pexp_coerce
+                                                expression (sigs_util.ml[68,2236+22]..[68,2236+49])
+                                                  Pexp_variant "Type"
+                                                  Some
+                                                    expression (sigs_util.ml[68,2236+28]..[68,2236+49])
+                                                      Pexp_coerce
+                                                      expression (sigs_util.ml[68,2236+29]..[68,2236+30])
+                                                        Pexp_ident "v" (sigs_util.ml[68,2236+29]..[68,2236+30])
+                                                      None
+                                                      core_type (sigs_util.ml[68,2236+34]..[68,2236+48])
+                                                        Ptyp_constr "Astfn.typedecl" (sigs_util.ml[68,2236+34]..[68,2236+48])
+                                                        []
+                                                None
+                                                core_type (sigs_util.ml[68,2236+53]..[68,2236+63])
+                                                  Ptyp_constr "Astfn.stru" (sigs_util.ml[68,2236+53]..[68,2236+63])
+                                                  []
+                                          <case>
+                                            pattern (sigs_util.ml[69,2301+19]..[69,2301+29])
+                                              Ppat_variant "Single"
+                                              Some
+                                                pattern (sigs_util.ml[69,2301+27]..[69,2301+29])
+                                                  Ppat_var "ty" (sigs_util.ml[69,2301+27]..[69,2301+29])
+                                            expression (sigs_util.ml[70,2334+21]..[71,2373+64])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (sigs_util.ml[70,2334+25]..[70,2334+26])
+                                                    Ppat_var "v" (sigs_util.ml[70,2334+25]..[70,2334+26])
+                                                  expression (sigs_util.ml[70,2334+29]..[70,2334+35])
+                                                    Pexp_apply
+                                                    expression (sigs_util.ml[70,2334+29]..[70,2334+32])
+                                                      Pexp_ident "aux" (sigs_util.ml[70,2334+29]..[70,2334+32])
+                                                    [
+                                                      <label> ""
+                                                        expression (sigs_util.ml[70,2334+33]..[70,2334+35])
+                                                          Pexp_ident "ty" (sigs_util.ml[70,2334+33]..[70,2334+35])
+                                                    ]
+                                              ]
+                                              expression (sigs_util.ml[71,2373+21]..[71,2373+64])
+                                                Pexp_coerce
+                                                expression (sigs_util.ml[71,2373+22]..[71,2373+49])
+                                                  Pexp_variant "Type"
+                                                  Some
+                                                    expression (sigs_util.ml[71,2373+28]..[71,2373+49])
+                                                      Pexp_coerce
+                                                      expression (sigs_util.ml[71,2373+29]..[71,2373+30])
+                                                        Pexp_ident "v" (sigs_util.ml[71,2373+29]..[71,2373+30])
+                                                      None
+                                                      core_type (sigs_util.ml[71,2373+34]..[71,2373+48])
+                                                        Ptyp_constr "Astfn.typedecl" (sigs_util.ml[71,2373+34]..[71,2373+48])
+                                                        []
+                                                None
+                                                core_type (sigs_util.ml[71,2373+53]..[71,2373+63])
+                                                  Ptyp_constr "Astfn.stru" (sigs_util.ml[71,2373+53]..[71,2373+63])
+                                                  []
+                                        ]
+                                    <label> ""
+                                      expression (sigs_util.ml[71,2373+66]..[71,2373+67])
+                                        Pexp_ident "x" (sigs_util.ml[71,2373+66]..[71,2373+67])
+                                  ]
+                                core_type (sigs_util.ml[63,2058+20]..[63,2058+29])
+                                  Ptyp_constr "list" (sigs_util.ml[63,2058+25]..[63,2058+29])
+                                  [
+                                    core_type (sigs_util.ml[63,2058+20]..[63,2058+24])
+                                      Ptyp_constr "stru" (sigs_util.ml[63,2058+20]..[63,2058+24])
+                                      []
+                                  ]
+                          ]
+                          expression (sigs_util.ml[72,2444+12]..[72,2444+33])
+                            Pexp_construct "Some" (sigs_util.ml[72,2444+12]..[72,2444+16])
+                            Some
+                              expression (sigs_util.ml[72,2444+18]..[72,2444+32])
+                                Pexp_apply
+                                expression (sigs_util.ml[72,2444+18]..[72,2444+29])
+                                  Pexp_ident "sem_of_list" (sigs_util.ml[72,2444+18]..[72,2444+29])
+                                [
+                                  <label> ""
+                                    expression (sigs_util.ml[72,2444+30]..[72,2444+32])
+                                      Pexp_ident "xs" (sigs_util.ml[72,2444+30]..[72,2444+32])
+                                ]
+                    ]
+                  core_type (sigs_util.ml[72,2444+37]..[72,2444+48])
+                    Ptyp_constr "option" (sigs_util.ml[72,2444+42]..[72,2444+48])
+                    [
+                      core_type (sigs_util.ml[72,2444+37]..[72,2444+41])
+                        Ptyp_constr "stru" (sigs_util.ml[72,2444+37]..[72,2444+41])
+                        []
+                    ]
+            ]
+    ]
+  structure_item (sigs_util.ml[73,2494+0]..[82,2783+43])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[73,2494+4]..[73,2494+16])
+          Ppat_var "stru_from_ty" (sigs_util.ml[73,2494+4]..[73,2494+16])
+        expression (sigs_util.ml[73,2494+17]..[82,2783+43])
+          Pexp_fun "f"
+          None
+          pattern (sigs_util.ml[73,2494+20]..[73,2494+40])
+            Ppat_constraint
+            pattern (sigs_util.ml[73,2494+21]..[73,2494+22])
+              Ppat_var "f" (sigs_util.ml[73,2494+21]..[73,2494+22])
+            core_type (sigs_util.ml[73,2494+25]..[73,2494+39])
+              Ptyp_arrow
+              ""
+              core_type (sigs_util.ml[73,2494+25]..[73,2494+31])
+                Ptyp_constr "string" (sigs_util.ml[73,2494+25]..[73,2494+31])
+                []
+              core_type (sigs_util.ml[73,2494+35]..[73,2494+39])
+                Ptyp_constr "stru" (sigs_util.ml[73,2494+35]..[73,2494+39])
+                []
+          expression (sigs_util.ml[74,2538+2]..[82,2783+43])
+            Pexp_function
+            [
+              <case>
+                pattern (sigs_util.ml[75,2549+4]..[75,2549+15])
+                  Ppat_constraint
+                  pattern (sigs_util.ml[75,2549+5]..[75,2549+6])
+                    Ppat_var "x" (sigs_util.ml[75,2549+5]..[75,2549+6])
+                  core_type (sigs_util.ml[75,2549+9]..[75,2549+14])
+                    Ptyp_constr "mtyps" (sigs_util.ml[75,2549+9]..[75,2549+14])
+                    []
+                expression (sigs_util.ml[76,2568+6]..[82,2783+43])
+                  Pexp_constraint
+                  expression (sigs_util.ml[76,2568+7]..[82,2783+35])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (sigs_util.ml[76,2568+11]..[76,2568+14])
+                          Ppat_var "tys" (sigs_util.ml[76,2568+11]..[76,2568+14])
+                        expression (sigs_util.ml[76,2568+14]..[81,2742+37])
+                          Pexp_constraint
+                          expression (sigs_util.ml[77,2598+9]..[81,2742+37])
+                            Pexp_apply
+                            expression (sigs_util.ml[77,2598+9]..[77,2598+25])
+                              Pexp_ident "Listf.concat_map" (sigs_util.ml[77,2598+9]..[77,2598+25])
+                            [
+                              <label> ""
+                                expression (sigs_util.ml[78,2624+12]..[81,2742+34])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (sigs_util.ml[79,2645+14]..[79,2645+25])
+                                        Ppat_variant "Mutual"
+                                        Some
+                                          pattern (sigs_util.ml[79,2645+22]..[79,2645+25])
+                                            Ppat_var "tys" (sigs_util.ml[79,2645+22]..[79,2645+25])
+                                      expression (sigs_util.ml[80,2674+16]..[80,2674+67])
+                                        Pexp_apply
+                                        expression (sigs_util.ml[80,2674+16]..[80,2674+24])
+                                          Pexp_ident "List.map" (sigs_util.ml[80,2674+16]..[80,2674+24])
+                                        [
+                                          <label> ""
+                                            expression (sigs_util.ml[80,2674+26]..[80,2674+62])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (sigs_util.ml[80,2674+37]..[80,2674+57])
+                                                    Ppat_constraint
+                                                    pattern (sigs_util.ml[80,2674+38]..[80,2674+43])
+                                                      Ppat_tuple
+                                                      [
+                                                        pattern (sigs_util.ml[80,2674+39]..[80,2674+40])
+                                                          Ppat_var "x" (sigs_util.ml[80,2674+39]..[80,2674+40])
+                                                        pattern (sigs_util.ml[80,2674+41]..[80,2674+42])
+                                                          Ppat_any
+                                                      ]
+                                                    core_type (sigs_util.ml[80,2674+46]..[80,2674+56])
+                                                      Ptyp_constr "named_type" (sigs_util.ml[80,2674+46]..[80,2674+56])
+                                                      []
+                                                  expression (sigs_util.ml[80,2674+61]..[80,2674+62])
+                                                    Pexp_ident "x" (sigs_util.ml[80,2674+61]..[80,2674+62])
+                                              ]
+                                          <label> ""
+                                            expression (sigs_util.ml[80,2674+64]..[80,2674+67])
+                                              Pexp_ident "tys" (sigs_util.ml[80,2674+64]..[80,2674+67])
+                                        ]
+                                    <case>
+                                      pattern (sigs_util.ml[81,2742+14]..[81,2742+27])
+                                        Ppat_variant "Single"
+                                        Some
+                                          pattern (sigs_util.ml[81,2742+14]..[81,2742+27])
+                                            Ppat_tuple
+                                            [
+                                              pattern (sigs_util.ml[81,2742+23]..[81,2742+24])
+                                                Ppat_var "x" (sigs_util.ml[81,2742+23]..[81,2742+24])
+                                              pattern (sigs_util.ml[81,2742+25]..[81,2742+26])
+                                                Ppat_any
+                                            ]
+                                      expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                        Pexp_construct "::" (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                        Some
+                                          expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                            Pexp_tuple
+                                            [
+                                              expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                                Pexp_ident "x" (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                              expression (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                                Pexp_construct "[]" (sigs_util.ml[81,2742+32]..[81,2742+33])
+                                                None
+                                            ]
+                                  ]
+                              <label> ""
+                                expression (sigs_util.ml[81,2742+36]..[81,2742+37])
+                                  Pexp_ident "x" (sigs_util.ml[81,2742+36]..[81,2742+37])
+                            ]
+                          core_type (sigs_util.ml[76,2568+16]..[76,2568+27])
+                            Ptyp_constr "list" (sigs_util.ml[76,2568+23]..[76,2568+27])
+                            [
+                              core_type (sigs_util.ml[76,2568+16]..[76,2568+22])
+                                Ptyp_constr "string" (sigs_util.ml[76,2568+16]..[76,2568+22])
+                                []
+                            ]
+                    ]
+                    expression (sigs_util.ml[82,2783+7]..[82,2783+35])
+                      Pexp_apply
+                      expression (sigs_util.ml[82,2783+7]..[82,2783+18])
+                        Pexp_ident "sem_of_list" (sigs_util.ml[82,2783+7]..[82,2783+18])
+                      [
+                        <label> ""
+                          expression (sigs_util.ml[82,2783+20]..[82,2783+34])
+                            Pexp_apply
+                            expression (sigs_util.ml[82,2783+20]..[82,2783+28])
+                              Pexp_ident "List.map" (sigs_util.ml[82,2783+20]..[82,2783+28])
+                            [
+                              <label> ""
+                                expression (sigs_util.ml[82,2783+29]..[82,2783+30])
+                                  Pexp_ident "f" (sigs_util.ml[82,2783+29]..[82,2783+30])
+                              <label> ""
+                                expression (sigs_util.ml[82,2783+31]..[82,2783+34])
+                                  Pexp_ident "tys" (sigs_util.ml[82,2783+31]..[82,2783+34])
+                            ]
+                      ]
+                  core_type (sigs_util.ml[82,2783+38]..[82,2783+42])
+                    Ptyp_constr "stru" (sigs_util.ml[82,2783+38]..[82,2783+42])
+                    []
+            ]
+    ]
+  structure_item (sigs_util.ml[83,2827+0]..[132,4733+9])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[83,2827+4]..[83,2827+24])
+          Ppat_var "mk_transform_type_eq" (sigs_util.ml[83,2827+4]..[83,2827+24])
+        expression (sigs_util.ml[84,2854+2]..[132,4733+9])
+          Pexp_function
+          [
+            <case>
+              pattern (sigs_util.ml[85,2865+4]..[85,2865+6])
+                Ppat_construct "()" (sigs_util.ml[85,2865+4]..[85,2865+6])
+                None
+              expression (sigs_util.ml[86,2875+6]..[132,4733+9])
+                Pexp_object
+                class_structure
+                  pattern (sigs_util.ml[86,2875+6]..[132,4733+9])
+                    Ppat_constraint
+                    pattern (sigs_util.ml[86,2875+14]..[86,2875+18])
+                      Ppat_var "self" (sigs_util.ml[86,2875+14]..[86,2875+18])
+                    core_type (sigs_util.ml[86,2875+21]..[86,2875+31])
+                      Ptyp_var self_type
+                  [
+                    class_field (sigs_util.ml[87,2908+8]..[87,2908+44])
+                      Pcf_val Immutable
+                        "transformers" (sigs_util.ml[87,2908+12]..[87,2908+24])
+                        Concrete Fresh
+                        expression (sigs_util.ml[87,2908+27]..[87,2908+44])
+                          Pexp_apply
+                          expression (sigs_util.ml[87,2908+27]..[87,2908+41])
+                            Pexp_ident "Hashtbl.create" (sigs_util.ml[87,2908+27]..[87,2908+41])
+                          [
+                            <label> ""
+                              expression (sigs_util.ml[87,2908+42]..[87,2908+44])
+                                Pexp_constant Const_int 50
+                          ]
+                    class_field (sigs_util.ml[88,2953+8]..[88,2953+35])
+                      Pcf_inherit Fresh
+                        class_expr (sigs_util.ml[88,2953+17]..[88,2953+26])
+                          Pcl_constr "ObjsN.map" (sigs_util.ml[88,2953+17]..[88,2953+26])
+                          []
+                        Some
+                          "super"
+                    class_field (sigs_util.ml[89,2989+8]..[111,3914+31])
+                      Pcf_method Public
+                        "stru" (sigs_util.ml[89,2989+16]..[89,2989+20])
+                        Concrete Override
+                        expression (sigs_util.ml[89,2989+8]..[111,3914+31])
+                          Pexp_poly
+                          expression (sigs_util.ml[90,3012+11]..[111,3914+30])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (sigs_util.ml[91,3032+13]..[91,3032+67])
+                                  Ppat_alias "x" (sigs_util.ml[91,3032+66]..[91,3032+67])
+                                  pattern (sigs_util.ml[91,3032+13]..[91,3032+62])
+                                    Ppat_constraint
+                                    pattern (sigs_util.ml[91,3032+14]..[91,3032+48])
+                                      Ppat_variant "Type"
+                                      Some
+                                        pattern (sigs_util.ml[91,3032+21]..[91,3032+47])
+                                          Ppat_variant "TyDcl"
+                                          Some
+                                            pattern (sigs_util.ml[91,3032+21]..[91,3032+47])
+                                              Ppat_tuple
+                                              [
+                                                pattern (sigs_util.ml[91,3032+29]..[91,3032+34])
+                                                  Ppat_var "_name" (sigs_util.ml[91,3032+29]..[91,3032+34])
+                                                pattern (sigs_util.ml[91,3032+35]..[91,3032+39])
+                                                  Ppat_var "vars" (sigs_util.ml[91,3032+35]..[91,3032+39])
+                                                pattern (sigs_util.ml[91,3032+40]..[91,3032+44])
+                                                  Ppat_var "ctyp" (sigs_util.ml[91,3032+40]..[91,3032+44])
+                                                pattern (sigs_util.ml[91,3032+45]..[91,3032+46])
+                                                  Ppat_any
+                                              ]
+                                    core_type (sigs_util.ml[91,3032+51]..[91,3032+61])
+                                      Ptyp_constr "Astfn.stru" (sigs_util.ml[91,3032+51]..[91,3032+61])
+                                      []
+                                expression (sigs_util.ml[92,3103+15]..[110,3873+40])
+                                  Pexp_let Nonrec
+                                  [
+                                    <def>
+                                      pattern (sigs_util.ml[92,3103+19]..[92,3103+20])
+                                        Ppat_var "r" (sigs_util.ml[92,3103+19]..[92,3103+20])
+                                      expression (sigs_util.ml[93,3126+17]..[95,3219+28])
+                                        Pexp_match
+                                        expression (sigs_util.ml[93,3126+23]..[93,3126+27])
+                                          Pexp_ident "ctyp" (sigs_util.ml[93,3126+23]..[93,3126+27])
+                                        [
+                                          <case>
+                                            pattern (sigs_util.ml[94,3159+19]..[94,3159+30])
+                                              Ppat_variant "TyEq"
+                                              Some
+                                                pattern (sigs_util.ml[94,3159+19]..[94,3159+30])
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (sigs_util.ml[94,3159+26]..[94,3159+27])
+                                                      Ppat_any
+                                                    pattern (sigs_util.ml[94,3159+28]..[94,3159+29])
+                                                      Ppat_var "t" (sigs_util.ml[94,3159+28]..[94,3159+29])
+                                                  ]
+                                            expression (sigs_util.ml[94,3159+34]..[94,3159+59])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[94,3159+34]..[94,3159+57])
+                                                Pexp_ident "Ctyp.qualified_app_list" (sigs_util.ml[94,3159+34]..[94,3159+57])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[94,3159+58]..[94,3159+59])
+                                                    Pexp_ident "t" (sigs_util.ml[94,3159+58]..[94,3159+59])
+                                              ]
+                                          <case>
+                                            pattern (sigs_util.ml[95,3219+19]..[95,3219+20])
+                                              Ppat_any
+                                            expression (sigs_util.ml[95,3219+24]..[95,3219+28])
+                                              Pexp_construct "None" (sigs_util.ml[95,3219+24]..[95,3219+28])
+                                              None
+                                        ]
+                                  ]
+                                  expression (sigs_util.ml[96,3251+16]..[110,3873+39])
+                                    Pexp_match
+                                    expression (sigs_util.ml[96,3251+22]..[96,3251+23])
+                                      Pexp_ident "r" (sigs_util.ml[96,3251+22]..[96,3251+23])
+                                    [
+                                      <case>
+                                        pattern (sigs_util.ml[97,3280+18]..[97,3280+30])
+                                          Ppat_construct "Some" (sigs_util.ml[97,3280+18]..[97,3280+22])
+                                          Some
+                                            pattern (sigs_util.ml[97,3280+18]..[97,3280+30])
+                                              Ppat_tuple
+                                              [
+                                                pattern (sigs_util.ml[97,3280+24]..[97,3280+25])
+                                                  Ppat_var "i" (sigs_util.ml[97,3280+24]..[97,3280+25])
+                                                pattern (sigs_util.ml[97,3280+26]..[97,3280+29])
+                                                  Ppat_var "lst" (sigs_util.ml[97,3280+26]..[97,3280+29])
+                                              ]
+                                        expression (sigs_util.ml[98,3314+20]..[109,3820+52])
+                                          Pexp_let Nonrec
+                                          [
+                                            <def>
+                                              pattern (sigs_util.ml[98,3314+24]..[98,3314+28])
+                                                Ppat_var "vars" (sigs_util.ml[98,3314+24]..[98,3314+28])
+                                              expression (sigs_util.ml[99,3345+22]..[101,3419+63])
+                                                Pexp_match
+                                                expression (sigs_util.ml[99,3345+28]..[99,3345+32])
+                                                  Pexp_ident "vars" (sigs_util.ml[99,3345+28]..[99,3345+32])
+                                                [
+                                                  <case>
+                                                    pattern (sigs_util.ml[100,3383+24]..[100,3383+29])
+                                                      Ppat_variant "None"
+                                                      None
+                                                    expression (sigs_util.ml[100,3383+33]..[100,3383+35])
+                                                      Pexp_construct "[]" (sigs_util.ml[100,3383+33]..[100,3383+35])
+                                                      None
+                                                  <case>
+                                                    pattern (sigs_util.ml[101,3419+24]..[101,3419+31])
+                                                      Ppat_variant "Some"
+                                                      Some
+                                                        pattern (sigs_util.ml[101,3419+30]..[101,3419+31])
+                                                          Ppat_var "x" (sigs_util.ml[101,3419+30]..[101,3419+31])
+                                                    expression (sigs_util.ml[101,3419+35]..[101,3419+63])
+                                                      Pexp_apply
+                                                      expression (sigs_util.ml[101,3419+35]..[101,3419+58])
+                                                        Pexp_ident "Ast_basic.N.list_of_com" (sigs_util.ml[101,3419+35]..[101,3419+58])
+                                                      [
+                                                        <label> ""
+                                                          expression (sigs_util.ml[101,3419+59]..[101,3419+60])
+                                                            Pexp_ident "x" (sigs_util.ml[101,3419+59]..[101,3419+60])
+                                                        <label> ""
+                                                          expression (sigs_util.ml[101,3419+61]..[101,3419+63])
+                                                            Pexp_construct "[]" (sigs_util.ml[101,3419+61]..[101,3419+63])
+                                                            None
+                                                      ]
+                                                ]
+                                          ]
+                                          expression (sigs_util.ml[102,3486+20]..[109,3820+52])
+                                            Pexp_ifthenelse
+                                            expression (sigs_util.ml[102,3486+23]..[102,3486+74])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[102,3486+23]..[102,3486+26])
+                                                Pexp_ident "not" (sigs_util.ml[102,3486+23]..[102,3486+26])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[102,3486+28]..[102,3486+73])
+                                                    Pexp_apply
+                                                    expression (sigs_util.ml[102,3486+68]..[102,3486+69])
+                                                      Pexp_ident "=" (sigs_util.ml[102,3486+68]..[102,3486+69])
+                                                    [
+                                                      <label> ""
+                                                        expression (sigs_util.ml[102,3486+28]..[102,3486+67])
+                                                          Pexp_coerce
+                                                          expression (sigs_util.ml[102,3486+29]..[102,3486+33])
+                                                            Pexp_ident "vars" (sigs_util.ml[102,3486+29]..[102,3486+33])
+                                                          Some
+                                                            core_type (sigs_util.ml[102,3486+36]..[102,3486+52])
+                                                              Ptyp_constr "list" (sigs_util.ml[102,3486+48]..[102,3486+52])
+                                                              [
+                                                                core_type (sigs_util.ml[102,3486+36]..[102,3486+47])
+                                                                  Ptyp_constr "decl_params" (sigs_util.ml[102,3486+36]..[102,3486+47])
+                                                                  []
+                                                              ]
+                                                          core_type (sigs_util.ml[102,3486+57]..[102,3486+66])
+                                                            Ptyp_constr "list" (sigs_util.ml[102,3486+62]..[102,3486+66])
+                                                            [
+                                                              core_type (sigs_util.ml[102,3486+57]..[102,3486+61])
+                                                                Ptyp_constr "ctyp" (sigs_util.ml[102,3486+57]..[102,3486+61])
+                                                                []
+                                                            ]
+                                                      <label> ""
+                                                        expression (sigs_util.ml[102,3486+70]..[102,3486+73])
+                                                          Pexp_ident "lst" (sigs_util.ml[102,3486+70]..[102,3486+73])
+                                                    ]
+                                              ]
+                                            expression (sigs_util.ml[103,3561+25]..[103,3561+37])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[103,3561+25]..[103,3561+35])
+                                                Pexp_send "stru"
+                                                expression (sigs_util.ml[103,3561+25]..[103,3561+30])
+                                                  Pexp_ident "super" (sigs_util.ml[103,3561+25]..[103,3561+30])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[103,3561+36]..[103,3561+37])
+                                                    Pexp_ident "x" (sigs_util.ml[103,3561+36]..[103,3561+37])
+                                              ]
+                                            Some
+                                              expression (sigs_util.ml[105,3624+22]..[109,3820+52])
+                                                Pexp_sequence
+                                                expression (sigs_util.ml[105,3624+23]..[108,3769+49])
+                                                  Pexp_let Nonrec
+                                                  [
+                                                    <def>
+                                                      pattern (sigs_util.ml[105,3624+27]..[105,3624+30])
+                                                        Ppat_var "src" (sigs_util.ml[105,3624+27]..[105,3624+30])
+                                                      expression (sigs_util.ml[105,3624+33]..[105,3624+34])
+                                                        Pexp_ident "i" (sigs_util.ml[105,3624+33]..[105,3624+34])
+                                                    <def>
+                                                      pattern (sigs_util.ml[106,3659+27]..[106,3659+31])
+                                                        Ppat_var "dest" (sigs_util.ml[106,3659+27]..[106,3659+31])
+                                                      expression (sigs_util.ml[106,3659+34]..[106,3659+49])
+                                                        Pexp_apply
+                                                        expression (sigs_util.ml[106,3659+34]..[106,3659+47])
+                                                          Pexp_ident "IdN.to_string" (sigs_util.ml[106,3659+34]..[106,3659+47])
+                                                        [
+                                                          <label> ""
+                                                            expression (sigs_util.ml[106,3659+48]..[106,3659+49])
+                                                              Pexp_ident "i" (sigs_util.ml[106,3659+48]..[106,3659+49])
+                                                        ]
+                                                  ]
+                                                  expression (sigs_util.ml[107,3712+23]..[108,3769+49])
+                                                    Pexp_apply
+                                                    expression (sigs_util.ml[107,3712+23]..[107,3712+38])
+                                                      Pexp_ident "Hashtbl.replace" (sigs_util.ml[107,3712+23]..[107,3712+38])
+                                                    [
+                                                      <label> ""
+                                                        expression (sigs_util.ml[107,3712+39]..[107,3712+51])
+                                                          Pexp_ident "transformers" (sigs_util.ml[107,3712+39]..[107,3712+51])
+                                                      <label> ""
+                                                        expression (sigs_util.ml[107,3712+52]..[107,3712+56])
+                                                          Pexp_ident "dest" (sigs_util.ml[107,3712+52]..[107,3712+56])
+                                                      <label> ""
+                                                        expression (sigs_util.ml[108,3769+25]..[108,3769+49])
+                                                          Pexp_tuple
+                                                          [
+                                                            expression (sigs_util.ml[108,3769+26]..[108,3769+29])
+                                                              Pexp_ident "src" (sigs_util.ml[108,3769+26]..[108,3769+29])
+                                                            expression (sigs_util.ml[108,3769+32]..[108,3769+47])
+                                                              Pexp_apply
+                                                              expression (sigs_util.ml[108,3769+32]..[108,3769+43])
+                                                                Pexp_ident "List.length" (sigs_util.ml[108,3769+32]..[108,3769+43])
+                                                              [
+                                                                <label> ""
+                                                                  expression (sigs_util.ml[108,3769+44]..[108,3769+47])
+                                                                    Pexp_ident "lst" (sigs_util.ml[108,3769+44]..[108,3769+47])
+                                                              ]
+                                                          ]
+                                                    ]
+                                                expression (sigs_util.ml[105,3624+22]..[109,3820+52])
+                                                  Pexp_coerce
+                                                  expression (sigs_util.ml[109,3820+24]..[109,3820+36])
+                                                    Pexp_variant "StExp"
+                                                    Some
+                                                      expression (sigs_util.ml[109,3820+31]..[109,3820+36])
+                                                        Pexp_variant "Unit"
+                                                        None
+                                                  None
+                                                  core_type (sigs_util.ml[109,3820+40]..[109,3820+50])
+                                                    Ptyp_constr "Astfn.stru" (sigs_util.ml[109,3820+40]..[109,3820+50])
+                                                    []
+                                      <case>
+                                        pattern (sigs_util.ml[110,3873+18]..[110,3873+22])
+                                          Ppat_construct "None" (sigs_util.ml[110,3873+18]..[110,3873+22])
+                                          None
+                                        expression (sigs_util.ml[110,3873+27]..[110,3873+39])
+                                          Pexp_apply
+                                          expression (sigs_util.ml[110,3873+27]..[110,3873+37])
+                                            Pexp_send "stru"
+                                            expression (sigs_util.ml[110,3873+27]..[110,3873+32])
+                                              Pexp_ident "super" (sigs_util.ml[110,3873+27]..[110,3873+32])
+                                          [
+                                            <label> ""
+                                              expression (sigs_util.ml[110,3873+38]..[110,3873+39])
+                                                Pexp_ident "x" (sigs_util.ml[110,3873+38]..[110,3873+39])
+                                          ]
+                                    ]
+                              <case>
+                                pattern (sigs_util.ml[111,3914+13]..[111,3914+14])
+                                  Ppat_var "x" (sigs_util.ml[111,3914+13]..[111,3914+14])
+                                expression (sigs_util.ml[111,3914+18]..[111,3914+30])
+                                  Pexp_apply
+                                  expression (sigs_util.ml[111,3914+18]..[111,3914+28])
+                                    Pexp_send "stru"
+                                    expression (sigs_util.ml[111,3914+18]..[111,3914+23])
+                                      Pexp_ident "super" (sigs_util.ml[111,3914+18]..[111,3914+23])
+                                  [
+                                    <label> ""
+                                      expression (sigs_util.ml[111,3914+29]..[111,3914+30])
+                                        Pexp_ident "x" (sigs_util.ml[111,3914+29]..[111,3914+30])
+                                  ]
+                            ]
+                          None
+                    class_field (sigs_util.ml[112,3946+8]..[124,4454+41])
+                      Pcf_method Public
+                        "ctyp" (sigs_util.ml[112,3946+16]..[112,3946+20])
+                        Concrete Override
+                        expression (sigs_util.ml[112,3946+8]..[124,4454+41])
+                          Pexp_poly
+                          expression (sigs_util.ml[113,3969+11]..[124,4454+40])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (sigs_util.ml[114,3989+13]..[114,3989+14])
+                                  Ppat_var "x" (sigs_util.ml[114,3989+13]..[114,3989+14])
+                                expression (sigs_util.ml[115,4007+16]..[124,4454+39])
+                                  Pexp_match
+                                  expression (sigs_util.ml[115,4007+22]..[115,4007+47])
+                                    Pexp_apply
+                                    expression (sigs_util.ml[115,4007+22]..[115,4007+45])
+                                      Pexp_ident "Ctyp.qualified_app_list" (sigs_util.ml[115,4007+22]..[115,4007+45])
+                                    [
+                                      <label> ""
+                                        expression (sigs_util.ml[115,4007+46]..[115,4007+47])
+                                          Pexp_ident "x" (sigs_util.ml[115,4007+46]..[115,4007+47])
+                                    ]
+                                  [
+                                    <case>
+                                      pattern (sigs_util.ml[116,4060+18]..[116,4060+30])
+                                        Ppat_construct "Some" (sigs_util.ml[116,4060+18]..[116,4060+22])
+                                        Some
+                                          pattern (sigs_util.ml[116,4060+18]..[116,4060+30])
+                                            Ppat_tuple
+                                            [
+                                              pattern (sigs_util.ml[116,4060+24]..[116,4060+25])
+                                                Ppat_var "i" (sigs_util.ml[116,4060+24]..[116,4060+25])
+                                              pattern (sigs_util.ml[116,4060+26]..[116,4060+29])
+                                                Ppat_var "lst" (sigs_util.ml[116,4060+26]..[116,4060+29])
+                                            ]
+                                      expression (sigs_util.ml[117,4094+20]..[123,4384+69])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (sigs_util.ml[117,4094+24]..[117,4094+27])
+                                              Ppat_var "lst" (sigs_util.ml[117,4094+24]..[117,4094+27])
+                                            expression (sigs_util.ml[118,4124+22]..[118,4124+70])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[118,4124+22]..[118,4124+30])
+                                                Pexp_ident "List.map" (sigs_util.ml[118,4124+22]..[118,4124+30])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[118,4124+32]..[118,4124+65])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (sigs_util.ml[118,4124+43]..[118,4124+47])
+                                                          Ppat_var "ctyp" (sigs_util.ml[118,4124+43]..[118,4124+47])
+                                                        expression (sigs_util.ml[118,4124+51]..[118,4124+65])
+                                                          Pexp_apply
+                                                          expression (sigs_util.ml[118,4124+51]..[118,4124+60])
+                                                            Pexp_send "ctyp"
+                                                            expression (sigs_util.ml[118,4124+51]..[118,4124+55])
+                                                              Pexp_ident "self" (sigs_util.ml[118,4124+51]..[118,4124+55])
+                                                          [
+                                                            <label> ""
+                                                              expression (sigs_util.ml[118,4124+61]..[118,4124+65])
+                                                                Pexp_ident "ctyp" (sigs_util.ml[118,4124+61]..[118,4124+65])
+                                                          ]
+                                                    ]
+                                                <label> ""
+                                                  expression (sigs_util.ml[118,4124+67]..[118,4124+70])
+                                                    Pexp_ident "lst" (sigs_util.ml[118,4124+67]..[118,4124+70])
+                                              ]
+                                        ]
+                                        expression (sigs_util.ml[119,4198+20]..[123,4384+69])
+                                          Pexp_let Nonrec
+                                          [
+                                            <def>
+                                              pattern (sigs_util.ml[119,4198+24]..[119,4198+27])
+                                                Ppat_var "src" (sigs_util.ml[119,4198+24]..[119,4198+27])
+                                              expression (sigs_util.ml[119,4198+30]..[119,4198+31])
+                                                Pexp_ident "i" (sigs_util.ml[119,4198+30]..[119,4198+31])
+                                            <def>
+                                              pattern (sigs_util.ml[120,4230+24]..[120,4230+28])
+                                                Ppat_var "dest" (sigs_util.ml[120,4230+24]..[120,4230+28])
+                                              expression (sigs_util.ml[120,4230+31]..[120,4230+46])
+                                                Pexp_apply
+                                                expression (sigs_util.ml[120,4230+31]..[120,4230+44])
+                                                  Pexp_ident "IdN.to_string" (sigs_util.ml[120,4230+31]..[120,4230+44])
+                                                [
+                                                  <label> ""
+                                                    expression (sigs_util.ml[120,4230+45]..[120,4230+46])
+                                                      Pexp_ident "i" (sigs_util.ml[120,4230+45]..[120,4230+46])
+                                                ]
+                                          ]
+                                          expression (sigs_util.ml[121,4280+20]..[123,4384+69])
+                                            Pexp_sequence
+                                            expression (sigs_util.ml[121,4280+21]..[122,4335+47])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[121,4280+21]..[121,4280+36])
+                                                Pexp_ident "Hashtbl.replace" (sigs_util.ml[121,4280+21]..[121,4280+36])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[121,4280+37]..[121,4280+49])
+                                                    Pexp_ident "transformers" (sigs_util.ml[121,4280+37]..[121,4280+49])
+                                                <label> ""
+                                                  expression (sigs_util.ml[121,4280+50]..[121,4280+54])
+                                                    Pexp_ident "dest" (sigs_util.ml[121,4280+50]..[121,4280+54])
+                                                <label> ""
+                                                  expression (sigs_util.ml[122,4335+23]..[122,4335+47])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (sigs_util.ml[122,4335+24]..[122,4335+27])
+                                                        Pexp_ident "src" (sigs_util.ml[122,4335+24]..[122,4335+27])
+                                                      expression (sigs_util.ml[122,4335+30]..[122,4335+45])
+                                                        Pexp_apply
+                                                        expression (sigs_util.ml[122,4335+30]..[122,4335+41])
+                                                          Pexp_ident "List.length" (sigs_util.ml[122,4335+30]..[122,4335+41])
+                                                        [
+                                                          <label> ""
+                                                            expression (sigs_util.ml[122,4335+42]..[122,4335+45])
+                                                              Pexp_ident "lst" (sigs_util.ml[122,4335+42]..[122,4335+45])
+                                                        ]
+                                                    ]
+                                              ]
+                                            expression (sigs_util.ml[121,4280+20]..[123,4384+69])
+                                              Pexp_apply
+                                              expression (sigs_util.ml[123,4384+21]..[123,4384+33])
+                                                Pexp_ident "appl_of_list" (sigs_util.ml[123,4384+21]..[123,4384+33])
+                                              [
+                                                <label> ""
+                                                  expression (sigs_util.ml[123,4384+35]..[123,4384+67])
+                                                    Pexp_construct "::" (sigs_util.ml[123,4384+61]..[123,4384+63])
+                                                    Some
+                                                      expression (sigs_util.ml[123,4384+35]..[123,4384+67])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (sigs_util.ml[123,4384+35]..[123,4384+60])
+                                                            Pexp_coerce
+                                                            expression (sigs_util.ml[123,4384+36]..[123,4384+45])
+                                                              Pexp_variant "Lid"
+                                                              Some
+                                                                expression (sigs_util.ml[123,4384+41]..[123,4384+45])
+                                                                  Pexp_ident "dest" (sigs_util.ml[123,4384+41]..[123,4384+45])
+                                                            None
+                                                            core_type (sigs_util.ml[123,4384+49]..[123,4384+59])
+                                                              Ptyp_constr "Astfn.ctyp" (sigs_util.ml[123,4384+49]..[123,4384+59])
+                                                              []
+                                                          expression (sigs_util.ml[123,4384+64]..[123,4384+67])
+                                                            Pexp_ident "lst" (sigs_util.ml[123,4384+64]..[123,4384+67])
+                                                        ]
+                                              ]
+                                    <case>
+                                      pattern (sigs_util.ml[124,4454+18]..[124,4454+22])
+                                        Ppat_construct "None" (sigs_util.ml[124,4454+18]..[124,4454+22])
+                                        None
+                                      expression (sigs_util.ml[124,4454+27]..[124,4454+39])
+                                        Pexp_apply
+                                        expression (sigs_util.ml[124,4454+27]..[124,4454+37])
+                                          Pexp_send "ctyp"
+                                          expression (sigs_util.ml[124,4454+27]..[124,4454+32])
+                                            Pexp_ident "super" (sigs_util.ml[124,4454+27]..[124,4454+32])
+                                        [
+                                          <label> ""
+                                            expression (sigs_util.ml[124,4454+38]..[124,4454+39])
+                                              Pexp_ident "x" (sigs_util.ml[124,4454+38]..[124,4454+39])
+                                        ]
+                                  ]
+                            ]
+                          None
+                    class_field (sigs_util.ml[125,4496+8]..[131,4705+27])
+                      Pcf_method Public
+                        "type_transformers" (sigs_util.ml[125,4496+15]..[125,4496+32])
+                        Concrete Fresh
+                        expression (sigs_util.ml[125,4496+8]..[131,4705+27])
+                          Pexp_poly
+                          expression (sigs_util.ml[126,4531+10]..[131,4705+27])
+                            Pexp_apply
+                            expression (sigs_util.ml[126,4531+10]..[126,4531+22])
+                              Pexp_ident "Hashtbl.fold" (sigs_util.ml[126,4531+10]..[126,4531+22])
+                            [
+                              <label> ""
+                                expression (sigs_util.ml[127,4554+13]..[130,4626+77])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (sigs_util.ml[128,4576+15]..[128,4576+19])
+                                        Ppat_var "dest" (sigs_util.ml[128,4576+15]..[128,4576+19])
+                                      expression (sigs_util.ml[129,4599+18]..[130,4626+76])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (sigs_util.ml[130,4626+20]..[130,4626+29])
+                                              Ppat_tuple
+                                              [
+                                                pattern (sigs_util.ml[130,4626+21]..[130,4626+24])
+                                                  Ppat_var "src" (sigs_util.ml[130,4626+21]..[130,4626+24])
+                                                pattern (sigs_util.ml[130,4626+25]..[130,4626+28])
+                                                  Ppat_var "len" (sigs_util.ml[130,4626+25]..[130,4626+28])
+                                              ]
+                                            expression (sigs_util.ml[130,4626+34]..[130,4626+75])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (sigs_util.ml[130,4626+45]..[130,4626+48])
+                                                    Ppat_var "acc" (sigs_util.ml[130,4626+45]..[130,4626+48])
+                                                  expression (sigs_util.ml[130,4626+52]..[130,4626+75])
+                                                    Pexp_construct "::" (sigs_util.ml[130,4626+69]..[130,4626+71])
+                                                    Some
+                                                      expression (sigs_util.ml[130,4626+52]..[130,4626+75])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (sigs_util.ml[130,4626+52]..[130,4626+68])
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (sigs_util.ml[130,4626+53]..[130,4626+57])
+                                                                Pexp_ident "dest" (sigs_util.ml[130,4626+53]..[130,4626+57])
+                                                              expression (sigs_util.ml[130,4626+59]..[130,4626+62])
+                                                                Pexp_ident "src" (sigs_util.ml[130,4626+59]..[130,4626+62])
+                                                              expression (sigs_util.ml[130,4626+64]..[130,4626+67])
+                                                                Pexp_ident "len" (sigs_util.ml[130,4626+64]..[130,4626+67])
+                                                            ]
+                                                          expression (sigs_util.ml[130,4626+72]..[130,4626+75])
+                                                            Pexp_ident "acc" (sigs_util.ml[130,4626+72]..[130,4626+75])
+                                                        ]
+                                              ]
+                                        ]
+                                  ]
+                              <label> ""
+                                expression (sigs_util.ml[131,4705+12]..[131,4705+24])
+                                  Pexp_ident "transformers" (sigs_util.ml[131,4705+12]..[131,4705+24])
+                              <label> ""
+                                expression (sigs_util.ml[131,4705+25]..[131,4705+27])
+                                  Pexp_construct "[]" (sigs_util.ml[131,4705+25]..[131,4705+27])
+                                  None
+                            ]
+                          None
+                  ]
+          ]
+    ]
+  structure_item (sigs_util.ml[133,4743+0]..[144,5092+65])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (sigs_util.ml[133,4743+4]..[133,4743+19])
+          Ppat_var "transform_mtyps" (sigs_util.ml[133,4743+4]..[133,4743+19])
+        expression (sigs_util.ml[134,4765+2]..[144,5092+65])
+          Pexp_function
+          [
+            <case>
+              pattern (sigs_util.ml[135,4776+4]..[135,4776+17])
+                Ppat_constraint
+                pattern (sigs_util.ml[135,4776+5]..[135,4776+8])
+                  Ppat_var "lst" (sigs_util.ml[135,4776+5]..[135,4776+8])
+                core_type (sigs_util.ml[135,4776+11]..[135,4776+16])
+                  Ptyp_constr "mtyps" (sigs_util.ml[135,4776+11]..[135,4776+16])
+                  []
+              expression (sigs_util.ml[136,4797+6]..[144,5092+65])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (sigs_util.ml[136,4797+10]..[136,4797+13])
+                      Ppat_var "obj" (sigs_util.ml[136,4797+10]..[136,4797+13])
+                    expression (sigs_util.ml[136,4797+16]..[136,4797+39])
+                      Pexp_apply
+                      expression (sigs_util.ml[136,4797+16]..[136,4797+36])
+                        Pexp_ident "mk_transform_type_eq" (sigs_util.ml[136,4797+16]..[136,4797+36])
+                      [
+                        <label> ""
+                          expression (sigs_util.ml[136,4797+37]..[136,4797+39])
+                            Pexp_construct "()" (sigs_util.ml[136,4797+37]..[136,4797+39])
+                            None
+                      ]
+                ]
+                expression (sigs_util.ml[137,4840+6]..[144,5092+65])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (sigs_util.ml[137,4840+10]..[137,4840+15])
+                        Ppat_var "item1" (sigs_util.ml[137,4840+10]..[137,4840+15])
+                      expression (sigs_util.ml[138,4858+8]..[143,5022+66])
+                        Pexp_apply
+                        expression (sigs_util.ml[138,4858+8]..[138,4858+16])
+                          Pexp_ident "List.map" (sigs_util.ml[138,4858+8]..[138,4858+16])
+                        [
+                          <label> ""
+                            expression (sigs_util.ml[139,4875+11]..[143,5022+61])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (sigs_util.ml[140,4895+13]..[140,4895+23])
+                                    Ppat_variant "Mutual"
+                                    Some
+                                      pattern (sigs_util.ml[140,4895+21]..[140,4895+23])
+                                        Ppat_var "ls" (sigs_util.ml[140,4895+21]..[140,4895+23])
+                                  expression (sigs_util.ml[141,4922+15]..[142,4945+76])
+                                    Pexp_variant "Mutual"
+                                    Some
+                                      expression (sigs_util.ml[142,4945+18]..[142,4945+75])
+                                        Pexp_apply
+                                        expression (sigs_util.ml[142,4945+18]..[142,4945+26])
+                                          Pexp_ident "List.map" (sigs_util.ml[142,4945+18]..[142,4945+26])
+                                        [
+                                          <label> ""
+                                            expression (sigs_util.ml[142,4945+28]..[142,4945+71])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (sigs_util.ml[142,4945+39]..[142,4945+45])
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (sigs_util.ml[142,4945+40]..[142,4945+41])
+                                                        Ppat_var "s" (sigs_util.ml[142,4945+40]..[142,4945+41])
+                                                      pattern (sigs_util.ml[142,4945+42]..[142,4945+44])
+                                                        Ppat_var "ty" (sigs_util.ml[142,4945+42]..[142,4945+44])
+                                                    ]
+                                                  expression (sigs_util.ml[142,4945+49]..[142,4945+71])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (sigs_util.ml[142,4945+50]..[142,4945+51])
+                                                        Pexp_ident "s" (sigs_util.ml[142,4945+50]..[142,4945+51])
+                                                      expression (sigs_util.ml[142,4945+54]..[142,4945+69])
+                                                        Pexp_apply
+                                                        expression (sigs_util.ml[142,4945+54]..[142,4945+66])
+                                                          Pexp_send "typedecl"
+                                                          expression (sigs_util.ml[142,4945+54]..[142,4945+57])
+                                                            Pexp_ident "obj" (sigs_util.ml[142,4945+54]..[142,4945+57])
+                                                        [
+                                                          <label> ""
+                                                            expression (sigs_util.ml[142,4945+67]..[142,4945+69])
+                                                              Pexp_ident "ty" (sigs_util.ml[142,4945+67]..[142,4945+69])
+                                                        ]
+                                                    ]
+                                              ]
+                                          <label> ""
+                                            expression (sigs_util.ml[142,4945+73]..[142,4945+75])
+                                              Pexp_ident "ls" (sigs_util.ml[142,4945+73]..[142,4945+75])
+                                        ]
+                                <case>
+                                  pattern (sigs_util.ml[143,5022+13]..[143,5022+27])
+                                    Ppat_variant "Single"
+                                    Some
+                                      pattern (sigs_util.ml[143,5022+13]..[143,5022+27])
+                                        Ppat_tuple
+                                        [
+                                          pattern (sigs_util.ml[143,5022+22]..[143,5022+23])
+                                            Ppat_var "s" (sigs_util.ml[143,5022+22]..[143,5022+23])
+                                          pattern (sigs_util.ml[143,5022+24]..[143,5022+26])
+                                            Ppat_var "ty" (sigs_util.ml[143,5022+24]..[143,5022+26])
+                                        ]
+                                  expression (sigs_util.ml[143,5022+31]..[143,5022+61])
+                                    Pexp_variant "Single"
+                                    Some
+                                      expression (sigs_util.ml[143,5022+39]..[143,5022+61])
+                                        Pexp_tuple
+                                        [
+                                          expression (sigs_util.ml[143,5022+40]..[143,5022+41])
+                                            Pexp_ident "s" (sigs_util.ml[143,5022+40]..[143,5022+41])
+                                          expression (sigs_util.ml[143,5022+44]..[143,5022+59])
+                                            Pexp_apply
+                                            expression (sigs_util.ml[143,5022+44]..[143,5022+56])
+                                              Pexp_send "typedecl"
+                                              expression (sigs_util.ml[143,5022+44]..[143,5022+47])
+                                                Pexp_ident "obj" (sigs_util.ml[143,5022+44]..[143,5022+47])
+                                            [
+                                              <label> ""
+                                                expression (sigs_util.ml[143,5022+57]..[143,5022+59])
+                                                  Pexp_ident "ty" (sigs_util.ml[143,5022+57]..[143,5022+59])
+                                            ]
+                                        ]
+                              ]
+                          <label> ""
+                            expression (sigs_util.ml[143,5022+63]..[143,5022+66])
+                              Pexp_ident "lst" (sigs_util.ml[143,5022+63]..[143,5022+66])
+                        ]
+                  ]
+                  expression (sigs_util.ml[144,5092+6]..[144,5092+65])
+                    Pexp_let Nonrec
+                    [
+                      <def>
+                        pattern (sigs_util.ml[144,5092+10]..[144,5092+19])
+                          Ppat_var "new_types" (sigs_util.ml[144,5092+10]..[144,5092+19])
+                        expression (sigs_util.ml[144,5092+22]..[144,5092+43])
+                          Pexp_send "type_transformers"
+                          expression (sigs_util.ml[144,5092+22]..[144,5092+25])
+                            Pexp_ident "obj" (sigs_util.ml[144,5092+22]..[144,5092+25])
+                    ]
+                    expression (sigs_util.ml[144,5092+47]..[144,5092+65])
+                      Pexp_tuple
+                      [
+                        expression (sigs_util.ml[144,5092+48]..[144,5092+57])
+                          Pexp_ident "new_types" (sigs_util.ml[144,5092+48]..[144,5092+57])
+                        expression (sigs_util.ml[144,5092+59]..[144,5092+64])
+                          Pexp_ident "item1" (sigs_util.ml[144,5092+59]..[144,5092+64])
+                      ]
+          ]
+    ]
+]

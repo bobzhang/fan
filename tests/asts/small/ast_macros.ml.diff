@@ -1,0 +1,112 @@
+9c9
+<       type_declaration "key" (ast_macros.ml[3,23+5]..[3,23+8]) (ast_macros.ml[3,23+5]..[3,23+17])
+---
+>       type_declaration "key" (ast_macros.ml[3,23+5]..[3,23+8]) (ast_macros.ml[3,23+0]..[3,23+17])
+26c26
+<       type_declaration "expander" (ast_macros.ml[4,41+5]..[4,41+13]) (ast_macros.ml[4,41+5]..[4,41+26])
+---
+>       type_declaration "expander" (ast_macros.ml[4,41+5]..[4,41+13]) (ast_macros.ml[4,41+0]..[4,41+26])
+52c52
+<         expression (ast_macros.ml[5,68+19]..[5,68+65])
+---
+>         expression (ast_macros.ml[5,68+19]..[5,68+65]) ghost
+63c63
+<           core_type (ast_macros.ml[5,68+22]..[5,68+45])
+---
+>           core_type (ast_macros.ml[5,68+21]..[5,68+45])
+149c149
+<                     expression (ast_macros.ml[10,249+21]..[10,249+32])
+---
+>                     expression (ast_macros.ml[10,249+20]..[10,249+33])
+155c155
+<                           expression (ast_macros.ml[10,249+26]..[10,249+31])
+---
+>                           expression (ast_macros.ml[10,249+25]..[10,249+32])
+169c169
+<                     expression (ast_macros.ml[10,249+37]..[10,249+48])
+---
+>                     expression (ast_macros.ml[10,249+36]..[10,249+49])
+175c175
+<                           expression (ast_macros.ml[10,249+42]..[10,249+47])
+---
+>                           expression (ast_macros.ml[10,249+41]..[10,249+48])
+215c215
+<               expression (ast_macros.ml[15,357+7]..[21,557+75])
+---
+>               expression (ast_macros.ml[15,357+6]..[21,557+76])
+226c226
+<                           pattern (ast_macros.ml[16,377+10]..[16,377+23])
+---
+>                           pattern (ast_macros.ml[16,377+15]..[16,377+23])
+237c237
+<                     expression (ast_macros.ml[17,416+11]..[18,488+20])
+---
+>                     expression (ast_macros.ml[17,416+11]..[18,488+20]) ghost
+247c247
+<                               expression (ast_macros.ml[17,416+25]..[17,416+65])
+---
+>                               expression (ast_macros.ml[17,416+24]..[17,416+66])
+253c253
+<                                     expression (ast_macros.ml[17,416+40]..[17,416+64])
+---
+>                                     expression (ast_macros.ml[17,416+39]..[17,416+65])
+262c262
+<                                           expression (ast_macros.ml[17,416+48]..[17,416+63])
+---
+>                                           expression (ast_macros.ml[17,416+47]..[17,416+64])
+297c297
+<                       expression (ast_macros.ml[21,557+11]..[21,557+75])
+---
+>                       expression (ast_macros.ml[21,557+11]..[21,557+75]) ghost
+307c307
+<                                 expression (ast_macros.ml[21,557+25]..[21,557+43])
+---
+>                                 expression (ast_macros.ml[21,557+24]..[21,557+44])
+318c318
+<                                 expression (ast_macros.ml[21,557+46]..[21,557+61])
+---
+>                                 expression (ast_macros.ml[21,557+46]..[21,557+61]) ghost
+334c334
+<   structure_item (ast_macros.ml[22,634+4]..[22,634+36])
+---
+>   structure_item (ast_macros.ml[22,634+0]..[22,634+36])
+360c360
+<             pattern (ast_macros.ml[24,692+10]..[24,692+14])
+---
+>             pattern (ast_macros.ml[24,692+9]..[24,692+15])
+374c374
+<                   expression (ast_macros.ml[26,739+4]..[38,1154+24])
+---
+>                   expression (ast_macros.ml[26,739+10]..[38,1154+24]) ghost
+385c385
+<                                 pattern (ast_macros.ml[28,772+9]..[28,772+33])
+---
+>                                 pattern (ast_macros.ml[28,772+14]..[28,772+33])
+393c393
+<                                         pattern (ast_macros.ml[28,772+20]..[28,772+30])
+---
+>                                         pattern (ast_macros.ml[28,772+25]..[28,772+30])
+409c409
+<                             expression (ast_macros.ml[29,821+12]..[37,1117+31])
+---
+>                             expression (ast_macros.ml[29,821+10]..[37,1117+33])
+445c445
+<                                             expression (ast_macros.ml[31,893+41]..[31,893+44])
+---
+>                                             expression (ast_macros.ml[31,893+40]..[31,893+45])
+461c461
+<                                   expression (ast_macros.ml[34,984+17]..[37,1117+30])
+---
+>                                   expression (ast_macros.ml[34,984+16]..[37,1117+31])
+468c468
+<                                         expression (ast_macros.ml[36,1035+21]..[37,1117+30])
+---
+>                                         expression (ast_macros.ml[36,1035+21]..[37,1117+30]) ghost
+478c478
+<                                                   expression (ast_macros.ml[36,1035+35]..[36,1035+49])
+---
+>                                                   expression (ast_macros.ml[36,1035+34]..[36,1035+50])
+489c489
+<                                                   expression (ast_macros.ml[36,1035+52]..[36,1035+76])
+---
+>                                                   expression (ast_macros.ml[36,1035+52]..[36,1035+76]) ghost

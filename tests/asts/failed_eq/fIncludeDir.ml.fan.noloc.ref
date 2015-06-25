@@ -1,0 +1,125 @@
+[
+  structure_item (fIncludeDir.ml[]..[])
+    Pstr_open Fresh "Util" (fIncludeDir.ml[]..[])
+  structure_item (fIncludeDir.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fIncludeDir.ml[]..[])
+          Ppat_var "add" (fIncludeDir.ml[]..[])
+        expression (fIncludeDir.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (fIncludeDir.ml[]..[])
+                Ppat_var "str" (fIncludeDir.ml[]..[])
+              expression (fIncludeDir.ml[]..[])
+                Pexp_ifthenelse
+                expression (fIncludeDir.ml[]..[])
+                  Pexp_apply
+                  expression (fIncludeDir.ml[]..[])
+                    Pexp_ident "<>" (fIncludeDir.ml[]..[])
+                  [
+                    <label> ""
+                      expression (fIncludeDir.ml[]..[])
+                        Pexp_ident "str" (fIncludeDir.ml[]..[])
+                    <label> ""
+                      expression (fIncludeDir.ml[]..[])
+                        Pexp_constant Const_string("",None)
+                  ]
+                expression (fIncludeDir.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (fIncludeDir.ml[]..[])
+                        Ppat_var "str" (fIncludeDir.ml[]..[])
+                      expression (fIncludeDir.ml[]..[])
+                        Pexp_ifthenelse
+                        expression (fIncludeDir.ml[]..[])
+                          Pexp_apply
+                          expression (fIncludeDir.ml[]..[])
+                            Pexp_ident "=" (fIncludeDir.ml[]..[])
+                          [
+                            <label> ""
+                              expression (fIncludeDir.ml[]..[])
+                                Pexp_apply
+                                expression (fIncludeDir.ml[]..[])
+                                  Pexp_ident "String.get" (fIncludeDir.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (fIncludeDir.ml[]..[])
+                                      Pexp_ident "str" (fIncludeDir.ml[]..[])
+                                  <label> ""
+                                    expression (fIncludeDir.ml[]..[])
+                                      Pexp_apply
+                                      expression (fIncludeDir.ml[]..[])
+                                        Pexp_ident "-" (fIncludeDir.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (fIncludeDir.ml[]..[])
+                                            Pexp_apply
+                                            expression (fIncludeDir.ml[]..[])
+                                              Pexp_ident "String.length" (fIncludeDir.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (fIncludeDir.ml[]..[])
+                                                  Pexp_ident "str" (fIncludeDir.ml[]..[])
+                                            ]
+                                        <label> ""
+                                          expression (fIncludeDir.ml[]..[])
+                                            Pexp_constant Const_int 1
+                                      ]
+                                ]
+                            <label> ""
+                              expression (fIncludeDir.ml[]..[])
+                                Pexp_constant Const_char 2f
+                          ]
+                        expression (fIncludeDir.ml[]..[])
+                          Pexp_ident "str" (fIncludeDir.ml[]..[])
+                        Some
+                          expression (fIncludeDir.ml[]..[])
+                            Pexp_apply
+                            expression (fIncludeDir.ml[]..[])
+                              Pexp_ident "^" (fIncludeDir.ml[]..[])
+                            [
+                              <label> ""
+                                expression (fIncludeDir.ml[]..[])
+                                  Pexp_ident "str" (fIncludeDir.ml[]..[])
+                              <label> ""
+                                expression (fIncludeDir.ml[]..[])
+                                  Pexp_constant Const_string("/",None)
+                            ]
+                  ]
+                  expression (fIncludeDir.ml[]..[])
+                    Pexp_apply
+                    expression (fIncludeDir.ml[]..[])
+                      Pexp_ident "Ref.modify" (fIncludeDir.ml[]..[])
+                    [
+                      <label> ""
+                        expression (fIncludeDir.ml[]..[])
+                          Pexp_ident "Configf.include_dirs" (fIncludeDir.ml[]..[])
+                      <label> ""
+                        expression (fIncludeDir.ml[]..[])
+                          Pexp_function
+                          [
+                            <case>
+                              pattern (fIncludeDir.ml[]..[])
+                                Ppat_var "x" (fIncludeDir.ml[]..[])
+                              expression (fIncludeDir.ml[]..[])
+                                Pexp_apply
+                                expression (fIncludeDir.ml[]..[])
+                                  Pexp_ident "cons" (fIncludeDir.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (fIncludeDir.ml[]..[])
+                                      Pexp_ident "str" (fIncludeDir.ml[]..[])
+                                  <label> ""
+                                    expression (fIncludeDir.ml[]..[])
+                                      Pexp_ident "x" (fIncludeDir.ml[]..[])
+                                ]
+                          ]
+                    ]
+                None
+          ]
+    ]
+]

@@ -1,0 +1,246 @@
+[
+  structure_item (fid.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[]..[])
+          Ppat_var "x" (fid.ml[]..[])
+        expression (fid.ml[]..[])
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[]..[])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[]..[])
+            Ppat_var "off" (fid.ml[]..[])
+          expression (fid.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[]..[])
+                  Ppat_constraint
+                  pattern (fid.ml[]..[])
+                    Ppat_var "i" (fid.ml[]..[])
+                  core_type (fid.ml[]..[])
+                    Ptyp_constr "int" (fid.ml[]..[])
+                    []
+                expression (fid.ml[]..[])
+                  Pexp_ifthenelse
+                  expression (fid.ml[]..[])
+                    Pexp_apply
+                    expression (fid.ml[]..[])
+                      Pexp_ident ">" (fid.ml[]..[])
+                    [
+                      <label> ""
+                        expression (fid.ml[]..[])
+                          Pexp_ident "off" (fid.ml[]..[])
+                      <label> ""
+                        expression (fid.ml[]..[])
+                          Pexp_constant Const_int 25
+                    ]
+                  expression (fid.ml[]..[])
+                    Pexp_apply
+                    expression (fid.ml[]..[])
+                      Pexp_ident "invalid_arg" (fid.ml[]..[])
+                    [
+                      <label> ""
+                        expression (fid.ml[]..[])
+                          Pexp_constant Const_string("unsupported offset in x ",None)
+                    ]
+                  Some
+                    expression (fid.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (fid.ml[]..[])
+                            Ppat_var "base" (fid.ml[]..[])
+                          expression (fid.ml[]..[])
+                            Pexp_open Fresh ""Char" (fid.ml[]..[])"
+                            expression (fid.ml[]..[])
+                              Pexp_apply
+                              expression (fid.ml[]..[])
+                                Pexp_ident "|>" (fid.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (fid.ml[]..[])
+                                    Pexp_apply
+                                    expression (fid.ml[]..[])
+                                      Pexp_ident "+" (fid.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[]..[])
+                                          Pexp_apply
+                                          expression (fid.ml[]..[])
+                                            Pexp_ident "code" (fid.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (fid.ml[]..[])
+                                                Pexp_constant Const_char 61
+                                          ]
+                                      <label> ""
+                                        expression (fid.ml[]..[])
+                                          Pexp_ident "off" (fid.ml[]..[])
+                                    ]
+                                <label> ""
+                                  expression (fid.ml[]..[])
+                                    Pexp_ident "chr" (fid.ml[]..[])
+                              ]
+                      ]
+                      expression (fid.ml[]..[])
+                        Pexp_apply
+                        expression (fid.ml[]..[])
+                          Pexp_ident "^" (fid.ml[]..[])
+                        [
+                          <label> ""
+                            expression (fid.ml[]..[])
+                              Pexp_constant Const_string("_",None)
+                          <label> ""
+                            expression (fid.ml[]..[])
+                              Pexp_apply
+                              expression (fid.ml[]..[])
+                                Pexp_ident "^" (fid.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (fid.ml[]..[])
+                                    Pexp_apply
+                                    expression (fid.ml[]..[])
+                                      Pexp_ident "Stringf.of_char" (fid.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[]..[])
+                                          Pexp_ident "base" (fid.ml[]..[])
+                                    ]
+                                <label> ""
+                                  expression (fid.ml[]..[])
+                                    Pexp_apply
+                                    expression (fid.ml[]..[])
+                                      Pexp_ident "string_of_int" (fid.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fid.ml[]..[])
+                                          Pexp_ident "i" (fid.ml[]..[])
+                                    ]
+                              ]
+                        ]
+            ]
+    ]
+  structure_item (fid.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[]..[])
+          Ppat_var "xid" (fid.ml[]..[])
+        expression (fid.ml[]..[])
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[]..[])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[]..[])
+            Ppat_var "off" (fid.ml[]..[])
+          expression (fid.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[]..[])
+                  Ppat_constraint
+                  pattern (fid.ml[]..[])
+                    Ppat_var "i" (fid.ml[]..[])
+                  core_type (fid.ml[]..[])
+                    Ptyp_constr "int" (fid.ml[]..[])
+                    []
+                expression (fid.ml[]..[])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (fid.ml[]..[])
+                      Pexp_apply
+                      expression (fid.ml[]..[])
+                        Pexp_ident "x" (fid.ml[]..[])
+                      [
+                        <label> "off"
+                          expression (fid.ml[]..[])
+                            Pexp_ident "off" (fid.ml[]..[])
+                        <label> ""
+                          expression (fid.ml[]..[])
+                            Pexp_ident "i" (fid.ml[]..[])
+                      ]
+            ]
+    ]
+  structure_item (fid.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[]..[])
+          Ppat_var "allx" (fid.ml[]..[])
+        expression (fid.ml[]..[])
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[]..[])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[]..[])
+            Ppat_var "off" (fid.ml[]..[])
+          expression (fid.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[]..[])
+                  Ppat_var "i" (fid.ml[]..[])
+                expression (fid.ml[]..[])
+                  Pexp_apply
+                  expression (fid.ml[]..[])
+                    Pexp_ident "^" (fid.ml[]..[])
+                  [
+                    <label> ""
+                      expression (fid.ml[]..[])
+                        Pexp_constant Const_string("all",None)
+                    <label> ""
+                      expression (fid.ml[]..[])
+                        Pexp_apply
+                        expression (fid.ml[]..[])
+                          Pexp_ident "x" (fid.ml[]..[])
+                        [
+                          <label> "off"
+                            expression (fid.ml[]..[])
+                              Pexp_ident "off" (fid.ml[]..[])
+                          <label> ""
+                            expression (fid.ml[]..[])
+                              Pexp_ident "i" (fid.ml[]..[])
+                        ]
+                  ]
+            ]
+    ]
+  structure_item (fid.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fid.ml[]..[])
+          Ppat_var "allxid" (fid.ml[]..[])
+        expression (fid.ml[]..[])
+          Pexp_fun "?off"
+          Some
+            expression (fid.ml[]..[])
+              Pexp_constant Const_int 0
+          pattern (fid.ml[]..[])
+            Ppat_var "off" (fid.ml[]..[])
+          expression (fid.ml[]..[])
+            Pexp_function
+            [
+              <case>
+                pattern (fid.ml[]..[])
+                  Ppat_var "i" (fid.ml[]..[])
+                expression (fid.ml[]..[])
+                  Pexp_variant "Lid"
+                  Some
+                    expression (fid.ml[]..[])
+                      Pexp_apply
+                      expression (fid.ml[]..[])
+                        Pexp_ident "allx" (fid.ml[]..[])
+                      [
+                        <label> "off"
+                          expression (fid.ml[]..[])
+                            Pexp_ident "off" (fid.ml[]..[])
+                        <label> ""
+                          expression (fid.ml[]..[])
+                            Pexp_ident "i" (fid.ml[]..[])
+                      ]
+            ]
+    ]
+]

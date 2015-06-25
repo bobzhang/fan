@@ -1,0 +1,504 @@
+[
+  structure_item (fan.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fan.ml[]..[])
+          Ppat_var "compile" (fan.ml[]..[])
+        expression (fan.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (fan.ml[]..[])
+                Ppat_constraint
+                pattern (fan.ml[]..[])
+                  Ppat_alias "x" (fan.ml[]..[])
+                  pattern (fan.ml[]..[])
+                    Ppat_record Open
+                    [
+                      "file" (fan.ml[]..[])
+                        pattern (fan.ml[]..[])
+                          Ppat_var "name" (fan.ml[]..[])
+                    ]
+                core_type (fan.ml[]..[])
+                  Ptyp_constr "Main_spec.compile_info" (fan.ml[]..[])
+                  []
+              expression (fan.ml[]..[])
+                Pexp_constraint
+                expression (fan.ml[]..[])
+                  Pexp_sequence
+                  expression (fan.ml[]..[])
+                    Pexp_ifthenelse
+                    expression (fan.ml[]..[])
+                      Pexp_field
+                      expression (fan.ml[]..[])
+                        Pexp_ident "x" (fan.ml[]..[])
+                      "show_where" (fan.ml[]..[])
+                    expression (fan.ml[]..[])
+                      Pexp_sequence
+                      expression (fan.ml[]..[])
+                        Pexp_apply
+                        expression (fan.ml[]..[])
+                          Pexp_ident "print_endline" (fan.ml[]..[])
+                        [
+                          <label> ""
+                            expression (fan.ml[]..[])
+                              Pexp_ident "Configf.fan_plugins_library" (fan.ml[]..[])
+                        ]
+                      expression (fan.ml[]..[])
+                        Pexp_apply
+                        expression (fan.ml[]..[])
+                          Pexp_ident "exit" (fan.ml[]..[])
+                        [
+                          <label> ""
+                            expression (fan.ml[]..[])
+                              Pexp_constant Const_int 0
+                        ]
+                    None
+                  expression (fan.ml[]..[])
+                    Pexp_sequence
+                    expression (fan.ml[]..[])
+                      Pexp_match
+                      expression (fan.ml[]..[])
+                        Pexp_field
+                        expression (fan.ml[]..[])
+                          Pexp_ident "x" (fan.ml[]..[])
+                        "output_file" (fan.ml[]..[])
+                      [
+                        <case>
+                          pattern (fan.ml[]..[])
+                            Ppat_construct "Some" (fan.ml[]..[])
+                            Some
+                              pattern (fan.ml[]..[])
+                                Ppat_any
+                          expression (fan.ml[]..[])
+                            Pexp_apply
+                            expression (fan.ml[]..[])
+                              Pexp_ident ":=" (fan.ml[]..[])
+                            [
+                              <label> ""
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "Fan_args.output_file" (fan.ml[]..[])
+                              <label> ""
+                                expression (fan.ml[]..[])
+                                  Pexp_field
+                                  expression (fan.ml[]..[])
+                                    Pexp_ident "x" (fan.ml[]..[])
+                                  "output_file" (fan.ml[]..[])
+                            ]
+                        <case>
+                          pattern (fan.ml[]..[])
+                            Ppat_any
+                          expression (fan.ml[]..[])
+                            Pexp_construct "()" (fan.ml[]..[])
+                            None
+                      ]
+                    expression (fan.ml[]..[])
+                      Pexp_sequence
+                      expression (fan.ml[]..[])
+                        Pexp_apply
+                        expression (fan.ml[]..[])
+                          Pexp_ident "List.iter" (fan.ml[]..[])
+                        [
+                          <label> ""
+                            expression (fan.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (fan.ml[]..[])
+                                    Ppat_var "dir" (fan.ml[]..[])
+                                  expression (fan.ml[]..[])
+                                    Pexp_apply
+                                    expression (fan.ml[]..[])
+                                      Pexp_ident "Ref.modify" (fan.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fan.ml[]..[])
+                                          Pexp_ident "Configf.dynload_dirs" (fan.ml[]..[])
+                                      <label> ""
+                                        expression (fan.ml[]..[])
+                                          Pexp_apply
+                                          expression (fan.ml[]..[])
+                                            Pexp_ident "Util.cons" (fan.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (fan.ml[]..[])
+                                                Pexp_ident "dir" (fan.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                          <label> ""
+                            expression (fan.ml[]..[])
+                              Pexp_field
+                              expression (fan.ml[]..[])
+                                Pexp_ident "x" (fan.ml[]..[])
+                              "include_dirs" (fan.ml[]..[])
+                        ]
+                      expression (fan.ml[]..[])
+                        Pexp_sequence
+                        expression (fan.ml[]..[])
+                          Pexp_apply
+                          expression (fan.ml[]..[])
+                            Pexp_ident "List.iter" (fan.ml[]..[])
+                          [
+                            <label> ""
+                              expression (fan.ml[]..[])
+                                Pexp_ident "Control_require.add" (fan.ml[]..[])
+                            <label> ""
+                              expression (fan.ml[]..[])
+                                Pexp_field
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "x" (fan.ml[]..[])
+                                "plugins" (fan.ml[]..[])
+                          ]
+                        expression (fan.ml[]..[])
+                          Pexp_sequence
+                          expression (fan.ml[]..[])
+                            Pexp_ifthenelse
+                            expression (fan.ml[]..[])
+                              Pexp_field
+                              expression (fan.ml[]..[])
+                                Pexp_ident "x" (fan.ml[]..[])
+                              "show_printers" (fan.ml[]..[])
+                            expression (fan.ml[]..[])
+                              Pexp_sequence
+                              expression (fan.ml[]..[])
+                                Pexp_apply
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "|>" (fan.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (fan.ml[]..[])
+                                      Pexp_ident "Prelude.backends" (fan.ml[]..[])
+                                  <label> ""
+                                    expression (fan.ml[]..[])
+                                      Pexp_apply
+                                      expression (fan.ml[]..[])
+                                        Pexp_ident "Hashtbl.iter" (fan.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (fan.ml[]..[])
+                                            Pexp_function
+                                            [
+                                              <case>
+                                                pattern (fan.ml[]..[])
+                                                  Ppat_var "k" (fan.ml[]..[])
+                                                expression (fan.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (fan.ml[]..[])
+                                                        Ppat_constraint
+                                                        pattern (fan.ml[]..[])
+                                                          Ppat_var "x" (fan.ml[]..[])
+                                                        core_type (fan.ml[]..[])
+                                                          Ptyp_constr "Prelude.backend" (fan.ml[]..[])
+                                                          []
+                                                      expression (fan.ml[]..[])
+                                                        Pexp_apply
+                                                        expression (fan.ml[]..[])
+                                                          Pexp_ident "Format.eprintf" (fan.ml[]..[])
+                                                        [
+                                                          <label> ""
+                                                            expression (fan.ml[]..[])
+                                                              Pexp_constant Const_string("@[%s: %s@]@\n",None)
+                                                          <label> ""
+                                                            expression (fan.ml[]..[])
+                                                              Pexp_ident "k" (fan.ml[]..[])
+                                                          <label> ""
+                                                            expression (fan.ml[]..[])
+                                                              Pexp_field
+                                                              expression (fan.ml[]..[])
+                                                                Pexp_ident "x" (fan.ml[]..[])
+                                                              "descr" (fan.ml[]..[])
+                                                        ]
+                                                  ]
+                                            ]
+                                      ]
+                                ]
+                              expression (fan.ml[]..[])
+                                Pexp_apply
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "exit" (fan.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (fan.ml[]..[])
+                                      Pexp_constant Const_int 0
+                                ]
+                            Some
+                              expression (fan.ml[]..[])
+                                Pexp_construct "()" (fan.ml[]..[])
+                                None
+                          expression (fan.ml[]..[])
+                            Pexp_sequence
+                            expression (fan.ml[]..[])
+                              Pexp_match
+                              expression (fan.ml[]..[])
+                                Pexp_field
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "x" (fan.ml[]..[])
+                                "printer" (fan.ml[]..[])
+                              [
+                                <case>
+                                  pattern (fan.ml[]..[])
+                                    Ppat_construct "None" (fan.ml[]..[])
+                                    None
+                                  expression (fan.ml[]..[])
+                                    Pexp_construct "()" (fan.ml[]..[])
+                                    None
+                                <case>
+                                  pattern (fan.ml[]..[])
+                                    Ppat_construct "Some" (fan.ml[]..[])
+                                    Some
+                                      pattern (fan.ml[]..[])
+                                        Ppat_var "s" (fan.ml[]..[])
+                                  expression (fan.ml[]..[])
+                                    Pexp_let Nonrec
+                                    [
+                                      <def>
+                                        pattern (fan.ml[]..[])
+                                          Ppat_var "x" (fan.ml[]..[])
+                                        expression (fan.ml[]..[])
+                                          Pexp_try
+                                          expression (fan.ml[]..[])
+                                            Pexp_apply
+                                            expression (fan.ml[]..[])
+                                              Pexp_ident "Hashtbl.find" (fan.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (fan.ml[]..[])
+                                                  Pexp_ident "Prelude.backends" (fan.ml[]..[])
+                                              <label> ""
+                                                expression (fan.ml[]..[])
+                                                  Pexp_ident "s" (fan.ml[]..[])
+                                            ]
+                                          [
+                                            <case>
+                                              pattern (fan.ml[]..[])
+                                                Ppat_construct "Not_found" (fan.ml[]..[])
+                                                None
+                                              expression (fan.ml[]..[])
+                                                Pexp_apply
+                                                expression (fan.ml[]..[])
+                                                  Pexp_ident "Util.failwithf" (fan.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (fan.ml[]..[])
+                                                      Pexp_constant Const_string("%s backend not found",None)
+                                                  <label> ""
+                                                    expression (fan.ml[]..[])
+                                                      Pexp_ident "s" (fan.ml[]..[])
+                                                ]
+                                          ]
+                                    ]
+                                    expression (fan.ml[]..[])
+                                      Pexp_sequence
+                                      expression (fan.ml[]..[])
+                                        Pexp_apply
+                                        expression (fan.ml[]..[])
+                                          Pexp_ident ":=" (fan.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (fan.ml[]..[])
+                                              Pexp_ident "Prelude.sigi_printer" (fan.ml[]..[])
+                                          <label> ""
+                                            expression (fan.ml[]..[])
+                                              Pexp_field
+                                              expression (fan.ml[]..[])
+                                                Pexp_ident "x" (fan.ml[]..[])
+                                              "interf" (fan.ml[]..[])
+                                        ]
+                                      expression (fan.ml[]..[])
+                                        Pexp_apply
+                                        expression (fan.ml[]..[])
+                                          Pexp_ident ":=" (fan.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (fan.ml[]..[])
+                                              Pexp_ident "Prelude.stru_printer" (fan.ml[]..[])
+                                          <label> ""
+                                            expression (fan.ml[]..[])
+                                              Pexp_field
+                                              expression (fan.ml[]..[])
+                                                Pexp_ident "x" (fan.ml[]..[])
+                                              "implem" (fan.ml[]..[])
+                                        ]
+                              ]
+                            expression (fan.ml[]..[])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (fan.ml[]..[])
+                                    Ppat_var "check" (fan.ml[]..[])
+                                  expression (fan.ml[]..[])
+                                    Pexp_apply
+                                    expression (fan.ml[]..[])
+                                      Pexp_ident "Filename.check_suffix" (fan.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fan.ml[]..[])
+                                          Pexp_ident "name" (fan.ml[]..[])
+                                    ]
+                              ]
+                              expression (fan.ml[]..[])
+                                Pexp_apply
+                                expression (fan.ml[]..[])
+                                  Pexp_ident "Fan_args.input_file" (fan.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (fan.ml[]..[])
+                                      Pexp_ifthenelse
+                                      expression (fan.ml[]..[])
+                                        Pexp_apply
+                                        expression (fan.ml[]..[])
+                                          Pexp_ident "check" (fan.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (fan.ml[]..[])
+                                              Pexp_constant Const_string(".mli",None)
+                                        ]
+                                      expression (fan.ml[]..[])
+                                        Pexp_construct "Intf" (fan.ml[]..[])
+                                        Some
+                                          expression (fan.ml[]..[])
+                                            Pexp_ident "name" (fan.ml[]..[])
+                                      Some
+                                        expression (fan.ml[]..[])
+                                          Pexp_ifthenelse
+                                          expression (fan.ml[]..[])
+                                            Pexp_apply
+                                            expression (fan.ml[]..[])
+                                              Pexp_ident "check" (fan.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (fan.ml[]..[])
+                                                  Pexp_constant Const_string(".ml",None)
+                                            ]
+                                          expression (fan.ml[]..[])
+                                            Pexp_construct "Impl" (fan.ml[]..[])
+                                            Some
+                                              expression (fan.ml[]..[])
+                                                Pexp_ident "name" (fan.ml[]..[])
+                                          Some
+                                            expression (fan.ml[]..[])
+                                              Pexp_ifthenelse
+                                              expression (fan.ml[]..[])
+                                                Pexp_apply
+                                                expression (fan.ml[]..[])
+                                                  Pexp_ident "check" (fan.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (fan.ml[]..[])
+                                                      Pexp_ident "Dyn_load.objext" (fan.ml[]..[])
+                                                ]
+                                              expression (fan.ml[]..[])
+                                                Pexp_construct "ModuleImpl" (fan.ml[]..[])
+                                                Some
+                                                  expression (fan.ml[]..[])
+                                                    Pexp_ident "name" (fan.ml[]..[])
+                                              Some
+                                                expression (fan.ml[]..[])
+                                                  Pexp_ifthenelse
+                                                  expression (fan.ml[]..[])
+                                                    Pexp_apply
+                                                    expression (fan.ml[]..[])
+                                                      Pexp_ident "check" (fan.ml[]..[])
+                                                    [
+                                                      <label> ""
+                                                        expression (fan.ml[]..[])
+                                                          Pexp_ident "Dyn_load.libext" (fan.ml[]..[])
+                                                    ]
+                                                  expression (fan.ml[]..[])
+                                                    Pexp_construct "ModuleImpl" (fan.ml[]..[])
+                                                    Some
+                                                      expression (fan.ml[]..[])
+                                                        Pexp_ident "name" (fan.ml[]..[])
+                                                  Some
+                                                    expression (fan.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (fan.ml[]..[])
+                                                        Pexp_ident "raise" (fan.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (fan.ml[]..[])
+                                                            Pexp_construct "Arg.Bad" (fan.ml[]..[])
+                                                            Some
+                                                              expression (fan.ml[]..[])
+                                                                Pexp_apply
+                                                                expression (fan.ml[]..[])
+                                                                  Pexp_ident "^" (fan.ml[]..[])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (fan.ml[]..[])
+                                                                      Pexp_constant Const_string("don't know what to do with ",None)
+                                                                  <label> ""
+                                                                    expression (fan.ml[]..[])
+                                                                      Pexp_ident "name" (fan.ml[]..[])
+                                                                ]
+                                                      ]
+                                ]
+                core_type (fan.ml[]..[])
+                  Ptyp_constr "unit" (fan.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (fan.ml[]..[])
+    Pstr_open Fresh "Cmdliner" (fan.ml[]..[])
+  structure_item (fan.ml[]..[])
+    Pstr_eval
+    expression (fan.ml[]..[])
+      Pexp_sequence
+      expression (fan.ml[]..[])
+        Pexp_apply
+        expression (fan.ml[]..[])
+          Pexp_ident "Ast_parsers.use_parsers" (fan.ml[]..[])
+        [
+          <label> ""
+            expression (fan.ml[]..[])
+              Pexp_construct "::" (fan.ml[]..[])
+              Some
+                expression (fan.ml[]..[])
+                  Pexp_tuple
+                  [
+                    expression (fan.ml[]..[])
+                      Pexp_constant Const_string("fan",None)
+                    expression (fan.ml[]..[])
+                      Pexp_construct "[]" (fan.ml[]..[])
+                      None
+                  ]
+        ]
+      expression (fan.ml[]..[])
+        Pexp_apply
+        expression (fan.ml[]..[])
+          Pexp_ident "Term.eval" (fan.ml[]..[])
+        [
+          <label> ""
+            expression (fan.ml[]..[])
+              Pexp_tuple
+              [
+                expression (fan.ml[]..[])
+                  Pexp_open Fresh ""Term" (fan.ml[]..[])"
+                  expression (fan.ml[]..[])
+                    Pexp_apply
+                    expression (fan.ml[]..[])
+                      Pexp_ident "app" (fan.ml[]..[])
+                    [
+                      <label> ""
+                        expression (fan.ml[]..[])
+                          Pexp_apply
+                          expression (fan.ml[]..[])
+                            Pexp_ident "pure" (fan.ml[]..[])
+                          [
+                            <label> ""
+                              expression (fan.ml[]..[])
+                                Pexp_ident "compile" (fan.ml[]..[])
+                          ]
+                      <label> ""
+                        expression (fan.ml[]..[])
+                          Pexp_ident "Main_spec.compile_info_arg" (fan.ml[]..[])
+                    ]
+                expression (fan.ml[]..[])
+                  Pexp_ident "Main_spec.info" (fan.ml[]..[])
+              ]
+        ]
+]

@@ -1,0 +1,59 @@
+40,43c40,42
+<         expression (dyn_load.ml[12,221+9]..[33,908+3])
+<           Pexp_function
+<           [
+<             <case>
+---
+>         expression (dyn_load.ml[12,221+9]..[33,908+3]) ghost
+>           Pexp_fun ""
+>           None
+66c65
+<                   expression (dyn_load.ml[15,275+7]..[25,529+45])
+---
+>               expression (dyn_load.ml[15,275+6]..[25,529+46])
+80c79
+<                       expression (dyn_load.ml[16,286+8]..[20,403+11])
+---
+>                   expression (dyn_load.ml[18,327+10]..[19,372+30])
+92c91
+<                         expression (dyn_load.ml[16,286+8]..[20,403+11])
+---
+>                     expression (dyn_load.ml[19,372+10]..[19,372+30])
+118c117
+<                               expression (dyn_load.ml[24,470+13]..[25,529+44])
+---
+>                           expression (dyn_load.ml[24,470+12]..[25,529+45])
+139c138
+<                 expression (dyn_load.ml[13,237+2]..[33,908+3])
+---
+>             expression (dyn_load.ml[26,577+4]..[32,829+78])
+147c146
+<                         expression (dyn_load.ml[27,610+16]..[27,610+75])
+---
+>                     expression (dyn_load.ml[27,610+15]..[27,610+76])
+150c149
+<                             expression (dyn_load.ml[27,610+16]..[27,610+75])
+---
+>                         expression (dyn_load.ml[27,610+16]..[27,610+75]) ghost
+158c157
+<                                     expression (dyn_load.ml[27,610+23]..[27,610+75])
+---
+>                                 expression (dyn_load.ml[27,610+23]..[27,610+75]) ghost
+189c188
+<                             expression (dyn_load.ml[29,701+21]..[29,701+59])
+---
+>                         expression (dyn_load.ml[29,701+20]..[29,701+60])
+231c230
+<                                   expression (dyn_load.ml[32,829+39]..[32,829+77])
+---
+>                               expression (dyn_load.ml[32,829+38]..[32,829+78])
+253d251
+<     ]
+257a256,262
+>           attribute "ocaml.doc"
+>             [
+>               structure_item (dyn_load.ml[35,913+0]..[36,935+54])
+>                 Pstr_eval
+>                 expression (dyn_load.ml[35,913+0]..[36,935+54])
+>                   Pexp_constant Const_string(" no repeat loading\n    FIXME? it can only load [cma] and [cmxs] files? ",None)
+>             ]

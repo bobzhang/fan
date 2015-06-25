@@ -1,0 +1,600 @@
+[
+  structure_item (parsef.ml[]..[])
+    Pstr_open Fresh "Astf" (parsef.ml[]..[])
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "ep" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_apply
+          expression (parsef.ml[]..[])
+            Pexp_ident "Gramf.mk" (parsef.ml[]..[])
+          [
+            <label> ""
+              expression (parsef.ml[]..[])
+                Pexp_constant Const_string("ep",None)
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_eval
+    expression (parsef.ml[]..[])
+      Pexp_apply
+      expression (parsef.ml[]..[])
+        Pexp_ident "Gramf.extend_single" (parsef.ml[]..[])
+      [
+        <label> ""
+          expression (parsef.ml[]..[]) 
+            Pexp_constraint
+            expression (parsef.ml[]..[])
+              Pexp_record
+              [
+                "entry" (parsef.ml[]..[])
+                  expression (parsef.ml[]..[]) 
+                    Pexp_constraint
+                    expression (parsef.ml[]..[])
+                      Pexp_ident "ep" (parsef.ml[]..[])
+                    core_type (parsef.ml[]..[])
+                      Ptyp_constr "Gramf.t" (parsef.ml[]..[])
+                      [
+                        core_type (parsef.ml[]..[])
+                          Ptyp_var ep
+                      ]
+                "olevel" (parsef.ml[]..[])
+                  expression (parsef.ml[]..[]) 
+                    Pexp_constraint
+                    expression (parsef.ml[]..[])
+                      Pexp_record
+                      [
+                        "label" (parsef.ml[]..[])
+                          expression (parsef.ml[]..[])
+                            Pexp_construct "None" (parsef.ml[]..[])
+                            None
+                        "lassoc" (parsef.ml[]..[])
+                          expression (parsef.ml[]..[])
+                            Pexp_construct "true" (parsef.ml[]..[])
+                            None
+                        "productions" (parsef.ml[]..[])
+                          expression (parsef.ml[]..[])
+                            Pexp_construct "::" (parsef.ml[]..[]) 
+                            Some
+                              expression (parsef.ml[]..[]) 
+                                Pexp_tuple
+                                [
+                                  expression (parsef.ml[]..[])
+                                    Pexp_record
+                                    [
+                                      "symbols" (parsef.ml[]..[])
+                                        expression (parsef.ml[]..[])
+                                          Pexp_construct "::" (parsef.ml[]..[]) 
+                                          Some
+                                            expression (parsef.ml[]..[]) 
+                                              Pexp_tuple
+                                              [
+                                                expression (parsef.ml[]..[])
+                                                  Pexp_construct "Token" (parsef.ml[]..[])
+                                                  Some
+                                                    expression (parsef.ml[]..[]) 
+                                                      Pexp_constraint
+                                                      expression (parsef.ml[]..[])
+                                                        Pexp_record
+                                                        [
+                                                          "descr" (parsef.ml[]..[])
+                                                            expression (parsef.ml[]..[])
+                                                              Pexp_record
+                                                              [
+                                                                "tag" (parsef.ml[]..[])
+                                                                  expression (parsef.ml[]..[])
+                                                                    Pexp_variant "Lid"
+                                                                    None
+                                                                "word" (parsef.ml[]..[])
+                                                                  expression (parsef.ml[]..[])
+                                                                    Pexp_construct "Any" (parsef.ml[]..[])
+                                                                    None
+                                                                "tag_name" (parsef.ml[]..[])
+                                                                  expression (parsef.ml[]..[])
+                                                                    Pexp_constant Const_string("Lid",None)
+                                                              ]
+                                                              None
+                                                        ]
+                                                        None
+                                                      core_type (parsef.ml[]..[])
+                                                        Ptyp_constr "Tokenf.pattern" (parsef.ml[]..[])
+                                                        []
+                                                expression (parsef.ml[]..[]) 
+                                                  Pexp_construct "[]" (parsef.ml[]..[]) 
+                                                  None
+                                              ]
+                                      "annot" (parsef.ml[]..[])
+                                        expression (parsef.ml[]..[])
+                                          Pexp_constant Const_string("(`Lid (_loc, x) :> Astf.ep)\n",None)
+                                      "fn" (parsef.ml[]..[])
+                                        expression (parsef.ml[]..[])
+                                          Pexp_apply
+                                          expression (parsef.ml[]..[])
+                                            Pexp_ident "Gramf.mk_action" (parsef.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (parsef.ml[]..[]) 
+                                                Pexp_constraint
+                                                expression (parsef.ml[]..[])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (parsef.ml[]..[])
+                                                        Ppat_constraint
+                                                        pattern (parsef.ml[]..[])
+                                                          Ppat_var "__fan_0" (parsef.ml[]..[])
+                                                        core_type (parsef.ml[]..[])
+                                                          Ptyp_constr "Tokenf.txt" (parsef.ml[]..[])
+                                                          []
+                                                      expression (parsef.ml[]..[])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (parsef.ml[]..[])
+                                                              Ppat_constraint
+                                                              pattern (parsef.ml[]..[])
+                                                                Ppat_var "_loc" (parsef.ml[]..[])
+                                                              core_type (parsef.ml[]..[])
+                                                                Ptyp_constr "Locf.t" (parsef.ml[]..[])
+                                                                []
+                                                            expression (parsef.ml[]..[])
+                                                              Pexp_let Nonrec
+                                                              [
+                                                                <def>
+                                                                  pattern (parsef.ml[]..[])
+                                                                    Ppat_var "x" (parsef.ml[]..[])
+                                                                  expression (parsef.ml[]..[])
+                                                                    Pexp_field
+                                                                    expression (parsef.ml[]..[])
+                                                                      Pexp_ident "__fan_0" (parsef.ml[]..[])
+                                                                    "txt" (parsef.ml[]..[])
+                                                              ]
+                                                              expression (parsef.ml[]..[]) 
+                                                                Pexp_constraint
+                                                                expression (parsef.ml[]..[]) 
+                                                                  Pexp_coerce
+                                                                  expression (parsef.ml[]..[])
+                                                                    Pexp_variant "Lid"
+                                                                    Some
+                                                                      expression (parsef.ml[]..[])
+Pexp_tuple
+[
+  expression (parsef.ml[]..[])
+    Pexp_ident "_loc" (parsef.ml[]..[])
+  expression (parsef.ml[]..[])
+    Pexp_ident "x" (parsef.ml[]..[])
+]
+                                                                  None
+                                                                  core_type (parsef.ml[]..[])
+                                                                    Ptyp_constr "Astf.ep" (parsef.ml[]..[])
+                                                                    []
+                                                                core_type (parsef.ml[]..[])
+                                                                  Ptyp_var ep
+                                                        ]
+                                                  ]
+                                                core_type (parsef.ml[]..[])
+                                                  Ptyp_arrow
+                                                  ""
+                                                  core_type (parsef.ml[]..[])
+                                                    Ptyp_constr "Tokenf.txt" (parsef.ml[]..[])
+                                                    []
+                                                  core_type (parsef.ml[]..[])
+                                                    Ptyp_arrow
+                                                    ""
+                                                    core_type (parsef.ml[]..[])
+                                                      Ptyp_constr "Locf.t" (parsef.ml[]..[])
+                                                      []
+                                                    core_type (parsef.ml[]..[])
+                                                      Ptyp_var ep
+                                          ]
+                                    ]
+                                    None
+                                  expression (parsef.ml[]..[]) 
+                                    Pexp_construct "[]" (parsef.ml[]..[]) 
+                                    None
+                                ]
+                      ]
+                      None
+                    core_type (parsef.ml[]..[])
+                      Ptyp_constr "Gramf.olevel" (parsef.ml[]..[])
+                      []
+              ]
+              None
+            core_type (parsef.ml[]..[])
+              Ptyp_constr "Gramf.single_extend_statement" (parsef.ml[]..[])
+              [
+                core_type (parsef.ml[]..[])
+                  Ptyp_any
+              ]
+      ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "exp" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_var "loc" (parsef.ml[]..[])
+              expression (parsef.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (parsef.ml[]..[])
+                      Ppat_var "str" (parsef.ml[]..[])
+                    expression (parsef.ml[]..[])
+                      Pexp_apply
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Gramlib.parse_string_eoi" (parsef.ml[]..[])
+                      [
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "Syntaxf.exp" (parsef.ml[]..[])
+                        <label> "loc"
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "loc" (parsef.ml[]..[])
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "str" (parsef.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "pat" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_var "loc" (parsef.ml[]..[])
+              expression (parsef.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (parsef.ml[]..[])
+                      Ppat_var "str" (parsef.ml[]..[])
+                    expression (parsef.ml[]..[])
+                      Pexp_apply
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Gramlib.parse_string_eoi" (parsef.ml[]..[])
+                      [
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "Syntaxf.pat" (parsef.ml[]..[])
+                        <label> "loc"
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "loc" (parsef.ml[]..[])
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "str" (parsef.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "stru" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_var "loc" (parsef.ml[]..[])
+              expression (parsef.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (parsef.ml[]..[])
+                      Ppat_var "str" (parsef.ml[]..[])
+                    expression (parsef.ml[]..[])
+                      Pexp_apply
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Gramlib.parse_string_eoi" (parsef.ml[]..[])
+                      [
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "Syntaxf.stru" (parsef.ml[]..[])
+                        <label> "loc"
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "loc" (parsef.ml[]..[])
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "str" (parsef.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "ep" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_var "loc" (parsef.ml[]..[])
+              expression (parsef.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (parsef.ml[]..[])
+                      Ppat_var "str" (parsef.ml[]..[])
+                    expression (parsef.ml[]..[]) 
+                      Pexp_constraint
+                      expression (parsef.ml[]..[])
+                        Pexp_apply
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "Gramlib.parse_string_eoi" (parsef.ml[]..[])
+                        [
+                          <label> ""
+                            expression (parsef.ml[]..[])
+                              Pexp_ident "ep" (parsef.ml[]..[])
+                          <label> "loc"
+                            expression (parsef.ml[]..[])
+                              Pexp_ident "loc" (parsef.ml[]..[])
+                          <label> ""
+                            expression (parsef.ml[]..[])
+                              Pexp_ident "str" (parsef.ml[]..[])
+                        ]
+                      core_type (parsef.ml[]..[])
+                        Ptyp_constr "ep" (parsef.ml[]..[])
+                        []
+                ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "ident" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_var "loc" (parsef.ml[]..[])
+              expression (parsef.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (parsef.ml[]..[])
+                      Ppat_var "str" (parsef.ml[]..[])
+                    expression (parsef.ml[]..[])
+                      Pexp_apply
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Gramlib.parse_string_eoi" (parsef.ml[]..[])
+                      [
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "Syntaxf.ident" (parsef.ml[]..[])
+                        <label> "loc"
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "loc" (parsef.ml[]..[])
+                        <label> ""
+                          expression (parsef.ml[]..[])
+                            Pexp_ident "str" (parsef.ml[]..[])
+                      ]
+                ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "expand_exp" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_constraint
+                pattern (parsef.ml[]..[])
+                  Ppat_var "x" (parsef.ml[]..[])
+                core_type (parsef.ml[]..[])
+                  Ptyp_constr "Tokenf.quot" (parsef.ml[]..[])
+                  []
+              expression (parsef.ml[]..[])
+                Pexp_ifthenelse
+                expression (parsef.ml[]..[])
+                  Pexp_apply
+                  expression (parsef.ml[]..[])
+                    Pexp_ident "=" (parsef.ml[]..[])
+                  [
+                    <label> ""
+                      expression (parsef.ml[]..[])
+                        Pexp_field
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                        "name" (parsef.ml[]..[])
+                    <label> ""
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Tokenf.empty_name" (parsef.ml[]..[])
+                  ]
+                expression (parsef.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (parsef.ml[]..[])
+                        Ppat_var "expander" (parsef.ml[]..[])
+                      expression (parsef.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (parsef.ml[]..[])
+                              Ppat_var "loc" (parsef.ml[]..[])
+                            expression (parsef.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (parsef.ml[]..[])
+                                    Ppat_any
+                                  expression (parsef.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (parsef.ml[]..[])
+                                          Ppat_var "s" (parsef.ml[]..[])
+                                        expression (parsef.ml[]..[])
+                                          Pexp_apply
+                                          expression (parsef.ml[]..[])
+                                            Pexp_ident "exp" (parsef.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (parsef.ml[]..[])
+                                                Pexp_ident "loc" (parsef.ml[]..[])
+                                            <label> ""
+                                              expression (parsef.ml[]..[])
+                                                Pexp_ident "s" (parsef.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                        ]
+                  ]
+                  expression (parsef.ml[]..[])
+                    Pexp_apply
+                    expression (parsef.ml[]..[])
+                      Pexp_ident "Tokenf.quot_expand" (parsef.ml[]..[])
+                    [
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "expander" (parsef.ml[]..[])
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                    ]
+                Some
+                  expression (parsef.ml[]..[])
+                    Pexp_apply
+                    expression (parsef.ml[]..[])
+                      Pexp_ident "Ast_quotation.expand" (parsef.ml[]..[])
+                    [
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "Dyn_tag.exp" (parsef.ml[]..[])
+                    ]
+          ]
+    ]
+  structure_item (parsef.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (parsef.ml[]..[])
+          Ppat_var "expand_stru" (parsef.ml[]..[])
+        expression (parsef.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (parsef.ml[]..[])
+                Ppat_constraint
+                pattern (parsef.ml[]..[])
+                  Ppat_var "x" (parsef.ml[]..[])
+                core_type (parsef.ml[]..[])
+                  Ptyp_constr "Tokenf.quot" (parsef.ml[]..[])
+                  []
+              expression (parsef.ml[]..[])
+                Pexp_ifthenelse
+                expression (parsef.ml[]..[])
+                  Pexp_apply
+                  expression (parsef.ml[]..[])
+                    Pexp_ident "=" (parsef.ml[]..[])
+                  [
+                    <label> ""
+                      expression (parsef.ml[]..[])
+                        Pexp_field
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                        "name" (parsef.ml[]..[])
+                    <label> ""
+                      expression (parsef.ml[]..[])
+                        Pexp_ident "Tokenf.empty_name" (parsef.ml[]..[])
+                  ]
+                expression (parsef.ml[]..[])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (parsef.ml[]..[])
+                        Ppat_var "expander" (parsef.ml[]..[])
+                      expression (parsef.ml[]..[])
+                        Pexp_function
+                        [
+                          <case>
+                            pattern (parsef.ml[]..[])
+                              Ppat_var "loc" (parsef.ml[]..[])
+                            expression (parsef.ml[]..[])
+                              Pexp_function
+                              [
+                                <case>
+                                  pattern (parsef.ml[]..[])
+                                    Ppat_any
+                                  expression (parsef.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (parsef.ml[]..[])
+                                          Ppat_var "s" (parsef.ml[]..[])
+                                        expression (parsef.ml[]..[])
+                                          Pexp_apply
+                                          expression (parsef.ml[]..[])
+                                            Pexp_ident "stru" (parsef.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (parsef.ml[]..[])
+                                                Pexp_ident "loc" (parsef.ml[]..[])
+                                            <label> ""
+                                              expression (parsef.ml[]..[])
+                                                Pexp_ident "s" (parsef.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                        ]
+                  ]
+                  expression (parsef.ml[]..[])
+                    Pexp_apply
+                    expression (parsef.ml[]..[])
+                      Pexp_ident "Tokenf.quot_expand" (parsef.ml[]..[])
+                    [
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "expander" (parsef.ml[]..[])
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                    ]
+                Some
+                  expression (parsef.ml[]..[])
+                    Pexp_apply
+                    expression (parsef.ml[]..[])
+                      Pexp_ident "Ast_quotation.expand" (parsef.ml[]..[])
+                    [
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "x" (parsef.ml[]..[])
+                      <label> ""
+                        expression (parsef.ml[]..[])
+                          Pexp_ident "Dyn_tag.stru" (parsef.ml[]..[])
+                    ]
+          ]
+    ]
+]

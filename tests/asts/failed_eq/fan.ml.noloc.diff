@@ -1,0 +1,60 @@
+2a3,18
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan.ml[]..[])
+>         Pstr_eval
+>         expression (fan.ml[]..[])
+>           Pexp_constant Const_string(" FIXME the command line parsing  can not handle prefix problem,\n    e.g. -p -px will cause some problem ",None)
+>     ]
+>   structure_item (fan.ml[]..[])
+>     Pstr_attribute "ocaml.text"
+>     [
+>       structure_item (fan.ml[]..[])
+>         Pstr_eval
+>         expression (fan.ml[]..[])
+>           Pexp_constant Const_string(" The first argument is file name\n    we dispatch different functions based on the filename extension\n    handle the file name \n ",None)
+>     ]
+>   structure_item (fan.ml[]..[])
+5a22,28
+>           attribute "ocaml.text"
+>             [
+>               structure_item (fan.ml[]..[])
+>                 Pstr_eval
+>                 expression (fan.ml[]..[])
+>                   Pexp_constant Const_string(" The first argument is file name\n    we dispatch different functions based on the filename extension\n    handle the file name \n ",None)
+>             ]
+9,11c32,33
+<           Pexp_function
+<           [
+<             <case>
+---
+>           Pexp_fun ""
+>           None
+105,107c127,128
+<                               Pexp_function
+<                               [
+<                                 <case>
+---
+>                           Pexp_fun ""
+>                           None
+129d149
+<                               ]
+181,183c201,202
+<                                             Pexp_function
+<                                             [
+<                                               <case>
+---
+>                                         Pexp_fun ""
+>                                         None
+187,189c206,207
+<                                                   Pexp_function
+<                                                   [
+<                                                     <case>
+---
+>                                           Pexp_fun ""
+>                                           None
+217,218d234
+<                                       ]
+<                                 ]
+444d459
+<     ]

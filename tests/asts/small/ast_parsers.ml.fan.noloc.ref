@@ -1,0 +1,296 @@
+[
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_open Fresh "Util" (ast_parsers.ml[]..[])
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "key" (ast_parsers.ml[]..[]) (ast_parsers.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_parsers.ml[]..[])
+              Ptyp_constr "string" (ast_parsers.ml[]..[])
+              []
+    ]
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "effect" (ast_parsers.ml[]..[]) (ast_parsers.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_parsers.ml[]..[])
+              Ptyp_arrow
+              ""
+              core_type (ast_parsers.ml[]..[])
+                Ptyp_constr "unit" (ast_parsers.ml[]..[])
+                []
+              core_type (ast_parsers.ml[]..[])
+                Ptyp_constr "unit" (ast_parsers.ml[]..[])
+                []
+    ]
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_parsers.ml[]..[])
+          Ppat_var "applied_parsers" (ast_parsers.ml[]..[])
+        expression (ast_parsers.ml[]..[])
+          Pexp_constraint
+          expression (ast_parsers.ml[]..[])
+            Pexp_apply
+            expression (ast_parsers.ml[]..[])
+              Pexp_ident "Queue.create" (ast_parsers.ml[]..[])
+            [
+              <label> ""
+                expression (ast_parsers.ml[]..[])
+                  Pexp_construct "()" (ast_parsers.ml[]..[])
+                  None
+            ]
+          core_type (ast_parsers.ml[]..[])
+            Ptyp_constr "Queue.t" (ast_parsers.ml[]..[])
+            [
+              core_type (ast_parsers.ml[]..[])
+                Ptyp_tuple
+                [
+                  core_type (ast_parsers.ml[]..[])
+                    Ptyp_constr "string" (ast_parsers.ml[]..[])
+                    []
+                  core_type (ast_parsers.ml[]..[])
+                    Ptyp_constr "effect" (ast_parsers.ml[]..[])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_parsers.ml[]..[])
+          Ppat_var "registered_parsers" (ast_parsers.ml[]..[])
+        expression (ast_parsers.ml[]..[])
+          Pexp_constraint
+          expression (ast_parsers.ml[]..[])
+            Pexp_apply
+            expression (ast_parsers.ml[]..[])
+              Pexp_ident "Hashtbl.create" (ast_parsers.ml[]..[])
+            [
+              <label> ""
+                expression (ast_parsers.ml[]..[])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_parsers.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (ast_parsers.ml[]..[])
+            [
+              core_type (ast_parsers.ml[]..[])
+                Ptyp_constr "key" (ast_parsers.ml[]..[])
+                []
+              core_type (ast_parsers.ml[]..[])
+                Ptyp_constr "effect" (ast_parsers.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_parsers.ml[]..[])
+          Ppat_var "use_parsers" (ast_parsers.ml[]..[])
+        expression (ast_parsers.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_parsers.ml[]..[])
+                Ppat_var "ls" (ast_parsers.ml[]..[])
+              expression (ast_parsers.ml[]..[])
+                Pexp_apply
+                expression (ast_parsers.ml[]..[])
+                  Pexp_ident "List.iter" (ast_parsers.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_parsers.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_parsers.ml[]..[])
+                            Ppat_var "s" (ast_parsers.ml[]..[])
+                          expression (ast_parsers.ml[]..[])
+                            Pexp_apply
+                            expression (ast_parsers.ml[]..[])
+                              Pexp_try
+                              expression (ast_parsers.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (ast_parsers.ml[]..[])
+                                      Ppat_var "u" (ast_parsers.ml[]..[])
+                                    expression (ast_parsers.ml[]..[])
+                                      Pexp_apply
+                                      expression (ast_parsers.ml[]..[])
+                                        Pexp_ident "Hashtbl.find" (ast_parsers.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (ast_parsers.ml[]..[])
+                                            Pexp_ident "registered_parsers" (ast_parsers.ml[]..[])
+                                        <label> ""
+                                          expression (ast_parsers.ml[]..[])
+                                            Pexp_ident "s" (ast_parsers.ml[]..[])
+                                      ]
+                                ]
+                                expression (ast_parsers.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (ast_parsers.ml[]..[])
+                                        Ppat_construct "()" (ast_parsers.ml[]..[])
+                                        None
+                                      expression (ast_parsers.ml[]..[])
+                                        Pexp_let Nonrec
+                                        [
+                                          <def>
+                                            pattern (ast_parsers.ml[]..[])
+                                              Ppat_any
+                                            expression (ast_parsers.ml[]..[])
+                                              Pexp_apply
+                                              expression (ast_parsers.ml[]..[])
+                                                Pexp_ident "Queue.add" (ast_parsers.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (ast_parsers.ml[]..[])
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (ast_parsers.ml[]..[])
+                                                        Pexp_ident "s" (ast_parsers.ml[]..[])
+                                                      expression (ast_parsers.ml[]..[])
+                                                        Pexp_ident "u" (ast_parsers.ml[]..[])
+                                                    ]
+                                                <label> ""
+                                                  expression (ast_parsers.ml[]..[])
+                                                    Pexp_ident "applied_parsers" (ast_parsers.ml[]..[])
+                                              ]
+                                        ]
+                                        expression (ast_parsers.ml[]..[])
+                                          Pexp_apply
+                                          expression (ast_parsers.ml[]..[])
+                                            Pexp_ident "u" (ast_parsers.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (ast_parsers.ml[]..[])
+                                                Pexp_construct "()" (ast_parsers.ml[]..[])
+                                                None
+                                          ]
+                                  ]
+                              [
+                                <case>
+                                  pattern (ast_parsers.ml[]..[])
+                                    Ppat_construct "Not_found" (ast_parsers.ml[]..[])
+                                    None
+                                  expression (ast_parsers.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (ast_parsers.ml[]..[])
+                                          Ppat_construct "()" (ast_parsers.ml[]..[])
+                                          None
+                                        expression (ast_parsers.ml[]..[])
+                                          Pexp_apply
+                                          expression (ast_parsers.ml[]..[])
+                                            Pexp_ident "failwithf" (ast_parsers.ml[]..[])
+                                          [
+                                            <label> ""
+                                              expression (ast_parsers.ml[]..[])
+                                                Pexp_constant Const_string("parser %s is not registered",None)
+                                            <label> ""
+                                              expression (ast_parsers.ml[]..[])
+                                                Pexp_ident "s" (ast_parsers.ml[]..[])
+                                          ]
+                                    ]
+                              ]
+                            [
+                              <label> ""
+                                expression (ast_parsers.ml[]..[])
+                                  Pexp_construct "()" (ast_parsers.ml[]..[])
+                                  None
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_parsers.ml[]..[])
+                      Pexp_ident "ls" (ast_parsers.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_parsers.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_parsers.ml[]..[])
+          Ppat_var "register_parser" (ast_parsers.ml[]..[])
+        expression (ast_parsers.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_parsers.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (ast_parsers.ml[]..[])
+                    Ppat_var "k" (ast_parsers.ml[]..[])
+                  pattern (ast_parsers.ml[]..[])
+                    Ppat_var "f" (ast_parsers.ml[]..[])
+                ]
+              expression (ast_parsers.ml[]..[])
+                Pexp_ifthenelse
+                expression (ast_parsers.ml[]..[])
+                  Pexp_apply
+                  expression (ast_parsers.ml[]..[])
+                    Pexp_ident "Hashtbl.mem" (ast_parsers.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_parsers.ml[]..[])
+                        Pexp_ident "registered_parsers" (ast_parsers.ml[]..[])
+                    <label> ""
+                      expression (ast_parsers.ml[]..[])
+                        Pexp_ident "k" (ast_parsers.ml[]..[])
+                  ]
+                expression (ast_parsers.ml[]..[])
+                  Pexp_apply
+                  expression (ast_parsers.ml[]..[])
+                    Pexp_ident "Format.eprintf" (ast_parsers.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_parsers.ml[]..[])
+                        Pexp_constant Const_string("%s is already a registered parser",None)
+                    <label> ""
+                      expression (ast_parsers.ml[]..[])
+                        Pexp_ident "k" (ast_parsers.ml[]..[])
+                  ]
+                Some
+                  expression (ast_parsers.ml[]..[])
+                    Pexp_apply
+                    expression (ast_parsers.ml[]..[])
+                      Pexp_ident "Hashtbl.replace" (ast_parsers.ml[]..[])
+                    [
+                      <label> ""
+                        expression (ast_parsers.ml[]..[])
+                          Pexp_ident "registered_parsers" (ast_parsers.ml[]..[])
+                      <label> ""
+                        expression (ast_parsers.ml[]..[])
+                          Pexp_ident "k" (ast_parsers.ml[]..[])
+                      <label> ""
+                        expression (ast_parsers.ml[]..[])
+                          Pexp_ident "f" (ast_parsers.ml[]..[])
+                    ]
+          ]
+    ]
+]

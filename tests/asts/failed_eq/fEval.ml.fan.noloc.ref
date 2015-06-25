@@ -1,0 +1,111 @@
+[
+  structure_item (fEval.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fEval.ml[]..[])
+          Ppat_var "s2s" (fEval.ml[]..[])
+        expression (fEval.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (fEval.ml[]..[])
+                Ppat_var "s" (fEval.ml[]..[])
+              expression (fEval.ml[]..[])
+                Pexp_constraint
+                expression (fEval.ml[]..[])
+                  Pexp_apply
+                  expression (fEval.ml[]..[])
+                    Pexp_ident "Ast2pt.phrase" (fEval.ml[]..[])
+                  [
+                    <label> ""
+                      expression (fEval.ml[]..[])
+                        Pexp_ident "s" (fEval.ml[]..[])
+                  ]
+                core_type (fEval.ml[]..[])
+                  Ptyp_constr "Parsetree.toplevel_phrase" (fEval.ml[]..[])
+                  []
+          ]
+    ]
+  structure_item (fEval.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (fEval.ml[]..[])
+          Ppat_var "eval_ast" (fEval.ml[]..[])
+        expression (fEval.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (fEval.ml[]..[])
+                Ppat_var "fmt" (fEval.ml[]..[])
+              expression (fEval.ml[]..[])
+                Pexp_function
+                [
+                  <case>
+                    pattern (fEval.ml[]..[])
+                      Ppat_var "ast" (fEval.ml[]..[])
+                    expression (fEval.ml[]..[])
+                      Pexp_try
+                      expression (fEval.ml[]..[])
+                        Pexp_apply
+                        expression (fEval.ml[]..[])
+                          Pexp_ident "ignore" (fEval.ml[]..[])
+                        [
+                          <label> ""
+                            expression (fEval.ml[]..[])
+                              Pexp_apply
+                              expression (fEval.ml[]..[])
+                                Pexp_ident "Toploop.execute_phrase" (fEval.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_construct "false" (fEval.ml[]..[])
+                                    None
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_ident "fmt" (fEval.ml[]..[])
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_apply
+                                    expression (fEval.ml[]..[])
+                                      Pexp_ident "s2s" (fEval.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (fEval.ml[]..[])
+                                          Pexp_ident "ast" (fEval.ml[]..[])
+                                    ]
+                              ]
+                        ]
+                      [
+                        <case>
+                          pattern (fEval.ml[]..[])
+                            Ppat_var "x" (fEval.ml[]..[])
+                          expression (fEval.ml[]..[])
+                            Pexp_sequence
+                            expression (fEval.ml[]..[])
+                              Pexp_apply
+                              expression (fEval.ml[]..[])
+                                Pexp_ident "Errors.report_error" (fEval.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_ident "fmt" (fEval.ml[]..[])
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_ident "x" (fEval.ml[]..[])
+                              ]
+                            expression (fEval.ml[]..[])
+                              Pexp_apply
+                              expression (fEval.ml[]..[])
+                                Pexp_ident "exit" (fEval.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (fEval.ml[]..[])
+                                    Pexp_constant Const_int 2
+                              ]
+                      ]
+                ]
+          ]
+    ]
+]

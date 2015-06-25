@@ -1,0 +1,88 @@
+11,12c11,12
+<             expression (ns.ml[1,0+22]..[1,0+35])
+<               Pexp_construct "::" (ns.ml[1,0+22]..[1,0+35])
+---
+>             expression (ns.ml[1,0+21]..[1,0+36])
+>               Pexp_construct "::" (ns.ml[1,0+22]..[1,0+36]) ghost
+14c14
+<                 expression (ns.ml[1,0+22]..[1,0+35])
+---
+>                 expression (ns.ml[1,0+22]..[1,0+36]) ghost
+19,20c19,20
+<                     expression (ns.ml[1,0+29]..[1,0+35])
+<                       Pexp_construct "::" (ns.ml[1,0+29]..[1,0+35])
+---
+>                     expression (ns.ml[1,0+29]..[1,0+36]) ghost
+>                       Pexp_construct "::" (ns.ml[1,0+29]..[1,0+36]) ghost
+22c22
+<                         expression (ns.ml[1,0+29]..[1,0+35])
+---
+>                         expression (ns.ml[1,0+29]..[1,0+36]) ghost
+27,28c27,28
+<                             expression (ns.ml[1,0+29]..[1,0+35])
+<                               Pexp_construct "[]" (ns.ml[1,0+29]..[1,0+35])
+---
+>                             expression (ns.ml[1,0+35]..[1,0+36]) ghost
+>                               Pexp_construct "[]" (ns.ml[1,0+35]..[1,0+36]) ghost
+42,43c42,43
+<             expression (ns.ml[2,37+23]..[2,37+45])
+<               Pexp_construct "::" (ns.ml[2,37+23]..[2,37+45])
+---
+>             expression (ns.ml[2,37+22]..[2,37+46])
+>               Pexp_construct "::" (ns.ml[2,37+23]..[2,37+46]) ghost
+45c45
+<                 expression (ns.ml[2,37+23]..[2,37+45])
+---
+>                 expression (ns.ml[2,37+23]..[2,37+46]) ghost
+50,51c50,51
+<                     expression (ns.ml[2,37+30]..[2,37+45])
+<                       Pexp_construct "::" (ns.ml[2,37+30]..[2,37+45])
+---
+>                     expression (ns.ml[2,37+30]..[2,37+46]) ghost
+>                       Pexp_construct "::" (ns.ml[2,37+30]..[2,37+46]) ghost
+53c53
+<                         expression (ns.ml[2,37+30]..[2,37+45])
+---
+>                         expression (ns.ml[2,37+30]..[2,37+46]) ghost
+58,59c58,59
+<                             expression (ns.ml[2,37+38]..[2,37+45])
+<                               Pexp_construct "::" (ns.ml[2,37+38]..[2,37+45])
+---
+>                             expression (ns.ml[2,37+38]..[2,37+46]) ghost
+>                               Pexp_construct "::" (ns.ml[2,37+38]..[2,37+46]) ghost
+61c61
+<                                 expression (ns.ml[2,37+38]..[2,37+45])
+---
+>                                 expression (ns.ml[2,37+38]..[2,37+46]) ghost
+66,67c66,67
+<                                     expression (ns.ml[2,37+38]..[2,37+45])
+<                                       Pexp_construct "[]" (ns.ml[2,37+38]..[2,37+45])
+---
+>                                     expression (ns.ml[2,37+45]..[2,37+46]) ghost
+>                                       Pexp_construct "[]" (ns.ml[2,37+45]..[2,37+46]) ghost
+82,83c82,83
+<             expression (ns.ml[3,84+24]..[3,84+39])
+<               Pexp_construct "::" (ns.ml[3,84+24]..[3,84+39])
+---
+>             expression (ns.ml[3,84+23]..[3,84+40])
+>               Pexp_construct "::" (ns.ml[3,84+24]..[3,84+40]) ghost
+85c85
+<                 expression (ns.ml[3,84+24]..[3,84+39])
+---
+>                 expression (ns.ml[3,84+24]..[3,84+40]) ghost
+90,91c90,91
+<                     expression (ns.ml[3,84+31]..[3,84+39])
+<                       Pexp_construct "::" (ns.ml[3,84+31]..[3,84+39])
+---
+>                     expression (ns.ml[3,84+31]..[3,84+40]) ghost
+>                       Pexp_construct "::" (ns.ml[3,84+31]..[3,84+40]) ghost
+93c93
+<                         expression (ns.ml[3,84+31]..[3,84+39])
+---
+>                         expression (ns.ml[3,84+31]..[3,84+40]) ghost
+98,99c98,99
+<                             expression (ns.ml[3,84+31]..[3,84+39])
+<                               Pexp_construct "[]" (ns.ml[3,84+31]..[3,84+39])
+---
+>                             expression (ns.ml[3,84+39]..[3,84+40]) ghost
+>                               Pexp_construct "[]" (ns.ml[3,84+39]..[3,84+40]) ghost

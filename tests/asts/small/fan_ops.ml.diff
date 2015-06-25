@@ -1,0 +1,1248 @@
+36c36
+<                       expression (fan_ops.ml[7,82+38]..[7,82+70])
+---
+>                       expression (fan_ops.ml[7,82+38]..[7,82+70]) ghost
+55c55
+<                       Ppat_construct "::" (fan_ops.ml[8,153+6]..[8,153+12])
+---
+>                       Ppat_construct "::" (fan_ops.ml[8,153+8]..[8,153+10])
+57c57
+<                         pattern (fan_ops.ml[8,153+6]..[8,153+12])
+---
+>                         pattern (fan_ops.ml[8,153+6]..[8,153+12]) ghost
+93c93
+<                                   expression (fan_ops.ml[10,196+31]..[10,196+40])
+---
+>                                   expression (fan_ops.ml[10,196+30]..[10,196+41])
+103c103
+<                                   expression (fan_ops.ml[10,196+43]..[10,196+51])
+---
+>                                   expression (fan_ops.ml[10,196+42]..[10,196+52])
+114c114
+<                         expression (fan_ops.ml[11,252+8]..[13,338+42])
+---
+>                         expression (fan_ops.ml[11,252+8]..[13,338+42]) ghost
+124c124
+<                                   expression (fan_ops.ml[12,266+19]..[12,266+69])
+---
+>                                   expression (fan_ops.ml[12,266+18]..[12,266+70])
+132c132
+<                                           expression (fan_ops.ml[12,266+32]..[12,266+49])
+---
+>                                           expression (fan_ops.ml[12,266+31]..[12,266+50])
+143c143
+<                                           expression (fan_ops.ml[12,266+52]..[12,266+68])
+---
+>                                           expression (fan_ops.ml[12,266+52]..[12,266+68]) ghost
+152c152
+<                                   expression (fan_ops.ml[13,338+13]..[13,338+28])
+---
+>                                   expression (fan_ops.ml[13,338+13]..[13,338+28]) ghost
+182c182
+<               expression (fan_ops.ml[16,406+22]..[16,406+75])
+---
+>               expression (fan_ops.ml[16,406+21]..[16,406+76])
+188c188
+<                     expression (fan_ops.ml[16,406+38]..[16,406+75])
+---
+>                     expression (fan_ops.ml[16,406+38]..[16,406+75]) ghost
+193c193
+<                           expression (fan_ops.ml[16,406+45]..[16,406+60])
+---
+>                           expression (fan_ops.ml[16,406+44]..[16,406+61])
+221c221
+<               expression (fan_ops.ml[19,511+13]..[19,511+70])
+---
+>               expression (fan_ops.ml[19,511+12]..[19,511+71])
+227c227
+<                     expression (fan_ops.ml[19,511+29]..[19,511+70])
+---
+>                     expression (fan_ops.ml[19,511+29]..[19,511+70]) ghost
+232c232
+<                           expression (fan_ops.ml[19,511+38]..[19,511+55])
+---
+>                           expression (fan_ops.ml[19,511+37]..[19,511+56])
+260c260
+<               expression (fan_ops.ml[22,611+13]..[22,611+70])
+---
+>               expression (fan_ops.ml[22,611+12]..[22,611+71])
+266c266
+<                     expression (fan_ops.ml[22,611+29]..[22,611+70])
+---
+>                     expression (fan_ops.ml[22,611+29]..[22,611+70]) ghost
+271c271
+<                           expression (fan_ops.ml[22,611+38]..[22,611+55])
+---
+>                           expression (fan_ops.ml[22,611+37]..[22,611+56])
+299c299
+<               expression (fan_ops.ml[26,727+7]..[26,727+72])
+---
+>               expression (fan_ops.ml[26,727+6]..[26,727+73])
+305c305
+<                     expression (fan_ops.ml[26,727+23]..[26,727+72])
+---
+>                     expression (fan_ops.ml[26,727+23]..[26,727+72]) ghost
+310c310
+<                           expression (fan_ops.ml[26,727+36]..[26,727+57])
+---
+>                           expression (fan_ops.ml[26,727+35]..[26,727+58])
+338c338
+<               expression (fan_ops.ml[29,829+13]..[29,829+68])
+---
+>               expression (fan_ops.ml[29,829+12]..[29,829+69])
+344c344
+<                     expression (fan_ops.ml[29,829+29]..[29,829+68])
+---
+>                     expression (fan_ops.ml[29,829+29]..[29,829+68]) ghost
+349c349
+<                           expression (fan_ops.ml[29,829+36]..[29,829+53])
+---
+>                           expression (fan_ops.ml[29,829+35]..[29,829+54])
+377c377
+<               expression (fan_ops.ml[31,917+22]..[31,917+76])
+---
+>               expression (fan_ops.ml[31,917+21]..[31,917+77])
+383c383
+<                     expression (fan_ops.ml[31,917+38]..[31,917+76])
+---
+>                     expression (fan_ops.ml[31,917+38]..[31,917+76]) ghost
+388c388
+<                           expression (fan_ops.ml[31,917+45]..[31,917+61])
+---
+>                           expression (fan_ops.ml[31,917+44]..[31,917+62])
+416c416
+<               expression (fan_ops.ml[33,1011+22]..[33,1011+74])
+---
+>               expression (fan_ops.ml[33,1011+21]..[33,1011+75])
+422c422
+<                     expression (fan_ops.ml[33,1011+38]..[33,1011+74])
+---
+>                     expression (fan_ops.ml[33,1011+38]..[33,1011+74]) ghost
+427c427
+<                           expression (fan_ops.ml[33,1011+45]..[33,1011+59])
+---
+>                           expression (fan_ops.ml[33,1011+44]..[33,1011+60])
+455c455
+<               expression (fan_ops.ml[34,1087+36]..[34,1087+57])
+---
+>               expression (fan_ops.ml[34,1087+35]..[34,1087+58])
+479c479
+<               expression (fan_ops.ml[35,1146+36]..[35,1146+59])
+---
+>               expression (fan_ops.ml[35,1146+35]..[35,1146+60])
+505c505
+<               expression (fan_ops.ml[39,1245+7]..[46,1450+27])
+---
+>               expression (fan_ops.ml[39,1245+6]..[46,1450+28])
+511c511
+<                     expression (fan_ops.ml[41,1278+12]..[46,1450+26])
+---
+>                     expression (fan_ops.ml[41,1278+11]..[46,1450+27])
+517c517
+<                           expression (fan_ops.ml[43,1318+16]..[46,1450+26])
+---
+>                           expression (fan_ops.ml[43,1318+16]..[46,1450+26]) ghost
+522c522
+<                                 expression (fan_ops.ml[44,1343+20]..[45,1372+72])
+---
+>                                 expression (fan_ops.ml[44,1343+19]..[45,1372+73])
+528c528
+<                                         expression (fan_ops.ml[45,1372+24]..[45,1372+39])
+---
+>                                         expression (fan_ops.ml[45,1372+23]..[45,1372+40])
+533c533
+<                                         expression (fan_ops.ml[45,1372+42]..[45,1372+71])
+---
+>                                         expression (fan_ops.ml[45,1372+42]..[45,1372+71]) ghost
+544c544
+<                                                 expression (fan_ops.ml[45,1372+54]..[45,1372+56])
+---
+>                                                 expression (fan_ops.ml[45,1372+53]..[45,1372+57])
+591c591
+<                           expression (fan_ops.ml[53,1569+13]..[59,1821+37])
+---
+>                           expression (fan_ops.ml[53,1569+12]..[59,1821+38])
+611c611
+<                                   Ppat_construct "::" (fan_ops.ml[55,1629+15]..[55,1629+21])
+---
+>                                   Ppat_construct "::" (fan_ops.ml[55,1629+17]..[55,1629+19])
+613c613
+<                                     pattern (fan_ops.ml[55,1629+15]..[55,1629+21])
+---
+>                                     pattern (fan_ops.ml[55,1629+15]..[55,1629+21]) ghost
+640c640
+<                                                 expression (fan_ops.ml[56,1654+61]..[56,1654+70])
+---
+>                                                 expression (fan_ops.ml[56,1654+60]..[56,1654+71])
+662c662
+<                                           expression (fan_ops.ml[58,1755+27]..[58,1755+63])
+---
+>                                           expression (fan_ops.ml[58,1755+26]..[58,1755+64])
+670c670
+<                                                   expression (fan_ops.ml[58,1755+40]..[58,1755+57])
+---
+>                                                   expression (fan_ops.ml[58,1755+39]..[58,1755+58])
+684c684
+<                                           expression (fan_ops.ml[59,1821+22]..[59,1821+35])
+---
+>                                           expression (fan_ops.ml[59,1821+21]..[59,1821+36])
+725c725
+<               expression (fan_ops.ml[64,1918+7]..[67,1972+76])
+---
+>               expression (fan_ops.ml[64,1918+6]..[67,1972+77])
+731c731
+<                     expression (fan_ops.ml[66,1951+12]..[67,1972+75])
+---
+>                     expression (fan_ops.ml[66,1951+11]..[67,1972+76])
+746c746
+<                                 expression (fan_ops.ml[67,1972+33]..[67,1972+74])
+---
+>                                 expression (fan_ops.ml[67,1972+32]..[67,1972+75])
+752c752
+<                                       expression (fan_ops.ml[67,1972+43]..[67,1972+70])
+---
+>                                       expression (fan_ops.ml[67,1972+42]..[67,1972+71])
+792c792
+<               expression (fan_ops.ml[71,2091+7]..[77,2289+27])
+---
+>               expression (fan_ops.ml[71,2091+6]..[77,2289+28])
+798c798
+<                     expression (fan_ops.ml[73,2124+12]..[77,2289+26])
+---
+>                     expression (fan_ops.ml[73,2124+11]..[77,2289+27])
+805c805
+<                           expression (fan_ops.ml[74,2145+23]..[74,2145+49])
+---
+>                           expression (fan_ops.ml[74,2145+23]..[74,2145+49]) ghost
+822c822
+<                           expression (fan_ops.ml[76,2219+16]..[77,2289+26])
+---
+>                           expression (fan_ops.ml[76,2219+16]..[77,2289+26]) ghost
+830c830
+<                                     expression (fan_ops.ml[76,2219+24]..[76,2219+35])
+---
+>                                     expression (fan_ops.ml[76,2219+23]..[76,2219+36])
+835c835
+<                                     expression (fan_ops.ml[76,2219+38]..[76,2219+64])
+---
+>                                     expression (fan_ops.ml[76,2219+38]..[76,2219+64]) ghost
+892c892
+<                 expression (fan_ops.ml[81,2390+7]..[87,2564+69])
+---
+>                 expression (fan_ops.ml[81,2390+6]..[87,2564+70])
+914c914
+<                       expression (fan_ops.ml[83,2446+12]..[87,2564+68])
+---
+>                       expression (fan_ops.ml[83,2446+11]..[87,2564+69])
+925c925
+<                             expression (fan_ops.ml[85,2500+17]..[87,2564+67])
+---
+>                             expression (fan_ops.ml[85,2500+16]..[87,2564+68])
+974c974
+<               expression (fan_ops.ml[91,2695+7]..[96,2879+19])
+---
+>               expression (fan_ops.ml[91,2695+6]..[96,2879+20])
+983c983
+<                         pattern (fan_ops.ml[92,2715+9]..[92,2715+21])
+---
+>                         pattern (fan_ops.ml[92,2715+14]..[92,2715+21])
+1006c1006
+<                         pattern (fan_ops.ml[93,2762+9]..[93,2762+25])
+---
+>                         pattern (fan_ops.ml[93,2762+16]..[93,2762+25])
+1022c1022
+<                           expression (fan_ops.ml[94,2791+12]..[94,2791+34])
+---
+>                           expression (fan_ops.ml[94,2791+11]..[94,2791+35])
+1032c1032
+<                           expression (fan_ops.ml[94,2791+40]..[94,2791+62])
+---
+>                           expression (fan_ops.ml[94,2791+39]..[94,2791+63])
+1066c1066
+<         expression (fan_ops.ml[97,2900+17]..[112,3381+43])
+---
+>         expression (fan_ops.ml[97,2900+17]..[112,3381+43]) ghost
+1089c1089
+<                             expression (fan_ops.ml[102,3045+11]..[102,3045+27])
+---
+>                             expression (fan_ops.ml[102,3045+10]..[102,3045+28])
+1118c1118
+<                         expression (fan_ops.ml[106,3127+9]..[111,3353+23])
+---
+>                         expression (fan_ops.ml[106,3127+8]..[111,3353+24])
+1127c1127
+<                                   pattern (fan_ops.ml[107,3149+11]..[107,3149+30])
+---
+>                                   pattern (fan_ops.ml[107,3149+18]..[107,3149+30])
+1145c1145
+<                                       expression (fan_ops.ml[108,3183+28]..[108,3183+45])
+---
+>                                       expression (fan_ops.ml[108,3183+27]..[108,3183+46])
+1151c1151
+<                                             expression (fan_ops.ml[108,3183+33]..[108,3183+45])
+---
+>                                             expression (fan_ops.ml[108,3183+33]..[108,3183+45]) ghost
+1160c1160
+<                                       expression (fan_ops.ml[108,3183+49]..[108,3183+66])
+---
+>                                       expression (fan_ops.ml[108,3183+48]..[108,3183+67])
+1166c1166
+<                                             expression (fan_ops.ml[108,3183+54]..[108,3183+66])
+---
+>                                             expression (fan_ops.ml[108,3183+54]..[108,3183+66]) ghost
+1286c1286
+<               expression (fan_ops.ml[116,3478+7]..[144,4887+47])
+---
+>               expression (fan_ops.ml[116,3478+6]..[144,4887+48])
+1331c1331
+<                             pattern (fan_ops.ml[120,3573+26]..[120,3573+42])
+---
+>                             pattern (fan_ops.ml[120,3573+34]..[120,3573+42])
+1351c1351
+<                         pattern (fan_ops.ml[121,3634+9]..[121,3634+21])
+---
+>                         pattern (fan_ops.ml[121,3634+14]..[121,3634+21])
+1367c1367
+<                           expression (fan_ops.ml[121,3634+40]..[121,3634+57])
+---
+>                           expression (fan_ops.ml[121,3634+40]..[121,3634+57]) ghost
+1385c1385
+<                           pattern (fan_ops.ml[122,3692+10]..[122,3692+27])
+---
+>                           pattern (fan_ops.ml[122,3692+17]..[122,3692+27])
+1413c1413
+<                           pattern (fan_ops.ml[123,3752+10]..[123,3752+26])
+---
+>                           pattern (fan_ops.ml[123,3752+18]..[123,3752+26])
+1430c1430
+<                           expression (fan_ops.ml[125,3818+14]..[125,3818+73])
+---
+>                           expression (fan_ops.ml[125,3818+13]..[125,3818+74])
+1437c1437
+<                                     pattern (fan_ops.ml[125,3818+25]..[125,3818+41])
+---
+>                                     pattern (fan_ops.ml[125,3818+34]..[125,3818+41])
+1464c1464
+<                           expression (fan_ops.ml[126,3893+14]..[126,3893+40])
+---
+>                           expression (fan_ops.ml[126,3893+13]..[126,3893+41])
+1482c1482
+<                         pattern (fan_ops.ml[127,3935+9]..[127,3935+23])
+---
+>                         pattern (fan_ops.ml[127,3935+14]..[127,3935+23])
+1498c1498
+<                           expression (fan_ops.ml[127,3935+28]..[127,3935+45])
+---
+>                           expression (fan_ops.ml[127,3935+27]..[127,3935+46])
+1508c1508
+<                           expression (fan_ops.ml[127,3935+51]..[127,3935+68])
+---
+>                           expression (fan_ops.ml[127,3935+50]..[127,3935+69])
+1522c1522
+<                         pattern (fan_ops.ml[128,4005+9]..[128,4005+23])
+---
+>                         pattern (fan_ops.ml[128,4005+14]..[128,4005+23])
+1538c1538
+<                           expression (fan_ops.ml[128,4005+28]..[128,4005+45])
+---
+>                           expression (fan_ops.ml[128,4005+27]..[128,4005+46])
+1548c1548
+<                           expression (fan_ops.ml[128,4005+51]..[128,4005+68])
+---
+>                           expression (fan_ops.ml[128,4005+50]..[128,4005+69])
+1562c1562
+<                         pattern (fan_ops.ml[129,4075+9]..[129,4075+23])
+---
+>                         pattern (fan_ops.ml[129,4075+14]..[129,4075+23])
+1578c1578
+<                           expression (fan_ops.ml[129,4075+28]..[129,4075+45])
+---
+>                           expression (fan_ops.ml[129,4075+27]..[129,4075+46])
+1588c1588
+<                           expression (fan_ops.ml[129,4075+51]..[129,4075+68])
+---
+>                           expression (fan_ops.ml[129,4075+50]..[129,4075+69])
+1602c1602
+<                         pattern (fan_ops.ml[130,4145+9]..[130,4145+23])
+---
+>                         pattern (fan_ops.ml[130,4145+14]..[130,4145+23])
+1618c1618
+<                           expression (fan_ops.ml[130,4145+28]..[130,4145+45])
+---
+>                           expression (fan_ops.ml[130,4145+27]..[130,4145+46])
+1628c1628
+<                           expression (fan_ops.ml[130,4145+51]..[130,4145+68])
+---
+>                           expression (fan_ops.ml[130,4145+50]..[130,4145+69])
+1642c1642
+<                         pattern (fan_ops.ml[131,4215+9]..[131,4215+28])
+---
+>                         pattern (fan_ops.ml[131,4215+21]..[131,4215+28])
+1665c1665
+<                         pattern (fan_ops.ml[132,4264+9]..[132,4264+19])
+---
+>                         pattern (fan_ops.ml[132,4264+14]..[132,4264+19])
+1697c1697
+<                           pattern (fan_ops.ml[134,4333+9]..[134,4333+25])
+---
+>                           pattern (fan_ops.ml[134,4333+18]..[134,4333+25])
+1710c1710
+<                           pattern (fan_ops.ml[134,4333+26]..[134,4333+48])
+---
+>                           pattern (fan_ops.ml[134,4333+39]..[134,4333+48])
+1737c1737
+<                           pattern (fan_ops.ml[135,4402+9]..[135,4402+23])
+---
+>                           pattern (fan_ops.ml[135,4402+16]..[135,4402+23])
+1750c1750
+<                           pattern (fan_ops.ml[135,4402+24]..[135,4402+35])
+---
+>                           pattern (fan_ops.ml[135,4402+30]..[135,4402+35])
+1825c1825
+<                                             pattern (fan_ops.ml[139,4561+9]..[139,4561+22])
+---
+>                                             pattern (fan_ops.ml[139,4561+14]..[139,4561+22])
+1838c1838
+<                                               pattern (fan_ops.ml[139,4561+24]..[139,4561+37])
+---
+>                                               pattern (fan_ops.ml[139,4561+29]..[139,4561+37])
+1854c1854
+<                                             pattern (fan_ops.ml[140,4611+11]..[140,4611+28])
+---
+>                                             pattern (fan_ops.ml[140,4611+18]..[140,4611+28])
+1872c1872
+<                                           pattern (fan_ops.ml[140,4611+42]..[140,4611+55])
+---
+>                                           pattern (fan_ops.ml[140,4611+47]..[140,4611+55])
+1888c1888
+<                                         pattern (fan_ops.ml[141,4679+11]..[141,4679+30])
+---
+>                                         pattern (fan_ops.ml[141,4679+22]..[141,4679+30])
+1904c1904
+<                                       pattern (fan_ops.ml[141,4679+44]..[141,4679+59])
+---
+>                                       pattern (fan_ops.ml[141,4679+51]..[141,4679+59])
+1920c1920
+<                                     pattern (fan_ops.ml[142,4751+11]..[142,4751+26])
+---
+>                                     pattern (fan_ops.ml[142,4751+18]..[142,4751+26])
+1936c1936
+<                                   pattern (fan_ops.ml[142,4751+40]..[142,4751+53])
+---
+>                                   pattern (fan_ops.ml[142,4751+45]..[142,4751+53])
+1952c1952
+<                                 pattern (fan_ops.ml[143,4817+11]..[143,4817+24])
+---
+>                                 pattern (fan_ops.ml[143,4817+16]..[143,4817+24])
+1968c1968
+<                               pattern (fan_ops.ml[143,4817+38]..[143,4817+57])
+---
+>                               pattern (fan_ops.ml[143,4817+49]..[143,4817+57])
+1984c1984
+<                             pattern (fan_ops.ml[144,4887+11]..[144,4887+26])
+---
+>                             pattern (fan_ops.ml[144,4887+18]..[144,4887+26])
+2013c2013
+<               expression (fan_ops.ml[148,4979+7]..[152,5119+58])
+---
+>               expression (fan_ops.ml[148,4979+6]..[152,5119+59])
+2042c2042
+<                                 expression (fan_ops.ml[151,5055+24]..[151,5055+44])
+---
+>                                 expression (fan_ops.ml[151,5055+23]..[151,5055+45])
+2101c2101
+<               expression (fan_ops.ml[156,5219+7]..[160,5293+76])
+---
+>               expression (fan_ops.ml[156,5219+6]..[160,5293+77])
+2107c2107
+<                     expression (fan_ops.ml[158,5252+12]..[160,5293+75])
+---
+>                     expression (fan_ops.ml[158,5252+11]..[160,5293+76])
+2119c2119
+<                                 expression (fan_ops.ml[160,5293+32]..[160,5293+74])
+---
+>                                 expression (fan_ops.ml[160,5293+31]..[160,5293+75])
+2125c2125
+<                                       expression (fan_ops.ml[160,5293+43]..[160,5293+70])
+---
+>                                       expression (fan_ops.ml[160,5293+42]..[160,5293+71])
+2165c2165
+<               expression (fan_ops.ml[164,5412+7]..[240,8933+79])
+---
+>               expression (fan_ops.ml[164,5412+6]..[240,8933+80])
+2171c2171
+<                     expression (fan_ops.ml[166,5444+12]..[240,8933+78])
+---
+>                     expression (fan_ops.ml[166,5444+11]..[240,8933+79])
+2196c2196
+<                                               pattern (fan_ops.ml[170,5548+21]..[170,5548+47])
+---
+>                                               pattern (fan_ops.ml[170,5548+26]..[170,5548+47])
+2204c2204
+<                                                       pattern (fan_ops.ml[170,5548+32]..[170,5548+46])
+---
+>                                                       pattern (fan_ops.ml[170,5548+37]..[170,5548+46])
+2223c2223
+<                                               pattern (fan_ops.ml[171,5608+22]..[171,5608+39])
+---
+>                                               pattern (fan_ops.ml[171,5608+27]..[171,5608+39])
+2245c2245
+<                                             expression (fan_ops.ml[172,5663+48]..[172,5663+75])
+---
+>                                             expression (fan_ops.ml[172,5663+47]..[172,5663+76])
+2262,2263c2262,2263
+<                                       expression (fan_ops.ml[173,5740+26]..[173,5740+29])
+<                                         Pexp_construct "::" (fan_ops.ml[173,5740+26]..[173,5740+29])
+---
+>                                       expression (fan_ops.ml[173,5740+25]..[173,5740+30])
+>                                         Pexp_construct "::" (fan_ops.ml[173,5740+26]..[173,5740+30]) ghost
+2265c2265
+<                                           expression (fan_ops.ml[173,5740+26]..[173,5740+29])
+---
+>                                           expression (fan_ops.ml[173,5740+26]..[173,5740+30]) ghost
+2270,2271c2270,2271
+<                                               expression (fan_ops.ml[173,5740+26]..[173,5740+29])
+<                                                 Pexp_construct "[]" (fan_ops.ml[173,5740+26]..[173,5740+29])
+---
+>                                               expression (fan_ops.ml[173,5740+29]..[173,5740+30]) ghost
+>                                                 Pexp_construct "[]" (fan_ops.ml[173,5740+29]..[173,5740+30]) ghost
+2276c2276
+<                             expression (fan_ops.ml[174,5774+17]..[240,8933+77])
+---
+>                             expression (fan_ops.ml[174,5774+16]..[240,8933+78])
+2296c2296
+<                                     Ppat_construct "::" (fan_ops.ml[176,5868+19]..[176,5868+25])
+---
+>                                     Ppat_construct "::" (fan_ops.ml[176,5868+21]..[176,5868+23])
+2298c2298
+<                                       pattern (fan_ops.ml[176,5868+19]..[176,5868+25])
+---
+>                                       pattern (fan_ops.ml[176,5868+19]..[176,5868+25]) ghost
+2307c2307
+<                                   expression (fan_ops.ml[177,5897+21]..[187,6375+30])
+---
+>                                   expression (fan_ops.ml[177,5897+21]..[187,6375+30]) ghost
+2317c2317
+<                                             expression (fan_ops.ml[179,5954+27]..[186,6301+49])
+---
+>                                             expression (fan_ops.ml[179,5954+26]..[186,6301+50])
+2325c2325
+<                                                     expression (fan_ops.ml[181,6021+32]..[185,6235+63])
+---
+>                                                     expression (fan_ops.ml[181,6021+31]..[185,6235+64])
+2333c2333
+<                                                             expression (fan_ops.ml[182,6058+41]..[182,6058+63])
+---
+>                                                             expression (fan_ops.ml[182,6058+40]..[182,6058+64])
+2344c2344
+<                                                             expression (fan_ops.ml[183,6124+37]..[185,6235+61])
+---
+>                                                             expression (fan_ops.ml[183,6124+36]..[185,6235+62])
+2352c2352
+<                                                                     expression (fan_ops.ml[184,6166+46]..[184,6166+66])
+---
+>                                                                     expression (fan_ops.ml[184,6166+45]..[184,6166+67])
+2363c2363
+<                                                                     expression (fan_ops.ml[185,6235+42]..[185,6235+59])
+---
+>                                                                     expression (fan_ops.ml[185,6235+41]..[185,6235+60])
+2376c2376
+<                                                     expression (fan_ops.ml[186,6301+31]..[186,6301+48])
+---
+>                                                     expression (fan_ops.ml[186,6301+31]..[186,6301+48]) ghost
+2385c2385
+<                                             expression (fan_ops.ml[186,6301+52]..[186,6301+68])
+---
+>                                             expression (fan_ops.ml[186,6301+52]..[186,6301+68]) ghost
+2400c2400
+<                                     Ppat_construct "::" (fan_ops.ml[188,6406+19]..[188,6406+29])
+---
+>                                     Ppat_construct "::" (fan_ops.ml[188,6406+21]..[188,6406+23])
+2402c2402
+<                                       pattern (fan_ops.ml[188,6406+19]..[188,6406+29])
+---
+>                                       pattern (fan_ops.ml[188,6406+19]..[188,6406+29]) ghost
+2408c2408
+<                                             Ppat_construct "::" (fan_ops.ml[188,6406+23]..[188,6406+29])
+---
+>                                             Ppat_construct "::" (fan_ops.ml[188,6406+25]..[188,6406+27])
+2410c2410
+<                                               pattern (fan_ops.ml[188,6406+23]..[188,6406+29])
+---
+>                                               pattern (fan_ops.ml[188,6406+23]..[188,6406+29]) ghost
+2420c2420
+<                                   expression (fan_ops.ml[189,6439+21]..[201,7022+56])
+---
+>                                   expression (fan_ops.ml[189,6439+21]..[201,7022+56]) ghost
+2430c2430
+<                                             expression (fan_ops.ml[191,6496+27]..[200,6945+74])
+---
+>                                             expression (fan_ops.ml[191,6496+26]..[200,6945+75])
+2438c2438
+<                                                     expression (fan_ops.ml[193,6563+32]..[200,6945+54])
+---
+>                                                     expression (fan_ops.ml[193,6563+31]..[200,6945+55])
+2446c2446
+<                                                             expression (fan_ops.ml[195,6640+37]..[199,6874+68])
+---
+>                                                             expression (fan_ops.ml[195,6640+36]..[199,6874+69])
+2454c2454
+<                                                                     expression (fan_ops.ml[196,6682+46]..[196,6682+68])
+---
+>                                                                     expression (fan_ops.ml[196,6682+45]..[196,6682+69])
+2465c2465
+<                                                                     expression (fan_ops.ml[197,6753+42]..[199,6874+66])
+---
+>                                                                     expression (fan_ops.ml[197,6753+41]..[199,6874+67])
+2473c2473
+<     expression (fan_ops.ml[198,6800+51]..[198,6800+71])
+---
+>     expression (fan_ops.ml[198,6800+50]..[198,6800+72])
+2484c2484
+<     expression (fan_ops.ml[199,6874+47]..[199,6874+64])
+---
+>     expression (fan_ops.ml[199,6874+46]..[199,6874+65])
+2497c2497
+<                                                             expression (fan_ops.ml[200,6945+36]..[200,6945+53])
+---
+>                                                             expression (fan_ops.ml[200,6945+36]..[200,6945+53]) ghost
+2506c2506
+<                                                     expression (fan_ops.ml[200,6945+57]..[200,6945+73])
+---
+>                                                     expression (fan_ops.ml[200,6945+57]..[200,6945+73]) ghost
+2515c2515
+<                                             expression (fan_ops.ml[201,7022+26]..[201,7022+42])
+---
+>                                             expression (fan_ops.ml[201,7022+26]..[201,7022+42]) ghost
+2530c2530
+<                                     Ppat_construct "::" (fan_ops.ml[202,7079+19]..[202,7079+33])
+---
+>                                     Ppat_construct "::" (fan_ops.ml[202,7079+21]..[202,7079+23])
+2532c2532
+<                                       pattern (fan_ops.ml[202,7079+19]..[202,7079+33])
+---
+>                                       pattern (fan_ops.ml[202,7079+19]..[202,7079+33]) ghost
+2538c2538
+<                                             Ppat_construct "::" (fan_ops.ml[202,7079+23]..[202,7079+33])
+---
+>                                             Ppat_construct "::" (fan_ops.ml[202,7079+25]..[202,7079+27])
+2540c2540
+<                                               pattern (fan_ops.ml[202,7079+23]..[202,7079+33])
+---
+>                                               pattern (fan_ops.ml[202,7079+23]..[202,7079+33]) ghost
+2546c2546
+<                                                     Ppat_construct "::" (fan_ops.ml[202,7079+27]..[202,7079+33])
+---
+>                                                     Ppat_construct "::" (fan_ops.ml[202,7079+29]..[202,7079+31])
+2548c2548
+<                                                       pattern (fan_ops.ml[202,7079+27]..[202,7079+33])
+---
+>                                                       pattern (fan_ops.ml[202,7079+27]..[202,7079+33]) ghost
+2559c2559
+<                                   expression (fan_ops.ml[203,7116+21]..[219,7923+56])
+---
+>                                   expression (fan_ops.ml[203,7116+21]..[219,7923+56]) ghost
+2569c2569
+<                                             expression (fan_ops.ml[205,7173+27]..[218,7847+73])
+---
+>                                             expression (fan_ops.ml[205,7173+26]..[218,7847+74])
+2577c2577
+<                                                     expression (fan_ops.ml[207,7240+32]..[218,7847+53])
+---
+>                                                     expression (fan_ops.ml[207,7240+31]..[218,7847+54])
+2585c2585
+<                                                             expression (fan_ops.ml[209,7317+37]..[217,7785+59])
+---
+>                                                             expression (fan_ops.ml[209,7317+36]..[217,7785+60])
+2593c2593
+<                                                                     expression (fan_ops.ml[211,7404+42]..[216,7709+73])
+---
+>                                                                     expression (fan_ops.ml[211,7404+41]..[216,7709+74])
+2601c2601
+<     expression (fan_ops.ml[212,7451+51]..[212,7451+73])
+---
+>     expression (fan_ops.ml[212,7451+50]..[212,7451+74])
+2612c2612
+<     expression (fan_ops.ml[213,7527+47]..[216,7709+71])
+---
+>     expression (fan_ops.ml[213,7527+46]..[216,7709+72])
+2620c2620
+<             expression (fan_ops.ml[215,7634+52]..[215,7634+72])
+---
+>             expression (fan_ops.ml[215,7634+51]..[215,7634+73])
+2631c2631
+<             expression (fan_ops.ml[216,7709+52]..[216,7709+69])
+---
+>             expression (fan_ops.ml[216,7709+51]..[216,7709+70])
+2644c2644
+<                                                                     expression (fan_ops.ml[217,7785+41]..[217,7785+58])
+---
+>                                                                     expression (fan_ops.ml[217,7785+41]..[217,7785+58]) ghost
+2653c2653
+<                                                             expression (fan_ops.ml[218,7847+36]..[218,7847+52])
+---
+>                                                             expression (fan_ops.ml[218,7847+36]..[218,7847+52]) ghost
+2662c2662
+<                                                     expression (fan_ops.ml[218,7847+56]..[218,7847+72])
+---
+>                                                     expression (fan_ops.ml[218,7847+56]..[218,7847+72]) ghost
+2671c2671
+<                                             expression (fan_ops.ml[219,7923+26]..[219,7923+42])
+---
+>                                             expression (fan_ops.ml[219,7923+26]..[219,7923+42]) ghost
+2686c2686
+<                                     Ppat_construct "::" (fan_ops.ml[220,7980+19]..[220,7980+37])
+---
+>                                     Ppat_construct "::" (fan_ops.ml[220,7980+21]..[220,7980+23])
+2688c2688
+<                                       pattern (fan_ops.ml[220,7980+19]..[220,7980+37])
+---
+>                                       pattern (fan_ops.ml[220,7980+19]..[220,7980+37]) ghost
+2694c2694
+<                                             Ppat_construct "::" (fan_ops.ml[220,7980+23]..[220,7980+37])
+---
+>                                             Ppat_construct "::" (fan_ops.ml[220,7980+25]..[220,7980+27])
+2696c2696
+<                                               pattern (fan_ops.ml[220,7980+23]..[220,7980+37])
+---
+>                                               pattern (fan_ops.ml[220,7980+23]..[220,7980+37]) ghost
+2702c2702
+<                                                     Ppat_construct "::" (fan_ops.ml[220,7980+27]..[220,7980+37])
+---
+>                                                     Ppat_construct "::" (fan_ops.ml[220,7980+29]..[220,7980+31])
+2704c2704
+<                                                       pattern (fan_ops.ml[220,7980+27]..[220,7980+37])
+---
+>                                                       pattern (fan_ops.ml[220,7980+27]..[220,7980+37]) ghost
+2714c2714
+<                                   expression (fan_ops.ml[221,8021+21]..[240,8933+77])
+---
+>                                   expression (fan_ops.ml[221,8021+21]..[240,8933+77]) ghost
+2724c2724
+<                                             expression (fan_ops.ml[223,8078+27]..[230,8427+49])
+---
+>                                             expression (fan_ops.ml[223,8078+26]..[230,8427+50])
+2732c2732
+<                                                     expression (fan_ops.ml[225,8145+32]..[229,8361+63])
+---
+>                                                     expression (fan_ops.ml[225,8145+31]..[229,8361+64])
+2740c2740
+<                                                             expression (fan_ops.ml[226,8182+41]..[226,8182+63])
+---
+>                                                             expression (fan_ops.ml[226,8182+40]..[226,8182+64])
+2751c2751
+<                                                             expression (fan_ops.ml[227,8248+37]..[229,8361+61])
+---
+>                                                             expression (fan_ops.ml[227,8248+36]..[229,8361+62])
+2759c2759
+<                                                                     expression (fan_ops.ml[228,8290+46]..[228,8290+68])
+---
+>                                                                     expression (fan_ops.ml[228,8290+45]..[228,8290+69])
+2770c2770
+<                                                                     expression (fan_ops.ml[229,8361+42]..[229,8361+59])
+---
+>                                                                     expression (fan_ops.ml[229,8361+41]..[229,8361+60])
+2783c2783
+<                                                     expression (fan_ops.ml[230,8427+31]..[230,8427+48])
+---
+>                                                     expression (fan_ops.ml[230,8427+31]..[230,8427+48]) ghost
+2792c2792
+<                                             expression (fan_ops.ml[231,8479+27]..[240,8933+62])
+---
+>                                             expression (fan_ops.ml[231,8479+26]..[240,8933+63])
+2800c2800
+<                                                     expression (fan_ops.ml[233,8548+32]..[240,8933+60])
+---
+>                                                     expression (fan_ops.ml[233,8548+31]..[240,8933+61])
+2808c2808
+<                                                             expression (fan_ops.ml[234,8585+40]..[234,8585+56])
+---
+>                                                             expression (fan_ops.ml[234,8585+40]..[234,8585+56]) ghost
+2816c2816
+<                                                             expression (fan_ops.ml[235,8643+37]..[240,8933+58])
+---
+>                                                             expression (fan_ops.ml[235,8643+36]..[240,8933+59])
+2824c2824
+<                                                                     expression (fan_ops.ml[236,8685+45]..[236,8685+61])
+---
+>                                                                     expression (fan_ops.ml[236,8685+45]..[236,8685+61]) ghost
+2832c2832
+<                                                                     expression (fan_ops.ml[237,8748+42]..[240,8933+56])
+---
+>                                                                     expression (fan_ops.ml[237,8748+41]..[240,8933+57])
+2840c2840
+<     expression (fan_ops.ml[238,8795+50]..[238,8795+66])
+---
+>     expression (fan_ops.ml[238,8795+50]..[238,8795+66]) ghost
+2848c2848
+<     expression (fan_ops.ml[239,8863+46]..[240,8933+55])
+---
+>     expression (fan_ops.ml[239,8863+46]..[240,8933+55]) ghost
+2889c2889
+<               expression (fan_ops.ml[244,9055+7]..[366,15486+30])
+---
+>               expression (fan_ops.ml[244,9055+6]..[366,15486+31])
+2895c2895
+<                     expression (fan_ops.ml[246,9087+12]..[366,15486+29])
+---
+>                     expression (fan_ops.ml[246,9087+11]..[366,15486+30])
+2901c2901
+<                           expression (fan_ops.ml[248,9132+17]..[366,15486+28])
+---
+>                           expression (fan_ops.ml[248,9132+16]..[366,15486+29])
+2912c2912
+<                                       pattern (fan_ops.ml[249,9164+20]..[255,9470+86])
+---
+>                                       pattern (fan_ops.ml[250,9189+22]..[255,9470+86])
+2920c2920
+<                                               pattern (fan_ops.ml[250,9189+28]..[255,9470+82])
+---
+>                                               pattern (fan_ops.ml[251,9222+30]..[255,9470+82])
+2928c2928
+<                                                       pattern (fan_ops.ml[251,9222+33]..[255,9470+77])
+---
+>                                                       pattern (fan_ops.ml[252,9260+35]..[255,9470+77])
+2936c2936
+<                                                               pattern (fan_ops.ml[252,9260+38]..[252,9260+57])
+---
+>                                                               pattern (fan_ops.ml[252,9260+43]..[252,9260+57])
+2947c2947
+<                                                               pattern (fan_ops.ml[252,9260+58]..[255,9470+76])
+---
+>                                                               pattern (fan_ops.ml[253,9323+60]..[255,9470+76])
+2955c2955
+<                                                                       pattern (fan_ops.ml[253,9323+63]..[254,9391+77])
+---
+>                                                                       pattern (fan_ops.ml[254,9391+65]..[254,9391+77])
+2966c2966
+<                                                                       pattern (fan_ops.ml[255,9470+61]..[255,9470+75])
+---
+>                                                                       pattern (fan_ops.ml[255,9470+66]..[255,9470+75])
+2988c2988
+<                                     expression (fan_ops.ml[258,9619+23]..[270,10226+62])
+---
+>                                     expression (fan_ops.ml[258,9619+23]..[270,10226+62]) ghost
+2998c2998
+<                                               expression (fan_ops.ml[260,9680+29]..[269,10147+76])
+---
+>                                               expression (fan_ops.ml[260,9680+28]..[269,10147+77])
+3006c3006
+<                                                       expression (fan_ops.ml[262,9751+34]..[269,10147+56])
+---
+>                                                       expression (fan_ops.ml[262,9751+33]..[269,10147+57])
+3014c3014
+<                                                               expression (fan_ops.ml[264,9832+39]..[268,10074+70])
+---
+>                                                               expression (fan_ops.ml[264,9832+38]..[268,10074+71])
+3022c3022
+<                                                                       expression (fan_ops.ml[265,9876+48]..[265,9876+70])
+---
+>                                                                       expression (fan_ops.ml[265,9876+47]..[265,9876+71])
+3033c3033
+<                                                                       expression (fan_ops.ml[266,9949+44]..[268,10074+68])
+---
+>                                                                       expression (fan_ops.ml[266,9949+43]..[268,10074+69])
+3041c3041
+<       expression (fan_ops.ml[267,9998+53]..[267,9998+73])
+---
+>       expression (fan_ops.ml[267,9998+52]..[267,9998+74])
+3052c3052
+<       expression (fan_ops.ml[268,10074+49]..[268,10074+66])
+---
+>       expression (fan_ops.ml[268,10074+48]..[268,10074+67])
+3065c3065
+<                                                               expression (fan_ops.ml[269,10147+38]..[269,10147+55])
+---
+>                                                               expression (fan_ops.ml[269,10147+38]..[269,10147+55]) ghost
+3074c3074
+<                                                       expression (fan_ops.ml[269,10147+59]..[269,10147+75])
+---
+>                                                       expression (fan_ops.ml[269,10147+59]..[269,10147+75]) ghost
+3083c3083
+<                                               expression (fan_ops.ml[270,10226+28]..[270,10226+48])
+---
+>                                               expression (fan_ops.ml[270,10226+28]..[270,10226+48]) ghost
+3102c3102
+<                                       pattern (fan_ops.ml[271,10289+20]..[279,10722+92])
+---
+>                                       pattern (fan_ops.ml[272,10314+22]..[279,10722+92])
+3110c3110
+<                                               pattern (fan_ops.ml[272,10314+28]..[279,10722+88])
+---
+>                                               pattern (fan_ops.ml[273,10347+30]..[279,10722+88])
+3118c3118
+<                                                       pattern (fan_ops.ml[273,10347+33]..[279,10722+84])
+---
+>                                                       pattern (fan_ops.ml[274,10385+35]..[279,10722+84])
+3126c3126
+<                                                               pattern (fan_ops.ml[274,10385+38]..[279,10722+79])
+---
+>                                                               pattern (fan_ops.ml[275,10428+40]..[279,10722+79])
+3134c3134
+<                                                                       pattern (fan_ops.ml[275,10428+43]..[275,10428+62])
+---
+>                                                                       pattern (fan_ops.ml[275,10428+48]..[275,10428+62])
+3145c3145
+<                                                                       pattern (fan_ops.ml[275,10428+63]..[279,10722+78])
+---
+>                                                                       pattern (fan_ops.ml[276,10496+65]..[279,10722+78])
+3153c3153
+<       pattern (fan_ops.ml[276,10496+68]..[277,10569+80])
+---
+>       pattern (fan_ops.ml[277,10569+68]..[277,10569+80])
+3164c3164
+<       pattern (fan_ops.ml[278,10651+66]..[279,10722+77])
+---
+>       pattern (fan_ops.ml[279,10722+68]..[279,10722+77])
+3189c3189
+<                                     expression (fan_ops.ml[282,10877+23]..[298,11716+62])
+---
+>                                     expression (fan_ops.ml[282,10877+23]..[298,11716+62]) ghost
+3199c3199
+<                                               expression (fan_ops.ml[284,10938+29]..[297,11638+75])
+---
+>                                               expression (fan_ops.ml[284,10938+28]..[297,11638+76])
+3207c3207
+<                                                       expression (fan_ops.ml[286,11009+34]..[297,11638+55])
+---
+>                                                       expression (fan_ops.ml[286,11009+33]..[297,11638+56])
+3215c3215
+<                                                               expression (fan_ops.ml[288,11090+39]..[296,11574+61])
+---
+>                                                               expression (fan_ops.ml[288,11090+38]..[296,11574+62])
+3223c3223
+<                                                                       expression (fan_ops.ml[290,11181+44]..[295,11496+75])
+---
+>                                                                       expression (fan_ops.ml[290,11181+43]..[295,11496+76])
+3231c3231
+<       expression (fan_ops.ml[291,11230+53]..[291,11230+75])
+---
+>       expression (fan_ops.ml[291,11230+52]..[291,11230+76])
+3242c3242
+<       expression (fan_ops.ml[292,11308+49]..[295,11496+73])
+---
+>       expression (fan_ops.ml[292,11308+48]..[295,11496+74])
+3250c3250
+<               expression (fan_ops.ml[294,11419+54]..[294,11419+74])
+---
+>               expression (fan_ops.ml[294,11419+53]..[294,11419+75])
+3261c3261
+<               expression (fan_ops.ml[295,11496+54]..[295,11496+71])
+---
+>               expression (fan_ops.ml[295,11496+53]..[295,11496+72])
+3274c3274
+<                                                                       expression (fan_ops.ml[296,11574+43]..[296,11574+60])
+---
+>                                                                       expression (fan_ops.ml[296,11574+43]..[296,11574+60]) ghost
+3283c3283
+<                                                               expression (fan_ops.ml[297,11638+38]..[297,11638+54])
+---
+>                                                               expression (fan_ops.ml[297,11638+38]..[297,11638+54]) ghost
+3292c3292
+<                                                       expression (fan_ops.ml[297,11638+58]..[297,11638+74])
+---
+>                                                       expression (fan_ops.ml[297,11638+58]..[297,11638+74]) ghost
+3301c3301
+<                                               expression (fan_ops.ml[298,11716+28]..[298,11716+48])
+---
+>                                               expression (fan_ops.ml[298,11716+28]..[298,11716+48]) ghost
+3320c3320
+<                                       pattern (fan_ops.ml[299,11779+20]..[309,12339+96])
+---
+>                                       pattern (fan_ops.ml[300,11804+22]..[309,12339+96])
+3328c3328
+<                                               pattern (fan_ops.ml[300,11804+28]..[309,12339+92])
+---
+>                                               pattern (fan_ops.ml[301,11837+30]..[309,12339+92])
+3336c3336
+<                                                       pattern (fan_ops.ml[301,11837+33]..[309,12339+88])
+---
+>                                                       pattern (fan_ops.ml[302,11875+35]..[309,12339+88])
+3344c3344
+<                                                               pattern (fan_ops.ml[302,11875+38]..[309,12339+84])
+---
+>                                                               pattern (fan_ops.ml[303,11918+40]..[309,12339+84])
+3352c3352
+<                                                                       pattern (fan_ops.ml[303,11918+43]..[309,12339+79])
+---
+>                                                                       pattern (fan_ops.ml[304,11966+45]..[309,12339+79])
+3360c3360
+<       pattern (fan_ops.ml[304,11966+48]..[304,11966+67])
+---
+>       pattern (fan_ops.ml[304,11966+53]..[304,11966+67])
+3371c3371
+<       pattern (fan_ops.ml[304,11966+68]..[309,12339+78])
+---
+>       pattern (fan_ops.ml[305,12039+68]..[309,12339+78])
+3379c3379
+<               pattern (fan_ops.ml[306,12111+68]..[307,12184+80])
+---
+>               pattern (fan_ops.ml[307,12184+68]..[307,12184+80])
+3390c3390
+<               pattern (fan_ops.ml[308,12266+68]..[309,12339+77])
+---
+>               pattern (fan_ops.ml[309,12339+68]..[309,12339+77])
+3418c3418
+<                                     expression (fan_ops.ml[312,12498+23]..[341,14202+62])
+---
+>                                     expression (fan_ops.ml[312,12498+23]..[341,14202+62]) ghost
+3428c3428
+<                                               expression (fan_ops.ml[314,12559+29]..[340,14142+57])
+---
+>                                               expression (fan_ops.ml[314,12559+28]..[340,14142+58])
+3436c3436
+<                                                       expression (fan_ops.ml[315,12593+38]..[315,12593+54])
+---
+>                                                       expression (fan_ops.ml[315,12593+37]..[315,12593+55])
+3447c3447
+<                                                       expression (fan_ops.ml[316,12650+34]..[340,14142+55])
+---
+>                                                       expression (fan_ops.ml[316,12650+33]..[340,14142+56])
+3455c3455
+<                                                               expression (fan_ops.ml[318,12731+39]..[339,14079+60])
+---
+>                                                               expression (fan_ops.ml[318,12731+38]..[339,14079+61])
+3463c3463
+<                                                                       expression (fan_ops.ml[320,12822+44]..[338,14011+65])
+---
+>                                                                       expression (fan_ops.ml[320,12822+43]..[338,14011+66])
+3471c3471
+<       expression (fan_ops.ml[322,12923+49]..[337,13937+71])
+---
+>       expression (fan_ops.ml[322,12923+48]..[337,13937+72])
+3479c3479
+<               expression (fan_ops.ml[324,13034+54]..[336,13856+78])
+---
+>               expression (fan_ops.ml[324,13034+53]..[336,13856+79])
+3487c3487
+<                       expression (fan_ops.ml[326,13155+59]..[328,13286+74])
+---
+>                       expression (fan_ops.ml[326,13155+58]..[328,13286+75])
+3498c3498
+<                       expression (fan_ops.ml[329,13363+59]..[336,13856+76])
+---
+>                       expression (fan_ops.ml[329,13363+58]..[336,13856+77])
+3506c3506
+<                               expression (fan_ops.ml[331,13494+64]..[333,13635+77])
+---
+>                               expression (fan_ops.ml[331,13494+63]..[333,13635+78])
+3517c3517
+<                               expression (fan_ops.ml[334,13715+64]..[336,13856+74])
+---
+>                               expression (fan_ops.ml[334,13715+63]..[336,13856+75])
+3530c3530
+<               expression (fan_ops.ml[337,13937+53]..[337,13937+70])
+---
+>               expression (fan_ops.ml[337,13937+53]..[337,13937+70]) ghost
+3539c3539
+<       expression (fan_ops.ml[338,14011+48]..[338,14011+64])
+---
+>       expression (fan_ops.ml[338,14011+48]..[338,14011+64]) ghost
+3548c3548
+<                                                                       expression (fan_ops.ml[339,14079+43]..[339,14079+59])
+---
+>                                                                       expression (fan_ops.ml[339,14079+43]..[339,14079+59]) ghost
+3557c3557
+<                                                               expression (fan_ops.ml[340,14142+38]..[340,14142+54])
+---
+>                                                               expression (fan_ops.ml[340,14142+38]..[340,14142+54]) ghost
+3567c3567
+<                                               expression (fan_ops.ml[341,14202+28]..[341,14202+48])
+---
+>                                               expression (fan_ops.ml[341,14202+28]..[341,14202+48]) ghost
+3586c3586
+<                                       pattern (fan_ops.ml[342,14265+20]..[349,14657+41])
+---
+>                                       pattern (fan_ops.ml[343,14290+22]..[349,14657+41])
+3594c3594
+<                                               pattern (fan_ops.ml[343,14290+28]..[348,14573+82])
+---
+>                                               pattern (fan_ops.ml[344,14323+30]..[348,14573+82])
+3602c3602
+<                                                       pattern (fan_ops.ml[344,14323+33]..[348,14573+77])
+---
+>                                                       pattern (fan_ops.ml[345,14361+35]..[348,14573+77])
+3610c3610
+<                                                               pattern (fan_ops.ml[345,14361+38]..[345,14361+57])
+---
+>                                                               pattern (fan_ops.ml[345,14361+43]..[345,14361+57])
+3621c3621
+<                                                               pattern (fan_ops.ml[345,14361+58]..[348,14573+76])
+---
+>                                                               pattern (fan_ops.ml[346,14424+60]..[348,14573+76])
+3629c3629
+<                                                                       pattern (fan_ops.ml[346,14424+63]..[347,14492+79])
+---
+>                                                                       pattern (fan_ops.ml[347,14492+65]..[347,14492+79])
+3640c3640
+<                                                                       pattern (fan_ops.ml[348,14573+61]..[348,14573+75])
+---
+>                                                                       pattern (fan_ops.ml[348,14573+66]..[348,14573+75])
+3656c3656
+<                                               pattern (fan_ops.ml[349,14657+23]..[349,14657+40])
+---
+>                                               pattern (fan_ops.ml[349,14657+30]..[349,14657+40])
+3671c3671
+<                                     expression (fan_ops.ml[352,14761+23]..[365,15423+62])
+---
+>                                     expression (fan_ops.ml[352,14761+23]..[365,15423+62]) ghost
+3681c3681
+<                                               expression (fan_ops.ml[354,14822+29]..[364,15350+70])
+---
+>                                               expression (fan_ops.ml[354,14822+28]..[364,15350+71])
+3689c3689
+<                                                       expression (fan_ops.ml[356,14893+34]..[363,15291+56])
+---
+>                                                       expression (fan_ops.ml[356,14893+33]..[363,15291+57])
+3697c3697
+<                                                               expression (fan_ops.ml[358,14974+39]..[362,15218+70])
+---
+>                                                               expression (fan_ops.ml[358,14974+38]..[362,15218+71])
+3705c3705
+<                                                                       expression (fan_ops.ml[359,15018+48]..[359,15018+70])
+---
+>                                                                       expression (fan_ops.ml[359,15018+47]..[359,15018+71])
+3716c3716
+<                                                                       expression (fan_ops.ml[360,15091+44]..[362,15218+68])
+---
+>                                                                       expression (fan_ops.ml[360,15091+43]..[362,15218+69])
+3724c3724
+<       expression (fan_ops.ml[361,15140+53]..[361,15140+75])
+---
+>       expression (fan_ops.ml[361,15140+52]..[361,15140+76])
+3735c3735
+<       expression (fan_ops.ml[362,15218+49]..[362,15218+66])
+---
+>       expression (fan_ops.ml[362,15218+48]..[362,15218+67])
+3748c3748
+<                                                               expression (fan_ops.ml[363,15291+38]..[363,15291+55])
+---
+>                                                               expression (fan_ops.ml[363,15291+38]..[363,15291+55]) ghost
+3757c3757
+<                                                       expression (fan_ops.ml[364,15350+34]..[364,15350+68])
+---
+>                                                       expression (fan_ops.ml[364,15350+33]..[364,15350+69])
+3765c3765
+<                                                               expression (fan_ops.ml[364,15350+47]..[364,15350+67])
+---
+>                                                               expression (fan_ops.ml[364,15350+47]..[364,15350+67]) ghost
+3775c3775
+<                                               expression (fan_ops.ml[365,15423+28]..[365,15423+48])
+---
+>                                               expression (fan_ops.ml[365,15423+28]..[365,15423+48]) ghost
+3805c3805
+<         expression (fan_ops.ml[367,15518+15]..[372,15680+10])
+---
+>         expression (fan_ops.ml[367,15518+15]..[372,15680+10]) ghost
+3821c3821
+<                         pattern (fan_ops.ml[369,15552+4]..[369,15552+19])
+---
+>                         pattern (fan_ops.ml[369,15552+9]..[369,15552+19])
+3834c3834
+<                         pattern (fan_ops.ml[369,15552+20]..[369,15552+33])
+---
+>                         pattern (fan_ops.ml[369,15552+25]..[369,15552+33])
+3893c3893
+<         expression (fan_ops.ml[373,15691+16]..[378,15840+10])
+---
+>         expression (fan_ops.ml[373,15691+16]..[378,15840+10]) ghost
+3907c3907
+<                       pattern (fan_ops.ml[375,15726+4]..[375,15726+19])
+---
+>                       pattern (fan_ops.ml[375,15726+9]..[375,15726+19])
+3975c3975
+<                   pattern (fan_ops.ml[381,15879+4]..[381,15879+19])
+---
+>                   pattern (fan_ops.ml[381,15879+9]..[381,15879+19])
+3998c3998
+<                   pattern (fan_ops.ml[382,15911+4]..[382,15911+19])
+---
+>                   pattern (fan_ops.ml[382,15911+9]..[382,15911+19])
+4030c4030
+<               expression (fan_ops.ml[387,15995+7]..[405,16795+59])
+---
+>               expression (fan_ops.ml[387,15995+6]..[405,16795+60])
+4036c4036
+<                     expression (fan_ops.ml[389,16030+12]..[405,16795+58])
+---
+>                     expression (fan_ops.ml[389,16030+11]..[405,16795+59])
+4042c4042
+<                           expression (fan_ops.ml[391,16072+17]..[405,16795+57])
+---
+>                           expression (fan_ops.ml[391,16072+16]..[405,16795+58])
+4053c4053
+<                                       pattern (fan_ops.ml[392,16104+20]..[392,16104+33])
+---
+>                                       pattern (fan_ops.ml[392,16104+25]..[392,16104+33])
+4064c4064
+<                                 expression (fan_ops.ml[393,16153+21]..[393,16153+62])
+---
+>                                 expression (fan_ops.ml[393,16153+21]..[393,16153+62]) ghost
+4074c4074
+<                                           expression (fan_ops.ml[393,16153+34]..[393,16153+47])
+---
+>                                           expression (fan_ops.ml[393,16153+33]..[393,16153+48])
+4094c4094
+<                                       pattern (fan_ops.ml[394,16216+20]..[394,16216+35])
+---
+>                                       pattern (fan_ops.ml[394,16216+27]..[394,16216+35])
+4105c4105
+<                                 expression (fan_ops.ml[395,16267+21]..[395,16267+64])
+---
+>                                 expression (fan_ops.ml[395,16267+21]..[395,16267+64]) ghost
+4115c4115
+<                                           expression (fan_ops.ml[395,16267+36]..[395,16267+49])
+---
+>                                           expression (fan_ops.ml[395,16267+35]..[395,16267+50])
+4135c4135
+<                                       pattern (fan_ops.ml[396,16332+20]..[396,16332+35])
+---
+>                                       pattern (fan_ops.ml[396,16332+27]..[396,16332+35])
+4146c4146
+<                                 expression (fan_ops.ml[397,16383+21]..[397,16383+64])
+---
+>                                 expression (fan_ops.ml[397,16383+21]..[397,16383+64]) ghost
+4156c4156
+<                                           expression (fan_ops.ml[397,16383+36]..[397,16383+49])
+---
+>                                           expression (fan_ops.ml[397,16383+35]..[397,16383+50])
+4176c4176
+<                                       pattern (fan_ops.ml[398,16448+20]..[398,16448+39])
+---
+>                                       pattern (fan_ops.ml[398,16448+31]..[398,16448+39])
+4187c4187
+<                                 expression (fan_ops.ml[399,16503+21]..[399,16503+68])
+---
+>                                 expression (fan_ops.ml[399,16503+21]..[399,16503+68]) ghost
+4197c4197
+<                                           expression (fan_ops.ml[399,16503+40]..[399,16503+53])
+---
+>                                           expression (fan_ops.ml[399,16503+39]..[399,16503+54])
+4217c4217
+<                                       pattern (fan_ops.ml[400,16572+20]..[400,16572+33])
+---
+>                                       pattern (fan_ops.ml[400,16572+25]..[400,16572+33])
+4228c4228
+<                                 expression (fan_ops.ml[401,16621+21]..[401,16621+62])
+---
+>                                 expression (fan_ops.ml[401,16621+21]..[401,16621+62]) ghost
+4238c4238
+<                                           expression (fan_ops.ml[401,16621+34]..[401,16621+47])
+---
+>                                           expression (fan_ops.ml[401,16621+33]..[401,16621+48])
+4255c4255
+<                                 expression (fan_ops.ml[403,16708+21]..[405,16795+57])
+---
+>                                 expression (fan_ops.ml[403,16708+21]..[405,16795+57]) ghost
+4265c4265
+<                                           expression (fan_ops.ml[404,16735+31]..[404,16735+57])
+---
+>                                           expression (fan_ops.ml[404,16735+30]..[404,16735+58])
+4273c4273
+<                                                   expression (fan_ops.ml[404,16735+43]..[404,16735+55])
+---
+>                                                   expression (fan_ops.ml[404,16735+42]..[404,16735+56])
+4286c4286
+<                                           expression (fan_ops.ml[405,16795+26]..[405,16795+43])
+---
+>                                           expression (fan_ops.ml[405,16795+26]..[405,16795+43]) ghost

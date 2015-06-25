@@ -1,0 +1,254 @@
+70c70
+<               expression (gram_pat.ml[8,242+37]..[8,242+58])
+---
+>               expression (gram_pat.ml[8,242+36]..[8,242+59])
+85c85
+<       class_declaration (gram_pat.ml[9,302+6]..[14,462+5])
+---
+>       class_declaration (gram_pat.ml[9,302+0]..[14,462+5])
+94c94
+<               pattern (gram_pat.ml[10,318+2]..[14,462+5])
+---
+>               pattern (gram_pat.ml[10,318+8]..[10,318+8]) ghost
+101c101
+<                     expression (gram_pat.ml[11,327+4]..[11,327+42])
+---
+>                     expression (gram_pat.ml[11,327+11]..[11,327+42]) ghost
+122c122
+<                     expression (gram_pat.ml[12,370+4]..[12,370+48])
+---
+>                     expression (gram_pat.ml[12,370+11]..[12,370+48]) ghost
+143c143
+<                     expression (gram_pat.ml[13,419+4]..[13,419+42])
+---
+>                     expression (gram_pat.ml[13,419+11]..[13,419+42]) ghost
+165c165
+<       type_declaration "lident" (gram_pat.ml[15,468+5]..[15,468+11]) (gram_pat.ml[15,468+5]..[15,468+39])
+---
+>       type_declaration "lident" (gram_pat.ml[15,468+5]..[15,468+11]) (gram_pat.ml[15,468+0]..[15,468+39])
+180c180
+<                     core_type (gram_pat.ml[15,468+24]..[15,468+37])
+---
+>                     core_type (gram_pat.ml[15,468+25]..[15,468+36])
+193c193
+<       type_declaration "t" (gram_pat.ml[16,508+4]..[16,508+5]) (gram_pat.ml[16,508+4]..[19,652+42])
+---
+>       type_declaration "t" (gram_pat.ml[16,508+4]..[16,508+5]) (gram_pat.ml[16,508+0]..[19,652+42])
+208c208
+<                     core_type (gram_pat.ml[17,516+12]..[17,516+25])
+---
+>                     core_type (gram_pat.ml[17,516+13]..[17,516+24])
+221c221
+<                     core_type (gram_pat.ml[17,516+37]..[17,516+48])
+---
+>                     core_type (gram_pat.ml[17,516+38]..[17,516+47])
+237c237
+<                     core_type (gram_pat.ml[17,516+60]..[17,516+73])
+---
+>                     core_type (gram_pat.ml[17,516+61]..[17,516+72])
+254c254
+<                     core_type (gram_pat.ml[18,591+18]..[18,591+29])
+---
+>                     core_type (gram_pat.ml[18,591+19]..[18,591+28])
+270c270
+<                     core_type (gram_pat.ml[18,591+43]..[18,591+59])
+---
+>                     core_type (gram_pat.ml[18,591+44]..[18,591+58])
+286c286
+<                     core_type (gram_pat.ml[19,652+12]..[19,652+25])
+---
+>                     core_type (gram_pat.ml[19,652+13]..[19,652+24])
+309c309
+<       class_declaration (gram_pat.ml[20,695+6]..[53,1895+5])
+---
+>       class_declaration (gram_pat.ml[20,695+0]..[53,1895+5])
+318c318
+<               pattern (gram_pat.ml[21,707+2]..[53,1895+5])
+---
+>               pattern (gram_pat.ml[21,707+9]..[21,707+28])
+335c335
+<                     expression (gram_pat.ml[23,757+4]..[27,872+54])
+---
+>                     expression (gram_pat.ml[23,757+11]..[27,872+54]) ghost
+344c344
+<                                 pattern (gram_pat.ml[25,810+8]..[25,810+22])
+---
+>                                 pattern (gram_pat.ml[25,810+13]..[25,810+22])
+402,403d401
+<                           Ptyp_poly
+<                           core_type (gram_pat.ml[23,757+20]..[23,757+36])
+416c414
+<                     expression (gram_pat.ml[28,927+4]..[52,1840+54])
+---
+>                     expression (gram_pat.ml[28,927+11]..[52,1840+54]) ghost
+425c423
+<                                 pattern (gram_pat.ml[30,965+8]..[30,965+22])
+---
+>                                 pattern (gram_pat.ml[30,965+13]..[30,965+22])
+484c482
+<                                 pattern (gram_pat.ml[33,1082+8]..[33,1082+26])
+---
+>                                 pattern (gram_pat.ml[33,1082+13]..[33,1082+26])
+565c563
+<                                 pattern (gram_pat.ml[37,1237+8]..[37,1237+22])
+---
+>                                 pattern (gram_pat.ml[37,1237+13]..[37,1237+22])
+626c624
+<                             expression (gram_pat.ml[40,1354+23]..[40,1354+49])
+---
+>                             expression (gram_pat.ml[40,1354+23]..[40,1354+49]) ghost
+650c648
+<                                 pattern (gram_pat.ml[41,1404+8]..[41,1404+26])
+---
+>                                 pattern (gram_pat.ml[41,1404+13]..[41,1404+26])
+731c729
+<                                 pattern (gram_pat.ml[45,1559+8]..[45,1559+28])
+---
+>                                 pattern (gram_pat.ml[45,1559+15]..[45,1559+28])
+812c810
+<                                 pattern (gram_pat.ml[49,1723+8]..[49,1723+22])
+---
+>                                 pattern (gram_pat.ml[49,1723+13]..[49,1723+22])
+899,900d896
+<                           Ptyp_poly
+<                           core_type (gram_pat.ml[28,927+15]..[28,927+21])
+917c913
+<         expression (gram_pat.ml[54,1901+23]..[60,2099+33])
+---
+>         expression (gram_pat.ml[54,1901+23]..[60,2099+33]) ghost
+925c921
+<                 expression (gram_pat.ml[57,1985+7]..[60,2099+32])
+---
+>                 expression (gram_pat.ml[57,1985+6]..[60,2099+33])
+932c928
+<                           pattern (gram_pat.ml[58,2001+9]..[58,2001+23])
+---
+>                           pattern (gram_pat.ml[58,2001+14]..[58,2001+23])
+984c980
+<         expression (gram_pat.ml[61,2133+14]..[84,3123+77])
+---
+>         expression (gram_pat.ml[61,2133+14]..[84,3123+77]) ghost
+992c988
+<                 expression (gram_pat.ml[64,2203+7]..[84,3123+76])
+---
+>                 expression (gram_pat.ml[64,2203+6]..[84,3123+77])
+999c995
+<                           pattern (gram_pat.ml[65,2219+9]..[65,2219+23])
+---
+>                           pattern (gram_pat.ml[65,2219+14]..[65,2219+23])
+1035c1031
+<                           pattern (gram_pat.ml[68,2350+9]..[68,2350+27])
+---
+>                           pattern (gram_pat.ml[68,2350+14]..[68,2350+27])
+1079c1075
+<                           pattern (gram_pat.ml[71,2499+9]..[71,2499+23])
+---
+>                           pattern (gram_pat.ml[71,2499+14]..[71,2499+23])
+1117c1113
+<                       expression (gram_pat.ml[74,2630+24]..[74,2630+54])
+---
+>                       expression (gram_pat.ml[74,2630+24]..[74,2630+54]) ghost
+1139c1135
+<                           pattern (gram_pat.ml[75,2685+9]..[75,2685+27])
+---
+>                           pattern (gram_pat.ml[75,2685+14]..[75,2685+27])
+1183c1179
+<                           pattern (gram_pat.ml[78,2834+9]..[78,2834+29])
+---
+>                           pattern (gram_pat.ml[78,2834+16]..[78,2834+29])
+1227c1223
+<                           pattern (gram_pat.ml[81,2992+9]..[81,2992+23])
+---
+>                           pattern (gram_pat.ml[81,2992+14]..[81,2992+23])
+1310c1306
+<             pattern (gram_pat.ml[86,3218+10]..[86,3218+14])
+---
+>             pattern (gram_pat.ml[86,3218+9]..[86,3218+15])
+1324c1320
+<                   expression (gram_pat.ml[88,3260+4]..[92,3364+22])
+---
+>                   expression (gram_pat.ml[88,3260+10]..[92,3364+22]) ghost
+1333c1329
+<                               pattern (gram_pat.ml[90,3291+8]..[90,3291+21])
+---
+>                               pattern (gram_pat.ml[90,3291+13]..[90,3291+21])
+1350c1346
+<                               pattern (gram_pat.ml[91,3326+8]..[91,3326+25])
+---
+>                               pattern (gram_pat.ml[91,3326+15]..[91,3326+25])
+1410c1406
+<               expression (gram_pat.ml[98,3447+7]..[119,4329+44])
+---
+>               expression (gram_pat.ml[98,3447+6]..[119,4329+45])
+1421c1417
+<                     expression (gram_pat.ml[100,3483+12]..[119,4329+43])
+---
+>                     expression (gram_pat.ml[100,3483+11]..[119,4329+44])
+1430c1426
+<                               pattern (gram_pat.ml[101,3508+14]..[101,3508+24])
+---
+>                               pattern (gram_pat.ml[101,3508+19]..[101,3508+24])
+1479c1475
+<                             expression (gram_pat.ml[104,3626+17]..[113,4066+44])
+---
+>                             expression (gram_pat.ml[104,3626+16]..[113,4066+45])
+1486c1482
+<                                     Ppat_construct "::" (gram_pat.ml[105,3656+19]..[105,3656+36])
+---
+>                                     Ppat_construct "::" (gram_pat.ml[105,3656+32]..[105,3656+34])
+1488c1484
+<                                       pattern (gram_pat.ml[105,3656+19]..[105,3656+36])
+---
+>                                       pattern (gram_pat.ml[105,3656+19]..[105,3656+36]) ghost
+1516c1512
+<                                     Ppat_construct "::" (gram_pat.ml[106,3708+19]..[106,3708+39])
+---
+>                                     Ppat_construct "::" (gram_pat.ml[106,3708+32]..[106,3708+34])
+1518c1514
+<                                       pattern (gram_pat.ml[106,3708+19]..[106,3708+39])
+---
+>                                       pattern (gram_pat.ml[106,3708+19]..[106,3708+39]) ghost
+1529c1525
+<                                             Ppat_construct "::" (gram_pat.ml[106,3708+34]..[106,3708+39])
+---
+>                                             Ppat_construct "::" (gram_pat.ml[106,3708+35]..[106,3708+37])
+1531c1527
+<                                               pattern (gram_pat.ml[106,3708+34]..[106,3708+39])
+---
+>                                               pattern (gram_pat.ml[106,3708+34]..[106,3708+39]) ghost
+1567c1563
+<                                     Ppat_construct "::" (gram_pat.ml[107,3783+19]..[107,3783+38])
+---
+>                                     Ppat_construct "::" (gram_pat.ml[107,3783+32]..[107,3783+34])
+1569c1565
+<                                       pattern (gram_pat.ml[107,3783+19]..[107,3783+38])
+---
+>                                       pattern (gram_pat.ml[107,3783+19]..[107,3783+38]) ghost
+1600c1596
+<                                         expression (gram_pat.ml[109,3870+24]..[109,3870+56])
+---
+>                                         expression (gram_pat.ml[109,3870+23]..[109,3870+57])
+1639c1635
+<                                     expression (gram_pat.ml[111,3957+21]..[113,4066+44])
+---
+>                                     expression (gram_pat.ml[113,4066+22]..[113,4066+43])
+1653c1649
+<                               pattern (gram_pat.ml[114,4112+14]..[114,4112+26])
+---
+>                               pattern (gram_pat.ml[114,4112+19]..[114,4112+26])
+1691c1687
+<                               pattern (gram_pat.ml[115,4175+14]..[115,4175+28])
+---
+>                               pattern (gram_pat.ml[115,4175+21]..[115,4175+28])
+1717c1713
+<                               pattern (gram_pat.ml[116,4219+14]..[116,4219+24])
+---
+>                               pattern (gram_pat.ml[116,4219+19]..[116,4219+24])
+1762c1758
+<                               pattern (gram_pat.ml[118,4290+14]..[118,4290+24])
+---
+>                               pattern (gram_pat.ml[118,4290+19]..[118,4290+24])
+1789c1785
+<                               pattern (gram_pat.ml[119,4329+14]..[119,4329+24])
+---
+>                               pattern (gram_pat.ml[119,4329+19]..[119,4329+24])

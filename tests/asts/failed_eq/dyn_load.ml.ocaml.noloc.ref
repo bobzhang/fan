@@ -1,0 +1,293 @@
+[
+  structure_item (dyn_load.ml[]..[])
+    Pstr_exception
+    extension_constructor (dyn_load.ml[]..[])
+      pext_name = "Error"
+      pext_kind =
+        Pext_decl
+          [
+            core_type (dyn_load.ml[]..[])
+              Ptyp_constr "string" (dyn_load.ml[]..[])
+              []
+            core_type (dyn_load.ml[]..[])
+              Ptyp_constr "string" (dyn_load.ml[]..[])
+              []
+          ]
+          None
+  structure_item (dyn_load.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_load.ml[]..[])
+          Ppat_var "_initialized" (dyn_load.ml[]..[])
+        expression (dyn_load.ml[]..[])
+          Pexp_apply
+          expression (dyn_load.ml[]..[])
+            Pexp_ident "ref" (dyn_load.ml[]..[])
+          [
+            <label> ""
+              expression (dyn_load.ml[]..[])
+                Pexp_construct "false" (dyn_load.ml[]..[])
+                None
+          ]
+    ]
+  structure_item (dyn_load.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (dyn_load.ml[]..[])
+          Ppat_var "load" (dyn_load.ml[]..[])
+        expression (dyn_load.ml[]..[]) 
+          Pexp_fun ""
+          None
+          pattern (dyn_load.ml[]..[])
+            Ppat_var "file" (dyn_load.ml[]..[])
+          expression (dyn_load.ml[]..[])
+            Pexp_sequence
+            expression (dyn_load.ml[]..[])
+              Pexp_ifthenelse
+              expression (dyn_load.ml[]..[])
+                Pexp_apply
+                expression (dyn_load.ml[]..[])
+                  Pexp_ident "not" (dyn_load.ml[]..[])
+                [
+                  <label> ""
+                    expression (dyn_load.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_load.ml[]..[])
+                        Pexp_ident "!" (dyn_load.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_ident "_initialized" (dyn_load.ml[]..[])
+                      ]
+                ]
+              expression (dyn_load.ml[]..[])
+                Pexp_try
+                expression (dyn_load.ml[]..[])
+                  Pexp_sequence
+                  expression (dyn_load.ml[]..[])
+                    Pexp_apply
+                    expression (dyn_load.ml[]..[])
+                      Pexp_ident "Dynlink.init" (dyn_load.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dyn_load.ml[]..[])
+                          Pexp_construct "()" (dyn_load.ml[]..[])
+                          None
+                    ]
+                  expression (dyn_load.ml[]..[])
+                    Pexp_sequence
+                    expression (dyn_load.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_load.ml[]..[])
+                        Pexp_ident "Dynlink.allow_unsafe_modules" (dyn_load.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_construct "true" (dyn_load.ml[]..[])
+                            None
+                      ]
+                    expression (dyn_load.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_load.ml[]..[])
+                        Pexp_ident ":=" (dyn_load.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_ident "_initialized" (dyn_load.ml[]..[])
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_construct "true" (dyn_load.ml[]..[])
+                            None
+                      ]
+                [
+                  <case>
+                    pattern (dyn_load.ml[]..[])
+                      Ppat_construct "Dynlink.Error" (dyn_load.ml[]..[])
+                      Some
+                        pattern (dyn_load.ml[]..[])
+                          Ppat_var "e" (dyn_load.ml[]..[])
+                    expression (dyn_load.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_load.ml[]..[])
+                        Pexp_ident "raise" (dyn_load.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_construct "Error" (dyn_load.ml[]..[])
+                            Some
+                              expression (dyn_load.ml[]..[])
+                                Pexp_tuple
+                                [
+                                  expression (dyn_load.ml[]..[])
+                                    Pexp_constant Const_string("Fan's dynamic loader initialization",None)
+                                  expression (dyn_load.ml[]..[])
+                                    Pexp_apply
+                                    expression (dyn_load.ml[]..[])
+                                      Pexp_ident "Dynlink.error_message" (dyn_load.ml[]..[])
+                                    [
+                                      <label> ""
+                                        expression (dyn_load.ml[]..[])
+                                          Pexp_ident "e" (dyn_load.ml[]..[])
+                                    ]
+                                ]
+                      ]
+                ]
+              None
+            expression (dyn_load.ml[]..[])
+              Pexp_match
+              expression (dyn_load.ml[]..[])
+                Pexp_apply
+                expression (dyn_load.ml[]..[])
+                  Pexp_ident "Filenamef.find_in_path" (dyn_load.ml[]..[])
+                [
+                  <label> "path"
+                    expression (dyn_load.ml[]..[])
+                      Pexp_construct "::" (dyn_load.ml[]..[])
+                      Some
+                        expression (dyn_load.ml[]..[]) 
+                          Pexp_tuple
+                          [
+                            expression (dyn_load.ml[]..[])
+                              Pexp_constant Const_string(".",None)
+                            expression (dyn_load.ml[]..[])
+                              Pexp_construct "::" (dyn_load.ml[]..[])
+                              Some
+                                expression (dyn_load.ml[]..[]) 
+                                  Pexp_tuple
+                                  [
+                                    expression (dyn_load.ml[]..[])
+                                      Pexp_ident "Configf.fan_plugins_library" (dyn_load.ml[]..[])
+                                    expression (dyn_load.ml[]..[])
+                                      Pexp_apply
+                                      expression (dyn_load.ml[]..[])
+                                        Pexp_ident "!" (dyn_load.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (dyn_load.ml[]..[])
+                                            Pexp_ident "Configf.dynload_dirs" (dyn_load.ml[]..[])
+                                      ]
+                                  ]
+                          ]
+                  <label> ""
+                    expression (dyn_load.ml[]..[])
+                      Pexp_ident "file" (dyn_load.ml[]..[])
+                ]
+              [
+                <case>
+                  pattern (dyn_load.ml[]..[])
+                    Ppat_construct "None" (dyn_load.ml[]..[])
+                    None
+                  expression (dyn_load.ml[]..[])
+                    Pexp_apply
+                    expression (dyn_load.ml[]..[])
+                      Pexp_ident "raise" (dyn_load.ml[]..[])
+                    [
+                      <label> ""
+                        expression (dyn_load.ml[]..[])
+                          Pexp_construct "Error" (dyn_load.ml[]..[])
+                          Some
+                            expression (dyn_load.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (dyn_load.ml[]..[])
+                                  Pexp_ident "file" (dyn_load.ml[]..[])
+                                expression (dyn_load.ml[]..[])
+                                  Pexp_constant Const_string("file not found in path",None)
+                              ]
+                    ]
+                <case>
+                  pattern (dyn_load.ml[]..[])
+                    Ppat_construct "Some" (dyn_load.ml[]..[])
+                    Some
+                      pattern (dyn_load.ml[]..[])
+                        Ppat_var "fname" (dyn_load.ml[]..[])
+                  expression (dyn_load.ml[]..[])
+                    Pexp_try
+                    expression (dyn_load.ml[]..[])
+                      Pexp_apply
+                      expression (dyn_load.ml[]..[])
+                        Pexp_ident "Dynlink.loadfile" (dyn_load.ml[]..[])
+                      [
+                        <label> ""
+                          expression (dyn_load.ml[]..[])
+                            Pexp_ident "fname" (dyn_load.ml[]..[])
+                      ]
+                    [
+                      <case>
+                        pattern (dyn_load.ml[]..[])
+                          Ppat_construct "Dynlink.Error" (dyn_load.ml[]..[])
+                          Some
+                            pattern (dyn_load.ml[]..[])
+                              Ppat_var "e" (dyn_load.ml[]..[])
+                        expression (dyn_load.ml[]..[])
+                          Pexp_apply
+                          expression (dyn_load.ml[]..[])
+                            Pexp_ident "raise" (dyn_load.ml[]..[])
+                          [
+                            <label> ""
+                              expression (dyn_load.ml[]..[])
+                                Pexp_construct "Error" (dyn_load.ml[]..[])
+                                Some
+                                  expression (dyn_load.ml[]..[])
+                                    Pexp_tuple
+                                    [
+                                      expression (dyn_load.ml[]..[])
+                                        Pexp_ident "fname" (dyn_load.ml[]..[])
+                                      expression (dyn_load.ml[]..[])
+                                        Pexp_apply
+                                        expression (dyn_load.ml[]..[])
+                                          Pexp_ident "Dynlink.error_message" (dyn_load.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (dyn_load.ml[]..[])
+                                              Pexp_ident "e" (dyn_load.ml[]..[])
+                                        ]
+                                    ]
+                          ]
+                    ]
+              ]
+    ]
+  structure_item (dyn_load.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+          attribute "ocaml.doc"
+            [
+              structure_item (dyn_load.ml[]..[])
+                Pstr_eval
+                expression (dyn_load.ml[]..[])
+                  Pexp_constant Const_string(" no repeat loading\n    FIXME? it can only load [cma] and [cmxs] files? ",None)
+            ]
+        pattern (dyn_load.ml[]..[])
+          Ppat_tuple
+          [
+            pattern (dyn_load.ml[]..[])
+              Ppat_var "objext" (dyn_load.ml[]..[])
+            pattern (dyn_load.ml[]..[])
+              Ppat_var "libext" (dyn_load.ml[]..[])
+          ]
+        expression (dyn_load.ml[]..[])
+          Pexp_ifthenelse
+          expression (dyn_load.ml[]..[])
+            Pexp_ident "Dynlink.is_native" (dyn_load.ml[]..[])
+          expression (dyn_load.ml[]..[])
+            Pexp_tuple
+            [
+              expression (dyn_load.ml[]..[])
+                Pexp_constant Const_string(".cmxs",None)
+              expression (dyn_load.ml[]..[])
+                Pexp_constant Const_string(".cmxs",None)
+            ]
+          Some
+            expression (dyn_load.ml[]..[])
+              Pexp_tuple
+              [
+                expression (dyn_load.ml[]..[])
+                  Pexp_constant Const_string(".cmo",None)
+                expression (dyn_load.ml[]..[])
+                  Pexp_constant Const_string(".cma",None)
+              ]
+    ]
+]

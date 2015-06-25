@@ -1,0 +1,844 @@
+5c5
+<       type_declaration "loc" (astfn.ml[1,0+5]..[1,0+8]) (astfn.ml[1,0+5]..[1,0+17])
+---
+>       type_declaration "loc" (astfn.ml[1,0+5]..[1,0+8]) (astfn.ml[1,0+0]..[1,0+17])
+22c22
+<       type_declaration "ant" (astfn.ml[2,18+5]..[2,18+8]) (astfn.ml[2,18+5]..[2,18+40])
+---
+>       type_declaration "ant" (astfn.ml[2,18+5]..[2,18+8]) (astfn.ml[2,18+0]..[2,18+40])
+37c37
+<                     core_type (astfn.ml[2,18+21]..[2,18+38])
+---
+>                     core_type (astfn.ml[2,18+22]..[2,18+37])
+54c54
+<       type_declaration "literal" (astfn.ml[3,59+5]..[3,59+12]) (astfn.ml[3,59+5]..[6,214+28])
+---
+>       type_declaration "literal" (astfn.ml[3,59+5]..[3,59+12]) (astfn.ml[3,59+0]..[6,214+28])
+123c123
+<       type_declaration "flag" (astfn.ml[7,243+5]..[7,243+9]) (astfn.ml[7,243+5]..[7,243+44])
+---
+>       type_declaration "flag" (astfn.ml[7,243+5]..[7,243+9]) (astfn.ml[7,243+0]..[7,243+44])
+150c150
+<       type_declaration "position_flag" (astfn.ml[8,288+5]..[8,288+18]) (astfn.ml[8,288+5]..[8,288+64])
+---
+>       type_declaration "position_flag" (astfn.ml[8,288+5]..[8,288+18]) (astfn.ml[8,288+0]..[8,288+64])
+179c179
+<       type_declaration "strings" (astfn.ml[9,353+5]..[9,353+12]) (astfn.ml[9,353+5]..[9,353+69])
+---
+>       type_declaration "strings" (astfn.ml[9,353+5]..[9,353+12]) (astfn.ml[9,353+0]..[9,353+69])
+194c194
+<                     core_type (astfn.ml[9,353+25]..[9,353+43])
+---
+>                     core_type (astfn.ml[9,353+26]..[9,353+42])
+221c221
+<       type_declaration "lident" (astfn.ml[10,423+5]..[10,423+11]) (astfn.ml[10,423+5]..[10,423+32])
+---
+>       type_declaration "lident" (astfn.ml[10,423+5]..[10,423+11]) (astfn.ml[10,423+0]..[10,423+32])
+246c246
+<       type_declaration "alident" (astfn.ml[11,456+5]..[11,456+12]) (astfn.ml[11,456+5]..[11,456+39])
+---
+>       type_declaration "alident" (astfn.ml[11,456+5]..[11,456+12]) (astfn.ml[11,456+0]..[11,456+39])
+275c275
+<       type_declaration "auident" (astfn.ml[12,496+5]..[12,496+12]) (astfn.ml[12,496+5]..[12,496+39])
+---
+>       type_declaration "auident" (astfn.ml[12,496+5]..[12,496+12]) (astfn.ml[12,496+0]..[12,496+39])
+304c304
+<       type_declaration "aident" (astfn.ml[13,536+5]..[13,536+11]) (astfn.ml[13,536+5]..[13,536+34])
+---
+>       type_declaration "aident" (astfn.ml[13,536+5]..[13,536+11]) (astfn.ml[13,536+0]..[13,536+34])
+331c331
+<       type_declaration "astring" (astfn.ml[14,571+5]..[14,571+12]) (astfn.ml[14,571+5]..[14,571+37])
+---
+>       type_declaration "astring" (astfn.ml[14,571+5]..[14,571+12]) (astfn.ml[14,571+0]..[14,571+37])
+360c360
+<       type_declaration "uident" (astfn.ml[15,609+5]..[15,609+11]) (astfn.ml[15,609+5]..[16,623+68])
+---
+>       type_declaration "uident" (astfn.ml[15,609+5]..[15,609+11]) (astfn.ml[15,609+0]..[16,623+68])
+375c375
+<                     core_type (astfn.ml[16,623+12]..[16,623+28])
+---
+>                     core_type (astfn.ml[16,623+13]..[16,623+27])
+388c388
+<                     core_type (astfn.ml[16,623+40]..[16,623+56])
+---
+>                     core_type (astfn.ml[16,623+41]..[16,623+55])
+409c409
+<       type_declaration "ident" (astfn.ml[17,692+5]..[17,692+10]) (astfn.ml[17,692+5]..[18,705+76])
+---
+>       type_declaration "ident" (astfn.ml[17,692+5]..[17,692+10]) (astfn.ml[17,692+0]..[18,705+76])
+424c424
+<                     core_type (astfn.ml[18,705+12]..[18,705+26])
+---
+>                     core_type (astfn.ml[18,705+13]..[18,705+25])
+437c437
+<                     core_type (astfn.ml[18,705+40]..[18,705+54])
+---
+>                     core_type (astfn.ml[18,705+41]..[18,705+53])
+462c462
+<       type_declaration "ident'" (astfn.ml[19,782+5]..[19,782+11]) (astfn.ml[19,782+5]..[21,870+20])
+---
+>       type_declaration "ident'" (astfn.ml[19,782+5]..[19,782+11]) (astfn.ml[19,782+0]..[21,870+20])
+477c477
+<                     core_type (astfn.ml[20,796+12]..[20,796+26])
+---
+>                     core_type (astfn.ml[20,796+13]..[20,796+25])
+490c490
+<                     core_type (astfn.ml[20,796+40]..[20,796+54])
+---
+>                     core_type (astfn.ml[20,796+41]..[20,796+53])
+519c519
+<       type_declaration "vid" (astfn.ml[22,891+5]..[22,891+8]) (astfn.ml[22,891+5]..[22,891+75])
+---
+>       type_declaration "vid" (astfn.ml[22,891+5]..[22,891+8]) (astfn.ml[22,891+0]..[22,891+75])
+534c534
+<                     core_type (astfn.ml[22,891+21]..[22,891+31])
+---
+>                     core_type (astfn.ml[22,891+22]..[22,891+30])
+567c567
+<       type_declaration "vid'" (astfn.ml[23,967+5]..[23,967+9]) (astfn.ml[23,967+5]..[23,967+70])
+---
+>       type_declaration "vid'" (astfn.ml[23,967+5]..[23,967+9]) (astfn.ml[23,967+0]..[23,967+70])
+582c582
+<                     core_type (astfn.ml[23,967+22]..[23,967+32])
+---
+>                     core_type (astfn.ml[23,967+23]..[23,967+31])
+611c611
+<       type_declaration "dupath" (astfn.ml[24,1038+5]..[24,1038+11]) (astfn.ml[24,1038+5]..[24,1038+52])
+---
+>       type_declaration "dupath" (astfn.ml[24,1038+5]..[24,1038+11]) (astfn.ml[24,1038+0]..[24,1038+52])
+626c626
+<                     core_type (astfn.ml[24,1038+24]..[24,1038+40])
+---
+>                     core_type (astfn.ml[24,1038+25]..[24,1038+39])
+647c647
+<       type_declaration "dlpath" (astfn.ml[25,1091+5]..[25,1091+11]) (astfn.ml[25,1091+5]..[25,1091+53])
+---
+>       type_declaration "dlpath" (astfn.ml[25,1091+5]..[25,1091+11]) (astfn.ml[25,1091+0]..[25,1091+53])
+662c662
+<                     core_type (astfn.ml[25,1091+24]..[25,1091+41])
+---
+>                     core_type (astfn.ml[25,1091+25]..[25,1091+40])
+683c683
+<       type_declaration "any" (astfn.ml[26,1145+5]..[26,1145+8]) (astfn.ml[26,1145+5]..[26,1145+19])
+---
+>       type_declaration "any" (astfn.ml[26,1145+5]..[26,1145+8]) (astfn.ml[26,1145+0]..[26,1145+19])
+704c704
+<       type_declaration "ctyp" (astfn.ml[27,1165+5]..[27,1165+9]) (astfn.ml[27,1165+5]..[37,1748+28])
+---
+>       type_declaration "ctyp" (astfn.ml[27,1165+5]..[27,1165+9]) (astfn.ml[27,1165+0]..[37,1748+28])
+719c719
+<                     core_type (astfn.ml[28,1177+14]..[28,1177+29])
+---
+>                     core_type (astfn.ml[28,1177+15]..[28,1177+28])
+736c736
+<                     core_type (astfn.ml[28,1177+47]..[28,1177+59])
+---
+>                     core_type (astfn.ml[28,1177+48]..[28,1177+58])
+749c749
+<                     core_type (astfn.ml[29,1238+14]..[29,1238+26])
+---
+>                     core_type (astfn.ml[29,1238+15]..[29,1238+25])
+768c768
+<                     core_type (astfn.ml[30,1289+14]..[30,1289+29])
+---
+>                     core_type (astfn.ml[30,1289+15]..[30,1289+28])
+781c781
+<                     core_type (astfn.ml[30,1289+45]..[30,1289+60])
+---
+>                     core_type (astfn.ml[30,1289+46]..[30,1289+59])
+798c798
+<                     core_type (astfn.ml[31,1360+14]..[31,1360+31])
+---
+>                     core_type (astfn.ml[31,1360+15]..[31,1360+30])
+817c817
+<                     core_type (astfn.ml[32,1414+14]..[32,1414+26])
+---
+>                     core_type (astfn.ml[32,1414+15]..[32,1414+25])
+836c836
+<                     core_type (astfn.ml[33,1463+18]..[33,1463+30])
+---
+>                     core_type (astfn.ml[33,1463+19]..[33,1463+29])
+849c849
+<                     core_type (astfn.ml[33,1463+44]..[33,1463+68])
+---
+>                     core_type (astfn.ml[33,1463+45]..[33,1463+67])
+874c874
+<                     core_type (astfn.ml[34,1533+58]..[34,1533+70])
+---
+>                     core_type (astfn.ml[34,1533+59]..[34,1533+69])
+905c905
+<                     core_type (astfn.ml[36,1681+12]..[36,1681+24])
+---
+>                     core_type (astfn.ml[36,1681+13]..[36,1681+23])
+918c918
+<                     core_type (astfn.ml[36,1681+43]..[36,1681+65])
+---
+>                     core_type (astfn.ml[36,1681+44]..[36,1681+64])
+941c941
+<       type_declaration "type_parameters" (astfn.ml[38,1777+4]..[38,1777+19]) (astfn.ml[38,1777+4]..[39,1799+71])
+---
+>       type_declaration "type_parameters" (astfn.ml[38,1777+4]..[38,1777+19]) (astfn.ml[38,1777+0]..[39,1799+71])
+956c956
+<                     core_type (astfn.ml[39,1799+12]..[39,1799+46])
+---
+>                     core_type (astfn.ml[39,1799+13]..[39,1799+45])
+979c979
+<       type_declaration "row_field" (astfn.ml[40,1871+4]..[40,1871+13]) (astfn.ml[40,1871+4]..[42,1950+50])
+---
+>       type_declaration "row_field" (astfn.ml[40,1871+4]..[40,1871+13]) (astfn.ml[40,1871+0]..[42,1950+50])
+998c998
+<                     core_type (astfn.ml[41,1887+18]..[41,1887+40])
+---
+>                     core_type (astfn.ml[41,1887+19]..[41,1887+39])
+1017c1017
+<                     core_type (astfn.ml[42,1950+16]..[42,1950+31])
+---
+>                     core_type (astfn.ml[42,1950+17]..[42,1950+30])
+1036c1036
+<       type_declaration "tag_names" (astfn.ml[43,2001+4]..[43,2001+13]) (astfn.ml[43,2001+4]..[43,2001+77])
+---
+>       type_declaration "tag_names" (astfn.ml[43,2001+4]..[43,2001+13]) (astfn.ml[43,2001+0]..[43,2001+77])
+1055c1055
+<                     core_type (astfn.ml[43,2001+32]..[43,2001+54])
+---
+>                     core_type (astfn.ml[43,2001+33]..[43,2001+53])
+1074c1074
+<       type_declaration "typedecl" (astfn.ml[44,2079+4]..[44,2079+12]) (astfn.ml[44,2079+4]..[47,2225+40])
+---
+>       type_declaration "typedecl" (astfn.ml[44,2079+4]..[44,2079+12]) (astfn.ml[44,2079+0]..[47,2225+40])
+1089c1089
+<                     core_type (astfn.ml[45,2094+14]..[45,2094+68])
+---
+>                     core_type (astfn.ml[45,2094+15]..[45,2094+67])
+1108c1108
+<                     core_type (astfn.ml[46,2164+16]..[46,2164+59])
+---
+>                     core_type (astfn.ml[46,2164+17]..[46,2164+58])
+1124c1124
+<                     core_type (astfn.ml[47,2225+12]..[47,2225+32])
+---
+>                     core_type (astfn.ml[47,2225+13]..[47,2225+31])
+1141c1141
+<       type_declaration "type_constr" (astfn.ml[48,2266+4]..[48,2266+15]) (astfn.ml[48,2266+4]..[49,2284+69])
+---
+>       type_declaration "type_constr" (astfn.ml[48,2266+4]..[48,2266+15]) (astfn.ml[48,2266+0]..[49,2284+69])
+1156c1156
+<                     core_type (astfn.ml[49,2284+12]..[49,2284+38])
+---
+>                     core_type (astfn.ml[49,2284+13]..[49,2284+37])
+1169c1169
+<                     core_type (astfn.ml[49,2284+49]..[49,2284+61])
+---
+>                     core_type (astfn.ml[49,2284+50]..[49,2284+60])
+1186c1186
+<       type_declaration "opt_type_constr" (astfn.ml[50,2354+4]..[50,2354+19]) (astfn.ml[50,2354+4]..[50,2354+55])
+---
+>       type_declaration "opt_type_constr" (astfn.ml[50,2354+4]..[50,2354+19]) (astfn.ml[50,2354+0]..[50,2354+55])
+1209c1209
+<       type_declaration "decl_param" (astfn.ml[51,2410+4]..[51,2410+14]) (astfn.ml[51,2410+4]..[54,2510+8])
+---
+>       type_declaration "decl_param" (astfn.ml[51,2410+4]..[51,2410+14]) (astfn.ml[51,2410+0]..[54,2510+8])
+1224c1224
+<                     core_type (astfn.ml[52,2427+14]..[52,2427+38])
+---
+>                     core_type (astfn.ml[52,2427+15]..[52,2427+37])
+1249c1249
+<       type_declaration "decl_params" (astfn.ml[55,2519+4]..[55,2519+15]) (astfn.ml[55,2519+4]..[58,2620+46])
+---
+>       type_declaration "decl_params" (astfn.ml[55,2519+4]..[55,2519+15]) (astfn.ml[55,2519+0]..[58,2620+46])
+1264c1264
+<                     core_type (astfn.ml[56,2537+14]..[56,2537+38])
+---
+>                     core_type (astfn.ml[56,2537+15]..[56,2537+37])
+1285c1285
+<                     core_type (astfn.ml[58,2620+12]..[58,2620+38])
+---
+>                     core_type (astfn.ml[58,2620+13]..[58,2620+37])
+1302c1302
+<       type_declaration "opt_decl_params" (astfn.ml[59,2667+4]..[59,2667+19]) (astfn.ml[59,2667+4]..[59,2667+55])
+---
+>       type_declaration "opt_decl_params" (astfn.ml[59,2667+4]..[59,2667+19]) (astfn.ml[59,2667+0]..[59,2667+55])
+1325c1325
+<       type_declaration "type_info" (astfn.ml[60,2723+4]..[60,2723+13]) (astfn.ml[60,2723+4]..[62,2810+33])
+---
+>       type_declaration "type_info" (astfn.ml[60,2723+4]..[60,2723+13]) (astfn.ml[60,2723+0]..[62,2810+33])
+1340c1340
+<                     core_type (astfn.ml[61,2739+14]..[61,2739+37])
+---
+>                     core_type (astfn.ml[61,2739+15]..[61,2739+36])
+1356c1356
+<                     core_type (astfn.ml[61,2739+52]..[61,2739+69])
+---
+>                     core_type (astfn.ml[61,2739+53]..[61,2739+68])
+1369c1369
+<                     core_type (astfn.ml[62,2810+13]..[62,2810+25])
+---
+>                     core_type (astfn.ml[62,2810+14]..[62,2810+24])
+1386c1386
+<       type_declaration "type_repr" (astfn.ml[63,2844+4]..[63,2844+13]) (astfn.ml[63,2844+4]..[63,2844+65])
+---
+>       type_declaration "type_repr" (astfn.ml[63,2844+4]..[63,2844+13]) (astfn.ml[63,2844+0]..[63,2844+65])
+1417c1417
+<       type_declaration "name_ctyp" (astfn.ml[64,2910+4]..[64,2910+13]) (astfn.ml[64,2910+4]..[66,2991+40])
+---
+>       type_declaration "name_ctyp" (astfn.ml[64,2910+4]..[64,2910+13]) (astfn.ml[64,2910+0]..[66,2991+40])
+1432c1432
+<                     core_type (astfn.ml[65,2926+12]..[65,2926+34])
+---
+>                     core_type (astfn.ml[65,2926+13]..[65,2926+33])
+1445c1445
+<                     core_type (astfn.ml[65,2926+48]..[65,2926+63])
+---
+>                     core_type (astfn.ml[65,2926+49]..[65,2926+62])
+1458c1458
+<                     core_type (astfn.ml[66,2991+17]..[66,2991+32])
+---
+>                     core_type (astfn.ml[66,2991+18]..[66,2991+31])
+1475c1475
+<       type_declaration "or_ctyp" (astfn.ml[67,3032+4]..[67,3032+11]) (astfn.ml[67,3032+4]..[69,3107+38])
+---
+>       type_declaration "or_ctyp" (astfn.ml[67,3032+4]..[67,3032+11]) (astfn.ml[67,3032+0]..[69,3107+38])
+1490c1490
+<                     core_type (astfn.ml[68,3046+12]..[68,3046+30])
+---
+>                     core_type (astfn.ml[68,3046+13]..[68,3046+29])
+1503c1503
+<                     core_type (astfn.ml[68,3046+44]..[68,3046+59])
+---
+>                     core_type (astfn.ml[68,3046+45]..[68,3046+58])
+1516c1516
+<                     core_type (astfn.ml[69,3107+11]..[69,3107+26])
+---
+>                     core_type (astfn.ml[69,3107+12]..[69,3107+25])
+1533c1533
+<       type_declaration "of_ctyp" (astfn.ml[70,3146+4]..[70,3146+11]) (astfn.ml[70,3146+4]..[70,3146+49])
+---
+>       type_declaration "of_ctyp" (astfn.ml[70,3146+4]..[70,3146+11]) (astfn.ml[70,3146+0]..[70,3146+49])
+1548c1548
+<                     core_type (astfn.ml[70,3146+23]..[70,3146+34])
+---
+>                     core_type (astfn.ml[70,3146+24]..[70,3146+33])
+1569c1569
+<       type_declaration "pat" (astfn.ml[71,3196+4]..[71,3196+7]) (astfn.ml[71,3196+4]..[81,3716+42])
+---
+>       type_declaration "pat" (astfn.ml[71,3196+4]..[71,3196+7]) (astfn.ml[71,3196+0]..[81,3716+42])
+1588c1588
+<                     core_type (astfn.ml[72,3206+18]..[72,3206+28])
+---
+>                     core_type (astfn.ml[72,3206+19]..[72,3206+27])
+1607c1607
+<                     core_type (astfn.ml[72,3206+58]..[72,3206+68])
+---
+>                     core_type (astfn.ml[72,3206+59]..[72,3206+67])
+1620c1620
+<                     core_type (astfn.ml[73,3276+12]..[73,3276+22])
+---
+>                     core_type (astfn.ml[73,3276+13]..[73,3276+21])
+1653c1653
+<                     core_type (astfn.ml[75,3358+14]..[75,3358+28])
+---
+>                     core_type (astfn.ml[75,3358+15]..[75,3358+27])
+1680c1680
+<                     core_type (astfn.ml[76,3420+36]..[76,3420+50])
+---
+>                     core_type (astfn.ml[76,3420+37]..[76,3420+49])
+1693c1693
+<                     core_type (astfn.ml[77,3472+16]..[77,3472+30])
+---
+>                     core_type (astfn.ml[77,3472+17]..[77,3472+29])
+1712c1712
+<                     core_type (astfn.ml[78,3528+20]..[78,3528+39])
+---
+>                     core_type (astfn.ml[78,3528+21]..[78,3528+38])
+1728c1728
+<                     core_type (astfn.ml[78,3528+51]..[78,3528+61])
+---
+>                     core_type (astfn.ml[78,3528+52]..[78,3528+60])
+1741c1741
+<                     core_type (astfn.ml[79,3591+14]..[79,3591+24])
+---
+>                     core_type (astfn.ml[79,3591+15]..[79,3591+23])
+1754c1754
+<                     core_type (astfn.ml[79,3591+43]..[79,3591+54])
+---
+>                     core_type (astfn.ml[79,3591+44]..[79,3591+53])
+1785c1785
+<                     core_type (astfn.ml[81,3716+25]..[81,3716+40])
+---
+>                     core_type (astfn.ml[81,3716+26]..[81,3716+39])
+1798c1798
+<       type_declaration "rec_pat" (astfn.ml[82,3759+4]..[82,3759+11]) (astfn.ml[82,3759+4]..[83,3773+70])
+---
+>       type_declaration "rec_pat" (astfn.ml[82,3759+4]..[82,3759+11]) (astfn.ml[82,3759+0]..[83,3773+70])
+1813c1813
+<                     core_type (astfn.ml[83,3773+16]..[83,3773+26])
+---
+>                     core_type (astfn.ml[83,3773+17]..[83,3773+25])
+1826c1826
+<                     core_type (astfn.ml[83,3773+38]..[83,3773+56])
+---
+>                     core_type (astfn.ml[83,3773+39]..[83,3773+55])
+1847c1847
+<       type_declaration "exp" (astfn.ml[84,3844+4]..[84,3844+7]) (astfn.ml[84,3844+4]..[103,4949+61])
+---
+>       type_declaration "exp" (astfn.ml[84,3844+4]..[84,3844+7]) (astfn.ml[84,3844+0]..[103,4949+61])
+1866c1866
+<                     core_type (astfn.ml[85,3854+18]..[85,3854+28])
+---
+>                     core_type (astfn.ml[85,3854+19]..[85,3854+27])
+1885c1885
+<                     core_type (astfn.ml[85,3854+58]..[85,3854+68])
+---
+>                     core_type (astfn.ml[85,3854+59]..[85,3854+67])
+1898c1898
+<                     core_type (astfn.ml[86,3924+12]..[86,3924+22])
+---
+>                     core_type (astfn.ml[86,3924+13]..[86,3924+21])
+1931c1931
+<                     core_type (astfn.ml[88,4006+19]..[88,4006+33])
+---
+>                     core_type (astfn.ml[88,4006+20]..[88,4006+32])
+1944c1944
+<                     core_type (astfn.ml[88,4006+47]..[88,4006+57])
+---
+>                     core_type (astfn.ml[88,4006+48]..[88,4006+56])
+1957c1957
+<                     core_type (astfn.ml[89,4065+17]..[89,4065+27])
+---
+>                     core_type (astfn.ml[89,4065+18]..[89,4065+26])
+1984c1984
+<                     core_type (astfn.ml[90,4126+33]..[90,4126+43])
+---
+>                     core_type (astfn.ml[90,4126+34]..[90,4126+42])
+1997c1997
+<                     core_type (astfn.ml[91,4171+12]..[91,4171+42])
+---
+>                     core_type (astfn.ml[91,4171+13]..[91,4171+41])
+2025c2025
+<                     core_type (astfn.ml[92,4231+19]..[92,4231+34])
+---
+>                     core_type (astfn.ml[92,4231+20]..[92,4231+33])
+2041c2041
+<                     core_type (astfn.ml[92,4231+49]..[92,4231+59])
+---
+>                     core_type (astfn.ml[92,4231+50]..[92,4231+58])
+2060c2060
+<                     core_type (astfn.ml[93,4292+36]..[93,4292+50])
+---
+>                     core_type (astfn.ml[93,4292+37]..[93,4292+49])
+2079c2079
+<                     core_type (astfn.ml[94,4360+14]..[94,4360+31])
+---
+>                     core_type (astfn.ml[94,4360+15]..[94,4360+30])
+2095c2095
+<                     core_type (astfn.ml[94,4360+52]..[94,4360+75])
+---
+>                     core_type (astfn.ml[94,4360+53]..[94,4360+74])
+2114c2114
+<                     core_type (astfn.ml[95,4437+18]..[95,4437+38])
+---
+>                     core_type (astfn.ml[95,4437+19]..[95,4437+37])
+2130c2130
+<                     core_type (astfn.ml[95,4437+52]..[95,4437+63])
+---
+>                     core_type (astfn.ml[95,4437+53]..[95,4437+62])
+2157c2157
+<                     core_type (astfn.ml[96,4502+62]..[96,4502+76])
+---
+>                     core_type (astfn.ml[96,4502+63]..[96,4502+75])
+2176c2176
+<                     core_type (astfn.ml[97,4580+37]..[97,4580+51])
+---
+>                     core_type (astfn.ml[97,4580+38]..[97,4580+50])
+2209c2209
+<                     core_type (astfn.ml[99,4714+13]..[99,4714+27])
+---
+>                     core_type (astfn.ml[99,4714+14]..[99,4714+26])
+2222c2222
+<                     core_type (astfn.ml[99,4714+45]..[99,4714+55])
+---
+>                     core_type (astfn.ml[99,4714+46]..[99,4714+54])
+2235c2235
+<                     core_type (astfn.ml[100,4771+12]..[100,4771+23])
+---
+>                     core_type (astfn.ml[100,4771+13]..[100,4771+22])
+2248c2248
+<                     core_type (astfn.ml[100,4771+42]..[100,4771+53])
+---
+>                     core_type (astfn.ml[100,4771+43]..[100,4771+52])
+2261c2261
+<                     core_type (astfn.ml[101,4826+17]..[101,4826+34])
+---
+>                     core_type (astfn.ml[101,4826+18]..[101,4826+33])
+2277c2277
+<                     core_type (astfn.ml[101,4826+50]..[101,4826+61])
+---
+>                     core_type (astfn.ml[101,4826+51]..[101,4826+60])
+2290c2290
+<                     core_type (astfn.ml[102,4889+14]..[102,4889+24])
+---
+>                     core_type (astfn.ml[102,4889+15]..[102,4889+23])
+2303c2303
+<                     core_type (astfn.ml[102,4889+40]..[102,4889+58])
+---
+>                     core_type (astfn.ml[102,4889+41]..[102,4889+57])
+2319c2319
+<                     core_type (astfn.ml[103,4949+21]..[103,4949+35])
+---
+>                     core_type (astfn.ml[103,4949+22]..[103,4949+34])
+2338c2338
+<       type_declaration "rec_exp" (astfn.ml[104,5011+4]..[104,5011+11]) (astfn.ml[104,5011+4]..[105,5025+70])
+---
+>       type_declaration "rec_exp" (astfn.ml[104,5011+4]..[104,5011+11]) (astfn.ml[104,5011+0]..[105,5025+70])
+2353c2353
+<                     core_type (astfn.ml[105,5025+12]..[105,5025+30])
+---
+>                     core_type (astfn.ml[105,5025+13]..[105,5025+29])
+2366c2366
+<                     core_type (astfn.ml[105,5025+46]..[105,5025+56])
+---
+>                     core_type (astfn.ml[105,5025+47]..[105,5025+55])
+2387c2387
+<       type_declaration "mtyp" (astfn.ml[106,5096+4]..[106,5096+8]) (astfn.ml[106,5096+4]..[108,5182+60])
+---
+>       type_declaration "mtyp" (astfn.ml[106,5096+4]..[106,5096+8]) (astfn.ml[106,5096+0]..[108,5182+60])
+2414c2414
+<                     core_type (astfn.ml[107,5107+52]..[107,5107+73])
+---
+>                     core_type (astfn.ml[107,5107+53]..[107,5107+72])
+2430c2430
+<                     core_type (astfn.ml[108,5182+13]..[108,5182+27])
+---
+>                     core_type (astfn.ml[108,5182+14]..[108,5182+26])
+2453c2453
+<       type_declaration "sigi" (astfn.ml[109,5243+4]..[109,5243+8]) (astfn.ml[109,5243+4]..[116,5632+51])
+---
+>       type_declaration "sigi" (astfn.ml[109,5243+4]..[109,5243+8]) (astfn.ml[109,5243+0]..[116,5632+51])
+2468c2468
+<                     core_type (astfn.ml[110,5254+12]..[110,5254+27])
+---
+>                     core_type (astfn.ml[110,5254+13]..[110,5254+26])
+2481c2481
+<                     core_type (astfn.ml[110,5254+44]..[110,5254+68])
+---
+>                     core_type (astfn.ml[110,5254+45]..[110,5254+67])
+2521c2521
+<                     core_type (astfn.ml[112,5393+40]..[112,5393+55])
+---
+>                     core_type (astfn.ml[112,5393+41]..[112,5393+54])
+2540c2540
+<                     core_type (astfn.ml[113,5450+48]..[113,5450+63])
+---
+>                     core_type (astfn.ml[113,5450+49]..[113,5450+62])
+2553c2553
+<                     core_type (astfn.ml[114,5515+12]..[114,5515+24])
+---
+>                     core_type (astfn.ml[114,5515+13]..[114,5515+23])
+2572c2572
+<                     core_type (astfn.ml[115,5572+18]..[115,5572+32])
+---
+>                     core_type (astfn.ml[115,5572+19]..[115,5572+31])
+2585c2585
+<                     core_type (astfn.ml[115,5572+45]..[115,5572+58])
+---
+>                     core_type (astfn.ml[115,5572+46]..[115,5572+57])
+2614c2614
+<       type_declaration "mbind" (astfn.ml[117,5684+4]..[117,5684+9]) (astfn.ml[117,5684+4]..[119,5764+42])
+---
+>       type_declaration "mbind" (astfn.ml[117,5684+4]..[117,5684+9]) (astfn.ml[117,5684+0]..[119,5764+42])
+2629c2629
+<                     core_type (astfn.ml[118,5696+12]..[118,5696+26])
+---
+>                     core_type (astfn.ml[118,5696+13]..[118,5696+25])
+2642c2642
+<                     core_type (astfn.ml[118,5696+45]..[118,5696+66])
+---
+>                     core_type (astfn.ml[118,5696+46]..[118,5696+65])
+2658c2658
+<                     core_type (astfn.ml[119,5764+19]..[119,5764+34])
+---
+>                     core_type (astfn.ml[119,5764+20]..[119,5764+33])
+2675c2675
+<       type_declaration "constr" (astfn.ml[120,5807+4]..[120,5807+10]) (astfn.ml[120,5807+4]..[123,5943+70])
+---
+>       type_declaration "constr" (astfn.ml[120,5807+4]..[120,5807+10]) (astfn.ml[120,5807+0]..[123,5943+70])
+2690c2690
+<                     core_type (astfn.ml[121,5820+15]..[121,5820+27])
+---
+>                     core_type (astfn.ml[121,5820+16]..[121,5820+26])
+2703c2703
+<                     core_type (astfn.ml[121,5820+44]..[121,5820+58])
+---
+>                     core_type (astfn.ml[121,5820+45]..[121,5820+57])
+2716c2716
+<                     core_type (astfn.ml[122,5880+19]..[122,5880+31])
+---
+>                     core_type (astfn.ml[122,5880+20]..[122,5880+30])
+2729c2729
+<                     core_type (astfn.ml[122,5880+49]..[122,5880+61])
+---
+>                     core_type (astfn.ml[122,5880+50]..[122,5880+60])
+2742c2742
+<                     core_type (astfn.ml[123,5943+20]..[123,5943+34])
+---
+>                     core_type (astfn.ml[123,5943+21]..[123,5943+33])
+2755c2755
+<                     core_type (astfn.ml[123,5943+46]..[123,5943+62])
+---
+>                     core_type (astfn.ml[123,5943+47]..[123,5943+61])
+2772c2772
+<       type_declaration "bind" (astfn.ml[124,6014+4]..[124,6014+8]) (astfn.ml[124,6014+4]..[124,6014+64])
+---
+>       type_declaration "bind" (astfn.ml[124,6014+4]..[124,6014+8]) (astfn.ml[124,6014+0]..[124,6014+64])
+2787c2787
+<                     core_type (astfn.ml[124,6014+21]..[124,6014+33])
+---
+>                     core_type (astfn.ml[124,6014+22]..[124,6014+32])
+2800c2800
+<                     core_type (astfn.ml[124,6014+46]..[124,6014+56])
+---
+>                     core_type (astfn.ml[124,6014+47]..[124,6014+55])
+2817c2817
+<       type_declaration "case" (astfn.ml[125,6079+4]..[125,6079+8]) (astfn.ml[125,6079+4]..[127,6139+40])
+---
+>       type_declaration "case" (astfn.ml[125,6079+4]..[125,6079+8]) (astfn.ml[125,6079+0]..[127,6139+40])
+2832c2832
+<                     core_type (astfn.ml[126,6090+12]..[126,6090+24])
+---
+>                     core_type (astfn.ml[126,6090+13]..[126,6090+23])
+2845c2845
+<                     core_type (astfn.ml[126,6090+37]..[126,6090+47])
+---
+>                     core_type (astfn.ml[126,6090+38]..[126,6090+46])
+2858c2858
+<                     core_type (astfn.ml[127,6139+17]..[127,6139+32])
+---
+>                     core_type (astfn.ml[127,6139+18]..[127,6139+31])
+2878c2878
+<       type_declaration "mexp" (astfn.ml[128,6180+4]..[128,6180+8]) (astfn.ml[128,6180+4]..[131,6327+33])
+---
+>       type_declaration "mexp" (astfn.ml[128,6180+4]..[128,6180+8]) (astfn.ml[128,6180+0]..[131,6327+33])
+2897c2897
+<                     core_type (astfn.ml[129,6191+19]..[129,6191+31])
+---
+>                     core_type (astfn.ml[129,6191+20]..[129,6191+30])
+2910c2910
+<                     core_type (astfn.ml[129,6191+47]..[129,6191+68])
+---
+>                     core_type (astfn.ml[129,6191+48]..[129,6191+67])
+2934c2934
+<                     core_type (astfn.ml[130,6261+52]..[130,6261+64])
+---
+>                     core_type (astfn.ml[130,6261+53]..[130,6261+63])
+2957c2957
+<       type_declaration "stru" (astfn.ml[132,6361+4]..[132,6361+8]) (astfn.ml[132,6361+4]..[140,6791+34])
+---
+>       type_declaration "stru" (astfn.ml[132,6361+4]..[132,6361+8]) (astfn.ml[132,6361+0]..[140,6791+34])
+2984c2984
+<                     core_type (astfn.ml[133,6372+57]..[133,6372+69])
+---
+>                     core_type (astfn.ml[133,6372+58]..[133,6372+68])
+3003c3003
+<                     core_type (astfn.ml[134,6443+49]..[134,6443+63])
+---
+>                     core_type (astfn.ml[134,6443+50]..[134,6443+62])
+3028c3028
+<                     core_type (astfn.ml[136,6552+17]..[136,6552+41])
+---
+>                     core_type (astfn.ml[136,6552+18]..[136,6552+40])
+3050c3050
+<                     core_type (astfn.ml[137,6615+15]..[137,6615+30])
+---
+>                     core_type (astfn.ml[137,6615+16]..[137,6615+29])
+3069c3069
+<                     core_type (astfn.ml[138,6670+19]..[138,6670+34])
+---
+>                     core_type (astfn.ml[138,6670+20]..[138,6670+33])
+3082c3082
+<                     core_type (astfn.ml[138,6670+47]..[138,6670+60])
+---
+>                     core_type (astfn.ml[138,6670+48]..[138,6670+59])
+3101c3101
+<                     core_type (astfn.ml[139,6732+38]..[139,6732+57])
+---
+>                     core_type (astfn.ml[139,6732+39]..[139,6732+56])
+3114c3114
+<                     core_type (astfn.ml[140,6791+14]..[140,6791+26])
+---
+>                     core_type (astfn.ml[140,6791+15]..[140,6791+25])
+3131c3131
+<       type_declaration "cltdecl" (astfn.ml[141,6826+4]..[141,6826+11]) (astfn.ml[141,6826+4]..[144,6926+44])
+---
+>       type_declaration "cltdecl" (astfn.ml[141,6826+4]..[141,6826+11]) (astfn.ml[141,6826+0]..[144,6926+44])
+3146c3146
+<                     core_type (astfn.ml[142,6840+12]..[142,6840+30])
+---
+>                     core_type (astfn.ml[142,6840+13]..[142,6840+29])
+3159c3159
+<                     core_type (astfn.ml[143,6872+15]..[143,6872+52])
+---
+>                     core_type (astfn.ml[143,6872+16]..[143,6872+51])
+3178c3178
+<                     core_type (astfn.ml[144,6926+16]..[144,6926+36])
+---
+>                     core_type (astfn.ml[144,6926+17]..[144,6926+35])
+3198c3198
+<       type_declaration "cltyp" (astfn.ml[145,6971+4]..[145,6971+9]) (astfn.ml[145,6971+4]..[148,7126+45])
+---
+>       type_declaration "cltyp" (astfn.ml[145,6971+4]..[145,6971+9]) (astfn.ml[145,6971+0]..[148,7126+45])
+3217c3217
+<                     core_type (astfn.ml[146,6983+23]..[146,6983+45])
+---
+>                     core_type (astfn.ml[146,6983+24]..[146,6983+44])
+3230c3230
+<                     core_type (astfn.ml[146,6983+59]..[146,6983+72])
+---
+>                     core_type (astfn.ml[146,6983+60]..[146,6983+71])
+3243c3243
+<                     core_type (astfn.ml[147,7057+14]..[147,7057+28])
+---
+>                     core_type (astfn.ml[147,7057+15]..[147,7057+27])
+3270c3270
+<                     core_type (astfn.ml[148,7126+23]..[148,7126+37])
+---
+>                     core_type (astfn.ml[148,7126+24]..[148,7126+36])
+3287c3287
+<       type_declaration "clsigi" (astfn.ml[149,7172+4]..[149,7172+10]) (astfn.ml[149,7172+4]..[153,7357+31])
+---
+>       type_declaration "clsigi" (astfn.ml[149,7172+4]..[149,7172+10]) (astfn.ml[149,7172+0]..[153,7357+31])
+3302c3302
+<                     core_type (astfn.ml[150,7185+12]..[150,7185+28])
+---
+>                     core_type (astfn.ml[150,7185+13]..[150,7185+27])
+3321c3321
+<                     core_type (astfn.ml[151,7239+14]..[151,7239+41])
+---
+>                     core_type (astfn.ml[151,7239+15]..[151,7239+40])
+3340c3340
+<                     core_type (astfn.ml[152,7282+15]..[152,7282+36])
+---
+>                     core_type (astfn.ml[152,7282+16]..[152,7282+35])
+3356c3356
+<                     core_type (astfn.ml[152,7282+52]..[152,7282+73])
+---
+>                     core_type (astfn.ml[152,7282+53]..[152,7282+72])
+3372c3372
+<                     core_type (astfn.ml[153,7357+11]..[153,7357+23])
+---
+>                     core_type (astfn.ml[153,7357+12]..[153,7357+22])
+3389c3389
+<       type_declaration "cldecl" (astfn.ml[154,7389+4]..[154,7389+10]) (astfn.ml[154,7389+4]..[156,7456+72])
+---
+>       type_declaration "cldecl" (astfn.ml[154,7389+4]..[154,7389+10]) (astfn.ml[154,7389+0]..[156,7456+72])
+3404c3404
+<                     core_type (astfn.ml[155,7402+15]..[155,7402+52])
+---
+>                     core_type (astfn.ml[155,7402+16]..[155,7402+51])
+3423c3423
+<                     core_type (astfn.ml[156,7456+16]..[156,7456+36])
+---
+>                     core_type (astfn.ml[156,7456+17]..[156,7456+35])
+3439c3439
+<                     core_type (astfn.ml[156,7456+48]..[156,7456+64])
+---
+>                     core_type (astfn.ml[156,7456+49]..[156,7456+63])
+3456c3456
+<       type_declaration "clexp" (astfn.ml[157,7529+4]..[157,7529+9]) (astfn.ml[157,7529+4]..[161,7736+62])
+---
+>       type_declaration "clexp" (astfn.ml[157,7529+4]..[157,7529+9]) (astfn.ml[157,7529+0]..[161,7736+62])
+3471c3471
+<                     core_type (astfn.ml[158,7541+14]..[158,7541+26])
+---
+>                     core_type (astfn.ml[158,7541+15]..[158,7541+25])
+3488c3488
+<                     core_type (astfn.ml[158,7541+49]..[158,7541+71])
+---
+>                     core_type (astfn.ml[158,7541+50]..[158,7541+70])
+3501c3501
+<                     core_type (astfn.ml[159,7614+14]..[159,7614+26])
+---
+>                     core_type (astfn.ml[159,7614+15]..[159,7614+25])
+3514c3514
+<                     core_type (astfn.ml[159,7614+40]..[159,7614+59])
+---
+>                     core_type (astfn.ml[159,7614+41]..[159,7614+58])
+3538c3538
+<                     core_type (astfn.ml[160,7675+45]..[160,7675+59])
+---
+>                     core_type (astfn.ml[160,7675+46]..[160,7675+58])
+3557c3557
+<                     core_type (astfn.ml[161,7736+40]..[161,7736+54])
+---
+>                     core_type (astfn.ml[161,7736+41]..[161,7736+53])
+3574c3574
+<       type_declaration "clfield" (astfn.ml[162,7799+4]..[162,7799+11]) (astfn.ml[162,7799+4]..[169,8147+31])
+---
+>       type_declaration "clfield" (astfn.ml[162,7799+4]..[162,7799+11]) (astfn.ml[162,7799+0]..[169,8147+31])
+3589c3589
+<                     core_type (astfn.ml[163,7813+12]..[163,7813+30])
+---
+>                     core_type (astfn.ml[163,7813+13]..[163,7813+29])
+3602c3602
+<                     core_type (astfn.ml[163,7813+46]..[163,7813+59])
+---
+>                     core_type (astfn.ml[163,7813+47]..[163,7813+58])
+3615c3615
+<                     core_type (astfn.ml[164,7874+18]..[164,7874+40])
+---
+>                     core_type (astfn.ml[164,7874+19]..[164,7874+39])
+3631c3631
+<                     core_type (astfn.ml[165,7916+14]..[165,7916+40])
+---
+>                     core_type (astfn.ml[165,7916+15]..[165,7916+39])
+3650c3650
+<                     core_type (astfn.ml[165,7916+55]..[165,7916+76])
+---
+>                     core_type (astfn.ml[165,7916+56]..[165,7916+75])
+3666c3666
+<                     core_type (astfn.ml[166,7994+14]..[166,7994+46])
+---
+>                     core_type (astfn.ml[166,7994+15]..[166,7994+45])
+3688c3688
+<                     core_type (astfn.ml[167,8042+15]..[167,8042+41])
+---
+>                     core_type (astfn.ml[167,8042+16]..[167,8042+40])
+3707c3707
+<                     core_type (astfn.ml[168,8085+16]..[168,8085+37])
+---
+>                     core_type (astfn.ml[168,8085+17]..[168,8085+36])
+3723c3723
+<                     core_type (astfn.ml[168,8085+48]..[168,8085+60])
+---
+>                     core_type (astfn.ml[168,8085+49]..[168,8085+59])
+3750c3750
+<       type_declaration "ep" (astfn.ml[170,8179+5]..[170,8179+7]) (astfn.ml[170,8179+5]..[173,8326+66])
+---
+>       type_declaration "ep" (astfn.ml[170,8179+5]..[170,8179+7]) (astfn.ml[170,8179+0]..[173,8326+66])
+3769c3769
+<                     core_type (astfn.ml[171,8189+18]..[171,8189+26])
+---
+>                     core_type (astfn.ml[171,8189+19]..[171,8189+25])
+3788c3788
+<                     core_type (astfn.ml[171,8189+56]..[171,8189+64])
+---
+>                     core_type (astfn.ml[171,8189+57]..[171,8189+63])
+3801c3801
+<                     core_type (astfn.ml[172,8255+12]..[172,8255+20])
+---
+>                     core_type (astfn.ml[172,8255+13]..[172,8255+19])
+3820c3820
+<                     core_type (astfn.ml[172,8255+53]..[172,8255+63])
+---
+>                     core_type (astfn.ml[172,8255+54]..[172,8255+62])
+3855c3855
+<       type_declaration "rec_bind" (astfn.ml[174,8393+4]..[174,8393+12]) (astfn.ml[174,8393+4]..[175,8408+71])
+---
+>       type_declaration "rec_bind" (astfn.ml[174,8393+4]..[174,8393+12]) (astfn.ml[174,8393+0]..[175,8408+71])
+3870c3870
+<                     core_type (astfn.ml[175,8408+16]..[175,8408+25])
+---
+>                     core_type (astfn.ml[175,8408+17]..[175,8408+24])
+3883c3883
+<                     core_type (astfn.ml[175,8408+37]..[175,8408+57])
+---
+>                     core_type (astfn.ml[175,8408+38]..[175,8408+56])

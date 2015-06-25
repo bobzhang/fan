@@ -1,0 +1,537 @@
+[
+  structure_item (ast_macros.ml[]..[])
+    Pstr_open Fresh "Astf" (ast_macros.ml[]..[])
+  structure_item (ast_macros.ml[]..[])
+    Pstr_open Fresh "Ast_gen" (ast_macros.ml[]..[])
+  structure_item (ast_macros.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "key" (ast_macros.ml[]..[]) (ast_macros.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_macros.ml[]..[])
+              Ptyp_constr "string" (ast_macros.ml[]..[])
+              []
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "expander" (ast_macros.ml[]..[]) (ast_macros.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_macros.ml[]..[])
+              Ptyp_arrow
+              ""
+              core_type (ast_macros.ml[]..[])
+                Ptyp_constr "exp" (ast_macros.ml[]..[])
+                []
+              core_type (ast_macros.ml[]..[])
+                Ptyp_constr "exp" (ast_macros.ml[]..[])
+                []
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[]..[])
+          Ppat_var "macro_expanders" (ast_macros.ml[]..[])
+        expression (ast_macros.ml[]..[]) 
+          Pexp_constraint
+          expression (ast_macros.ml[]..[])
+            Pexp_apply
+            expression (ast_macros.ml[]..[])
+              Pexp_ident "Hashtbl.create" (ast_macros.ml[]..[])
+            [
+              <label> ""
+                expression (ast_macros.ml[]..[])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_macros.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (ast_macros.ml[]..[])
+            [
+              core_type (ast_macros.ml[]..[])
+                Ptyp_constr "key" (ast_macros.ml[]..[])
+                []
+              core_type (ast_macros.ml[]..[])
+                Ptyp_constr "expander" (ast_macros.ml[]..[])
+                []
+            ]
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[]..[])
+          Ppat_var "register_macro" (ast_macros.ml[]..[])
+        expression (ast_macros.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (ast_macros.ml[]..[])
+                    Ppat_var "k" (ast_macros.ml[]..[])
+                  pattern (ast_macros.ml[]..[])
+                    Ppat_var "f" (ast_macros.ml[]..[])
+                ]
+              expression (ast_macros.ml[]..[])
+                Pexp_apply
+                expression (ast_macros.ml[]..[])
+                  Pexp_ident "Hashtbl.replace" (ast_macros.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_ident "macro_expanders" (ast_macros.ml[]..[])
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_ident "k" (ast_macros.ml[]..[])
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_ident "f" (ast_macros.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (ast_macros.ml[]..[])
+          Ppat_var "fib" (ast_macros.ml[]..[])
+        expression (ast_macros.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[]..[])
+                Ppat_or
+                pattern (ast_macros.ml[]..[])
+                  Ppat_constant Const_int 0
+                pattern (ast_macros.ml[]..[])
+                  Ppat_constant Const_int 1
+              expression (ast_macros.ml[]..[])
+                Pexp_constant Const_int 1
+            <case>
+              pattern (ast_macros.ml[]..[])
+                Ppat_var "n" (ast_macros.ml[]..[])
+              <when>
+                expression (ast_macros.ml[]..[])
+                  Pexp_apply
+                  expression (ast_macros.ml[]..[])
+                    Pexp_ident ">" (ast_macros.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_macros.ml[]..[])
+                        Pexp_ident "n" (ast_macros.ml[]..[])
+                    <label> ""
+                      expression (ast_macros.ml[]..[])
+                        Pexp_constant Const_int 0
+                  ]
+              expression (ast_macros.ml[]..[])
+                Pexp_apply
+                expression (ast_macros.ml[]..[])
+                  Pexp_ident "+" (ast_macros.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_apply
+                      expression (ast_macros.ml[]..[])
+                        Pexp_ident "fib" (ast_macros.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_macros.ml[]..[])
+                            Pexp_apply
+                            expression (ast_macros.ml[]..[])
+                              Pexp_ident "-" (ast_macros.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "n" (ast_macros.ml[]..[])
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_constant Const_int 1
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_apply
+                      expression (ast_macros.ml[]..[])
+                        Pexp_ident "fib" (ast_macros.ml[]..[])
+                      [
+                        <label> ""
+                          expression (ast_macros.ml[]..[])
+                            Pexp_apply
+                            expression (ast_macros.ml[]..[])
+                              Pexp_ident "-" (ast_macros.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "n" (ast_macros.ml[]..[])
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_constant Const_int 2
+                            ]
+                      ]
+                ]
+            <case>
+              pattern (ast_macros.ml[]..[])
+                Ppat_any
+              expression (ast_macros.ml[]..[])
+                Pexp_apply
+                expression (ast_macros.ml[]..[])
+                  Pexp_ident "invalid_arg" (ast_macros.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_macros.ml[]..[])
+                      Pexp_constant Const_string("fib",None)
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[]..[])
+          Ppat_var "fibm" (ast_macros.ml[]..[])
+        expression (ast_macros.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_macros.ml[]..[])
+                Ppat_var "y" (ast_macros.ml[]..[])
+              expression (ast_macros.ml[]..[])
+                Pexp_match
+                expression (ast_macros.ml[]..[])
+                  Pexp_ident "y" (ast_macros.ml[]..[])
+                [
+                  <case>
+                    pattern (ast_macros.ml[]..[])
+                      Ppat_constraint
+                      pattern (ast_macros.ml[]..[])
+                        Ppat_variant "Int"
+                        Some
+                          pattern (ast_macros.ml[]..[])
+                            Ppat_tuple
+                            [
+                              pattern (ast_macros.ml[]..[])
+                                Ppat_var "_loc" (ast_macros.ml[]..[])
+                              pattern (ast_macros.ml[]..[])
+                                Ppat_var "x" (ast_macros.ml[]..[])
+                            ]
+                      core_type (ast_macros.ml[]..[])
+                        Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                        []
+                    expression (ast_macros.ml[]..[]) 
+                      Pexp_coerce
+                      expression (ast_macros.ml[]..[])
+                        Pexp_variant "Int"
+                        Some
+                          expression (ast_macros.ml[]..[])
+                            Pexp_tuple
+                            [
+                              expression (ast_macros.ml[]..[])
+                                Pexp_ident "_loc" (ast_macros.ml[]..[])
+                              expression (ast_macros.ml[]..[])
+                                Pexp_apply
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "string_of_int" (ast_macros.ml[]..[])
+                                [
+                                  <label> ""
+                                    expression (ast_macros.ml[]..[])
+                                      Pexp_apply
+                                      expression (ast_macros.ml[]..[])
+                                        Pexp_ident "@@" (ast_macros.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_ident "fib" (ast_macros.ml[]..[])
+                                        <label> ""
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_apply
+                                            expression (ast_macros.ml[]..[])
+                                              Pexp_ident "int_of_string" (ast_macros.ml[]..[])
+                                            [
+                                              <label> ""
+                                                expression (ast_macros.ml[]..[])
+                                                  Pexp_ident "x" (ast_macros.ml[]..[])
+                                            ]
+                                      ]
+                                ]
+                            ]
+                      None
+                      core_type (ast_macros.ml[]..[])
+                        Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                        []
+                  <case>
+                    pattern (ast_macros.ml[]..[])
+                      Ppat_var "x" (ast_macros.ml[]..[])
+                    expression (ast_macros.ml[]..[])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (ast_macros.ml[]..[])
+                            Ppat_var "_loc" (ast_macros.ml[]..[])
+                          expression (ast_macros.ml[]..[])
+                            Pexp_apply
+                            expression (ast_macros.ml[]..[])
+                              Pexp_ident "loc_of" (ast_macros.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "x" (ast_macros.ml[]..[])
+                            ]
+                      ]
+                      expression (ast_macros.ml[]..[]) 
+                        Pexp_coerce
+                        expression (ast_macros.ml[]..[])
+                          Pexp_variant "App"
+                          Some
+                            expression (ast_macros.ml[]..[])
+                              Pexp_tuple
+                              [
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "_loc" (ast_macros.ml[]..[])
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_variant "Lid"
+                                  Some
+                                    expression (ast_macros.ml[]..[])
+                                      Pexp_tuple
+                                      [
+                                        expression (ast_macros.ml[]..[])
+                                          Pexp_ident "_loc" (ast_macros.ml[]..[])
+                                        expression (ast_macros.ml[]..[])
+                                          Pexp_constant Const_string("fib",None)
+                                      ]
+                                expression (ast_macros.ml[]..[]) 
+                                  Pexp_coerce
+                                  expression (ast_macros.ml[]..[])
+                                    Pexp_ident "x" (ast_macros.ml[]..[])
+                                  None
+                                  core_type (ast_macros.ml[]..[])
+                                    Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                                    []
+                              ]
+                        None
+                        core_type (ast_macros.ml[]..[])
+                          Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                          []
+                ]
+          ]
+    ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_eval
+    expression (ast_macros.ml[]..[])
+      Pexp_apply
+      expression (ast_macros.ml[]..[])
+        Pexp_ident "register_macro" (ast_macros.ml[]..[])
+      [
+        <label> ""
+          expression (ast_macros.ml[]..[])
+            Pexp_tuple
+            [
+              expression (ast_macros.ml[]..[])
+                Pexp_constant Const_string("FIB",None)
+              expression (ast_macros.ml[]..[])
+                Pexp_ident "fibm" (ast_macros.ml[]..[])
+            ]
+      ]
+  structure_item (ast_macros.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_macros.ml[]..[])
+          Ppat_var "macro_expander" (ast_macros.ml[]..[])
+        expression (ast_macros.ml[]..[])
+          Pexp_object
+          class_structure
+            pattern (ast_macros.ml[]..[])
+              Ppat_var "self" (ast_macros.ml[]..[])
+            [
+              class_field (ast_macros.ml[]..[])
+                Pcf_inherit Fresh
+                  class_expr (ast_macros.ml[]..[])
+                    Pcl_constr "Objs.map" (ast_macros.ml[]..[])
+                    []
+                  Some
+                    "super"
+              class_field (ast_macros.ml[]..[])
+                Pcf_method Public
+                  "exp" (ast_macros.ml[]..[])
+                  Concrete Override
+                  expression (ast_macros.ml[]..[]) 
+                    Pexp_poly
+                    expression (ast_macros.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_macros.ml[]..[])
+                            Ppat_constraint
+                            pattern (ast_macros.ml[]..[])
+                              Ppat_variant "App"
+                              Some
+                                pattern (ast_macros.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (ast_macros.ml[]..[])
+                                      Ppat_var "_loc" (ast_macros.ml[]..[])
+                                    pattern (ast_macros.ml[]..[])
+                                      Ppat_variant "Uid"
+                                      Some
+                                        pattern (ast_macros.ml[]..[])
+                                          Ppat_tuple
+                                          [
+                                            pattern (ast_macros.ml[]..[])
+                                              Ppat_any
+                                            pattern (ast_macros.ml[]..[])
+                                              Ppat_var "a" (ast_macros.ml[]..[])
+                                          ]
+                                    pattern (ast_macros.ml[]..[])
+                                      Ppat_var "y" (ast_macros.ml[]..[])
+                                  ]
+                            core_type (ast_macros.ml[]..[])
+                              Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                              []
+                          expression (ast_macros.ml[]..[])
+                            Pexp_apply
+                            expression (ast_macros.ml[]..[])
+                              Pexp_try
+                              expression (ast_macros.ml[]..[])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (ast_macros.ml[]..[])
+                                      Ppat_var "f" (ast_macros.ml[]..[])
+                                    expression (ast_macros.ml[]..[])
+                                      Pexp_apply
+                                      expression (ast_macros.ml[]..[])
+                                        Pexp_ident "Hashtbl.find" (ast_macros.ml[]..[])
+                                      [
+                                        <label> ""
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_ident "macro_expanders" (ast_macros.ml[]..[])
+                                        <label> ""
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_ident "a" (ast_macros.ml[]..[])
+                                      ]
+                                ]
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (ast_macros.ml[]..[])
+                                        Ppat_construct "()" (ast_macros.ml[]..[])
+                                        None
+                                      expression (ast_macros.ml[]..[])
+                                        Pexp_apply
+                                        expression (ast_macros.ml[]..[])
+                                          Pexp_send "exp"
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_ident "self" (ast_macros.ml[]..[])
+                                        [
+                                          <label> ""
+                                            expression (ast_macros.ml[]..[])
+                                              Pexp_apply
+                                              expression (ast_macros.ml[]..[])
+                                                Pexp_ident "f" (ast_macros.ml[]..[])
+                                              [
+                                                <label> ""
+                                                  expression (ast_macros.ml[]..[])
+                                                    Pexp_ident "y" (ast_macros.ml[]..[])
+                                              ]
+                                        ]
+                                  ]
+                              [
+                                <case>
+                                  pattern (ast_macros.ml[]..[])
+                                    Ppat_construct "Not_found" (ast_macros.ml[]..[])
+                                    None
+                                  expression (ast_macros.ml[]..[])
+                                    Pexp_function
+                                    [
+                                      <case>
+                                        pattern (ast_macros.ml[]..[])
+                                          Ppat_construct "()" (ast_macros.ml[]..[])
+                                          None
+                                        expression (ast_macros.ml[]..[]) 
+                                          Pexp_coerce
+                                          expression (ast_macros.ml[]..[])
+                                            Pexp_variant "App"
+                                            Some
+                                              expression (ast_macros.ml[]..[])
+                                                Pexp_tuple
+                                                [
+                                                  expression (ast_macros.ml[]..[])
+                                                    Pexp_ident "_loc" (ast_macros.ml[]..[])
+                                                  expression (ast_macros.ml[]..[])
+                                                    Pexp_variant "Uid"
+                                                    Some
+                                                      expression (ast_macros.ml[]..[])
+                                                        Pexp_tuple
+                                                        [
+                                                          expression (ast_macros.ml[]..[])
+                                                            Pexp_ident "_loc" (ast_macros.ml[]..[])
+                                                          expression (ast_macros.ml[]..[])
+                                                            Pexp_ident "a" (ast_macros.ml[]..[])
+                                                        ]
+                                                  expression (ast_macros.ml[]..[]) 
+                                                    Pexp_coerce
+                                                    expression (ast_macros.ml[]..[])
+                                                      Pexp_apply
+                                                      expression (ast_macros.ml[]..[])
+                                                        Pexp_send "exp"
+                                                        expression (ast_macros.ml[]..[])
+                                                          Pexp_ident "self" (ast_macros.ml[]..[])
+                                                      [
+                                                        <label> ""
+                                                          expression (ast_macros.ml[]..[])
+                                                            Pexp_ident "y" (ast_macros.ml[]..[])
+                                                      ]
+                                                    None
+                                                    core_type (ast_macros.ml[]..[])
+                                                      Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                                                      []
+                                                ]
+                                          None
+                                          core_type (ast_macros.ml[]..[])
+                                            Ptyp_constr "Astf.exp" (ast_macros.ml[]..[])
+                                            []
+                                    ]
+                              ]
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_construct "()" (ast_macros.ml[]..[])
+                                  None
+                            ]
+                        <case>
+                          pattern (ast_macros.ml[]..[])
+                            Ppat_var "e" (ast_macros.ml[]..[])
+                          expression (ast_macros.ml[]..[])
+                            Pexp_apply
+                            expression (ast_macros.ml[]..[])
+                              Pexp_send "exp"
+                              expression (ast_macros.ml[]..[])
+                                Pexp_ident "super" (ast_macros.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_macros.ml[]..[])
+                                  Pexp_ident "e" (ast_macros.ml[]..[])
+                            ]
+                      ]
+                    None
+            ]
+    ]
+]

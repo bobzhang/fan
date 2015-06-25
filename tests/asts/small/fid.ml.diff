@@ -1,0 +1,52 @@
+8c8
+<         expression (fid.ml[1,0+6]..[8,192+60])
+---
+>         expression (fid.ml[1,0+6]..[8,192+60]) ghost
+50c50
+<                     expression (fid.ml[7,126+9]..[8,192+59])
+---
+>                     expression (fid.ml[7,126+8]..[8,192+60])
+64c64
+<                                   expression (fid.ml[7,126+38]..[7,126+54])
+---
+>                                   expression (fid.ml[7,126+37]..[7,126+55])
+70c70
+<                                         expression (fid.ml[7,126+39]..[7,126+47])
+---
+>                                         expression (fid.ml[7,126+38]..[7,126+48])
+97c97
+<                             expression (fid.ml[8,192+16]..[8,192+58])
+---
+>                             expression (fid.ml[8,192+15]..[8,192+59])
+103c103
+<                                   expression (fid.ml[8,192+17]..[8,192+37])
+---
+>                                   expression (fid.ml[8,192+16]..[8,192+38])
+113c113
+<                                   expression (fid.ml[8,192+42]..[8,192+57])
+---
+>                                   expression (fid.ml[8,192+41]..[8,192+58])
+132c132
+<         expression (fid.ml[9,253+8]..[9,253+60])
+---
+>         expression (fid.ml[9,253+8]..[9,253+60]) ghost
+153c153
+<                     expression (fid.ml[9,253+51]..[9,253+59])
+---
+>                     expression (fid.ml[9,253+50]..[9,253+60])
+173c173
+<         expression (fid.ml[10,314+9]..[10,314+56])
+---
+>         expression (fid.ml[10,314+9]..[10,314+56]) ghost
+195c195
+<                       expression (fid.ml[10,314+47]..[10,314+55])
+---
+>                       expression (fid.ml[10,314+46]..[10,314+56])
+216c216
+<         expression (fid.ml[11,371+11]..[11,371+58])
+---
+>         expression (fid.ml[11,371+11]..[11,371+58]) ghost
+232c232
+<                     expression (fid.ml[11,371+46]..[11,371+57])
+---
+>                     expression (fid.ml[11,371+45]..[11,371+58])

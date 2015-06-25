@@ -1,0 +1,1082 @@
+[
+  structure_item (gfold.ml[1,0+0]..[23,809+82])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[1,0+4]..[1,0+10])
+          Ppat_var "sfold0" (gfold.ml[1,0+4]..[1,0+10])
+        expression (gfold.ml[2,13+2]..[23,809+82])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[3,24+4]..[3,24+5])
+                Ppat_var "f" (gfold.ml[3,24+4]..[3,24+5])
+              expression (gfold.ml[4,33+7]..[23,809+81])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[5,49+9]..[5,49+10])
+                      Ppat_var "e" (gfold.ml[5,49+9]..[5,49+10])
+                    expression (gfold.ml[6,63+12]..[23,809+80])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[7,84+14]..[7,84+20])
+                            Ppat_var "_entry" (gfold.ml[7,84+14]..[7,84+20])
+                          expression (gfold.ml[8,108+17]..[23,809+79])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[9,134+19]..[9,134+25])
+                                  Ppat_var "_symbl" (gfold.ml[9,134+19]..[9,134+25])
+                                expression (gfold.ml[10,163+22]..[23,809+78])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[11,194+24]..[11,194+29])
+                                        Ppat_var "psymb" (gfold.ml[11,194+24]..[11,194+29])
+                                      expression (gfold.ml[12,227+26]..[23,809+78])
+                                        Pexp_let Rec
+                                        [
+                                          <def>
+                                            pattern (gfold.ml[12,227+34]..[12,227+38])
+                                              Ppat_var "fold" (gfold.ml[12,227+34]..[12,227+38])
+                                            expression (gfold.ml[13,268+28]..[22,754+51])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (gfold.ml[14,305+30]..[14,305+34])
+                                                    Ppat_var "accu" (gfold.ml[14,305+30]..[14,305+34])
+                                                  expression (gfold.ml[15,343+33]..[22,754+50])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[16,385+35]..[16,385+57])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[16,385+36]..[16,385+42])
+                                                            Ppat_var "__strm" (gfold.ml[16,385+36]..[16,385+42])
+                                                          core_type (gfold.ml[16,385+45]..[16,385+56])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[16,385+47]..[16,385+56])
+                                                            [
+                                                              core_type (gfold.ml[16,385+45]..[16,385+46])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[17,446+38]..[22,754+49])
+                                                          Pexp_match
+                                                          expression (gfold.ml[17,446+44]..[19,563+74])
+                                                            Pexp_try
+                                                            expression (gfold.ml[17,446+48]..[17,446+67])
+                                                              Pexp_construct "Some" (gfold.ml[17,446+48]..[17,446+52])
+                                                              Some
+                                                                expression (gfold.ml[17,446+54]..[17,446+66])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[17,446+54]..[17,446+59])
+                                                                    Pexp_ident "psymb" (gfold.ml[17,446+54]..[17,446+59])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[17,446+60]..[17,446+66])
+Pexp_ident "__strm" (gfold.ml[17,446+60]..[17,446+66])
+                                                                  ]
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[19,563+46]..[19,563+65])
+                                                                  Ppat_construct "Streamf.NotConsumed" (gfold.ml[19,563+46]..[19,563+65])
+                                                                  None
+                                                                expression (gfold.ml[19,563+70]..[19,563+74])
+                                                                  Pexp_construct "None" (gfold.ml[19,563+70]..[19,563+74])
+                                                                  None
+                                                            ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[21,681+40]..[21,681+46])
+                                                                Ppat_construct "Some" (gfold.ml[21,681+40]..[21,681+44])
+                                                                Some
+                                                                  pattern (gfold.ml[21,681+45]..[21,681+46])
+                                                                    Ppat_var "a" (gfold.ml[21,681+45]..[21,681+46])
+                                                              expression (gfold.ml[21,681+50]..[21,681+72])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[21,681+50]..[21,681+54])
+                                                                  Pexp_ident "fold" (gfold.ml[21,681+50]..[21,681+54])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[21,681+56]..[21,681+64])
+                                                                      Pexp_apply
+                                                                      expression (gfold.ml[21,681+56]..[21,681+57])
+Pexp_ident "f" (gfold.ml[21,681+56]..[21,681+57])
+                                                                      [
+<label> ""
+  expression (gfold.ml[21,681+58]..[21,681+59])
+    Pexp_ident "a" (gfold.ml[21,681+58]..[21,681+59])
+<label> ""
+  expression (gfold.ml[21,681+60]..[21,681+64])
+    Pexp_ident "accu" (gfold.ml[21,681+60]..[21,681+64])
+                                                                      ]
+                                                                  <label> ""
+                                                                    expression (gfold.ml[21,681+66]..[21,681+72])
+                                                                      Pexp_ident "__strm" (gfold.ml[21,681+66]..[21,681+72])
+                                                                ]
+                                                            <case>
+                                                              pattern (gfold.ml[22,754+40]..[22,754+41])
+                                                                Ppat_any
+                                                              expression (gfold.ml[22,754+45]..[22,754+49])
+                                                                Pexp_ident "accu" (gfold.ml[22,754+45]..[22,754+49])
+                                                          ]
+                                                    ]
+                                              ]
+                                        ]
+                                        expression (gfold.ml[23,809+27]..[23,809+77])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (gfold.ml[23,809+38]..[23,809+60])
+                                                Ppat_constraint
+                                                pattern (gfold.ml[23,809+39]..[23,809+45])
+                                                  Ppat_var "__strm" (gfold.ml[23,809+39]..[23,809+45])
+                                                core_type (gfold.ml[23,809+48]..[23,809+59])
+                                                  Ptyp_constr "Streamf.t" (gfold.ml[23,809+50]..[23,809+59])
+                                                  [
+                                                    core_type (gfold.ml[23,809+48]..[23,809+49])
+                                                      Ptyp_any
+                                                  ]
+                                              expression (gfold.ml[23,809+64]..[23,809+77])
+                                                Pexp_apply
+                                                expression (gfold.ml[23,809+64]..[23,809+68])
+                                                  Pexp_ident "fold" (gfold.ml[23,809+64]..[23,809+68])
+                                                [
+                                                  <label> ""
+                                                    expression (gfold.ml[23,809+69]..[23,809+70])
+                                                      Pexp_ident "e" (gfold.ml[23,809+69]..[23,809+70])
+                                                  <label> ""
+                                                    expression (gfold.ml[23,809+71]..[23,809+77])
+                                                      Pexp_ident "__strm" (gfold.ml[23,809+71]..[23,809+77])
+                                                ]
+                                          ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[24,892+0]..[52,1998+66])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[24,892+4]..[24,892+10])
+          Ppat_var "sfold1" (gfold.ml[24,892+4]..[24,892+10])
+        expression (gfold.ml[25,905+2]..[52,1998+66])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[26,916+4]..[26,916+5])
+                Ppat_var "f" (gfold.ml[26,916+4]..[26,916+5])
+              expression (gfold.ml[27,925+7]..[52,1998+65])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[28,941+9]..[28,941+10])
+                      Ppat_var "e" (gfold.ml[28,941+9]..[28,941+10])
+                    expression (gfold.ml[29,955+12]..[52,1998+64])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[30,976+14]..[30,976+20])
+                            Ppat_var "_entry" (gfold.ml[30,976+14]..[30,976+20])
+                          expression (gfold.ml[31,1000+17]..[52,1998+63])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[32,1026+19]..[32,1026+25])
+                                  Ppat_var "_symbl" (gfold.ml[32,1026+19]..[32,1026+25])
+                                expression (gfold.ml[33,1055+22]..[52,1998+62])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[34,1086+24]..[34,1086+29])
+                                        Ppat_var "psymb" (gfold.ml[34,1086+24]..[34,1086+29])
+                                      expression (gfold.ml[35,1119+26]..[52,1998+62])
+                                        Pexp_let Rec
+                                        [
+                                          <def>
+                                            pattern (gfold.ml[35,1119+34]..[35,1119+38])
+                                              Ppat_var "fold" (gfold.ml[35,1119+34]..[35,1119+38])
+                                            expression (gfold.ml[36,1160+28]..[45,1646+51])
+                                              Pexp_function
+                                              [
+                                                <case>
+                                                  pattern (gfold.ml[37,1197+30]..[37,1197+34])
+                                                    Ppat_var "accu" (gfold.ml[37,1197+30]..[37,1197+34])
+                                                  expression (gfold.ml[38,1235+33]..[45,1646+50])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[39,1277+35]..[39,1277+57])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[39,1277+36]..[39,1277+42])
+                                                            Ppat_var "__strm" (gfold.ml[39,1277+36]..[39,1277+42])
+                                                          core_type (gfold.ml[39,1277+45]..[39,1277+56])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[39,1277+47]..[39,1277+56])
+                                                            [
+                                                              core_type (gfold.ml[39,1277+45]..[39,1277+46])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[40,1338+38]..[45,1646+49])
+                                                          Pexp_match
+                                                          expression (gfold.ml[40,1338+44]..[42,1455+74])
+                                                            Pexp_try
+                                                            expression (gfold.ml[40,1338+48]..[40,1338+67])
+                                                              Pexp_construct "Some" (gfold.ml[40,1338+48]..[40,1338+52])
+                                                              Some
+                                                                expression (gfold.ml[40,1338+54]..[40,1338+66])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[40,1338+54]..[40,1338+59])
+                                                                    Pexp_ident "psymb" (gfold.ml[40,1338+54]..[40,1338+59])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[40,1338+60]..[40,1338+66])
+Pexp_ident "__strm" (gfold.ml[40,1338+60]..[40,1338+66])
+                                                                  ]
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[42,1455+46]..[42,1455+65])
+                                                                  Ppat_construct "Streamf.NotConsumed" (gfold.ml[42,1455+46]..[42,1455+65])
+                                                                  None
+                                                                expression (gfold.ml[42,1455+70]..[42,1455+74])
+                                                                  Pexp_construct "None" (gfold.ml[42,1455+70]..[42,1455+74])
+                                                                  None
+                                                            ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[44,1573+40]..[44,1573+46])
+                                                                Ppat_construct "Some" (gfold.ml[44,1573+40]..[44,1573+44])
+                                                                Some
+                                                                  pattern (gfold.ml[44,1573+45]..[44,1573+46])
+                                                                    Ppat_var "a" (gfold.ml[44,1573+45]..[44,1573+46])
+                                                              expression (gfold.ml[44,1573+50]..[44,1573+72])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[44,1573+50]..[44,1573+54])
+                                                                  Pexp_ident "fold" (gfold.ml[44,1573+50]..[44,1573+54])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[44,1573+56]..[44,1573+64])
+                                                                      Pexp_apply
+                                                                      expression (gfold.ml[44,1573+56]..[44,1573+57])
+Pexp_ident "f" (gfold.ml[44,1573+56]..[44,1573+57])
+                                                                      [
+<label> ""
+  expression (gfold.ml[44,1573+58]..[44,1573+59])
+    Pexp_ident "a" (gfold.ml[44,1573+58]..[44,1573+59])
+<label> ""
+  expression (gfold.ml[44,1573+60]..[44,1573+64])
+    Pexp_ident "accu" (gfold.ml[44,1573+60]..[44,1573+64])
+                                                                      ]
+                                                                  <label> ""
+                                                                    expression (gfold.ml[44,1573+66]..[44,1573+72])
+                                                                      Pexp_ident "__strm" (gfold.ml[44,1573+66]..[44,1573+72])
+                                                                ]
+                                                            <case>
+                                                              pattern (gfold.ml[45,1646+40]..[45,1646+41])
+                                                                Ppat_any
+                                                              expression (gfold.ml[45,1646+45]..[45,1646+49])
+                                                                Pexp_ident "accu" (gfold.ml[45,1646+45]..[45,1646+49])
+                                                          ]
+                                                    ]
+                                              ]
+                                        ]
+                                        expression (gfold.ml[46,1701+27]..[52,1998+61])
+                                          Pexp_function
+                                          [
+                                            <case>
+                                              pattern (gfold.ml[47,1737+29]..[47,1737+51])
+                                                Ppat_constraint
+                                                pattern (gfold.ml[47,1737+30]..[47,1737+36])
+                                                  Ppat_var "__strm" (gfold.ml[47,1737+30]..[47,1737+36])
+                                                core_type (gfold.ml[47,1737+39]..[47,1737+50])
+                                                  Ptyp_constr "Streamf.t" (gfold.ml[47,1737+41]..[47,1737+50])
+                                                  [
+                                                    core_type (gfold.ml[47,1737+39]..[47,1737+40])
+                                                      Ptyp_any
+                                                  ]
+                                              expression (gfold.ml[48,1792+31]..[52,1998+61])
+                                                Pexp_let Nonrec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[48,1792+35]..[48,1792+36])
+                                                      Ppat_var "a" (gfold.ml[48,1792+35]..[48,1792+36])
+                                                    expression (gfold.ml[48,1792+39]..[48,1792+51])
+                                                      Pexp_apply
+                                                      expression (gfold.ml[48,1792+39]..[48,1792+44])
+                                                        Pexp_ident "psymb" (gfold.ml[48,1792+39]..[48,1792+44])
+                                                      [
+                                                        <label> ""
+                                                          expression (gfold.ml[48,1792+45]..[48,1792+51])
+                                                            Pexp_ident "__strm" (gfold.ml[48,1792+45]..[48,1792+51])
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[49,1847+32]..[52,1998+60])
+                                                  Pexp_try
+                                                  expression (gfold.ml[49,1847+36]..[49,1847+55])
+                                                    Pexp_apply
+                                                    expression (gfold.ml[49,1847+36]..[49,1847+40])
+                                                      Pexp_ident "fold" (gfold.ml[49,1847+36]..[49,1847+40])
+                                                    [
+                                                      <label> ""
+                                                        expression (gfold.ml[49,1847+42]..[49,1847+47])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[49,1847+42]..[49,1847+43])
+                                                            Pexp_ident "f" (gfold.ml[49,1847+42]..[49,1847+43])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[49,1847+44]..[49,1847+45])
+                                                                Pexp_ident "a" (gfold.ml[49,1847+44]..[49,1847+45])
+                                                            <label> ""
+                                                              expression (gfold.ml[49,1847+46]..[49,1847+47])
+                                                                Pexp_ident "e" (gfold.ml[49,1847+46]..[49,1847+47])
+                                                          ]
+                                                      <label> ""
+                                                        expression (gfold.ml[49,1847+49]..[49,1847+55])
+                                                          Pexp_ident "__strm" (gfold.ml[49,1847+49]..[49,1847+55])
+                                                    ]
+                                                  [
+                                                    <case>
+                                                      pattern (gfold.ml[51,1940+34]..[51,1940+53])
+                                                        Ppat_construct "Streamf.NotConsumed" (gfold.ml[51,1940+34]..[51,1940+53])
+                                                        None
+                                                      expression (gfold.ml[52,1998+36]..[52,1998+60])
+                                                        Pexp_apply
+                                                        expression (gfold.ml[52,1998+36]..[52,1998+41])
+                                                          Pexp_ident "raise" (gfold.ml[52,1998+36]..[52,1998+41])
+                                                        [
+                                                          <label> ""
+                                                            expression (gfold.ml[52,1998+43]..[52,1998+59])
+                                                              Pexp_construct "Streamf.Error" (gfold.ml[52,1998+43]..[52,1998+56])
+                                                              Some
+                                                                expression (gfold.ml[52,1998+57]..[52,1998+59])
+                                                                  Pexp_constant Const_string("",None)
+                                                        ]
+                                                  ]
+                                          ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[53,2065+0]..[98,4229+52])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[53,2065+4]..[53,2065+13])
+          Ppat_var "sfold0sep" (gfold.ml[53,2065+4]..[53,2065+13])
+        expression (gfold.ml[54,2081+2]..[98,4229+52])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[55,2092+4]..[55,2092+5])
+                Ppat_var "f" (gfold.ml[55,2092+4]..[55,2092+5])
+              expression (gfold.ml[56,2101+7]..[98,4229+51])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[57,2117+9]..[57,2117+10])
+                      Ppat_var "e" (gfold.ml[57,2117+9]..[57,2117+10])
+                    expression (gfold.ml[58,2131+12]..[98,4229+50])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[59,2152+14]..[59,2152+19])
+                            Ppat_var "entry" (gfold.ml[59,2152+14]..[59,2152+19])
+                          expression (gfold.ml[60,2175+17]..[98,4229+49])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[61,2201+19]..[61,2201+24])
+                                  Ppat_var "symbl" (gfold.ml[61,2201+19]..[61,2201+24])
+                                expression (gfold.ml[62,2229+22]..[98,4229+48])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[63,2260+24]..[63,2260+29])
+                                        Ppat_var "psymb" (gfold.ml[63,2260+24]..[63,2260+29])
+                                      expression (gfold.ml[64,2293+27]..[98,4229+47])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (gfold.ml[65,2329+29]..[65,2329+33])
+                                              Ppat_var "psep" (gfold.ml[65,2329+29]..[65,2329+33])
+                                            expression (gfold.ml[66,2366+31]..[98,4229+47])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (gfold.ml[66,2366+35]..[66,2366+41])
+                                                    Ppat_var "failed" (gfold.ml[66,2366+35]..[66,2366+41])
+                                                  expression (gfold.ml[67,2410+33]..[70,2579+52])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[68,2452+35]..[68,2452+48])
+                                                          Ppat_construct "::" (gfold.ml[68,2452+35]..[68,2452+48])
+                                                          Some
+                                                            pattern (gfold.ml[68,2452+35]..[68,2452+48])
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (gfold.ml[68,2452+35]..[68,2452+39])
+                                                                  Ppat_var "symb" (gfold.ml[68,2452+35]..[68,2452+39])
+                                                                pattern (gfold.ml[68,2452+41]..[68,2452+48])
+                                                                  Ppat_construct "::" (gfold.ml[68,2452+41]..[68,2452+48])
+                                                                  Some
+                                                                    pattern (gfold.ml[68,2452+41]..[68,2452+48])
+                                                                      Ppat_tuple
+                                                                      [
+pattern (gfold.ml[68,2452+41]..[68,2452+44])
+  Ppat_var "sep" (gfold.ml[68,2452+41]..[68,2452+44])
+pattern (gfold.ml[68,2452+46]..[68,2452+48])
+  Ppat_construct "[]" (gfold.ml[68,2452+46]..[68,2452+48])
+  None
+                                                                      ]
+                                                              ]
+                                                        expression (gfold.ml[69,2504+37]..[69,2504+74])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[69,2504+37]..[69,2504+59])
+                                                            Pexp_ident "Gentry.symb_failed_txt" (gfold.ml[69,2504+37]..[69,2504+59])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[69,2504+60]..[69,2504+65])
+                                                                Pexp_ident "entry" (gfold.ml[69,2504+60]..[69,2504+65])
+                                                            <label> ""
+                                                              expression (gfold.ml[69,2504+66]..[69,2504+69])
+                                                                Pexp_ident "sep" (gfold.ml[69,2504+66]..[69,2504+69])
+                                                            <label> ""
+                                                              expression (gfold.ml[69,2504+70]..[69,2504+74])
+                                                                Pexp_ident "symb" (gfold.ml[69,2504+70]..[69,2504+74])
+                                                          ]
+                                                      <case>
+                                                        pattern (gfold.ml[70,2579+35]..[70,2579+36])
+                                                          Ppat_any
+                                                        expression (gfold.ml[70,2579+40]..[70,2579+52])
+                                                          Pexp_assert
+                                                          expression (gfold.ml[70,2579+47]..[70,2579+52])
+                                                            Pexp_construct "false" (gfold.ml[70,2579+47]..[70,2579+52])
+                                                            None
+                                                    ]
+                                              ]
+                                              expression (gfold.ml[71,2635+31]..[98,4229+47])
+                                                Pexp_let Rec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[71,2635+39]..[71,2635+43])
+                                                      Ppat_var "kont" (gfold.ml[71,2635+39]..[71,2635+43])
+                                                    expression (gfold.ml[72,2681+33]..[90,3768+56])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (gfold.ml[73,2723+35]..[73,2723+39])
+                                                            Ppat_var "accu" (gfold.ml[73,2723+35]..[73,2723+39])
+                                                          expression (gfold.ml[74,2766+38]..[90,3768+55])
+                                                            Pexp_function
+                                                            [
+                                                              <case>
+                                                                pattern (gfold.ml[75,2813+40]..[75,2813+62])
+                                                                  Ppat_constraint
+                                                                  pattern (gfold.ml[75,2813+41]..[75,2813+47])
+                                                                    Ppat_var "__strm" (gfold.ml[75,2813+41]..[75,2813+47])
+                                                                  core_type (gfold.ml[75,2813+50]..[75,2813+61])
+                                                                    Ptyp_constr "Streamf.t" (gfold.ml[75,2813+52]..[75,2813+61])
+                                                                    [
+                                                                      core_type (gfold.ml[75,2813+50]..[75,2813+51])
+Ptyp_any
+                                                                    ]
+                                                                expression (gfold.ml[76,2879+43]..[90,3768+54])
+                                                                  Pexp_match
+                                                                  expression (gfold.ml[76,2879+49]..[79,3080+57])
+                                                                    Pexp_try
+                                                                    expression (gfold.ml[76,2879+53]..[76,2879+71])
+                                                                      Pexp_construct "Some" (gfold.ml[76,2879+53]..[76,2879+57])
+                                                                      Some
+expression (gfold.ml[76,2879+59]..[76,2879+70])
+  Pexp_apply
+  expression (gfold.ml[76,2879+59]..[76,2879+63])
+    Pexp_ident "psep" (gfold.ml[76,2879+59]..[76,2879+63])
+  [
+    <label> ""
+      expression (gfold.ml[76,2879+64]..[76,2879+70])
+        Pexp_ident "__strm" (gfold.ml[76,2879+64]..[76,2879+70])
+  ]
+                                                                    [
+                                                                      <case>
+pattern (gfold.ml[78,3005+51]..[78,3005+70])
+  Ppat_construct "Streamf.NotConsumed" (gfold.ml[78,3005+51]..[78,3005+70])
+  None
+expression (gfold.ml[79,3080+53]..[79,3080+57])
+  Pexp_construct "None" (gfold.ml[79,3080+53]..[79,3080+57])
+  None
+                                                                    ]
+                                                                  [
+                                                                    <case>
+                                                                      pattern (gfold.ml[81,3186+45]..[81,3186+52])
+Ppat_construct "Some" (gfold.ml[81,3186+45]..[81,3186+49])
+Some
+  pattern (gfold.ml[81,3186+50]..[81,3186+52])
+    Ppat_construct "()" (gfold.ml[81,3186+50]..[81,3186+52])
+    None
+                                                                      expression (gfold.ml[82,3242+47]..[89,3698+69])
+Pexp_let Nonrec
+[
+  <def>
+    pattern (gfold.ml[82,3242+51]..[82,3242+52])
+      Ppat_var "a" (gfold.ml[82,3242+51]..[82,3242+52])
+    expression (gfold.ml[83,3297+49]..[88,3621+73])
+      Pexp_try
+      expression (gfold.ml[83,3297+53]..[83,3297+65])
+        Pexp_apply
+        expression (gfold.ml[83,3297+53]..[83,3297+58])
+          Pexp_ident "psymb" (gfold.ml[83,3297+53]..[83,3297+58])
+        [
+          <label> ""
+            expression (gfold.ml[83,3297+59]..[83,3297+65])
+              Pexp_ident "__strm" (gfold.ml[83,3297+59]..[83,3297+65])
+        ]
+      [
+        <case>
+          pattern (gfold.ml[85,3417+51]..[85,3417+70])
+            Ppat_construct "Streamf.NotConsumed" (gfold.ml[85,3417+51]..[85,3417+70])
+            None
+          expression (gfold.ml[86,3492+53]..[88,3621+73])
+            Pexp_apply
+            expression (gfold.ml[86,3492+53]..[86,3492+58])
+              Pexp_ident "raise" (gfold.ml[86,3492+53]..[86,3492+58])
+            [
+              <label> ""
+                expression (gfold.ml[87,3551+56]..[88,3621+72])
+                  Pexp_construct "Streamf.Error" (gfold.ml[87,3551+56]..[87,3551+69])
+                  Some
+                    expression (gfold.ml[88,3621+59]..[88,3621+71])
+                      Pexp_apply
+                      expression (gfold.ml[88,3621+59]..[88,3621+65])
+                        Pexp_ident "failed" (gfold.ml[88,3621+59]..[88,3621+65])
+                      [
+                        <label> ""
+                          expression (gfold.ml[88,3621+66]..[88,3621+71])
+                            Pexp_ident "symbl" (gfold.ml[88,3621+66]..[88,3621+71])
+                      ]
+            ]
+      ]
+]
+expression (gfold.ml[89,3698+47]..[89,3698+69])
+  Pexp_apply
+  expression (gfold.ml[89,3698+47]..[89,3698+51])
+    Pexp_ident "kont" (gfold.ml[89,3698+47]..[89,3698+51])
+  [
+    <label> ""
+      expression (gfold.ml[89,3698+53]..[89,3698+61])
+        Pexp_apply
+        expression (gfold.ml[89,3698+53]..[89,3698+54])
+          Pexp_ident "f" (gfold.ml[89,3698+53]..[89,3698+54])
+        [
+          <label> ""
+            expression (gfold.ml[89,3698+55]..[89,3698+56])
+              Pexp_ident "a" (gfold.ml[89,3698+55]..[89,3698+56])
+          <label> ""
+            expression (gfold.ml[89,3698+57]..[89,3698+61])
+              Pexp_ident "accu" (gfold.ml[89,3698+57]..[89,3698+61])
+        ]
+    <label> ""
+      expression (gfold.ml[89,3698+63]..[89,3698+69])
+        Pexp_ident "__strm" (gfold.ml[89,3698+63]..[89,3698+69])
+  ]
+                                                                    <case>
+                                                                      pattern (gfold.ml[90,3768+45]..[90,3768+46])
+Ppat_any
+                                                                      expression (gfold.ml[90,3768+50]..[90,3768+54])
+Pexp_ident "accu" (gfold.ml[90,3768+50]..[90,3768+54])
+                                                                  ]
+                                                            ]
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[91,3828+32]..[98,4229+46])
+                                                  Pexp_function
+                                                  [
+                                                    <case>
+                                                      pattern (gfold.ml[92,3869+34]..[92,3869+56])
+                                                        Ppat_constraint
+                                                        pattern (gfold.ml[92,3869+35]..[92,3869+41])
+                                                          Ppat_var "__strm" (gfold.ml[92,3869+35]..[92,3869+41])
+                                                        core_type (gfold.ml[92,3869+44]..[92,3869+55])
+                                                          Ptyp_constr "Streamf.t" (gfold.ml[92,3869+46]..[92,3869+55])
+                                                          [
+                                                            core_type (gfold.ml[92,3869+44]..[92,3869+45])
+                                                              Ptyp_any
+                                                          ]
+                                                      expression (gfold.ml[93,3929+37]..[98,4229+45])
+                                                        Pexp_match
+                                                        expression (gfold.ml[93,3929+43]..[95,4044+73])
+                                                          Pexp_try
+                                                          expression (gfold.ml[93,3929+47]..[93,3929+66])
+                                                            Pexp_construct "Some" (gfold.ml[93,3929+47]..[93,3929+51])
+                                                            Some
+                                                              expression (gfold.ml[93,3929+53]..[93,3929+65])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[93,3929+53]..[93,3929+58])
+                                                                  Pexp_ident "psymb" (gfold.ml[93,3929+53]..[93,3929+58])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[93,3929+59]..[93,3929+65])
+                                                                      Pexp_ident "__strm" (gfold.ml[93,3929+59]..[93,3929+65])
+                                                                ]
+                                                          [
+                                                            <case>
+                                                              pattern (gfold.ml[95,4044+45]..[95,4044+64])
+                                                                Ppat_construct "Streamf.NotConsumed" (gfold.ml[95,4044+45]..[95,4044+64])
+                                                                None
+                                                              expression (gfold.ml[95,4044+69]..[95,4044+73])
+                                                                Pexp_construct "None" (gfold.ml[95,4044+69]..[95,4044+73])
+                                                                None
+                                                          ]
+                                                        [
+                                                          <case>
+                                                            pattern (gfold.ml[97,4160+39]..[97,4160+45])
+                                                              Ppat_construct "Some" (gfold.ml[97,4160+39]..[97,4160+43])
+                                                              Some
+                                                                pattern (gfold.ml[97,4160+44]..[97,4160+45])
+                                                                  Ppat_var "a" (gfold.ml[97,4160+44]..[97,4160+45])
+                                                            expression (gfold.ml[97,4160+49]..[97,4160+68])
+                                                              Pexp_apply
+                                                              expression (gfold.ml[97,4160+49]..[97,4160+53])
+                                                                Pexp_ident "kont" (gfold.ml[97,4160+49]..[97,4160+53])
+                                                              [
+                                                                <label> ""
+                                                                  expression (gfold.ml[97,4160+55]..[97,4160+60])
+                                                                    Pexp_apply
+                                                                    expression (gfold.ml[97,4160+55]..[97,4160+56])
+                                                                      Pexp_ident "f" (gfold.ml[97,4160+55]..[97,4160+56])
+                                                                    [
+                                                                      <label> ""
+expression (gfold.ml[97,4160+57]..[97,4160+58])
+  Pexp_ident "a" (gfold.ml[97,4160+57]..[97,4160+58])
+                                                                      <label> ""
+expression (gfold.ml[97,4160+59]..[97,4160+60])
+  Pexp_ident "e" (gfold.ml[97,4160+59]..[97,4160+60])
+                                                                    ]
+                                                                <label> ""
+                                                                  expression (gfold.ml[97,4160+62]..[97,4160+68])
+                                                                    Pexp_ident "__strm" (gfold.ml[97,4160+62]..[97,4160+68])
+                                                              ]
+                                                          <case>
+                                                            pattern (gfold.ml[98,4229+39]..[98,4229+40])
+                                                              Ppat_any
+                                                            expression (gfold.ml[98,4229+44]..[98,4229+45])
+                                                              Pexp_ident "e" (gfold.ml[98,4229+44]..[98,4229+45])
+                                                        ]
+                                                  ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (gfold.ml[99,4282+0]..[158,7387+61])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (gfold.ml[99,4282+4]..[99,4282+13])
+          Ppat_var "sfold1sep" (gfold.ml[99,4282+4]..[99,4282+13])
+        expression (gfold.ml[100,4298+2]..[158,7387+61])
+          Pexp_function
+          [
+            <case>
+              pattern (gfold.ml[101,4309+4]..[101,4309+5])
+                Ppat_var "f" (gfold.ml[101,4309+4]..[101,4309+5])
+              expression (gfold.ml[102,4318+7]..[158,7387+60])
+                Pexp_function
+                [
+                  <case>
+                    pattern (gfold.ml[103,4334+9]..[103,4334+10])
+                      Ppat_var "e" (gfold.ml[103,4334+9]..[103,4334+10])
+                    expression (gfold.ml[104,4348+12]..[158,7387+59])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (gfold.ml[105,4369+14]..[105,4369+19])
+                            Ppat_var "entry" (gfold.ml[105,4369+14]..[105,4369+19])
+                          expression (gfold.ml[106,4392+17]..[158,7387+58])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (gfold.ml[107,4418+19]..[107,4418+24])
+                                  Ppat_var "symbl" (gfold.ml[107,4418+19]..[107,4418+24])
+                                expression (gfold.ml[108,4446+22]..[158,7387+57])
+                                  Pexp_function
+                                  [
+                                    <case>
+                                      pattern (gfold.ml[109,4477+24]..[109,4477+29])
+                                        Ppat_var "psymb" (gfold.ml[109,4477+24]..[109,4477+29])
+                                      expression (gfold.ml[110,4510+27]..[158,7387+56])
+                                        Pexp_function
+                                        [
+                                          <case>
+                                            pattern (gfold.ml[111,4546+29]..[111,4546+33])
+                                              Ppat_var "psep" (gfold.ml[111,4546+29]..[111,4546+33])
+                                            expression (gfold.ml[112,4583+31]..[158,7387+56])
+                                              Pexp_let Nonrec
+                                              [
+                                                <def>
+                                                  pattern (gfold.ml[112,4583+35]..[112,4583+41])
+                                                    Ppat_var "failed" (gfold.ml[112,4583+35]..[112,4583+41])
+                                                  expression (gfold.ml[113,4627+33]..[116,4796+52])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[114,4669+35]..[114,4669+48])
+                                                          Ppat_construct "::" (gfold.ml[114,4669+35]..[114,4669+48])
+                                                          Some
+                                                            pattern (gfold.ml[114,4669+35]..[114,4669+48])
+                                                              Ppat_tuple
+                                                              [
+                                                                pattern (gfold.ml[114,4669+35]..[114,4669+39])
+                                                                  Ppat_var "symb" (gfold.ml[114,4669+35]..[114,4669+39])
+                                                                pattern (gfold.ml[114,4669+41]..[114,4669+48])
+                                                                  Ppat_construct "::" (gfold.ml[114,4669+41]..[114,4669+48])
+                                                                  Some
+                                                                    pattern (gfold.ml[114,4669+41]..[114,4669+48])
+                                                                      Ppat_tuple
+                                                                      [
+pattern (gfold.ml[114,4669+41]..[114,4669+44])
+  Ppat_var "sep" (gfold.ml[114,4669+41]..[114,4669+44])
+pattern (gfold.ml[114,4669+46]..[114,4669+48])
+  Ppat_construct "[]" (gfold.ml[114,4669+46]..[114,4669+48])
+  None
+                                                                      ]
+                                                              ]
+                                                        expression (gfold.ml[115,4721+37]..[115,4721+74])
+                                                          Pexp_apply
+                                                          expression (gfold.ml[115,4721+37]..[115,4721+59])
+                                                            Pexp_ident "Gentry.symb_failed_txt" (gfold.ml[115,4721+37]..[115,4721+59])
+                                                          [
+                                                            <label> ""
+                                                              expression (gfold.ml[115,4721+60]..[115,4721+65])
+                                                                Pexp_ident "entry" (gfold.ml[115,4721+60]..[115,4721+65])
+                                                            <label> ""
+                                                              expression (gfold.ml[115,4721+66]..[115,4721+69])
+                                                                Pexp_ident "sep" (gfold.ml[115,4721+66]..[115,4721+69])
+                                                            <label> ""
+                                                              expression (gfold.ml[115,4721+70]..[115,4721+74])
+                                                                Pexp_ident "symb" (gfold.ml[115,4721+70]..[115,4721+74])
+                                                          ]
+                                                      <case>
+                                                        pattern (gfold.ml[116,4796+35]..[116,4796+36])
+                                                          Ppat_any
+                                                        expression (gfold.ml[116,4796+40]..[116,4796+52])
+                                                          Pexp_assert
+                                                          expression (gfold.ml[116,4796+47]..[116,4796+52])
+                                                            Pexp_construct "false" (gfold.ml[116,4796+47]..[116,4796+52])
+                                                            None
+                                                    ]
+                                              ]
+                                              expression (gfold.ml[117,4852+31]..[158,7387+56])
+                                                Pexp_let Nonrec
+                                                [
+                                                  <def>
+                                                    pattern (gfold.ml[117,4852+35]..[117,4852+44])
+                                                      Ppat_var "parse_top" (gfold.ml[117,4852+35]..[117,4852+44])
+                                                    expression (gfold.ml[118,4899+33]..[121,5063+65])
+                                                      Pexp_function
+                                                      [
+                                                        <case>
+                                                          pattern (gfold.ml[119,4941+35]..[119,4941+46])
+                                                            Ppat_construct "::" (gfold.ml[119,4941+35]..[119,4941+46])
+                                                            Some
+                                                              pattern (gfold.ml[119,4941+35]..[119,4941+46])
+                                                                Ppat_tuple
+                                                                [
+                                                                  pattern (gfold.ml[119,4941+35]..[119,4941+39])
+                                                                    Ppat_var "symb" (gfold.ml[119,4941+35]..[119,4941+39])
+                                                                  pattern (gfold.ml[119,4941+41]..[119,4941+46])
+                                                                    Ppat_construct "::" (gfold.ml[119,4941+41]..[119,4941+46])
+                                                                    Some
+                                                                      pattern (gfold.ml[119,4941+41]..[119,4941+46])
+Ppat_tuple
+[
+  pattern (gfold.ml[119,4941+41]..[119,4941+42])
+    Ppat_any
+  pattern (gfold.ml[119,4941+44]..[119,4941+46])
+    Ppat_construct "[]" (gfold.ml[119,4941+44]..[119,4941+46])
+    None
+]
+                                                                ]
+                                                          expression (gfold.ml[120,4991+37]..[120,4991+71])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[120,4991+37]..[120,4991+60])
+                                                              Pexp_ident "Gentry.parser_of_symbol" (gfold.ml[120,4991+37]..[120,4991+60])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[120,4991+61]..[120,4991+66])
+                                                                  Pexp_ident "entry" (gfold.ml[120,4991+61]..[120,4991+66])
+                                                              <label> ""
+                                                                expression (gfold.ml[120,4991+67]..[120,4991+71])
+                                                                  Pexp_ident "symb" (gfold.ml[120,4991+67]..[120,4991+71])
+                                                            ]
+                                                        <case>
+                                                          pattern (gfold.ml[121,5063+35]..[121,5063+36])
+                                                            Ppat_any
+                                                          expression (gfold.ml[121,5063+40]..[121,5063+65])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[121,5063+40]..[121,5063+45])
+                                                              Pexp_ident "raise" (gfold.ml[121,5063+40]..[121,5063+45])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[121,5063+46]..[121,5063+65])
+                                                                  Pexp_construct "Streamf.NotConsumed" (gfold.ml[121,5063+46]..[121,5063+65])
+                                                                  None
+                                                            ]
+                                                      ]
+                                                ]
+                                                expression (gfold.ml[122,5132+31]..[158,7387+56])
+                                                  Pexp_let Rec
+                                                  [
+                                                    <def>
+                                                      pattern (gfold.ml[122,5132+39]..[122,5132+43])
+                                                        Ppat_var "kont" (gfold.ml[122,5132+39]..[122,5132+43])
+                                                      expression (gfold.ml[123,5178+33]..[154,7166+56])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (gfold.ml[124,5220+35]..[124,5220+39])
+                                                              Ppat_var "accu" (gfold.ml[124,5220+35]..[124,5220+39])
+                                                            expression (gfold.ml[125,5263+38]..[154,7166+55])
+                                                              Pexp_function
+                                                              [
+                                                                <case>
+                                                                  pattern (gfold.ml[126,5310+40]..[126,5310+62])
+                                                                    Ppat_constraint
+                                                                    pattern (gfold.ml[126,5310+41]..[126,5310+47])
+                                                                      Ppat_var "__strm" (gfold.ml[126,5310+41]..[126,5310+47])
+                                                                    core_type (gfold.ml[126,5310+50]..[126,5310+61])
+                                                                      Ptyp_constr "Streamf.t" (gfold.ml[126,5310+52]..[126,5310+61])
+                                                                      [
+core_type (gfold.ml[126,5310+50]..[126,5310+51])
+  Ptyp_any
+                                                                      ]
+                                                                  expression (gfold.ml[127,5376+43]..[154,7166+54])
+                                                                    Pexp_match
+                                                                    expression (gfold.ml[127,5376+49]..[130,5577+57])
+                                                                      Pexp_try
+                                                                      expression (gfold.ml[127,5376+53]..[127,5376+71])
+Pexp_construct "Some" (gfold.ml[127,5376+53]..[127,5376+57])
+Some
+  expression (gfold.ml[127,5376+59]..[127,5376+70])
+    Pexp_apply
+    expression (gfold.ml[127,5376+59]..[127,5376+63])
+      Pexp_ident "psep" (gfold.ml[127,5376+59]..[127,5376+63])
+    [
+      <label> ""
+        expression (gfold.ml[127,5376+64]..[127,5376+70])
+          Pexp_ident "__strm" (gfold.ml[127,5376+64]..[127,5376+70])
+    ]
+                                                                      [
+<case>
+  pattern (gfold.ml[129,5502+51]..[129,5502+70])
+    Ppat_construct "Streamf.NotConsumed" (gfold.ml[129,5502+51]..[129,5502+70])
+    None
+  expression (gfold.ml[130,5577+53]..[130,5577+57])
+    Pexp_construct "None" (gfold.ml[130,5577+53]..[130,5577+57])
+    None
+                                                                      ]
+                                                                    [
+                                                                      <case>
+pattern (gfold.ml[132,5683+45]..[132,5683+52])
+  Ppat_construct "Some" (gfold.ml[132,5683+45]..[132,5683+49])
+  Some
+    pattern (gfold.ml[132,5683+50]..[132,5683+52])
+      Ppat_construct "()" (gfold.ml[132,5683+50]..[132,5683+52])
+      None
+expression (gfold.ml[133,5739+47]..[153,7096+69])
+  Pexp_let Nonrec
+  [
+    <def>
+      pattern (gfold.ml[133,5739+51]..[133,5739+52])
+        Ppat_var "a" (gfold.ml[133,5739+51]..[133,5739+52])
+      expression (gfold.ml[134,5794+49]..[152,7015+77])
+        Pexp_try
+        expression (gfold.ml[135,5847+51]..[149,6819+66])
+          Pexp_try
+          expression (gfold.ml[135,5847+55]..[135,5847+67])
+            Pexp_apply
+            expression (gfold.ml[135,5847+55]..[135,5847+60])
+              Pexp_ident "psymb" (gfold.ml[135,5847+55]..[135,5847+60])
+            [
+              <label> ""
+                expression (gfold.ml[135,5847+61]..[135,5847+67])
+                  Pexp_ident "__strm" (gfold.ml[135,5847+61]..[135,5847+67])
+            ]
+          [
+            <case>
+              pattern (gfold.ml[137,5971+53]..[137,5971+72])
+                Ppat_construct "Streamf.NotConsumed" (gfold.ml[137,5971+53]..[137,5971+72])
+                None
+              expression (gfold.ml[138,6048+55]..[149,6819+66])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (gfold.ml[138,6048+59]..[138,6048+60])
+                      Ppat_var "a" (gfold.ml[138,6048+59]..[138,6048+60])
+                    expression (gfold.ml[139,6111+57]..[148,6740+75])
+                      Pexp_try
+                      expression (gfold.ml[140,6172+59]..[141,6247+67])
+                        Pexp_apply
+                        expression (gfold.ml[140,6172+59]..[140,6172+68])
+                          Pexp_ident "parse_top" (gfold.ml[140,6172+59]..[140,6172+68])
+                        [
+                          <label> ""
+                            expression (gfold.ml[140,6172+69]..[140,6172+74])
+                              Pexp_ident "symbl" (gfold.ml[140,6172+69]..[140,6172+74])
+                          <label> ""
+                            expression (gfold.ml[141,6247+61]..[141,6247+67])
+                              Pexp_ident "__strm" (gfold.ml[141,6247+61]..[141,6247+67])
+                        ]
+                      [
+                        <case>
+                          pattern (gfold.ml[143,6377+59]..[143,6377+78])
+                            Ppat_construct "Streamf.NotConsumed" (gfold.ml[143,6377+59]..[143,6377+78])
+                            None
+                          expression (gfold.ml[145,6521+61]..[148,6740+75])
+                            Pexp_apply
+                            expression (gfold.ml[145,6521+61]..[145,6521+66])
+                              Pexp_ident "raise" (gfold.ml[145,6521+61]..[145,6521+66])
+                            [
+                              <label> ""
+                                expression (gfold.ml[146,6588+64]..[148,6740+74])
+                                  Pexp_construct "Streamf.Error" (gfold.ml[146,6588+64]..[146,6588+77])
+                                  Some
+                                    expression (gfold.ml[147,6666+67]..[148,6740+73])
+                                      Pexp_apply
+                                      expression (gfold.ml[147,6666+67]..[147,6666+73])
+                                        Pexp_ident "failed" (gfold.ml[147,6666+67]..[147,6666+73])
+                                      [
+                                        <label> ""
+                                          expression (gfold.ml[148,6740+68]..[148,6740+73])
+                                            Pexp_ident "symbl" (gfold.ml[148,6740+68]..[148,6740+73])
+                                      ]
+                            ]
+                      ]
+                ]
+                expression (gfold.ml[149,6819+55]..[149,6819+66])
+                  Pexp_apply
+                  expression (gfold.ml[149,6819+55]..[149,6819+64])
+                    Pexp_ident "Obj.magic" (gfold.ml[149,6819+55]..[149,6819+64])
+                  [
+                    <label> ""
+                      expression (gfold.ml[149,6819+65]..[149,6819+66])
+                        Pexp_ident "a" (gfold.ml[149,6819+65]..[149,6819+66])
+                  ]
+          ]
+        [
+          <case>
+            pattern (gfold.ml[151,6940+51]..[151,6940+70])
+              Ppat_construct "Streamf.NotConsumed" (gfold.ml[151,6940+51]..[151,6940+70])
+              None
+            expression (gfold.ml[152,7015+53]..[152,7015+77])
+              Pexp_apply
+              expression (gfold.ml[152,7015+53]..[152,7015+58])
+                Pexp_ident "raise" (gfold.ml[152,7015+53]..[152,7015+58])
+              [
+                <label> ""
+                  expression (gfold.ml[152,7015+60]..[152,7015+76])
+                    Pexp_construct "Streamf.Error" (gfold.ml[152,7015+60]..[152,7015+73])
+                    Some
+                      expression (gfold.ml[152,7015+74]..[152,7015+76])
+                        Pexp_constant Const_string("",None)
+              ]
+        ]
+  ]
+  expression (gfold.ml[153,7096+47]..[153,7096+69])
+    Pexp_apply
+    expression (gfold.ml[153,7096+47]..[153,7096+51])
+      Pexp_ident "kont" (gfold.ml[153,7096+47]..[153,7096+51])
+    [
+      <label> ""
+        expression (gfold.ml[153,7096+53]..[153,7096+61])
+          Pexp_apply
+          expression (gfold.ml[153,7096+53]..[153,7096+54])
+            Pexp_ident "f" (gfold.ml[153,7096+53]..[153,7096+54])
+          [
+            <label> ""
+              expression (gfold.ml[153,7096+55]..[153,7096+56])
+                Pexp_ident "a" (gfold.ml[153,7096+55]..[153,7096+56])
+            <label> ""
+              expression (gfold.ml[153,7096+57]..[153,7096+61])
+                Pexp_ident "accu" (gfold.ml[153,7096+57]..[153,7096+61])
+          ]
+      <label> ""
+        expression (gfold.ml[153,7096+63]..[153,7096+69])
+          Pexp_ident "__strm" (gfold.ml[153,7096+63]..[153,7096+69])
+    ]
+                                                                      <case>
+pattern (gfold.ml[154,7166+45]..[154,7166+46])
+  Ppat_any
+expression (gfold.ml[154,7166+50]..[154,7166+54])
+  Pexp_ident "accu" (gfold.ml[154,7166+50]..[154,7166+54])
+                                                                    ]
+                                                              ]
+                                                        ]
+                                                  ]
+                                                  expression (gfold.ml[155,7226+32]..[158,7387+55])
+                                                    Pexp_function
+                                                    [
+                                                      <case>
+                                                        pattern (gfold.ml[156,7267+34]..[156,7267+56])
+                                                          Ppat_constraint
+                                                          pattern (gfold.ml[156,7267+35]..[156,7267+41])
+                                                            Ppat_var "__strm" (gfold.ml[156,7267+35]..[156,7267+41])
+                                                          core_type (gfold.ml[156,7267+44]..[156,7267+55])
+                                                            Ptyp_constr "Streamf.t" (gfold.ml[156,7267+46]..[156,7267+55])
+                                                            [
+                                                              core_type (gfold.ml[156,7267+44]..[156,7267+45])
+                                                                Ptyp_any
+                                                            ]
+                                                        expression (gfold.ml[157,7327+36]..[158,7387+55])
+                                                          Pexp_let Nonrec
+                                                          [
+                                                            <def>
+                                                              pattern (gfold.ml[157,7327+40]..[157,7327+41])
+                                                                Ppat_var "a" (gfold.ml[157,7327+40]..[157,7327+41])
+                                                              expression (gfold.ml[157,7327+44]..[157,7327+56])
+                                                                Pexp_apply
+                                                                expression (gfold.ml[157,7327+44]..[157,7327+49])
+                                                                  Pexp_ident "psymb" (gfold.ml[157,7327+44]..[157,7327+49])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (gfold.ml[157,7327+50]..[157,7327+56])
+                                                                      Pexp_ident "__strm" (gfold.ml[157,7327+50]..[157,7327+56])
+                                                                ]
+                                                          ]
+                                                          expression (gfold.ml[158,7387+36]..[158,7387+55])
+                                                            Pexp_apply
+                                                            expression (gfold.ml[158,7387+36]..[158,7387+40])
+                                                              Pexp_ident "kont" (gfold.ml[158,7387+36]..[158,7387+40])
+                                                            [
+                                                              <label> ""
+                                                                expression (gfold.ml[158,7387+42]..[158,7387+47])
+                                                                  Pexp_apply
+                                                                  expression (gfold.ml[158,7387+42]..[158,7387+43])
+                                                                    Pexp_ident "f" (gfold.ml[158,7387+42]..[158,7387+43])
+                                                                  [
+                                                                    <label> ""
+                                                                      expression (gfold.ml[158,7387+44]..[158,7387+45])
+Pexp_ident "a" (gfold.ml[158,7387+44]..[158,7387+45])
+                                                                    <label> ""
+                                                                      expression (gfold.ml[158,7387+46]..[158,7387+47])
+Pexp_ident "e" (gfold.ml[158,7387+46]..[158,7387+47])
+                                                                  ]
+                                                              <label> ""
+                                                                expression (gfold.ml[158,7387+49]..[158,7387+55])
+                                                                  Pexp_ident "__strm" (gfold.ml[158,7387+49]..[158,7387+55])
+                                                            ]
+                                                    ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+          ]
+    ]
+]

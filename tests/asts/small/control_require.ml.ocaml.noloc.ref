@@ -1,0 +1,382 @@
+[
+  structure_item (control_require.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (control_require.ml[]..[])
+          Ppat_var "loaded_modules" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_apply
+          expression (control_require.ml[]..[])
+            Pexp_ident "ref" (control_require.ml[]..[])
+          [
+            <label> ""
+              expression (control_require.ml[]..[])
+                Pexp_ident "Setf.String.empty" (control_require.ml[]..[])
+          ]
+    ]
+  structure_item (control_require.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (control_require.ml[]..[])
+          Ppat_var "add_to_loaded_modules" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (control_require.ml[]..[])
+                Ppat_var "name" (control_require.ml[]..[])
+              expression (control_require.ml[]..[])
+                Pexp_apply
+                expression (control_require.ml[]..[])
+                  Pexp_ident ":=" (control_require.ml[]..[])
+                [
+                  <label> ""
+                    expression (control_require.ml[]..[])
+                      Pexp_ident "loaded_modules" (control_require.ml[]..[])
+                  <label> ""
+                    expression (control_require.ml[]..[])
+                      Pexp_apply
+                      expression (control_require.ml[]..[])
+                        Pexp_ident "Setf.String.add" (control_require.ml[]..[])
+                      [
+                        <label> ""
+                          expression (control_require.ml[]..[])
+                            Pexp_ident "name" (control_require.ml[]..[])
+                        <label> ""
+                          expression (control_require.ml[]..[])
+                            Pexp_apply
+                            expression (control_require.ml[]..[])
+                              Pexp_ident "!" (control_require.ml[]..[])
+                            [
+                              <label> ""
+                                expression (control_require.ml[]..[])
+                                  Pexp_ident "loaded_modules" (control_require.ml[]..[])
+                            ]
+                      ]
+                ]
+          ]
+    ]
+  structure_item (control_require.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (control_require.ml[]..[])
+          Ppat_var "add" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (control_require.ml[]..[])
+                Ppat_var "name" (control_require.ml[]..[])
+              expression (control_require.ml[]..[])
+                Pexp_ifthenelse
+                expression (control_require.ml[]..[])
+                  Pexp_apply
+                  expression (control_require.ml[]..[])
+                    Pexp_ident "@@" (control_require.ml[]..[])
+                  [
+                    <label> ""
+                      expression (control_require.ml[]..[])
+                        Pexp_ident "not" (control_require.ml[]..[])
+                    <label> ""
+                      expression (control_require.ml[]..[])
+                        Pexp_apply
+                        expression (control_require.ml[]..[])
+                          Pexp_ident "Setf.String.mem" (control_require.ml[]..[])
+                        [
+                          <label> ""
+                            expression (control_require.ml[]..[])
+                              Pexp_ident "name" (control_require.ml[]..[])
+                          <label> ""
+                            expression (control_require.ml[]..[])
+                              Pexp_apply
+                              expression (control_require.ml[]..[])
+                                Pexp_ident "!" (control_require.ml[]..[])
+                              [
+                                <label> ""
+                                  expression (control_require.ml[]..[])
+                                    Pexp_ident "loaded_modules" (control_require.ml[]..[])
+                              ]
+                        ]
+                  ]
+                expression (control_require.ml[]..[])
+                  Pexp_sequence
+                  expression (control_require.ml[]..[])
+                    Pexp_apply
+                    expression (control_require.ml[]..[])
+                      Pexp_ident "add_to_loaded_modules" (control_require.ml[]..[])
+                    [
+                      <label> ""
+                        expression (control_require.ml[]..[])
+                          Pexp_ident "name" (control_require.ml[]..[])
+                    ]
+                  expression (control_require.ml[]..[])
+                    Pexp_apply
+                    expression (control_require.ml[]..[])
+                      Pexp_ident "Dyn_load.load" (control_require.ml[]..[])
+                    [
+                      <label> ""
+                        expression (control_require.ml[]..[])
+                          Pexp_apply
+                          expression (control_require.ml[]..[])
+                            Pexp_ident "^" (control_require.ml[]..[])
+                          [
+                            <label> ""
+                              expression (control_require.ml[]..[])
+                                Pexp_ident "name" (control_require.ml[]..[])
+                            <label> ""
+                              expression (control_require.ml[]..[])
+                                Pexp_ident "Dyn_load.libext" (control_require.ml[]..[])
+                          ]
+                    ]
+                None
+          ]
+    ]
+  structure_item (control_require.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (control_require.ml[]..[])
+          Ppat_construct "()" (control_require.ml[]..[])
+          None
+        expression (control_require.ml[]..[])
+          Pexp_open Fresh ""Control" (control_require.ml[]..[])"
+          expression (control_require.ml[]..[])
+            Pexp_apply
+            expression (control_require.ml[]..[])
+              Pexp_ident "Gramf.extend_single" (control_require.ml[]..[])
+            [
+              <label> ""
+                expression (control_require.ml[]..[]) 
+                  Pexp_constraint
+                  expression (control_require.ml[]..[])
+                    Pexp_record
+                    [
+                      "entry" (control_require.ml[]..[])
+                        expression (control_require.ml[]..[]) 
+                          Pexp_constraint
+                          expression (control_require.ml[]..[])
+                            Pexp_ident "item" (control_require.ml[]..[])
+                          core_type (control_require.ml[]..[])
+                            Ptyp_constr "Gramf.t" (control_require.ml[]..[])
+                            [
+                              core_type (control_require.ml[]..[])
+                                Ptyp_var item
+                            ]
+                      "olevel" (control_require.ml[]..[])
+                        expression (control_require.ml[]..[]) 
+                          Pexp_constraint
+                          expression (control_require.ml[]..[])
+                            Pexp_record
+                            [
+                              "label" (control_require.ml[]..[])
+                                expression (control_require.ml[]..[])
+                                  Pexp_construct "None" (control_require.ml[]..[])
+                                  None
+                              "lassoc" (control_require.ml[]..[])
+                                expression (control_require.ml[]..[])
+                                  Pexp_construct "true" (control_require.ml[]..[])
+                                  None
+                              "productions" (control_require.ml[]..[])
+                                expression (control_require.ml[]..[])
+                                  Pexp_construct "::" (control_require.ml[]..[]) 
+                                  Some
+                                    expression (control_require.ml[]..[]) 
+                                      Pexp_tuple
+                                      [
+                                        expression (control_require.ml[]..[])
+                                          Pexp_record
+                                          [
+                                            "symbols" (control_require.ml[]..[])
+                                              expression (control_require.ml[]..[])
+                                                Pexp_construct "::" (control_require.ml[]..[]) 
+                                                Some
+                                                  expression (control_require.ml[]..[]) 
+                                                    Pexp_tuple
+                                                    [
+                                                      expression (control_require.ml[]..[])
+                                                        Pexp_construct "Token" (control_require.ml[]..[])
+                                                        Some
+                                                          expression (control_require.ml[]..[]) 
+                                                            Pexp_constraint
+                                                            expression (control_require.ml[]..[])
+                                                              Pexp_record
+                                                              [
+                                                                "descr" (control_require.ml[]..[])
+                                                                  expression (control_require.ml[]..[])
+                                                                    Pexp_record
+                                                                    [
+                                                                      "tag" (control_require.ml[]..[])
+expression (control_require.ml[]..[])
+  Pexp_variant "Key"
+  None
+                                                                      "word" (control_require.ml[]..[])
+expression (control_require.ml[]..[])
+  Pexp_construct "A" (control_require.ml[]..[])
+  Some
+    expression (control_require.ml[]..[])
+      Pexp_constant Const_string("require",None)
+                                                                      "tag_name" (control_require.ml[]..[])
+expression (control_require.ml[]..[])
+  Pexp_constant Const_string("Key",None)
+                                                                    ]
+                                                                    None
+                                                              ]
+                                                              None
+                                                            core_type (control_require.ml[]..[])
+                                                              Ptyp_constr "Tokenf.pattern" (control_require.ml[]..[])
+                                                              []
+                                                      expression (control_require.ml[]..[]) 
+                                                        Pexp_construct "::" (control_require.ml[]..[]) 
+                                                        Some
+                                                          expression (control_require.ml[]..[]) 
+                                                            Pexp_tuple
+                                                            [
+                                                              expression (control_require.ml[]..[])
+                                                                Pexp_construct "Token" (control_require.ml[]..[])
+                                                                Some
+                                                                  expression (control_require.ml[]..[]) 
+                                                                    Pexp_constraint
+                                                                    expression (control_require.ml[]..[])
+                                                                      Pexp_record
+                                                                      [
+"descr" (control_require.ml[]..[])
+  expression (control_require.ml[]..[])
+    Pexp_record
+    [
+      "tag" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_variant "Str"
+          None
+      "word" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_construct "Any" (control_require.ml[]..[])
+          None
+      "tag_name" (control_require.ml[]..[])
+        expression (control_require.ml[]..[])
+          Pexp_constant Const_string("Str",None)
+    ]
+    None
+                                                                      ]
+                                                                      None
+                                                                    core_type (control_require.ml[]..[])
+                                                                      Ptyp_constr "Tokenf.pattern" (control_require.ml[]..[])
+                                                                      []
+                                                              expression (control_require.ml[]..[]) 
+                                                                Pexp_construct "[]" (control_require.ml[]..[]) 
+                                                                None
+                                                            ]
+                                                    ]
+                                            "annot" (control_require.ml[]..[])
+                                              expression (control_require.ml[]..[])
+                                                Pexp_constant Const_string("add s\n",None)
+                                            "fn" (control_require.ml[]..[])
+                                              expression (control_require.ml[]..[])
+                                                Pexp_apply
+                                                expression (control_require.ml[]..[])
+                                                  Pexp_ident "Gramf.mk_action" (control_require.ml[]..[])
+                                                [
+                                                  <label> ""
+                                                    expression (control_require.ml[]..[]) 
+                                                      Pexp_constraint
+                                                      expression (control_require.ml[]..[])
+                                                        Pexp_function
+                                                        [
+                                                          <case>
+                                                            pattern (control_require.ml[]..[])
+                                                              Ppat_constraint
+                                                              pattern (control_require.ml[]..[])
+                                                                Ppat_var "__fan_1" (control_require.ml[]..[])
+                                                              core_type (control_require.ml[]..[])
+                                                                Ptyp_constr "Tokenf.txt" (control_require.ml[]..[])
+                                                                []
+                                                            expression (control_require.ml[]..[])
+                                                              Pexp_function
+                                                              [
+                                                                <case>
+                                                                  pattern (control_require.ml[]..[])
+                                                                    Ppat_any
+                                                                  expression (control_require.ml[]..[])
+                                                                    Pexp_function
+                                                                    [
+                                                                      <case>
+pattern (control_require.ml[]..[])
+  Ppat_constraint
+  pattern (control_require.ml[]..[])
+    Ppat_var "_loc" (control_require.ml[]..[])
+  core_type (control_require.ml[]..[])
+    Ptyp_constr "Locf.t" (control_require.ml[]..[])
+    []
+expression (control_require.ml[]..[])
+  Pexp_let Nonrec
+  [
+    <def>
+      pattern (control_require.ml[]..[])
+        Ppat_var "s" (control_require.ml[]..[])
+      expression (control_require.ml[]..[])
+        Pexp_field
+        expression (control_require.ml[]..[])
+          Pexp_ident "__fan_1" (control_require.ml[]..[])
+        "txt" (control_require.ml[]..[])
+  ]
+  expression (control_require.ml[]..[]) 
+    Pexp_constraint
+    expression (control_require.ml[]..[])
+      Pexp_apply
+      expression (control_require.ml[]..[])
+        Pexp_ident "add" (control_require.ml[]..[])
+      [
+        <label> ""
+          expression (control_require.ml[]..[])
+            Pexp_ident "s" (control_require.ml[]..[])
+      ]
+    core_type (control_require.ml[]..[])
+      Ptyp_var item
+                                                                    ]
+                                                              ]
+                                                        ]
+                                                      core_type (control_require.ml[]..[])
+                                                        Ptyp_arrow
+                                                        ""
+                                                        core_type (control_require.ml[]..[])
+                                                          Ptyp_constr "Tokenf.txt" (control_require.ml[]..[])
+                                                          []
+                                                        core_type (control_require.ml[]..[])
+                                                          Ptyp_arrow
+                                                          ""
+                                                          core_type (control_require.ml[]..[])
+                                                            Ptyp_constr "Tokenf.txt" (control_require.ml[]..[])
+                                                            []
+                                                          core_type (control_require.ml[]..[])
+                                                            Ptyp_arrow
+                                                            ""
+                                                            core_type (control_require.ml[]..[])
+                                                              Ptyp_constr "Locf.t" (control_require.ml[]..[])
+                                                              []
+                                                            core_type (control_require.ml[]..[])
+                                                              Ptyp_var item
+                                                ]
+                                          ]
+                                          None
+                                        expression (control_require.ml[]..[]) 
+                                          Pexp_construct "[]" (control_require.ml[]..[]) 
+                                          None
+                                      ]
+                            ]
+                            None
+                          core_type (control_require.ml[]..[])
+                            Ptyp_constr "Gramf.olevel" (control_require.ml[]..[])
+                            []
+                    ]
+                    None
+                  core_type (control_require.ml[]..[])
+                    Ptyp_constr "Gramf.single_extend_statement" (control_require.ml[]..[])
+                    [
+                      core_type (control_require.ml[]..[])
+                        Ptyp_any
+                    ]
+            ]
+    ]
+]

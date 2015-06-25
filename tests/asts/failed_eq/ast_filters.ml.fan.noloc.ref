@@ -1,0 +1,740 @@
+[
+  structure_item (ast_filters.ml[]..[])
+    Pstr_open Fresh "Util" (ast_filters.ml[]..[])
+  structure_item (ast_filters.ml[]..[])
+    Pstr_open Fresh "Astf" (ast_filters.ml[]..[])
+  structure_item (ast_filters.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "key" (ast_filters.ml[]..[]) (ast_filters.ml[]..[])
+        ptype_params =
+          []
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_filters.ml[]..[])
+              Ptyp_constr "string" (ast_filters.ml[]..[])
+              []
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_type
+    [
+      type_declaration "filter" (ast_filters.ml[]..[]) (ast_filters.ml[]..[])
+        ptype_params =
+          [
+            core_type (ast_filters.ml[]..[])
+              Ptyp_var a
+          ]
+        ptype_cstrs =
+          []
+        ptype_kind =
+          Ptype_abstract
+        ptype_private = Public
+        ptype_manifest =
+          Some
+            core_type (ast_filters.ml[]..[])
+              Ptyp_arrow
+              ""
+              core_type (ast_filters.ml[]..[])
+                Ptyp_var a
+              core_type (ast_filters.ml[]..[])
+                Ptyp_var a
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "interf_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "key" (ast_filters.ml[]..[])
+                []
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "filter" (ast_filters.ml[]..[])
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "sigi" (ast_filters.ml[]..[])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "implem_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "key" (ast_filters.ml[]..[])
+                []
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "filter" (ast_filters.ml[]..[])
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "stru" (ast_filters.ml[]..[])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "topphrase_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Hashtbl.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_constant Const_int 40
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Hashtbl.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "key" (ast_filters.ml[]..[])
+                []
+              core_type (ast_filters.ml[]..[])
+                Ptyp_constr "filter" (ast_filters.ml[]..[])
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "stru" (ast_filters.ml[]..[])
+                    []
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "applied_interf_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Queue.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_construct "()" (ast_filters.ml[]..[])
+                  None
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Queue.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "string" (ast_filters.ml[]..[])
+                    []
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "filter" (ast_filters.ml[]..[])
+                    [
+                      core_type (ast_filters.ml[]..[])
+                        Ptyp_constr "sigi" (ast_filters.ml[]..[])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "applied_implem_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Queue.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_construct "()" (ast_filters.ml[]..[])
+                  None
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Queue.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "string" (ast_filters.ml[]..[])
+                    []
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "filter" (ast_filters.ml[]..[])
+                    [
+                      core_type (ast_filters.ml[]..[])
+                        Ptyp_constr "stru" (ast_filters.ml[]..[])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "applied_topphrase_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_constraint
+          expression (ast_filters.ml[]..[])
+            Pexp_apply
+            expression (ast_filters.ml[]..[])
+              Pexp_ident "Queue.create" (ast_filters.ml[]..[])
+            [
+              <label> ""
+                expression (ast_filters.ml[]..[])
+                  Pexp_construct "()" (ast_filters.ml[]..[])
+                  None
+            ]
+          core_type (ast_filters.ml[]..[])
+            Ptyp_constr "Queue.t" (ast_filters.ml[]..[])
+            [
+              core_type (ast_filters.ml[]..[])
+                Ptyp_tuple
+                [
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "string" (ast_filters.ml[]..[])
+                    []
+                  core_type (ast_filters.ml[]..[])
+                    Ptyp_constr "filter" (ast_filters.ml[]..[])
+                    [
+                      core_type (ast_filters.ml[]..[])
+                        Ptyp_constr "stru" (ast_filters.ml[]..[])
+                        []
+                    ]
+                ]
+            ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "apply_interf_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "i" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Queue.fold" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_var "ast" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (ast_filters.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "_name" (ast_filters.ml[]..[])
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "f" (ast_filters.ml[]..[])
+                                  ]
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_filters.ml[]..[])
+                                    Pexp_ident "f" (ast_filters.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_filters.ml[]..[])
+                                        Pexp_ident "ast" (ast_filters.ml[]..[])
+                                  ]
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "i" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "applied_interf_filters" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "apply_implem_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "i" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Queue.fold" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_var "ast" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (ast_filters.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "_name" (ast_filters.ml[]..[])
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "f" (ast_filters.ml[]..[])
+                                  ]
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_filters.ml[]..[])
+                                    Pexp_ident "f" (ast_filters.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_filters.ml[]..[])
+                                        Pexp_ident "ast" (ast_filters.ml[]..[])
+                                  ]
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "i" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "applied_implem_filters" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "apply_topphrase_filters" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "i" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Queue.fold" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_var "ast" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (ast_filters.ml[]..[])
+                                  Ppat_tuple
+                                  [
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "_name" (ast_filters.ml[]..[])
+                                    pattern (ast_filters.ml[]..[])
+                                      Ppat_var "f" (ast_filters.ml[]..[])
+                                  ]
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_apply
+                                  expression (ast_filters.ml[]..[])
+                                    Pexp_ident "f" (ast_filters.ml[]..[])
+                                  [
+                                    <label> ""
+                                      expression (ast_filters.ml[]..[])
+                                        Pexp_ident "ast" (ast_filters.ml[]..[])
+                                  ]
+                            ]
+                      ]
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "i" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "applied_topphrase_filters" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "use_interf_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "s" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (ast_filters.ml[]..[])
+                      Ppat_var "u" (ast_filters.ml[]..[])
+                    expression (ast_filters.ml[]..[])
+                      Pexp_try
+                      expression (ast_filters.ml[]..[])
+                        Pexp_apply
+                        expression (ast_filters.ml[]..[])
+                          Pexp_ident "Hashtbl.find" (ast_filters.ml[]..[])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "interf_filters" (ast_filters.ml[]..[])
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "s" (ast_filters.ml[]..[])
+                        ]
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_construct "Not_found" (ast_filters.ml[]..[])
+                            None
+                          expression (ast_filters.ml[]..[])
+                            Pexp_apply
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "failwithf" (ast_filters.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_constant Const_string("filter %s is not registered",None)
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_ident "s" (ast_filters.ml[]..[])
+                            ]
+                      ]
+                ]
+                expression (ast_filters.ml[]..[])
+                  Pexp_apply
+                  expression (ast_filters.ml[]..[])
+                    Pexp_ident "Queue.add" (ast_filters.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_tuple
+                        [
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "s" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "u" (ast_filters.ml[]..[])
+                        ]
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_ident "applied_interf_filters" (ast_filters.ml[]..[])
+                  ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "use_implem_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "s" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (ast_filters.ml[]..[])
+                      Ppat_var "u" (ast_filters.ml[]..[])
+                    expression (ast_filters.ml[]..[])
+                      Pexp_try
+                      expression (ast_filters.ml[]..[])
+                        Pexp_apply
+                        expression (ast_filters.ml[]..[])
+                          Pexp_ident "Hashtbl.find" (ast_filters.ml[]..[])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "implem_filters" (ast_filters.ml[]..[])
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "s" (ast_filters.ml[]..[])
+                        ]
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_construct "Not_found" (ast_filters.ml[]..[])
+                            None
+                          expression (ast_filters.ml[]..[])
+                            Pexp_apply
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "failwithf" (ast_filters.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_constant Const_string("filter %s is not registered",None)
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_ident "s" (ast_filters.ml[]..[])
+                            ]
+                      ]
+                ]
+                expression (ast_filters.ml[]..[])
+                  Pexp_apply
+                  expression (ast_filters.ml[]..[])
+                    Pexp_ident "Queue.add" (ast_filters.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_tuple
+                        [
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "s" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "u" (ast_filters.ml[]..[])
+                        ]
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_ident "applied_implem_filters" (ast_filters.ml[]..[])
+                  ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "use_topphrase_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_var "s" (ast_filters.ml[]..[])
+              expression (ast_filters.ml[]..[])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (ast_filters.ml[]..[])
+                      Ppat_var "u" (ast_filters.ml[]..[])
+                    expression (ast_filters.ml[]..[])
+                      Pexp_try
+                      expression (ast_filters.ml[]..[])
+                        Pexp_apply
+                        expression (ast_filters.ml[]..[])
+                          Pexp_ident "Hashtbl.find" (ast_filters.ml[]..[])
+                        [
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "topphrase_filters" (ast_filters.ml[]..[])
+                          <label> ""
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "s" (ast_filters.ml[]..[])
+                        ]
+                      [
+                        <case>
+                          pattern (ast_filters.ml[]..[])
+                            Ppat_construct "Not_found" (ast_filters.ml[]..[])
+                            None
+                          expression (ast_filters.ml[]..[])
+                            Pexp_apply
+                            expression (ast_filters.ml[]..[])
+                              Pexp_ident "failwithf" (ast_filters.ml[]..[])
+                            [
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_constant Const_string("filter %s is not registered",None)
+                              <label> ""
+                                expression (ast_filters.ml[]..[])
+                                  Pexp_ident "s" (ast_filters.ml[]..[])
+                            ]
+                      ]
+                ]
+                expression (ast_filters.ml[]..[])
+                  Pexp_apply
+                  expression (ast_filters.ml[]..[])
+                    Pexp_ident "Queue.add" (ast_filters.ml[]..[])
+                  [
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_tuple
+                        [
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "s" (ast_filters.ml[]..[])
+                          expression (ast_filters.ml[]..[])
+                            Pexp_ident "u" (ast_filters.ml[]..[])
+                        ]
+                    <label> ""
+                      expression (ast_filters.ml[]..[])
+                        Pexp_ident "applied_topphrase_filters" (ast_filters.ml[]..[])
+                  ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "register_sigi_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "k" (ast_filters.ml[]..[])
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "f" (ast_filters.ml[]..[])
+                ]
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Hashtbl.replace" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "interf_filters" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "k" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "f" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "register_stru_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "k" (ast_filters.ml[]..[])
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "f" (ast_filters.ml[]..[])
+                ]
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Hashtbl.replace" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "implem_filters" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "k" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "f" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+  structure_item (ast_filters.ml[]..[])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (ast_filters.ml[]..[])
+          Ppat_var "register_topphrase_filter" (ast_filters.ml[]..[])
+        expression (ast_filters.ml[]..[])
+          Pexp_function
+          [
+            <case>
+              pattern (ast_filters.ml[]..[])
+                Ppat_tuple
+                [
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "k" (ast_filters.ml[]..[])
+                  pattern (ast_filters.ml[]..[])
+                    Ppat_var "f" (ast_filters.ml[]..[])
+                ]
+              expression (ast_filters.ml[]..[])
+                Pexp_apply
+                expression (ast_filters.ml[]..[])
+                  Pexp_ident "Hashtbl.replace" (ast_filters.ml[]..[])
+                [
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "topphrase_filters" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "k" (ast_filters.ml[]..[])
+                  <label> ""
+                    expression (ast_filters.ml[]..[])
+                      Pexp_ident "f" (ast_filters.ml[]..[])
+                ]
+          ]
+    ]
+]

@@ -1,0 +1,843 @@
+[
+  structure_item (flex_lib.ml[1,0+0]..[1,0+43])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[1,0+4]..[1,0+16])
+          Ppat_var "lexing_store" (flex_lib.ml[1,0+4]..[1,0+16])
+        expression (flex_lib.ml[1,0+19]..[1,0+43])
+          Pexp_ident "Lexing_util.lexing_store" (flex_lib.ml[1,0+19]..[1,0+43])
+    ]
+  structure_item (flex_lib.ml[2,44+0]..[2,44+28])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[2,44+4]..[2,44+11])
+          Ppat_var "fprintf" (flex_lib.ml[2,44+4]..[2,44+11])
+        expression (flex_lib.ml[2,44+14]..[2,44+28])
+          Pexp_ident "Format.fprintf" (flex_lib.ml[2,44+14]..[2,44+28])
+    ]
+  structure_item (flex_lib.ml[3,73+0]..[3,73+40])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[3,73+4]..[3,73+17])
+          Ppat_var "std_formatter" (flex_lib.ml[3,73+4]..[3,73+17])
+        expression (flex_lib.ml[3,73+20]..[3,73+40])
+          Pexp_ident "Format.std_formatter" (flex_lib.ml[3,73+20]..[3,73+40])
+    ]
+  structure_item (flex_lib.ml[4,114+0]..[8,275+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[4,114+4]..[4,114+15])
+          Ppat_var "from_string" (flex_lib.ml[4,114+4]..[4,114+15])
+        expression (flex_lib.ml[4,114+16]..[8,275+24]) ghost
+          Pexp_fun ""
+          None
+          pattern (flex_lib.ml[4,114+16]..[4,114+47])
+            Ppat_record Open
+            [
+              "Locf.loc_start" (flex_lib.ml[4,114+18]..[4,114+32])
+                pattern (flex_lib.ml[4,114+35]..[4,114+44])
+                  Ppat_var "loc_start" (flex_lib.ml[4,114+35]..[4,114+44])
+            ]
+          expression (flex_lib.ml[4,114+48]..[8,275+24]) ghost
+            Pexp_fun ""
+            None
+            pattern (flex_lib.ml[4,114+48]..[4,114+51])
+              Ppat_var "str" (flex_lib.ml[4,114+48]..[4,114+51])
+            expression (flex_lib.ml[5,168+2]..[8,275+24])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (flex_lib.ml[5,168+6]..[5,168+8])
+                    Ppat_var "lb" (flex_lib.ml[5,168+6]..[5,168+8])
+                  expression (flex_lib.ml[5,168+11]..[5,168+33])
+                    Pexp_apply
+                    expression (flex_lib.ml[5,168+11]..[5,168+29])
+                      Pexp_ident "Lexing.from_string" (flex_lib.ml[5,168+11]..[5,168+29])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[5,168+30]..[5,168+33])
+                          Pexp_ident "str" (flex_lib.ml[5,168+30]..[5,168+33])
+                    ]
+              ]
+              expression (flex_lib.ml[6,205+2]..[8,275+24])
+                Pexp_sequence
+                expression (flex_lib.ml[6,205+2]..[6,205+38])
+                  Pexp_setfield
+                  expression (flex_lib.ml[6,205+2]..[6,205+4])
+                    Pexp_ident "lb" (flex_lib.ml[6,205+2]..[6,205+4])
+                  "lex_abs_pos" (flex_lib.ml[6,205+5]..[6,205+16])
+                  expression (flex_lib.ml[6,205+20]..[6,205+38])
+                    Pexp_field
+                    expression (flex_lib.ml[6,205+20]..[6,205+29])
+                      Pexp_ident "loc_start" (flex_lib.ml[6,205+20]..[6,205+29])
+                    "pos_cnum" (flex_lib.ml[6,205+30]..[6,205+38])
+                expression (flex_lib.ml[7,245+2]..[8,275+24])
+                  Pexp_sequence
+                  expression (flex_lib.ml[7,245+2]..[7,245+28])
+                    Pexp_setfield
+                    expression (flex_lib.ml[7,245+2]..[7,245+4])
+                      Pexp_ident "lb" (flex_lib.ml[7,245+2]..[7,245+4])
+                    "lex_curr_p" (flex_lib.ml[7,245+5]..[7,245+15])
+                    expression (flex_lib.ml[7,245+19]..[7,245+28])
+                      Pexp_ident "loc_start" (flex_lib.ml[7,245+19]..[7,245+28])
+                  expression (flex_lib.ml[8,275+2]..[8,275+24])
+                    Pexp_apply
+                    expression (flex_lib.ml[8,275+2]..[8,275+21])
+                      Pexp_ident "Lex_fan.from_lexbuf" (flex_lib.ml[8,275+2]..[8,275+21])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[8,275+22]..[8,275+24])
+                          Pexp_ident "lb" (flex_lib.ml[8,275+22]..[8,275+24])
+                    ]
+    ]
+  structure_item (flex_lib.ml[9,300+0]..[13,480+24])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[9,300+4]..[9,300+15])
+          Ppat_var "from_stream" (flex_lib.ml[9,300+4]..[9,300+15])
+        expression (flex_lib.ml[9,300+16]..[13,480+24]) ghost
+          Pexp_fun ""
+          None
+          pattern (flex_lib.ml[9,300+16]..[9,300+47])
+            Ppat_record Open
+            [
+              "Locf.loc_start" (flex_lib.ml[9,300+18]..[9,300+32])
+                pattern (flex_lib.ml[9,300+35]..[9,300+44])
+                  Ppat_var "loc_start" (flex_lib.ml[9,300+35]..[9,300+44])
+            ]
+          expression (flex_lib.ml[9,300+48]..[13,480+24]) ghost
+            Pexp_fun ""
+            None
+            pattern (flex_lib.ml[9,300+48]..[9,300+52])
+              Ppat_var "strm" (flex_lib.ml[9,300+48]..[9,300+52])
+            expression (flex_lib.ml[10,355+2]..[13,480+24])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (flex_lib.ml[10,355+6]..[10,355+8])
+                    Ppat_var "lb" (flex_lib.ml[10,355+6]..[10,355+8])
+                  expression (flex_lib.ml[10,355+11]..[10,355+51])
+                    Pexp_apply
+                    expression (flex_lib.ml[10,355+11]..[10,355+31])
+                      Pexp_ident "Lexing.from_function" (flex_lib.ml[10,355+11]..[10,355+31])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[10,355+32]..[10,355+51])
+                          Pexp_apply
+                          expression (flex_lib.ml[10,355+33]..[10,355+45])
+                            Pexp_ident "lexing_store" (flex_lib.ml[10,355+33]..[10,355+45])
+                          [
+                            <label> ""
+                              expression (flex_lib.ml[10,355+46]..[10,355+50])
+                                Pexp_ident "strm" (flex_lib.ml[10,355+46]..[10,355+50])
+                          ]
+                    ]
+              ]
+              expression (flex_lib.ml[11,410+2]..[13,480+24])
+                Pexp_sequence
+                expression (flex_lib.ml[11,410+2]..[11,410+38])
+                  Pexp_setfield
+                  expression (flex_lib.ml[11,410+2]..[11,410+4])
+                    Pexp_ident "lb" (flex_lib.ml[11,410+2]..[11,410+4])
+                  "lex_abs_pos" (flex_lib.ml[11,410+5]..[11,410+16])
+                  expression (flex_lib.ml[11,410+20]..[11,410+38])
+                    Pexp_field
+                    expression (flex_lib.ml[11,410+20]..[11,410+29])
+                      Pexp_ident "loc_start" (flex_lib.ml[11,410+20]..[11,410+29])
+                    "pos_cnum" (flex_lib.ml[11,410+30]..[11,410+38])
+                expression (flex_lib.ml[12,450+2]..[13,480+24])
+                  Pexp_sequence
+                  expression (flex_lib.ml[12,450+2]..[12,450+28])
+                    Pexp_setfield
+                    expression (flex_lib.ml[12,450+2]..[12,450+4])
+                      Pexp_ident "lb" (flex_lib.ml[12,450+2]..[12,450+4])
+                    "lex_curr_p" (flex_lib.ml[12,450+5]..[12,450+15])
+                    expression (flex_lib.ml[12,450+19]..[12,450+28])
+                      Pexp_ident "loc_start" (flex_lib.ml[12,450+19]..[12,450+28])
+                  expression (flex_lib.ml[13,480+2]..[13,480+24])
+                    Pexp_apply
+                    expression (flex_lib.ml[13,480+2]..[13,480+21])
+                      Pexp_ident "Lex_fan.from_lexbuf" (flex_lib.ml[13,480+2]..[13,480+21])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[13,480+22]..[13,480+24])
+                          Pexp_ident "lb" (flex_lib.ml[13,480+22]..[13,480+24])
+                    ]
+    ]
+  structure_item (flex_lib.ml[14,505+0]..[22,828+25])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (flex_lib.ml[14,505+8]..[14,505+13])
+          Ppat_var "clean" (flex_lib.ml[14,505+8]..[14,505+13])
+        expression (flex_lib.ml[14,505+13]..[22,828+25]) ghost
+          Pexp_constraint
+          expression (flex_lib.ml[15,553+2]..[22,828+25])
+            Pexp_fun ""
+            None
+            pattern (flex_lib.ml[15,553+6]..[15,553+28])
+              Ppat_constraint
+              pattern (flex_lib.ml[15,553+7]..[15,553+13])
+                Ppat_var "__strm" (flex_lib.ml[15,553+7]..[15,553+13])
+              core_type (flex_lib.ml[15,553+16]..[15,553+27])
+                Ptyp_constr "Streamf.t" (flex_lib.ml[15,553+18]..[15,553+27])
+                [
+                  core_type (flex_lib.ml[15,553+16]..[15,553+17])
+                    Ptyp_any
+                ]
+            expression (flex_lib.ml[16,586+4]..[22,828+25])
+              Pexp_match
+              expression (flex_lib.ml[16,586+10]..[16,586+29])
+                Pexp_apply
+                expression (flex_lib.ml[16,586+10]..[16,586+22])
+                  Pexp_ident "Streamf.peek" (flex_lib.ml[16,586+10]..[16,586+22])
+                [
+                  <label> ""
+                    expression (flex_lib.ml[16,586+23]..[16,586+29])
+                      Pexp_ident "__strm" (flex_lib.ml[16,586+23]..[16,586+29])
+                ]
+              [
+                <case>
+                  pattern (flex_lib.ml[17,621+6]..[17,621+24])
+                    Ppat_construct "Some" (flex_lib.ml[17,621+6]..[17,621+10])
+                    Some
+                      pattern (flex_lib.ml[17,621+11]..[17,621+24])
+                        Ppat_alias "x" (flex_lib.ml[17,621+22]..[17,621+23])
+                        pattern (flex_lib.ml[17,621+12]..[17,621+18])
+                          Ppat_variant "EOI"
+                          Some
+                            pattern (flex_lib.ml[17,621+17]..[17,621+18])
+                              Ppat_any
+                  expression (flex_lib.ml[17,621+28]..[17,621+66])
+                    Pexp_sequence
+                    expression (flex_lib.ml[17,621+29]..[17,621+48])
+                      Pexp_apply
+                      expression (flex_lib.ml[17,621+29]..[17,621+41])
+                        Pexp_ident "Streamf.junk" (flex_lib.ml[17,621+29]..[17,621+41])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[17,621+42]..[17,621+48])
+                            Pexp_ident "__strm" (flex_lib.ml[17,621+42]..[17,621+48])
+                      ]
+                    expression (flex_lib.ml[17,621+50]..[17,621+65])
+                      Pexp_apply
+                      expression (flex_lib.ml[17,621+50]..[17,621+63])
+                        Pexp_ident "Streamf.ising" (flex_lib.ml[17,621+50]..[17,621+63])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[17,621+64]..[17,621+65])
+                            Pexp_ident "x" (flex_lib.ml[17,621+64]..[17,621+65])
+                      ]
+                <case>
+                  pattern (flex_lib.ml[18,688+6]..[18,688+12])
+                    Ppat_construct "Some" (flex_lib.ml[18,688+6]..[18,688+10])
+                    Some
+                      pattern (flex_lib.ml[18,688+11]..[18,688+12])
+                        Ppat_var "x" (flex_lib.ml[18,688+11]..[18,688+12])
+                  expression (flex_lib.ml[19,704+8]..[21,763+64])
+                    Pexp_sequence
+                    expression (flex_lib.ml[19,704+9]..[19,704+28])
+                      Pexp_apply
+                      expression (flex_lib.ml[19,704+9]..[19,704+21])
+                        Pexp_ident "Streamf.junk" (flex_lib.ml[19,704+9]..[19,704+21])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[19,704+22]..[19,704+28])
+                            Pexp_ident "__strm" (flex_lib.ml[19,704+22]..[19,704+28])
+                      ]
+                    expression (flex_lib.ml[20,734+9]..[21,763+63])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (flex_lib.ml[20,734+14]..[20,734+16])
+                            Ppat_var "xs" (flex_lib.ml[20,734+14]..[20,734+16])
+                          expression (flex_lib.ml[20,734+19]..[20,734+25])
+                            Pexp_ident "__strm" (flex_lib.ml[20,734+19]..[20,734+25])
+                      ]
+                      expression (flex_lib.ml[21,763+10]..[21,763+62])
+                        Pexp_apply
+                        expression (flex_lib.ml[21,763+10]..[21,763+23])
+                          Pexp_ident "Streamf.icons" (flex_lib.ml[21,763+10]..[21,763+23])
+                        [
+                          <label> ""
+                            expression (flex_lib.ml[21,763+24]..[21,763+25])
+                              Pexp_ident "x" (flex_lib.ml[21,763+24]..[21,763+25])
+                          <label> ""
+                            expression (flex_lib.ml[21,763+26]..[21,763+62])
+                              Pexp_apply
+                              expression (flex_lib.ml[21,763+27]..[21,763+40])
+                                Pexp_ident "Streamf.slazy" (flex_lib.ml[21,763+27]..[21,763+40])
+                              [
+                                <label> ""
+                                  expression (flex_lib.ml[21,763+41]..[21,763+61])
+                                    Pexp_fun ""
+                                    None
+                                    pattern (flex_lib.ml[21,763+46]..[21,763+47])
+                                      Ppat_any
+                                    expression (flex_lib.ml[21,763+52]..[21,763+60])
+                                      Pexp_apply
+                                      expression (flex_lib.ml[21,763+52]..[21,763+57])
+                                        Pexp_ident "clean" (flex_lib.ml[21,763+52]..[21,763+57])
+                                      [
+                                        <label> ""
+                                          expression (flex_lib.ml[21,763+58]..[21,763+60])
+                                            Pexp_ident "xs" (flex_lib.ml[21,763+58]..[21,763+60])
+                                      ]
+                              ]
+                        ]
+                <case>
+                  pattern (flex_lib.ml[22,828+6]..[22,828+7])
+                    Ppat_any
+                  expression (flex_lib.ml[22,828+11]..[22,828+25])
+                    Pexp_ident "Streamf.sempty" (flex_lib.ml[22,828+11]..[22,828+25])
+              ]
+          core_type (flex_lib.ml[14,505+15]..[14,505+45])
+            Ptyp_arrow
+            ""
+            core_type (flex_lib.ml[14,505+15]..[14,505+28])
+              Ptyp_constr "Tokenf.stream" (flex_lib.ml[14,505+15]..[14,505+28])
+              []
+            core_type (flex_lib.ml[14,505+32]..[14,505+45])
+              Ptyp_constr "Tokenf.stream" (flex_lib.ml[14,505+32]..[14,505+45])
+              []
+    ]
+  structure_item (flex_lib.ml[23,854+0]..[31,1185+25])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (flex_lib.ml[23,854+8]..[23,854+20])
+          Ppat_var "strict_clean" (flex_lib.ml[23,854+8]..[23,854+20])
+        expression (flex_lib.ml[23,854+20]..[31,1185+25]) ghost
+          Pexp_constraint
+          expression (flex_lib.ml[24,909+2]..[31,1185+25])
+            Pexp_fun ""
+            None
+            pattern (flex_lib.ml[24,909+6]..[24,909+28])
+              Ppat_constraint
+              pattern (flex_lib.ml[24,909+7]..[24,909+13])
+                Ppat_var "__strm" (flex_lib.ml[24,909+7]..[24,909+13])
+              core_type (flex_lib.ml[24,909+16]..[24,909+27])
+                Ptyp_constr "Streamf.t" (flex_lib.ml[24,909+18]..[24,909+27])
+                [
+                  core_type (flex_lib.ml[24,909+16]..[24,909+17])
+                    Ptyp_any
+                ]
+            expression (flex_lib.ml[25,942+4]..[31,1185+25])
+              Pexp_match
+              expression (flex_lib.ml[25,942+10]..[25,942+29])
+                Pexp_apply
+                expression (flex_lib.ml[25,942+10]..[25,942+22])
+                  Pexp_ident "Streamf.peek" (flex_lib.ml[25,942+10]..[25,942+22])
+                [
+                  <label> ""
+                    expression (flex_lib.ml[25,942+23]..[25,942+29])
+                      Pexp_ident "__strm" (flex_lib.ml[25,942+23]..[25,942+29])
+                ]
+              [
+                <case>
+                  pattern (flex_lib.ml[26,977+6]..[26,977+19])
+                    Ppat_construct "Some" (flex_lib.ml[26,977+6]..[26,977+10])
+                    Some
+                      pattern (flex_lib.ml[26,977+11]..[26,977+19])
+                        Ppat_variant "EOI"
+                        Some
+                          pattern (flex_lib.ml[26,977+17]..[26,977+18])
+                            Ppat_any
+                  expression (flex_lib.ml[26,977+23]..[26,977+60])
+                    Pexp_sequence
+                    expression (flex_lib.ml[26,977+24]..[26,977+43])
+                      Pexp_apply
+                      expression (flex_lib.ml[26,977+24]..[26,977+36])
+                        Pexp_ident "Streamf.junk" (flex_lib.ml[26,977+24]..[26,977+36])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[26,977+37]..[26,977+43])
+                            Pexp_ident "__strm" (flex_lib.ml[26,977+37]..[26,977+43])
+                      ]
+                    expression (flex_lib.ml[26,977+45]..[26,977+59])
+                      Pexp_ident "Streamf.sempty" (flex_lib.ml[26,977+45]..[26,977+59])
+                <case>
+                  pattern (flex_lib.ml[27,1038+6]..[27,1038+12])
+                    Ppat_construct "Some" (flex_lib.ml[27,1038+6]..[27,1038+10])
+                    Some
+                      pattern (flex_lib.ml[27,1038+11]..[27,1038+12])
+                        Ppat_var "x" (flex_lib.ml[27,1038+11]..[27,1038+12])
+                  expression (flex_lib.ml[28,1054+8]..[30,1113+71])
+                    Pexp_sequence
+                    expression (flex_lib.ml[28,1054+9]..[28,1054+28])
+                      Pexp_apply
+                      expression (flex_lib.ml[28,1054+9]..[28,1054+21])
+                        Pexp_ident "Streamf.junk" (flex_lib.ml[28,1054+9]..[28,1054+21])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[28,1054+22]..[28,1054+28])
+                            Pexp_ident "__strm" (flex_lib.ml[28,1054+22]..[28,1054+28])
+                      ]
+                    expression (flex_lib.ml[29,1084+9]..[30,1113+70])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (flex_lib.ml[29,1084+14]..[29,1084+16])
+                            Ppat_var "xs" (flex_lib.ml[29,1084+14]..[29,1084+16])
+                          expression (flex_lib.ml[29,1084+19]..[29,1084+25])
+                            Pexp_ident "__strm" (flex_lib.ml[29,1084+19]..[29,1084+25])
+                      ]
+                      expression (flex_lib.ml[30,1113+10]..[30,1113+69])
+                        Pexp_apply
+                        expression (flex_lib.ml[30,1113+10]..[30,1113+23])
+                          Pexp_ident "Streamf.icons" (flex_lib.ml[30,1113+10]..[30,1113+23])
+                        [
+                          <label> ""
+                            expression (flex_lib.ml[30,1113+24]..[30,1113+25])
+                              Pexp_ident "x" (flex_lib.ml[30,1113+24]..[30,1113+25])
+                          <label> ""
+                            expression (flex_lib.ml[30,1113+26]..[30,1113+69])
+                              Pexp_apply
+                              expression (flex_lib.ml[30,1113+27]..[30,1113+40])
+                                Pexp_ident "Streamf.slazy" (flex_lib.ml[30,1113+27]..[30,1113+40])
+                              [
+                                <label> ""
+                                  expression (flex_lib.ml[30,1113+41]..[30,1113+68])
+                                    Pexp_fun ""
+                                    None
+                                    pattern (flex_lib.ml[30,1113+46]..[30,1113+47])
+                                      Ppat_any
+                                    expression (flex_lib.ml[30,1113+52]..[30,1113+67])
+                                      Pexp_apply
+                                      expression (flex_lib.ml[30,1113+52]..[30,1113+64])
+                                        Pexp_ident "strict_clean" (flex_lib.ml[30,1113+52]..[30,1113+64])
+                                      [
+                                        <label> ""
+                                          expression (flex_lib.ml[30,1113+65]..[30,1113+67])
+                                            Pexp_ident "xs" (flex_lib.ml[30,1113+65]..[30,1113+67])
+                                      ]
+                              ]
+                        ]
+                <case>
+                  pattern (flex_lib.ml[31,1185+6]..[31,1185+7])
+                    Ppat_any
+                  expression (flex_lib.ml[31,1185+11]..[31,1185+25])
+                    Pexp_ident "Streamf.sempty" (flex_lib.ml[31,1185+11]..[31,1185+25])
+              ]
+          core_type (flex_lib.ml[23,854+22]..[23,854+52])
+            Ptyp_arrow
+            ""
+            core_type (flex_lib.ml[23,854+22]..[23,854+35])
+              Ptyp_constr "Tokenf.stream" (flex_lib.ml[23,854+22]..[23,854+35])
+              []
+            core_type (flex_lib.ml[23,854+39]..[23,854+52])
+              Ptyp_constr "Tokenf.stream" (flex_lib.ml[23,854+39]..[23,854+52])
+              []
+    ]
+  structure_item (flex_lib.ml[32,1211+0]..[36,1331+75])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[32,1211+4]..[32,1211+21])
+          Ppat_var "debug_from_string" (flex_lib.ml[32,1211+4]..[32,1211+21])
+        expression (flex_lib.ml[32,1211+22]..[36,1331+75]) ghost
+          Pexp_fun ""
+          None
+          pattern (flex_lib.ml[32,1211+22]..[32,1211+25])
+            Ppat_var "str" (flex_lib.ml[32,1211+22]..[32,1211+25])
+          expression (flex_lib.ml[33,1239+2]..[36,1331+75])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (flex_lib.ml[33,1239+6]..[33,1239+9])
+                  Ppat_var "loc" (flex_lib.ml[33,1239+6]..[33,1239+9])
+                expression (flex_lib.ml[33,1239+12]..[33,1239+27])
+                  Pexp_ident "Locf.string_loc" (flex_lib.ml[33,1239+12]..[33,1239+27])
+            ]
+            expression (flex_lib.ml[34,1270+2]..[36,1331+75])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (flex_lib.ml[34,1270+6]..[34,1270+12])
+                    Ppat_var "stream" (flex_lib.ml[34,1270+6]..[34,1270+12])
+                  expression (flex_lib.ml[34,1270+15]..[34,1270+34])
+                    Pexp_apply
+                    expression (flex_lib.ml[34,1270+15]..[34,1270+26])
+                      Pexp_ident "from_string" (flex_lib.ml[34,1270+15]..[34,1270+26])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[34,1270+27]..[34,1270+30])
+                          Pexp_ident "loc" (flex_lib.ml[34,1270+27]..[34,1270+30])
+                      <label> ""
+                        expression (flex_lib.ml[34,1270+31]..[34,1270+34])
+                          Pexp_ident "str" (flex_lib.ml[34,1270+31]..[34,1270+34])
+                    ]
+              ]
+              expression (flex_lib.ml[35,1308+2]..[36,1331+75])
+                Pexp_apply
+                expression (flex_lib.ml[35,1308+20]..[35,1308+22])
+                  Pexp_ident "|>" (flex_lib.ml[35,1308+20]..[35,1308+22])
+                [
+                  <label> ""
+                    expression (flex_lib.ml[35,1308+2]..[35,1308+19])
+                      Pexp_apply
+                      expression (flex_lib.ml[35,1308+10]..[35,1308+12])
+                        Pexp_ident "|>" (flex_lib.ml[35,1308+10]..[35,1308+12])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[35,1308+3]..[35,1308+9])
+                            Pexp_ident "stream" (flex_lib.ml[35,1308+3]..[35,1308+9])
+                        <label> ""
+                          expression (flex_lib.ml[35,1308+13]..[35,1308+18])
+                            Pexp_ident "clean" (flex_lib.ml[35,1308+13]..[35,1308+18])
+                      ]
+                  <label> ""
+                    expression (flex_lib.ml[36,1331+4]..[36,1331+75])
+                      Pexp_apply
+                      expression (flex_lib.ml[36,1331+5]..[36,1331+17])
+                        Pexp_ident "Streamf.iter" (flex_lib.ml[36,1331+5]..[36,1331+17])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[36,1331+18]..[36,1331+74])
+                            Pexp_fun ""
+                            None
+                            pattern (flex_lib.ml[36,1331+23]..[36,1331+24])
+                              Ppat_var "t" (flex_lib.ml[36,1331+23]..[36,1331+24])
+                            expression (flex_lib.ml[36,1331+29]..[36,1331+73])
+                              Pexp_apply
+                              expression (flex_lib.ml[36,1331+29]..[36,1331+36])
+                                Pexp_ident "fprintf" (flex_lib.ml[36,1331+29]..[36,1331+36])
+                              [
+                                <label> ""
+                                  expression (flex_lib.ml[36,1331+37]..[36,1331+50])
+                                    Pexp_ident "std_formatter" (flex_lib.ml[36,1331+37]..[36,1331+50])
+                                <label> ""
+                                  expression (flex_lib.ml[36,1331+51]..[36,1331+58])
+                                    Pexp_constant Const_string("%a@\n",None)
+                                <label> ""
+                                  expression (flex_lib.ml[36,1331+59]..[36,1331+71])
+                                    Pexp_ident "Tokenf.print" (flex_lib.ml[36,1331+59]..[36,1331+71])
+                                <label> ""
+                                  expression (flex_lib.ml[36,1331+72]..[36,1331+73])
+                                    Pexp_ident "t" (flex_lib.ml[36,1331+72]..[36,1331+73])
+                              ]
+                      ]
+                ]
+    ]
+  structure_item (flex_lib.ml[37,1407+0]..[46,1715+20])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[37,1407+4]..[37,1407+18])
+          Ppat_var "list_of_string" (flex_lib.ml[37,1407+4]..[37,1407+18])
+        expression (flex_lib.ml[37,1407+19]..[46,1715+20]) ghost
+          Pexp_fun "?verbose"
+          Some
+            expression (flex_lib.ml[37,1407+30]..[37,1407+34])
+              Pexp_construct "true" (flex_lib.ml[37,1407+30]..[37,1407+34])
+              None
+          pattern (flex_lib.ml[37,1407+21]..[37,1407+28])
+            Ppat_var "verbose" (flex_lib.ml[37,1407+21]..[37,1407+28])
+          expression (flex_lib.ml[37,1407+37]..[46,1715+20]) ghost
+            Pexp_fun ""
+            None
+            pattern (flex_lib.ml[37,1407+37]..[37,1407+40])
+              Ppat_var "str" (flex_lib.ml[37,1407+37]..[37,1407+40])
+            expression (flex_lib.ml[38,1450+2]..[46,1715+20])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (flex_lib.ml[38,1450+6]..[38,1450+12])
+                    Ppat_var "result" (flex_lib.ml[38,1450+6]..[38,1450+12])
+                  expression (flex_lib.ml[38,1450+15]..[38,1450+21])
+                    Pexp_apply
+                    expression (flex_lib.ml[38,1450+15]..[38,1450+18])
+                      Pexp_ident "ref" (flex_lib.ml[38,1450+15]..[38,1450+18])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[38,1450+19]..[38,1450+21])
+                          Pexp_construct "[]" (flex_lib.ml[38,1450+19]..[38,1450+21])
+                          None
+                    ]
+              ]
+              expression (flex_lib.ml[39,1475+2]..[46,1715+20])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (flex_lib.ml[39,1475+6]..[39,1475+9])
+                      Ppat_var "loc" (flex_lib.ml[39,1475+6]..[39,1475+9])
+                    expression (flex_lib.ml[39,1475+12]..[39,1475+27])
+                      Pexp_ident "Locf.string_loc" (flex_lib.ml[39,1475+12]..[39,1475+27])
+                ]
+                expression (flex_lib.ml[40,1506+2]..[46,1715+20])
+                  Pexp_let Nonrec
+                  [
+                    <def>
+                      pattern (flex_lib.ml[40,1506+6]..[40,1506+12])
+                        Ppat_var "stream" (flex_lib.ml[40,1506+6]..[40,1506+12])
+                      expression (flex_lib.ml[40,1506+15]..[40,1506+34])
+                        Pexp_apply
+                        expression (flex_lib.ml[40,1506+15]..[40,1506+26])
+                          Pexp_ident "from_string" (flex_lib.ml[40,1506+15]..[40,1506+26])
+                        [
+                          <label> ""
+                            expression (flex_lib.ml[40,1506+27]..[40,1506+30])
+                              Pexp_ident "loc" (flex_lib.ml[40,1506+27]..[40,1506+30])
+                          <label> ""
+                            expression (flex_lib.ml[40,1506+31]..[40,1506+34])
+                              Pexp_ident "str" (flex_lib.ml[40,1506+31]..[40,1506+34])
+                        ]
+                  ]
+                  expression (flex_lib.ml[41,1544+2]..[46,1715+20])
+                    Pexp_sequence
+                    expression (flex_lib.ml[41,1544+2]..[45,1641+72])
+                      Pexp_apply
+                      expression (flex_lib.ml[41,1544+20]..[41,1544+22])
+                        Pexp_ident "|>" (flex_lib.ml[41,1544+20]..[41,1544+22])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[41,1544+2]..[41,1544+19])
+                            Pexp_apply
+                            expression (flex_lib.ml[41,1544+10]..[41,1544+12])
+                              Pexp_ident "|>" (flex_lib.ml[41,1544+10]..[41,1544+12])
+                            [
+                              <label> ""
+                                expression (flex_lib.ml[41,1544+3]..[41,1544+9])
+                                  Pexp_ident "stream" (flex_lib.ml[41,1544+3]..[41,1544+9])
+                              <label> ""
+                                expression (flex_lib.ml[41,1544+13]..[41,1544+18])
+                                  Pexp_ident "clean" (flex_lib.ml[41,1544+13]..[41,1544+18])
+                            ]
+                        <label> ""
+                          expression (flex_lib.ml[42,1567+4]..[45,1641+72])
+                            Pexp_apply
+                            expression (flex_lib.ml[42,1567+5]..[42,1567+17])
+                              Pexp_ident "Streamf.iter" (flex_lib.ml[42,1567+5]..[42,1567+17])
+                            [
+                              <label> ""
+                                expression (flex_lib.ml[43,1585+7]..[45,1641+71])
+                                  Pexp_fun ""
+                                  None
+                                  pattern (flex_lib.ml[43,1585+12]..[43,1585+13])
+                                    Ppat_var "t" (flex_lib.ml[43,1585+12]..[43,1585+13])
+                                  expression (flex_lib.ml[44,1603+10]..[45,1641+70])
+                                    Pexp_sequence
+                                    expression (flex_lib.ml[44,1603+10]..[44,1603+36])
+                                      Pexp_apply
+                                      expression (flex_lib.ml[44,1603+17]..[44,1603+19])
+                                        Pexp_ident ":=" (flex_lib.ml[44,1603+17]..[44,1603+19])
+                                      [
+                                        <label> ""
+                                          expression (flex_lib.ml[44,1603+10]..[44,1603+16])
+                                            Pexp_ident "result" (flex_lib.ml[44,1603+10]..[44,1603+16])
+                                        <label> ""
+                                          expression (flex_lib.ml[44,1603+20]..[44,1603+36])
+                                            Pexp_construct "::" (flex_lib.ml[44,1603+23]..[44,1603+25])
+                                            Some
+                                              expression (flex_lib.ml[44,1603+21]..[44,1603+35]) ghost
+                                                Pexp_tuple
+                                                [
+                                                  expression (flex_lib.ml[44,1603+21]..[44,1603+22])
+                                                    Pexp_ident "t" (flex_lib.ml[44,1603+21]..[44,1603+22])
+                                                  expression (flex_lib.ml[44,1603+26]..[44,1603+35])
+                                                    Pexp_apply
+                                                    expression (flex_lib.ml[44,1603+27]..[44,1603+28])
+                                                      Pexp_ident "!" (flex_lib.ml[44,1603+27]..[44,1603+28])
+                                                    [
+                                                      <label> ""
+                                                        expression (flex_lib.ml[44,1603+28]..[44,1603+34])
+                                                          Pexp_ident "result" (flex_lib.ml[44,1603+28]..[44,1603+34])
+                                                    ]
+                                                ]
+                                      ]
+                                    expression (flex_lib.ml[45,1641+10]..[45,1641+70])
+                                      Pexp_ifthenelse
+                                      expression (flex_lib.ml[45,1641+13]..[45,1641+20])
+                                        Pexp_ident "verbose" (flex_lib.ml[45,1641+13]..[45,1641+20])
+                                      expression (flex_lib.ml[45,1641+26]..[45,1641+70])
+                                        Pexp_apply
+                                        expression (flex_lib.ml[45,1641+26]..[45,1641+33])
+                                          Pexp_ident "fprintf" (flex_lib.ml[45,1641+26]..[45,1641+33])
+                                        [
+                                          <label> ""
+                                            expression (flex_lib.ml[45,1641+34]..[45,1641+47])
+                                              Pexp_ident "std_formatter" (flex_lib.ml[45,1641+34]..[45,1641+47])
+                                          <label> ""
+                                            expression (flex_lib.ml[45,1641+48]..[45,1641+55])
+                                              Pexp_constant Const_string("%a@\n",None)
+                                          <label> ""
+                                            expression (flex_lib.ml[45,1641+56]..[45,1641+68])
+                                              Pexp_ident "Tokenf.print" (flex_lib.ml[45,1641+56]..[45,1641+68])
+                                          <label> ""
+                                            expression (flex_lib.ml[45,1641+69]..[45,1641+70])
+                                              Pexp_ident "t" (flex_lib.ml[45,1641+69]..[45,1641+70])
+                                        ]
+                                      None
+                            ]
+                      ]
+                    expression (flex_lib.ml[46,1715+2]..[46,1715+20])
+                      Pexp_apply
+                      expression (flex_lib.ml[46,1715+2]..[46,1715+10])
+                        Pexp_ident "List.rev" (flex_lib.ml[46,1715+2]..[46,1715+10])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[46,1715+11]..[46,1715+20])
+                            Pexp_apply
+                            expression (flex_lib.ml[46,1715+12]..[46,1715+13])
+                              Pexp_ident "!" (flex_lib.ml[46,1715+12]..[46,1715+13])
+                            [
+                              <label> ""
+                                expression (flex_lib.ml[46,1715+13]..[46,1715+19])
+                                  Pexp_ident "result" (flex_lib.ml[46,1715+13]..[46,1715+19])
+                            ]
+                      ]
+    ]
+  structure_item (flex_lib.ml[47,1736+0]..[47,1736+50])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[47,1736+4]..[47,1736+14])
+          Ppat_var "get_tokens" (flex_lib.ml[47,1736+4]..[47,1736+14])
+        expression (flex_lib.ml[47,1736+15]..[47,1736+50]) ghost
+          Pexp_fun ""
+          None
+          pattern (flex_lib.ml[47,1736+15]..[47,1736+16])
+            Ppat_var "s" (flex_lib.ml[47,1736+15]..[47,1736+16])
+          expression (flex_lib.ml[47,1736+19]..[47,1736+50])
+            Pexp_apply
+            expression (flex_lib.ml[47,1736+19]..[47,1736+33])
+              Pexp_ident "list_of_string" (flex_lib.ml[47,1736+19]..[47,1736+33])
+            [
+              <label> "verbose"
+                expression (flex_lib.ml[47,1736+43]..[47,1736+48])
+                  Pexp_construct "false" (flex_lib.ml[47,1736+43]..[47,1736+48])
+                  None
+              <label> ""
+                expression (flex_lib.ml[47,1736+49]..[47,1736+50])
+                  Pexp_ident "s" (flex_lib.ml[47,1736+49]..[47,1736+50])
+            ]
+    ]
+  structure_item (flex_lib.ml[48,1787+0]..[53,1954+78])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (flex_lib.ml[48,1787+4]..[48,1787+19])
+          Ppat_var "debug_from_file" (flex_lib.ml[48,1787+4]..[48,1787+19])
+        expression (flex_lib.ml[48,1787+20]..[53,1954+78]) ghost
+          Pexp_fun ""
+          None
+          pattern (flex_lib.ml[48,1787+20]..[48,1787+24])
+            Ppat_var "file" (flex_lib.ml[48,1787+20]..[48,1787+24])
+          expression (flex_lib.ml[49,1814+2]..[53,1954+78])
+            Pexp_let Nonrec
+            [
+              <def>
+                pattern (flex_lib.ml[49,1814+6]..[49,1814+9])
+                  Ppat_var "loc" (flex_lib.ml[49,1814+6]..[49,1814+9])
+                expression (flex_lib.ml[49,1814+12]..[49,1814+24])
+                  Pexp_apply
+                  expression (flex_lib.ml[49,1814+12]..[49,1814+19])
+                    Pexp_ident "Locf.mk" (flex_lib.ml[49,1814+12]..[49,1814+19])
+                  [
+                    <label> ""
+                      expression (flex_lib.ml[49,1814+20]..[49,1814+24])
+                        Pexp_ident "file" (flex_lib.ml[49,1814+20]..[49,1814+24])
+                  ]
+            ]
+            expression (flex_lib.ml[50,1842+2]..[53,1954+78])
+              Pexp_let Nonrec
+              [
+                <def>
+                  pattern (flex_lib.ml[50,1842+6]..[50,1842+10])
+                    Ppat_var "chan" (flex_lib.ml[50,1842+6]..[50,1842+10])
+                  expression (flex_lib.ml[50,1842+13]..[50,1842+25])
+                    Pexp_apply
+                    expression (flex_lib.ml[50,1842+13]..[50,1842+20])
+                      Pexp_ident "open_in" (flex_lib.ml[50,1842+13]..[50,1842+20])
+                    [
+                      <label> ""
+                        expression (flex_lib.ml[50,1842+21]..[50,1842+25])
+                          Pexp_ident "file" (flex_lib.ml[50,1842+21]..[50,1842+25])
+                    ]
+              ]
+              expression (flex_lib.ml[51,1871+2]..[53,1954+78])
+                Pexp_let Nonrec
+                [
+                  <def>
+                    pattern (flex_lib.ml[51,1871+6]..[51,1871+12])
+                      Ppat_var "stream" (flex_lib.ml[51,1871+6]..[51,1871+12])
+                    expression (flex_lib.ml[51,1871+15]..[51,1871+38])
+                      Pexp_apply
+                      expression (flex_lib.ml[51,1871+15]..[51,1871+33])
+                        Pexp_ident "Streamf.of_channel" (flex_lib.ml[51,1871+15]..[51,1871+33])
+                      [
+                        <label> ""
+                          expression (flex_lib.ml[51,1871+34]..[51,1871+38])
+                            Pexp_ident "chan" (flex_lib.ml[51,1871+34]..[51,1871+38])
+                      ]
+                ]
+                expression (flex_lib.ml[52,1913+2]..[53,1954+78])
+                  Pexp_apply
+                  expression (flex_lib.ml[52,1913+38]..[52,1913+40])
+                    Pexp_ident "|>" (flex_lib.ml[52,1913+38]..[52,1913+40])
+                  [
+                    <label> ""
+                      expression (flex_lib.ml[52,1913+2]..[52,1913+37])
+                        Pexp_apply
+                        expression (flex_lib.ml[52,1913+28]..[52,1913+30])
+                          Pexp_ident "|>" (flex_lib.ml[52,1913+28]..[52,1913+30])
+                        [
+                          <label> ""
+                            expression (flex_lib.ml[52,1913+3]..[52,1913+27])
+                              Pexp_apply
+                              expression (flex_lib.ml[52,1913+4]..[52,1913+15])
+                                Pexp_ident "from_stream" (flex_lib.ml[52,1913+4]..[52,1913+15])
+                              [
+                                <label> ""
+                                  expression (flex_lib.ml[52,1913+16]..[52,1913+19])
+                                    Pexp_ident "loc" (flex_lib.ml[52,1913+16]..[52,1913+19])
+                                <label> ""
+                                  expression (flex_lib.ml[52,1913+20]..[52,1913+26])
+                                    Pexp_ident "stream" (flex_lib.ml[52,1913+20]..[52,1913+26])
+                              ]
+                          <label> ""
+                            expression (flex_lib.ml[52,1913+31]..[52,1913+36])
+                              Pexp_ident "clean" (flex_lib.ml[52,1913+31]..[52,1913+36])
+                        ]
+                    <label> ""
+                      expression (flex_lib.ml[53,1954+4]..[53,1954+78])
+                        Pexp_apply
+                        expression (flex_lib.ml[53,1954+18]..[53,1954+20])
+                          Pexp_ident "@@" (flex_lib.ml[53,1954+18]..[53,1954+20])
+                        [
+                          <label> ""
+                            expression (flex_lib.ml[53,1954+5]..[53,1954+17])
+                              Pexp_ident "Streamf.iter" (flex_lib.ml[53,1954+5]..[53,1954+17])
+                          <label> ""
+                            expression (flex_lib.ml[53,1954+21]..[53,1954+77])
+                              Pexp_fun ""
+                              None
+                              pattern (flex_lib.ml[53,1954+26]..[53,1954+27])
+                                Ppat_var "t" (flex_lib.ml[53,1954+26]..[53,1954+27])
+                              expression (flex_lib.ml[53,1954+32]..[53,1954+76])
+                                Pexp_apply
+                                expression (flex_lib.ml[53,1954+32]..[53,1954+39])
+                                  Pexp_ident "fprintf" (flex_lib.ml[53,1954+32]..[53,1954+39])
+                                [
+                                  <label> ""
+                                    expression (flex_lib.ml[53,1954+40]..[53,1954+53])
+                                      Pexp_ident "std_formatter" (flex_lib.ml[53,1954+40]..[53,1954+53])
+                                  <label> ""
+                                    expression (flex_lib.ml[53,1954+54]..[53,1954+61])
+                                      Pexp_constant Const_string("%a@\n",None)
+                                  <label> ""
+                                    expression (flex_lib.ml[53,1954+62]..[53,1954+74])
+                                      Pexp_ident "Tokenf.print" (flex_lib.ml[53,1954+62]..[53,1954+74])
+                                  <label> ""
+                                    expression (flex_lib.ml[53,1954+75]..[53,1954+76])
+                                      Pexp_ident "t" (flex_lib.ml[53,1954+75]..[53,1954+76])
+                                ]
+                        ]
+                  ]
+    ]
+]

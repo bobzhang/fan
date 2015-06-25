@@ -1,0 +1,1016 @@
+[
+  structure_item (idN.ml[1,0+0]..[1,0+10])
+    Pstr_open Fresh "Astfn" (idN.ml[1,0+5]..[1,0+10])
+  structure_item (idN.ml[2,11+0]..[2,11+14])
+    Pstr_open Fresh "Astn_util" (idN.ml[2,11+5]..[2,11+14])
+  structure_item (idN.ml[3,26+0]..[3,26+9])
+    Pstr_open Fresh "Util" (idN.ml[3,26+5]..[3,26+9])
+  structure_item (idN.ml[4,36+0]..[8,165+59])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (idN.ml[4,36+8]..[4,36+21])
+          Ppat_var "tvar_of_ident" (idN.ml[4,36+8]..[4,36+21])
+        expression (idN.ml[4,36+21]..[8,165+59]) ghost
+          Pexp_constraint
+          expression (idN.ml[5,75+2]..[8,165+59])
+            Pexp_function
+            [
+              <case>
+                pattern (idN.ml[6,86+4]..[6,86+17])
+                  Ppat_or
+                  pattern (idN.ml[6,86+4]..[6,86+10])
+                    Ppat_variant "Lid"
+                    Some
+                      pattern (idN.ml[6,86+9]..[6,86+10])
+                        Ppat_var "x" (idN.ml[6,86+9]..[6,86+10])
+                  pattern (idN.ml[6,86+11]..[6,86+17])
+                    Ppat_variant "Uid"
+                    Some
+                      pattern (idN.ml[6,86+16]..[6,86+17])
+                        Ppat_var "x" (idN.ml[6,86+16]..[6,86+17])
+                expression (idN.ml[6,86+21]..[6,86+22])
+                  Pexp_ident "x" (idN.ml[6,86+21]..[6,86+22])
+              <case>
+                pattern (idN.ml[7,109+4]..[7,109+20])
+                  Ppat_variant "Dot"
+                  Some
+                    pattern (idN.ml[7,109+9]..[7,109+20])
+                      Ppat_tuple
+                      [
+                        pattern (idN.ml[7,109+10]..[7,109+16])
+                          Ppat_variant "Uid"
+                          Some
+                            pattern (idN.ml[7,109+15]..[7,109+16])
+                              Ppat_var "x" (idN.ml[7,109+15]..[7,109+16])
+                        pattern (idN.ml[7,109+17]..[7,109+19])
+                          Ppat_var "xs" (idN.ml[7,109+17]..[7,109+19])
+                      ]
+                expression (idN.ml[7,109+24]..[7,109+55])
+                  Pexp_apply
+                  expression (idN.ml[7,109+26]..[7,109+27])
+                    Pexp_ident "^" (idN.ml[7,109+26]..[7,109+27])
+                  [
+                    <label> ""
+                      expression (idN.ml[7,109+24]..[7,109+25])
+                        Pexp_ident "x" (idN.ml[7,109+24]..[7,109+25])
+                    <label> ""
+                      expression (idN.ml[7,109+28]..[7,109+55])
+                        Pexp_apply
+                        expression (idN.ml[7,109+34]..[7,109+35])
+                          Pexp_ident "^" (idN.ml[7,109+34]..[7,109+35])
+                        [
+                          <label> ""
+                            expression (idN.ml[7,109+29]..[7,109+33])
+                              Pexp_constant Const_string("__",None)
+                          <label> ""
+                            expression (idN.ml[7,109+36]..[7,109+54])
+                              Pexp_apply
+                              expression (idN.ml[7,109+37]..[7,109+50])
+                                Pexp_ident "tvar_of_ident" (idN.ml[7,109+37]..[7,109+50])
+                              [
+                                <label> ""
+                                  expression (idN.ml[7,109+51]..[7,109+53])
+                                    Pexp_ident "xs" (idN.ml[7,109+51]..[7,109+53])
+                              ]
+                        ]
+                  ]
+              <case>
+                pattern (idN.ml[8,165+4]..[8,165+5])
+                  Ppat_any
+                expression (idN.ml[8,165+9]..[8,165+59])
+                  Pexp_apply
+                  expression (idN.ml[8,165+9]..[8,165+17])
+                    Pexp_ident "failwith" (idN.ml[8,165+9]..[8,165+17])
+                  [
+                    <label> ""
+                      expression (idN.ml[8,165+18]..[8,165+59])
+                        Pexp_constant Const_string("internal error in the Grammar extension",None)
+                  ]
+            ]
+          core_type (idN.ml[4,36+23]..[4,36+36])
+            Ptyp_arrow
+            ""
+            core_type (idN.ml[4,36+23]..[4,36+26])
+              Ptyp_constr "vid" (idN.ml[4,36+23]..[4,36+26])
+              []
+            core_type (idN.ml[4,36+30]..[4,36+36])
+              Ptyp_constr "string" (idN.ml[4,36+30]..[4,36+36])
+              []
+    ]
+  structure_item (idN.ml[9,225+0]..[22,638+18])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[9,225+4]..[9,225+17])
+          Ppat_var "map_to_string" (idN.ml[9,225+4]..[9,225+17])
+        expression (idN.ml[10,245+2]..[22,638+18])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[11,256+4]..[11,256+17])
+                Ppat_constraint
+                pattern (idN.ml[11,256+5]..[11,256+10])
+                  Ppat_var "ident" (idN.ml[11,256+5]..[11,256+10])
+                core_type (idN.ml[11,256+13]..[11,256+16])
+                  Ptyp_constr "vid" (idN.ml[11,256+13]..[11,256+16])
+                  []
+              expression (idN.ml[12,277+6]..[22,638+18])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (idN.ml[12,277+14]..[12,277+17])
+                      Ppat_var "aux" (idN.ml[12,277+14]..[12,277+17])
+                    expression (idN.ml[13,297+8]..[21,559+75])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (idN.ml[14,314+10]..[14,314+11])
+                            Ppat_var "i" (idN.ml[14,314+10]..[14,314+11])
+                          expression (idN.ml[15,329+12]..[21,559+75])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (idN.ml[16,351+15]..[16,351+18])
+                                  Ppat_var "acc" (idN.ml[16,351+15]..[16,351+18])
+                                expression (idN.ml[17,373+17]..[21,559+74])
+                                  Pexp_match
+                                  expression (idN.ml[17,373+24]..[17,373+25])
+                                    Pexp_ident "i" (idN.ml[17,373+24]..[17,373+25])
+                                  [
+                                    <case>
+                                      pattern (idN.ml[18,404+20]..[18,404+30])
+                                        Ppat_variant "Dot"
+                                        Some
+                                          pattern (idN.ml[18,404+25]..[18,404+30])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[18,404+26]..[18,404+27])
+                                                Ppat_var "a" (idN.ml[18,404+26]..[18,404+27])
+                                              pattern (idN.ml[18,404+28]..[18,404+29])
+                                                Ppat_var "b" (idN.ml[18,404+28]..[18,404+29])
+                                            ]
+                                      expression (idN.ml[18,404+34]..[18,404+59])
+                                        Pexp_apply
+                                        expression (idN.ml[18,404+34]..[18,404+37])
+                                          Pexp_ident "aux" (idN.ml[18,404+34]..[18,404+37])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[18,404+38]..[18,404+39])
+                                              Pexp_ident "a" (idN.ml[18,404+38]..[18,404+39])
+                                          <label> ""
+                                            expression (idN.ml[18,404+40]..[18,404+59])
+                                              Pexp_apply
+                                              expression (idN.ml[18,404+45]..[18,404+46])
+                                                Pexp_ident "^" (idN.ml[18,404+45]..[18,404+46])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[18,404+41]..[18,404+44])
+                                                    Pexp_constant Const_string("_",None)
+                                                <label> ""
+                                                  expression (idN.ml[18,404+47]..[18,404+58])
+                                                    Pexp_apply
+                                                    expression (idN.ml[18,404+48]..[18,404+51])
+                                                      Pexp_ident "aux" (idN.ml[18,404+48]..[18,404+51])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[18,404+52]..[18,404+53])
+                                                          Pexp_ident "b" (idN.ml[18,404+52]..[18,404+53])
+                                                      <label> ""
+                                                        expression (idN.ml[18,404+54]..[18,404+57])
+                                                          Pexp_ident "acc" (idN.ml[18,404+54]..[18,404+57])
+                                                    ]
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[19,464+20]..[19,464+26])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[19,464+25]..[19,464+26])
+                                            Ppat_var "x" (idN.ml[19,464+25]..[19,464+26])
+                                      expression (idN.ml[19,464+30]..[19,464+37])
+                                        Pexp_apply
+                                        expression (idN.ml[19,464+32]..[19,464+33])
+                                          Pexp_ident "^" (idN.ml[19,464+32]..[19,464+33])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[19,464+30]..[19,464+31])
+                                              Pexp_ident "x" (idN.ml[19,464+30]..[19,464+31])
+                                          <label> ""
+                                            expression (idN.ml[19,464+34]..[19,464+37])
+                                              Pexp_ident "acc" (idN.ml[19,464+34]..[19,464+37])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[20,502+20]..[20,502+26])
+                                        Ppat_variant "Uid"
+                                        Some
+                                          pattern (idN.ml[20,502+25]..[20,502+26])
+                                            Ppat_var "x" (idN.ml[20,502+25]..[20,502+26])
+                                      expression (idN.ml[20,502+30]..[20,502+56])
+                                        Pexp_apply
+                                        expression (idN.ml[20,502+51]..[20,502+52])
+                                          Pexp_ident "^" (idN.ml[20,502+51]..[20,502+52])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[20,502+30]..[20,502+50])
+                                              Pexp_apply
+                                              expression (idN.ml[20,502+31]..[20,502+47])
+                                                Pexp_ident "String.lowercase" (idN.ml[20,502+31]..[20,502+47])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[20,502+48]..[20,502+49])
+                                                    Pexp_ident "x" (idN.ml[20,502+48]..[20,502+49])
+                                              ]
+                                          <label> ""
+                                            expression (idN.ml[20,502+53]..[20,502+56])
+                                              Pexp_ident "acc" (idN.ml[20,502+53]..[20,502+56])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[21,559+20]..[21,559+21])
+                                        Ppat_var "t" (idN.ml[21,559+20]..[21,559+21])
+                                      expression (idN.ml[21,559+25]..[21,559+73])
+                                        Pexp_apply
+                                        expression (idN.ml[21,559+25]..[21,559+34])
+                                          Pexp_ident "failwithf" (idN.ml[21,559+25]..[21,559+34])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[21,559+35]..[21,559+54])
+                                              Pexp_constant Const_string("map_to_string: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[21,559+55]..[21,559+73])
+                                              Pexp_apply
+                                              expression (idN.ml[21,559+56]..[21,559+70])
+                                                Pexp_ident "ObjsN.dump_vid" (idN.ml[21,559+56]..[21,559+70])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[21,559+71]..[21,559+72])
+                                                    Pexp_ident "t" (idN.ml[21,559+71]..[21,559+72])
+                                              ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+                expression (idN.ml[22,638+6]..[22,638+18])
+                  Pexp_apply
+                  expression (idN.ml[22,638+6]..[22,638+9])
+                    Pexp_ident "aux" (idN.ml[22,638+6]..[22,638+9])
+                  [
+                    <label> ""
+                      expression (idN.ml[22,638+10]..[22,638+15])
+                        Pexp_ident "ident" (idN.ml[22,638+10]..[22,638+15])
+                    <label> ""
+                      expression (idN.ml[22,638+16]..[22,638+18])
+                        Pexp_constant Const_string("",None)
+                  ]
+          ]
+    ]
+  structure_item (idN.ml[23,657+0]..[38,1179+18])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[23,657+4]..[23,657+13])
+          Ppat_var "to_string" (idN.ml[23,657+4]..[23,657+13])
+        expression (idN.ml[24,673+2]..[38,1179+18])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[25,684+4]..[25,684+19])
+                Ppat_constraint
+                pattern (idN.ml[25,684+5]..[25,684+10])
+                  Ppat_var "ident" (idN.ml[25,684+5]..[25,684+10])
+                core_type (idN.ml[25,684+13]..[25,684+18])
+                  Ptyp_constr "ident" (idN.ml[25,684+13]..[25,684+18])
+                  []
+              expression (idN.ml[26,707+6]..[38,1179+18])
+                Pexp_let Rec
+                [
+                  <def>
+                    pattern (idN.ml[26,707+14]..[26,707+17])
+                      Ppat_var "aux" (idN.ml[26,707+14]..[26,707+17])
+                    expression (idN.ml[27,727+8]..[37,1098+77])
+                      Pexp_function
+                      [
+                        <case>
+                          pattern (idN.ml[28,744+10]..[28,744+11])
+                            Ppat_var "i" (idN.ml[28,744+10]..[28,744+11])
+                          expression (idN.ml[29,759+12]..[37,1098+77])
+                            Pexp_function
+                            [
+                              <case>
+                                pattern (idN.ml[30,781+15]..[30,781+18])
+                                  Ppat_var "acc" (idN.ml[30,781+15]..[30,781+18])
+                                expression (idN.ml[31,803+17]..[37,1098+76])
+                                  Pexp_match
+                                  expression (idN.ml[31,803+24]..[31,803+25])
+                                    Pexp_ident "i" (idN.ml[31,803+24]..[31,803+25])
+                                  [
+                                    <case>
+                                      pattern (idN.ml[32,834+20]..[32,834+30])
+                                        Ppat_variant "Dot"
+                                        Some
+                                          pattern (idN.ml[32,834+25]..[32,834+30])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[32,834+26]..[32,834+27])
+                                                Ppat_var "a" (idN.ml[32,834+26]..[32,834+27])
+                                              pattern (idN.ml[32,834+28]..[32,834+29])
+                                                Ppat_var "b" (idN.ml[32,834+28]..[32,834+29])
+                                            ]
+                                      expression (idN.ml[32,834+34]..[32,834+59])
+                                        Pexp_apply
+                                        expression (idN.ml[32,834+34]..[32,834+37])
+                                          Pexp_ident "aux" (idN.ml[32,834+34]..[32,834+37])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[32,834+38]..[32,834+39])
+                                              Pexp_ident "a" (idN.ml[32,834+38]..[32,834+39])
+                                          <label> ""
+                                            expression (idN.ml[32,834+40]..[32,834+59])
+                                              Pexp_apply
+                                              expression (idN.ml[32,834+45]..[32,834+46])
+                                                Pexp_ident "^" (idN.ml[32,834+45]..[32,834+46])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[32,834+41]..[32,834+44])
+                                                    Pexp_constant Const_string("_",None)
+                                                <label> ""
+                                                  expression (idN.ml[32,834+47]..[32,834+58])
+                                                    Pexp_apply
+                                                    expression (idN.ml[32,834+48]..[32,834+51])
+                                                      Pexp_ident "aux" (idN.ml[32,834+48]..[32,834+51])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[32,834+52]..[32,834+53])
+                                                          Pexp_ident "b" (idN.ml[32,834+52]..[32,834+53])
+                                                      <label> ""
+                                                        expression (idN.ml[32,834+54]..[32,834+57])
+                                                          Pexp_ident "acc" (idN.ml[32,834+54]..[32,834+57])
+                                                    ]
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[33,894+20]..[33,894+32])
+                                        Ppat_variant "Apply"
+                                        Some
+                                          pattern (idN.ml[33,894+27]..[33,894+32])
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[33,894+28]..[33,894+29])
+                                                Ppat_var "a" (idN.ml[33,894+28]..[33,894+29])
+                                              pattern (idN.ml[33,894+30]..[33,894+31])
+                                                Ppat_var "b" (idN.ml[33,894+30]..[33,894+31])
+                                            ]
+                                      expression (idN.ml[34,930+22]..[34,930+72])
+                                        Pexp_apply
+                                        expression (idN.ml[34,930+29]..[34,930+30])
+                                          Pexp_ident "^" (idN.ml[34,930+29]..[34,930+30])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[34,930+22]..[34,930+28])
+                                              Pexp_constant Const_string("app_",None)
+                                          <label> ""
+                                            expression (idN.ml[34,930+31]..[34,930+72])
+                                              Pexp_apply
+                                              expression (idN.ml[34,930+63]..[34,930+64])
+                                                Pexp_ident "^" (idN.ml[34,930+63]..[34,930+64])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[34,930+32]..[34,930+62])
+                                                    Pexp_apply
+                                                    expression (idN.ml[34,930+33]..[34,930+36])
+                                                      Pexp_ident "aux" (idN.ml[34,930+33]..[34,930+36])
+                                                    [
+                                                      <label> ""
+                                                        expression (idN.ml[34,930+37]..[34,930+38])
+                                                          Pexp_ident "a" (idN.ml[34,930+37]..[34,930+38])
+                                                      <label> ""
+                                                        expression (idN.ml[34,930+39]..[34,930+61])
+                                                          Pexp_apply
+                                                          expression (idN.ml[34,930+47]..[34,930+48])
+                                                            Pexp_ident "^" (idN.ml[34,930+47]..[34,930+48])
+                                                          [
+                                                            <label> ""
+                                                              expression (idN.ml[34,930+40]..[34,930+46])
+                                                                Pexp_constant Const_string("_to_",None)
+                                                            <label> ""
+                                                              expression (idN.ml[34,930+49]..[34,930+60])
+                                                                Pexp_apply
+                                                                expression (idN.ml[34,930+50]..[34,930+53])
+                                                                  Pexp_ident "aux" (idN.ml[34,930+50]..[34,930+53])
+                                                                [
+                                                                  <label> ""
+                                                                    expression (idN.ml[34,930+54]..[34,930+55])
+                                                                      Pexp_ident "b" (idN.ml[34,930+54]..[34,930+55])
+                                                                  <label> ""
+                                                                    expression (idN.ml[34,930+56]..[34,930+59])
+                                                                      Pexp_ident "acc" (idN.ml[34,930+56]..[34,930+59])
+                                                                ]
+                                                          ]
+                                                    ]
+                                                <label> ""
+                                                  expression (idN.ml[34,930+65]..[34,930+71])
+                                                    Pexp_constant Const_string("_end",None)
+                                              ]
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[35,1003+20]..[35,1003+26])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[35,1003+25]..[35,1003+26])
+                                            Ppat_var "x" (idN.ml[35,1003+25]..[35,1003+26])
+                                      expression (idN.ml[35,1003+30]..[35,1003+37])
+                                        Pexp_apply
+                                        expression (idN.ml[35,1003+32]..[35,1003+33])
+                                          Pexp_ident "^" (idN.ml[35,1003+32]..[35,1003+33])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[35,1003+30]..[35,1003+31])
+                                              Pexp_ident "x" (idN.ml[35,1003+30]..[35,1003+31])
+                                          <label> ""
+                                            expression (idN.ml[35,1003+34]..[35,1003+37])
+                                              Pexp_ident "acc" (idN.ml[35,1003+34]..[35,1003+37])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[36,1041+20]..[36,1041+26])
+                                        Ppat_variant "Uid"
+                                        Some
+                                          pattern (idN.ml[36,1041+25]..[36,1041+26])
+                                            Ppat_var "x" (idN.ml[36,1041+25]..[36,1041+26])
+                                      expression (idN.ml[36,1041+30]..[36,1041+56])
+                                        Pexp_apply
+                                        expression (idN.ml[36,1041+51]..[36,1041+52])
+                                          Pexp_ident "^" (idN.ml[36,1041+51]..[36,1041+52])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[36,1041+30]..[36,1041+50])
+                                              Pexp_apply
+                                              expression (idN.ml[36,1041+31]..[36,1041+47])
+                                                Pexp_ident "String.lowercase" (idN.ml[36,1041+31]..[36,1041+47])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[36,1041+48]..[36,1041+49])
+                                                    Pexp_ident "x" (idN.ml[36,1041+48]..[36,1041+49])
+                                              ]
+                                          <label> ""
+                                            expression (idN.ml[36,1041+53]..[36,1041+56])
+                                              Pexp_ident "acc" (idN.ml[36,1041+53]..[36,1041+56])
+                                        ]
+                                    <case>
+                                      pattern (idN.ml[37,1098+20]..[37,1098+21])
+                                        Ppat_var "t" (idN.ml[37,1098+20]..[37,1098+21])
+                                      expression (idN.ml[37,1098+25]..[37,1098+75])
+                                        Pexp_apply
+                                        expression (idN.ml[37,1098+25]..[37,1098+34])
+                                          Pexp_ident "failwithf" (idN.ml[37,1098+25]..[37,1098+34])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[37,1098+35]..[37,1098+54])
+                                              Pexp_constant Const_string("map_to_string: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[37,1098+55]..[37,1098+75])
+                                              Pexp_apply
+                                              expression (idN.ml[37,1098+56]..[37,1098+72])
+                                                Pexp_ident "ObjsN.dump_ident" (idN.ml[37,1098+56]..[37,1098+72])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[37,1098+73]..[37,1098+74])
+                                                    Pexp_ident "t" (idN.ml[37,1098+73]..[37,1098+74])
+                                              ]
+                                        ]
+                                  ]
+                            ]
+                      ]
+                ]
+                expression (idN.ml[38,1179+6]..[38,1179+18])
+                  Pexp_apply
+                  expression (idN.ml[38,1179+6]..[38,1179+9])
+                    Pexp_ident "aux" (idN.ml[38,1179+6]..[38,1179+9])
+                  [
+                    <label> ""
+                      expression (idN.ml[38,1179+10]..[38,1179+15])
+                        Pexp_ident "ident" (idN.ml[38,1179+10]..[38,1179+15])
+                    <label> ""
+                      expression (idN.ml[38,1179+16]..[38,1179+18])
+                        Pexp_constant Const_string("",None)
+                  ]
+          ]
+    ]
+  structure_item (idN.ml[39,1198+0]..[45,1360+48])
+    Pstr_value Rec
+    [
+      <def>
+        pattern (idN.ml[39,1198+8]..[39,1198+14])
+          Ppat_var "to_vid" (idN.ml[39,1198+8]..[39,1198+14])
+        expression (idN.ml[40,1215+2]..[45,1360+48])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[41,1226+4]..[41,1226+15])
+                Ppat_constraint
+                pattern (idN.ml[41,1226+5]..[41,1226+6])
+                  Ppat_var "x" (idN.ml[41,1226+5]..[41,1226+6])
+                core_type (idN.ml[41,1226+9]..[41,1226+14])
+                  Ptyp_constr "ident" (idN.ml[41,1226+9]..[41,1226+14])
+                  []
+              expression (idN.ml[42,1245+6]..[45,1360+48]) ghost
+                Pexp_constraint
+                expression (idN.ml[42,1245+7]..[45,1360+41])
+                  Pexp_match
+                  expression (idN.ml[42,1245+14]..[42,1245+15])
+                    Pexp_ident "x" (idN.ml[42,1245+14]..[42,1245+15])
+                  [
+                    <case>
+                      pattern (idN.ml[43,1266+10]..[43,1266+18])
+                        Ppat_variant "Apply"
+                        Some
+                          pattern (idN.ml[43,1266+17]..[43,1266+18])
+                            Ppat_any
+                      expression (idN.ml[43,1266+22]..[43,1266+43])
+                        Pexp_apply
+                        expression (idN.ml[43,1266+22]..[43,1266+30])
+                          Pexp_ident "failwith" (idN.ml[43,1266+22]..[43,1266+30])
+                        [
+                          <label> ""
+                            expression (idN.ml[43,1266+31]..[43,1266+43])
+                              Pexp_constant Const_string("IdN.to_vid",None)
+                        ]
+                    <case>
+                      pattern (idN.ml[44,1310+10]..[44,1310+20])
+                        Ppat_variant "Dot"
+                        Some
+                          pattern (idN.ml[44,1310+15]..[44,1310+20])
+                            Ppat_tuple
+                            [
+                              pattern (idN.ml[44,1310+16]..[44,1310+17])
+                                Ppat_var "a" (idN.ml[44,1310+16]..[44,1310+17])
+                              pattern (idN.ml[44,1310+18]..[44,1310+19])
+                                Ppat_var "b" (idN.ml[44,1310+18]..[44,1310+19])
+                            ]
+                      expression (idN.ml[44,1310+24]..[44,1310+49])
+                        Pexp_apply
+                        expression (idN.ml[44,1310+24]..[44,1310+27])
+                          Pexp_ident "dot" (idN.ml[44,1310+24]..[44,1310+27])
+                        [
+                          <label> ""
+                            expression (idN.ml[44,1310+28]..[44,1310+38])
+                              Pexp_apply
+                              expression (idN.ml[44,1310+29]..[44,1310+35])
+                                Pexp_ident "to_vid" (idN.ml[44,1310+29]..[44,1310+35])
+                              [
+                                <label> ""
+                                  expression (idN.ml[44,1310+36]..[44,1310+37])
+                                    Pexp_ident "a" (idN.ml[44,1310+36]..[44,1310+37])
+                              ]
+                          <label> ""
+                            expression (idN.ml[44,1310+39]..[44,1310+49])
+                              Pexp_apply
+                              expression (idN.ml[44,1310+40]..[44,1310+46])
+                                Pexp_ident "to_vid" (idN.ml[44,1310+40]..[44,1310+46])
+                              [
+                                <label> ""
+                                  expression (idN.ml[44,1310+47]..[44,1310+48])
+                                    Pexp_ident "b" (idN.ml[44,1310+47]..[44,1310+48])
+                              ]
+                        ]
+                    <case>
+                      pattern (idN.ml[45,1360+10]..[45,1360+35])
+                        Ppat_alias "x" (idN.ml[45,1360+34]..[45,1360+35])
+                        pattern (idN.ml[45,1360+10]..[45,1360+30])
+                          Ppat_or
+                          pattern (idN.ml[45,1360+10]..[45,1360+23])
+                            Ppat_or
+                            pattern (idN.ml[45,1360+10]..[45,1360+16])
+                              Ppat_variant "Lid"
+                              Some
+                                pattern (idN.ml[45,1360+15]..[45,1360+16])
+                                  Ppat_any
+                            pattern (idN.ml[45,1360+17]..[45,1360+23])
+                              Ppat_variant "Uid"
+                              Some
+                                pattern (idN.ml[45,1360+22]..[45,1360+23])
+                                  Ppat_any
+                          pattern (idN.ml[45,1360+24]..[45,1360+30])
+                            Ppat_variant "Ant"
+                            Some
+                              pattern (idN.ml[45,1360+29]..[45,1360+30])
+                                Ppat_any
+                      expression (idN.ml[45,1360+39]..[45,1360+40])
+                        Pexp_ident "x" (idN.ml[45,1360+39]..[45,1360+40])
+                  ]
+                core_type (idN.ml[45,1360+44]..[45,1360+47])
+                  Ptyp_constr "vid" (idN.ml[45,1360+44]..[45,1360+47])
+                  []
+          ]
+    ]
+  structure_item (idN.ml[46,1409+0]..[59,1835+71])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[46,1409+4]..[46,1409+13])
+          Ppat_var "ident_map" (idN.ml[46,1409+4]..[46,1409+13])
+        expression (idN.ml[47,1425+2]..[59,1835+71])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[48,1436+4]..[48,1436+5])
+                Ppat_var "f" (idN.ml[48,1436+4]..[48,1436+5])
+              expression (idN.ml[49,1445+6]..[59,1835+71])
+                Pexp_function
+                [
+                  <case>
+                    pattern (idN.ml[50,1461+9]..[50,1461+18])
+                      Ppat_constraint
+                      pattern (idN.ml[50,1461+10]..[50,1461+11])
+                        Ppat_var "x" (idN.ml[50,1461+10]..[50,1461+11])
+                      core_type (idN.ml[50,1461+14]..[50,1461+17])
+                        Ptyp_constr "vid" (idN.ml[50,1461+14]..[50,1461+17])
+                        []
+                    expression (idN.ml[51,1483+11]..[59,1835+70])
+                      Pexp_let Nonrec
+                      [
+                        <def>
+                          pattern (idN.ml[51,1483+15]..[51,1483+18])
+                            Ppat_var "lst" (idN.ml[51,1483+15]..[51,1483+18])
+                          expression (idN.ml[51,1483+21]..[51,1483+49])
+                            Pexp_apply
+                            expression (idN.ml[51,1483+21]..[51,1483+44])
+                              Pexp_ident "Ast_basic.N.list_of_dot" (idN.ml[51,1483+21]..[51,1483+44])
+                            [
+                              <label> ""
+                                expression (idN.ml[51,1483+45]..[51,1483+46])
+                                  Pexp_ident "x" (idN.ml[51,1483+45]..[51,1483+46])
+                              <label> ""
+                                expression (idN.ml[51,1483+47]..[51,1483+49])
+                                  Pexp_construct "[]" (idN.ml[51,1483+47]..[51,1483+49])
+                                  None
+                            ]
+                      ]
+                      expression (idN.ml[52,1536+11]..[59,1835+70])
+                        Pexp_match
+                        expression (idN.ml[52,1536+18]..[52,1536+21])
+                          Pexp_ident "lst" (idN.ml[52,1536+18]..[52,1536+21])
+                        [
+                          <case>
+                            pattern (idN.ml[53,1563+14]..[53,1563+16])
+                              Ppat_construct "[]" (idN.ml[53,1563+14]..[53,1563+16])
+                              None
+                            expression (idN.ml[53,1563+20]..[53,1563+58])
+                              Pexp_apply
+                              expression (idN.ml[53,1563+20]..[53,1563+31])
+                                Pexp_ident "invalid_arg" (idN.ml[53,1563+20]..[53,1563+31])
+                              [
+                                <label> ""
+                                  expression (idN.ml[53,1563+32]..[53,1563+58])
+                                    Pexp_constant Const_string("ident_map identifier [] ",None)
+                              ]
+                          <case>
+                            pattern (idN.ml[54,1622+14]..[54,1622+26])
+                              Ppat_construct "::" (idN.ml[54,1622+22]..[54,1622+24])
+                              Some
+                                pattern (idN.ml[54,1622+14]..[54,1622+26]) ghost
+                                  Ppat_tuple
+                                  [
+                                    pattern (idN.ml[54,1622+14]..[54,1622+22])
+                                      Ppat_variant "Lid"
+                                      Some
+                                        pattern (idN.ml[54,1622+20]..[54,1622+21])
+                                          Ppat_var "y" (idN.ml[54,1622+20]..[54,1622+21])
+                                    pattern (idN.ml[54,1622+24]..[54,1622+26])
+                                      Ppat_construct "[]" (idN.ml[54,1622+24]..[54,1622+26])
+                                      None
+                                  ]
+                            expression (idN.ml[54,1622+30]..[54,1622+39])
+                              Pexp_apply
+                              expression (idN.ml[54,1622+30]..[54,1622+33])
+                                Pexp_ident "lid" (idN.ml[54,1622+30]..[54,1622+33])
+                              [
+                                <label> ""
+                                  expression (idN.ml[54,1622+34]..[54,1622+39])
+                                    Pexp_apply
+                                    expression (idN.ml[54,1622+35]..[54,1622+36])
+                                      Pexp_ident "f" (idN.ml[54,1622+35]..[54,1622+36])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[54,1622+37]..[54,1622+38])
+                                          Pexp_ident "y" (idN.ml[54,1622+37]..[54,1622+38])
+                                    ]
+                              ]
+                          <case>
+                            pattern (idN.ml[55,1662+14]..[55,1662+16])
+                              Ppat_var "ls" (idN.ml[55,1662+14]..[55,1662+16])
+                            expression (idN.ml[56,1682+16]..[59,1835+69])
+                              Pexp_let Nonrec
+                              [
+                                <def>
+                                  pattern (idN.ml[56,1682+20]..[56,1682+21])
+                                    Ppat_var "l" (idN.ml[56,1682+20]..[56,1682+21])
+                                  expression (idN.ml[56,1682+24]..[56,1682+38])
+                                    Pexp_apply
+                                    expression (idN.ml[56,1682+24]..[56,1682+35])
+                                      Pexp_ident "List.length" (idN.ml[56,1682+24]..[56,1682+35])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[56,1682+36]..[56,1682+38])
+                                          Pexp_ident "ls" (idN.ml[56,1682+36]..[56,1682+38])
+                                    ]
+                              ]
+                              expression (idN.ml[57,1724+16]..[59,1835+69])
+                                Pexp_match
+                                expression (idN.ml[57,1724+23]..[57,1724+44])
+                                  Pexp_apply
+                                  expression (idN.ml[57,1724+23]..[57,1724+33])
+                                    Pexp_ident "Listf.drop" (idN.ml[57,1724+23]..[57,1724+33])
+                                  [
+                                    <label> ""
+                                      expression (idN.ml[57,1724+34]..[57,1724+41])
+                                        Pexp_apply
+                                        expression (idN.ml[57,1724+37]..[57,1724+38])
+                                          Pexp_ident "-" (idN.ml[57,1724+37]..[57,1724+38])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[57,1724+35]..[57,1724+36])
+                                              Pexp_ident "l" (idN.ml[57,1724+35]..[57,1724+36])
+                                          <label> ""
+                                            expression (idN.ml[57,1724+39]..[57,1724+40])
+                                              Pexp_constant Const_int 2
+                                        ]
+                                    <label> ""
+                                      expression (idN.ml[57,1724+42]..[57,1724+44])
+                                        Pexp_ident "ls" (idN.ml[57,1724+42]..[57,1724+44])
+                                  ]
+                                [
+                                  <case>
+                                    pattern (idN.ml[58,1774+19]..[58,1774+34])
+                                      Ppat_construct "::" (idN.ml[58,1774+20]..[58,1774+22])
+                                      Some
+                                        pattern (idN.ml[58,1774+19]..[58,1774+34]) ghost
+                                          Ppat_tuple
+                                          [
+                                            pattern (idN.ml[58,1774+19]..[58,1774+20])
+                                              Ppat_var "q" (idN.ml[58,1774+19]..[58,1774+20])
+                                            pattern (idN.ml[58,1774+22]..[58,1774+34])
+                                              Ppat_construct "::" (idN.ml[58,1774+30]..[58,1774+32])
+                                              Some
+                                                pattern (idN.ml[58,1774+22]..[58,1774+34]) ghost
+                                                  Ppat_tuple
+                                                  [
+                                                    pattern (idN.ml[58,1774+22]..[58,1774+30])
+                                                      Ppat_variant "Lid"
+                                                      Some
+                                                        pattern (idN.ml[58,1774+28]..[58,1774+29])
+                                                          Ppat_var "y" (idN.ml[58,1774+28]..[58,1774+29])
+                                                    pattern (idN.ml[58,1774+32]..[58,1774+34])
+                                                      Ppat_construct "[]" (idN.ml[58,1774+32]..[58,1774+34])
+                                                      None
+                                                  ]
+                                          ]
+                                    expression (idN.ml[58,1774+38]..[58,1774+60])
+                                      Pexp_variant "Dot"
+                                      Some
+                                        expression (idN.ml[58,1774+43]..[58,1774+60])
+                                          Pexp_tuple
+                                          [
+                                            expression (idN.ml[58,1774+44]..[58,1774+45])
+                                              Pexp_ident "q" (idN.ml[58,1774+44]..[58,1774+45])
+                                            expression (idN.ml[58,1774+47]..[58,1774+59])
+                                              Pexp_variant "Lid"
+                                              Some
+                                                expression (idN.ml[58,1774+53]..[58,1774+58])
+                                                  Pexp_apply
+                                                  expression (idN.ml[58,1774+54]..[58,1774+55])
+                                                    Pexp_ident "f" (idN.ml[58,1774+54]..[58,1774+55])
+                                                  [
+                                                    <label> ""
+                                                      expression (idN.ml[58,1774+56]..[58,1774+57])
+                                                        Pexp_ident "y" (idN.ml[58,1774+56]..[58,1774+57])
+                                                  ]
+                                          ]
+                                  <case>
+                                    pattern (idN.ml[59,1835+19]..[59,1835+20])
+                                      Ppat_any
+                                    expression (idN.ml[59,1835+24]..[59,1835+68])
+                                      Pexp_apply
+                                      expression (idN.ml[59,1835+24]..[59,1835+33])
+                                        Pexp_ident "failwithf" (idN.ml[59,1835+24]..[59,1835+33])
+                                      [
+                                        <label> ""
+                                          expression (idN.ml[59,1835+34]..[59,1835+49])
+                                            Pexp_constant Const_string("ident_map: %s",None)
+                                        <label> ""
+                                          expression (idN.ml[59,1835+50]..[59,1835+68])
+                                            Pexp_apply
+                                            expression (idN.ml[59,1835+51]..[59,1835+65])
+                                              Pexp_ident "ObjsN.dump_vid" (idN.ml[59,1835+51]..[59,1835+65])
+                                            [
+                                              <label> ""
+                                                expression (idN.ml[59,1835+66]..[59,1835+67])
+                                                  Pexp_ident "x" (idN.ml[59,1835+66]..[59,1835+67])
+                                            ]
+                                      ]
+                                ]
+                        ]
+                ]
+          ]
+    ]
+  structure_item (idN.ml[60,1907+0]..[75,2435+16])
+    Pstr_value Nonrec
+    [
+      <def>
+        pattern (idN.ml[60,1907+4]..[60,1907+22])
+          Ppat_var "ident_map_of_ident" (idN.ml[60,1907+4]..[60,1907+22])
+        expression (idN.ml[61,1932+2]..[75,2435+16])
+          Pexp_function
+          [
+            <case>
+              pattern (idN.ml[62,1943+4]..[62,1943+5])
+                Ppat_var "f" (idN.ml[62,1943+4]..[62,1943+5])
+              expression (idN.ml[63,1952+6]..[75,2435+16])
+                Pexp_function
+                [
+                  <case>
+                    pattern (idN.ml[64,1968+9]..[64,1968+10])
+                      Ppat_var "x" (idN.ml[64,1968+9]..[64,1968+10])
+                    expression (idN.ml[65,1982+11]..[75,2435+15]) ghost
+                      Pexp_constraint
+                      expression (idN.ml[65,1982+12]..[74,2354+77])
+                        Pexp_let Nonrec
+                        [
+                          <def>
+                            pattern (idN.ml[65,1982+16]..[65,1982+19])
+                              Ppat_var "lst" (idN.ml[65,1982+16]..[65,1982+19])
+                            expression (idN.ml[65,1982+22]..[65,1982+50])
+                              Pexp_apply
+                              expression (idN.ml[65,1982+22]..[65,1982+45])
+                                Pexp_ident "Ast_basic.N.list_of_dot" (idN.ml[65,1982+22]..[65,1982+45])
+                              [
+                                <label> ""
+                                  expression (idN.ml[65,1982+46]..[65,1982+47])
+                                    Pexp_ident "x" (idN.ml[65,1982+46]..[65,1982+47])
+                                <label> ""
+                                  expression (idN.ml[65,1982+48]..[65,1982+50])
+                                    Pexp_construct "[]" (idN.ml[65,1982+48]..[65,1982+50])
+                                    None
+                              ]
+                        ]
+                        expression (idN.ml[66,2036+12]..[74,2354+77])
+                          Pexp_match
+                          expression (idN.ml[66,2036+19]..[66,2036+22])
+                            Pexp_ident "lst" (idN.ml[66,2036+19]..[66,2036+22])
+                          [
+                            <case>
+                              pattern (idN.ml[67,2064+15]..[67,2064+17])
+                                Ppat_construct "[]" (idN.ml[67,2064+15]..[67,2064+17])
+                                None
+                              expression (idN.ml[67,2064+21]..[67,2064+59])
+                                Pexp_apply
+                                expression (idN.ml[67,2064+21]..[67,2064+32])
+                                  Pexp_ident "invalid_arg" (idN.ml[67,2064+21]..[67,2064+32])
+                                [
+                                  <label> ""
+                                    expression (idN.ml[67,2064+33]..[67,2064+59])
+                                      Pexp_constant Const_string("ident_map identifier [] ",None)
+                                ]
+                            <case>
+                              pattern (idN.ml[68,2124+15]..[68,2124+27])
+                                Ppat_construct "::" (idN.ml[68,2124+23]..[68,2124+25])
+                                Some
+                                  pattern (idN.ml[68,2124+15]..[68,2124+27]) ghost
+                                    Ppat_tuple
+                                    [
+                                      pattern (idN.ml[68,2124+15]..[68,2124+23])
+                                        Ppat_variant "Lid"
+                                        Some
+                                          pattern (idN.ml[68,2124+21]..[68,2124+22])
+                                            Ppat_var "y" (idN.ml[68,2124+21]..[68,2124+22])
+                                      pattern (idN.ml[68,2124+25]..[68,2124+27])
+                                        Ppat_construct "[]" (idN.ml[68,2124+25]..[68,2124+27])
+                                        None
+                                    ]
+                              expression (idN.ml[68,2124+31]..[68,2124+34])
+                                Pexp_apply
+                                expression (idN.ml[68,2124+31]..[68,2124+32])
+                                  Pexp_ident "f" (idN.ml[68,2124+31]..[68,2124+32])
+                                [
+                                  <label> ""
+                                    expression (idN.ml[68,2124+33]..[68,2124+34])
+                                      Pexp_ident "y" (idN.ml[68,2124+33]..[68,2124+34])
+                                ]
+                            <case>
+                              pattern (idN.ml[69,2159+15]..[69,2159+17])
+                                Ppat_var "ls" (idN.ml[69,2159+15]..[69,2159+17])
+                              expression (idN.ml[70,2180+17]..[74,2354+76])
+                                Pexp_let Nonrec
+                                [
+                                  <def>
+                                    pattern (idN.ml[70,2180+21]..[70,2180+22])
+                                      Ppat_var "l" (idN.ml[70,2180+21]..[70,2180+22])
+                                    expression (idN.ml[70,2180+25]..[70,2180+39])
+                                      Pexp_apply
+                                      expression (idN.ml[70,2180+25]..[70,2180+36])
+                                        Pexp_ident "List.length" (idN.ml[70,2180+25]..[70,2180+36])
+                                      [
+                                        <label> ""
+                                          expression (idN.ml[70,2180+37]..[70,2180+39])
+                                            Pexp_ident "ls" (idN.ml[70,2180+37]..[70,2180+39])
+                                      ]
+                                ]
+                                expression (idN.ml[71,2223+17]..[74,2354+76])
+                                  Pexp_match
+                                  expression (idN.ml[71,2223+24]..[71,2223+45])
+                                    Pexp_apply
+                                    expression (idN.ml[71,2223+24]..[71,2223+34])
+                                      Pexp_ident "Listf.drop" (idN.ml[71,2223+24]..[71,2223+34])
+                                    [
+                                      <label> ""
+                                        expression (idN.ml[71,2223+35]..[71,2223+42])
+                                          Pexp_apply
+                                          expression (idN.ml[71,2223+38]..[71,2223+39])
+                                            Pexp_ident "-" (idN.ml[71,2223+38]..[71,2223+39])
+                                          [
+                                            <label> ""
+                                              expression (idN.ml[71,2223+36]..[71,2223+37])
+                                                Pexp_ident "l" (idN.ml[71,2223+36]..[71,2223+37])
+                                            <label> ""
+                                              expression (idN.ml[71,2223+40]..[71,2223+41])
+                                                Pexp_constant Const_int 2
+                                          ]
+                                      <label> ""
+                                        expression (idN.ml[71,2223+43]..[71,2223+45])
+                                          Pexp_ident "ls" (idN.ml[71,2223+43]..[71,2223+45])
+                                    ]
+                                  [
+                                    <case>
+                                      pattern (idN.ml[72,2274+20]..[72,2274+35])
+                                        Ppat_construct "::" (idN.ml[72,2274+21]..[72,2274+23])
+                                        Some
+                                          pattern (idN.ml[72,2274+20]..[72,2274+35]) ghost
+                                            Ppat_tuple
+                                            [
+                                              pattern (idN.ml[72,2274+20]..[72,2274+21])
+                                                Ppat_var "q" (idN.ml[72,2274+20]..[72,2274+21])
+                                              pattern (idN.ml[72,2274+23]..[72,2274+35])
+                                                Ppat_construct "::" (idN.ml[72,2274+31]..[72,2274+33])
+                                                Some
+                                                  pattern (idN.ml[72,2274+23]..[72,2274+35]) ghost
+                                                    Ppat_tuple
+                                                    [
+                                                      pattern (idN.ml[72,2274+23]..[72,2274+31])
+                                                        Ppat_variant "Lid"
+                                                        Some
+                                                          pattern (idN.ml[72,2274+29]..[72,2274+30])
+                                                            Ppat_var "y" (idN.ml[72,2274+29]..[72,2274+30])
+                                                      pattern (idN.ml[72,2274+33]..[72,2274+35])
+                                                        Ppat_construct "[]" (idN.ml[72,2274+33]..[72,2274+35])
+                                                        None
+                                                    ]
+                                            ]
+                                      expression (idN.ml[72,2274+39]..[72,2274+54])
+                                        Pexp_variant "Dot"
+                                        Some
+                                          expression (idN.ml[72,2274+44]..[72,2274+54])
+                                            Pexp_tuple
+                                            [
+                                              expression (idN.ml[72,2274+45]..[72,2274+46])
+                                                Pexp_ident "q" (idN.ml[72,2274+45]..[72,2274+46])
+                                              expression (idN.ml[72,2274+48]..[72,2274+53])
+                                                Pexp_apply
+                                                expression (idN.ml[72,2274+49]..[72,2274+50])
+                                                  Pexp_ident "f" (idN.ml[72,2274+49]..[72,2274+50])
+                                                [
+                                                  <label> ""
+                                                    expression (idN.ml[72,2274+51]..[72,2274+52])
+                                                      Pexp_ident "y" (idN.ml[72,2274+51]..[72,2274+52])
+                                                ]
+                                            ]
+                                    <case>
+                                      pattern (idN.ml[73,2329+20]..[73,2329+21])
+                                        Ppat_any
+                                      expression (idN.ml[74,2354+22]..[74,2354+75])
+                                        Pexp_apply
+                                        expression (idN.ml[74,2354+22]..[74,2354+31])
+                                          Pexp_ident "failwithf" (idN.ml[74,2354+22]..[74,2354+31])
+                                        [
+                                          <label> ""
+                                            expression (idN.ml[74,2354+32]..[74,2354+56])
+                                              Pexp_constant Const_string("ident_map_of_ident: %s",None)
+                                          <label> ""
+                                            expression (idN.ml[74,2354+57]..[74,2354+75])
+                                              Pexp_apply
+                                              expression (idN.ml[74,2354+58]..[74,2354+72])
+                                                Pexp_ident "ObjsN.dump_vid" (idN.ml[74,2354+58]..[74,2354+72])
+                                              [
+                                                <label> ""
+                                                  expression (idN.ml[74,2354+73]..[74,2354+74])
+                                                    Pexp_ident "x" (idN.ml[74,2354+73]..[74,2354+74])
+                                              ]
+                                        ]
+                                  ]
+                          ]
+                      core_type (idN.ml[75,2435+11]..[75,2435+14])
+                        Ptyp_constr "vid" (idN.ml[75,2435+11]..[75,2435+14])
+                        []
+                ]
+          ]
+    ]
+]
