@@ -186,8 +186,9 @@ MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 fan_top: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma 
      ocamlfind ocamlmktop -o $@  dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain_top.cma
 
-ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
-    ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+# We should provide ftop support in a separate package
+# ftop: utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
+#     ocamlfind ocamlmktop -o $@ -thread -linkpkg -package utop dynlink.cma utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma  cold/libmain.cma thirdparty/utop/libtop.cma
 
 
 MakeWeakFix(mountdir,pp,exe) =
